@@ -1,0 +1,8 @@
+.show {
+  margin-left: 20px;
+  width: 30px;
+}
+
+.visible {
+  display: none;
+}
