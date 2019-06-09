@@ -7,47 +7,47 @@ export default class App extends Component {
     this.state = {
       loaded: false,
       requested: false,
+      postsList: []
     }
     this.requestData = this.requestData.bind(this);
   }
 
+  getData(url) {
+    return fetch(url).then(response => response.json());
+  }
+
   requestData() {
-    const PostsResp = fetch('https://jsonplaceholder.typicode.com/posts')
-      .then(response => response.json());
+    this.setState({
+      requested: true,
+    });
 
-    const UsersResp = fetch('https://jsonplaceholder.typicode.com/users')
-      .then(response => response.json());
-
-    const CommentsResp = fetch('https://jsonplaceholder.typicode.com/comments')
-      .then(response => response.json());
-
-    Promise.all([PostsResp, UsersResp, CommentsResp])
+    Promise.all([
+      this.getData('https://jsonplaceholder.typicode.com/posts'),
+      this.getData('https://jsonplaceholder.typicode.com/users'),
+      this.getData('https://jsonplaceholder.typicode.com/comments')
+    ])
       .then(([posts, users, comments]) => {
-        this.setState({
-          requested: true,
-        });
-
-        const commentMap = {};
+        const commentsMap = {};
         comments.forEach(el => {
-          commentMap[el.postId] ? commentMap[el.postId].push(el) : commentMap[el.postId] = [el];
+          commentsMap[el.postId] ? commentsMap[el.postId].push(el) : commentsMap[el.postId] = [el];
         });
 
         const usersMap = users.reduce((acc, user) => ({ ...acc, [user.id]: user }), {});
 
-        this.postsMap = posts.map(post => ({
-          ...post, comments: commentMap[post.id], user: usersMap[post.userId]
+        this.state.postsList = posts.map(post => ({
+          ...post, comments: commentsMap[post.id], user: usersMap[post.userId]
         }));
 
         this.setState({
           loaded: true,
         });
-      })
+      });
   }
 
   render() {
     if (this.state.loaded) {
       return (
-        <div>{this.postsMap.map(post => <Post post={post} key={post.id} />)}</div>
+        <div>{this.state.postsList.map(post => <Post post={post} key={post.id} />)}</div>
       );
     } else {
       return (
