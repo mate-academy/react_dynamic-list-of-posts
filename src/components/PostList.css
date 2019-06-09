@@ -1,0 +1,32 @@
+.posts-page {
+    max-width: 500px;
+    margin: 30px auto 0;
+}
+
+button {
+    display: block;
+    width: 250px;
+    height: 100px;
+    margin: 0 auto;
+    margin-top: calc(50vh - 50px);border: none;
+    outline: none;
+    border-radius: 20px;
+    font-size: 50px;
+    background: rgb(107, 7, 107);
+    color: white;
+}
+
+button:active {
+    transform: scale(1.1);
+}
+
+input {
+    width: 200px;
+    height: 30px;
+    border-radius: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    outline: none;
+    border: 1px solid rgb(107, 7, 107);
+    margin-bottom: 20px;
+}
