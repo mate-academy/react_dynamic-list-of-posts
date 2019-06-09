@@ -1,0 +1,83 @@
+.circle {
+  z-index: -4;
+  width: 100px;
+  height: 65px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  border-width: 63px 43px;
+  border-style: solid;
+  border-color: #9e9abd;
+  border-radius: 50%;
+}
+
+.envelope {
+  z-index: 1;
+  width: 34px;
+  height: 0;
+  border-width: 34px 35px;
+  border-style: solid;
+  border-color: transparent #ecc460 #f7d98f;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.envelope:before {
+  z-index: 1;
+  position: absolute;
+  top: 0px;
+  left: 0;
+  content: "";
+  height: 0;
+  width: 0;
+  border: 52px solid transparent;
+  border-top: 52px solid #f9e1a7;
+  border-bottom: 0 solid #d77e35;
+  transition: border-bottom-width ease-in 0.2s 0.2s, border-top-width ease-out 0.2s 0.4s, top ease-in 0.2s 0.2s, z-index linear 0.2s 0.2s;
+}
+.envelope:after {
+  content: "Download";
+  z-index: -1;
+  position: absolute;
+  left: 7px;
+  bottom: 4px;
+  color: #444246;
+  font: 13px "Open Sans", sans-serif;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 55px;
+  background: white;
+  width: 90px;
+  height: 54px;
+  margin-top: 0;
+  padding-bottom: 0;
+  box-shadow: 0 0 0 7px #d77e35;
+  transition: all ease-in-out 0.2s 0s;
+  border-radius: 0 0 10px 10px;
+}
+
+.envelope:hover:before {
+  top: -52px;
+  z-index: -1;
+  border-top-width: 0;
+  border-bottom-width: 52px;
+  transition: top ease-out 0.2s 0.2s, border-top-width ease-in 0.2s 0s, border-bottom-width ease-out 0.2s 0.2s, z-index linear 0.2s 0.2s;
+}
+
+.envelope:hover:after {
+  bottom: 40px;
+  box-shadow: 0 36px 0 7px #d77e35;
+  transition: all ease-in-out 0.2s 0.4s;
+}
+
+p {
+  font-family: sans-serif;
+  font-size: 0.6em;
+  text-align: center;
+  bottom: 0;
+  top: auto;
+}
