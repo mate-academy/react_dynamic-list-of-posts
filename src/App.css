@@ -1,0 +1,43 @@
+body {
+  background-color: #E1BCF0;
+  color: rgb(22, 15, 15);
+}
+
+.App {
+  width: 800px;
+  margin: 0 auto;
+}
+
+.comments a {
+  text-align: center;
+}
+.comments {
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+  margin: 0 auto;
+  margin-top: 15px;
+}
+
+.user-list {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.user-list span {
+  color: #064D57;
+  border: 1px solid #000;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.post--dec {
+  color: #B5916E;
+}
+
+.post-list p {
+  width: 600px;
+  margin: 0 auto;
+}
