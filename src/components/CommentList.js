@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Commentar from './Comment';
 
-export default class CommentList extends Component {
-  render() {
+export default function CommentList(props) {
     return (
       <div className="comments">
-        {this.props.commetItem.map(commetItem =>
+        {props.commetItem.map(commetItem =>
           <Commentar commetItem={commetItem} key={commetItem.name} />)
         }
       </div>
     );
-  }
 }

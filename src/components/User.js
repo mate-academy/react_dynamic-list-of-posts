@@ -1,18 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export default class User extends Component {
-  render() {
+export default function User(props) {
     return (
       <div>
         <h4>
-          <i>{this.props.author.name}</i> <i>{this.props.author.email}</i>
+          <i>{props.author.name}</i> <i>{props.author.email}</i>
         </h4>
         <div className="address">
-          <i>{this.props.author.address.street}</i>
-          <i>{this.props.author.address.suite}</i>
-          <i>{this.props.author.address.city}</i>
+          <i>{props.author.address.street}</i>
+          <i>{props.author.address.suite}</i>
+          <i>{props.author.address.city}</i>
         </div>
       </div>
     );
-  }
 }

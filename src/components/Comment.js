@@ -1,12 +1,10 @@
 import React from 'react';
 
-export default class Commentar extends React.Component {
-  render() {
+export default function Commentar(props) {
     return (
       <div>
-        <cite>{this.props.commetItem.name}</cite>
-        <blockquote>{this.props.commetItem.body}</blockquote>
+        <cite>{props.commetItem.name}</cite>
+        <blockquote>{props.commetItem.body}</blockquote>
       </div>
     );
-  }
 }

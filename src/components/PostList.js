@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Post from './Post';
 import CommentList from './CommentList';
 import './envelope.css';
 import './PostList.css';
 
-export default class PostList extends Component {
+export default class PostList extends React.Component {
   static loadUrl(url) {
     return fetch(url)
       .then(response => response.json())
@@ -35,7 +35,7 @@ export default class PostList extends Component {
     ])
       .then(([posts, users, comments]) => this.setState({
         loaded: true,
-        data: posts.map(post => ({
+        data: posts.map((post) => ({
           ...post,
           user: users.find(user => user.id === post.userId),
           comments: comments

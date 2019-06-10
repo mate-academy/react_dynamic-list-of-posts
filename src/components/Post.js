@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import User from './User';
 
-export default class Post extends Component {
-  render() {
+export default function Post(props) {
     return (
       <div className="article">
-        <h2>{this.props.data.title}</h2>
-        <User author={this.props.data.user} />
-        <p>{this.props.data.body}</p>
+        <h2>{props.data.title}</h2>
+        <User author={props.data.user} />
+        <p>{props.data.body}</p>
       </div>
     );
-  }
 }
