@@ -1,0 +1,56 @@
+@import url(https://fonts.googleapis.com/css?family=Old+Standard+TT:400,400italic,700);
+
+body {
+  background: #F5F1E3;
+  font-family: "Old Standard TT", "Times New Roman", serif;
+  font-size: 18px;
+  line-height: 1.5;
+  color: #433F3F;
+}
+
+.container {
+  margin: 30px auto;
+  width: 80%;
+}
+
+.Loading {
+  font-size: 50px;
+  text-align: center;
+  margin-top: 20%;
+}
+
+input {
+  height: 30px;
+  width: 230px;
+  border-radius: 13px;
+  padding-left: 10px;
+}
+
+h2 {
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+h4 {
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+p {
+  font-size: 20px;
+  text-align: left;
+}
+
+.comments {
+  width: 90%;
+  margin-left: 45px;
+}
+
+blockquote {
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+
