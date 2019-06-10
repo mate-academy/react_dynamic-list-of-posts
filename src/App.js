@@ -34,9 +34,11 @@ export default class App extends Component {
 
         const usersMap = users.reduce((acc, user) => ({ ...acc, [user.id]: user }), {});
 
-        this.state.postsList = posts.map(post => ({
-          ...post, comments: commentsMap[post.id], user: usersMap[post.userId]
-        }));
+        this.setState({
+          postsList: posts.map(post => ({
+            ...post, comments: commentsMap[post.id], user: usersMap[post.userId]
+        }))
+      })
 
         this.setState({
           loaded: true,
@@ -46,15 +48,16 @@ export default class App extends Component {
 
   render() {
     if (this.state.loaded) {
+      const { postsList } = this.state
       return (
-        <div>{this.state.postsList.map(post => <Post post={post} key={post.id} />)}</div>
+        <div>{postsList.map(post => <Post post={post} key={post.id} />)}</div>
       );
     } else {
       return (
         <button
           onClick={this.requestData}
           disabled={this.state.requested}>
-          {this.state.requested ? "Loading..." : "Load Data"}
+          {this.state.requested ? 'Loading...' : 'Load Data'}
         </button>
       );
     }
