@@ -1,0 +1,12 @@
+.post {
+  //border: 1px solid black;
+  padding: 20px;
+  border-radius: 15px;
+  margin-top: 20px;
+  background: lightcyan;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.comments_block {
+  margin-left: 100px;
+}
