@@ -30,20 +30,13 @@ class Comments extends Component {
   }
 
   render() {
-    const commentsList = [];
-    this.props.comments.forEach(comment => {
-      commentsList.push(
-        <Comment key = {comment.body} text = {comment.body} author = {comment.name} 
-        email = {comment.email}/>  
-      )
-    });
-
     return (
       <React.Fragment>
         <h3>Comments
           <button className="show" onClick = {this.showHide}>{this.state.sign}</button></h3>
         <section className = "comments">
-          {commentsList}
+          {this.props.comments.map(comment => <Comment key = {comment.body} text = {comment.body} author = {comment.name} 
+          email = {comment.email}/>)}
         </section>
       </React.Fragment>
     );

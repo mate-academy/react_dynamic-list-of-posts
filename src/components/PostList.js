@@ -51,8 +51,9 @@ class PostList extends Component {
   }
 
   searchResults(event){
-    let newList = this.state.postComponents.filter((item => item.props.title.includes(event.target.value.trim())));
-    console.log(newList);
+    let newList = this.state.postComponents.filter((item =>
+      item.props.title.includes(event.target.value.trim()) || item.props.text.includes(event.target.value.trim())
+    ));
     this.setState({
       forRender: newList
     });

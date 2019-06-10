@@ -3,9 +3,7 @@ import PostList from './components/PostList';
 import './css/App.css'
 
 function App() {
-  return <div>
-    <PostList />
-  </div>
+  return <PostList />
 }
 
 export default App;
