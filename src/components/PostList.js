@@ -58,7 +58,7 @@ class PostList extends React.Component {
         <div className="posts-page">
           <input type="text" onInput={this.searchPost} placeholder="Search..." />
           <section className="posts-list">
-            {this.state.postsFound.length === 0 ?
+            {!this.state.postsFound.length ?
               this.state.postsList.map((item) => Post(item)) :
                 this.state.postsFound.map((item) => Post(item))
             }
