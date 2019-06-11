@@ -1,5 +1,4 @@
-import React, {Component} from 'react';
-// import './App.css';
+import React, { Component } from 'react';
 import PostList from './components/PostList';
 
 const serverUrl = 'https://jsonplaceholder.typicode.com/';
@@ -13,23 +12,25 @@ class App extends Component {
       comments: null,
       postList: null
     }
+  }
+
+  componentDidMount() {
     this.loadData();
   }
 
-  isLoading() {
+  get isLoading() {
     return !this.state.posts || !this.state.users || !this.state.comments;
   }
 
-  isLoaded() {
+  get isLoaded() {
     return this.state.postList !== null;
   }
 
   checkData() {
-    if (this.isLoading()) return;
+    if (this.isLoading) return;
     const postsListMap = this.state.posts.map(post => ({...post,
       user: this.state.users.find(user => user.id === post.userId),
       postComments: this.state.comments.filter(comment => comment.postId === post.id) }));
-      console.log(postsListMap.length);
     this.setState(state => ({
       postList: postsListMap
     }));
@@ -73,8 +74,7 @@ class App extends Component {
   }
 
   render() {
-    console.log('');
-    if(this.isLoaded()) {
+    if(this.isLoaded) {
       return (
         <div className="App">
           <h1>Post List</h1>

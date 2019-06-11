@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './Comment.css';
 
 class Comment extends Component {
 
@@ -7,7 +8,7 @@ class Comment extends Component {
       return (
         <div>
           <h4>{this.props.title}</h4>
-          <h6>{this.props.body}</h6>
+        <span className="comment-body">{this.props.body}</span>
         </div>
       );
   }
