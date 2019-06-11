@@ -64,7 +64,7 @@ class PostList extends Component {
         </thead>
         <tbody>
           {this.state.items.map(item => 
-          <Post data={item} />)}
+          <Post data={item}  key={item.title} />)}
         </tbody>
       </table>);
       } else if (this.state.items.title.includes(this.state.filter) || this.state.items.body.includes(this.state.filter)){
@@ -81,7 +81,7 @@ class PostList extends Component {
           </thead>
           <tbody>
             {this.state.items.map(item => 
-            <Post data={item} />)}
+            <Post data={item}  key={item.title} />)}
           </tbody>
         </table>);
       }
@@ -96,7 +96,6 @@ class PostList extends Component {
     } return (
       <div> <button className='btn' onClick={this.getItem} disabled>Loading....</button></div>
     );
-    console.log(this.state.items.title);
   }
 }
 
