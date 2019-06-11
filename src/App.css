@@ -1,0 +1,44 @@
+body {
+  background: rgb(128, 128, 216);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.btn {
+  background-color: red;
+  height: 200px;
+  width: 200px;
+  border-radius: 50%;
+  border: 5px solid white;
+  transition: all 2s;
+  cursor: pointer;
+  color: white;
+  font-size: 220%;
+  margin-top: 200px;
+}
+
+.btn:hover {
+  background-color: brown;
+  border: 20px solid white;
+  transform: scale(0.5);
+}
+
+table, th, td {
+  border: 2px solid green;
+  border-collapse: collapse;
+}
+
+table {
+  margin: 15px;
+}
+
+th, td {
+  padding: 5px;
+}
+
+.postSearcher {
+  margin: 50px 0 0 15px;
+  background: #ccc;
+}
