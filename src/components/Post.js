@@ -8,7 +8,7 @@ function Post(props) {
     const {user, title, body, id, comments} = props;
     return (
         <div className='post'>
-            <User user = {user}/>
+            <User user={user}/>
             <div className='post-body'>
                 <div className='title'>{title}</div>
                 <div className='body'>{body}</div>

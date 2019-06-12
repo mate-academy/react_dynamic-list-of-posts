@@ -1,7 +1,7 @@
 import React, {Component}from 'react';
 import './App.css';
 import PostList from './components/PostList';
-import Service from './components/service';
+import Service from './service';
 
 
 class App extends Component {
@@ -15,50 +15,57 @@ class App extends Component {
   };
 
   downloadData = async () => {
-    this.setState(state => {
-      return {
-        ...state,
-        isLoading: true
-      }
+    this.setState({
+      isLoading: true
     });
     const usersPromise = this.service.getUsers();
     const postsPromise = this.service.getPosts();
     const commentsPromise = this.service.getComments();
     await Promise.all([usersPromise, postsPromise, commentsPromise])
         .then(values => {
-          this.setState(state => {
-            return {
-              ...state,
+          this.setState({
               users: values[0],
               posts: values[1],
               comments: values[2],
               loaded: true,
               isLoading: false
-            }
-          })
+          });
         });
   };
 
   render() {
-    if (!this.state.loaded && !this.state.isLoading) {
+    const {
+      loaded,
+      isLoading,
+      users,
+      posts,
+      comments
+    } = this.state;
+
+    const button = (
+      <button
+        type="button"
+        disabled={isLoading}
+        onClick={this.downloadData}
+      >
+        {isLoading ? 'Loading...' : 'Load data'}
+      </button>
+    );
+    if (!loaded && !isLoading) {
       return (
-          <button onClick={this.downloadData}>
-            Load
-          </button>
-      )
+          button
+      );
     }
-    if (this.state.isLoading) {
+    if (isLoading) {
       return (
-          <button disabled={true}>
-            Loading...
-          </button>
-      )
+        button
+      );
     }
-    if (this.state.loaded) {
+    if (loaded) {
       return (
-          <PostList users={this.state.users}
-                    posts={this.state.posts}
-                    comments={this.state.comments}
+          <PostList users={users}
+                    posts={posts}
+                    comments={comments}
           />
       );
     }

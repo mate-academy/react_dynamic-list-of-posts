@@ -3,8 +3,8 @@ export default class Service {
         this.apiBase = 'https://jsonplaceholder.typicode.com/';
     }
 
-    async getUsers() {
-        return await this._getData('users')
+    getUsers() {
+        return this._getData('users')
             .then(res => {
                 return res.reduce((accumulator, currentValue) => {
                     accumulator[currentValue.id] = currentValue;
@@ -22,7 +22,7 @@ export default class Service {
     }
 
     async _getData(type) {
-        return await fetch(`${this.apiBase}${type}`)
+        return fetch(`${this.apiBase}${type}`)
             .then(res => res.json());
     };
 }
