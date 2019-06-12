@@ -1,20 +1,18 @@
-import React, { Component } from 'react';
+import React from 'react';
 import User from './User';
 import CommentList from './CommentList';
 
-class Post extends Component {
-
-  render() {
-    return (
-      <div>
-        <h2>{this.props.title}</h2>
-        <span>{this.props.body}</span>
-        <User {...this.props.user}/>
-        <CommentList postComments={this.props.postComments} />
-        <hr/>
-      </div>
-    );
-  }
+function Post(props) {
+  const { title, body, user, postComments } = props;
+  return (
+    <div>
+      <h2>{title}</h2>
+      <span>{body}</span>
+      <User {...user}/>
+      <CommentList postComments={postComments} />
+      <hr/>
+    </div>
+  );
 }
 
 export default Post;

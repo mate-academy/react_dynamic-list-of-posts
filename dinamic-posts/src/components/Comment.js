@@ -1,17 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './Comment.css';
 
-class Comment extends Component {
-
-  render() {
-
-      return (
-        <div>
-          <h4>{this.props.title}</h4>
-        <span className="comment-body">{this.props.body}</span>
-        </div>
-      );
-  }
+function Comment(props) {
+  const { title, body } = props;
+  return (
+    <div>
+      <h4>{title}</h4>
+      <span className="comment-body">{body}</span>
+    </div>
+  );
 }
 
 export default Comment;

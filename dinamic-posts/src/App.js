@@ -74,23 +74,13 @@ class App extends Component {
   }
 
   render() {
-    if(this.isLoaded) {
-      return (
+    return (
         <div className="App">
           <h1>Post List</h1>
-          <PostList posts={this.state.postList} />
+        {this.isLoaded ? (<PostList posts={this.state.postList} />) : (<p>Loading...</p>)}
         </div>
       );
-    } else {
-      return (
-        <div className="App">
-          <h1>Post List</h1>
-          <p>Loading...</p>
-        </div>
-      );
-    }
   }
-
 }
 
 export default App;
