@@ -16,7 +16,6 @@ class PostList extends Component {
             return {
                 foundPosts: prevState.posts
             }
-
         })
     }
 
