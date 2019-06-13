@@ -14,8 +14,7 @@ export default class PostList extends Component {
 
   search(event) {
     const value = event.target.value;
-    console.log(event.target.value)
-    this.setState(state => state.search = value)
+    this.setState(() => ({search: value}))
   }
 
   render() {
@@ -27,8 +26,8 @@ export default class PostList extends Component {
           value={this.state.search} />
         {this.props.posts
           .filter(item =>
-            item.title.includes(this.state.search) ||
-            item.body.includes(this.state.search))
+            item.title.includes(this.state.search.trim()) ||
+            item.body.includes(this.state.search.trim()))
           .map(item =>
             <Post key={item.id}
             title={item.title} body={item.body}

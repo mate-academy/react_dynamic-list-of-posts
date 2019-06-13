@@ -25,13 +25,12 @@ export default class App extends Component {
   }
 
   parseData(dataArrs) {
-    const posts = dataArrs[0];
-    const users = this.usersToObj(dataArrs[1]);
-    const comments = dataArrs[2];
+    const [posts, users, comments] = dataArrs;
+    const usersObj = this.usersToObj(users);
 
     this.setState(() => ({
       posts: posts,
-      users: users,
+      users: usersObj,
       comments: comments,
       status: 'redy to show'
     }))
@@ -45,13 +44,9 @@ export default class App extends Component {
     return Promise.all(urls.map(url => this.createPromise(url)));
   }
 
-  init() {
-    this.getAllData(this.data).then(responses => this.parseData(responses))
-  }
-
   showPosts() {
     this.setState(state => state.status = 'loading');
-    this.init();
+    this.getAllData(this.data).then(responses => this.parseData(responses))
   }
 
   render() {
