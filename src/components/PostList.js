@@ -73,7 +73,7 @@ class PostList extends Component {
                 address={item.user.address.street}
               />
               <CommentList comments={item.comments}/>
-            </section>): null)}
+            </section>)
         </div>
       )
     }else{
