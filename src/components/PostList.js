@@ -50,15 +50,13 @@ class PostList extends Component {
   render() {
     if (!this.state.requested) {
       return <button className='load-btn' type='submit' onClick={this.loadItems}>Load page</button>;
-    }
-
-    if(this.state.loaded) {
+    }else if(this.state.loaded) {
       return (
         <div className='list'>
           <input type="text" placeholder="search" onChange={this.filterChanged} />
           {this.state.data.map(item =>
-            item.title.includes(this.state.filter) || item.body.includes(this.state.filter) ?
-            (<section>
+            item.title.includes(this.state.filter) || item.body.includes(this.state.filter)
+            ? (<section>
               <Post
                 key={item.title}
                 title={item.title}
