@@ -15,6 +15,7 @@ class PostList extends Component {
     this.loadItems = this.loadItems.bind(this);
     this.filterChanged = this.filterChanged.bind(this);
   }
+  
   loadApi(url) {
     return fetch(url)
       .then(res => res.json())
