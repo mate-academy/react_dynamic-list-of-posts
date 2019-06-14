@@ -51,7 +51,6 @@ class PostList extends Component {
   }
 
   render() {
-
     if (!this.state.requested) {
       return <button className='load-btn' type='submit' onClick={this.loadItems}>Load page</button>;
     }
