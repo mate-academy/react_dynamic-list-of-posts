@@ -16,13 +16,11 @@ class PostList extends Component {
     this.filterChanged = this.filterChanged.bind(this);
   }
   
-  
   loadApi(url) {
     return fetch(url)
       .then(res => res.json())
       .then(data => data);
   }
-
 
   loadItems() {
     this.setState({
