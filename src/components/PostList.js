@@ -28,7 +28,6 @@ class PostList extends Component {
     this.setState({
       requested: true,
     });
-
     Promise.all([
       this.loadApi('https://jsonplaceholder.typicode.com/posts'),
       this.loadApi('https://jsonplaceholder.typicode.com/users'),
