@@ -25,7 +25,6 @@ class PostList extends Component {
 
 
   loadItems() {
-
     this.setState({
       requested: true,
     });
