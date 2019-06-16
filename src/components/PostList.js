@@ -58,7 +58,6 @@ class PostList extends React.Component {
   }
 
   render () {
-
     if (!this.state.request){
       return (
         <div className="button-contaier">
@@ -66,16 +65,20 @@ class PostList extends React.Component {
         </div>
       );
     } else if (this.state.loaded) {
-
       if (this.state.filter === null) {
         return (
           <div className="posts-contaier">
             <div className="input-contaier">
               <input type="text" placeholder="Search" onChange={this.filterPosts}/>
             </div>
-            {this.state.posts.map(post =>
-              <Post title={post.title} text={post.body} users={this.state.users}
-               userId={post.userId} id={post.id} key={post.id} comments={this.state.comments}/>)}
+            {this.state.posts.map(post => (
+              <Post
+                users={this.state.users}
+                post={post}
+                comments={this.state.comments}
+                key={post.id}
+              />
+           ))}
           </div>
         );
       } else if (this.state.filter !== null) {
@@ -87,9 +90,14 @@ class PostList extends React.Component {
             <div className="input-contaier">
               <input type="text" placeholder="Search" onChange={this.filterPosts}/>
             </div>
-            {filtredPost.map(post =>
-              <Post title={post.title} text={post.body} users={this.state.users}
-               userId={post.userId} id={post.id} key={post.id} comments={this.state.comments}/>)}
+            {filtredPost.map(post => (
+              <Post
+                post={post}
+                users={this.state.users}
+                key={post.id}
+                comments={this.state.comments}
+              />
+            ))}
           </div>
         );
       }
