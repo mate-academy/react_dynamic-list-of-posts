@@ -17,7 +17,7 @@ class App extends React.Component {
   loadUrl(url) {
     return fetch(url)
       .then(res => res.json())
-    .then(data => data);
+      .then(data => data);
   }
   
   loadContent() {
