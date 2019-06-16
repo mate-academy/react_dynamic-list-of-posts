@@ -24,7 +24,7 @@ class App extends React.Component {
     Promise.all([
       this.loadUrl('https://jsonplaceholder.typicode.com/posts'),
       this.loadUrl('https://jsonplaceholder.typicode.com/users'),
-	  this.loadUrl('https://jsonplaceholder.typicode.com/comments')
+      this.loadUrl('https://jsonplaceholder.typicode.com/comments')
     ]).then( ([posts, users, comments]) => {
       this.setState({
         buttonState: 2,
