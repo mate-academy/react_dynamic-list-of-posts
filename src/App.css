@@ -1,0 +1,57 @@
+.post {
+  background: #eee;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  width: 1000px;
+  margin: 0 auto;
+}
+
+.post-title {
+  background: #ee4;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.post-text {
+  background: #fff;
+  line-height: 30px;
+  padding-left: 10px;
+}
+
+.user {
+  font-style: italic;
+}
+
+.user-email a,
+.comment-email a{
+  text-decoration: none;
+  color: rgb(181, 176, 56);
+}
+
+.user-email:hover a,
+.comment-email:hover a{
+  color: rgb(104, 181, 56);
+}
+
+.comments {
+  background: #fff;
+  padding: 10px;
+}
+
+.comment {
+  border-bottom: 1px solid #ee4;
+}
+
+.comment-email {
+  font-style: italic;
+}
+
+.comment-body {
+  padding-left: 10px;
+}
+
+.input-contaier {
+  margin: 10px;
+  position: fixed;
+}
