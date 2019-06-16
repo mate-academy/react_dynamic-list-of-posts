@@ -10,7 +10,7 @@ class App extends React.Component {
       posts: [],
       users: [],
 	comments: [],
-	  query: "",
+	query: "",
     }
   }
   
