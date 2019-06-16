@@ -9,7 +9,7 @@ class App extends React.Component {
       buttonState: 0,
       posts: [],
       users: [],
-	  comments: [],
+	comments: [],
 	  query: "",
     }
   }
