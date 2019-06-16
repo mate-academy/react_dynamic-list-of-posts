@@ -2,7 +2,9 @@ import React from 'react';
 import Comment from "./Comment.js";
 
 function CommentList(props) {
-  return props.comments.map((value) => {
+  return props.comments.map((value) => (
+    <Comment key={value.id} comment={value}/>
+    ));
   return <Comment key={value.id} comment={value}/>
   });
 }
