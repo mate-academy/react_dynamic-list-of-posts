@@ -3,7 +3,7 @@ import Comment from './Comment'
 
 function CommentList(props) {
     return (
-        <div className="comments">
+        <div>
             {props.comments.map(comment => Comment(comment))}
         </div>
     );

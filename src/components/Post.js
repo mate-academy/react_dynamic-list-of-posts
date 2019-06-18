@@ -5,8 +5,8 @@ import  './Post.css';
 
 function Post(props) {
     return (
-        <div key={props.title} className="post">
-            <h3>{props.title}</h3>
+        <div key={props.title}>
+            <h2>{props.title}</h2>
             <p>{props.body}</p>
             <User name={props.user.name}
                   email={props.user.email}

@@ -1,6 +1,7 @@
 import React from 'react';
 import Post from './Post';
 
+
 class PostList extends React.Component {
     constructor(props) {
         super(props)
