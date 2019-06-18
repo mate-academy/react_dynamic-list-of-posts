@@ -50,35 +50,15 @@ export default class PostList extends Component {
       <section key={post.title} className ='Post'>
         <Post title={post.title} body={post.body} user={user} />
         <section className='CommentList'>
-          <CommentList comments={this.state.comments} postId={post.id} />
+        <CommentList comments={this.state.comments} postId={post.id} />
         </section>
       </section>
-      )
+      );
     })
     return (
       <div className='PostList'>
         {postsList}
       </div>
-    )
+    );
   }
 }
-
-// export default function PostList(props) {
-//   const {users, comments, posts} = props;
-//   const postsList = posts.map(post => {
-//     const user = users.find(user => user.id === post.userId);
-//     return (
-//     <section key={post.title} className ='Post'>
-//       <Post title={post.title} body={post.body} user={user} />
-//       <section className='CommentList'>
-//         <CommentList comments={comments} postId={post.id} />
-//       </section>
-//     </section>
-//     )
-//   })
-//   return (
-//     <div className='PostList'>
-//       {postsList}
-//     </div>
-//   )
-// }
