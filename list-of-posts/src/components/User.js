@@ -1,10 +1,7 @@
 import React from 'react';
 
 function User(props) {
-  let user = props.users.find(user => {
-    return user.id === props.userId;
-  });
-
+  const user = props.users.find(user => user.id === props.userId);
   return (
     <div>
       <h3>Author</h3>
