@@ -29,7 +29,7 @@ class App extends React.Component {
         buttonState: 2,
         posts: posts,
         users: users,
-	    comments: comments
+	comments: comments
       });
     });
 	
