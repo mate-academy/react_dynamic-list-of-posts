@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './App.css';
 import PostList from './components/PostList';
 
 export default class App extends Component {
@@ -11,8 +10,8 @@ export default class App extends Component {
       posts: [],
       users: [],
       comments: [],
-      status: 'before dawnload'
-    }
+      status: 'before download'
+    };
     this.showPosts = this.showPosts.bind(this);
   }
 
@@ -20,7 +19,7 @@ export default class App extends Component {
     const newObj = users.reduce(((acc, user) => {
       acc[user.id] = user;
       return acc;
-    }), {})
+    }), {});
     return newObj;
   }
 
@@ -32,8 +31,8 @@ export default class App extends Component {
       posts: posts,
       users: usersObj,
       comments: comments,
-      status: 'redy to show'
-    }))
+      status: 'ready to show'
+    }));
   }
 
   createPromise(url) {
@@ -45,19 +44,20 @@ export default class App extends Component {
   }
 
   showPosts() {
-    this.setState(state => state.status = 'loading');
-    this.getAllData(this.data).then(responses => this.parseData(responses))
+    this.setState((state) => ({
+      ...state,
+      status: 'loading'}));
+    this.getAllData(this.data).then(responses => this.parseData(responses));
   }
 
   render() {
     return (
       <div>
-        {this.state.status === 'before dawnload'
-          && <button className="download" onClick={this.showPosts}>
-            Show Todos!</button>}
+        {this.state.status === 'before download'
+          && <button className="download" onClick={this.showPosts}>Show Todos!</button>}
         {this.state.status === 'loading'
           && <button className="download" disabled>Loading...</button>}
-        {this.state.status === 'redy to show'
+        {this.state.status === 'ready to show'
           && <PostList posts={this.state.posts} users={this.state.users}
             comments={this.state.comments} />}
       </div>

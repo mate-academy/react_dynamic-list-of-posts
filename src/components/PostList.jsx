@@ -14,28 +14,27 @@ export default class PostList extends Component {
 
   search(event) {
     const value = event.target.value;
-    this.setState(() => ({search: value}))
+    if (value.trim()) {
+      this.setState(() => ({
+        search: value
+      }));
+    }
   }
 
   render() {
     return (
       <div className="post-list">
-        <input
-          type="text"
-          onChange={this.search}
-          value={this.state.search} />
+        <input type="text" onChange={this.search} value={this.state.search} />
         {this.props.posts
           .filter(item =>
-            item.title.includes(this.state.search.trim()) ||
-            item.body.includes(this.state.search.trim()))
+            item.title.includes(this.state.search.trim())
+            || item.body.includes(this.state.search.trim()))
           .map(item =>
-            <Post key={item.id}
-            title={item.title} body={item.body}
-              comments={
-                <CommentList postId={item.id} comments={this.props.comments} />}>
+            <Post key={item.id} title={item.title} body={item.body}
+              comments={<CommentList postId={item.id} comments={this.props.comments} />}>
               <User user={this.props.users[item.userId]} />
             </Post>)}
       </div>
-    )
+    );
   }
 }
