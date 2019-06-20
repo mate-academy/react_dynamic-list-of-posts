@@ -37,16 +37,16 @@ class App extends React.Component {
   }
   
   handleChange(event) {
-	this.setState({query: event.target.value});
+    this.setState({query: event.target.value});
   }
   
   getQueryed() {
-	  return this.state.posts.filter((value) => {
-		 if(value.title.indexOf(this.state.query.trim()) > -1 || value.body.indexOf(this.state.query.trim()) > -1) {
-			 return true;
-		 }
-		 return false;
-	  });
+    return this.state.posts.filter((value) => {
+      if(value.title.indexOf(this.state.query.trim()) > -1 || value.body.indexOf(this.state.query.trim()) > -1) {
+        return true;
+      }
+      return false;
+    });
   }
   
   render() {
