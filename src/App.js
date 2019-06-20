@@ -61,12 +61,12 @@ class App extends React.Component {
     
       case 2: {
         return (
-			<>
-				<input type="text" placeholder="search..." onChange={this.handleChange.bind(this)} />
-				<PostList posts={this.getQueryed()} users={this.state.users} comments={this.state.comments}/>
-			</>
-		)
-	  }
+          <>
+	    <input type="text" placeholder="search..." onChange={this.handleChange.bind(this)} />
+            <PostList posts={this.getQueryed()} users={this.state.users} comments={this.state.comments}/>
+	  </>
+        )
+      }
     }
   }
 }
