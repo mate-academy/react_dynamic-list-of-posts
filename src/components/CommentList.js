@@ -1,15 +1,15 @@
-import React from 'react';
-import Comment from './Comment';
-import '../css/Comments.css';
+import React from "react";
+import Comment from "./Comment";
+import "../css/Comments.css";
 
-class CommentList extends React.Component {
-  render() {
-    return (
-      <div className='comments'>
-        {this.props.comments.map((c) => <Comment comment={c} key={c.id} />)}
-      </div>
-    )
-  }
+function CommentList(props) {
+  return (
+    <div className="comments">
+      {props.comments.map(comment => (
+        <Comment comment={comment} key={comment.id} />
+      ))}
+    </div>
+  );
 }
 
 export default CommentList;
