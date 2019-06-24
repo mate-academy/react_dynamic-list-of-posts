@@ -1,13 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class User extends Component {
-  render() {   
-    return (
-      <>
-        Author: {this.props.user.name}
-      </>
-    );
-  }
+function User(props) {   
+  return (
+    <>
+      Author: {props.user.name}
+    </>
+  );
 }
 
 export default User;
