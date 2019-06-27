@@ -13,7 +13,7 @@ export default class PostList extends Component {
 
   loadData(url){
     return fetch(url)
-      .then(data => data.json().then(data => data))
+      .then(data => data.json())
   };
   
   getItem() {
@@ -38,7 +38,9 @@ export default class PostList extends Component {
     return (
       <div>
         <button onClick={this.getItem}>Load Data</button>
-        <button onClick={this.sortTitle}>Sort title</button>
+        {this.state.items.length !== 0 &&
+          <button onClick={this.sortTitle}>Sort title</button>
+        }
         {this.state.items.map(post => 
         <Post 
           key={post.id} 
