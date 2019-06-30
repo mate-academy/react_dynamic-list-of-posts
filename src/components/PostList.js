@@ -76,7 +76,7 @@ class PostList extends Component {
       
       return (
         <div>
-          <input className='postSearcher' type='text' onChange={this.filterChanged} placeholder='Search the post'></input>
+          <input className='postSearcher' type='text' onChange={this.filterChanged} placeholder='Search the post' />
         {filteredPost}
         </div>
         );
