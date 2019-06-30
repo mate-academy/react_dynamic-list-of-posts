@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-export default class User extends Component {
-  render() {
+export default function User (props) {
     return (
     <React.Fragment>
       <td>
@@ -15,5 +14,4 @@ export default class User extends Component {
       </td>
     </React.Fragment>
   );
-  }
 }
