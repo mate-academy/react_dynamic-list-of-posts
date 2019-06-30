@@ -47,7 +47,12 @@ class PostList extends Component {
 
   render() {
     if (!this.state.requested) {
-      return <div> <button className='btn' onClick={this.getItem}>
+      return ( 
+        <div> 
+          <button className='btn' onClick={this.getItem}>
+            {this.state.requested ? 'loading' : 'load data'}
+          </button>
+        </div>)
         {this.state.requested ? 'loading' : 'load data'}</button>
       </div>
     } else if (this.state.loaded) {
