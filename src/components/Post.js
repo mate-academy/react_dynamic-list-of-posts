@@ -1,20 +1,18 @@
-import React, { Component } from 'react';
+import React from 'react';
 import User from './User';
 import CommentList from './CommentList';
 
-export default class Post extends Component {
-  render() {
-    return (
+export default function Post (props) {
+     return (
       <tr>
         <td>{
-          this.props.data.title}
+          props.data.title}
         </td>
         <td>{
-          this.props.data.body}
+          props.data.body}
         </td>
-        <User author={this.props.data.users} />
-        <CommentList comments={this.props.data.comments} />
+        <User author={props.data.users} />
+        <CommentList comments={props.data.comments} />
       </tr>
     );
   }
-}

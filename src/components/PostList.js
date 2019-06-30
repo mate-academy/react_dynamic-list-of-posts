@@ -38,26 +38,26 @@ class PostList extends Component {
       }))
     }));
   }
- 
+
   filterChanged(event) {
-   this.setState({
-    filter: event.target.value
-   });
+    this.setState({
+      filter: event.target.value
+    });
   }
 
   render() {
     if (!this.state.requested) {
-      return ( 
-        <div> 
+      return (
+        <div>
           <button className='btn' onClick={this.getItem}>
             {this.state.requested ? 'loading' : 'load data'}
           </button>
         </div>)
-        {this.state.requested ? 'loading' : 'load data'}</button>
-      </div>
+      { this.state.requested ? 'loading' : 'load data' }</button >
+      </div >
     } else if (this.state.loaded) {
       let filteredPost = [];
-       filteredPost = (<table>
+      filteredPost = (<table>
         <thead>
           <tr>
             <th>TITLE</th>
@@ -69,20 +69,19 @@ class PostList extends Component {
           </tr>
         </thead>
         <tbody>
-           {this.state.items.filter(item => (item.title.includes(this.state.filter) || item.body.includes(this.state.filter))).map(item => 
-          <Post data={item}  key={item.title} />)}
+          {this.state.items.filter(item => (item.title.includes(this.state.filter) || item.body.includes(this.state.filter))).map(item =>
+            <Post data={item} key={item.title} />)}
         </tbody>
       </table>);
-      
+
       return (
         <div>
           <input className='postSearcher' type='text' onChange={this.filterChanged} placeholder='Search the post' />
-        {filteredPost}
+          {filteredPost}
         </div>
-        );
-    } else {
-
-    } return (
+      );
+    }
+    return (
       <div> <button className='btn' onClick={this.getItem} disabled>Loading....</button></div>
     );
   }

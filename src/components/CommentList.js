@@ -1,12 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Comment from './Comment';
 
-export default class CommentList extends Component {
-  render() {
-    return (
-     <td>
-       <Comment comments={this.props.comments} />
-     </td>
-   );
-  }
+export default function CommentList(props) {
+  return (
+    <td>
+      <Comment comments={props.comments} />
+    </td >
+  );
 }
