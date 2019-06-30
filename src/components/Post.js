@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import User from './User';
 import CommentList from './CommentList';
+
 export default class Post extends Component {
   render() {
     return (
