@@ -6,21 +6,22 @@ export default class App extends Component {
     super(props);
 
     this.state = {
-      loadedPosts: false,
       posts: null,
-      loadedUsers: false,
       users: null,
-      loadedComments: false,
       comments: null,
+      compliedPosts: null,
+      requested: false
     };
-
-
+    this.setRequest = this.setRequest.bind(this);
+    this.getData = this.getData.bind(this);
+    this.requstComments = this.requstComments.bind(this);
+    this.requstPosts = this.requstPosts.bind(this);
+    this.requstUsers = this.requstUsers.bind(this);
   }
 
   async requstPosts() {
     const response = await fetch('https://jsonplaceholder.typicode.com/posts');
     this.setState({
-      loadedPosts: true,
       posts: await response.json()
     });
   }
@@ -28,7 +29,6 @@ export default class App extends Component {
   async requstUsers() {
     const response = await fetch('https://jsonplaceholder.typicode.com/users');
     this.setState({
-      loadedUsers: true,
       users: await response.json()
     });
   }
@@ -38,60 +38,71 @@ export default class App extends Component {
       'https://jsonplaceholder.typicode.com/comments'
     );
     this.setState({
-      loadedComments: true,
       comments: await response.json()
     });
   }
 
+  componentDidUpdate() {
+    const { 
+      posts,
+      users,
+      comments,
+      compliedPosts
+    } = this.state;
+    
+    if (!posts) {
+      this.requstPosts();
+    }
+    if (!users) {
+      this.requstUsers();
+    }
+    if (!comments) {
+      this.requstComments();
+    }
+    if (posts && users && comments && !compliedPosts) {
+      this.getData();
+    }
+  }
+
+  setRequest() {
+    this.setState({
+      requested: true
+    });
+  }
+
   getData() {
-    const modifiedPosts = this.state.posts.map(post => {
+    const { posts, users, comments } = this.state;
+
+    const modifiedPosts = posts.map(post => {
       return {
         title: post.title,
         body: post.body,
         id: post.id,
-        userInfo: this.state.users.find(user => {
-
+        userInfo: users.find(user => {
           return user.id === post.userId;
         }),
-        comments: this.state.comments.filter(comment => {
-
+        comments: comments.filter(comment => {
           return comment.postId === post.id;
         })
       };
     });
-    return modifiedPosts;
+    this.setState({
+      compliedPosts: modifiedPosts
+    });
   }
 
   render() {
-    const { loadedPosts, loadedComments, loadedUsers } = this.state;
-    if (
-      !loadedPosts &&
-      !loadedComments &&
-      !loadedUsers
-    ) {
+    const { compliedPosts, requested } = this.state;
+    if (!compliedPosts) {
       return (
         <div>
-          <button
-            onClick={() => {
-              this.requstComments();
-              this.requstPosts();
-              this.requstUsers();
-            }}
-          >
-            Load
+          <button onClick={this.setRequest}>
+            {requested ? 'Loading...' : 'load'}
           </button>
         </div>
       );
-    } else if (
-      loadedPosts &&
-      loadedComments &&
-      loadedUsers
-    ) {
-      return <PostList posts={this.getData()} />;
     } else {
-      return (
-        <button type="button" disabled>Loading...</button>
-      )
+      return <PostList posts={compliedPosts} />;
     }
   }
 }
