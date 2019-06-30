@@ -16,7 +16,7 @@ class PostList extends Component {
 
   loadUrl(url) {
     return fetch(url)
-      .then(response => response.json()).then(response => response);
+      .then(response => response.json())
   }
 
   getItem() {
