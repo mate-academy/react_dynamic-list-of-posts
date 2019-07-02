@@ -7,8 +7,6 @@ Add link here: `[DEMO LINK](https://<your_account>.github.io/<repo_name>/)`
 
 ## Task 
 
-# React dynamic list of posts
-
 By requesting https://jsonplaceholder.typicode.com/posts, https://jsonplaceholder.typicode.com/users, and https://jsonplaceholder.typicode.com/comments, create and display a list of posts with the following data on each:
 
 1) the title of the post;
