@@ -3,15 +3,7 @@ import './PostList.css';
 import Comments from './components/Comments';
 import Posts from './components/Posts';
 import Users from './components/Users';
-
-const getPosts = () => fetch('https://jsonplaceholder.typicode.com/posts')
-  .then(res => res.json());
-
-const getComments = () => fetch('https://jsonplaceholder.typicode.com/comments')
-  .then(res => res.json());
-
-const getUsers = () => fetch(' https://jsonplaceholder.typicode.com/users')
-  .then(res => res.json());
+import { getPosts, getComments, getUsers } from './appi.js';
 
 class PostList extends React.Component {
   constructor(props) {
