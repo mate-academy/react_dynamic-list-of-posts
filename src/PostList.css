@@ -1,0 +1,25 @@
+
+p {
+  margin-top:0;
+  margin-bottom: 0;
+}
+
+.App {
+  text-align: center;
+}
+
+.AuthorContact {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.Comments {
+  margin-left: 20px;
+}
+
+.CommentItem {
+  margin-top: 10px;
+  margin-left: 10px;
+}
