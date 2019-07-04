@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PostList from './components/PostList';
+import { BASE_URL } from './constants';
 
 export default class App extends Component {
   constructor(props) {
@@ -20,14 +21,14 @@ export default class App extends Component {
   }
 
   async requstPosts() {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const response = await fetch(`${BASE_URL}posts`);
     this.setState({
       posts: await response.json()
     });
   }
 
   async requstUsers() {
-    const response = await fetch('https://jsonplaceholder.typicode.com/users');
+    const response = await fetch(`${BASE_URL}users`);
     this.setState({
       users: await response.json()
     });
@@ -35,7 +36,7 @@ export default class App extends Component {
 
   async requstComments() {
     const response = await fetch(
-      'https://jsonplaceholder.typicode.com/comments'
+      `${BASE_URL}comments`
     );
     this.setState({
       comments: await response.json()
