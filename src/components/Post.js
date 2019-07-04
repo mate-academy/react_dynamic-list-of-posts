@@ -3,7 +3,7 @@ import '../App.css';
 import User from "./User";
 import CommentList from "./CommentList";
 
-const Post = ({post, showComments, postItems}) => (
+const Post = ({post, postItems}) => (
   <div>
     <User
       post={post}
@@ -12,7 +12,6 @@ const Post = ({post, showComments, postItems}) => (
 
     <CommentList
       comments={post.comments}
-      showComments={showComments}
       postId={post.id}
       postItems={postItems}
     />

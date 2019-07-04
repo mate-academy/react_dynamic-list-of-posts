@@ -2,7 +2,7 @@ import React from 'react';
 import '../App.css';
 import Post from './Post';
 
-const PostList = ({posts, showComments, postItems, filterBy, value}) => (
+const PostList = ({posts, filterBy, value}) => (
   <div className="post-list">
     <label className="label">
       Filter by &nbsp;
@@ -22,8 +22,6 @@ const PostList = ({posts, showComments, postItems, filterBy, value}) => (
         >
           <Post
             post={post}
-            showComments={showComments}
-            postItems={postItems}
           />
         </div>
       ))}

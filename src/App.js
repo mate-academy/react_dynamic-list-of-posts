@@ -8,11 +8,10 @@ class App extends React.Component {
     super(props);
 
     this.state = {
-      posts: [],
-      postItems: [],
+      posts: {},
+      shownPosts: {},
       isLoaded: false,
       isDisabled: false,
-      shownPosts: [],
       value: ''
     };
   }
@@ -52,46 +51,36 @@ class App extends React.Component {
     return str[0].toUpperCase() + str.slice(1);
   }
 
-  showComments = (postId) => {
-    this.setState(prevState => {
-      const copyPostItems = {...prevState.postItems};
-      copyPostItems[postId] = !copyPostItems[postId];
-
-      return { postItems:copyPostItems };
-    })
-  }
-
   filterBy = (event) => {
-    const copyPosts = this.state.posts.filter(post => (
-      post.title.toLowerCase().includes(event.target.value) ||
-      post.body.toLowerCase().includes(event.target.value)
+    const copiedPosts = this.state.posts.filter(post => (
+      post.title.toLowerCase().includes(event.target.value.toLowerCase()) ||
+      post.body.toLowerCase().includes(event.target.value.toLowerCase())
     ));
 
     this.setState({
       value: event.target.value,
-      shownPosts: copyPosts
+      shownPosts: copiedPosts
     })
   }
 
   render() {
     return (
       <section className="section-wrap">
-        <h1>React static list of posts</h1>
-        {this.state.isLoaded ?
-          <PostList
-            posts={this.state.shownPosts}
-            postItems={this.state.postItems}
-            showComments={this.showComments}
-            filterBy={this.filterBy}
-            value={this.state.value}
-          /> :
+        <h1>React dynamic list of posts</h1>
+        {this.state.isLoaded ? (
+            <PostList
+              posts={this.state.shownPosts}
+              filterBy={this.filterBy}
+              value={this.state.value}
+            />
+          ): (
           <button
             className="btn-load"
             onClick={this.onLoad}
           >
             {this.state.isDisabled ? "Loading..." : "Load"}
           </button>
-        }
+        )}
       </section>
     );
   }
