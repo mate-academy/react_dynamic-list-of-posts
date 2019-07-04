@@ -1,20 +1,20 @@
 import React from 'react';
 import Post from './Post';
-import {COMMENTS_URL, POSTS_URL, USERS_URL, doFetch} from "./utils";
+import {getComments, getPosts, getUsers} from "./utils";
 
 export default class PostList extends React.Component {
   state = {
     posts: [],
     requested: false,
     loaded: false,
-  }
+  };
 
-  loadData() {
+  loadData = () => {
     this.setState({
       requested: true,
     });
 
-    Promise.all([doFetch(POSTS_URL), doFetch(USERS_URL), doFetch(COMMENTS_URL)])
+    Promise.all([getPosts(), getUsers(), getComments()])
       .then(([ posts, users, comments ]) => {
         this.setState({
           posts: posts.map(post => ({
@@ -26,7 +26,7 @@ export default class PostList extends React.Component {
           requested: false,
         })
       })
-  }
+  };
 
   render() {
     if(this.state.requested) {
@@ -34,12 +34,12 @@ export default class PostList extends React.Component {
     }
 
     if(!this.state.loaded) {
-      return <button onClick={() => this.loadData()}>Load Posts</button>
+      return <button onClick={this.loadData}>Load Posts</button>
     }
 
     return (
       <section>
-        {this.state.posts.map(post => <Post {...post}/>)}
+        {this.state.posts.map(post => <Post key={post.id} {...post}/>)}
       </section>
     )
   }
