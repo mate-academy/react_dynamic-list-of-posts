@@ -51,10 +51,11 @@ class App extends React.Component {
     return str[0].toUpperCase() + str.slice(1);
   }
 
-  filterBy = (event) => {
+  filterBy = event => {
+    const value = event.target.value.toLowerCase();
     const copiedPosts = this.state.posts.filter(post => (
-      post.title.toLowerCase().includes(event.target.value.toLowerCase()) ||
-      post.body.toLowerCase().includes(event.target.value.toLowerCase())
+      post.title.toLowerCase().includes(value) ||
+      post.body.toLowerCase().includes(value)
     ));
 
     this.setState({

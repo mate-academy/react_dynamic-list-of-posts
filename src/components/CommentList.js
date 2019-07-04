@@ -8,19 +8,20 @@ class CommentList extends React.Component {
   }
 
   showComments = () => {
-    this.setState({isShowingComments: !this.state.isShowingComments})
+    this.setState((prevState) => ({
+      isShowingComments: !prevState.isShowingComments
+    }))
   }
 
   render() {
     const {comments} = this.props;
     const {isShowingComments} = this.state;
-    const {showComments} = this;
 
     return (
       <div className="comment-list">
           <button
             className="comment-btn"
-            onClick={showComments}
+            onClick={this.showComments}
           >
               {comments.length} comments
           </button>
