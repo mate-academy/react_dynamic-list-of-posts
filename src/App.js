@@ -12,7 +12,7 @@ export default class App extends Component {
       compliedPosts: null,
       requested: false
     };
-    this.setRequest = this.setRequest.bind(this);
+    this.sendRequest = this.sendRequest.bind(this);
     this.getData = this.getData.bind(this);
     this.requstComments = this.requstComments.bind(this);
     this.requstPosts = this.requstPosts.bind(this);
@@ -42,32 +42,13 @@ export default class App extends Component {
     });
   }
 
-  componentDidUpdate() {
-    const { 
-      posts,
-      users,
-      comments,
-      compliedPosts
-    } = this.state;
-    
-    if (!posts) {
-      this.requstPosts();
-    }
-    if (!users) {
-      this.requstUsers();
-    }
-    if (!comments) {
-      this.requstComments();
-    }
-    if (posts && users && comments && !compliedPosts) {
-      this.getData();
-    }
-  }
-
-  setRequest() {
+  sendRequest() {
     this.setState({
       requested: true
     });
+    this.requstPosts();
+    this.requstUsers();
+    this.requstComments();
   }
 
   getData() {
@@ -91,12 +72,27 @@ export default class App extends Component {
     });
   }
 
+  componentDidUpdate() {
+    const { 
+      posts, 
+      users, 
+      comments, 
+      compliedPosts 
+    } = this.state;
+    if (posts 
+        && users 
+        && comments 
+        && !compliedPosts) {
+      this.getData();      
+    }
+  }
+
   render() {
     const { compliedPosts, requested } = this.state;
     if (!compliedPosts) {
       return (
         <div>
-          <button onClick={this.setRequest}>
+          <button onClick={this.sendRequest}>
             {requested ? 'Loading...' : 'load'}
           </button>
         </div>

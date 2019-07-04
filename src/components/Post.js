@@ -3,8 +3,16 @@ import CommentList from './CommentList';
 import User from './User';
 
 export default function Post(props) {
-  const { title, body, comments } = props;
-  const { name, email, address } = props.userInfo;
+  const { 
+    title, 
+    body, 
+    comments, 
+    userInfo: { 
+      name, 
+      email, 
+      address,
+    }
+  } = props;
 
   return (
     <div className="post">
