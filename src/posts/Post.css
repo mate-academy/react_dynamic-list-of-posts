@@ -1,0 +1,10 @@
+.postlist {
+  margin: 40px 300px;
+}
+
+.post {
+  margin-bottom: 30px;
+  padding: 0 40px 20px 40px;
+  border: 2px solid #ef010166;
+  background-color: white;
+}

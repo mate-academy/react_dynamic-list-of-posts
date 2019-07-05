@@ -1,15 +1,15 @@
 {
-  "homepage": "https://mate-academy.github.io/react_dynamic-list-of-posts",
+  "homepage": "https://DianaMeissen.mate-academy.github.io/rreact_dynamic-list-of-posts",
   "name": "react_dynamic-list-of-posts",
   "version": "0.1.0",
   "private": true,
   "keywords": [],
-  "author": "Mate Academy",
   "license": "GPL-3.0",
   "dependencies": {
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-md-spinner": "^1.0.0",
     "react-scripts": "3.0.1"
   },
   "devDependencies": {
@@ -30,7 +30,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint --ext .jsx,.js ./src/",
+    "lint": "eslint --ext .jsx,.js ./src/ --fix",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },
