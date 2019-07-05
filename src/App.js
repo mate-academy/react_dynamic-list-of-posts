@@ -29,11 +29,13 @@ class App extends React.Component {
       getPosts(),
       getUsers(),
       getComments()
-    ])
+    ]);
+
+    const copiedPosts = this.getPostsWithUsersAndComments(posts, users, comments);
 
     this.setState({
-      posts: this.getPostsWithUsersAndComments(posts, users, comments),
-      shownPosts: this.getPostsWithUsersAndComments(posts, users, comments)
+      posts: copiedPosts,
+      shownPosts: copiedPosts
     });
   }
 
