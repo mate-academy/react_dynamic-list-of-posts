@@ -7,6 +7,13 @@
   z-index: -1;
 }
 
+.commentlist h3,
+.comment {
+  font-weight: 300;
+  font-family: "Montserrat", sans-serif;
+  letter-spacing: 2px;
+}
+
 .highlitedText {
   font-weight: bold;
 }

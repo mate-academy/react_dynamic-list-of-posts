@@ -1,4 +1,8 @@
-.user {
+.user,
+.user-title {
+  font-weight: 300;
+  font-family: "Montserrat", sans-serif;
+  letter-spacing: 2px;
 }
 
 .highlitedText {
