@@ -1,0 +1,28 @@
+.comment-hide {
+  margin-top: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  text-align: center;
+}
+
+.comment-items {
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.comment-item {
+  margin: 5px 20px 0;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(34,36,38,.15);
+}
+
+.comment-item h3 {
+  color: rgba(0, 0, 0, 0.788);
+  font-size: 15px;
+  margin: 5px 0;
+  cursor: pointer;
+}
+
+.comment-item h3:hover {
+  opacity: .8;
+}

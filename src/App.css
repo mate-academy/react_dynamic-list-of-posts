@@ -1,3 +1,26 @@
-.App {
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Roboto, sans-serif;
+}
+
+.container {
+  width: 600px;
+  margin: 15px auto;
+  padding: 1em;
+  box-sizing: border-box;
+  border-top: 2px solid #21ba45 !important;
+  border: 1px solid rgba(34,36,38,.15);
+  border-radius: 5px;
+  box-shadow: 0 1px 2px 0 rgba(34,36,38,.15);
   text-align: center;
+}
+
+.container__header {
+  color: rgba(0, 0, 0, 0.788);
+  font-size: 25px;
+  margin: 0 0 15px;
+  text-transform: uppercase;
 }

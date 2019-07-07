@@ -1,0 +1,23 @@
+.load-section {
+  display: flex;
+  justify-content: center;
+}
+
+.load-btn {
+  font-family: Roboto, sans-serif;
+  background: #2185d0;
+  color: #fff;
+  width: 150px;
+  height: 40px;
+  border: 1px solid rgba(34,36,38,.15);
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all .3s;
+}
+
+.load-btn:hover {
+  /* transform: scale(1.05); */
+  background: #1F79BD;
+}
