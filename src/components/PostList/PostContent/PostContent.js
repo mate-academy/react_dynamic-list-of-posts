@@ -37,8 +37,7 @@ class PostContent extends Component {
                 comments={this.state.post.comments}
                 hideFunction={this.showComments}
               />
-            )
-            : (
+            ) : (
               <div
                 role="button"
                 tabIndex={0}

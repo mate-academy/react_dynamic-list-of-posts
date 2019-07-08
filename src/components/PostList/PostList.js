@@ -11,7 +11,7 @@ const PostList = ({ posts, sortData }) => (
   <div>
     <input
       type="text"
-      placeholder="Search field"
+      placeholder="Search field by body"
       onChange={sortData}
       className="search-field"
     />

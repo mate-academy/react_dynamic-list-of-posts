@@ -1,8 +1,8 @@
-/* eslint-disable react/no-unused-state */
+// /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import './App.css';
 
-import NotLoaded from './components/NotLoaded/NotLoaded';
+import LoadButton from './components/LoadButton/LoadButton';
 import PostList from './components/PostList/PostList';
 
 import fetchData from './components/fetchData';
@@ -13,10 +13,9 @@ class App extends Component {
     sortedPostList: [],
     isLoaded: false,
     isLoading: false,
-    sortField: null,
   };
 
-  getData = async() => {
+  getTodos = async() => {
     this.setState({ isLoading: true });
     const data = await fetchData();
     this.setState({
@@ -46,11 +45,10 @@ class App extends Component {
                 posts={this.state.sortedPostList}
                 sortData={this.sortData}
               />
-            )
-            : (
-              <NotLoaded
+            ) : (
+              <LoadButton
                 isLoading={this.state.isLoading}
-                fetchData={this.getData}
+                getTodos={this.getTodos}
               />
             )
         }

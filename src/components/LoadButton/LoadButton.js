@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './NotLoaded.css';
+import './LoadButton.css';
 
-const NotLoaded = ({ isLoading, fetchData }) => (
+const LoadButton = ({ isLoading, getTodos }) => (
   <div className="load-section">
     {
       isLoading
@@ -14,12 +14,11 @@ const NotLoaded = ({ isLoading, fetchData }) => (
           >
             Loading...
           </button>
-        )
-        : (
+        ) : (
           <button
             className="load-btn"
             type="button"
-            onClick={fetchData}
+            onClick={getTodos}
           >
             Load data
           </button>
@@ -28,9 +27,9 @@ const NotLoaded = ({ isLoading, fetchData }) => (
   </div>
 );
 
-NotLoaded.propTypes = {
+LoadButton.propTypes = {
   isLoading: PropTypes.bool.isRequired,
-  fetchData: PropTypes.func.isRequired,
+  getTodos: PropTypes.func.isRequired,
 };
 
-export default NotLoaded;
+export default LoadButton;
