@@ -11,8 +11,6 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.preparePosts();
-
     this.state = {
       posts: [],
       isLoaded: false,
