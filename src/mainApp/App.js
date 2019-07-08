@@ -21,28 +21,29 @@ const prepareData = (posts, users, comments) => {
 class App extends React.Component {
   state = {
     posts: [],
+    shownPosts: [],
     btnVisible: true,
     btnText: 'Load',
     visible: false,
   };
 
   async getPosts() {
-    const posts = await postsFromServer();
-    const users = await usersFromServer();
-    const comments = await commentsFromServer();
+    const posts = prepareData(await postsFromServer(), await usersFromServer(), await commentsFromServer());
 
     this.setState({
-      posts: prepareData(posts, users, comments),
+      posts,
+      shownPosts: posts,
       btnVisible: false,
     });
   }
 
   findPostByText = (text) => {
     const findedPosts = this.state.posts.filter(post => post.title.includes(text) || post.body.includes(text));
-    console.log('into findPostByText, text is ' + text);
-    console.log(findedPosts);
+    this.setState({ shownPosts : findedPosts });
+  }
 
-    this.setState({ posts : findedPosts });
+  showAllPosts = () => {
+    this.setState({ shownPosts: this.state.posts });
   }
 
   render() {
@@ -65,8 +66,8 @@ class App extends React.Component {
           this.state.posts.length > 0 ? (
             <>
               <h1 className="main-title">Dynamic list of posts</h1>
-              <Filter onFilter={this.findPostByText} />
-              <PostList posts={this.state.posts} />
+              <Filter onFilter={this.findPostByText} showAll={this.showAllPosts} />
+              <PostList posts={this.state.shownPosts} />
             </>
           ) : (
             <MDSpinner size={50} />

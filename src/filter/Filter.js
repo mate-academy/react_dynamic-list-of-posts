@@ -1,7 +1,7 @@
 import React from 'react';
 import './Filter.css';
 
-const Filter = ({ onFilter }) => {
+const Filter = ({ onFilter, showAll }) => {
   return (
     <form 
       className="filter" 
@@ -11,11 +11,21 @@ const Filter = ({ onFilter }) => {
         event.preventDefault();
       }}
     >
-      <input 
-        className="filter-input" 
-        type="text" 
-        name="filterInput" />
-      <label className="filter-label">Find post by text</label>
+      <div className="block">
+        <input 
+          className="filter-input" 
+          type="text" 
+          name="filterInput" />
+        <label className="filter-label">Find post by text</label>
+        <button 
+          type="button"
+          className="show-all-button"
+          onClick={showAll}
+        >
+          Show all
+        </button>
+      </div>
+      
     </form>
   );
 };
