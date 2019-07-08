@@ -1,4 +1,41 @@
 .filter {
+  margin: 40px 642px;
   color: white;
   background-color: #ffffff80;
+  position: relative;
+}
+
+.filter-input {
+	font-size: 16px;
+  padding: 10px;
+  display: block;
+  width: 600px;
+  border: none;
+}
+
+.filter-input:focus {
+  outline:none;
+}
+
+.filter-label {
+  font-weight: 300;
+  font-family: "Montserrat", sans-serif;
+  color: #999;
+  font-size: 25px;
+  position: absolute;
+  pointer-events: none;
+  left: 10px;
+  top: 8px;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+/* active state */
+.filter-input:focus ~ .filter-label {
+  font-weight: 300;
+  font-family: "Montserrat", sans-serif;
+  top: -25px;
+  font-size: 20px;
+  color: white;
 }

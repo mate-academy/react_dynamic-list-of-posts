@@ -1,13 +1,22 @@
-import React from "react";
-import "../filter/Filter.css";
+import React from 'react';
+import './Filter.css';
 
-const Filter = props => {
+const Filter = ({ onFilter }) => {
   return (
-    <div className="filter">
-      <span>
-        Find post by text: <input type="text" />
-      </span>
-    </div>
+    <form 
+      className="filter" 
+      onSubmit={(event) => {
+        onFilter(event.target.filterInput.value);
+        event.target.filterInput.value = '';
+        event.preventDefault();
+      }}
+    >
+      <input 
+        className="filter-input" 
+        type="text" 
+        name="filterInput" />
+      <label className="filter-label">Find post by text</label>
+    </form>
   );
 };
 
