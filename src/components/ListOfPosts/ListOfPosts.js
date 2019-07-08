@@ -10,15 +10,18 @@ class ListOfPosts extends React.Component {
   };
 
   searchPost = (event) => {
-    const value = event.target.value.trim();
-    this.setState({ value });
+    const searchValue = event.target.value.trim();
+    this.setState({ searchValue });
   };
 
   filter(searchValue) {
     // eslint-disable-next-line max-len
     return this.props.posts.filter((post) => {
       const preparedValue = searchValue.replace(/ /g, '').toLowerCase();
-      return post.postItem.title.replace(/ /g, '').toLowerCase().includes(preparedValue);
+      return post.postItem.title
+        .replace(/ /g, '')
+        .toLowerCase()
+        .includes(preparedValue);
     });
   }
 
