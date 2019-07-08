@@ -47,7 +47,9 @@ class App extends React.Component {
       <main className="main">
         {
           !this.state.isLoaded && (
-            <button onClick={() => this.load()} className="load-btn">{this.state.btnText}</button>
+            <button onClick={() => this.load()} className="load-btn">
+              {this.state.btnText}
+            </button>
           )
         }
         {

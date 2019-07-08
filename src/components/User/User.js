@@ -1,11 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import './User.css';
 
 class User extends React.Component {
   render() {
     const { name, email } = this.props.user;
-    const { needEmail } = this.props;
     return (
       <div className="user">
         {
@@ -26,5 +26,12 @@ class User extends React.Component {
     );
   }
 }
+
+User.propTypes = {
+  user: PropTypes.shape({
+    name: PropTypes.string,
+    email: PropTypes.string,
+  }).isRequired,
+};
 
 export default User;

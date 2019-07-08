@@ -5,19 +5,16 @@ import './CommentsList.css';
 import CommentItem from '../CommentItem/CommentItem';
 
 class CommentsList extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      showComments: false,
-    };
-  }
+  state = {
+    showComments: false,
+  };
 
   showComments() {
     this.setState(prevState => ({ showComments: !prevState.showComments }));
   }
 
   render() {
+    const { comments } = this.props;
     return (
       <div>
         {
@@ -33,7 +30,7 @@ class CommentsList extends React.Component {
           this.state.showComments && (
             <div className="comments">
               {
-                this.props.comments.map(comment => <CommentItem comment={comment} />)
+                comments.map(comment => <CommentItem comment={comment} />)
               }
             </div>)
         }

@@ -25,6 +25,13 @@ class PostItem extends React.Component {
 }
 
 PostItem.propTypes = {
-  post: PropTypes.object.isRequired,
+  post: PropTypes.shape({
+    postItem: PropTypes.shape({
+      title: PropTypes.string,
+      body: PropTypes.string,
+    }),
+    postAuthor: PropTypes.object,
+    postComments: PropTypes.object,
+  }).isRequired,
 };
 export default PostItem;

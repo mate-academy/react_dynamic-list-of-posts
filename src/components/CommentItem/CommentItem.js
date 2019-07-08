@@ -1,7 +1,9 @@
 import React from 'react';
+import PropTypes from "prop-types";
 
 import User from "../User/User";
 import './CommentItem.css';
+
 
 const CommentItem = ({ comment }) => {
   return (
@@ -10,6 +12,13 @@ const CommentItem = ({ comment }) => {
       <p className="comments__item__body">{comment.body}</p>
     </div>
   );
+};
+
+CommentItem.propTypes = {
+  comment: PropTypes.shape({
+    name: PropTypes.string,
+    body: PropTypes.string,
+  }).isRequired,
 };
 
 export default CommentItem;
