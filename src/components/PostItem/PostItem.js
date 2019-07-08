@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import './PostItem.css';
 import CommentList from '../CommentsList/CommentsList';
-import User from "../User/User";
+import User from '../User/User';
 
 const PostItem = ({ postItem, postAuthor, postComments }) => (
   <div className="post__container">
