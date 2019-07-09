@@ -1,21 +1,8 @@
 import React from 'react';
 import ButtonPosts from './components/ButtonPosts'
 import PostList from './components/PostList'
+
 import './App.css' 
-
-import { getPosts, getUsers, getComments} from './api/data'
-
-const getData = async () => {
-  const posts = await getPosts();
-  const users = await getUsers();
-  const comments = await getComments();
-
-  return posts.map(post => ({
-    ...post,
-    user: users.find(user => user.id === post.userId),
-    comments: comments.filter(comment => post.id === comment.postId),
-  }));
-}
 
 class App extends React.Component {
   state = {
@@ -24,33 +11,45 @@ class App extends React.Component {
     isLoaded: false,
   }
 
-  loadData = async () => {
+  getData = async () => {
     this.setState({
       isLoading: true,
-    })   
+    })
 
-    const posts = await getData();
+    const responsePosts = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const responseUsers = await fetch('https://jsonplaceholder.typicode.com/users');
+    const responseComments = await fetch('https://jsonplaceholder.typicode.com/comments');
 
-    this.setState({ 
-      currentPosts: posts,
+    const posts = await responsePosts.json();
+    const users = await responseUsers.json();
+    const comments = await responseComments.json();
+
+    const postsWithUser = posts.map(post => ({
+      ...post,
+      user: users.find(user => user.id === post.userId),
+      comments: comments.filter(comment => post.id === comment.postId),
+    }));
+
+    this.setState({
+      currentPosts: postsWithUser,
       isLoading: false,
-      isLoaded: true, 
-    });
+      isLoaded: true,
+    })
   }
 
+
   render() {
-    const { currentPosts, isLoading, isLoaded } = this.state;
     return (
       <div className='App'>
         <h1 className='site__title'>Dynamic list of posts</h1>
         {
-          isLoaded
+          this.state.isLoaded
             ? <PostList 
-                currentPosts={currentPosts}
+                currentPosts={this.state.currentPosts}
               />
             : <ButtonPosts 
-                isLoading={isLoading}
-                getData={this.loadData} 
+                isLoading={this.state.isLoading}
+                getData={this.getData} 
               />
         }
       </div>
