@@ -3,6 +3,14 @@ node_modules
 .DS_Store
 yarn.lock
 package-lock.json
+.editorconfig
+.eslintignore
+.eslintrc.js
+.gitignore
+.stylelintignore
+.stylelintrc.js
+package.json
+README.md
 
 npm-debug.log*
 yarn-debug.log*
