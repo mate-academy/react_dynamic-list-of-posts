@@ -5,7 +5,7 @@ const Comment = ({ comments }) => (
   <p>
     <div className="comments">
       <br />
-      <b>Comment by</b>
+      <b>Comment</b>
       {' '}
       {comments.body}
     </div>
