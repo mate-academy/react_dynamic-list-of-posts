@@ -22,7 +22,6 @@ class Post extends React.Component {
         <h2 className='article__title'>{this.props.currentPost.title}</h2>
         <section className='article__body'>{this.props.currentPost.body}</section> <br />
         <User user={this.props.currentPost.user}/>
-        <h5>Comments:</h5>
         {
           this.state.showComments
             ? <CommentList currentComments={this.props.currentPost.comments} />
