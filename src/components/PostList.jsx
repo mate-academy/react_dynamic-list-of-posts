@@ -1,7 +1,7 @@
 import React from 'react'
 import Post from './Post'
 
-const PostsList = ({currentPosts}) => (
+const PostList = ({currentPosts}) => (
   <div>
     {
       currentPosts.map(post => (
@@ -11,4 +11,4 @@ const PostsList = ({currentPosts}) => (
   </div>
 )
 
-export default PostsList
+export default PostList

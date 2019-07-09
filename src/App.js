@@ -1,6 +1,6 @@
 import React from 'react';
 import ButtonPosts from './components/ButtonPosts'
-import PostsList from './components/PostsList'
+import PostList from './components/PostList'
 
 class App extends React.Component {
   state = {
@@ -41,7 +41,7 @@ class App extends React.Component {
       <div>
         {
           this.state.isLoaded
-            ? <PostsList 
+            ? <PostList 
                 currentPosts={this.state.currentPosts}
               />
             : <ButtonPosts 
