@@ -1,7 +1,7 @@
 import React from 'react'
 
 const ButtonPosts = ({ isLoading, getData }) => (
-  <button onClick={getData}>
+  <button className='button__posts' onClick={getData}>
     {
       isLoading
         ? 'Loading...'
