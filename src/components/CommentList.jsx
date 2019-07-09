@@ -1,9 +1,14 @@
 import React from 'react'
+import Comment from './Comment'
 
-const CommentList = () => (
+const CommentList = ({currentComments}) => (
   <div>
     <h5>Comments:</h5>
-    CommentList zaglushka!
+    {
+      currentComments.map(comment => (
+        <Comment currentComment={comment}/>
+      ))
+    }
   </div>
 )
 
