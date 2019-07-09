@@ -2,6 +2,8 @@ import React from 'react';
 import ButtonPosts from './components/ButtonPosts'
 import PostList from './components/PostList'
 
+import './App.css' 
+
 class App extends React.Component {
   state = {
     currentPosts: [],
@@ -38,7 +40,8 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className='App'>
+        <h1 className='site__title'>Dynamic list of posts</h1>
         {
           this.state.isLoaded
             ? <PostList 
