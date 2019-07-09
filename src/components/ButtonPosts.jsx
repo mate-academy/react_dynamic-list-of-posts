@@ -5,7 +5,7 @@ const ButtonPosts = ({ isLoading, getData }) => (
     {
       isLoading
         ? 'Loading...'
-        : 'Load'
+        : 'Load posts'
     }
   </button>
 )
