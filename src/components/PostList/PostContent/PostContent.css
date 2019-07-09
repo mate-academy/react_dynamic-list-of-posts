@@ -24,9 +24,8 @@
   margin-top: 5px;
   cursor: pointer;
   font-size: 13px;
-  /* outline: none; */
 }
 
 .post-action:hover {
-  color: #000;
+  color: #2185d0;
 }
