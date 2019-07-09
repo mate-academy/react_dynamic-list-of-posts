@@ -1,12 +1,57 @@
 import React from 'react';
-import './App.css';
+import ButtonPosts from './components/ButtonPosts'
+import PostsList from './components/PostsList'
 
-function App() {
-  return (
-    <div className="App">
-      <h1>Dynamic list of posts</h1>
-    </div>
-  );
+class App extends React.Component {
+  state = {
+    currentPosts: [],
+    isLoading: false,
+    isLoaded: false,
+  }
+
+  getData = async () => {
+    this.setState({
+      isLoading: true,
+    })
+
+    const responsePosts = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const responseUsers = await fetch('https://jsonplaceholder.typicode.com/users');
+    const responseComments = await fetch('https://jsonplaceholder.typicode.com/comments');
+
+    const posts = await responsePosts.json();
+    const users = await responseUsers.json();
+    const comments = await responseComments.json();
+
+    const postsWithUser = posts.map(post => ({
+      ...post,
+      user: users.find(user => user.id === post.userId),
+      comments: comments.filter(comment => post.id === comment.postId),
+    }));
+
+    this.setState({
+      currentPosts: postsWithUser,
+      isLoading: false,
+      isLoaded: true,
+    })
+  }
+
+
+  render() {
+    return (
+      <div>
+        {
+          this.state.isLoaded
+            ? <PostsList 
+                currentPosts={this.state.currentPosts}
+              />
+            : <ButtonPosts 
+                isLoading={this.state.isLoading}
+                getData={this.getData} 
+              />
+        }
+      </div>
+    )
+  }
 }
 
 export default App;
