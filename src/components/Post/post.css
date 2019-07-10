@@ -1,0 +1,16 @@
+.post-page {
+  display: grid;
+  grid-template-columns: 200px auto;
+  margin: 10px;
+}
+.post-page__post {
+  padding: 0 20px;
+  background-color: #e2e2e2;
+}
+.post-page__user {
+  padding: 10px;
+  box-sizing: border-box;
+  word-wrap: break-word;
+}
+
+/*# sourceMappingURL=post.css.map */

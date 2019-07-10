@@ -1,0 +1,18 @@
+.post-page {
+  display: grid;
+  grid-template-columns: 200px auto;
+  margin: 10px;
+
+  &__post {
+    padding: 0 20px;
+    background-color: rgb(226, 226, 226);
+  }
+
+ &__user {
+    padding: 10px;
+    box-sizing: border-box;
+    word-wrap: break-word;
+  }
+}
+
+
