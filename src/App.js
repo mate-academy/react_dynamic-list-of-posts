@@ -35,6 +35,7 @@ class App extends Component {
   }
 
   render() {
+    const { sortedPostList, isLoading } = this.state;
     return (
       <main className="container">
         <h1 className="container__header">List of posts</h1>
@@ -42,12 +43,12 @@ class App extends Component {
           this.state.isLoaded
             ? (
               <PostList
-                posts={this.state.sortedPostList}
+                posts={sortedPostList}
                 sortData={this.sortData}
               />
             ) : (
               <LoadButton
-                isLoading={this.state.isLoading}
+                isLoading={isLoading}
                 getTodos={this.getTodos}
               />
             )

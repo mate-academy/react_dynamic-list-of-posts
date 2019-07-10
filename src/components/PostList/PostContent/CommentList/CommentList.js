@@ -5,11 +5,7 @@ import PropTypes from 'prop-types';
 import './CommentList.css';
 
 const CommentList = ({ comments, hideFunction }) => (
-  <div style={{
-    marginTop: 5,
-    borderTop: '1px solid rgba(34,36,38,.15)',
-  }}
-  >
+  <div className="comment-list">
     <div className="comment-items">
       {
         comments.map(comment => (

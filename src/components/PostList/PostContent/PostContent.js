@@ -13,13 +13,14 @@ class PostContent extends Component {
     };
   }
 
-  showComments = () => {
+  toggleComments = () => {
     this.setState(state => ({
       displayComments: !state.displayComments,
     }));
   }
 
   render() {
+    const { comments } = this.state.post;
     return (
       <div className="post-section">
         <h2 className="post-user">
@@ -34,8 +35,8 @@ class PostContent extends Component {
           this.state.displayComments
             ? (
               <CommentList
-                comments={this.state.post.comments}
-                hideFunction={this.showComments}
+                comments={comments}
+                hideFunction={this.toggleComments}
               />
             ) : (
               <div
@@ -43,7 +44,7 @@ class PostContent extends Component {
                 tabIndex={0}
                 className="post-action"
                 onKeyUp={() => {}}
-                onClick={this.showComments}
+                onClick={this.toggleComments}
               >
                 Show comments
               </div>
