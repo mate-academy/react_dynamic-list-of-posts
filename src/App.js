@@ -39,7 +39,7 @@ class App extends React.Component {
 
   updateSearch = (event) => {
     this.setState({
-      search: event.target.value.substr(0, 100),
+      search: event.target.value.slice(0),
     });
   }
 

@@ -2,14 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Comment = ({ comments }) => (
-  <p>
-    <div className="comments">
-      <br />
-      <b>Comment</b>
-      {' '}
-      {comments.body}
-    </div>
-  </p>
+  <div className="comments">
+    <br />
+    <b>Comment</b>
+    {' '}
+    {comments.body}
+  </div>
 );
 
 Comment.propTypes = {

@@ -1,6 +1,5 @@
 body {
   background-color: white;
-  user-select: none;
 }
 
 * {
@@ -68,6 +67,7 @@ body {
 }
 
 .view-comments {
+  user-select: none;
   padding-top: 4px;
   text-align: center;
   font-size: 20px;
@@ -80,6 +80,7 @@ body {
 }
 
 .comments{
+  user-select: none;
   display: grid;
   grid-template-columns: 1fr;
 }
@@ -90,6 +91,7 @@ body {
 }
 
 .button {
+  user-select: none;
   background-color: black;
   color: aliceblue;
   margin-top: 20px;

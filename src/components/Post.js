@@ -14,7 +14,6 @@ class Post extends React.Component {
     return (
       <li
         className="post_list"
-
       >
         <User userItem={post.user} />
         <p className="post_title">
@@ -33,7 +32,11 @@ class Post extends React.Component {
             showComment: !state.showComment,
           }))}
         >
-          <p className="view-comments">View comments</p>
+          <p className="view-comments">
+            {this.state.showComment
+              ? 'Hide comments'
+              : 'View comments'}
+          </p>
         </div>
         {
           this.state.showComment
