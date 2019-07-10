@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import Post from './Post';
 
-const PostList = ({ allPosts, onChange }) => (
+const PostList = ({ allPosts, handleSearch }) => (
   <ul className="postlist">
     <form className="search">
 
@@ -12,7 +12,7 @@ const PostList = ({ allPosts, onChange }) => (
         placeholder="Input text for searching"
         className="search__input"
         autoComplete="off"
-        onChange={onChange}
+        onChange={handleSearch}
       />
 
     </form>

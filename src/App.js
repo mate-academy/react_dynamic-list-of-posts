@@ -30,8 +30,6 @@ class App extends React.Component {
       isLoading: true,
     });
 
-    document.getElementsByClassName('loadData').disabled = true;
-
     setTimeout(() => {
       this.setState({
         posts: currentList,
@@ -41,7 +39,7 @@ class App extends React.Component {
     }, 0);
   };
 
-  onChange = (event) => {
+  handleSearch = (event) => {
     this.setState({
       posts: getPostsByFilter(currentList, event.target.value),
     });
@@ -55,7 +53,7 @@ class App extends React.Component {
 
           <PostList
             allPosts={this.state.posts}
-            onChange={this.onChange}
+            handleSearch={this.handleSearch}
           />
 
         ) : (
@@ -63,6 +61,7 @@ class App extends React.Component {
             type="button"
             className="loadData"
             onClick={this.handleClick}
+            disabled={this.state.isLoading}
           >
             {this.state.isLoading ? 'Loading...' : 'Load' }
           </button>
