@@ -6,33 +6,40 @@ import CommentItem from '../CommentItem/CommentItem';
 
 class CommentsList extends React.Component {
   state = {
-    showComments: false,
+    commentsAreVisible: false,
   };
 
-  showComments() {
-    this.setState(prevState => ({ showComments: !prevState.showComments }));
+  togleComments() {
+    this.setState(prevState => ({ commentsAreVisible: !prevState.commentsAreVisible }));
   }
 
   render() {
     const { comments } = this.props;
+    const { commentsAreVisible } = this.state;
     return (
       <div>
         {
-          <button className="show-comments-btn" onClick={() => { this.showComments(true); }}>
+          <button
+            className="show-comments-btn"
+            onClick={() => { this.togleComments(true); }}
+          >
             {
-              !this.state.showComments
-                ? 'Показать комментарии'
-                : 'Скрыть комментарии'
+              commentsAreVisible
+                ? 'Скрыть комментарии'
+                : 'Показать комментарии'
             }
           </button>
         }
         {
-          this.state.showComments && (
+          commentsAreVisible && (
             <div className="comments">
               {
-                comments.map(comment => <CommentItem comment={comment} />)
+                comments.map(comment => (
+                  <CommentItem comment={comment} key={comment.id} />
+                ))
               }
-            </div>)
+            </div>
+          )
         }
       </div>
     );

@@ -14,18 +14,17 @@ class ListOfPosts extends React.Component {
     this.setState({ searchValue });
   };
 
-  filter(searchValue) {
-    // eslint-disable-next-line max-len
+  filterPosts(searchValue) {
+    const preparedValue = searchValue.replace(/\s+/g, ' ').toLowerCase();
     return this.props.posts.filter((post) => {
-      const preparedValue = searchValue.replace(/ /g, '').toLowerCase();
       return post.postItem.title
-        .replace(/ /g, '')
         .toLowerCase()
         .includes(preparedValue);
     });
   }
 
   render() {
+    const filteredPosts = this.filterPosts(this.state.searchValue);
     return (
       <div className="posts-list">
 
@@ -35,13 +34,15 @@ class ListOfPosts extends React.Component {
             type="search"
             id="search-post"
             className="search-post__input"
-            onChange={(e) => { this.searchPost(e); }}
+            onChange={this.searchPost}
           />
         </label>
 
         <div className="posts">
           {
-            this.filter(this.state.searchValue).map(post => <PostItem post={post} />)
+            filteredPosts.map(post => (
+              <PostItem post={post} key={post.id} />
+            ))
           }
         </div>
 

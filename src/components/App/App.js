@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 
 import {
-  usersLink, commentsLink, postsLink, loadData,
+  loadUsers, loadComments, loadPosts,
 } from '../../api/loadData';
 
 import ListOfPosts from '../ListOfPosts/ListOfPosts';
@@ -20,14 +20,9 @@ class App extends React.Component {
 
   load = async() => {
     this.setState({ btnText: 'Loading' });
-    await this.preparePosts();
-    this.setState(prevState => ({ isLoaded: !prevState.isLoaded }));
-  };
-
-  async preparePosts() {
-    const users = await loadData(usersLink);
-    const posts = await loadData(postsLink);
-    const comments = await loadData(commentsLink);
+    const users = await loadUsers();
+    const posts = await loadPosts();
+    const comments = await loadComments();
 
     const preparedPosts = posts.map(post => ({
       postItem: post,
@@ -38,20 +33,25 @@ class App extends React.Component {
     this.setState({
       posts: preparedPosts,
     });
-  }
+
+    this.setState(prevState => ({
+      isLoaded: !prevState.isLoaded,
+      posts: preparedPosts,
+    }));
+  };
 
   render() {
     return (
       <main className="main">
         {
-          !this.state.isLoaded && (
-            <button onClick={() => this.load()} className="load-btn">
-              {this.state.btnText}
-            </button>
-          )
-        }
-        {
-          this.state.isLoaded && <ListOfPosts posts={this.state.posts} />
+          !this.state.isLoaded
+            ? (
+              <button onClick={() => this.load()} className="load-btn">
+                {this.state.btnText}
+              </button>
+            ) : (
+              <ListOfPosts posts={this.state.posts} />
+            )
         }
       </main>
     );

@@ -9,18 +9,10 @@ class User extends React.Component {
     return (
       <div className="user">
         {
-          name && (
-            <p className="user__name">
-              {name}
-            </p>
-          )
+          name && (<p className="user__name">{name}</p>)
         }
         {
-          email && (
-            <p className="user__email">
-              {email}
-            </p>
-          )
+          email && (<p className="user__email">{email}</p>)
         }
       </div>
     );

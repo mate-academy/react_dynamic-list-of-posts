@@ -1,9 +1,17 @@
-export const postsLink = 'https://jsonplaceholder.typicode.com/posts';
-export const usersLink = 'https://jsonplaceholder.typicode.com/users';
-export const commentsLink = 'https://jsonplaceholder.typicode.com/comments';
+export const loadPosts = async() => {
+  let loadedData = await fetch('https://jsonplaceholder.typicode.com/posts');
+  loadedData = await loadedData.json();
+  return loadedData;
+};
 
-export const loadData = async(link) => {
-  let loadedData = await fetch(link);
+export const loadUsers = async() => {
+  let loadedData = await fetch('https://jsonplaceholder.typicode.com/users');
+  loadedData = await loadedData.json();
+  return loadedData;
+};
+
+export const loadComments = async() => {
+  let loadedData = await fetch('https://jsonplaceholder.typicode.com/comments');
   loadedData = await loadedData.json();
   return loadedData;
 };
