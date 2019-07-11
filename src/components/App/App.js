@@ -20,9 +20,11 @@ class App extends React.Component {
 
   load = async() => {
     this.setState({ btnText: 'Loading' });
-    const users = await loadUsers();
-    const posts = await loadPosts();
-    const comments = await loadComments();
+    const [users, posts, comments] = await Promise.all([
+      loadUsers(),
+      loadPosts(),
+      loadComments(),
+    ]);
 
     const preparedPosts = posts.map(post => ({
       postItem: post,
