@@ -1,4 +1,3 @@
-// /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import './App.css';
 
@@ -15,22 +14,40 @@ class App extends Component {
     isLoading: false,
   };
 
-  getTodos = async() => {
-    this.setState({ isLoading: true });
-    const data = await fetchData();
-    this.setState({
-      postList: data,
-      sortedPostList: data,
-      isLoading: false,
-      isLoaded: true,
-    });
+  handleLoad = async() => {
+    try {
+      this.setState({ isLoading: true });
+
+      const users = await fetchData('users');
+      const comments = await fetchData('comments');
+      const posts = await fetchData('posts');
+
+      const currentPosts = posts.map(post => ({
+        ...post,
+        user: users.find(user => user.id === post.userId),
+        comments: comments.filter(comment => comment.postId === post.id),
+      }));
+
+      this.setState({
+        postList: currentPosts,
+        sortedPostList: currentPosts,
+        isLoading: false,
+        isLoaded: true,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
-  sortData = (event) => {
+  handleSort = (event) => {
     const { value } = event.target;
-    this.setState(state => ({
-      sortedPostList: state.postList
-        .filter(post => post.body.includes(String(value))),
+    const callback = post => (
+      post.body.includes(String(value))
+        || post.title.includes(String(value))
+    );
+
+    this.setState(prevState => ({
+      sortedPostList: prevState.postList.filter(callback),
     }));
   }
 
@@ -44,12 +61,12 @@ class App extends Component {
             ? (
               <PostList
                 posts={sortedPostList}
-                sortData={this.sortData}
+                handleSort={this.handleSort}
               />
             ) : (
               <LoadButton
                 isLoading={isLoading}
-                getTodos={this.getTodos}
+                handleLoad={this.handleLoad}
               />
             )
         }

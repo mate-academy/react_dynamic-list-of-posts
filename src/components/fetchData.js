@@ -1,23 +1,12 @@
-const fetchData = async() => {
-  const usersUrl = 'https://jsonplaceholder.typicode.com/users';
-  const usersResponse = await fetch(usersUrl);
-  const users = await usersResponse.json();
+const API_URL = 'https://jsonplaceholder.typicode.com/';
 
-  const commentsUrl = 'https://jsonplaceholder.typicode.com/comments';
-  const commentsResponse = await fetch(commentsUrl);
-  const comments = await commentsResponse.json();
+export default async(value) => {
+  const response = await fetch(`${API_URL}${value}`);
 
-  const postsUrl = 'https://jsonplaceholder.typicode.com/posts';
-  const postsResponse = await fetch(postsUrl);
-  const posts = await postsResponse.json();
+  if (!response.ok) {
+    throw new Error(`Error code: ${response.status}`);
+  }
 
-  const sortedPosts = posts.map(post => ({
-    ...post,
-    user: users.find(user => user.id === post.userId),
-    comments: comments.filter(comment => comment.postId === post.id),
-  }));
-
-  return sortedPosts;
+  const data = await response.json();
+  return data;
 };
-
-export default fetchData;

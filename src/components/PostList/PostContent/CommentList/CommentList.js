@@ -1,36 +1,25 @@
-/* eslint-disable */
 import React from 'react';
 import PropTypes from 'prop-types';
 
 import './CommentList.css';
+import Comment from './Comment';
 
-const CommentList = ({ comments, hideFunction }) => (
+const CommentList = ({ comments }) => (
   <div className="comment-list">
     <div className="comment-items">
       {
-        comments.map(comment => (
-          <div className="comment-item">
-            <h3>{comment.email}</h3>
-            {comment.body}
-          </div>
-        ))
+        comments.map(comment => <Comment key={comment.id} comment={comment} />)
       }
-    </div>
-    <div
-      className="comment-hide"
-      role="button"
-      tabIndex={0}
-      onKeyUp={() => {}}
-      onClick={hideFunction}
-    >
-      Hide comments
     </div>
   </div>
 );
 
+const commentsShape = PropTypes.shape({
+  id: PropTypes.number.isRequired,
+});
+
 CommentList.propTypes = {
-  comments: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  hideFunction: PropTypes.func.isRequired,
+  comments: PropTypes.arrayOf(commentsShape).isRequired,
 };
 
 export default CommentList;

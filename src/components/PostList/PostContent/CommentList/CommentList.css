@@ -3,13 +3,6 @@
   border-top: 1px solid rgba(34,36,38,.15);
 }
 
-.comment-hide {
-  margin-top: 10px;
-  cursor: pointer;
-  font-size: 13px;
-  text-align: center;
-}
-
 .comment-hide:hover {
   color: #2185d0;
 }

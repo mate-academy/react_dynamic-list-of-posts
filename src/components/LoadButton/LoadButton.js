@@ -2,34 +2,24 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './LoadButton.css';
 
-const LoadButton = ({ isLoading, getTodos }) => (
+const LoadButton = ({ isLoading, handleLoad }) => (
   <div className="load-section">
-    {
-      isLoading
-        ? (
-          <button
-            className="load-btn"
-            type="button"
-            disabled
-          >
-            Loading...
-          </button>
-        ) : (
-          <button
-            className="load-btn"
-            type="button"
-            onClick={getTodos}
-          >
-            Load data
-          </button>
-        )
-    }
+    <button
+      type="button"
+      className="load-btn"
+      disabled={isLoading}
+      onClick={handleLoad}
+    >
+      {
+        isLoading ? 'Loading...' : 'Load data'
+      }
+    </button>
   </div>
 );
 
 LoadButton.propTypes = {
   isLoading: PropTypes.bool.isRequired,
-  getTodos: PropTypes.func.isRequired,
+  handleLoad: PropTypes.func.isRequired,
 };
 
 export default LoadButton;

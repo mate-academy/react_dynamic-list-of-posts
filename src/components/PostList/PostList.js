@@ -1,18 +1,15 @@
-/* eslint-disable
-  react/jsx-one-expression-per-line
-*/
 import React from 'react';
 import PropTypes from 'prop-types';
 
 import './PostList.css';
 import PostContent from './PostContent/PostContent';
 
-const PostList = ({ posts, sortData }) => (
+const PostList = ({ posts, handleSort }) => (
   <div>
     <input
       type="text"
       placeholder="Search field by body"
-      onChange={sortData}
+      onChange={handleSort}
       className="search-field"
     />
     {
@@ -23,7 +20,7 @@ const PostList = ({ posts, sortData }) => (
 
 PostList.propTypes = {
   posts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  sortData: PropTypes.func.isRequired,
+  handleSort: PropTypes.func.isRequired,
 };
 
 export default PostList;

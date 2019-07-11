@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import './PostContent.css';
+import ToggleCommentsButton from './ToggleCommentsButton';
 import CommentList from './CommentList/CommentList';
 
 class PostContent extends Component {
@@ -9,46 +10,37 @@ class PostContent extends Component {
     super(props);
     this.state = {
       post: props.post,
-      displayComments: false,
+      displayedComments: false,
     };
   }
 
   toggleComments = () => {
-    this.setState(state => ({
-      displayComments: !state.displayComments,
+    this.setState(prevState => ({
+      displayedComments: !prevState.displayedComments,
     }));
   }
 
   render() {
-    const { comments } = this.state.post;
+    const { post, displayedComments } = this.state;
     return (
       <div className="post-section">
         <h2 className="post-user">
-          {this.state.post.user.name}
+          {
+            post.user.name
+          }
         </h2>
 
         {
-          this.state.post.body
+          post.body
         }
 
+        <ToggleCommentsButton
+          toggle={this.toggleComments}
+          displayed={displayedComments}
+        />
+
         {
-          this.state.displayComments
-            ? (
-              <CommentList
-                comments={comments}
-                hideFunction={this.toggleComments}
-              />
-            ) : (
-              <div
-                role="button"
-                tabIndex={0}
-                className="post-action"
-                onKeyUp={() => {}}
-                onClick={this.toggleComments}
-              >
-                Show comments
-              </div>
-            )
+          !displayedComments || <CommentList comments={post.comments} />
         }
       </div>
     );

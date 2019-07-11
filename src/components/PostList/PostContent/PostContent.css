@@ -21,6 +21,10 @@
 }
 
 .post-action {
+  color: rgba(0, 0, 0, 0.788);
+  display: block;
+  background: #fff;
+  border: none;
   margin-top: 5px;
   cursor: pointer;
   font-size: 13px;
