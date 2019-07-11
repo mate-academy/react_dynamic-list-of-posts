@@ -4,7 +4,9 @@ export const loadData = async(url) => {
   return data;
 };
 
-export const getPostsWithUsers = async(url) => {
+export const getPostsWithUsers = async() => {
+  const url = 'https://jsonplaceholder.typicode.com/';
+
   const posts = await loadData(`${url}posts`);
   const users = await loadData(`${url}users`);
   const comments = await loadData(`${url}comments`);

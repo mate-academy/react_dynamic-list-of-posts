@@ -15,7 +15,7 @@ class App extends React.Component {
     loadButton.disabled = true;
     loadButton.textContent = 'Loading...';
 
-    getPostsWithUsers('https://jsonplaceholder.typicode.com/').then((data) => {
+    getPostsWithUsers().then((data) => {
       this.setState({
         postsWhithUser: [...data],
         filter: [...data],
@@ -32,7 +32,7 @@ class App extends React.Component {
       let byField = '';
       let filtrField;
 
-      for (let i = 0; i < 2; i++) {
+      for (let i = 0; i < 2; i += 1) {
         if (searchForm.searchBy[i].checked) {
           byField += searchForm.searchBy[i].value;
         }
@@ -40,26 +40,21 @@ class App extends React.Component {
 
       switch (byField) {
         case 'body':
-          filtrField = (post) => { post.body.includes(userValue); };
+          filtrField = post => post.body.includes(userValue);
           break;
         case 'titlebody':
-          filtrField = (post) => {
-            post.title.includes(userValue) || post.body.includes(userValue);
-          };
+          filtrField = post => post.title.includes(userValue) || post.body.includes(userValue);
           break;
         default:
-          filtrField = (post) => { post.title.includes(userValue) };
+          filtrField = post => post.title.includes(userValue);
       }
 
-      const newFilter = this.state.postsWhithUser.filter(post => filtrField(post));
-
+      const newFilter = this.state.postsWhithUser.filter(filtrField);
       this.setState({
         filter: [...newFilter],
       });
     } else {
-      this.setState((prevState) => { 
-        return {filter: [...prevState.postsWhithUser],};
-      });
+      this.setState(prevState => ({ filter: [...prevState.postsWhithUser] }));
     }
   }
 
@@ -68,9 +63,7 @@ class App extends React.Component {
     const userValue = searchForm.searchInput.value;
 
     if (userValue === '') {
-      this.setState((prevState) => {
-        return {filter: [...prevState.postsWhithUser]};
-      });
+      this.setState(prevState => ({ filter: [...prevState.postsWhithUser] }));
     }
   }
 
@@ -82,6 +75,7 @@ class App extends React.Component {
           (this.state.renderButton)
             ? (
               <button
+                type="button"
                 className="load-button"
                 onClick={this.handleClick}
               >
@@ -90,42 +84,45 @@ class App extends React.Component {
             )
             : (
               <div>
-                <form 
+                <form
                   className="search-form"
-                  name="searchForm" 
-                  action="" 
-                  onSubmit={event => event.preventDefault()}
+                  name="searchForm"
+                  action=""
+                  onSubmit={(event) => { event.preventDefault(); this.filtredBy(); }}
                 >
                   <input
                     className="search-form__input"
                     name="searchInput"
                     type="search"
-                    onKeyUp={(event) => {if (event.keyCode === 13) this.filtredBy()}}
                     onBlur={this.filterBlur}
                   />
 
-                  <button onClick={this.filtredBy}>Search</button>
+                  <button
+                    type="submit"
+                  >
+                    Search
+                  </button>
 
                   <br />
 
-                  <label forHTML="checkTitle"> 
-                    <input 
-                      name="searchBy" 
-                      type="checkbox" 
-                      value="title" 
-                      defaultChecked="true" 
-                      id="checkTitle" 
-                    /> 
+                  <label htmlFor="checkTitle">
+                    <input
+                      name="searchBy"
+                      type="checkbox"
+                      value="title"
+                      defaultChecked="true"
+                      id="checkTitle"
+                    />
                     by post title
                   </label>
 
-                  <label forHTML="checkBody">
-                    <input 
+                  <label htmlFor="checkBody">
+                    <input
                       name="searchBy"
                       type="checkbox"
                       value="body"
                       id="checkBody"
-                    /> 
+                    />
                     by post text
                   </label>
                 </form>
@@ -133,7 +130,7 @@ class App extends React.Component {
                 <PostList posts={this.state.filter} />
               </div>
             )
-          }
+        }
       </div>
     );
   }
