@@ -8,7 +8,7 @@ const ToggleCommentsButton = ({ toggle, displayed }) => (
     onClick={toggle}
   >
     {
-      displayed ? 'Show comments' : 'Hide comments'
+      displayed ? 'Hide comments' : 'Show comments'
     }
   </button>
 );
