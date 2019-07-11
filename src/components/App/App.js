@@ -32,10 +32,6 @@ class App extends React.Component {
       postComments: comments.filter(comment => comment.postId === post.id),
     }));
 
-    this.setState({
-      posts: preparedPosts,
-    });
-
     this.setState(prevState => ({
       isLoaded: !prevState.isLoaded,
       posts: preparedPosts,
