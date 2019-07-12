@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './LoadButton.css';
 
-const LoadButton = ({ isLoading, handleLoad }) => (
+const LoadButton = ({ isLoading, handleClick }) => (
   <div className="load-section">
     <button
       type="button"
       className="load-btn"
       disabled={isLoading}
-      onClick={handleLoad}
+      onClick={handleClick}
     >
       {
         isLoading ? 'Loading...' : 'Load data'
@@ -19,7 +19,7 @@ const LoadButton = ({ isLoading, handleLoad }) => (
 
 LoadButton.propTypes = {
   isLoading: PropTypes.bool.isRequired,
-  handleLoad: PropTypes.func.isRequired,
+  handleClick: PropTypes.func.isRequired,
 };
 
 export default LoadButton;

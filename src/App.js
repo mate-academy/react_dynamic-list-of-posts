@@ -4,69 +4,66 @@ import './App.css';
 import LoadButton from './components/LoadButton/LoadButton';
 import PostList from './components/PostList/PostList';
 
-import fetchData from './components/fetchData';
+import { getUsers, getComments, getPosts } from './components/fetchData';
 
 class App extends Component {
   state = {
-    postList: [],
-    sortedPostList: [],
+    posts: [],
+    filteredPosts: [],
     isLoaded: false,
     isLoading: false,
   };
 
-  handleLoad = async() => {
-    try {
-      this.setState({ isLoading: true });
+  loadPosts = async() => {
+    this.setState({ isLoading: true });
 
-      const users = await fetchData('users');
-      const comments = await fetchData('comments');
-      const posts = await fetchData('posts');
+    const [users, comments, posts] = await Promise.all([
+      getUsers(),
+      getComments(),
+      getPosts(),
+    ]);
 
-      const currentPosts = posts.map(post => ({
-        ...post,
-        user: users.find(user => user.id === post.userId),
-        comments: comments.filter(comment => comment.postId === post.id),
-      }));
+    const postsWithData = posts.map(post => ({
+      ...post,
+      user: users.find(user => user.id === post.userId),
+      comments: comments.filter(comment => comment.postId === post.id),
+    }));
 
-      this.setState({
-        postList: currentPosts,
-        sortedPostList: currentPosts,
-        isLoading: false,
-        isLoaded: true,
-      });
-    } catch (error) {
-      throw new Error(error);
-    }
+    this.setState({
+      posts: postsWithData,
+      filteredPosts: postsWithData,
+      isLoading: false,
+      isLoaded: true,
+    });
   }
 
-  handleSort = (event) => {
+  handleFilter = (event) => {
     const { value } = event.target;
     const callback = post => (
-      post.body.includes(String(value))
-        || post.title.includes(String(value))
+      post.body.includes(value) || post.title.includes(value)
     );
 
     this.setState(prevState => ({
-      sortedPostList: prevState.postList.filter(callback),
+      filteredPosts: prevState.posts.filter(callback),
     }));
   }
 
   render() {
-    const { sortedPostList, isLoading } = this.state;
+    const { filteredPosts, isLoading, isLoaded } = this.state;
     return (
       <main className="container">
         <h1 className="container__header">List of posts</h1>
         {
-          this.state.isLoaded
+          isLoaded
             ? (
               <PostList
-                posts={sortedPostList}
-                handleSort={this.handleSort}
+                posts={filteredPosts}
+                handleFilter={this.handleFilter}
               />
             ) : (
               <LoadButton
                 isLoading={isLoading}
-                handleLoad={this.handleLoad}
+                handleClick={this.loadPosts}
               />
             )
         }

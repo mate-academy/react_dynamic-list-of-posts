@@ -6,42 +6,33 @@ import ToggleCommentsButton from './ToggleCommentsButton';
 import CommentList from './CommentList/CommentList';
 
 class PostContent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      post: props.post,
-      displayedComments: false,
-    };
-  }
+  state = {
+    areDisplayed: false,
+  };
 
   toggleComments = () => {
     this.setState(prevState => ({
-      displayedComments: !prevState.displayedComments,
+      areDisplayed: !prevState.areDisplayed,
     }));
   }
 
   render() {
-    const { post, displayedComments } = this.state;
+    const { areDisplayed } = this.state;
+    const { post } = this.props;
     return (
       <div className="post-section">
         <h2 className="post-user">
-          {
-            post.user.name
-          }
+          {post.user.name}
         </h2>
 
-        {
-          post.body
-        }
+        {post.body}
 
         <ToggleCommentsButton
           toggle={this.toggleComments}
-          displayed={displayedComments}
+          displayed={areDisplayed}
         />
 
-        {
-          !displayedComments || <CommentList comments={post.comments} />
-        }
+        {!areDisplayed || <CommentList comments={post.comments} />}
       </div>
     );
   }
@@ -53,6 +44,7 @@ PostContent.propTypes = {
       name: PropTypes.string.isRequired,
     }).isRequired,
     body: PropTypes.string.isRequired,
+    comments: PropTypes.array.isRequired,
   }).isRequired,
 };
 

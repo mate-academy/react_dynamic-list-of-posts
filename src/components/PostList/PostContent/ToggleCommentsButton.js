@@ -7,9 +7,7 @@ const ToggleCommentsButton = ({ toggle, displayed }) => (
     className="post-action"
     onClick={toggle}
   >
-    {
-      displayed ? 'Hide comments' : 'Show comments'
-    }
+    {displayed ? 'Hide comments' : 'Show comments'}
   </button>
 );
 
