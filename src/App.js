@@ -46,9 +46,9 @@ class App extends React.Component {
   render() {
     const filtredPosts = this.state.posts.filter(post => (
       post.body.toLowerCase()
-        .indexOf(this.state.search.toLowerCase()) !== -1
+        .includes(this.state.search.toLowerCase())
       || post.title.toLowerCase()
-        .indexOf(this.state.search.toLowerCase()) !== -1
+        .includes(this.state.search.toLowerCase())
     ));
 
     if (this.state.isLoaded) {
@@ -64,7 +64,7 @@ class App extends React.Component {
     }
     return (
       <div className="button_load">
-        <button className="button" onClick={this.LoadData} type="button">
+        <button className="button" onClick={this.LoadData} type="button" disabled={this.state.isLoading}>
           {this.state.isLoading ? 'Loading...' : 'Load'}
         </button>
       </div>
