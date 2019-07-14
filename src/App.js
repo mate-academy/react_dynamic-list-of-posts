@@ -1,37 +1,18 @@
 import React from 'react';
 import './App.css';
 import PostList from './PostList';
-
-const getPosts = async() => {
-const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-const currentPost = await response.json();
-
-return currentPost;
-};
-
-const getUsers = async() => {
-  const response = await fetch('https://jsonplaceholder.typicode.com/users');
-  const currentUsers = await response.json();
-
-  return currentUsers;
-};
-
-const getComments = async() => {
-  const response = await fetch('https://jsonplaceholder.typicode.com/comments');
-  const currentComment = await response.json();
-
-  return currentComment;
-};
+import { getPosts, getUsers, getComments } from './serverLoad';
 
 class App extends React.Component {
   state = {
-    listOfPost: [],
+    listOfPosts: [],
     isLoaded: false,
     isLoading: false,
+    posts: [],
   };
 
-   handleClick = async() => {
-    const comments= await getComments();
+  handleClick = async() => {
+    const comments = await getComments();
     const posts = await getPosts();
     const users = await getUsers();
     const userWhitpostAndComments = posts.map(post => ({
@@ -41,24 +22,44 @@ class App extends React.Component {
     }));
 
     this.setState({
-      listOfPost: userWhitpostAndComments,
+      posts: userWhitpostAndComments,
+      listOfPosts: userWhitpostAndComments,
       isLoading: true,
     });
 
-     setTimeout(() => {
+    setTimeout(() => {
       this.setState({
         isLoaded: true,
         isLoading: false,
       });
-    }, 1000);
+    }, 10);
   };
 
-   render() {
+  handleSearch = (someType) => {
+    const search = someType.target.value;
+
+    this.setState(prevState => ({
+      listOfPosts: prevState.posts.filter(
+        world => [world.title, world.body]
+          .join('')
+          .toLowerCase()
+          .includes(search.toLowerCase())
+      ),
+    }));
+  }
+
+  render() {
     return (
       <div>
-         { this.state.isLoaded ? (
+        { this.state.isLoaded ? (
           <div className="App">
-            <PostList postsCurrent={this.state.listOfPost} />
+            <input
+              type="text"
+              className="search_input"
+              placeholder="Search for"
+              onChange={this.handleSearch}
+            />
+            <PostList postsCurrent={this.state.listOfPosts} />
           </div>
         ) : (
           <button type="button" onClick={this.handleClick}>

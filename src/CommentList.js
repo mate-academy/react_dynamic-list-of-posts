@@ -2,13 +2,68 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Comment from './Comment';
 
-const CommentList = ({ currentComment }) => (
-  <div className="App__comment_list">
-    {currentComment.map(comment => (
-      <Comment dataComment={comment} />
-    ))}
-  </div>
-);
+class CommentList extends React.Component {
+  state = {
+    isLoaded: false,
+    isLoading: false,
+  }
+
+  handleClickHide = () => {
+    this.setState({
+      isLoading: false,
+    });
+
+    setTimeout(() => {
+      this.setState({
+        isLoaded: false,
+        isLoading: true,
+      });
+    }, 10);
+  };
+
+  handleClick = () => {
+    this.setState({
+      isLoading: true,
+    });
+
+    setTimeout(() => {
+      this.setState({
+        isLoaded: true,
+        isLoading: false,
+      });
+    }, 10);
+  }
+
+  render() {
+    return (
+      <div className="App__comment_list">
+        { this.state.isLoaded
+          ? (
+            <div>
+              <button
+                type="button"
+                onClick={this.handleClickHide}
+              >
+                { this.state.isLoading ? 'Loading' : 'Hide Comment' }
+              </button>
+              {this.props.currentComment.map(comment => (
+                <Comment dataComment={comment} key={comment.id} />
+              ))}
+            </div>
+          )
+          : (
+            <button
+              type="button"
+              onClick={this.handleClick}
+            >
+              { this.state.isLoading ? 'Comment' : 'Comment' }
+            </button>
+          )
+        }
+      </div>
+    );
+  }
+}
 
 CommentList.propTypes = {
   currentComment: PropTypes.arrayOf(PropTypes.oneOfType([

@@ -5,8 +5,7 @@ import CommentList from './CommentList';
 
 const Post = ({ dataPost }) => (
   <div className="App__data--post">
-    <User currentUser={dataPost.user} />
-    {console.log(dataPost)}
+    <User currentUser={dataPost.user} key={dataPost.user.id} />
     <h1 className="App__title">{dataPost.title}</h1>
     <p className="App__body">{dataPost.body}</p>
     <CommentList currentComment={dataPost.comments} />

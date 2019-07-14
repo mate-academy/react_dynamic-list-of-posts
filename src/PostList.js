@@ -5,7 +5,7 @@ import Post from './Post';
 const PostList = ({ postsCurrent }) => (
   <div className="App__container">
     {postsCurrent.map(post => (
-      <Post dataPost={post} />
+      <Post dataPost={post} key={postsCurrent.id} />
     ))}
   </div>
 );

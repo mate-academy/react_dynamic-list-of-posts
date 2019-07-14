@@ -3,12 +3,7 @@ import PropTypes from 'prop-types';
 
 const Comment = ({ dataComment }) => (
   <pre className="App__comment">
-    <div className="App__Coment_user">
-      <p>{dataComment.name}</p>
-      <p>{dataComment.email}</p>
-    </div>
-    <hr />
-    <br />
+    <h3>{dataComment.email}</h3>
     <p>Comment:</p>
     <p>{dataComment.body}</p>
   </pre>
