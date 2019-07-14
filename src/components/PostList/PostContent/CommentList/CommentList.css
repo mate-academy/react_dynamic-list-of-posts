@@ -1,0 +1,30 @@
+.comment-list {
+  margin-top: 10px;
+  border-top: 1px solid rgba(34,36,38,.15);
+}
+
+.comment-hide:hover {
+  color: #2185d0;
+}
+
+.comment-items {
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.comment-item {
+  margin: 5px 20px 0;
+  padding: 10px;
+  border-bottom: 1px solid rgba(34,36,38,.15);
+}
+
+.comment-item h3 {
+  color: rgba(0, 0, 0, 0.788);
+  font-size: 15px;
+  margin: 0 0 5px;
+  cursor: pointer;
+}
+
+.comment-item h3:hover {
+  opacity: .8;
+}
