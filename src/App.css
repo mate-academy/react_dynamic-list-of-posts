@@ -1,3 +1,68 @@
 .App {
   text-align: center;
 }
+.App {
+  width: 900px;
+  margin: 0 auto;
+}
+
+.App__container {
+  margin-top: 10px;
+  padding: 0 30px;
+  justify-content: stretch;
+}
+
+.App__comment {
+  margin: 5px 20px 0;
+  padding: 10px;
+  border-bottom: 1px solid rgba(34,36,38,.15);
+  display: flex;
+  margin: 0 10px;
+}
+
+.App__comment h3 {
+  color: rgba(0, 0, 0, 0.788);
+  font-size: 15px;
+  margin: 0 0 5px;
+  cursor: pointer;
+}
+
+.App__comment h3:hover {
+  opacity: .8;
+}
+
+
+.App__data--post {
+  border: 1px dotted black;
+  margin: 0 5px;
+  border-radius: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  box-shadow: 0px 0px 16px rgba(38, 38, 38, 0.16);
+}
+
+.App__data--post:hover {
+  transform: scale(1.02);
+  cursor: pointer;
+  transition: all 500ms ease 0s;
+}
+
+.App__comment_list {
+  overflow: scroll;
+  border: 1px dotted black;
+  background: #aaa;
+}
+
+.search_input {
+  width: 100%;
+  border: 0;
+  opacity: 50%;
+  line-height: 56px;
+  padding-left: 8px;
+  border: 1px solid blueviolet;
+}
+
+.App_key {
+  opacity: .8;
+}
+
