@@ -4,25 +4,26 @@ import PropTypes from 'prop-types';
 import Post from './Post';
 
 const PostList = ({ allPosts, handleSearch }) => (
-  <ul className="postlist">
-    <form className="search">
-
+  <>
+    <div className="search">
       <input
         type="search"
-        placeholder="Input text for searching"
+        placeholder="Input name for searching"
         className="search__input"
         autoComplete="off"
         onChange={handleSearch}
       />
+    </div>
 
-    </form>
+    <ul className="postlist">
+      {allPosts.map(post => (
+        <li className="postlist__post" key={post.id}>
+          <Post post={post} />
+        </li>
+      ))}
+    </ul>
 
-    {allPosts.map(post => (
-      <li className="postlist__post" key={post.id}>
-        <Post post={post} />
-      </li>
-    ))}
-  </ul>
+  </>
 );
 
 PostList.propTypes = {
@@ -32,7 +33,7 @@ PostList.propTypes = {
     title: PropTypes.string,
     body: PropTypes.string,
   })).isRequired,
-  onChange: PropTypes.func.isRequired,
+  handleSearch: PropTypes.func.isRequired,
 };
 
 export default PostList;

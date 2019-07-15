@@ -1,20 +1,22 @@
-const getData = async(url) => {
-  const responsePosts = await fetch(`${url}/posts`);
+const myUrl = 'https://jsonplaceholder.typicode.com';
+
+export const getPosts = async() => {
+  const responsePosts = await fetch(`${myUrl}/posts`);
   const posts = await responsePosts.json();
 
-  const responseUsers = await fetch(`${url}/users`);
-  const users = await responseUsers.json();
-
-  const responseComments = await fetch(`${url}/comments`);
-  const comments = await responseComments.json();
-
-  const data = posts.map(post => ({
-    ...post,
-    user: users.find(user => (user.id === post.userId)),
-    comment: comments.filter(comment => comment.postId === post.id),
-  }));
-
-  return data;
+  return posts;
 };
 
-export default getData;
+export const getUsers = async() => {
+  const responseUsers = await fetch(`${myUrl}/users`);
+  const users = await responseUsers.json();
+
+  return users;
+};
+
+export const getComments = async() => {
+  const responseComments = await fetch(`${myUrl}/comments`);
+  const comments = await responseComments.json();
+
+  return comments;
+};

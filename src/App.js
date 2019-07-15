@@ -2,47 +2,48 @@ import React from 'react';
 import './App.css';
 
 import PostList from './components/PostList';
-import getData from './api/getData';
-
-let currentList = [];
-const myUrl = 'https://jsonplaceholder.typicode.com';
-
-const getPostsByFilter = (posts, searchText) => {
-  const filteringPosts = [...posts].filter(post => (
-    (post.title.includes(searchText) || post.body.includes(searchText))
-  ));
-  return filteringPosts;
-};
+import { getPosts, getUsers, getComments } from './api/getData';
+import getPostsByFilter from './utils';
 
 class App extends React.Component {
   state = {
     posts: [],
+    shownPosts: [],
     isLoaded: false,
     isLoading: false,
   };
 
-  async componentDidMount() {
-    currentList = await getData(myUrl);
-  }
-
-  handleClick = () => {
+  handleLoadData = async() => {
     this.setState({
       isLoading: true,
     });
 
-    setTimeout(() => {
-      this.setState({
-        posts: currentList,
-        isLoaded: true,
-        isLoading: false,
-      });
-    }, 0);
+    const [posts, users, comments] = await Promise.all([
+      getPosts(),
+      getUsers(),
+      getComments(),
+    ]);
+
+    const preparedPosts = posts.map(post => ({
+      ...post,
+      user: users.find(user => user.id === post.userId),
+      comment: comments.filter(comment => comment.postId === post.id),
+    }));
+
+    this.setState({
+      posts: preparedPosts,
+      shownPosts: preparedPosts,
+      isLoaded: true,
+      isLoading: false,
+    });
   };
 
   handleSearch = (event) => {
-    this.setState({
-      posts: getPostsByFilter(currentList, event.target.value),
-    });
+    const { value } = event.target;
+
+    this.setState(prevState => ({
+      shownPosts: getPostsByFilter(prevState.posts, value),
+    }));
   };
 
   render() {
@@ -52,7 +53,7 @@ class App extends React.Component {
         { this.state.isLoaded ? (
 
           <PostList
-            allPosts={this.state.posts}
+            allPosts={this.state.shownPosts}
             handleSearch={this.handleSearch}
           />
 
@@ -60,7 +61,7 @@ class App extends React.Component {
           <button
             type="button"
             className="loadData"
-            onClick={this.handleClick}
+            onClick={this.handleLoadData}
             disabled={this.state.isLoading}
           >
             {this.state.isLoading ? 'Loading...' : 'Load' }
