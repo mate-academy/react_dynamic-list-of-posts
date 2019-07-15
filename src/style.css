@@ -1,0 +1,49 @@
+h1{
+  text-align: center;
+}
+
+.btn {
+  width: 100%;
+}
+
+.post-item {
+max-width: 900px;
+border: 2px solid black;
+border-radius: 10px;
+margin: auto;
+margin-bottom: 20px;
+align-content: center;
+background-color: #eafffc;
+}
+
+.question-block {
+  display: flex;
+  border-radius: 10px;
+  border: 1px solid black;
+  margin: 5px;
+  padding: 10px;
+  background-color: #f3fffd;
+
+}
+
+.user {
+  min-width: 230px;
+  padding: 10px;
+}
+
+.question {
+  border-radius: 10px;
+  border: 1px solid black;
+  padding: 10px;
+}
+.italic {
+  font-style: italic;
+}
+
+.comments {
+  padding: 20px;
+}
+
+.comment-body {
+  padding: 5px 30px;
+}
