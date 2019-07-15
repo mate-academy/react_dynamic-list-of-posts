@@ -1,3 +1,47 @@
 .App {
-  text-align: center;
+  max-width:1024px;
+  margin: 0 auto;
+  padding:0;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.PostList__title {
+  font-size: 20px;
+  padding:8px;
+}
+
+.PostList__items {
+  padding: 5px 8px;
+  margin-bottom: 8px;
+  background-color: #E6E5FE;
+  border-radius: 3px;
+}
+
+.PostList__user {
+  color: white;
+  background-color: black;
+
+}
+
+.CommentList__user {
+  color: white;
+  background-color: #453C47;
+}
+
+.CommentList__items {
+  margin-left: 50px;
+  margin-top: 15px;
+}
+
+.title {
+  font-weight: 600;
+}
+
+.title-group {
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.User-head {
+  color: blue;
 }
