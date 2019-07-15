@@ -11,16 +11,16 @@ const Post = ({ question }) => (
     <div className="question-block">
       <User user={question.user} key={question.user.id} />
       <div className="question">
-        <h3>
+        <h5>
           <p>Question:</p>
           {question.title}
-        </h3>
-        <article>{question.body}</article>
+        </h5>
+        <article className="post-body">{question.body}</article>
       </div>
     </div>
 
     <div className="comments">
-      <h3>Answers:</h3>
+      <h4>Answers:</h4>
       <div className="comment-item">
         <hr />
         <Accordion defaultActiveKey="1">
@@ -49,10 +49,18 @@ Post.propTypes = {
     title: PropTypes.string,
     body: PropTypes.string,
     userId: PropTypes.number,
-    user: PropTypes.object,
-    comments: PropTypes.object,
+    user: PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+    }),
+    comments: PropTypes.arrayOf(PropTypes.shape({
+      postId: PropTypes.number,
+      id: PropTypes.number,
+      name: PropTypes.string,
+      email: PropTypes.string,
+      body: PropTypes.string,
+    })),
   }).isRequired,
-
 };
 
 export default Post;

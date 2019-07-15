@@ -6,15 +6,15 @@ const User = ({ user }) => (
   <>
     <div className="user">
       <h2>{user.name}</h2>
-      <h3>{user.email}</h3>
-      <p>
+      <h6>{user.email}</h6>
+      <div>
         {user.address.city}
         {user.address.street}
         <p>
           zipcode:
           {user.address.suite}
         </p>
-      </p>
+      </div>
     </div>
   </>
 );
