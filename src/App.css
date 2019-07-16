@@ -1,3 +1,18 @@
-.App {
+h1, h2 {
   text-align: center;
+}
+
+.load-button {
+  width: 100px;
+  height: 50px;
+  display: block;
+  margin: 0 auto;
+}
+
+.search-form {
+  margin: 20px;
+}
+
+.search-form__input {
+  margin-bottom: 10px;
 }

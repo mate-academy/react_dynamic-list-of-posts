@@ -1,0 +1,17 @@
+.comment-list {
+  width: 90%;
+  margin: 10px auto;
+
+  &__body {
+    height: 300px;
+    background-color: rgb(255, 255, 255);
+    overflow: auto;
+  }
+
+  &__comment {
+    display: grid;
+    grid-template-columns: 200px auto;
+    grid-gap: 5px;
+  }
+}
+

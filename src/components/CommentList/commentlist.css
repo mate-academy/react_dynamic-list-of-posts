@@ -1,0 +1,16 @@
+.comment-list {
+  width: 90%;
+  margin: 10px auto;
+}
+.comment-list__body {
+  height: 300px;
+  background-color: white;
+  overflow: auto;
+}
+.comment-list__comment {
+  display: grid;
+  grid-template-columns: 200px auto;
+  grid-gap: 5px;
+}
+
+/*# sourceMappingURL=commentlist.css.map */
