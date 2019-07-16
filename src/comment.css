@@ -1,0 +1,27 @@
+.comment {
+  margin: 5px;
+  padding: 10px;
+  background-color: rgb(236, 233, 233);
+  border: 1px solid #a3a3a3;
+  border-radius: 5px;
+  box-shadow: 0 1px 5px #a3a3a3;
+  font-family: 'Roboto', sans-serif;
+  text-align: justify;
+}
+
+.comment_name {
+  opacity: 0.8;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.comment_body {
+  opacity: 0.8;
+  font-size: 14px;
+}
+
+.comment_email {
+  opacity: 0.8;
+  font-weight: 700;
+  font-size: 13px;
+}

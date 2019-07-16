@@ -1,0 +1,23 @@
+.postlist_item {
+  margin: 5px;
+  padding: 10px;
+  background-color: white;
+  border: 1px solid #a3a3a3;
+  border-radius: 5px;
+  box-shadow: 0 1px 5px #a3a3a3;
+  font-family: 'Roboto', sans-serif;
+  text-align: justify;
+}
+
+.postlist_title {
+  margin: 5px 0 15px 0;
+  font-weight: 700;
+  text-align: center;
+}
+
+.postlist_body {
+  margin: 5px 0;
+  text-indent: 20px;
+}
+
+
