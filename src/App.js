@@ -5,51 +5,59 @@ import { getPostsWithUsers } from './components/loadingData';
 
 class App extends React.Component {
   state = {
-    renderButton: true,
+    isLoadButtonVisible: true,
+    textOfLoadButton: 'Load',
     postsWhithUser: [],
     filter: [],
+    searchInput: '',
   }
 
-  handleClick = () => {
-    const loadButton = document.querySelector('.load-button');
-    loadButton.disabled = true;
-    loadButton.textContent = 'Loading...';
+  handleClick = (event) => {
+    const loadButton = event.target;
+
+    this.setState({
+      textOfLoadButton: 'Loading...',
+    });
+
+    loadButton.disabled = this.state.textOfLoadButton === 'Loading...';
 
     getPostsWithUsers().then((data) => {
       this.setState({
         postsWhithUser: [...data],
         filter: [...data],
-        renderButton: false,
+        isLoadButtonVisible: false,
       });
     });
   }
 
-  filtredBy = () => {
-    const searchForm = document.searchForm.elements;
-    const userValue = searchForm.searchInput.value;
+  filtredBy = (event) => {
+    event.preventDefault();
+    const { searchBy } = event.target;
+    const value = this.state.searchInput;
 
-    if (userValue !== '') {
+    if (value !== '') {
       let byField = '';
       let filtrField;
 
       for (let i = 0; i < 2; i += 1) {
-        if (searchForm.searchBy[i].checked) {
-          byField += searchForm.searchBy[i].value;
+        if (searchBy[i].checked) {
+          byField += searchBy[i].value;
         }
       }
 
       switch (byField) {
         case 'body':
-          filtrField = post => post.body.includes(userValue);
+          filtrField = post => post.body.includes(value);
           break;
         case 'titlebody':
-          filtrField = post => post.title.includes(userValue) || post.body.includes(userValue);
+          filtrField = post => post.title.includes(value) || post.body.includes(value);
           break;
         default:
-          filtrField = post => post.title.includes(userValue);
+          filtrField = post => post.title.includes(value);
       }
 
       const newFilter = this.state.postsWhithUser.filter(filtrField);
+
       this.setState({
         filter: [...newFilter],
       });
@@ -58,28 +66,37 @@ class App extends React.Component {
     }
   }
 
-  filterBlur = () => {
-    const searchForm = document.searchForm.elements;
-    const userValue = searchForm.searchInput.value;
+  filterBlur = (event) => {
+    const { value } = event.target.value;
 
-    if (userValue === '') {
+    if (value === '') {
       this.setState(prevState => ({ filter: [...prevState.postsWhithUser] }));
     }
   }
 
+  handleChange = (event) => {
+    const { name, value } = event.target;
+
+    this.setState({
+      [name]: value,
+    });
+  }
+
   render() {
+    const { isLoadButtonVisible, filter, textOfLoadButton, searchInput } = this.state;
+
     return (
       <div className="App">
         <h1>Dynamic list of posts</h1>
         {
-          (this.state.renderButton)
+          (isLoadButtonVisible)
             ? (
               <button
                 type="button"
                 className="load-button"
                 onClick={this.handleClick}
               >
-                Load
+                {textOfLoadButton}
               </button>
             )
             : (
@@ -88,13 +105,15 @@ class App extends React.Component {
                   className="search-form"
                   name="searchForm"
                   action=""
-                  onSubmit={(event) => { event.preventDefault(); this.filtredBy(); }}
+                  onSubmit={this.filtredBy}
                 >
                   <input
                     className="search-form__input"
                     name="searchInput"
+                    value={searchInput}
                     type="search"
                     onBlur={this.filterBlur}
+                    onChange={this.handleChange}
                   />
 
                   <button
@@ -127,7 +146,7 @@ class App extends React.Component {
                   </label>
                 </form>
 
-                <PostList posts={this.state.filter} />
+                <PostList posts={filter} />
               </div>
             )
         }

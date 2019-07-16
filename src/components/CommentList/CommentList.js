@@ -8,7 +8,7 @@ const CommentList = ({ comments }) => (
     <h3>Comments</h3>
     <div className="comment-list__body">
       {comments && comments.map(currentComment => (
-        <Comment comment={currentComment} key={"comment" + currentComment.id + currentComment.postId}/>))
+        <Comment comment={currentComment} key={currentComment.id} />))
       }
     </div>
   </div>
