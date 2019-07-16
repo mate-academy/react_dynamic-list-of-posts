@@ -9,7 +9,7 @@ export default function Post (props) {
           props.data.title}
         </td>
         <td>{
-          props.data.body}
+          {props.data.body}
         </td>
         <User author={props.data.users} />
         <CommentList comments={props.data.comments} />
