@@ -1,10 +1,10 @@
 import React from 'react';
+import logo from '../images/user.png'
 
 function Comment(props) {
   return (
-    <div>
-      <h3>Comment</h3>
-      <p><a href={'mailto: ' + props.authorEmail}>{props.authorName}</a></p>
+    <div className="comment">
+      <p><img src={logo} alt="user"/><a href={'mailto: ' + props.authorEmail}>{props.authorName}</a></p>
       <p>{props.comment}</p>
     </div>
   )
