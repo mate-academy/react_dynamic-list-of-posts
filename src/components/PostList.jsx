@@ -1,10 +1,14 @@
 import React from 'react'
 import Post from './Post'
 
-const PostList = ({currentPosts}) => (
+const PostList = ({currentPosts, inputValue, searchByFilter, filteredPosts}) => (
   <div>
+    <label className='search' htmlFor="">
+      Search: 
+      <input className='search__field' value={inputValue} onChange={searchByFilter} type="text"/>
+    </label>
     {
-      currentPosts.map(post => (
+      filteredPosts.map(post => (
         <Post currentPost={post}/>
       ))
     }

@@ -10,6 +10,7 @@
 .site__title {
   text-align: center;
   color: #4D80AA;
+  margin: 0;
 }
 
 .article {
@@ -44,4 +45,17 @@
 .button__posts {
   justify-self: center;
   width: 120px;
+}
+
+.search {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.search__field {
+  width: 790px;
+  border: 3px solid #D9963F;
+  padding: 4px;
 }

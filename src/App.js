@@ -9,6 +9,8 @@ class App extends React.Component {
     currentPosts: [],
     isLoading: false,
     isLoaded: false,
+    inputValue: '',
+    filteredPosts: [],
   }
 
   getData = async () => {
@@ -32,9 +34,18 @@ class App extends React.Component {
 
     this.setState({
       currentPosts: postsWithUser,
+      filteredPosts: postsWithUser,
       isLoading: false,
       isLoaded: true,
     })
+  }
+
+  searchByFilter = (e) => {
+    const {value} = e.target;
+    this.setState(prevState => ({
+      inputValue: value,
+      filteredPosts: [...prevState.currentPosts].filter(post=> post.title.includes(value) || post.body.includes(value))
+      }))
   }
 
 
@@ -46,6 +57,9 @@ class App extends React.Component {
           this.state.isLoaded
             ? <PostList 
                 currentPosts={this.state.currentPosts}
+                inputValue={this.state.inputValue}
+                searchByFilter={this.searchByFilter}
+                filteredPosts={this.state.filteredPosts}
               />
             : <ButtonPosts 
                 isLoading={this.state.isLoading}
