@@ -15,17 +15,17 @@ handleLoad = async() => {
   this.setState({
     isLoading: true,
   });
-  const PostsWithUserAndComments = await getFromServer();
+  const postsWithUserAndComments = await getFromServer();
   setTimeout(() => {
     this.setState({
-      loadedPosts: [...PostsWithUserAndComments],
-      postTemplate: [...PostsWithUserAndComments],
+      loadedPosts: [...postsWithUserAndComments],
+      postTemplate: [...postsWithUserAndComments],
       isLoaded: true,
     });
   }, 1000);
 };
 
-handleInputSearch = (event) => {
+filteredPosts = (event) => {
   const { value } = event.target;
   this.setState (state => ({
     loadedPosts: state.postTemplate
@@ -58,7 +58,7 @@ render() {
           <input
             type="text"
             placeholder="Search post by body or title..."
-            onChange={this.handleInputSearch}
+            onChange={this.filteredPosts}
             className="app_search-input"
           />
         </label>
