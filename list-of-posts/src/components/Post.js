@@ -6,9 +6,8 @@ function Post(props) {
   return (
     <li>
       <p className="title">{props.title}</p>
-      <p>{props.text}</p>
       <User users={props.userList} userId={props.userId}/>
-      <p className="comments">Comments</p>
+      <p className="text">{props.text}</p>
       <CommentList comments={props.comments} postId={props.post}/>
     </li>
   )

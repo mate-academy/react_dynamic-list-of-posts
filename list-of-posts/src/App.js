@@ -59,7 +59,7 @@ class App extends Component {
       <>
         {this.state.loaded
           ? (
-            <div className="container">
+            <div>
               <input type="text" onInput={this.filterPosts} placeholder="search post"/>
               <PostList list={!this.state.foundPost.length
                 ? this.state.posts
@@ -68,11 +68,10 @@ class App extends Component {
           )
           : (
             <div className="container">
-              <button onClick={this.handleClick} disabled={this.state.disabled}>Load</button>
-              {this.state.loading
-                ? <p className="loading">Loading...</p>
-                : null
-              }
+              <button className="button" onClick={this.handleClick} disabled={this.state.disabled}>{this.state.loading
+                ? 'Loading...'
+                : 'Load'}
+              </button>
             </div>
           )
         }

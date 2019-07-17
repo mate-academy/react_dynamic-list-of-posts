@@ -5,7 +5,7 @@ function Comment(props) {
   return (
     <div className="comment">
       <p><img src={logo} alt="user"/><a href={'mailto: ' + props.authorEmail}>{props.authorName}</a></p>
-      <p>{props.comment}</p>
+      <p className="commentText">{props.comment}</p>
     </div>
   )
 }
