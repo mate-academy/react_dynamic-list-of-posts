@@ -14,11 +14,14 @@ body {
   position: fixed;
   top: calc(50% - 50px);
   left: calc(50% - 100px);
+
   width: 200px;
   height: 100px;
+
   border-radius: 10px;
   border: 3px solid #00334d;
   background: #54a3cb;
+
   font-family: "Montserrat", sans-serif;
   font-weight: bold;
   font-size: 20px;
@@ -27,6 +30,7 @@ body {
 .filter-wrapper {
   display: flex;
   justify-content: space-around;
+
   font-family: "Montserrat", sans-serif;
   font-weight: bold;
   font-size: 20px;
@@ -36,32 +40,38 @@ body {
   margin: 20px 10px;
   width: 800px;
   height: 50px;
+
   border-radius: 10px;
   border: 1px solid #00334d;
 }
 
 .post-list-wrapper {
   padding: 10px 50px 40px;
-}
-.post-list-wrapper .post {
-  font-size: 1.3em;
-}
-.post-list-wrapper .post__title {
-  color: #3494c4;
-  text-align: center;
-  text-shadow: 5px 2px 5px #0a0a169f;
-  text-transform: uppercase;
-}
-.post-list-wrapper .user-info {
-  font-weight: 600;
-  font-size: 1.1em;
+
+  .post {
+    font-size: 1.3em;
+  }
+
+  .post__title {
+    color: #3494c4;
+    text-align: center;
+    text-shadow: 5px 2px 5px #0a0a169f;
+    text-transform: uppercase;
+  }
+
+  .user-info {
+    font-weight: 600;
+    font-size: 1.1em;
+  }
 }
 
 .comment-btn {
   height: 30px;
+
   border-radius: 10px;
   border: 1px solid #00334d;
   background: #54a3cb;
+
   font-family: "Montserrat", sans-serif;
   font-weight: bold;
   font-size: 16px;
@@ -70,7 +80,9 @@ body {
 .comment-list {
   height: 200px;
   margin-bottom: 20px;
+
   overflow: auto;
+
   background-color: #b3e6ff;
 }
 
@@ -78,13 +90,13 @@ body {
   margin: 10px 10px 0 10px;
   border-bottom: 2px solid #00334d;
   font-size: 0.65em;
-}
-.comment__email {
-  font-style: italic;
-}
-.comment__name {
-  font-size: 1.1em;
-  text-transform: uppercase;
-}
 
-/*# sourceMappingURL=App.css.map */
+  &__email {
+    font-style: italic;
+  }
+
+  &__name {
+    font-size: 1.1em;
+    text-transform: uppercase;
+  }
+}
