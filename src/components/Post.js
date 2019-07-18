@@ -3,25 +3,11 @@ import PropTypes from 'prop-types';
 
 import User from './User';
 import CommentList from './CommentList';
-import { getComments } from '../api/getData';
 
 class Post extends React.Component {
   state = {
     isVisible: false,
-    comments: [],
   }
-
-  componentDidMount() {
-    this.loadData();
-  }
-
-  loadData = async() => {
-    const comments = await getComments();
-
-    this.setState({
-      comments,
-    });
-  };
 
   showComments = () => {
     this.setState({
@@ -37,7 +23,7 @@ class Post extends React.Component {
 
   render() {
     const { post } = this.props;
-    const { isVisible, comments } = this.state;
+    const { isVisible } = this.state;
 
     return (
       <article className="post">
@@ -50,8 +36,7 @@ class Post extends React.Component {
         { isVisible ? (
           <>
             <CommentList
-              post={post}
-              comments={comments}
+              comments={post.comments}
             />
             <button
               type="button"
@@ -68,7 +53,7 @@ class Post extends React.Component {
             onClick={this.showComments}
             className="comment-btn"
           >
-            Show comments
+            {`Show comments (${post.comments.length})`}
           </button>
         )
         }
@@ -82,6 +67,7 @@ Post.propTypes = {
     title: PropTypes.string.isRequired,
     body: PropTypes.string.isRequired,
     user: PropTypes.object.isRequired,
+    comments: PropTypes.object.isRequired,
   }).isRequired,
 };
 

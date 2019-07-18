@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 
-import { getData } from './api/getData';
+import getData from './api/getData';
 import PostList from './components/PostList';
 
 class App extends React.Component {
@@ -12,18 +12,14 @@ class App extends React.Component {
     isLoading: false,
   }
 
-  componentDidMount() {
-    this.loadData();
-  }
-
-  loadData = async() => {
+  async componentDidMount() {
     const posts = await getData();
 
     this.setState({
       visiblePosts: posts,
       posts,
     });
-  };
+  }
 
   handleClick = () => {
     this.setState({
