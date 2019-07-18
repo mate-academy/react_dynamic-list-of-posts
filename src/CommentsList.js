@@ -24,9 +24,17 @@ class CommentsList extends React.Component {
         >
           {!this.state.commentListIsOpen ? 'Show comments' : 'Hide comments'}
         </button>
-        {this.state.commentListIsOpen && <Comment commentData={commentData} /> }
+        {this.state.commentListIsOpen
+        && commentData.map(comment =>
+        (
+          <Comment
+            commentData={comment}
+            key={comment.id}
+          />
+        ))}
       </div>
     );
+
   }
 }
 

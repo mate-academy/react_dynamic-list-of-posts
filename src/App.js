@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import getFromServer from './Get';
+import {getData} from './Get';
 import PostList from './PostList';
 
 class App extends React.Component {
@@ -15,14 +15,12 @@ handleLoad = async() => {
   this.setState({
     isLoading: true,
   });
-  const postsWithUserAndComments = await getFromServer();
-  setTimeout(() => {
+  const postsWithUserAndComments = await getData();
     this.setState({
       loadedPosts: [...postsWithUserAndComments],
       postTemplate: [...postsWithUserAndComments],
       isLoaded: true,
     });
-  }, 1000);
 };
 
 filteredPosts = (event) => {
