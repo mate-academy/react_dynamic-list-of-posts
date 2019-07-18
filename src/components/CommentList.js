@@ -5,20 +5,18 @@ import Comment from './Comment';
 
 class CommentList extends React.Component {
   state = {
-    isLoadedComment: 1,
+    isToggleOn: true,
   }
 
-  /* eslint-disable */
   getShowComment = () => {
-    this.setState({
-      isLoadedComment: this.state.isLoadedComment * (-1),
-    });
+    this.setState(state => ({
+      isToggleOn: !state.isToggleOn,
+    }));
   }
-  /* eslint-enable */
 
   render() {
     const { listItems } = this.props;
-    const { isLoadedComment } = this.state;
+    const { isToggleOn } = this.state;
 
     return (
       <div>
@@ -29,7 +27,7 @@ class CommentList extends React.Component {
         >
           Comments
         </button>
-        {isLoadedComment === 1
+        {isToggleOn === true
           ? ([])
           : (listItems.comments.map(item => <Comment commentItem={item} />))}
       </div>
