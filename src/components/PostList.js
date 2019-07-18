@@ -17,7 +17,7 @@ const PostList = ({ posts, getFilterPosts }) => (
       {posts.map(item => (
         <li className="post_section">
           <div className="user-post">
-            <Post postItem={item} />
+            <Post key={item.id} postItem={item} />
           </div>
         </li>
       ))}

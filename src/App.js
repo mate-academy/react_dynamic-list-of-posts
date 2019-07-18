@@ -5,7 +5,7 @@ import PostList from './components/PostList';
 
 import { getPosts, getUsers, getComments } from './api/getData';
 
-const getArrFromPost = (name, value) => {
+const сheckPresenceValue = (name, value) => {
   if (name) {
     if (value.split(' ').length > 1) {
       return name.toLowerCase().startsWith(value.toLowerCase());
@@ -56,8 +56,8 @@ class App extends React.Component {
 
     this.setState(prevState => ({
       visiblePosts: prevState.posts.filter((post) => {
-        const byTitle = getArrFromPost(post.title, value);
-        const byBodyPost = getArrFromPost(post.body, value);
+        const byTitle = сheckPresenceValue(post.title, value);
+        const byBodyPost = сheckPresenceValue(post.body, value);
 
         return byTitle || byBodyPost;
       }),

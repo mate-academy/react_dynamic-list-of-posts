@@ -28,15 +28,23 @@ class CommentList extends React.Component {
           Comments
         </button>
         {isToggleOn === true
-          ? ([])
-          : (listItems.comments.map(item => <Comment commentItem={item} />))}
+          ? ''
+          : (listItems.comments.map(
+            item => <Comment key={item.id} commentItem={item} />
+          ))}
       </div>
     );
   }
 }
 
 CommentList.propTypes = {
-  listItems: PropTypes.arrayOf(PropTypes.object).isRequired,
+  listItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      email: PropTypes.string,
+      name: PropTypes.string,
+      body: PropTypes.string,
+    })
+  ).isRequired,
 };
 
 export default CommentList;
