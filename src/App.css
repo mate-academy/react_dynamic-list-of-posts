@@ -1,3 +1,27 @@
 .App {
+  display: flex-box;
+  margin-left: 25%;
   text-align: center;
+  border: 1px solid black;
+  width: 50%;
+}
+
+.post {
+  border: 1px solid black;
+  background-color: aquamarine;
+}
+
+.comment-body {
+  background-color: beige;
+  text-align: right;
+}
+
+.user {
+  background-color: rgb(109, 194, 250);
+  text-align: left;
+}
+
+.comment-author {
+  background-color: rgb(158, 158, 30);
+  text-align: right;
 }
