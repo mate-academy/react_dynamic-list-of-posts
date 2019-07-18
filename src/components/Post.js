@@ -15,12 +15,6 @@ class Post extends React.Component {
     }));
   }
 
-  hideComments = () => {
-    this.setState({
-      isVisible: false,
-    });
-  }
-
   render() {
     const { post } = this.props;
     const { isVisible } = this.state;
