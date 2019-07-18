@@ -9,10 +9,10 @@ class Post extends React.Component {
     isVisible: false,
   }
 
-  showComments = () => {
-    this.setState({
-      isVisible: true,
-    });
+  toggleComments = () => {
+    this.setState(prevState => ({
+      isVisible: !prevState.isVisible,
+    }));
   }
 
   hideComments = () => {
@@ -40,7 +40,7 @@ class Post extends React.Component {
             />
             <button
               type="button"
-              onClick={this.hideComments}
+              onClick={this.toggleComments}
               className="comment-btn"
             >
               Hide comments
@@ -50,7 +50,7 @@ class Post extends React.Component {
         ) : (
           <button
             type="button"
-            onClick={this.showComments}
+            onClick={this.toggleComments}
             className="comment-btn"
           >
             {`Show comments (${post.comments.length})`}

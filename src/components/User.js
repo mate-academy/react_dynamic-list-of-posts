@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const User = props => (
+const User = ({ user }) => (
   <div className="user-info">
-    <div>{ props.user.name }</div>
-    <div>{ props.user.email }</div>
+    <div>{ user.name }</div>
+    <div>{ user.email }</div>
   </div>
 );
 

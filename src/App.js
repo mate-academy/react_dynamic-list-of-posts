@@ -12,16 +12,9 @@ class App extends React.Component {
     isLoading: false,
   }
 
-  async componentDidMount() {
+  handleClick = async() => {
     const posts = await getData();
 
-    this.setState({
-      visiblePosts: posts,
-      posts,
-    });
-  }
-
-  handleClick = () => {
     this.setState({
       isLoading: true,
     });
@@ -30,22 +23,30 @@ class App extends React.Component {
       this.setState({
         isLoaded: true,
         isLoading: false,
+        visiblePosts: posts,
+        posts,
       });
     }, 2000);
   };
 
   handleFilter = (event) => {
-    const { value, name } = event.target;
+    const { value } = event.target;
 
     this.setState(prevState => ({
       visiblePosts: prevState.posts.filter(
-        post => (
-          post[name]
+        post => ((
+          post.title
             .toLowerCase()
             .includes(value
               .toLowerCase()
               .trim())
-        )
+        ) || (
+          post.body
+            .toLowerCase()
+            .includes(value
+              .toLowerCase()
+              .trim())
+        ))
       ),
     }));
   }
@@ -63,24 +64,13 @@ class App extends React.Component {
           <>
             <h1>Dynamic list of posts</h1>
 
-            <div className="filter-inputs">
-              <label htmlFor="name-input">
-                Filter by title:
+            <div className="filter-wrapper">
+              <label htmlFor="filter-input">
+                Filter by title or text:
                 <input
                   type="text"
-                  id="title-input"
+                  id="filter-input"
                   className="filter-input"
-                  name="title"
-                  onChange={this.handleFilter}
-                />
-              </label>
-              <label htmlFor="text-input">
-                Filter by text:
-                <input
-                  type="text"
-                  id="text-input"
-                  className="filter-input"
-                  name="body"
                   onChange={this.handleFilter}
                 />
               </label>

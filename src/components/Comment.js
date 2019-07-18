@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Comment = props => (
+const Comment = ({ comment }) => (
   <div className="comment">
-    <div className="comment__email">{ props.comment.email }</div>
-    <h2 className="comment__name">{ props.comment.name }</h2>
-    <p className="comment__text">{ props.comment.body }</p>
+    <div className="comment__email">{ comment.email }</div>
+    <h2 className="comment__name">{ comment.name }</h2>
+    <p className="comment__text">{ comment.body }</p>
   </div>
 );
 
