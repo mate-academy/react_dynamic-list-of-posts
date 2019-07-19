@@ -21,8 +21,8 @@ class App extends React.Component {
     const posts = await getPosts();
 
     this.setState({
-      postWithUsersAndComments: posts,
-      postWithUsersAndCommentsOrigin: posts,
+      postWithUsersAndComments: [ ...posts ],
+      postWithUsersAndCommentsOrigin: [ ...posts ],
       isLoading: false,
       isLoaded: true,
     });

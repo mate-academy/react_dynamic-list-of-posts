@@ -9,7 +9,7 @@ class CommentsList extends React.Component {
     commentLoaded: false,
   }
 
-  handleShowComments = () => {
+  handleToggleComments = () => {
     this.setState(prevState => ({
       commentLoaded: !prevState.commentLoaded,
     }));
@@ -31,9 +31,9 @@ class CommentsList extends React.Component {
             type="button"
             name="isLoadComments"
             className="comments_button"
-            onClick={this.handleShowComments}
+            onClick={this.handleToggleComments}
           >
-            Show Comments
+            {this.state.commentLoaded ? 'Hide Comments' : 'Show Comments'}
           </button>
         </div>
 
