@@ -27,7 +27,7 @@ class CommentList extends React.Component {
         >
           Comments
         </button>
-        {isToggleOn === true
+        {isToggleOn
           ? ''
           : (listItems.comments.map(
             item => <Comment key={item.id} commentItem={item} />
