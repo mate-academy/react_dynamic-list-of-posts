@@ -1,3 +1,76 @@
 .App {
+  width: 60%;
+  font-family: Helevetica, Arial, sans-serif;
+  margin-left: 15%;
+  font-size: 15px;
   text-align: center;
+}
+
+.main-headline {
+  margin-bottom: 25px;
+}
+
+.btn {
+  width: 200px;
+}
+
+.title_page {
+  text-align: center;
+  color: black;
+}
+
+.input-filter_name {
+  position: relative;
+  width: 90%;
+  margin-bottom: 10px;
+  padding: 5px 25px 5px 20px;
+  border: none;
+  border-bottom: 1px solid #b8b9bb;
+  left: 10px;
+}
+
+.post_section {
+  list-style: none;
+  text-align: left;
+  background-color: lightblue;
+  padding: 5px 65px 5px 15px;
+}
+
+.title_post {
+  color: #202020;
+  margin-top: 10px 35px;
+  font-size: 22px;
+}
+
+.user-section {
+  display: flex;
+  justify-content: start;
+  font-size: 12px;
+}
+
+.user-section > span {
+  margin-right: 5px;
+}
+
+.comment_tab {
+  color: #202020;
+  padding: 20px 0;
+  border-bottom: 1px dashed #666;
+  font-weight: bold;
+}
+
+.comment_box {
+  width: 100%;
+  padding: 15px;
+  margin: 10px;
+  border: 1px solid #ddd;
+  font-size: 13px;
+  background-color: antiquewhite;
+}
+
+.comment_author {
+  font-weight: bold;
+  color: #781919;
+  margin-bottom: 10px;
+  padding-right: 10px;
 }
