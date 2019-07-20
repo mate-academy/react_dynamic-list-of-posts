@@ -1,3 +1,134 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+*:focus {
+  outline: none;
+}
+
+#root {
+  display: flex;
+  justify-content: space-around;
+}
+
 .App {
-  text-align: center;
+  padding: 20px 40px;
+}
+
+.load-button {
+  width: 100px;
+  height: 70px;
+  background-color: white;
+  border: 1px solid #a3a3a3;
+  border-radius: 5px;
+  box-shadow: 0 1px 5px #a3a3a3;
+  font-size: 20px;
+  transition: 300ms all;
+  margin-top: 20px;
+}
+
+.load-button:hover {
+  cursor: pointer;
+  background-color: #a3a3a3;
+  color: white;
+}
+
+.search-filter {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.search-filter__input {
+  border: 1px solid #a3a3a3;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+.search-filter__button {
+  background-color: white;
+  border: 1px solid #a3a3a3;
+  border-radius: 5px;
+  box-shadow: 0 1px 5px #a3a3a3;
+  font-size: 17px;
+  transition: 300ms all;
+  margin-left: 10px;
+  padding: 7px;
+}
+
+.search-filter__button:hover {
+  cursor: pointer;
+  background-color: #a3a3a3;
+  color: white;
+}
+
+li {
+  list-style-type: none;
+  margin-bottom: 30px;
+}
+
+.user-post {
+  border: 1px solid #a3a3a3;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+.post {
+  margin-bottom: 13px;
+}
+
+.post__title {
+  font-size: 20px;
+  margin-bottom: 7px;
+}
+
+.post__body {
+  font-size: 17px;
+}
+
+.user {
+  display: flex;
+  justify-content: space-around;
+  font-size: 14px;
+  color: #585858;
+}
+
+.user__adress span {
+  margin-right: 15px;
+}
+
+.comment {
+  max-width: 50%;
+  margin-left: auto;
+  border: 1px solid #a3a3a3;
+  border-radius: 5px;
+  margin-top: 20px;
+  padding: 5px 10px;
+  position: relative;
+}
+
+.comment::before {
+  content: " ";
+  top: -7px;
+  left: 10%;
+  background: white;
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-left: 1px solid #a3a3a3;
+  border-top: 1px solid #a3a3a3;
+  transform: rotate(45deg);
+}
+
+.comment__name-email {
+  display: flex;
+  justify-content: space-around;
+  font-size: 14px;
+  color: #585858;
+}
+
+.comment__body {
+  font-size: 16px;
+  margin-bottom: 5px;
 }
