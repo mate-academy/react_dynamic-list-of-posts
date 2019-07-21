@@ -22,7 +22,7 @@ class CommentsList extends React.Component {
           type="button"
           onClick={this.handleClick}
         >
-          {!this.state.commentListIsOpen ? 'Show comments' : 'Hide comments'}
+          {this.state.commentListIsOpen ? 'Hide comments' : 'Show comments'}
         </button>
         {this.state.commentListIsOpen
         && commentData.map(comment =>

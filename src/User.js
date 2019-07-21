@@ -7,9 +7,7 @@ const User = ({ userData }) => (
       {userData.name}, the &nbsp;
     </span>
     <span className="user_nickname">
-      (
-      {userData.username}
-      )
+      ({userData.username})
     </span>
     <div className="user_email">
       {userData.email}

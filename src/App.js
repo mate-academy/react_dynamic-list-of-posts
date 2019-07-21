@@ -23,7 +23,7 @@ handleLoad = async() => {
     });
 };
 
-filteredPosts = (event) => {
+filteringPosts = (event) => {
   const { value } = event.target;
   this.setState (state => ({
     loadedPosts: state.postTemplate
@@ -44,6 +44,7 @@ render() {
         type="button"
         onClick={this.handleLoad}
         hidden={this.state.isLoaded}
+        disabled={this.state.isLoading}
       >
         {this.state.isLoading ? 'Loading...' : 'Load'}
       </button>
@@ -56,7 +57,7 @@ render() {
           <input
             type="text"
             placeholder="Search post by body or title..."
-            onChange={this.filteredPosts}
+            onChange={this.filteringPosts}
             className="app_search-input"
           />
         </label>
