@@ -10,8 +10,6 @@ const PostList = ({ loadedPosts }) => (
     {loadedPosts.map(post => (
       <div className="postlist_item" key={post.id}>
         <div><Post postData={post} /></div>
-        <div><User userData={post.userData} /></div>
-        <div><CommentsList commentData={post.userComments} /></div>
       </div>
     ))}
   </div>
