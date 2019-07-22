@@ -3,6 +3,19 @@ import getData from './data/getData';
 import './App.css';
 import PostList from './components/PostList';
 
+const getDataList = async() => {
+  const users = await getData('https://jsonplaceholder.typicode.com/users');
+  const posts = await getData('https://jsonplaceholder.typicode.com/posts');
+  const comments = await
+  getData('https://jsonplaceholder.typicode.com/comments');
+
+  return posts.map(post => ({
+    ...post,
+    user: users.find(user => user.id === post.userId),
+    comments: comments.filter(comment => comment.postId === post.id),
+  }));
+};
+
 class App extends React.Component {
   state = {
     users: [],
@@ -14,21 +27,13 @@ class App extends React.Component {
     this.setState({
       isLoading: true,
     });
-    const users = await getData('https://jsonplaceholder.typicode.com/users');
-    const posts = await getData('https://jsonplaceholder.typicode.com/posts');
-    const comments = await
-    getData('https://jsonplaceholder.typicode.com/comments');
-    const result = posts.map(post => ({
-      ...post,
-      user: users.find(user => user.id === post.userId),
-      comments: comments.filter(comment => comment.postId === post.id),
-    }));
+    const result = await getDataList();
 
     this.setState({
       users: result,
       isLoaded: true,
       isLoading: false,
-      post: result,
+      posts: result,
     });
   };
 
@@ -36,7 +41,7 @@ class App extends React.Component {
     const search = event.target.value;
 
     this.setState(prevState => ({
-      users: prevState.post.filter(
+      users: prevState.posts.filter(
         text => [text.title || text.body]
           .join('').toLowerCase().includes(search.toLowerCase())
       ),
