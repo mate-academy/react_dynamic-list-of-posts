@@ -9,7 +9,10 @@ const PostList = ({currentPosts, inputValue, searchByFilter, filteredPosts}) => 
     </label>
     {
       filteredPosts.map(post => (
-        <Post currentPost={post}/>
+        <Post 
+          currentPost={post}
+          key={post.id}
+        />
       ))
     }
   </div>

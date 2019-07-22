@@ -4,7 +4,6 @@ import User from './User'
 import CommentList from './CommentList'
 import ButtonComments from './ButtonComments'
 
-
 class Post extends React.Component {
   state ={
     showComments: false,
@@ -30,7 +29,6 @@ class Post extends React.Component {
               />
         }
 
-        
       </article>
     )
   }

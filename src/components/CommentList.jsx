@@ -6,7 +6,10 @@ const CommentList = ({currentComments}) => (
     <h5>Comments:</h5>
     {
       currentComments.map(comment => (
-        <Comment currentComment={comment}/>
+        <Comment 
+          currentComment={comment}
+          key={comment.id}  
+        />
       ))
     }
   </div>
