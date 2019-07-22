@@ -7,18 +7,13 @@ import PostsList from './components/PostList';
 class App extends React.Component {
   state = {
     posts: [],
-    // sortedPostsList: [],
+    // sortedPostsList: this.posts,
     users: [],
     comments: [],
     isLoaded: false,
     isLoading: false,
-    sortType: 'id',
-    sortDirection: 1, // 1 = 'asc', // 2 = desc
+    query: '',
   };
-
-  urlParams =
-    `?_sort=${this.state.sortType}
-    &_order=${this.state.sortDirection === 1 ? 'asc' : 'desc'}`;
 
   handleClick = () => {
     this.setState({
@@ -27,12 +22,25 @@ class App extends React.Component {
 
     this.loadData()
       .then(() => {
-        this.sortData(this.state.sortType);
         this.setState({
           isLoaded: true,
           isLoading: false,
         });
       });
+  };
+
+  handleChange = (event) => {
+    this.setState({
+      query: event.target.value,
+    });
+  };
+
+  search = (event) => {
+    event.preventDefault();
+    this.setState(previousState => ({
+      posts: previousState.posts
+        .filter(post => post.body.includes(previousState.query)),
+    }));
   };
 
   async loadData() {
@@ -48,7 +56,7 @@ class App extends React.Component {
           { comments: commentsData },
         );
       });
-    await getPosts(this.urlParams)
+    await getPosts()
       .then((postsData) => {
         this.setState(previousState => (
           {
@@ -68,10 +76,10 @@ class App extends React.Component {
       <main>
         {this.state.isLoaded ? (
           <div className="App">
-            <form>
+            <form onSubmit={this.search}>
               <input
                 type="text"
-                // onChange={handleChange}
+                onChange={this.handleChange}
                 value={this.state.query}
               />
               <button type="submit">find</button>
