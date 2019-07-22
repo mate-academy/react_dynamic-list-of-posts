@@ -5,7 +5,6 @@ import PostList from './components/PostList';
 class App extends React.Component {
   state = {
     postWidthUser: [],
-    isLoaded: false,
     isLoading: false,
     defaultPostWidthUser: [],
   };
@@ -21,17 +20,16 @@ class App extends React.Component {
     const comments = fetch('https://jsonplaceholder.typicode.com/comments')
       .then(responce => responce.json());
 
-    Promise.all([posts, users, comments]).then((lists) => {
-      const postWidthUser = lists[0].map(item => ({
+    Promise.all([posts, users, comments]).then(([posts, users, comments]) => {
+      const postWidthUser = posts.map(item => ({
         ...item,
-        user: lists[1].find(user => user.id === item.userId),
-        comments: lists[2].filter(comment => comment.postId === item.id),
+        user: users.find(user => user.id === item.userId),
+        comments: comments.filter(comment => comment.postId === item.id),
       }));
       this.setState({
         defaultPostWidthUser: postWidthUser,
         postWidthUser: [...postWidthUser],
         isLoading: false,
-        isLoaded: true,
       });
     });
   };
@@ -48,7 +46,7 @@ class App extends React.Component {
   };
 
   render() {
-    if (!this.state.isLoaded) {
+    if (this.state.defaultPostWidthUser <= 0) {
       return <button className="load-button" onClick={this.loadData}>
         {this.state.isLoading ? 'Loading...' : 'Load' }
       </button>;

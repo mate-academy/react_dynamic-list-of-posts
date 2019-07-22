@@ -7,7 +7,7 @@ import CommentList from './CommentList';
 const PostList = ({ items }) => (
   <ul>
     {items.map(item => (
-      <li className="comment-section">
+      <li key={item.id} className="comment-section">
         <div className="user-post">
           <Post postItem={item} />
           <User userItem={item} />
