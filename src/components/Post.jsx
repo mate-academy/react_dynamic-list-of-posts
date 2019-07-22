@@ -29,7 +29,9 @@ class Post extends React.Component {
         />
         {
           this.state.showComments
-            && <CommentList currentComments={this.props.currentPost.comments} />
+            && <CommentList 
+              currentComments={this.props.currentPost.comments} 
+            />
         }
 
       </article>
