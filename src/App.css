@@ -1,3 +1,43 @@
 .App {
   text-align: center;
 }
+
+.app {
+  text-align: left;
+  display: grid;
+  grid-template-columns: 800px;
+  justify-content: center;
+}
+
+.app_load-button {
+  display:block;
+  margin: 300px auto;
+  width: 130px;
+  height: 50px;
+  background-color: white;
+  border: 1px solid #a3a3a3;
+  border-radius: 5px;
+  box-shadow: 0 1px 5px #a3a3a3;
+  font-size: 20px;
+  font-family: 'Roboto', sans-serif;
+  opacity: 0.8;
+}
+
+.app_load-button:hover {
+  cursor: pointer;
+  width: 140px;
+  height: 60px;
+  position: relative;
+  font-size: 23px;
+}
+
+.app_search-input {
+  height: 40px;
+  width: 770px;
+  background-color: white;
+  border: 1px solid #a3a3a3;
+  border-radius: 5px;
+  box-shadow: 0 1px 5px #a3a3a3;
+  margin: 5px;
+  padding: 10px;
+}
