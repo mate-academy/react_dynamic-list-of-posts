@@ -1,7 +1,13 @@
 import React from 'react'
 
-const ButtomComments = ({showCommentsFunc}) => (
-  <button onClick={showCommentsFunc}>Show comments</button>
+const ButtomComments = ({showCommentsFunc, showComments}) => (
+  <button onClick={showCommentsFunc}>
+    {
+      showComments
+        ? 'Hide comments'
+        : 'Show comments'
+    }
+  </button>
 )
 
 export default ButtomComments

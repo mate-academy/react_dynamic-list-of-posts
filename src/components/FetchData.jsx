@@ -15,7 +15,5 @@ export default async () => {
     comments: comments.filter(comment => post.id === comment.postId),
   }));
 
-  console.log(postsWithUser);
-
   return postsWithUser;
 }
