@@ -9,31 +9,32 @@ class Post extends React.Component {
     showComments: false,
   }
 
-  showCommentsFunc = () => {
+  toggleShowComments = () => {
     this.setState(prevState => ({
-      showComments: prevState.showComments === true ? false : true,
+      showComments: !prevState.showComments,
     }))
   }
 
   render() {
+    const { currentPost } = this.props;
+    const { showComments } = this.state;
+
     return (
       <article className='article'>
-        <h2 className='article__title'>{this.props.currentPost.title}</h2>
-        <section className='article__body'>
-          {this.props.currentPost.body}
-        </section> <br />
-        <User user={this.props.currentPost.user}/>
+        <h2 className='article__title'>{currentPost.title}</h2>
+        <section className='article__body'>{currentPost.body}</section>
+        <br /> 
+        <User user={currentPost.user}/>
         <ButtonComments 
-            showCommentsFunc={this.showCommentsFunc}
-            showComments={this.state.showComments}
+            toggleShowComments={this.toggleShowComments}
+            showComments={showComments}
         />
         {
-          this.state.showComments
+          showComments
             && <CommentList 
-              currentComments={this.props.currentPost.comments} 
+              currentComments={currentPost.comments} 
             />
         }
-
       </article>
     )
   }

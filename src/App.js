@@ -33,25 +33,34 @@ class App extends React.Component {
     const {value} = e.target;
     this.setState(prevState => ({
       inputValue: value,
-      filteredPosts: prevState.currentPosts.filter(post=> post.title.includes(value) || post.body.includes(value))
+      filteredPosts: prevState.currentPosts
+      .filter(post => (post.title + post.body)
+      .includes(value))
       }))
   }
 
 
   render() {
+    const {isLoaded, 
+      currentPosts,
+      inputValue,
+      filteredPosts,
+      isLoading,
+      } = this.state;
+      
     return (
       <div className='App'>
         <h1 className='site__title'>Dynamic list of posts</h1>
         {
-          this.state.isLoaded
+          isLoaded
             ? <PostList 
-                currentPosts={this.state.currentPosts}
-                inputValue={this.state.inputValue}
+                currentPosts={currentPosts}
+                inputValue={inputValue}
                 searchByFilter={this.searchByFilter}
-                filteredPosts={this.state.filteredPosts}
+                filteredPosts={filteredPosts}
               />
             : <ButtonPosts 
-                isLoading={this.state.isLoading}
+                isLoading={isLoading}
                 getData={this.getData} 
               />
         }
