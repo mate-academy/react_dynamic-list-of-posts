@@ -1,0 +1,20 @@
+.comment__item {
+  border-bottom: 3px solid #b48865;
+}
+
+.comment__title {
+  margin: 12px 0;
+}
+
+.comment__author {
+  padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  color: #687a8a;
+  font-style: italic;
+}
+
+.comment__body {
+  margin: 6px 0;
+}

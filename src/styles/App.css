@@ -1,0 +1,58 @@
+p {
+  text-align: justify;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+input:focus,
+button:focus {
+  outline-offset: 0;
+}
+
+.App {
+  width: 600px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  text-align: center;
+}
+
+.button--load {
+  width: 200px;
+  height: 50px;
+  background: #ccac90;
+  text-transform: uppercase;
+  margin: 15px auto;
+  cursor: pointer;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+.post-list__searching {
+  margin: 10px auto;
+  border: 1px solid #91bfad;
+  padding: 6px;
+}
+
+.search-post__clear {
+  visibility: visible;
+  width: 30px;
+  height: 34px;
+  background: transparent;
+  position: relative;
+  left: -30px;
+  cursor: pointer;
+  border: none;
+}
+
+.post-list__filter {
+  width: 300px;
+  height: 30px;
+  font-size: 18px;
+}

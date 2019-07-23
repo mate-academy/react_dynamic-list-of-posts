@@ -1,0 +1,17 @@
+.post__comments {
+  background: white;
+  padding: 10px 0;
+  margin: 15px;
+}
+
+.post__comments:hover {
+  cursor: pointer;
+}
+
+.comments-hide {
+  display: none;
+}
+
+.comments-show {
+  display: block;
+}

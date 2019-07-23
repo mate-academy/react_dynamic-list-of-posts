@@ -1,0 +1,31 @@
+.post {
+  padding: 0 20px 20px;
+  margin-bottom: 15px;
+  border-left: 2px solid #91bfad;
+  border-right: 2px solid #91bfad;
+  background-color: rgba(136, 252, 214, 0.33);
+  border-bottom: 3px solid #687a8a;
+  border-top: 3px solid #687a8a;
+}
+
+.post__content {
+  border-bottom: 1px solid #0000002e;
+}
+
+.post__content--title {
+  text-align: center;
+  padding: 10px 0;
+}
+
+.post__content--body {
+  margin: 0 0 4px;
+}
+
+.user {
+  padding-top: 6px;
+  text-align: right;
+  font-size: 15px;
+  color: #687a8a;
+  font-style: italic;
+}
+
