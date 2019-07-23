@@ -11,32 +11,34 @@ class Post extends React.Component {
   handleCommentClick = () => {
     this.setState(previousState => (
       {
-        openComments: previousState.openComments === false,
+        openComments: !previousState.openComments,
       }
     ));
   };
 
   render() {
-    const { postData } = this.props;
+    const {
+      id, title, body, user, commentsList,
+    } = this.props.postData;
 
     return (
       <li
-        key={`post_${postData.id}`}
+        key={`post_${id}`}
         className="post_item"
       >
-        <h3>{postData.title}</h3>
-        <p>{postData.body}</p>
-        <User user={postData.user} />
+        <h3>{title}</h3>
+        <p>{body}</p>
+        <User user={user} />
         {
           this.state.openComments ? (
             <CommentList
-              comment={postData.commentsList}
+              comment={commentsList}
             />
           ) : ``
         }
         <div>
           <span>
-            {postData.commentsList.length}
+            {commentsList.length}
             {` comments : `}
           </span>
           <button
@@ -53,6 +55,7 @@ class Post extends React.Component {
 
 Post.propTypes = {
   postData: propTypes.shape({
+    id: propTypes.number,
     title: propTypes.string,
     body: propTypes.string,
     user: propTypes.shape({}),

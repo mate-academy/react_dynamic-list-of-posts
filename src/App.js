@@ -7,7 +7,6 @@ import PostsList from './components/PostList';
 class App extends React.Component {
   state = {
     posts: [],
-    // sortedPostsList: this.posts,
     users: [],
     comments: [],
     isLoaded: false,
@@ -58,16 +57,16 @@ class App extends React.Component {
       });
     await getPosts()
       .then((postsData) => {
-        this.setState(previousState => (
-          {
-            posts: postsData.map(post => ({
-              ...post,
-              user: previousState.users.find(user => user.id === post.userId),
-              commentsList: previousState.comments
-                .filter(comment => comment.postId === post.userId),
-            })),
-          }
-        ));
+        const result = postsData.map(post => ({
+          ...post,
+          user: this.state.users.find(user => user.id === post.userId),
+          commentsList: this.state.comments
+            .filter(comment => comment.postId === post.userId),
+        }));
+
+        this.setState({
+          posts: result,
+        });
       });
   }
 

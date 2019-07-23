@@ -2,14 +2,14 @@ import React from 'react';
 import propTypes from 'prop-types';
 import Post from './Post';
 
-const PostsList = props => (
+const PostsList = ({ posts }) => (
   <ul
     key="post_list"
     className="post_list"
   >
-    {props.posts.map(currentPost => (
+    {posts.map(currentPost => (
       <Post
-        key={`post_${currentPost.id}`}
+        key={currentPost.id}
         postData={currentPost}
       />
     ))}
