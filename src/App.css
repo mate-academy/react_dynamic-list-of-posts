@@ -1,3 +1,97 @@
 .App {
   text-align: center;
 }
+
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+h1 {
+  font-size: 30px;
+}
+
+.post {
+  width: 90%;
+  margin: 30px auto 0;
+}
+
+.postUp {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+  border: 2px solid #000;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.author {
+  font-size: 15px;
+}
+
+.postTitle {
+  margin: 2px 0;
+  border: 2px solid #000;
+  text-align: center;
+}
+
+.postBody {
+  margin: 2px 0;
+  border: 2px solid #000;
+  text-align: justify;
+}
+
+.postText {
+  padding: 10px;
+}
+
+.postFooter {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+  border: 2px solid #000;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.cmntsN {
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+  margin: 5px auto;
+  font-size: 22px;
+  color: green;
+}
+
+.cmntsAdd {
+  cursor: pointer;
+}
+
+.cmntsShow {
+  cursor: pointer;
+}
+
+.comment {
+  width: 70%;
+  margin: 8px 7% 0 23%;
+  padding: 0 10px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  text-align: justify;
+}
+
+.cmntAuthor {
+  display: flex;
+  justify-content: space-between;
+}
+
+form {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.formDiv {
+  margin: 10px 0;
+}
+
+
