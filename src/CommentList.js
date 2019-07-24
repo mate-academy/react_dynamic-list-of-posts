@@ -8,7 +8,10 @@ const CommentList = ({ commentsList }) => (
     <h3 className="comment__title">Comments</h3>
     {
       commentsList.map(item => (
-        <Comment comment={item} />
+        <Comment
+          key={item.id}
+          comment={item}
+        />
       ))
     }
   </div>

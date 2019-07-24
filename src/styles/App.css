@@ -10,7 +10,8 @@ h3 {
 
 input:focus,
 button:focus {
-  outline-offset: 0;
+  outline: none;
+  border: none;
 }
 
 .App {

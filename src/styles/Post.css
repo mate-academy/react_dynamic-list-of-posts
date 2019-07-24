@@ -1,11 +1,11 @@
 .post__comments {
   background: white;
   padding: 10px 0;
-  margin: 15px;
-}
-
-.post__comments:hover {
+  margin: 15px auto;
+  width: 100%;
+  font-size: 18px;
   cursor: pointer;
+  border: none;
 }
 
 .comments-hide {

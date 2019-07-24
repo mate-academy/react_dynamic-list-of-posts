@@ -1,20 +1,8 @@
 import React from 'react';
 import './styles/App.css';
-import { getPosts, getUsers, getComments } from './getData';
+import getData from './getData';
 import PostList from './PostList';
 import FilterPosts from './FilterPosts';
-
-const getData = async() => {
-  const posts = await getPosts();
-  const users = await getUsers();
-  const comments = await getComments();
-
-  return [...posts].map(post => ({
-    ...post,
-    user: users.find(user => user.id === post.userId),
-    commentsList: comments.filter(comment => comment.postId === post.id),
-  }));
-};
 
 class App extends React.Component {
   state = {
@@ -23,25 +11,25 @@ class App extends React.Component {
     filterStr: '',
     isLoaded: false,
     isLoading: false,
+    disabled: false,
   };
 
   onHandlerClick = async() => {
     this.setState({
       isLoading: true,
+      disabled: true,
     });
     setTimeout(() => {
-      this.setState({
-        isLoaded: true,
-      });
+      this.loadData();
     }, 2000);
-    this.loadData();
   };
 
   loadData = async() => {
     const posts = await getData();
 
-    this.state.posts = posts;
     this.setState({
+      isLoaded: true,
+      posts,
       visiblePosts: posts,
     });
   };
@@ -61,12 +49,10 @@ class App extends React.Component {
   };
 
   clearFilter = () => {
-    const { posts } = this.state;
-
-    this.setState({
+    this.setState(prevState => ({
       filterStr: '',
-      visiblePosts: posts,
-    });
+      visiblePosts: prevState.posts,
+    }));
   };
 
   render() {
@@ -75,6 +61,7 @@ class App extends React.Component {
       isLoading,
       filterStr,
       visiblePosts,
+      disabled,
     } = this.state;
 
     return (
@@ -85,6 +72,7 @@ class App extends React.Component {
               className="button--load"
               onClick={this.onHandlerClick}
               type="button"
+              disabled={disabled}
             >
               {isLoading ? 'Loading...' : 'Load'}
             </button>

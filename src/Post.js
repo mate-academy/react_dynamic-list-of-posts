@@ -30,21 +30,19 @@ class Post extends React.Component {
           key={user.id}
           user={user}
         />
-        {/* eslint-disable-next-line max-len */}
-        {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-static-element-interactions */}
-        <div
-          className="post__comments"
+        <button
+          type="button"
           onClick={() => this.changeShowComments()}
+          className="post__comments"
         >
           {showComments ? 'Hide comments'
             : `Show ${commentsList.length} comments`
           }
-        </div>
+        </button>
         <div
           className={showComments ? 'comments-show' : 'comments-hide'}
         >
           <CommentList
-            key={commentsList.id}
             commentsList={commentsList}
           />
         </div>
