@@ -4,10 +4,9 @@ import './App.css';
 import PostList from './components/PostList';
 
 const getDataList = async() => {
-  const users = await getData('https://jsonplaceholder.typicode.com/users');
-  const posts = await getData('https://jsonplaceholder.typicode.com/posts');
-  const comments = await
-  getData('https://jsonplaceholder.typicode.com/comments');
+  const users = await getData('users');
+  const posts = await getData('posts');
+  const comments = await getData('comments');
 
   return posts.map(post => ({
     ...post,

@@ -15,13 +15,13 @@ class CommentList extends React.Component {
 
   render() {
     const { currentComments } = this.props;
-    const result = currentComments.map(comment => (
+    const comments = currentComments.map(comment => (
       <Comment key={comment.id} currentComment={comment} />
     ));
 
     return (
       <div>
-        {this.state.show && result}
+        {this.state.show && comments}
 
         <button
           type="submit"
