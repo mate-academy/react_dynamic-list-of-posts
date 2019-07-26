@@ -2,7 +2,7 @@ import React from 'react';
 
 function User({ user }) {
     return (
-        <div className="user" key={user.id} >
+        <div className="user" >
             <h5 className="author">Author</h5>
             <ul className="user_info">
                 <li className="user_name">Author-name: <span>{user.name}</span></li>

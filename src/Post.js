@@ -1,6 +1,6 @@
 import React from 'react';
 import User from './User';
-import Comment from './Comment'
+import CommentList from './CommentList'
 
 class Post extends React.Component {
     constructor(props) {
@@ -23,9 +23,8 @@ class Post extends React.Component {
                         <h4 className="post_title">{post.title}</h4>
                         <p className="post_body">{post.body}</p>
                         <User user={post.user} />
-                        <button className="show_comments" onClick={() => this.openComments()}>Comments</button>
-                        {this.state.isOpenComments ? <Comment comments={post.comments} /> : null}
-                        
+                        <button className="show_comments" onClick={this.openComments}>Comments</button>
+                        {this.state.isOpenComments ? <CommentList comments={post.comments} /> : null}
                     </div>
                 )
             })

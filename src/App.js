@@ -6,7 +6,6 @@ function App() {
 
     return (
       <div className="App">
-        {alert('Верстку ще доробляю ))))')}
         <PostList />
       </div>
     );

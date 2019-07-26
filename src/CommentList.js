@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Comment({ comments }) {
+function CommentList({ comments }) {
     return (
        comments.map(comment => {
         return(
@@ -9,7 +9,7 @@ function Comment({ comments }) {
                <p className="comment_body">
                {comment.body}
                </p>
-               <mark className="comment_email">{comment.email}</mark>
+               <span className="comment_email">{comment.email}</span>
            </div>
         ) 
        })
@@ -17,4 +17,4 @@ function Comment({ comments }) {
     )
 }
 
-export default Comment;
+export default CommentList;
