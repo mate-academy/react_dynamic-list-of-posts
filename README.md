@@ -2,7 +2,7 @@
 
 ## Demo link
 
-Add link here: `[DEMO LINK](https://<your_account>.github.io/<repo_name>/)`
+Add link here: [DEMO LINK](https://elizavetateregeria.github.io/react_dynamic-list-of-posts/)
 
 
 ## Task 
