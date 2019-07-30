@@ -37,6 +37,7 @@ class App extends React.Component {
     const { isLoaded, isLoading, posts } = this.state;
     return (
       <div className="App">
+        <h1>Dynamic list of posts</h1>
         {isLoaded
           ? (
             <PostList
@@ -44,15 +45,13 @@ class App extends React.Component {
             />
           )
           : (
-            <>
-              <h1>Dynamic list of posts</h1>
-              <button
-                type="button"
-                onClick={this.handleClick}
-              >
-                {isLoading ? 'Loading...' : 'Load'}
-              </button>
-            </>
+            <button
+              type="button"
+              onClick={this.handleClick}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Loading...' : 'Load'}
+            </button>
           )
         }
       </div>

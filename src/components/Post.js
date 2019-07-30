@@ -23,20 +23,13 @@ class Post extends React.Component {
         <h2 className="post-title">{currentPost.title}</h2>
         <div className="post-text">{currentPost.body}</div>
         <User userData={currentPost.user} />
-        {isCommentsLoaded
-          ? (
-            <>
-              <CommentList comments={currentPost.comments} />
-              <button type="button" onClick={this.handleClick}>
-                Hide comments
-              </button>
-            </>
-          )
-          : (
-            <button type="button" onClick={this.handleClick}>
-              Load comments
-            </button>
-          )}
+        {
+          isCommentsLoaded
+          && <CommentList comments={currentPost.comments} />
+        }
+        <button type="button" onClick={this.handleClick}>
+          { isCommentsLoaded ? 'Hide comments' : 'Load comments' }
+        </button>
       </div>
     );
   }
