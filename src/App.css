@@ -1,3 +1,11 @@
 .App {
   text-align: center;
 }
+
+.comments {
+  display: none;
+}
+
+.comments.show {
+  display: block;
+}
