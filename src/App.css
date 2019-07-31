@@ -1,3 +1,17 @@
 .App {
   text-align: center;
 }
+
+.post_list {
+  width: 500px;
+  margin: auto;
+}
+
+.post_item {
+  border: 1px solid beige;
+  border-radius: 5px;
+  list-style: none;
+  text-align: left;
+  padding: 0 20px;
+  margin-bottom: 10px;
+}
