@@ -20,6 +20,7 @@ class Post extends React.Component {
     const {
       id, title, body, user, commentsList,
     } = this.props.postData;
+    const { openComments } = this.state;
 
     return (
       <li
@@ -30,7 +31,7 @@ class Post extends React.Component {
         <p>{body}</p>
         <User user={user} />
         {
-          this.state.openComments ? (
+          openComments ? (
             <CommentList
               comment={commentsList}
             />
@@ -45,7 +46,7 @@ class Post extends React.Component {
             type="button"
             onClick={this.handleCommentClick}
           >
-            {this.state.openComments ? 'close' : 'open'}
+            {openComments ? 'close' : 'open'}
           </button>
         </div>
       </li>

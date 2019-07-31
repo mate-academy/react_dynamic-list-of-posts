@@ -2,7 +2,7 @@ import React from 'react';
 import propTypes from 'prop-types';
 
 const CommentComponent = ({ commentData }) => (
-  <li key={commentData.id}>
+  <li>
     <h3>{commentData.name}</h3>
     <p>{commentData.body}</p>
     <p>{commentData.email}</p>
