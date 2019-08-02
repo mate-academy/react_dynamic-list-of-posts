@@ -1,3 +1,7 @@
+body {
+  background-color: rgb(224, 175, 14);
+}
+
 .App {
   display: block;
   width: 60%;
@@ -7,6 +11,12 @@
 .userBox {
   display: flex;
   align-items: baseline;
+}
+
+.inputFilter {
+  border: 0;
+  border-bottom: 1px solid rgb(40, 40, 80);
+  background: rgb(224, 175, 14);
 }
 
 .post {

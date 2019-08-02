@@ -1,30 +1,7 @@
 import React from 'react';
 import './App.css';
 import Post from './Post';
-
-const getUsers = async() => {
-  const url1 = 'https://jsonplaceholder.typicode.com/users';
-  const response = await fetch(url1);
-  const result = response.json();
-
-  return result;
-};
-
-const getPosts = async() => {
-  const url2 = 'https://jsonplaceholder.typicode.com/posts';
-  const response = await fetch(url2);
-  const result = response.json();
-
-  return result;
-};
-
-const getComments = async() => {
-  const url3 = 'https://jsonplaceholder.typicode.com/comments';
-  const response = await fetch(url3);
-  const result = response.json();
-
-  return result;
-};
+import { getUsers, getPosts, getComments } from './GetInfo';
 
 class App extends React.Component {
   state = {
@@ -38,6 +15,10 @@ class App extends React.Component {
   }
 
   loadData = async() => {
+    this.setState({
+      isLoading: true,
+    });
+
     const usersData = await getUsers();
     const postsData = await getPosts();
     const commentsData = await getComments();
@@ -47,34 +28,23 @@ class App extends React.Component {
       posts: postsData,
       visiblePosts: postsData,
       comments: commentsData,
-      isLoading: true,
+      isLoaded: true,
+      isLoading: false,
     });
-
-    setTimeout(() => {
-      this.setState({
-        isLoaded: true,
-        isLoading: false,
-      });
-    }, 2000);
   }
 
-  checkPostInfo = (info, inputValue) => {
-    if (info) {
-      return info.toLowerCase().includes(inputValue.toLowerCase());
-    }
-
-    return false;
-  }
+  checkPostInfo = (info, inputValue) => info
+    && info.toLowerCase().includes(inputValue.toLowerCase());
 
   inputFilter = (event) => {
-    const inputValue = event.target.value;
+    const { value } = event.target;
 
     this.setState(prevState => ({
-      inputText: inputValue,
+      inputText: value,
       visiblePosts: prevState.posts.filter((post) => {
         const filterFields = post.title + post.body;
 
-        return this.checkPostInfo(filterFields, inputValue);
+        return this.checkPostInfo(filterFields, value);
       }),
     }));
   }
@@ -84,7 +54,7 @@ class App extends React.Component {
       users, visiblePosts, comments, isLoaded, isLoading, inputText,
     } = this.state;
 
-    const Posts = visiblePosts.map(
+    const posts = visiblePosts.map(
       post => (
         <Post
           key={post.id}
@@ -108,7 +78,7 @@ class App extends React.Component {
                 onChange={this.inputFilter}
                 placeholder="Find your post"
               />
-              {Posts}
+              {posts}
             </>
           ) : (
             <button

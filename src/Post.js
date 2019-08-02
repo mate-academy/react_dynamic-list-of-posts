@@ -8,7 +8,7 @@ class Post extends React.Component {
     isActive: false,
   }
 
-  commentButton = (id) => {
+  showComments = (id) => {
     this.setState(prevState => ({
       isActive: !prevState.isActive,
     }));
@@ -22,7 +22,7 @@ class Post extends React.Component {
     const user = <User key={findUser.id} user={findUser} />;
 
     const filterCom = comments.filter(com => com.postId === post.id);
-    const Comments = filterCom.map(
+    const readyComments = filterCom.map(
       com => <Comment key={com.id} comment={com} isActive={isActive} />
     );
 
@@ -34,12 +34,12 @@ class Post extends React.Component {
         <button
           type="button"
           className="commentButton"
-          onClick={() => this.commentButton(post.id)}
+          onClick={() => this.showComments(post.id)}
         >
           Comments
         </button>
         <hr />
-        {Comments}
+        {readyComments}
       </div>
     );
   }
