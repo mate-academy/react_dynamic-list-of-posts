@@ -1,3 +1,84 @@
+body {
+  background-color: rgb(55, 18, 141);
+}
+
 .App {
+  display: block;
+  width: 60%;
+  margin: auto;
+}
+
+.title {
+  color: rgb(155, 185, 235);
+}
+
+.userBox {
+  display: flex;
+  align-items: baseline;
+}
+
+.inputFilter {
+  border: 0;
+  border-bottom: 1px solid rgb(40, 40, 80);
+  background: rgb(155, 185, 235);
+}
+
+.post {
+  margin-bottom: 50px;
+  padding: 20px;
+  background-color: rgb(155, 185, 235);
+  border: 2px solid rgb(40, 40, 80);
+}
+
+.title {
   text-align: center;
+}
+
+.comment {
+  padding: 10px;
+  margin-top: 5px;
+  background-color: #e4ca85;
+  border: 1px dotted rgb(134, 116, 67);
+  border-radius: 20px;
+}
+
+.inputFilter {
+  margin-bottom: 10px;
+  width: 930px;
+}
+
+.loadButton {
+  border: 1px solid rgb( 33, 126, 74 );
+  border-radius: 4px;
+  color: #fff;
+  background-color: rgb( 43, 153, 91 );
+  display: block;
+  width: 100px;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  padding: 8px 16px;
+  margin: 20px auto;
+  text-decoration: none;
+  transition: background-color 0.1s linear;
+}
+
+.loadButton:hover {
+  background-color: rgb( 75, 183, 141 );
+}
+
+.commentButton {
+  background-color: rgb(255, 255, 255);
+  border: 1px solid rgb(204, 204, 204);
+  border-radius: 4px;
+  color: rgb(85, 85, 85);
+  display: block;
+  width: 120px;
+  font-size: 14px;
+  text-align: center;
+  height: 40px;
+  line-height: 20px;
+  margin-bottom: 10px;
+  padding: 4px 6px;
+  text-decoration: none;
 }
