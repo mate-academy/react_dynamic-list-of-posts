@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import Post from './Post';
-import { getUsers, getPosts, getComments } from './GetInfo';
+import GetInfo from './GetInfo';
 
 class App extends React.Component {
   state = {
@@ -19,9 +19,13 @@ class App extends React.Component {
       isLoading: true,
     });
 
-    const usersData = await getUsers();
-    const postsData = await getPosts();
-    const commentsData = await getComments();
+    const usersImport = 'https://jsonplaceholder.typicode.com/users';
+    const postsImport = 'https://jsonplaceholder.typicode.com/posts';
+    const commentsImport = 'https://jsonplaceholder.typicode.com/comments';
+
+    const usersData = await GetInfo(usersImport);
+    const postsData = await GetInfo(postsImport);
+    const commentsData = await GetInfo(commentsImport);
 
     this.setState({
       users: usersData,

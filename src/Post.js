@@ -8,7 +8,7 @@ class Post extends React.Component {
     isActive: false,
   }
 
-  showComments = (id) => {
+  toggleComments = (id) => {
     this.setState(prevState => ({
       isActive: !prevState.isActive,
     }));
@@ -34,7 +34,7 @@ class Post extends React.Component {
         <button
           type="button"
           className="commentButton"
-          onClick={() => this.showComments(post.id)}
+          onClick={() => this.toggleComments(post.id)}
         >
           Comments
         </button>
