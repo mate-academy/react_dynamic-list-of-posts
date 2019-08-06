@@ -22,7 +22,7 @@ class Post extends React.Component {
     const user = <User key={findUser.id} user={findUser} />;
 
     const filterCom = comments.filter(com => com.postId === post.id);
-    const readyComments = filterCom.map(
+    const preparedComments = filterCom.map(
       com => <Comment key={com.id} comment={com} isActive={isActive} />
     );
 
@@ -39,7 +39,7 @@ class Post extends React.Component {
           Comments
         </button>
         <hr />
-        {readyComments}
+        {preparedComments}
       </div>
     );
   }
