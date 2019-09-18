@@ -1,0 +1,19 @@
+.comment {
+  content: "";
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-top: 1px solid #00000038;
+  z-index: -1;
+}
+
+.commentlist h3,
+.comment {
+  font-weight: 300;
+  font-family: "Montserrat", sans-serif;
+  letter-spacing: 2px;
+}
+
+.highlitedText {
+  font-weight: bold;
+}
