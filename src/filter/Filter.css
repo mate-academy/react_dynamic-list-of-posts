@@ -1,5 +1,5 @@
 .filter {
-  margin: 40px 400px 40px 500px;
+  margin: 40px 400px 40px 300px;
   color: white;
   position: relative;
 }
@@ -12,7 +12,7 @@
 	font-size: 16px;
   padding: 15px;
   margin-bottom: 20px;
-  width: 600px;
+  width: 810px;
   border: none;
 }
 
@@ -43,7 +43,7 @@
 }
 
 .show-all-button {
-  margin-left: 150px;
+  margin-left: 420px;
   transform: translateX(-50%);
   font-size: 20px;
   width: 170px;
