@@ -1,3 +1,14 @@
-.App {
+.container {
   text-align: center;
+}
+
+.no-todos-list {
+  color: red;
+  font-size: 20px;
+}
+
+.loading {
+  text-align: center;
+  color: goldenrod;
+  font-size: 20px;
 }

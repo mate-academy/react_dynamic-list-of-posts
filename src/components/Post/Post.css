@@ -1,0 +1,7 @@
+.post-info {
+  justify-self: center;
+}
+
+.ui.card:first-child {
+  margin-top: 1em;
+}
