@@ -1,0 +1,31 @@
+.comment__comm {
+  margin: 0;
+  color: #231e28;
+  padding: 30px 30px 30px 60px;
+  border-left: 8px solid #cbdde7;
+  position: relative;
+  background: #faf8eb;
+  font-family: "Lato", sans-serif;
+  font-weight: 300;
+}
+
+.comment__comm:before {
+  content: "\201C";
+  font-family: Arial;
+  color: #cbdde7;
+  font-size: 70px;
+  position: absolute;
+  left: 15px;
+  top: 5px;
+}
+
+.border {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.comment__text-comm {
+  font-style: italic;
+  font-size: 15px;
+  margin-top: 0;
+}
