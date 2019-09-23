@@ -1,0 +1,9 @@
+.ui.statistics .statistic>.label {
+  color: white;
+}
+
+.ui.icon.input {
+  margin-top: 50px;
+  width: 90%;
+  height: 50px;
+}

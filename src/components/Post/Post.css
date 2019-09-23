@@ -1,0 +1,11 @@
+.header {
+  text-transform: uppercase;
+}
+
+.card {
+  min-width: 90%;
+}
+
+.ui.raised.link.card {
+  padding-bottom: 30px;
+}
