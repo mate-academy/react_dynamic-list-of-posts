@@ -1,0 +1,10 @@
+.comment__name {
+  border-bottom: 1.5px solid rgba(10, 158, 163, 0.651);
+  width: 80%;
+  margin: 0 auto;
+  padding-top: 10px;
+}
+
+.comment__body {
+  font-style: italic;
+}

@@ -1,0 +1,9 @@
+.post-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto;
+  gap: 30px;
+  text-align: center;
+  background-color: aliceblue;
+  padding-top: 15px;
+}
