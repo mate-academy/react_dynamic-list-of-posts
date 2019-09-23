@@ -1,0 +1,6 @@
+.comment-list {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(200px, 1fr));
+  grid-gap: 35px;
+  padding: 20px 30px 20px;
+}
