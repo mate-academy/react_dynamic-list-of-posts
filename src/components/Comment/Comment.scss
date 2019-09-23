@@ -1,0 +1,44 @@
+.comment {
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  &__text {
+    margin: 0;
+  }
+
+  &__name {
+    padding: 0 15% 1em;
+    text: {
+      align: center;
+      transform: capitalize;
+    }
+    font: {
+      size: 1.1em;
+      weight: 700;
+    }
+  }
+
+  &__body {
+    text-align: left;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+
+  &__author {
+    margin-top: 1em;
+    color: dodgerblue;
+
+    .user {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+  }
+}
