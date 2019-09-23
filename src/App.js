@@ -31,12 +31,12 @@ class App extends React.Component {
   };
 
   searchPost = (event) => {
-    this.setState({
-      posts: this.state.copyPosts.filter(
+    this.setState(prevState => ({
+      posts: prevState.copyPosts.filter(
         post => post.title.toLowerCase().includes(event.target.value.toLowerCase())
           || post.body.toLowerCase().includes(event.target.value.toLowerCase())
       ),
-    });
+    }));
   };
 
   render() {
