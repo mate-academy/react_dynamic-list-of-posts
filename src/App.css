@@ -1,3 +1,7 @@
 .App {
   text-align: center;
 }
+
+.search-input {
+  margin-bottom: 30px;
+}
