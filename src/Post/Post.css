@@ -1,0 +1,10 @@
+.post {
+  border-radius: 20px;
+  box-shadow: 0 0 8px 8px #cdcdcd;
+  padding: 50px;
+  margin-bottom: 50px;
+}
+
+.post__title {
+  margin-bottom: 50px;
+}
