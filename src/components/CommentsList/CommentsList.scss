@@ -1,0 +1,10 @@
+.comments {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+}
+
+@media screen and (max-width: 1500px) {
+  .comments {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

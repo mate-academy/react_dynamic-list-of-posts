@@ -1,0 +1,11 @@
+.post-list {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 25px;
+}
+
+@media screen and (max-width: 1380px) {
+  .post-list {
+    grid-template-columns: auto;
+  }
+}
