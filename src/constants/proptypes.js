@@ -4,6 +4,10 @@ export const ButtonProps = {
   text: PropTypes.string.isRequired,
 };
 
+export const SearchPanelProps = {
+  onSearchChange: PropTypes.func.isRequired,
+};
+
 const userShape = PropTypes.shape({
   name: PropTypes.string,
   email: PropTypes.string,

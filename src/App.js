@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Button from './components/Button/Button';
+import SearchPanel from './components/SearchPanel/SearchPanel';
 import PostList from './components/PostList/PostList';
 
 import './App.css';
@@ -14,6 +15,7 @@ class App extends Component {
     users: [],
     comments: [],
     isLoading: false,
+    term: '',
   };
 
   handleShow = () => {
@@ -37,6 +39,21 @@ class App extends Component {
       }));
   };
 
+  search = (items, term) => {
+    if (term.length === 0) {
+      return items;
+    }
+
+    return items.filter(item => ((item.title
+      .toLowerCase().indexOf(term.toLowerCase()) > -1))
+      || (item.body
+        .toLowerCase().indexOf(term.toLowerCase()) > -1));
+  }
+
+  onSearchChange = (term) => {
+    this.setState({ term });
+  };
+
   getPostsWithComments = (postsList, commentsList, usersList) => (
     postsList
       .map(post => ({
@@ -51,10 +68,12 @@ class App extends Component {
       posts,
       comments,
       users,
+      term,
       isLoading,
     } = this.state;
 
     const preparedPosts = this.getPostsWithComments(posts, comments, users);
+    const visiblePosts = this.search(preparedPosts, term);
 
     return (
       <div className="App">
@@ -75,7 +94,14 @@ class App extends Component {
               </div>
             </>
           )
-          : <PostList posts={preparedPosts} />
+          : (
+            <>
+              <SearchPanel
+                onSearchChange={this.onSearchChange}
+              />
+              <PostList posts={visiblePosts} />
+            </>
+          )
         }
       </div>
     );
