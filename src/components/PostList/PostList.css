@@ -1,0 +1,38 @@
+body {
+  margin: 0 20px;
+}
+
+.post-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+  padding: 0;
+}
+
+li.post-list__item.ui.card {
+  width: 100%;
+  margin: 0;
+}
+
+li.post-list__item.ui.card > .card-item {
+  height: 210px;
+  max-height: 210px;
+}
+
+.content .meta.meta__name {
+  text-align: left;
+}
+
+.content .meta.meta__email {
+  text-align: left;
+}
+
+.post-list__item .content .meta.meta__address {
+  display: grid;
+  grid-template-columns: 130px 130px;
+  gap: 20px;
+}
+
+.content .meta.meta__address p {
+  text-align: left;
+}
