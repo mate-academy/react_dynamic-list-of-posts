@@ -38,7 +38,10 @@ class App extends Component {
           }));
 
         this.setState({
-          preparedPosts,
+          posts: preparedPosts,
+          sortedPosts: [...preparedPosts].sort((a, b) => (
+            a.title.charCodeAt(0) - b.title.charCodeAt(0)
+          )),
           isLoaded: true,
         });
       });
@@ -52,7 +55,8 @@ class App extends Component {
 
   render() {
     const {
-      preparedPosts,
+      posts,
+      sortedPosts,
       isLoading,
       isLoaded,
       isSorted,
@@ -67,10 +71,8 @@ class App extends Component {
               <button type="button" onClick={this.sort}>Sort</button>
               <PostList
                 posts={isSorted
-                  ? [...preparedPosts].sort((a, b) => (
-                    a.title.charCodeAt(0) - b.title.charCodeAt(0)
-                  ))
-                  : preparedPosts}
+                  ? sortedPosts
+                  : posts}
               />
             </>
           ))
