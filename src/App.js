@@ -7,6 +7,7 @@ const BASE_URL = 'https://jsonplaceholder.typicode.com';
 class App extends React.Component {
   state = {
     posts: [],
+    originalPosts: [],
     isLoaded: false,
     isLoading: false,
     hasError: false,
@@ -40,6 +41,7 @@ class App extends React.Component {
 
       this.setState({
         posts: postsWithComments,
+        originalPosts: postsWithComments,
         isLoaded: true,
       });
     } catch (error) {
@@ -50,6 +52,17 @@ class App extends React.Component {
 
     this.setState({
       isLoading: false,
+    });
+  };
+
+  handleSearchChange = (event) => {
+    const { originalPosts } = this.state;
+    const { value } = event.target;
+
+    this.setState({
+      posts: [...originalPosts].filter(post => (
+        post.title.includes(value) || post.body.includes(value)
+      )),
     });
   };
 
@@ -65,7 +78,16 @@ class App extends React.Component {
       <>
         <h1 className="heading">Dynamic list of todos</h1>
         {isLoaded ? (
-          <PostList posts={posts} />
+          <>
+            <input
+              type="text"
+              name="search-input"
+              placeholder="Search..."
+              className="search"
+              onChange={this.handleSearchChange}
+            />
+            <PostList posts={posts} />
+          </>
         ) : (
           <>
             {hasError && (
