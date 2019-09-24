@@ -1,3 +1,79 @@
 .App {
   text-align: center;
 }
+
+h1 {
+  background: rgb(149,149,149);
+    background: -moz-linear-gradient(-45deg, rgba(149,149,149,1) 0%, rgba(13,13,13,1) 46%, rgba(1,1,1,1) 50%, rgba(10,10,10,1) 53%, rgba(78,78,78,1) 76%, rgba(56,56,56,1) 87%, rgba(27,27,27,1) 100%);
+    background: -webkit-linear-gradient(-45deg, rgba(149,149,149,1) 0%,rgba(13,13,13,1) 46%,rgba(1,1,1,1) 50%,rgba(10,10,10,1) 53%,rgba(78,78,78,1) 76%,rgba(56,56,56,1) 87%,rgba(27,27,27,1) 100%);
+    background: linear-gradient(135deg, rgba(149,149,149,1) 0%,rgba(13,13,13,1) 46%,rgba(1,1,1,1) 50%,rgba(10,10,10,1) 53%,rgba(78,78,78,1) 76%,rgba(56,56,56,1) 87%,rgba(27,27,27,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#959595', endColorstr='#1b1b1b',GradientType=1 );
+    color: white;
+    font-size: 5em;
+    font-family: cursive;
+    margin: 0 0 10px;
+}
+
+.button-start {
+  font-size: 41px;
+  width: 200px;
+  height: 75px;
+  border: 2px solid #f1deff;
+  border-radius: 10px;
+  color: #ffffff;
+  background: rgb(38, 38, 40);
+  margin: auto;
+  transform: scaleY(1);
+  position: relative;
+  top: -75px;
+  transition: opacity 0.5s, transform 0.2s;
+}
+
+.button-start:focus {
+  transform: scaleY(-1);
+  opacity: 0;
+}
+
+.button-back {
+  font-size: 34px;
+  padding-top: 15px;
+  box-sizing: border-box;
+  top: 75px;
+  transform: scaleY(180deg);
+  width: 200px;
+  border-radius: 10px;
+  color:black;
+  background: rgb(255, 255, 255);
+  height: 75px;
+  transform: scaleY(1);
+  border: 2px solid rgb(36, 36, 36);
+  transition: opacity 1.5s, transform 0.2s, background 0.3s, border 0.3s, color 0.3s;
+  margin: auto;
+}
+
+.down {
+  opacity: 0;
+}
+
+.sort {
+  /* left: -1px; */
+  width: 150px;
+  font-size: 15px;
+  border: none;
+  padding: 12px;
+  background: #c8c8c8;
+  color: black;
+  border: 1px solid black;
+  border-radius: 7px;
+  transition: transform 0.2s, opacity 0.5s;
+
+}
+
+.sort-left{
+  margin: 1px 20px 0 -200px;
+}
+
+.sort:active {
+  outline: none;
+  transform: scale(0.96);
+}

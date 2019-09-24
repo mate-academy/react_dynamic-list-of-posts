@@ -1,0 +1,29 @@
+.post {
+  border: 1px solid rgb(233, 233, 233);
+  width: 48%;
+  min-width: 700px;
+  margin: auto;
+  margin-top: 40px;
+  background: #f7f7f7;
+  border-radius: 31px;
+  transition: background 0.3s,
+    border 0.3s;
+}
+.post:hover {
+  /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#ffffff+0,d3d3d3+50,f4f4f4+50,ffffff+100 */
+  background: rgb(255,255,255); /* Old browsers */
+  background: -moz-linear-gradient(-45deg,  rgba(255,255,255,1) 0%, rgba(211,211,211,1) 50%, rgba(244,244,244,1) 50%, rgba(255,255,255,1) 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(-45deg,  rgba(255,255,255,1) 0%,rgba(211,211,211,1) 50%,rgba(244,244,244,1) 50%,rgba(255,255,255,1) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(135deg,  rgba(255,255,255,1) 0%,rgba(211,211,211,1) 50%,rgba(244,244,244,1) 50%,rgba(255,255,255,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+  border: 1px solid rgb(218, 218, 218);
+}
+.post__body {
+  width: 80%;
+  margin: auto;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgb(148, 148, 148);
+}
+.post__title {
+  font-family: cursive;
+}
