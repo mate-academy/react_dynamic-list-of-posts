@@ -1,3 +1,33 @@
-.App {
+.heading {
   text-align: center;
+  font-size: 36px;
+}
+
+.load-button {
+  display: block;
+  margin: 50px auto;
+  background-color: #fff;
+  border-radius: 30px;
+  border: none;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.7);
+  outline: none;
+  cursor: pointer;
+  width: 200px;
+  height: 60px;
+  font-size: 18px;
+}
+
+.error-title {
+  text-align: center;
+}
+
+.search {
+  display: block;
+  width: 800px;
+  height: 40px;
+  margin: 20px auto;
+  padding: 0 20px;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.7);
+  border-radius: 20px;
+  border: none;
 }

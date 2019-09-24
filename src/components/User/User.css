@@ -1,0 +1,22 @@
+.user-name {
+  display: block;
+  text-decoration: none;
+  color: #000;
+}
+
+.user-icon {
+  height: 30px;
+  width: 30px;
+}
+
+.user-email {
+  padding: 0 30px;
+  opacity: 0.5;
+  font-style: italic;
+  margin: 5px 0;
+}
+
+.user-address {
+  padding: 0 30px;
+  margin: 0;
+}

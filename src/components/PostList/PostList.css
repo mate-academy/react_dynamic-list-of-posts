@@ -1,0 +1,11 @@
+.header {
+  font-size: 54px;
+  text-align: center;
+  padding: 0 10px;
+}
+
+.container {
+  margin: 0 auto;
+  padding: 20px;
+  max-width: 1000px;
+}
