@@ -54,8 +54,6 @@ class App extends Component {
       isLoading,
     } = this.state;
 
-    // const prepPosts = this.preparedPosts(posts, comments, users);
-
     const preparedPosts = this.getPostsWithComments(posts, comments, users);
 
     return (
