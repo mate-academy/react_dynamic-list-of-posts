@@ -6,12 +6,12 @@ import User from '../User/User';
 import CommentList from '../CommentList/CommentList';
 
 const Post = ({
-  key, post, user, comments,
+  post, user, comments,
 }) => {
   const { title, body } = post;
 
   return (
-    <div className="post" key={key}>
+    <div className="post">
       <div className="post__author">
         <User user={user} />
       </div>

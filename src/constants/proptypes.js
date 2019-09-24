@@ -17,7 +17,6 @@ const CommentShape = {
 };
 
 export const CommentProps = {
-  key: PropTypes.string.isRequired,
   comment: PropTypes.shape(CommentShape).isRequired,
 };
 
@@ -31,7 +30,6 @@ const PostShape = {
 };
 
 export const PostProps = {
-  key: PropTypes.string.isRequired,
   post: PropTypes.shape(PostShape).isRequired,
   user: PropTypes.objectOf(UserShape),
   comments: PropTypes.arrayOf(PropTypes.objectOf(CommentShape)).isRequired,

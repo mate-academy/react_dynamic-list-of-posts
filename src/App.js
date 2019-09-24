@@ -29,8 +29,13 @@ export default class App extends Component {
       const users = await fetchUsers.json();
       const comments = await fecthComments.json();
 
+      this.postsAll = [...posts];
+
       this.setState({
-        posts, users, comments, isLoaded: true,
+        posts,
+        users,
+        comments,
+        isLoaded: true,
       });
     } catch (error) {
       this.setState({
@@ -38,6 +43,18 @@ export default class App extends Component {
       });
     }
   }
+
+  handleSearch = (e) => {
+    const pattern = e.target.value;
+
+    this.setState({
+      posts: this.postsAll.filter((post) => {
+        const regex = new RegExp(`${pattern}`, 'i');
+
+        return regex.test(post.title);
+      }),
+    });
+  };
 
   showLoaderButton = () => (this.state.isLoading
     ? (
@@ -72,7 +89,36 @@ export default class App extends Component {
         <h2>{errorMessage}</h2>
 
         {isLoaded
-          ? <PostList posts={posts} users={users} comments={comments} />
+          ? (
+            <>
+              <section className="search-section">
+                <div className="container">
+                  <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                      <span
+                        className="input-group-text"
+                        id="basic-addon1"
+                        role="img"
+                        aria-label=""
+                      >
+                        🔎
+                      </span>
+                    </div>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Search...(case ignore)"
+                      aria-label="Username"
+                      aria-describedby="basic-addon1"
+                      onChange={this.handleSearch}
+                    />
+                  </div>
+                </div>
+              </section>
+
+              <PostList posts={posts} users={users} comments={comments} />
+            </>
+          )
           : this.showLoaderButton()}
       </div>
     );

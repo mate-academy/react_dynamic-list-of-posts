@@ -8,7 +8,7 @@ const Comment = ({ key, comment }) => {
   const { name, body, email } = comment;
 
   return (
-    <div className="comment" key={key}>
+    <div className="comment">
       <div>
         <p className="comment__text comment__name">{name}</p>
         <p className="comment__text comment__body">{body}</p>
