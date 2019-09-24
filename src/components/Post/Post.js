@@ -10,8 +10,6 @@ const PostItem = ({ post }) => {
     title, body, user, comments,
   } = post;
 
-  console.log('post: ', post);
-
   const { name, email, address } = user;
 
   return (

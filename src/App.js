@@ -37,16 +37,12 @@ class App extends Component {
       }));
   };
 
-  usersMap = users => (
-    users.reduce((acc, item) => ({ ...acc, [item.id]: item }), {})
-  )
-
-  getPostsWithComments = (postsList, commentsList) => (
+  getPostsWithComments = (postsList, commentsList, usersList) => (
     postsList
       .map(post => ({
         ...post,
         comments: commentsList.filter(comment => comment.postId === post.id),
-        user: this.usersMap[post.userId],
+        user: usersList.find(user => user.id === post.userId),
       }))
   );
 
@@ -58,13 +54,9 @@ class App extends Component {
       isLoading,
     } = this.state;
 
-    console.log('this.state: ', this.state);
+    // const prepPosts = this.preparedPosts(posts, comments, users);
 
     const preparedPosts = this.getPostsWithComments(posts, comments, users);
-
-    console.log('users: ', users);
-
-    // console.log('preparedPosts: ', preparedPosts);
 
     return (
       <div className="App">
@@ -87,7 +79,6 @@ class App extends Component {
           )
           : <PostList posts={preparedPosts} />
         }
-        {/* <PostList posts={preparedPosts} /> */}
       </div>
     );
   }
