@@ -31,21 +31,15 @@ class App extends React.Component {
     this.setState({
       isLoading: true,
     });
-    posts().then(data => this.setState({
-      posts: data,
-      originPosts: data,
-    }));
-    comments().then(data => this.setState({
-      comments: data,
-    }));
-    users().then(data => this.setState({
-      users: data,
-    }));
 
     Promise.all([posts(), comments(), users()])
-      .then(() => {
+      .then(([posts, comments, users]) => {
         this.setState({
           isLoaded: true,
+          users,
+          comments,
+          posts,
+          originPosts: posts,
         });
       })
       .finally(() => {
