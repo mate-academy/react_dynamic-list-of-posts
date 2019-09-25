@@ -1,13 +1,19 @@
 import PropTypes from 'prop-types';
 
+const UserAdressShape = {
+  city: PropTypes.string,
+  street: PropTypes.string,
+  zipcode: PropTypes.string,
+};
+
 const UserShape = {
   name: PropTypes.string,
   email: PropTypes.string,
-  address: PropTypes.string,
+  address: PropTypes.shape(UserAdressShape),
 };
 
 export const UserProps = {
-  user: PropTypes.objectOf(UserShape),
+  user: PropTypes.shape(UserShape),
 };
 
 const CommentShape = {
@@ -21,7 +27,7 @@ export const CommentProps = {
 };
 
 export const CommentListProps = {
-  comments: PropTypes.arrayOf(PropTypes.objectOf(CommentShape)).isRequired,
+  comments: PropTypes.arrayOf(PropTypes.shape(CommentShape)).isRequired,
 };
 
 const PostShape = {
@@ -31,12 +37,12 @@ const PostShape = {
 
 export const PostProps = {
   post: PropTypes.shape(PostShape).isRequired,
-  user: PropTypes.objectOf(UserShape),
-  comments: PropTypes.arrayOf(PropTypes.objectOf(CommentShape)).isRequired,
+  user: PropTypes.shape(UserShape),
+  comments: PropTypes.arrayOf(PropTypes.shape(CommentShape)).isRequired,
 };
 
 export const PostListProps = {
-  posts: PropTypes.arrayOf(PropTypes.objectOf(PostShape)).isRequired,
-  users: PropTypes.arrayOf(PropTypes.objectOf(UserShape)).isRequired,
-  comments: PropTypes.arrayOf(PropTypes.objectOf(CommentShape)).isRequired,
+  posts: PropTypes.arrayOf(PropTypes.shape(PostShape)).isRequired,
+  users: PropTypes.arrayOf(PropTypes.shape(UserShape)).isRequired,
+  comments: PropTypes.arrayOf(PropTypes.shape(CommentShape)).isRequired,
 };

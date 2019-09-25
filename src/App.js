@@ -44,12 +44,10 @@ export default class App extends Component {
     }
   }
 
-  handleSearch = (e) => {
-    const pattern = e.target.value;
-
+  handleSearch = ({ value }) => {
     this.setState({
       posts: this.postsAll.filter((post) => {
-        const regex = new RegExp(`${pattern}`, 'i');
+        const regex = new RegExp(`${value}`, 'i');
 
         return regex.test(post.title);
       }),
@@ -110,7 +108,7 @@ export default class App extends Component {
                       placeholder="Search...(case ignore)"
                       aria-label="Username"
                       aria-describedby="basic-addon1"
-                      onChange={this.handleSearch}
+                      onChange={e => this.handleSearch(e.target)}
                     />
                   </div>
                 </div>

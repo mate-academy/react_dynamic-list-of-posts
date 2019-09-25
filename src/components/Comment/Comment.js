@@ -4,7 +4,7 @@ import { CommentProps } from '../../constants/proptypes';
 
 import User from '../User/User';
 
-const Comment = ({ key, comment }) => {
+const Comment = ({ comment }) => {
   const { name, body, email } = comment;
 
   return (
