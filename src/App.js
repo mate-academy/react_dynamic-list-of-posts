@@ -3,6 +3,7 @@ import './App.css';
 import PostList from './components/PostList/PostList';
 import getPostsWithUsers from './getPostsWithUsers';
 import getPostWithComments from './getPostWithComments';
+import Search from './components/Search/Search';
 
 const API_URL = 'https://jsonplaceholder.typicode.com/';
 
@@ -14,6 +15,7 @@ const getData = dataName => (
 class App extends Component {
   state = {
     postList: [],
+    filteredList: [],
     isLoading: false,
     isLoaded: false,
     isError: false,
@@ -35,6 +37,9 @@ class App extends Component {
           postList: getPostWithComments(
             getPostsWithUsers(posts, users), comments
           ),
+          filteredList: getPostWithComments(
+            getPostsWithUsers(posts, users), comments
+          ),
           isLoaded: true,
           isError: false,
           isLoading: false,
@@ -47,11 +52,27 @@ class App extends Component {
           isLoading: false,
         });
       });
+  };
+
+  filterList = (searchStr) => {
+    this.setState(prevState => ({
+      filteredList: searchStr
+        ? [...prevState.postList]
+          .filter(post => (
+            post.title.indexOf(searchStr) > 0
+            || post.body.indexOf(searchStr) > 0
+          ))
+        : [...prevState.postList],
+    }));
+  }
+
+  resetList = () => {
+    this.setState(prevState => ({ filteredList: [...prevState.postList] }));
   }
 
   render() {
     const {
-      postList,
+      filteredList,
       isLoaded,
       isLoading,
       isError,
@@ -79,9 +100,14 @@ class App extends Component {
     return (
       <div className="App">
         <header className="header">
-          <h1>Static list of posts</h1>
+          <h1>Dynamic list of posts</h1>
+          <h2>{`Posts: ${filteredList.length}`}</h2>
+          <Search
+            filterList={this.filterList}
+            resetList={this.resetList}
+          />
         </header>
-        <PostList posts={postList} />
+        <PostList posts={filteredList} />
       </div>
     );
   }
