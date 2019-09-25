@@ -36,7 +36,8 @@ class App extends Component {
 
       const posts = await postsResponse.json();
       const users = await usersResponse.json();
-      const comments = await usersResponse.json(); // to json convert
+      const comments = await commentsResponse.json(); // to json convert
+
 
       this.setState({
         posts, users, comments, isLoaded: true,
@@ -51,7 +52,6 @@ class App extends Component {
   };
 
   render() {
-    const textOnButton = (hasError ? 'Try Again' : 'Load');
     const {
       posts,
       users,
@@ -60,6 +60,7 @@ class App extends Component {
       isLoading,
       hasError,
     } = this.state; // her par-rs;
+    const textOnButton = (hasError ? 'Try Again' : 'Load');
 
     return (
       <div className="App">
