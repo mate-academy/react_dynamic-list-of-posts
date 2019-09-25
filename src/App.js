@@ -14,6 +14,8 @@ function getFullPosts(posts, comments, usersMapApi) {
 class App extends React.Component {
   state = {
     preparedPosts: [],
+    filteredPosts: [],
+    templateForFilter: '',
     isLoading: false,
     hasError: false,
     isInitialized: false,
@@ -45,6 +47,7 @@ class App extends React.Component {
 
         this.setState({
           preparedPosts,
+          filteredPosts: [...preparedPosts],
           isLoading: false,
         });
       })
@@ -56,9 +59,35 @@ class App extends React.Component {
       });
   }
 
+  addTextForFilter = ({ target: { value } }) => {
+    this.setState({
+      templateForFilter: value,
+    });
+  }
+
+  sortPosts = (event) => {
+    event.preventDefault();
+
+    const { templateForFilter } = this.state;
+
+    this.setState(({ filteredPosts }) => ({
+      filteredPosts: filteredPosts
+        .filter(post => post.title.includes(templateForFilter)
+        || post.body.includes(templateForFilter)),
+      templateForFilter: '',
+    }));
+  }
+
+  resetFilter = () => {
+    this.setState(({ preparedPosts }) => ({
+      filteredPosts: [...preparedPosts],
+    }));
+  }
+
   render() {
     const {
-      preparedPosts,
+      filteredPosts,
+      templateForFilter,
       isLoading,
       hasError,
       isInitialized,
@@ -101,7 +130,22 @@ class App extends React.Component {
     return (
       <div className="app">
         <h1 className="app__title">Static list of posts</h1>
-        <PostList fullPosts={preparedPosts} />
+        <form onSubmit={event => this.sortPosts(event)}>
+          <input
+            onChange={event => this.addTextForFilter(event)}
+            value={templateForFilter}
+            type="text"
+            className="text-template"
+          />
+        </form>
+        <button
+          onClick={this.resetFilter}
+          type="button"
+          className="button_reset btn btn-primary load"
+        >
+          Reset
+        </button>
+        <PostList fullPosts={filteredPosts} />
       </div>
     );
   }

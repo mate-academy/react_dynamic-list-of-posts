@@ -5,7 +5,7 @@
 }
 
 .app__title {
-  margin: 50px 0 0 70px;
+  margin: 50px 0 0 20px;
   font-family: Arial;
   font-size: 50px;
   color: #58554b;
@@ -32,4 +32,12 @@
 .load-again {
   width: 150px;
   height: 70px;
+}
+
+.button_reset {
+  margin: 20px 0 70px 0;
+}
+
+.text-template {
+  margin: 70px 0 10px 0;
 }
