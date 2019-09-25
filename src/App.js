@@ -6,7 +6,8 @@ class App extends Component {
   state ={
     isLoading: false,
     isLoaded: false,
-    isSorted: false,
+    isFiltered: false,
+    inputValue: '',
   }
 
   getData = () => {
@@ -39,27 +40,43 @@ class App extends Component {
 
         this.setState({
           posts: preparedPosts,
-          sortedPosts: [...preparedPosts].sort((a, b) => (
-            a.title.charCodeAt(0) - b.title.charCodeAt(0)
-          )),
+          filteredPosts: preparedPosts,
           isLoaded: true,
         });
       });
   }
 
-  sort = () => {
-    this.setState(({ isSorted }) => ({
-      isSorted: !isSorted,
+  filter = (event) => {
+    event.preventDefault();
+    this.setState(({ posts, inputValue }) => ({
+      isFiltered: true,
+      filteredPosts: posts
+        .filter(({ title, body }) => title.includes(inputValue)
+          || body.includes(inputValue)),
+      inputValue: '',
     }));
+  }
+
+  handleChange = (value) => {
+    this.setState({
+      inputValue: value,
+    });
+  }
+
+  reset = () => {
+    this.setState({
+      isFiltered: false,
+    });
   }
 
   render() {
     const {
       posts,
-      sortedPosts,
+      filteredPosts,
       isLoading,
       isLoaded,
-      isSorted,
+      isFiltered,
+      inputValue,
     } = this.state;
 
     return (
@@ -68,10 +85,23 @@ class App extends Component {
         {
           (isLoaded && (
             <>
-              <button type="button" onClick={this.sort}>Sort</button>
+              <form onSubmit={e => this.filter(e)}>
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={e => this.handleChange(e.target.value)}
+                />
+              </form>
+              <button
+                type="button"
+                onClick={this.reset}
+                className="mt-30"
+              >
+                Reset
+              </button>
               <PostList
-                posts={isSorted
-                  ? sortedPosts
+                posts={isFiltered
+                  ? filteredPosts
                   : posts}
               />
             </>
