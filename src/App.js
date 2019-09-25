@@ -66,10 +66,6 @@ class App extends Component {
     }));
   }
 
-  resetList = () => {
-    this.setState(prevState => ({ filteredList: [...prevState.postList] }));
-  }
-
   render() {
     const {
       filteredList,
@@ -104,7 +100,6 @@ class App extends Component {
           <h2>{`Posts: ${filteredList.length}`}</h2>
           <Search
             filterList={this.filterList}
-            resetList={this.resetList}
           />
         </header>
         <PostList posts={filteredList} />

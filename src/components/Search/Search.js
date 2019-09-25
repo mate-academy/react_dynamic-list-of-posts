@@ -23,12 +23,10 @@ class Search extends Component {
 
   handleResetList = () => {
     this.setState({ searchValue: '' });
-    const { resetList } = this.props;
+    const { filterList } = this.props;
 
-    resetList();
+    filterList('');
   }
-
-  handleResetList
 
   render() {
     const { searchValue } = this.state;
@@ -47,7 +45,7 @@ class Search extends Component {
           type="submit"
           onClick={this.handleResetList}
         >
-            Show all
+          Show all
         </button>
       </div>
     );
@@ -56,7 +54,6 @@ class Search extends Component {
 
 Search.propTypes = {
   filterList: PropTypes.func.isRequired,
-  resetList: PropTypes.func.isRequired,
 };
 
 export default Search;
