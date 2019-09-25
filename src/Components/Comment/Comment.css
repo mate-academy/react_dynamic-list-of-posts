@@ -1,0 +1,12 @@
+.comment {
+  box-sizing: border-box;
+  padding: 5px;
+  background-color: rgb(245, 199, 220);
+  border-radius: 20px;
+  font-size: 11px;
+  color: rgb(6, 20, 89);
+}
+
+.comment__email {
+  color: rgb(128, 133, 206);
+}

@@ -1,3 +1,41 @@
-.App {
+body {
+  background-color: rgb(249, 212, 205);
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
   text-align: center;
+}
+
+.main {
+  position: relative;
+}
+
+.data-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgb(58, 24, 45);
+  background-color: rgb(247, 210, 226);
+  border: 2px solid rgb(58, 24, 45);
+  height: 100px;
+  width: 200px;
+  border-radius: 15px;
+  font-weight: bold;
+  font-size: 25px;
+}
+
+.data-button:hover {
+  cursor: pointer;
+  background-color: rgb(58, 24, 45);
+  color: rgb(247, 210, 226);
+  border-color: rgb(247, 210, 226);
+}
+
+.filter-input {
+  box-sizing: border-box;
+  height: 30px;
+  width: 200px;
+  border-radius: 10px;
+  margin: 0 30px 50px;
+  color: rgb(58, 24, 45);
+  font-size: 18px;
 }

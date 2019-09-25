@@ -1,0 +1,17 @@
+.header {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.header__title {
+  color: rgb(131, 26, 86);
+  font-size: 50px;
+}
+
+.header__text {
+  color: rgb(58, 24, 45);
+}
+
+.header__span {
+  color: rgb(173, 22, 111);
+}
