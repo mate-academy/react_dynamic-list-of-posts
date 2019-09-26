@@ -9,7 +9,7 @@ class App extends React.Component {
     preparedPosts: [],
     isLoading: false,
     isLoaded: false,
-    error: null,
+    error: true,
   }
 
   loadData = async() => {
@@ -25,6 +25,7 @@ class App extends React.Component {
         fetch(`${BASE_URL}users`),
         fetch(`${BASE_URL}comments`),
       ]);
+
       const posts = await postsResponse.json();
       const users = await usersResponse.json();
       const comments = await commentsResponse.json();
@@ -34,8 +35,6 @@ class App extends React.Component {
         user: users.find(user => post.userId === user.id),
         comments: comments.filter(comment => comment.postId === post.id),
       }));
-
-      console.log(preparedPosts);
 
       this.setState({
         preparedPosts,
@@ -67,7 +66,7 @@ class App extends React.Component {
       );
     }
 
-    if (error) {
+    if (!error) {
       return <p>{error}</p>;
     }
 
