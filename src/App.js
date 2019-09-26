@@ -7,6 +7,8 @@ const BASE_URL = `https://jsonplaceholder.typicode.com`;
 
 export default class App extends Component {
   state = {
+    // eslint-disable-next-line react/no-unused-state
+    postsAll: [],
     isLoaded: false,
     isLoading: false,
     posts: [],
@@ -32,6 +34,8 @@ export default class App extends Component {
       this.postsAll = [...posts];
 
       this.setState({
+        // eslint-disable-next-line react/no-unused-state
+        postsAll: posts,
         posts,
         users,
         comments,
@@ -45,13 +49,13 @@ export default class App extends Component {
   }
 
   handleSearch = ({ value }) => {
-    this.setState({
-      posts: this.postsAll.filter((post) => {
+    this.setState(({ postsAll }) => ({
+      posts: postsAll.filter((post) => {
         const regex = new RegExp(`${value}`, 'i');
 
         return regex.test(post.title);
       }),
-    });
+    }));
   };
 
   showLoaderButton = () => (this.state.isLoading
