@@ -9,9 +9,7 @@ const USERS_URL = 'https://jsonplaceholder.typicode.com/users';
 
 class App extends React.Component {
   state = {
-    posts: [],
-    users: [],
-    comments: [],
+    postWithUserAndComments: [],
     isLoading: false,
     error: null,
     isShowButton: true,
@@ -27,17 +25,20 @@ class App extends React.Component {
       fetch(USERS_URL),
       fetch(COMMENTS_URL),
     ])
-      .then(([res1, res2, res3]) => (
-        Promise.all([res1.json(), res2.json(), res3.json()])))
-      .then(([data1, data2, data3]) => this.setState({
-        posts: data1,
-        users: data2,
-        comments: data3,
+      .then(([postsRes, usersRes, commentsRes]) => (
+        Promise.all([postsRes.json(), usersRes.json(), commentsRes.json()])))
+      .then(([postsData, usersData, commentsData]) => this.setState({
         isLoading: false,
         isShowButton: false,
+        postWithUserAndComments: postsData.map(post => ({
+          ...post,
+          user: usersData.find(user => post.userId === user.id),
+          comments: commentsData.filter(comment => comment.postId === post.id),
+        })),
       }))
       .catch((err) => {
         this.setState({
+          isLoading: false,
           error: err,
         });
       });
@@ -45,19 +46,18 @@ class App extends React.Component {
 
   render() {
     const {
-      posts, users, comments, isLoading, error, isShowButton,
+      isLoading, error, isShowButton, postWithUserAndComments,
     } = this.state;
-
-    const postWithUserAndComments = posts.map(post => ({
-      ...post,
-      user: users.find(user => post.userId === user.id),
-      comments: comments.filter(comment => comment.postId === post.id),
-    }));
 
     if (isLoading) {
       return (
         <div className="App">
-          <button type="button" disabled>
+          <h1>Dynamic list of posts</h1>
+          <button
+            className="button"
+            type="button"
+            disabled
+          >
             Loading...
           </button>
         </div>
@@ -65,13 +65,19 @@ class App extends React.Component {
     }
 
     if (error) {
-      return <div>{`Error: ${error.message} data`}</div>;
+      return (
+        <div className="App">
+          <div>{`Error: ${error.message} data`}</div>
+        </div>
+      );
     }
 
     return (
       <div className="App">
+        <h1>Dynamic list of posts</h1>
         {isShowButton && (
           <button
+            className="button"
             type="button"
             onClick={this.loadTodos}
           >
