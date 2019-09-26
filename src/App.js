@@ -17,8 +17,7 @@ const postWithCommentsUser = (users, posts, comments) => posts.map(post => (
 class App extends React.Component {
   state = {
     posts: [],
-    users: [],
-    comments: [],
+    originalPosts: [],
     isLoading: false,
     isLoaded: false,
     errors: '',
@@ -34,13 +33,14 @@ class App extends React.Component {
       fetch('https://jsonplaceholder.typicode.com/users'),
       fetch('https://jsonplaceholder.typicode.com/comments'),
     ])
-      .then(([todos, users, comments]) => Promise.all([todos.json(),
+      .then(([todos, users, comments]) => Promise.all([
+        todos.json(),
         users.json(),
-        comments.json()]))
+        comments.json()
+      ]))
       .then(([todosData, usersData, commentsData]) => this.setState({
-        posts: todosData,
-        users: usersData,
-        comments: commentsData,
+        originalPosts: postWithCommentsUser(todosData, usersData, commentsData),
+        posts: postWithCommentsUser(usersData, todosData, commentsData),
         isLoading: false,
         isLoaded: true,
         countTryConnect: 0,
@@ -53,24 +53,21 @@ class App extends React.Component {
           isLoading: false,
         }));
       });
+
   };
 
   render() {
     const { posts,
-      users,
-      comments,
       isLoading,
       isLoaded,
       errors,
       countTryConnect,
     } = this.state;
 
-    const listPost = postWithCommentsUser(users, posts, comments);
-
     return (
       <>
         <h1>Dynamic list of posts</h1>
-        {!posts.length && !users.length && !comments.length && !isLoading
+        {!posts.length && !isLoading
           && <button
             type="button"
             className="app__button-load"
@@ -101,7 +98,7 @@ class App extends React.Component {
           )
         }
 
-        { isLoaded && <PostList posts={listPost}/> }
+        { isLoaded && <PostList posts={posts}/> }
       </>
     );
   }
