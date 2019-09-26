@@ -46,7 +46,7 @@ class App extends Component {
       });
   }
 
-  filter = (event) => {
+  filterPostsByInput = (event) => {
     event.preventDefault();
     this.setState(({ posts, inputValue }) => ({
       isFiltered: true,
@@ -57,13 +57,13 @@ class App extends Component {
     }));
   }
 
-  handleChange = (value) => {
+  handleSearchInputChange = (value) => {
     this.setState({
       inputValue: value,
     });
   }
 
-  reset = () => {
+  resetPostsFiltering = () => {
     this.setState({
       isFiltered: false,
     });
@@ -85,16 +85,16 @@ class App extends Component {
         {
           (isLoaded && (
             <>
-              <form onSubmit={e => this.filter(e)}>
+              <form onSubmit={e => this.filterPostsByInput(e)}>
                 <input
                   type="text"
                   value={inputValue}
-                  onChange={e => this.handleChange(e.target.value)}
+                  onChange={e => this.handleSearchInputChange(e.target.value)}
                 />
               </form>
               <button
                 type="button"
-                onClick={this.reset}
+                onClick={this.resetPostsFiltering}
                 className="mt-30"
               >
                 Reset
