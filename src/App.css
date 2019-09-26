@@ -7,6 +7,10 @@
   font-size: 20px;
 }
 
+.app-title {
+  text-align: center;
+}
+
 .loading {
   text-align: center;
   color: goldenrod;

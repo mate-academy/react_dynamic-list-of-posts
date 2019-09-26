@@ -4,7 +4,7 @@ import { PostProps } from '../PropTypes/PropTypes';
 import './Post.css';
 import CommentList from '../CommentList/CommentList';
 
-const Post = ({ post, commentList }) => {
+const Post = ({ post, comments }) => {
   const {
     id, title, body, user,
   } = post;
@@ -42,7 +42,7 @@ const Post = ({ post, commentList }) => {
             </p>
           </div>
 
-          <CommentList filteredComments={commentList
+          <CommentList filteredComments={comments
             .filter(comment => comment.postId === id)}
           />
         </div>

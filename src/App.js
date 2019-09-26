@@ -9,70 +9,80 @@ const API_COMMENTS = 'https://jsonplaceholder.typicode.com/comments';
 
 class App extends React.Component {
   state = {
-    users: [],
-    posts: [],
+    listOfPosts: [],
     comments: [],
     isLoading: false,
+    isLoaded: false,
+    hasError: false,
   };
 
-  getPostUsers = (postList, usersList) => postList.map(post => (
-    {
-      ...post,
-      user: usersList.find(user => (user.id === post.userId)),
-    }
-  ));
-
-  loadData = () => {
+  loadData = async() => {
     this.setState({
       isLoading: true,
+      hasError: false,
     });
 
-    Promise.all([
-      fetch(API_POSTS),
-      fetch(API_USER),
-      fetch(API_COMMENTS),
-    ])
-      .then(([posts, users, comments]) => Promise.all([
-        posts.json(),
-        users.json(),
-        comments.json(),
-      ]))
-      .then(([dataPosts, dataUsers, dataComments]) => this.setState({
-        users: [...dataUsers],
-        comments: [...dataComments],
-        posts: [...dataPosts],
-        isLoading: false,
+    try {
+      const [
+        postsFromApi,
+        usersFromApi,
+        commentsFromApi,
+      ] = await Promise.all([
+        fetch(API_POSTS),
+        fetch(API_USER),
+        fetch(API_COMMENTS),
+      ]);
+
+      const posts = await postsFromApi.json();
+      const users = await usersFromApi.json();
+      const comments = await commentsFromApi.json();
+      const listOfPosts = posts.map(post => ({
+        ...post,
+        user: users.find(user => (user.id === post.userId)),
       }));
-  };
+
+      this.setState({
+        listOfPosts,
+        comments,
+        isLoaded: true,
+      });
+    } catch (error) {
+      this.setState({
+        hasError: true,
+      });
+    }
+
+    this.setState({
+      isLoading: false,
+    });
+  }
 
   render() {
     const {
-      users, comments, posts, isLoading,
+      listOfPosts, isLoading, isLoaded, hasError, comments,
     } = this.state;
 
-    const usersPosts = this.getPostUsers(posts, users);
-
-    if (isLoading) {
-      return <p className="loading">Loading...</p>;
-    }
-
-    if (usersPosts.length === 0) {
-      return (
-        <div className="container">
-          <h1 className="static-list__title">Dynamic List of Posts</h1>
-          <p className="no-todos-list">No todos yet</p>
-          <button
-            type="button"
-            onClick={this.loadData}
-            className="info-load"
-          >
-            Load
-          </button>
-        </div>
-      );
-    }
-
-    return <PostList posts={usersPosts} commentList={comments} />;
+    return (
+      <div className="App">
+        <h1 className="app-title">Dynamic list of posts</h1>
+        {isLoaded ? (
+          <PostList posts={listOfPosts} comments={comments} />
+        ) : (
+          <>
+            {hasError && (
+              <h2 className="error">Error was find! Please, try again!</h2>
+            )}
+            <button
+              type="button"
+              onClick={this.loadData}
+              className="info-load"
+            >
+              {isLoading ? 'Loading...' : 'Load posts'}
+            </button>
+          </>
+        )}
+      </div>
+    );
   }
 }
 

@@ -50,7 +50,7 @@ export const PostProps = {
     email: PropTypes.string,
     user: PropTypes.shape(userShape),
   }).isRequired,
-  commentList: PropTypes.arrayOf(
+  comments: PropTypes.arrayOf(
     PropTypes.shape(CommentListShape),
   ).isRequired,
 };
