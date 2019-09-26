@@ -2,7 +2,7 @@ import React from 'react';
 import PostList from './components/PostList/PostList';
 import './App.css';
 
-const BASE_URL = 'https://jsonplaceholder.typicode.com//';
+const BASE_URL = 'https://jsonplaceholder.typicode.com/';
 
 class App extends React.Component {
   state = {
