@@ -96,10 +96,8 @@ export default class App extends Component {
                       <span
                         className="input-group-text"
                         id="basic-addon1"
-                        role="img"
-                        aria-label=""
                       >
-                        🔎
+                        <span role="img" aria-label="search">🔎</span>
                       </span>
                     </div>
                     <input
