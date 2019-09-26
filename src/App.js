@@ -18,8 +18,8 @@ class App extends Component {
     filteredList: [],
     isLoading: false,
     isLoaded: false,
-    isError: false,
     buttonText: 'Load',
+    errorText: null,
   }
 
   loadDataFromServer = () => {
@@ -41,15 +41,14 @@ class App extends Component {
             getPostsWithUsers(posts, users), comments
           ),
           isLoaded: true,
-          isError: false,
           isLoading: false,
         });
       })
       .catch(() => {
         this.setState({
           buttonText: 'try again',
-          isError: true,
           isLoading: false,
+          errorText: <p>No data, try again</p>,
         });
       });
   };
@@ -71,17 +70,14 @@ class App extends Component {
       filteredList,
       isLoaded,
       isLoading,
-      isError,
       buttonText,
+      errorText,
     } = this.state;
 
     if (!isLoaded) {
       return (
         <div>
-          {isError
-            ? <p>No Data :( Try again</p>
-            : null
-          }
+          {errorText}
           <button
             type="submit"
             disabled={isLoading}
