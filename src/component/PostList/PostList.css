@@ -1,0 +1,6 @@
+.post-list {
+  display: grid;
+  grid-template-columns: repeat(1,minmax(400px, 850px));
+  grid-gap: 35px;
+  justify-content: center;
+}

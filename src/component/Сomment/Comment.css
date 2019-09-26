@@ -1,0 +1,17 @@
+.comment {
+  padding: 5px 10px;
+  border: 1px solid black;
+  background-color: lightgreen;
+  transition: transform, border;
+  transition-duration: 0.3s;
+}
+
+.comment:hover {
+  transform: scale(1.05);
+  border: 3px solid green;
+}
+
+.comment__revisor {
+  color: darkblue;
+  font-weight: bold;
+}
