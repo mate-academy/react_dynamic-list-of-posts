@@ -1,3 +1,26 @@
 .App {
   text-align: center;
 }
+
+.button {
+  min-width: 120px;
+  border: none;
+  padding: 10px 24px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: outline 1s;
+  margin: 10px;
+}
+
+.button:hover {
+  background-color: #ccc;
+}
+
+.button:active {
+  transform: scale(0.97);
+}
+
+.button:focus {
+  outline: 1px solid #aaa;
+  outline-offset: -2px;
+}
