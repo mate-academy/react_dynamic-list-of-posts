@@ -2,14 +2,14 @@ import React from 'react';
 import PostList from './components/PostList/PostList';
 import './App.css';
 
-const BASE_URL = 'https://jsonplaceholder.typicode.com/';
+const BASE_URL = 'https://jsonplaceholder.typicode.com//';
 
 class App extends React.Component {
   state = {
     preparedPosts: [],
     isLoading: false,
     isLoaded: false,
-    error: true,
+    error: null,
   }
 
   loadData = async() => {
@@ -35,6 +35,8 @@ class App extends React.Component {
         user: users.find(user => post.userId === user.id),
         comments: comments.filter(comment => comment.postId === post.id),
       }));
+
+      console.log(preparedPosts);
 
       this.setState({
         preparedPosts,
@@ -66,9 +68,8 @@ class App extends React.Component {
       );
     }
 
-    if (!error) {
-      return <p>{error}</p>;
-    }
+    // eslint-disable-next-line no-unused-expressions
+    error && <p>{error}</p>;
 
     return (
       <div className="App">
