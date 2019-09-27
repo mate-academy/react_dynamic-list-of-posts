@@ -28,7 +28,8 @@ class App extends Component {
           {
             ...post,
             user: users.find(person => person.id === post.userId),
-            comments: comments.filter(comment => comment.postId === post.id)
+            comments: comments
+              .filter(comment => comment.postId === post.id)
               .map(item => ({
                 ...item,
                 user: users.find(person => person.email === item.email),
