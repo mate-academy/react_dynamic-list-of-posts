@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 480px;
+  justify-content: center;
+  max-height: 100vh;
+}
+
+.btn--start {
+  align-self: center;
+}
+
+.btn {
+  margin-bottom: 1em;
+}

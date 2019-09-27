@@ -1,0 +1,14 @@
+.comment-list {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  padding: 20px 0 0;
+}
+
+.comment-list .comment-list__item {
+  margin-bottom: 20px;
+}
+
+.ui.card {
+  margin: 0 0 20px;
+}
