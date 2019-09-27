@@ -7,7 +7,6 @@ const BASE_URL = `https://jsonplaceholder.typicode.com`;
 
 export default class App extends Component {
   state = {
-    // eslint-disable-next-line react/no-unused-state
     postsAll: [],
     isLoaded: false,
     isLoading: false,
@@ -34,7 +33,6 @@ export default class App extends Component {
       this.postsAll = [...posts];
 
       this.setState({
-        // eslint-disable-next-line react/no-unused-state
         postsAll: posts,
         posts,
         users,
