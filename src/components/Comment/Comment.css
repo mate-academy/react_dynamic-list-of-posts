@@ -1,0 +1,23 @@
+.comment {
+  padding-left: 100px;
+}
+
+.comment__head {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.comment__body {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  padding-left: 50px;
+}
+
+.comment__user-info {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 12px;
+  padding-left: 50px;
+}
