@@ -27,19 +27,20 @@ class App extends Component {
       buttonText: 'loading...',
       isLoading: true,
     });
+
     Promise.all([
       getData('comments'),
       getData('posts'),
       getData('users'),
     ])
       .then(([comments, posts, users]) => {
+        const postsWithComments = getPostWithComments(
+          getPostsWithUsers(posts, users), comments
+        );
+
         this.setState({
-          postList: getPostWithComments(
-            getPostsWithUsers(posts, users), comments
-          ),
-          filteredList: getPostWithComments(
-            getPostsWithUsers(posts, users), comments
-          ),
+          postList: postsWithComments,
+          filteredList: postsWithComments,
           isLoaded: true,
           isLoading: false,
         });
@@ -94,9 +95,7 @@ class App extends Component {
         <header className="header">
           <h1>Dynamic list of posts</h1>
           <h2>{`Posts: ${filteredList.length}`}</h2>
-          <Search
-            filterList={this.filterList}
-          />
+          <Search filterList={this.filterList} />
         </header>
         <PostList posts={filteredList} />
       </div>
