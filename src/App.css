@@ -1,3 +1,9 @@
 .App {
+  background-color: rgb(249, 247, 247);
+  padding: 20px;
+}
+
+.title {
+  color: burlywood;
   text-align: center;
 }
