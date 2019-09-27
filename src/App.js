@@ -36,8 +36,6 @@ class App extends React.Component {
         comments: comments.filter(comment => comment.postId === post.id),
       }));
 
-      console.log(preparedPosts);
-
       this.setState({
         preparedPosts,
         isLoaded: true,
