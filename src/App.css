@@ -1,3 +1,43 @@
-.App {
+.app {
   text-align: center;
+  margin: 0 auto;
+  width: 600px;
+}
+
+.app__title {
+  margin: 50px 0 0 20px;
+  font-family: Arial;
+  font-size: 50px;
+  color: #58554b;
+}
+
+.App__title {
+  color: black;
+  margin-bottom: 5px;
+}
+
+.loading {
+  margin: 70px 0 0 70px;
+  font-size: 35px;
+  color: #000;
+}
+
+.load {
+  margin: 70px 0 0 70px;
+  padding-bottom: 7px;
+  width: 100px;
+  height: 50px;
+}
+
+.load-again {
+  width: 150px;
+  height: 70px;
+}
+
+.button_reset {
+  margin: 20px 0 70px 0;
+}
+
+.text-template {
+  margin: 70px 0 10px 0;
 }
