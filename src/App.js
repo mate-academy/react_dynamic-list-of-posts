@@ -12,8 +12,6 @@ const COMMENTS_URL = 'https://jsonplaceholder.typicode.com/comments';
 class App extends Component {
   state = {
     posts: [],
-    users: [],
-    comments: [],
     isLoading: false,
     term: '',
   };
@@ -32,14 +30,16 @@ class App extends Component {
         [resPosts.json(), resUsers.json(), resComments.json()]
       ))
       .then(([dataPosts, dataUsers, dataComments]) => this.setState({
-        posts: dataPosts,
-        users: dataUsers,
-        comments: dataComments,
+        posts: dataPosts.map(post => ({
+          ...post,
+          comments: dataComments.filter(comment => comment.postId === post.id),
+          user: dataUsers.find(user => user.id === post.userId),
+        })),
         isLoading: false,
       }));
   };
 
-  search = (items, term) => {
+  searchPosts = (items, term) => {
     if (term.length === 0) {
       return items;
     }
@@ -66,14 +66,11 @@ class App extends Component {
   render() {
     const {
       posts,
-      comments,
-      users,
       term,
       isLoading,
     } = this.state;
 
-    const preparedPosts = this.getPostsWithComments(posts, comments, users);
-    const visiblePosts = this.search(preparedPosts, term);
+    const visiblePosts = this.searchPosts(posts, term);
 
     return (
       <div className="App">
