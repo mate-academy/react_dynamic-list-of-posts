@@ -70,8 +70,8 @@ class App extends React.Component {
 
     const { templateForFilter } = this.state;
 
-    this.setState(({ filteredPosts }) => ({
-      filteredPosts: filteredPosts
+    this.setState(({ preparedPosts }) => ({
+      filteredPosts: preparedPosts
         .filter(post => post.title.includes(templateForFilter)
         || post.body.includes(templateForFilter)),
       templateForFilter: '',
