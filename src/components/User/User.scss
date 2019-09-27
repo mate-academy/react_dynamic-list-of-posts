@@ -1,0 +1,21 @@
+.user {
+  text-align: inherit;
+  font: {
+    size: inherit;
+    style: italic;
+  }
+
+  &--text {
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  &__text {
+    margin-right: 7px;
+    font: {
+      style: normal;
+      size: 0.8em;
+      weight: 700;
+    }
+  }
+}
