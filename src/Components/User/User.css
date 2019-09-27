@@ -1,0 +1,14 @@
+.user__name {
+  font-size: 25px;
+  color: rgb(77, 14, 71);
+}
+
+.user__email {
+  font-size: 15px;
+  color: rgb(26, 49, 89);
+}
+
+.user__address {
+  font-size: 13px;
+  color: rgb(56, 113, 165);
+}
