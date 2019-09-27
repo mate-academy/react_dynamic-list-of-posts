@@ -54,15 +54,6 @@ class App extends Component {
     this.setState({ term });
   };
 
-  getPostsWithComments = (postsList, commentsList, usersList) => (
-    postsList
-      .map(post => ({
-        ...post,
-        comments: commentsList.filter(comment => comment.postId === post.id),
-        user: usersList.find(user => user.id === post.userId),
-      }))
-  );
-
   render() {
     const {
       posts,
