@@ -8,7 +8,7 @@ const Header = ({
 }) => {
   const buttonText = isLoading
     ? 'Okay, okay, already loading...'
-    : 'GET POSTS RIGHT NOW!!!';
+    : 'GET POSTS RIGHT NOW!';
 
   return (
     <div className="container mb-5">

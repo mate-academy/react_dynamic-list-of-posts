@@ -24,7 +24,11 @@ class App extends React.Component {
       fetch(commentsUrl),
     ])
       .then(([usersData, postsData, commentsData]) => (
-        Promise.all([usersData.json(), postsData.json(), commentsData.json()])
+        Promise.all([
+          usersData.json(), 
+          postsData.json(), 
+          commentsData.json()
+        ])
       ))
   )
 
