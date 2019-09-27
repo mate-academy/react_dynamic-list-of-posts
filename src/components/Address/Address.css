@@ -1,0 +1,6 @@
+.address {
+  display: flex;
+  flex-direction: column;
+  color: #aaa;
+  padding: 1em;
+}
