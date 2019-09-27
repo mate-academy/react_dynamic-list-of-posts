@@ -1,12 +1,17 @@
 import React from 'react';
-
 import './App.css';
-
-import getPostsFromServer from './api/apiPosts';
-import getCommentsFromServer from './api/apiComments';
-import getUsersFromServer from './api/apiUsers';
 import PostList from './Components/PostList/PostList';
 import Header from './Components/Header/Header';
+
+const APIPOSTS_URl = 'https://jsonplaceholder.typicode.com/posts';
+const APICOMMENTS_URl = 'https://jsonplaceholder.typicode.com/comments';
+const APIUSERS_URl = 'https://jsonplaceholder.typicode.com/users';
+
+const getDataFromServer = async(url) => {
+  const data = await fetch(url);
+
+  return data.json();
+};
 
 const addingUsers = (postList, usersList) => postList.map(post => (
   {
@@ -32,7 +37,9 @@ class App extends React.Component {
 
     Promise
       .all([
-        getPostsFromServer(), getUsersFromServer(), getCommentsFromServer(),
+        getDataFromServer(APIPOSTS_URl),
+        getDataFromServer(APIUSERS_URl),
+        getDataFromServer(APICOMMENTS_URl),
       ])
       .then(([posts, users, comments]) => {
         this.setState({
