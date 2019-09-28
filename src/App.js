@@ -1,10 +1,7 @@
 import React from 'react';
 import './App.css';
 
-import { getUsers } from './api/users';
-import { getPosts } from './api/posts';
-import { getComments } from './api/comments';
-
+import { getData } from './api/data';
 import { PostList } from './components/PostList/PostList';
 
 function getPostsWithUsers(posts, users, comments) {
@@ -14,6 +11,10 @@ function getPostsWithUsers(posts, users, comments) {
     comments: comments.filter(comment => comment.postId === post.id),
   }));
 }
+
+const urlUsers = 'https://jsonplaceholder.typicode.com/users';
+const urlPosts = 'https://jsonplaceholder.typicode.com/posts';
+const urlComments = 'https://jsonplaceholder.typicode.com/comments';
 
 class App extends React.Component {
   state = {
@@ -33,28 +34,14 @@ class App extends React.Component {
       hasError: false,
     });
 
-    getPosts().then((data) => {
-      this.setState({
-        posts: data,
-        originPosts: data,
-      });
-    });
-
-    getUsers().then((data) => {
-      this.setState({
-        users: data,
-      });
-    });
-    getComments().then((data) => {
-      this.setState({
-        comments: data,
-      });
-    });
-
-    Promise.all([getPosts(), getUsers(), getComments()])
-      .then(() => {
+    Promise.all([getData(urlPosts), getData(urlUsers), getData(urlComments)])
+      .then(([posts, users, comments]) => {
         this.setState({
+          originPosts: getPostsWithUsers(posts, users, comments),
+          posts: getPostsWithUsers(posts, users, comments),
           isLoaded: true,
+          users,
+          comments,
         });
       })
       .catch(() => {
@@ -69,13 +56,13 @@ class App extends React.Component {
       });
   };
 
-  searchFunc = (event) => {
+  searchPost = (event) => {
     const { originPosts } = this.state;
 
     this.setState({
       posts: [...originPosts].filter(
-        v => v.title.toLowerCase().includes(event.target.value.toLowerCase())
-          || v.body.toLowerCase().includes(event.target.value.toLowerCase())
+        post => post.title.toLowerCase().includes(event.target.value.toLowerCase())
+          || post.body.toLowerCase().includes(event.target.value.toLowerCase())
       ),
     });
   };
@@ -89,7 +76,6 @@ class App extends React.Component {
       hasError,
       isLoaded,
     } = this.state;
-    const preparedPosts = getPostsWithUsers(posts, users, comments);
 
     return (
       <div className="main">
@@ -131,9 +117,9 @@ class App extends React.Component {
               name="text-area"
               placeholder="Search your post ❤"
               className="form-control form-control-lg"
-              onChange={this.searchFunc}
+              onChange={this.searchPost}
             />
-            <PostList posts={preparedPosts} />
+            <PostList posts={posts} />
           </>
         )}
       </div>
