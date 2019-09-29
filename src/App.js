@@ -9,23 +9,11 @@ const usersUrl = 'https://jsonplaceholder.typicode.com/users';
 
 class App extends Component {
   state = {
-    comments: [],
     posts: [],
-    users: [],
     hasError: false,
     isLoading: false,
     isLoaded: false,
   }
-
-  getPostsWithUserAndComments = (
-    postList,
-    userList,
-    commentList
-  ) => postList.map(post => ({
-    ...post,
-    user: userList.find(user => user.id === post.userId),
-    comments: commentList.filter(comment => comment.postId === post.id),
-  }));
 
   handleClick = async() => {
     this.setState({ isLoading: true });
@@ -45,10 +33,15 @@ class App extends Component {
       const users = await usersResponse.json();
       const comments = await commentsResponse.json();
 
+      const preparedPosts = posts
+        .map(post => ({
+          ...post,
+          user: users.find(user => user.id === post.userId),
+          comments: comments.filter(comment => comment.postId === post.id),
+        }));
+
       this.setState({
-        posts,
-        users,
-        comments,
+        posts: preparedPosts,
         isLoaded: true,
       });
     } catch (error) {
@@ -62,8 +55,6 @@ class App extends Component {
   render() {
     const {
       posts,
-      users,
-      comments,
       isLoaded,
       isLoading,
       hasError,
@@ -74,13 +65,7 @@ class App extends Component {
         {isLoaded ? (
           <>
             <h1 className="title">Static list of posts</h1>
-            <PostList posts={
-              this.getPostsWithUserAndComments(
-                posts,
-                users,
-                comments
-              )}
-            />
+            <PostList posts={posts} />
           </>
         ) : (
           <>
