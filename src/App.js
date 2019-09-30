@@ -2,14 +2,11 @@ import React from 'react';
 import PostList from './components/PostList/PostList';
 import './App.css';
 
-const getUsers = () => fetch('https://jsonplaceholder.typicode.com/users')
-  .then(response => response.json());
+const urlUsers = 'https://jsonplaceholder.typicode.com/users';
+const urlPosts = 'https://jsonplaceholder.typicode.com/posts';
+const urlComments = 'https://jsonplaceholder.typicode.com/comments';
 
-const getPosts = () => fetch('https://jsonplaceholder.typicode.com/posts')
-  .then(response => response.json());
-
-const getComments = () => fetch('https://jsonplaceholder.typicode.com/comments')
-  .then(response => response.json());
+const getData = url => fetch(url).then(response => response.json());
 
 const getPostsWithComments = (postsList, commentsList, userList) => (
   postsList
@@ -37,27 +34,13 @@ class App extends React.Component {
       hasError: false,
     });
 
-    getPosts().then((data) => {
-      this.setState({
-        posts: data,
-      });
-    });
-
-    getUsers().then((data) => {
-      this.setState({
-        users: data,
-      });
-    });
-    getComments().then((data) => {
-      this.setState({
-        comments: data,
-      });
-    });
-
-    Promise.all([getPosts(), getUsers(), getComments()])
-      .then(() => {
+    Promise.all([getData(urlPosts), getData(urlUsers), getData(urlComments)])
+      .then(([posts, users, comments]) => {
         this.setState({
+          posts: getPostsWithComments(posts, users, comments),
           isLoaded: true,
+          users,
+          comments,
         });
       })
       .catch(() => {
@@ -81,8 +64,6 @@ class App extends React.Component {
       hasError,
       isLoaded,
     } = this.state;
-
-    const preparedPosts = getPostsWithComments(posts, users, comments);
 
     return (
       <div className="main">
@@ -129,7 +110,7 @@ class App extends React.Component {
         )}
         {isLoaded && (
           <>
-            <PostList posts={preparedPosts} />
+            <PostList posts={posts} />
           </>
         )}
       </div>

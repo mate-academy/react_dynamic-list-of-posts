@@ -7,7 +7,7 @@ import './PostList.css';
 const PostList = ({ posts }) => (
   <ul className="post-list">
     {posts.map(post => (
-      <li className="post-list__item ui card" key={post.id}>
+      <li className="post-list__item ui card" key={posts.id}>
         <PostItem post={post} />
       </li>
     ))}

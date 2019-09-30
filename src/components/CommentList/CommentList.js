@@ -8,7 +8,7 @@ const CommentList = ({ comments }) => (
   <ul className="extra content comment-list">
     {comments.map(comment => (
       <li className="comment-list__item" key={comment.id}>
-        <Comment comment={comment.name} />
+        <Comment comment={comment} />
       </li>
     ))}
   </ul>

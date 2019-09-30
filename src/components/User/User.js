@@ -4,8 +4,7 @@ import { UserProps } from '../../constants/proptypes';
 
 import './User.css';
 
-const User = ({ name, email, address }) => {
-  const { city, street } = address;
+const User = ({ name, email }) => {
 
   return (
     <div>
@@ -19,10 +18,6 @@ const User = ({ name, email, address }) => {
         <span>email: </span>
         {email}
       </p>
-      <div className="meta meta__address">
-        <p className="meta__address--city">{`city: ${city}`}</p>
-        <p className="meta__address--street">{`street: ${street}`}</p>
-      </div>
     </div>
   );
 };
