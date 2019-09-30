@@ -58,7 +58,14 @@ export const PostItemProps = {
 };
 
 export const PostListProps = {
-  posts: PropTypes.arrayOf(
-    PropTypes.object,
-  ).isRequired,
+  posts: PropTypes.arrayOf(PropTypes.shape({
+    userId: PropTypes.number,
+    id: PropTypes.number,
+    title: PropTypes.string,
+    body: PropTypes.string,
+    user: PropTypes.shape(userShape),
+  })),
+  commentList: PropTypes.arrayOf(
+    PropTypes.shape(commentsShape),
+  ),
 };

@@ -2,9 +2,9 @@ import React from 'react';
 import PostList from './components/PostList/PostList';
 import './App.css';
 
-const urlUsers = 'https://jsonplaceholder.typicode.com/users';
-const urlPosts = 'https://jsonplaceholder.typicode.com/posts';
-const urlComments = 'https://jsonplaceholder.typicode.com/comments';
+const USERS_API_URL = 'https://jsonplaceholder.typicode.com/users';
+const POSTS_API_URL = 'https://jsonplaceholder.typicode.com/posts';
+const COMMENTS_API_URL = 'https://jsonplaceholder.typicode.com/comments';
 
 const getData = url => fetch(url).then(response => response.json());
 
@@ -34,7 +34,11 @@ class App extends React.Component {
       hasError: false,
     });
 
-    Promise.all([getData(urlPosts), getData(urlUsers), getData(urlComments)])
+    Promise.all([
+      getData(POSTS_API_URL),
+      getData(USERS_API_URL),
+      getData(COMMENTS_API_URL),
+    ])
       .then(([posts, users, comments]) => {
         this.setState({
           posts: getPostsWithComments(posts, users, comments),
@@ -57,12 +61,7 @@ class App extends React.Component {
 
   render() {
     const {
-      posts,
-      users,
-      comments,
-      isLoading,
-      hasError,
-      isLoaded,
+      posts, users, comments, isLoading, hasError, isLoaded,
     } = this.state;
 
     return (
@@ -80,39 +79,45 @@ class App extends React.Component {
           <span>comments: </span>
           {comments.length}
         </p>
-        {!posts.length
-        && !users.length
-        && !comments.length
-        && !isLoading
-        && !hasError && (
-          <button
-            onClick={this.getData}
-            type="button"
-          >
-           Loaded
-          </button>
-        )}
+        <button
+          onClick={this.getData}
+          type="button"
+        >
+          Loaded
+        </button>
+
+        if(isLoaded)
+        {
+
+          <PostList posts={posts} />
+        }
+        else
+        {
+          {
+            !posts.length
+          && !users.length
+          && !comments.length
+          && !isLoading
+          && !hasError && (
+
+          )}
         {isLoading && (
           <div>
-            <span>Loading...</span>
+          <span>Loading...</span>
           </div>
-        )}
+          )}
         {hasError && (
           <>
-            <h3>Error loading:(</h3>
-            <button
-              type="button"
-              onClick={this.getData}
-            >
-              Try again
-            </button>
+          <h3>Error loading:(</h3>
+          <button
+          type="button"
+          onClick={this.getData}
+          >
+          Try again
+          </button>
           </>
-        )}
-        {isLoaded && (
-          <>
-            <PostList posts={posts} />
-          </>
-        )}
+          )}
+        }
       </div>
     );
   }
