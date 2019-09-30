@@ -6,7 +6,7 @@ function Comment({ comment }) {
   const { name, email, body } = comment;
 
   return (
-    <div>
+    <div className="comment">
       <div>{body}</div>
       <div>
         <p>{name}</p>
@@ -19,7 +19,7 @@ function Comment({ comment }) {
 }
 
 Comment.propTypes = {
-  comment: PropTypes.arrayOf({
+  comment: PropTypes.shape({
     name: PropTypes.string,
     email: PropTypes.string,
     body: PropTypes.string,

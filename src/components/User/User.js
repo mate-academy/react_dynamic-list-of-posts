@@ -21,7 +21,7 @@ function User({ user }) {
 }
 
 User.propTypes = {
-  user: PropTypes.arrayOf({
+  user: PropTypes.shape({
     name: PropTypes.string,
     email: PropTypes.string,
   }).isRequired,

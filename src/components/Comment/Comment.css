@@ -1,0 +1,9 @@
+.comment {
+  margin: 0 10px;
+  border: 1px dashed blue;
+  border-radius: 15px;
+  height: 230px;
+  width: 350px;
+  background-color: white;
+  padding: 10px;
+}

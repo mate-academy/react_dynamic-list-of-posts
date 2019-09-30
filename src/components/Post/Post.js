@@ -8,7 +8,7 @@ function Post({ post }) {
   const { title, body, comments } = post;
 
   return (
-    <div>
+    <div className="post">
       <div>
         <h2>{title}</h2>
         <p>{body}</p>
@@ -21,7 +21,7 @@ function Post({ post }) {
 }
 
 Post.propTypes = {
-  post: PropTypes.arrayOf({
+  post: PropTypes.shape({
     title: PropTypes.string,
     body: PropTypes.string,
     comments: PropTypes.string,
