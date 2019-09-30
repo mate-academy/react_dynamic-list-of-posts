@@ -19,28 +19,29 @@ class App extends React.Component {
       isLoading: true,
     });
 
-    getComments().then((comments) => {
-      this.setState({ comments });
-    });
-    getUsers().then((users) => {
-      this.setState({ users });
-    });
-    getPosts().then((posts) => {
-      this.setState({ copyPosts: posts, posts, isLoading: false });
-    });
+    Promise.all([getComments(), getUsers(), getPosts()]).then(data => this.setState({
+      comments: data[0],
+      users: data[1],
+      posts: data[2],
+      copyPosts: data[2],
+      isLoading: false,
+    }));
   };
 
-  searchPost = (event) => {
+  searchPost = ({ target }) => {
     this.setState(prevState => ({
       posts: prevState.copyPosts.filter(
-        post => post.title.toLowerCase().includes(event.target.value.toLowerCase())
-          || post.body.toLowerCase().includes(event.target.value.toLowerCase())
+        post => post.title.toLowerCase().includes(target.value.toLowerCase())
+          || post.body.toLowerCase().includes(target.value.toLowerCase())
       ),
     }));
   };
 
   render() {
-    const preparedPosts = UserToPosts(this.state.posts, this.state.users);
+    const {
+      posts, users, comments, copyPosts,
+    } = this.state;
+    const preparedPosts = UserToPosts(posts, users);
 
     return (
       <div className="App">
@@ -48,19 +49,19 @@ class App extends React.Component {
 
         <p>
           <span>posts: </span>
-          {this.state.posts.length}
+          {posts.length}
         </p>
 
         <p>
           <span>comments: </span>
-          {this.state.comments.length}
+          {comments.length}
         </p>
 
         <p>
           <span>Users: </span>
-          {this.state.users.length}
+          {users.length}
         </p>
-        {this.state.copyPosts.length === 0 ? (
+        {copyPosts.length === 0 ? (
           <button
             type="button"
             onClick={this.dataLoading}
@@ -77,12 +78,12 @@ class App extends React.Component {
           <>
             <input
               type="text"
-              name="text-area"
+              name="text"
               placeholder="Write text you find"
               className="form-control"
               onChange={this.searchPost}
             />
-            <PostList posts={preparedPosts} comments={this.state.comments} />
+            <PostList posts={preparedPosts} comments={comments} />
           </>
         )}
       </div>
