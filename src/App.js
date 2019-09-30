@@ -3,16 +3,18 @@ import './App.css';
 
 import PostList from './components/PostList/PostList';
 
-const postsUrl = 'https://jsonplaceholder.typicode.com/posts';
-const commentsUrl = 'https://jsonplaceholder.typicode.com/comments';
-const usersUrl = 'https://jsonplaceholder.typicode.com/users';
+const POSTS_API_URL = 'https://jsonplaceholder.typicode.com/posts';
+const COMMENTS_API_URL = 'https://jsonplaceholder.typicode.com/comments';
+const USERS_API_URL = 'https://jsonplaceholder.typicode.com/users';
 
 class App extends Component {
   state = {
     posts: [],
+    originalPosts: [],
     hasError: false,
     isLoading: false,
     isLoaded: false,
+    inputValue: '',
   }
 
   handleClick = async() => {
@@ -24,9 +26,9 @@ class App extends Component {
         usersResponse,
         commentsResponse,
       ] = await Promise.all([
-        fetch(postsUrl),
-        fetch(usersUrl),
-        fetch(commentsUrl),
+        fetch(POSTS_API_URL),
+        fetch(USERS_API_URL),
+        fetch(COMMENTS_API_URL),
       ]);
 
       const posts = await postsResponse.json();
@@ -42,6 +44,7 @@ class App extends Component {
 
       this.setState({
         posts: preparedPosts,
+        originalPosts: preparedPosts,
         isLoaded: true,
       });
     } catch (error) {
@@ -52,19 +55,35 @@ class App extends Component {
     }
   };
 
+  handleInputFilter = ({ target }) => {
+    this.setState({
+      inputValue: target.value,
+      posts: [...this.state.originalPosts]
+        .filter(({ title }) => title.includes(this.state.inputValue)),
+    });
+  }
+
+  handleResetPosts = () => {
+    this.setState(prevState => ({
+      posts: [...prevState.originalPosts],
+    }));
+  }
+
   render() {
-    const {
-      posts,
-      isLoaded,
-      isLoading,
-      hasError,
-    } = this.state;
+    const { posts, isLoaded, isLoading, hasError, inputValue } = this.state;
 
     return (
-      <div className="App">
+      <div className="app">
         {isLoaded ? (
           <>
-            <h1 className="title">Static list of posts</h1>
+            <h1 className="title">Dynamic list of posts</h1>
+            <p>Posts: {posts.length}</p>
+            <input
+              type="text"
+              onChange={this.handleInputFilter}
+              value={inputValue}
+              className="filter__input"
+            />
             <PostList posts={posts} />
           </>
         ) : (
