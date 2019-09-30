@@ -79,45 +79,39 @@ class App extends React.Component {
           <span>comments: </span>
           {comments.length}
         </p>
-        <button
-          onClick={this.getData}
-          type="button"
-        >
-          Loaded
-        </button>
-
-        if(isLoaded)
-        {
-
-          <PostList posts={posts} />
-        }
-        else
-        {
-          {
-            !posts.length
-          && !users.length
-          && !comments.length
-          && !isLoading
-          && !hasError && (
-
-          )}
+        {!posts.length
+        && !users.length
+        && !comments.length
+        && !isLoading
+        && !hasError && (
+          <button
+            onClick={this.getData}
+            type="button"
+          >
+           Loaded
+          </button>
+        )}
         {isLoading && (
           <div>
-          <span>Loading...</span>
+            <span>Loading...</span>
           </div>
-          )}
+        )}
         {hasError && (
           <>
-          <h3>Error loading:(</h3>
-          <button
-          type="button"
-          onClick={this.getData}
-          >
-          Try again
-          </button>
+            <h3>Error loading:(</h3>
+            <button
+              type="button"
+              onClick={this.getData}
+            >
+              Try again
+            </button>
           </>
-          )}
-        }
+        )}
+        {isLoaded && (
+          <>
+            <PostList posts={posts} />
+          </>
+        )}
       </div>
     );
   }
