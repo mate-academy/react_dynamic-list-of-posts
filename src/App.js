@@ -12,6 +12,7 @@ class App extends React.Component {
     originalData: [],
     sortedData: [],
     users: [],
+    sortedUsers: [],
     inputtedName: '',
     isLoading: false,
     isReady: true,
@@ -21,6 +22,7 @@ class App extends React.Component {
     this.setState({
       isLoading: true,
     });
+
     Promise.all([
       fetch(COMMENTS_API_URL),
       fetch(USERS_API_URL),
@@ -45,83 +47,76 @@ class App extends React.Component {
             { ...acc, [user.id]: user }), {})[post.userId],
         })),
         users,
+        sortedUsers: users,
 
         isLoading: false,
         isReady: false,
       }));
   };
 
-  handleEnteredName = (event) => {
+  handleEnteredName = ({ target }) => {
     this.setState({
-      inputtedName: event.target.value,
+      inputtedName: target.value.toLowerCase(),
     });
+    this.sortingDataByName(target.value.toLowerCase());
   }
 
-sortingDataByName = (event) => {
-  const { inputtedName } = this.state;
+  sortingDataByName = (inputtedName) => {
+    this.setState(prevState => ({
+      sortedData: [...prevState.originalData].filter(data => (
+        data.user.name.toLowerCase().includes(inputtedName))),
+      sortedUsers: [...prevState.users].filter(data => (
+        data.name.toLowerCase().includes(inputtedName))),
+    }));
+  }
 
-  event.preventDefault();
+  showAllData = () => {
+    this.setState(prevState => ({
+      sortedData: [...prevState.originalData],
+      inputtedName: '',
+    }));
+  }
 
-  this.setState(prevState => ({
-    sortedData: [...prevState.originalData].filter(data => (
-      data.user.name === inputtedName)),
-    inputtedName: '',
-  }));
-}
+  render() {
+    const {
+      isLoading, isReady, sortedData, inputtedName, sortedUsers,
+    } = this.state;
 
-showAllData = () => {
-  this.setState(prevState => ({
-    sortedData: [...prevState.originalData],
-  }));
-}
+    if (isLoading) {
+      return (
+        <div className="app">
+          <p>Loading ...</p>
+        </div>
+      );
+    }
 
-render() {
-  const {
-    isLoading,
-    isReady,
-    sortedData,
-    inputtedName,
-    users,
-  } = this.state;
+    if (isReady) {
+      return (
+        <div className="app">
+          <button type="button" onClick={this.getList}> Show posts </button>
+        </div>
+      );
+    }
 
-  if (isLoading) {
     return (
       <div className="app">
-        <p>Loading ...</p>
-      </div>
-    );
-  }
-
-  if (isReady) {
-    return (
-      <div className="app">
-        <button type="button" onClick={this.getList}> Show posts </button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="app">
-      <h1>Static list of posts</h1>
-      <p>
-        Posts:
-        {sortedData.length}
-      </p>
-      <h2>Posted users name: </h2>
-      {users.map(person => <b>{person.name}<br/></b>)}
-      <form onSubmit={this.sortingDataByName}>
+        <h1>Static list of posts</h1>
+        <p>
+          Posts:
+          {sortedData.length}
+        </p>
+        <h2>Posted users name: </h2>
+        {sortedUsers.map(person => <b>{person.name}<br/></b>)}
         <input
           onChange={this.handleEnteredName}
           value={inputtedName}
           placeholder=" input user name"
         />
-        <button type="submit">Search</button>
-      </form>
-      <button type="button" onClick={this.showAllData}>Show all</button>
-      <PostList fullPosts={sortedData} />
-    </div>
-  );
-}
+        <button type="button" onClick={this.showAllData}>Show all</button>
+        <PostList fullPosts={sortedData} />
+      </div>
+    );
+  }
 }
 
 export default App;
