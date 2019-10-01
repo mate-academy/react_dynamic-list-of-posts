@@ -12,7 +12,7 @@ class App extends React.Component {
     originalData: [],
     sortedData: [],
     users: [],
-    sortedUsers: [],
+    usersToDisplay: [],
     inputtedName: '',
     isLoading: false,
     isReady: true,
@@ -47,7 +47,7 @@ class App extends React.Component {
             { ...acc, [user.id]: user }), {})[post.userId],
         })),
         users,
-        sortedUsers: users,
+        usersToDisplay: users,
 
         isLoading: false,
         isReady: false,
@@ -65,7 +65,7 @@ class App extends React.Component {
     this.setState(prevState => ({
       sortedData: [...prevState.originalData].filter(data => (
         data.user.name.toLowerCase().includes(inputtedName))),
-      sortedUsers: [...prevState.users].filter(data => (
+      usersToDisplay: [...prevState.users].filter(data => (
         data.name.toLowerCase().includes(inputtedName))),
     }));
   }
@@ -73,13 +73,14 @@ class App extends React.Component {
   showAllData = () => {
     this.setState(prevState => ({
       sortedData: [...prevState.originalData],
+      usersToDisplay: [...prevState.users],
       inputtedName: '',
     }));
   }
 
   render() {
     const {
-      isLoading, isReady, sortedData, inputtedName, sortedUsers,
+      isLoading, isReady, sortedData, inputtedName, usersToDisplay,
     } = this.state;
 
     if (isLoading) {
@@ -100,19 +101,25 @@ class App extends React.Component {
 
     return (
       <div className="app">
-        <h1>Static list of posts</h1>
+        <h1>Dynamic list of posts</h1>
         <p>
           Posts:
           {sortedData.length}
         </p>
         <h2>Posted users name: </h2>
-        {sortedUsers.map(person => <b>{person.name}<br/></b>)}
+        {usersToDisplay.map(person => (
+          <b>
+            {person.name}
+            <br />
+          </b>
+        ))}
         <input
           onChange={this.handleEnteredName}
           value={inputtedName}
           placeholder=" input user name"
         />
-        <button type="button" onClick={this.showAllData}>Show all</button>
+        <br />
+        <button type="button" onClick={this.showAllData}>Reset</button>
         <PostList fullPosts={sortedData} />
       </div>
     );
