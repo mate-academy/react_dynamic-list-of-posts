@@ -56,34 +56,45 @@ class App extends Component {
   };
 
   handleInputFilter = ({ target }) => {
-    this.setState({
+    this.setState(({ originalPosts }) => ({
       inputValue: target.value,
-      posts: [...this.state.originalPosts]
-        .filter(({ title }) => title.includes(this.state.inputValue)),
-    });
+      posts: originalPosts
+        .filter(({ title }) => title.includes(target.value)),
+    }));
   }
 
   handleResetPosts = () => {
-    this.setState(prevState => ({
-      posts: [...prevState.originalPosts],
+    this.setState(({ originalPosts }) => ({
+      inputValue: '',
+      posts: originalPosts,
     }));
   }
 
   render() {
-    const { posts, isLoaded, isLoading, hasError, inputValue } = this.state;
+    const {
+      posts,
+      isLoaded,
+      isLoading,
+      hasError,
+      inputValue,
+    } = this.state;
 
     return (
       <div className="app">
         {isLoaded ? (
           <>
             <h1 className="title">Dynamic list of posts</h1>
-            <p>Posts: {posts.length}</p>
+            <p>
+              Posts:
+              {posts.length}
+            </p>
             <input
               type="text"
               onChange={this.handleInputFilter}
               value={inputValue}
               className="filter__input"
             />
+            <button type="button" onClick={this.handleResetPosts}>Reset</button>
             <PostList posts={posts} />
           </>
         ) : (
