@@ -1,0 +1,10 @@
+.post {
+  margin-bottom: 50px;
+  padding: 50px;
+  border: 5px solid rgba(133, 133, 133, 0.5);
+}
+
+.post-title {
+  font-size: 30px;
+  margin-bottom: 50px;
+}
