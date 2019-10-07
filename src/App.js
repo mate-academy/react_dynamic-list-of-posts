@@ -3,6 +3,7 @@ import './App.css';
 
 import { getData } from './api/data';
 import { PostList } from './components/PostList/PostList';
+import { LoadingPage } from './components/LoadingPage/LoadingPage';
 
 function getPostsWithUsers(posts, users, comments) {
   return posts.map(post => ({
@@ -12,9 +13,9 @@ function getPostsWithUsers(posts, users, comments) {
   }));
 }
 
-const urlUsers = 'https://jsonplaceholder.typicode.com/users';
-const urlPosts = 'https://jsonplaceholder.typicode.com/posts';
-const urlComments = 'https://jsonplaceholder.typicode.com/comments';
+const USERS_API_URL = 'https://jsonplaceholder.typicode.com/users';
+const POSTS_API_URL = 'https://jsonplaceholder.typicode.com/posts';
+const COMMENTS_API_URL = 'https://jsonplaceholder.typicode.com/comments';
 
 class App extends React.Component {
   state = {
@@ -34,7 +35,7 @@ class App extends React.Component {
       hasError: false,
     });
 
-    Promise.all([getData(urlPosts), getData(urlUsers), getData(urlComments)])
+    Promise.all([getData(POSTS_API_URL), getData(USERS_API_URL), getData(COMMENTS_API_URL)])
       .then(([posts, users, comments]) => {
         this.setState({
           originPosts: getPostsWithUsers(posts, users, comments),
@@ -56,13 +57,13 @@ class App extends React.Component {
       });
   };
 
-  searchPost = (event) => {
+  searchPost = ({ value }) => {
     const { originPosts } = this.state;
 
     this.setState({
       posts: [...originPosts].filter(
-        post => post.title.toLowerCase().includes(event.target.value.toLowerCase())
-          || post.body.toLowerCase().includes(event.target.value.toLowerCase())
+        post => post.title.toLowerCase().includes(value.toLowerCase())
+          || post.body.toLowerCase().includes(value.toLowerCase())
       ),
     });
   };
@@ -70,8 +71,6 @@ class App extends React.Component {
   render() {
     const {
       posts,
-      users,
-      comments,
       isLoading,
       hasError,
       isLoaded,
@@ -84,32 +83,12 @@ class App extends React.Component {
           <span>posts: </span>
           {posts.length}
         </p>
-        {!posts.length
-          && !users.length
-          && !comments.length
-          && !isLoading
-          && !hasError && (
+        {!isLoaded && !isLoading && (
           <button onClick={this.getData} className="btn btn-outline-dark">
               Load posts
           </button>
         )}
-        {isLoading && (
-          <div className="spinner-grow text-dark" role="status">
-            <span className="sr-only">Loading...</span>
-          </div>
-        )}
-        {hasError && (
-          <>
-            <h3>Something went wrong:(</h3>
-            <button
-              type="button"
-              onClick={this.getData}
-              className="btn btn-outline-dark"
-            >
-              Try again
-            </button>
-          </>
-        )}
+        <LoadingPage isLoading={isLoading} hasError={hasError} getData={this.getData} />
         {isLoaded && (
           <>
             <input
