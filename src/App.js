@@ -57,8 +57,9 @@ class App extends React.Component {
       });
   };
 
-  searchPost = ({ value }) => {
+  searchPost = (event) => {
     const { originPosts } = this.state;
+    const { value } = event.target;
 
     this.setState({
       posts: [...originPosts].filter(
