@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import PostList from './components/PostList/PostList'
+import PostList from './components/PostList/PostList';
 
 const URL = 'https://jsonplaceholder.typicode.com/';
 
@@ -22,8 +22,8 @@ class App extends Component {
     comments: commentsList.filter(comment => comment.postId === post.id),
   }));
 
-  handleClick = async () => {
-    this.setState({ isLoading: true }); // succesfully loading after handle click
+  handleClick = async() => {
+    this.setState({ isLoading: true });
 
     try {
       const [
@@ -31,22 +31,28 @@ class App extends Component {
       ] = await Promise.all([
         fetch(`${URL}posts`),
         fetch(`${URL}users`),
-        fetch(`${URL}comments`)
+        fetch(`${URL}comments`),
       ]);
 
       const posts = await postsResponse.json();
       const users = await usersResponse.json();
       const comments = await commentsResponse.json(); // to json convert
 
+      const preparedPosts = posts
+        .map(post => ({
+          ...post,
+          user: users.find(user => user.id === post.userId),
+          comments: comments.filter(comment => comment.postId === post.id),
+        }));
 
       this.setState({
-        posts, users, comments, isLoaded: true,
+        posts: preparedPosts,
+        isLoaded: true,
       });
-    }
-    catch (error) {
+    } catch (error) {
       this.setState({
         hasError: true,
-        isLoading: false, // describes getting an error
+        isLoading: false,
       });
     }
   };
@@ -54,37 +60,29 @@ class App extends Component {
   render() {
     const {
       posts,
-      users,
-      comments,
       isLoaded,
       isLoading,
       hasError,
-    } = this.state; // her par-rs;
+    } = this.state; 
     const textOnButton = (hasError ? 'Try Again' : 'Load');
 
     return (
       <div className="App">
         {isLoaded ? (
           <>
-            <h1>Static list of posts</h1>
-            <PostList
-              posts={
-                this.getFullPost(
-                  posts, users, comments
-                )
-              }
-            />
+            <h1>Dynamic list of posts</h1>
+            <PostList posts={posts} />
           </>
         ) : (
-            <>
-              <h1>
-                {hasError ? 'Error - failed to fetch' : 'Load Posts'}
-              </h1>
-              <button type="button" onClick={this.handleClick}>
-                {isLoading ? 'Loading..' : textOnButton}
-              </button>
-            </>
-          )
+          <>
+            <h1>
+              {hasError ? 'Error - failed to fetch' : 'Load Posts'}
+            </h1>
+            <button type="button" onClick={this.handleClick}>
+              {isLoading ? 'Loading..' : textOnButton}
+            </button>
+          </>
+        )
         }
       </div>
     );
