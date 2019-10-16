@@ -1,94 +1,120 @@
+/* eslint-disable react/no-unused-state */
 import React from 'react';
 
 import './App.css';
 import PostsList from './components/PostsList/PostsList';
 
-class App extends React.Component{
+class App extends React.Component {
   state = {
-    active:0,
-    titleFilt:0,
-    userFilt:0,
-    usersPostsWithComments:[],
-    usersPostsWithCommentsSorted:[]
+    active: 0,
+    titleFiltering: 0,
+    userFiltering: 0,
+    posts: [],
   }
 
-  loadDatas = () => {
-    Promise.all([
-     fetch('https://jsonplaceholder.typicode.com/users').then(users => users.json()),
-     fetch('https://jsonplaceholder.typicode.com/posts').then(posts => posts.json()),
-     fetch('https://jsonplaceholder.typicode.com/comments').then(comments => comments.json()),
- ])
-    .then(data => {
-      const modifiedArray = data[1].map(post => ({
-        ...post,
-        user: data[0].find(user => user.id === post.userId),
-        comments: data[2].filter(comments => comments.postId === post.id),
-      }));
-      this.setState({
-        active:1,
-        usersPostsWithComments: modifiedArray,
-        usersPostsWithCommentsSorted: modifiedArray,
-      })
-    })
+  loadDatas = async() => {
+    const [
+      usersResponse,
+      postsResponse,
+      commentsResponse,
+    ] = await Promise.all([
+      fetch('https://jsonplaceholder.typicode.com/users'),
+      fetch('https://jsonplaceholder.typicode.com/posts'),
+      fetch('https://jsonplaceholder.typicode.com/comments'),
+    ]);
+
+    const users = await usersResponse.json();
+    const posts = await postsResponse.json();
+    const comments = await commentsResponse.json();
+
+    const preparedPosts = posts.map(post => ({
+      ...post,
+      user: users.find(user => user.id === post.userId),
+      comments: comments.filter(comment => comment.postId === post.id),
+    }));
+
+    this.setState({
+      posts: preparedPosts,
+      active: 1,
+    });
   }
 
-  sortTitle = () => {
-    this.setState(prevState => (
-      this.state.titleFilt === 0
-      ? {
-        usersPostsWithCommentsSorted: [...prevState.usersPostsWithComments]
-        .sort((a,b) => a.title < b.title ? -1 : a.title > b.title ? 1 : 0 ),
-        titleFilt: 1,
-      }
-      : {
-        usersPostsWithCommentsSorted: [...prevState.usersPostsWithCommentsSorted]
-        .reverse(),
-        titleFilt: 0,
-      }
-    ));
+  filterList = (str) => {
+    switch (str) {
+      case 'title':
+        return this.setState(prevState => (
+          prevState.titleFiltering === 0
+            ? {
+              posts: [...prevState.posts]
+                .sort((a, b) => (a.title.localeCompare(b.title))),
+              titleFiltering: 1,
+            }
+            : {
+              posts: [...prevState.posts]
+                .sort((a, b) => (b.title.localeCompare(a.title))),
+              titleFiltering: 0,
+            }
+        ));
+
+      case 'text':
+        return this.setState(prevState => (
+          prevState.userFiltering === 0
+            ? {
+              posts: [...prevState.posts]
+                .sort((a, b) => (a.body.localeCompare(b.body))),
+              userFiltering: 1,
+            }
+            : {
+              posts: [...prevState.posts]
+                .sort((a, b) => (b.body.localeCompare(a.body))),
+              userFiltering: 0,
+            }
+        ));
+
+      default:
+        return this.state.posts;
+    }
   }
 
-  sortUserText = () => {
-    this.setState(prevState => (
-      this.state.userFilt === 0
-      ? {
-        usersPostsWithCommentsSorted: [...prevState.usersPostsWithComments]
-        .sort((a,b) => a.body < b.body ? -1 : a.body > b.body ? 1 : 0 ),
-        userFilt: 1,
-      }
-      : {
-        usersPostsWithCommentsSorted: [...prevState.usersPostsWithCommentsSorted]
-        .reverse(),
-        userFilt: 0,
-      }
-    ))
-  }
+  render() {
+    const { posts, active } = this.state;
 
-  render () {
-    const { usersPostsWithCommentsSorted, active } = this.state;
     return (
       <div className="App">
-        <h1>Static list of posts</h1>
-        <div className={active === 1 ? 'button-back down' : 'button-back' }>Loading...</div>
+        <h1>Dynamic list of posts</h1>
+        <div className={active === 1 ? 'button-back down' : 'button-back'}>
+          Loading...
+        </div>
 
         <button
           onClick={this.loadDatas}
-          className={active === 1 ? 'button-start down' : 'button-start' }
+          className={active === 1 ? 'button-start down' : 'button-start'}
           type="button"
-        >Load</button>
+        >
+Load
 
-        {!!active && (<button
-          type="button"
-          className="sort sort-left"
-          onClick={this.sortTitle}
-        >Title A-Z</button>)}
+        </button>
 
-        {!!active && (<button
-          type="button"
-          className="sort"
-          onClick={this.sortUserText}
-        >Text A-Z</button>)}
-        <PostsList posts={usersPostsWithCommentsSorted} />
+        {!!active && (
+          <button
+            type="button"
+            className="sort sort-left"
+            onClick={() => this.filterList('title')}
+          >
+            Title A-Z
+          </button>
+        )}
+
+        {!!active && (
+          <button
+            type="button"
+            className="sort"
+            onClick={() => this.filterList('text')}
+          >
+            Text A-Z
+          </button>
+        )}
+        <PostsList posts={posts} />
       </div>
     );
   }
