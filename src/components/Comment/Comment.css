@@ -1,0 +1,41 @@
+.comment {
+  width: 35%;
+  margin: 30px;
+  box-shadow: 0px 0px 20px -6px rgba(0, 0, 0, 0.75);
+  border-radius: 13px;
+  padding: 20px;
+  background: #7e7e7e;
+  transition: transform 0.2s,
+    background 0.2s;
+}
+.comment:hover {
+  background:#afafaf;
+  transform: scale(1.03);
+}
+.comment:hover .comment__name {
+  color: #292929
+}
+.comment:hover .comment__email {
+  color: #252464
+}
+.comment__email {
+  color: #cecece;
+  font-style: italic;
+  transition: color .2s;
+}
+.comment__body {
+  font-size: 17px;
+  margin: 26px 0;
+  font-size: 17px;
+  margin: 26px 0;
+  border-bottom: 1px solid #a5a5a5;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #b8b8b8;
+}
+.comment__name {
+  font-family: cursive;
+  color: lightgrey;
+  font-size: 1.3em;
+  font-weight: bold;
+  transition: color 0.2s;
+}
