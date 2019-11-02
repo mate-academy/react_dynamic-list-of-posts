@@ -1,12 +1,61 @@
 import React from 'react';
 import './App.css';
+import { Button } from 'semantic-ui-react';
+import PostList from './components/postsList/PostsList';
+import { getPosts, getUsers, getComments } from './Api';
 
-function App() {
-  return (
-    <div className="App">
-      <h1>Dynamic list of posts</h1>
-    </div>
-  );
+class App extends React.PureComponent {
+  state = {
+    posts: [],
+    users: [],
+    comments: [],
+    isLoading: false,
+    loadingError: false,
+    wasLoaded: false,
+  };
+
+  getInfoFromServer = async () => {
+    this.setState({
+      isLoading: true,
+      wasLoaded: true,
+    });
+
+    const [posts, users, comments] = await Promise.all([getPosts(), getUsers(), getComments()])
+      .catch(() => this.setState({
+        loadingError: true,
+        isLoading: false,
+      }));
+
+    this.setState({
+      posts: posts,
+      users: users,
+      comments: comments,
+      isLoading: false,
+      loadingError: false,
+    });
+  }
+
+  render() {
+    const { posts, users, comments, isLoading, loadingError, wasLoaded } = this.state;
+    console.log(this.state);
+
+    if (!isLoading && !wasLoaded) {
+      return <Button secondary onClick={this.getInfoFromServer}>Load posts from server</Button>;
+    } else if (isLoading) {
+      return <Button secondary loading>Loading</Button>;
+    }
+
+    if (wasLoaded && !loadingError) {
+      return <PostList posts={posts} users={users} comments={comments} />;
+    } else if (wasLoaded && loadingError) {
+      return (
+        <>
+          <p>Loading error, please try again!</p>
+          <Button secondary onClick={this.getInfoFromServer}>Try again</Button>
+        </>
+      );
+    }
+  }
 }
 
 export default App;
