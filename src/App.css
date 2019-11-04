@@ -1,3 +1,22 @@
 .App {
   text-align: center;
 }
+
+
+.post {
+  margin: 50px auto;
+  width: max-content;
+}
+
+.postAuthorContainer {
+  display: block;
+  width: max-content;
+  margin: 0 auto;
+}
+
+.sortButtonContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 600px;
+  margin: 50px auto;
+}
