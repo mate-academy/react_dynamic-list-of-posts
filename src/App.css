@@ -1,3 +1,183 @@
-.App {
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  list-style-type: none;
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: white;
+}
+
+.card {
+  position: relative;
+  background: white;
+  max-width: 500px;
+  margin: 20px auto;
+  box-shadow: 0 0 30px 2px #000;
+}
+
+.header {
+  background: url("images/header.jpeg");
+  background-size: cover;
+  min-height: 350px;
+}
+
+.card .header .icon a .fa-heart-o {
+  position: relative;
+  background: #17bebb;
+  color: white;
+  font-size: 1.3em;
+  font-weight: bold;
+  padding: 15px;
+  border-radius: 50%;
+  box-shadow: 0 5px 30px 1px #17bebb;
+  left: 88%;
+  top: 325px;
+}
+
+.fa-heart-o:before {
+  font-family: FontAwesome, sans-serif;
+  content: "\f004";
+}
+
+.title {
+  color: black;
+  text-align: left;
+  font-size: larger;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 5px 30px;
+}
+
+.fa-clock-o {
+  color: gray;
+  margin: 0 30px;
+}
+
+.fa-users {
+  color: gray;
+}
+
+.info {
+  margin: 10px 30px;
+}
+
+.btn {
+  display: block;
+  background: #ef3e36;
+  color: white;
+  position: relative;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   text-align: center;
+  padding: 10px;
+  transition: 250ms;
+  width: 100%;
+}
+
+.btn:hover {
+  background: #17bebb;
+  transition: 250ms;
+}
+
+.users__info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  padding: 13px;
+}
+
+.comment {
+  padding: 15px;
+  border-bottom: 1px dotted black;
+}
+
+.search__container {
+  padding-top: 60px;
+  display: flex;
+  justify-content: center;
+}
+
+.search__title {
+  font-size: 22px;
+  font-weight: 900;
+  text-align: center;
+  color: #ff8b88;
+}
+
+.search__input {
+  width: 35%;
+  padding: 12px 24px;
+  background-color: transparent;
+  transition: transform 250ms ease-in-out;
+  font-size: 14px;
+  line-height: 18px;
+  color: #575756;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/%3E%3Cpath d='M0 0h24v24H0z' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 18px 18px;
+  background-position: 95% center;
+  border-radius: 50px;
+  border: 1px solid #575756;
+}
+
+.search__input::placeholder {
+  color: color(#575756 a(0.8));
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.search__input:hover,
+.search__input:focus {
+  padding: 12px 0;
+  outline: 0;
+  border: 1px solid transparent;
+  border-bottom: 1px solid #575756;
+  border-radius: 0;
+  background-position: 100% center;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+  height: 97vh;
+}
+
+.load-btn {
+  width: 180px;
+  height: 80px;
+  outline: none;
+  cursor: pointer;
+  background: none;
+  transition: 0.5s;
+  font-size: 24px;
+  border-radius: 5px;
+  font-family: "Lato", sans-serif;
+  color: #17bebb;
+  border-color: #17bebb;
+}
+
+.load-btn:hover {
+  border: none;
+  color: white;
+  font-size: 28px;
+  transform: scale(1.1);
+  background-color: #17bebb;
 }
