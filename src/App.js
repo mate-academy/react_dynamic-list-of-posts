@@ -20,24 +20,22 @@ class App extends React.PureComponent {
       wasLoaded: true,
     });
 
-    const [posts, users, comments] = await Promise.all([getPosts(), getUsers(), getComments()])
+    Promise.all([getPosts(), getUsers(), getComments()])
+      .then(([posts, users, comments]) => this.setState({
+        posts: posts,
+        users: users,
+        comments: comments,
+        isLoading: false,
+        loadingError: false,
+      }))
       .catch(() => this.setState({
         loadingError: true,
         isLoading: false,
       }));
-
-    this.setState({
-      posts: posts,
-      users: users,
-      comments: comments,
-      isLoading: false,
-      loadingError: false,
-    });
   }
 
   render() {
     const { posts, users, comments, isLoading, loadingError, wasLoaded } = this.state;
-    console.log(this.state);
 
     if (!isLoading && !wasLoaded) {
       return <Button secondary onClick={this.getInfoFromServer}>Load posts from server</Button>;

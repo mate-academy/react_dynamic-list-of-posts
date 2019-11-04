@@ -6,16 +6,16 @@ const getResponse = async (url) => {
   return response.json();
 };
 
-export const getPosts = async () => {
-  return await getResponse(`${baseURL}/posts`);
+export const getPosts = () => {
+  return getResponse(`${baseURL}/posts`);
 };
 
-export const getUsers = async () => {
-  return await getResponse(`${baseURL}/users`);
+export const getUsers = () => {
+  return getResponse(`${baseURL}/users`);
 };
 
-export const getComments = async () => {
-  return await getResponse(`${baseURL}/comments`);
+export const getComments = () => {
+  return getResponse(`${baseURL}/comments`);
 };
 
 

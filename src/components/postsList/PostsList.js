@@ -16,11 +16,11 @@ class PostList extends React.PureComponent {
     });
   }
 
-  getmodifiedPosts = (posts, users, comments) => {
-    return posts.map(post => ({
+  getmodifiedPosts = (postsList, usersList, commentsList) => {
+    return postsList.map(post => ({
       ...post,
-      user: users.find(user => user.id === post.userId),
-      commentList: comments.filter(comment => comment.postId === post.id),
+      user: usersList.find(user => user.id === post.userId),
+      commentList: commentsList.filter(comment => comment.postId === post.id),
     }));
   };
 
@@ -28,12 +28,16 @@ class PostList extends React.PureComponent {
     this.setState((prevState) => {
       const newPostList = [...prevState.modifiedPosts];
 
-      if (filter === 'title') {
-        newPostList.sort((a, b) => a.title.localeCompare(b.title));
-      } else if (filter === 'author') {
-        newPostList.sort((a, b) => a.user.name.localeCompare(b.user.name));
-      } else if (filter === 'postContent') {
-        newPostList.sort((a, b) => a.body.localeCompare(b.body));
+      switch (filter) {
+        case 'title':
+          newPostList.sort((a, b) => a.title.localeCompare(b.title));
+          break;
+        case 'author':
+          newPostList.sort((a, b) => a.user.name.localeCompare(b.user.name));
+          break;
+        case 'postContent':
+          newPostList.sort((a, b) => a.body.localeCompare(b.body));
+          break;
       }
 
       return ({
