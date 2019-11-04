@@ -2,7 +2,7 @@
 
 ## Demo link
 
-Add link here: [DEMO LINK](https://Sijey.github.io/react_dynamic-list-of-posts)
+Add link here: [DEMO LINK](https://sijey.github.io/react_dynamic-list-of-posts/)
 
 
 ## Task 
