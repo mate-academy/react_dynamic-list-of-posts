@@ -1,24 +1,13 @@
 import React from 'react';
 import './App.css';
 import { Button } from 'semantic-ui-react';
-import posts from './api/posts';
-import users from './api/users';
-import comments from './api/comments';
+import { users, posts, comments } from './api/api';
 import PostList from './components/postList/PostList';
-
-function postsWithUsersAndComment(postList, userList, commentList) {
-  return postList.map(post => ({
-    ...post,
-    user: userList.find(user => user.id === post.userId),
-    comments: commentList.filter(comment => comment.postId === post.id),
-  }));
-}
 
 class App extends React.Component {
   state = {
-    postList: [],
-    userList: [],
-    commentList: [],
+    originPosts: null,
+    fullPosts: null,
     isLoading: false,
     hasError: false,
   };
@@ -29,12 +18,17 @@ class App extends React.Component {
       hasError: false,
     });
 
-    Promise.all([posts(), comments(), users()])
+    Promise.all([posts, comments, users])
       .then(([postList, commentList, userList]) => {
+        const fullPosts = postList.map(post => ({
+          ...post,
+          user: userList.find(user => user.id === post.userId),
+          comments: commentList.filter(comment => comment.postId === post.id),
+        }));
+
         this.setState({
-          postList,
-          commentList,
-          userList,
+          fullPosts,
+          originPosts: fullPosts,
         });
       })
       .catch(() => {
@@ -49,11 +43,20 @@ class App extends React.Component {
       });
   };
 
+  handleSearch = (event) => {
+    const { originPosts } = this.state;
+
+    this.setState({
+      fullPosts: [...originPosts]
+        .filter(post => (post.title.includes(event.target.value))
+        || (post.body.includes(event.target.value))),
+    });
+  };
+
   render() {
     const {
-      postList, commentList, userList, isLoading, hasError,
+      isLoading, hasError, fullPosts,
     } = this.state;
-    const fullPosts = postsWithUsersAndComment(postList, userList, commentList);
 
     if (isLoading) {
       return <p>Loading...</p>;
@@ -68,7 +71,7 @@ class App extends React.Component {
       );
     }
 
-    if (!fullPosts.length) {
+    if (fullPosts === null) {
       return (
         <>
           <p>No posts and comments yet</p>
@@ -77,7 +80,7 @@ class App extends React.Component {
       );
     }
 
-    return <PostList posts={fullPosts} />;
+    return <PostList posts={fullPosts} search={this.handleSearch} />;
   }
 }
 
