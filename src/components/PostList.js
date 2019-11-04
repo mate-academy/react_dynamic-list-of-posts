@@ -62,11 +62,11 @@ class PostList extends React.Component {
             placeholder="Введите значение"
             onChange={this.filter}
           />
-          {filterValue.length > 0
+          {filterValue.length
             ? postsFiltered.map(post => <Post key={post.id} {...post} />)
             : posts.map(post => <Post key={post.id} {...post} />)
           }
-          {postsFiltered.length < 1 ? <span>Ничего не найдено</span> : null}
+          {!postsFiltered.length ? <span>Ничего не найдено</span> : null}
         </div>
       </section>
     );
