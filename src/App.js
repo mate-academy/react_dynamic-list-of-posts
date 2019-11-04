@@ -1,12 +1,68 @@
-import React from 'react';
-import './App.css';
+import React, { Component } from 'react';
+import PostList from './components/postList/PostList';
+import Spinner from './components/spinner/Spinner';
+import getComments from './services/Comments';
+import getUsers from './services/Users';
+import getPosts from './services/PostList';
 
-function App() {
-  return (
-    <div className="App">
-      <h1>Dynamic list of posts</h1>
-    </div>
-  );
+export default class App extends Component {
+
+  state = {
+    postList: null,
+    isLoading: false,
+    hasError: false,
+  }
+
+  loadData = async () => {
+    this.setState({
+      isLoading: true,
+      hasError: false,
+    });
+
+    const [posts, users, comments] = await Promise.all([getPosts(), getUsers(), getComments()])
+      .catch(() => {
+        this.setState({ hasError: true, isLoading: false })
+      })
+      .finally(() => {
+        this.setState({ isLoading: false })
+      })
+
+    this.setState({
+      postList: posts.map(post => ({
+        ...post,
+        user: users.find(user => user.id === post.userId),
+        comment: comments.filter(comment => comment.postId === post.id),
+      })),
+    });
+  };
+
+  render() {
+    const { postList, isLoading, hasError } = this.state;
+
+    if (isLoading) {
+      return <Spinner />
+    } else if (hasError) {
+      return (
+      <>
+        <Spinner />
+        <p>We have some problems with our server, please try again.</p>
+        <button
+        onClick={this.loadData}
+        className="btn btn-outline-dark">
+          Try again
+      </button>
+      </>
+      );
+    } else if (postList === null) {
+      return <button
+              onClick={this.loadData}
+              className="btn btn-outline-dark">
+                Load posts
+              </button>
+    } else {
+      return (
+        <PostList postInfo = {postList} />
+      );
+    }
+  }
 }
-
-export default App;
