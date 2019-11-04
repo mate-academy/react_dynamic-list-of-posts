@@ -18,5 +18,5 @@ function CommentList({ comments }) {
 Comment.propTypes = {
   comments: PropTypes.arrayOf(PropTypes.object).isRequired
 }
-//
+
 export default CommentList;

@@ -11,6 +11,7 @@ class PostsList extends React.Component {
     this.state = {
       postsList: [],
       typeOfFilter: 'standart',
+      filterValue: '',
     }
   }
 
@@ -53,16 +54,27 @@ class PostsList extends React.Component {
     })
   }
 
-  render() {
+  editFilter = (event) => {
+    this.setState({ filterValue: event.target.value })
+  }
 
+  render() {
+    const { filterValue } = this.state;
     return (
       <>
         <div className="filter">
           <Filter activeFilter={this.activeFilter}/>
+          <input type="text" placeholder="Write filter text" value={this.state.filterValue} onChange={this.editFilter} />
         </div>
         <div className="postsEnvironment">
           {
-            this.filteredPost().map(post => (
+            this.filteredPost()
+              .filter(post => {
+                if (post.body.includes(filterValue) || post.title.includes(filterValue)) {
+                  return post;
+                }
+              })
+              .map(post => (
               <Post
                 post={post}
                 key={post.id}
@@ -80,5 +92,5 @@ PostsList.propTypes = {
   users: PropTypes.arrayOf(PropTypes.object).isRequired,
   comments: PropTypes.arrayOf(PropTypes.object).isRequired,
 }
-//
+
 export default PostsList;

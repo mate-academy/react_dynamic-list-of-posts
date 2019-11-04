@@ -13,5 +13,5 @@ Comment.propTypes = {
   comment: PropTypes.object.isRequired,
   id: PropTypes.number.isRequired,
 }
-//
+
 export default Comment;

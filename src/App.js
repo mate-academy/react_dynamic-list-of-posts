@@ -19,24 +19,25 @@ class App extends React.Component {
     }
   }
 
-  loadData = async () => {
+  loadData = () => {
     this.setState({ isLoading: true })
 
-    const [ posts, users, comments ] = await Promise.all([getPosts(), getUsers(), getComments()])
+    Promise.all([getPosts(), getUsers(), getComments()])
+      .then((postsUsersComments) =>
+        this.setState(prev => {
+          return {
+            ...prev,
+            posts: postsUsersComments[0],
+            users: postsUsersComments[1],
+            comments: postsUsersComments[2],
+            isLoading: false,
+            dataReceived: true,
+            hasError: false,
+          }
+        })
+      )
       .catch(() => this.setState({ hasError: true }))
       .finally(() => this.setState({ isLoading: false }))
-
-    this.setState(prev => {
-      return {
-        ...prev,
-        posts: posts,
-        users: users,
-        comments: comments,
-        isLoading: false,
-        dataReceived: true,
-        hasError: false,
-      }
-    })
   }
 
   render() {
@@ -63,16 +64,14 @@ class App extends React.Component {
     } else if (hasError) {
 
       return (
-        <>
-          <div className="start-button">
-            <h3>Sorry! We have some problem with connection to server, please load data again.</h3>
-              {
-                isLoading
-                ? <Button loading></Button>
-                : <Button onClick={this.loadData}>Load</Button>
-              }
-          </div>
-        </>
+        <div className="start-button">
+          <h3>Sorry! We have some problem with connection to server, please load data again.</h3>
+            {
+              isLoading
+              ? <Button loading></Button>
+              : <Button onClick={this.loadData}>Load</Button>
+            }
+        </div>
       );
     } else {
 
@@ -82,6 +81,5 @@ class App extends React.Component {
     }
   }
 }
-//
 export default App;
 

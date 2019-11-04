@@ -68,7 +68,7 @@ Post.propTypes = {
   post: PropTypes.object.isRequired,
   key: PropTypes.number.isRequired,
 }
-//
+
 export default Post;
 
 

@@ -21,5 +21,5 @@ class Filter extends React.Component {
 Filter.propTypes = {
   activeFilter: PropTypes.arrayOf(PropTypes.object).isRequired,
 }
-//
+
 export default Filter;
