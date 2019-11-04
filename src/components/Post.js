@@ -5,7 +5,7 @@ import User from './User';
 
 const Post = ({ post }) => (
   <li>
-    <h1>{post.title}</h1>
+    <h2>{post.title}</h2>
     <p>{post.body}</p>
     <User user={post.user} />
     <CommentList comments={post.comments} />

@@ -2,25 +2,13 @@ const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts';
 const USERS_URL = 'https://jsonplaceholder.typicode.com/users';
 const COMMENTS_URL = 'https://jsonplaceholder.typicode.com/comments';
 
-const getPosts = () => (
-  fetch(POSTS_URL)
-    .then(response => response.json())
-);
-
-const getUsers = () => (
-  fetch(USERS_URL)
-    .then(response => response.json())
-);
-
-const getComments = () => (
-  fetch(COMMENTS_URL)
-    .then(response => response.json())
-);
-
-const getPostsWithDependencies = async() => {
-  const postList = await getPosts();
-  const userList = await getUsers();
-  const commentList = await getComments();
+const getPostsWithDependencies = async () => {
+  const postList = await fetch(POSTS_URL)
+    .then(response => response.json());
+  const userList = await fetch(USERS_URL)
+    .then(response => response.json());
+  const commentList = await fetch(COMMENTS_URL)
+    .then(response => response.json());
 
   return postList.map(post => (
     {

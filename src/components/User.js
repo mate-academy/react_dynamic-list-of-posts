@@ -3,19 +3,22 @@ import PropTypes from 'prop-types';
 
 const User = ({ user }) => (
   <div>
-    <div>{`Author: ${user.name}`}</div>
-    <div>
+    <p>
+      Author:
+      {user.name}
+    </p>
+    <p>
       {`
         Author lives at ${user.address.suite}
         on ${user.address.street} street
         in ${user.address.city}
       `}
-    </div>
-    <div>
+    </p>
+    <p>
       <a href={`mailto: ${user.email}`}>
         {`Email ${user.name}`}
       </a>
-    </div>
+    </p>
   </div>
 );
 

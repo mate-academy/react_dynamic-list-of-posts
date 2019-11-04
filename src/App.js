@@ -47,7 +47,7 @@ class App extends React.Component {
       );
     }
 
-    if (posts.length === 0) {
+    if (!posts.length) {
       return (
         <button type="button" onClick={this.loadPosts}>
           Load

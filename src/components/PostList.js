@@ -18,17 +18,16 @@ class PostList extends React.Component {
     const { inputValue } = this.state;
     let filteredPosts = null;
 
-    if (inputValue === '') {
-      filteredPosts = [...posts];
-    } else {
-      filteredPosts = [...posts].filter(
+    !inputValue
+      ? filteredPosts = [...posts]
+      : filteredPosts = [...posts].filter(
         post => post.title.includes(inputValue)
           || post.body.includes(inputValue)
       );
-    }
 
     return (
       <>
+        <h1>POSTS</h1>
         <label htmlFor="filter-posts">Filter the posts: </label>
         <input
           type="text"
