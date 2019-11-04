@@ -13,26 +13,12 @@ class CommentList extends React.Component {
     this.setState({
       isLoading: false,
     });
-
-    setTimeout(() => {
-      this.setState({
-        isLoaded: false,
-        isLoading: true,
-      });
-    }, 10);
   };
 
   handleClick = () => {
     this.setState({
       isLoading: true,
     });
-
-    setTimeout(() => {
-      this.setState({
-        isLoaded: true,
-        isLoading: false,
-      });
-    }, 10);
   };
 
   render() {
