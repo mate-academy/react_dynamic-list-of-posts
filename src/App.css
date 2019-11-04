@@ -1,3 +1,41 @@
 .App {
   text-align: center;
 }
+
+body {
+  background-color: #1A1B1D;
+}
+
+.before__load,
+.load__fail {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#loader {
+  height: 100vh;
+}
+
+.input {
+  margin-bottom: 30px;
+  width: 51%;
+}
+
+h2 {
+  color: white;
+}
+
+.card__box {
+  margin-bottom: 30px !important;
+}
+
+.mail__link {
+  color: gray;
+}
+
+.mail__link:hover {
+  color: lightgray;
+}
