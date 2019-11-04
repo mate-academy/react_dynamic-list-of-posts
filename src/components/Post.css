@@ -1,0 +1,34 @@
+.post {
+  margin: 5px auto;
+  padding: 5px;
+  width: 600px;
+  box-shadow: 0 0 4px 1px #000000;
+}
+
+.post__title {
+  text-transform: capitalize;
+}
+
+.comment,
+.commentText{
+  color: white;
+}
+
+h3 {
+  background-color: black;
+  color: white;
+}
+section {
+  background-color: rgba(211, 211, 211, 0.23);
+  width: 600px;
+  margin: auto;
+}
+h1 {
+  color: black;
+}
+
+input {
+  background-color: lightcyan;
+  width: 600px;
+  border-radius: 11px;
+}
