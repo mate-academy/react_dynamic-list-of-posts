@@ -10,9 +10,9 @@ class CommentsList extends Component {
 
     return (
       <div>
-        <h4 className="comment__header">{name}</h4>
+        <h4>{name}</h4>
         <a href={`mailto:${email}`} className="mail__link">{email}</a>
-        <p className="comment__body">{body}</p>
+        <p>{body}</p>
       </div>
     );
   }

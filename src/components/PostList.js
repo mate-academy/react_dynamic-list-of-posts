@@ -22,7 +22,7 @@ class PostList extends Component {
     const filteredInfo = [...postsInfo].filter(post => post.title.includes(filter) || post.body.includes(filter) || post.user.name.includes(filter) || post.user.email.includes(filter));
 
     return (
-      <Segment inverted classname="box">
+      <Segment inverted>
         <Input
           inverted
           type="text"
