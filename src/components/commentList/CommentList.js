@@ -7,8 +7,7 @@ const CommentList = ({ comments }) => (
   <List>
     {comments.map(comment => (
       <Comment comment={comment} key={comment.id} />
-    ))
-    }
+    ))}
   </List>
 );
 
