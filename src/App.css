@@ -1,3 +1,18 @@
 .App {
   text-align: center;
 }
+
+.button,
+.input {
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+.input {
+  width: 290px;
+  height: 50px;
+  margin-top: 50px !important;
+  border: 1px solid black;
+  outline: none;
+  padding: 15px;
+}
