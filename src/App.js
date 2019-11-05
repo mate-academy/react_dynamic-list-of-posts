@@ -4,8 +4,8 @@ import PostList from './components/PostList/PostList';
 
 class App extends React.Component {
   state = {
-    originalData: [],
     sortedData: [],
+    originalData: [],
     users: [],
     inputtedName: '',
     isLoading: false,
@@ -16,24 +16,24 @@ class App extends React.Component {
     this.setState({
       isLoading: true,
     });
+
+    const getData = async (url) => {
+      const response = await fetch(url);
+      return response.json();
+    };
+
     Promise.all([
-      fetch('https://jsonplaceholder.typicode.com/comments'),
-      fetch('https://jsonplaceholder.typicode.com/users'),
-      fetch(' https://jsonplaceholder.typicode.com/posts'),
-    ])
-      .then(([res1, res2, res3]) => Promise.all([
-        res1.json(),
-        res2.json(),
-        res3.json(),
-      ]))
+      getData('https://jsonplaceholder.typicode.com/comments'),
+      getData('https://jsonplaceholder.typicode.com/users'),
+      getData('https://jsonplaceholder.typicode.com/posts')])
       .then(([comments, users, posts]) => this.setState({
-        originalData: posts.map(post => ({
+        sortedData: posts.map(post => ({
           ...post,
           comments: comments.filter(comment => comment.postId === post.id),
           user: users.reduce((acc, user) => (
             { ...acc, [user.id]: user }), {})[post.userId],
         })),
-        sortedData: posts.map(post => ({
+        originalData: posts.map(post => ({
           ...post,
           comments: comments.filter(comment => comment.postId === post.id),
           user: users.reduce((acc, user) => (
@@ -49,21 +49,20 @@ class App extends React.Component {
     this.setState({
       inputtedName: target.value.toLowerCase(),
     });
-    this.sortingDataByName(target.value.toLowerCase());
+    this.sortingByName(target.value.toLowerCase());
   };
 
   sortingByName = (inputtedName) => {
     this.setState(prevState => ({
       sortedData: [...prevState.originalData].filter(data => (
         data.user.name.toLowerCase().includes(inputtedName))),
-      sortedUsers: [...prevState.users].filter(data => (
-        data.name.toLowerCase().includes(inputtedName))),
     }));
   };
 
   showAllData = () => {
     this.setState(prevState => ({
       sortedData: [...prevState.originalData],
+      inputtedName: '',
     }));
   };
 
@@ -100,7 +99,7 @@ class App extends React.Component {
           {sortedData.length}
         </p>
         <h2>Posted users name: </h2>
-        {users.map(person => <b>{person.name}<br/></b>)}
+        {users.map(person => <strong>{person.name}<br/></strong>)}
         <form onSubmit={this.sortingByName} className="form">
           <div className="ui left icon input">
           <input

@@ -13,7 +13,7 @@ function Post({post}) {
         <p>{body}</p>
         <User user={post.user} />
       </div>
-      <CommentList comments={comments} />
+      <CommentList comments={comments} key={comments.id} />
     </div>
   );
 }
