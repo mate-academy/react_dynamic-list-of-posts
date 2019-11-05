@@ -14,13 +14,13 @@ class User extends Component {
         <br />
         <a href={`mailto:${email}`}>{email}</a>
         <br />
-        <div>
+        <p>
           <span>
             City:
             {address.city}
           </span>
           <br />
-        </div>
+        </p>
       </div>
     );
   }

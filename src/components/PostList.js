@@ -19,7 +19,11 @@ class PostList extends Component {
   render() {
     const { postsInfo } = this.props;
     const { filter } = this.state;
-    const filteredInfo = [...postsInfo].filter(post => post.title.includes(filter) || post.body.includes(filter) || post.user.name.includes(filter) || post.user.email.includes(filter));
+    const filteredInfo = [...postsInfo]
+      .filter(post => post.title.includes(filter)
+        || post.body.includes(filter)
+        || post.user.name.includes(filter)
+        || post.user.email.includes(filter));
 
     return (
       <Segment inverted>

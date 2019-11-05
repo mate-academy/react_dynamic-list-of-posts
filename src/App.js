@@ -2,12 +2,10 @@ import React from 'react';
 import './App.css';
 
 import {
-  Dimmer, Loader,  Segment, Button,
+  Dimmer, Loader, Segment, Button,
 } from 'semantic-ui-react';
 
-import getPosts from './API/posts';
-import getUsers from './API/users';
-import getComments from './API/comments';
+import { posts, users, comments } from './API/post-api';
 import PostList from './components/PostList';
 
 class App extends React.Component {
@@ -22,13 +20,13 @@ class App extends React.Component {
       isLoading: true,
     });
 
-    Promise.all([getPosts(), getUsers(), getComments()])
-      .then(([posts, users, comments]) => {
+    Promise.all([posts, users, comments])
+      .then(([Posts, Users, Comments]) => {
         this.setState({
-          postList: posts.map(post => ({
+          postList: Posts.map(post => ({
             ...post,
-            user: users.find(user => user.id === post.userId),
-            comments: comments.filter(comment => comment.postId === post.id),
+            user: Users.find(user => user.id === post.userId),
+            comments: Comments.filter(comment => comment.postId === post.id),
           })),
           isLoading: false,
           hasError: false,
