@@ -88,6 +88,8 @@ body {
   padding: 10px;
   transition: 250ms;
   width: 100%;
+  cursor: pointer;
+  outline: none;
 }
 
 .btn:hover {

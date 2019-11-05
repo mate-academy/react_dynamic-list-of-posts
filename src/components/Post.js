@@ -9,8 +9,7 @@ const Post = ({ dataPost }) => (
     <div className="card">
       <div className="header">
         <div className="icon">
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a href="#"><i className="fa fa-heart-o" /></a>
+          <a href="##"><i className="fa fa-heart-o" /></a>
         </div>
       </div>
       <div className="text">
@@ -19,7 +18,6 @@ const Post = ({ dataPost }) => (
         <p className="info">{dataPost.body}</p>
         <CommentList currentComment={dataPost.comments} />
       </div>
-      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
     </div>
   </>
 );

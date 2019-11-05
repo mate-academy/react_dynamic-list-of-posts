@@ -1,20 +1,11 @@
-export const getPosts = async() => {
-  const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-  const currentPost = await response.json();
+const defaultUrl = ' https://jsonplaceholder.typicode.com';
 
-  return currentPost;
+const getData = async(url) => {
+  const response = await fetch(url);
+
+  return response.json();
 };
 
-export const getUsers = async() => {
-  const response = await fetch('https://jsonplaceholder.typicode.com/users');
-  const currentUsers = await response.json();
-
-  return currentUsers;
-};
-
-export const getComments = async() => {
-  const response = await fetch('https://jsonplaceholder.typicode.com/comments');
-  const currentComment = await response.json();
-
-  return currentComment;
-};
+export const getPosts = () => getData(`${defaultUrl}/posts`);
+export const getUsers = () => getData(`${defaultUrl}/users`);
+export const getComments = () => getData(`${defaultUrl}/comments`);

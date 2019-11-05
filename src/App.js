@@ -12,27 +12,29 @@ class App extends React.Component {
   };
 
   handleClick = async() => {
-    const comments = await getComments();
-    const posts = await getPosts();
-    const users = await getUsers();
-    const usersPosts = posts.map(post => ({
-      ...post,
-      user: users.find(user => user.id === post.userId),
-      comments: comments.filter(comment => comment.postId === post.id),
-    }));
+    Promise.all([getComments(), getPosts(), getUsers()])
+      .then((result) => {
+        const [comments, posts, users] = result;
+        const usersPosts = posts.map(post => ({
+          ...post,
+          user: users.find(user => user.id === post.userId),
+          comments: comments.filter(comment => comment.postId === post.id),
+        }));
 
-    this.setState({
-      posts: usersPosts,
-      listOfPosts: usersPosts,
-      isLoading: true,
-    });
+        this.setState({
+          posts: usersPosts,
+          listOfPosts: usersPosts,
+          isLoading: true,
+          isLoaded: false,
+        });
 
-    setTimeout(() => {
-      this.setState({
-        isLoaded: true,
-        isLoading: false,
+        setTimeout(() => {
+          this.setState({
+            isLoaded: true,
+            isLoading: false,
+          });
+        }, 10);
       });
-    }, 10);
   };
 
   handleSearch = (someType) => {
@@ -40,7 +42,7 @@ class App extends React.Component {
 
     this.setState(prevState => ({
       listOfPosts: prevState.posts.filter(
-        world => [world.title, world.body]
+        word => [word.title, word.body]
           .join('')
           .toLowerCase()
           .includes(search.toLowerCase())
@@ -51,7 +53,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        { this.state.isLoaded ? (
+        { this.state.isLoaded && (
           <>
             <div className="search__container">
               <input
@@ -63,7 +65,10 @@ class App extends React.Component {
             </div>
             <PostList postsCurrent={this.state.listOfPosts} />
           </>
-        ) : (
+        )
+        }
+        {' '}
+        { !this.state.isLoaded && (
           <div className="btn-container">
             <button
               className="load-btn"
