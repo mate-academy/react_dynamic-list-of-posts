@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import PostList from './components/postList/PostList';
 import Spinner from './components/spinner/Spinner';
-import getComments from './services/Comments';
-import getUsers from './services/Users';
-import getPosts from './services/PostList';
+import { posts, users, comments } from './services/PostList';
 
 export default class App extends Component {
 
@@ -19,7 +17,16 @@ export default class App extends Component {
       hasError: false,
     });
 
-    const [posts, users, comments] = await Promise.all([getPosts(), getUsers(), getComments()])
+    Promise.all([posts, users, comments])
+      .then(([posts, users, comments]) => {
+        this.setState({
+            postList: posts.map(post => ({
+            ...post,
+            user: users.find(user => user.id === post.userId),
+            comment: comments.filter(comment => comment.postId === post.id),
+          })),
+        });
+      })
       .catch(() => {
         this.setState({ hasError: true, isLoading: false })
       })
@@ -27,13 +34,7 @@ export default class App extends Component {
         this.setState({ isLoading: false })
       })
 
-    this.setState({
-      postList: posts.map(post => ({
-        ...post,
-        user: users.find(user => user.id === post.userId),
-        comment: comments.filter(comment => comment.postId === post.id),
-      })),
-    });
+
   };
 
   render() {
@@ -47,18 +48,22 @@ export default class App extends Component {
         <Spinner />
         <p>We have some problems with our server, please try again.</p>
         <button
-        onClick={this.loadData}
-        className="btn btn-outline-dark">
+          onClick={this.loadData}
+          className="btn btn-outline-dark"
+        >
           Try again
-      </button>
+        </button>
       </>
       );
     } else if (postList === null) {
-      return <button
-              onClick={this.loadData}
-              className="btn btn-outline-dark">
-                Load posts
-              </button>
+      return (
+        <button
+          onClick={this.loadData}
+          className="btn btn-outline-dark"
+        >
+          Load posts
+        </button>
+    );
     } else {
       return (
         <PostList postInfo = {postList} />

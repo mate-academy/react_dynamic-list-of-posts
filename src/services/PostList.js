@@ -1,8 +1,10 @@
-const POST_API = `https://jsonplaceholder.typicode.com/posts`;
-
-function getPosts() {
-  return fetch(POST_API)
-    .then(posts => posts.json());
+function getPostInfo(url) {
+  return fetch(url)
+    .then(response => response.json());
 }
 
-export default getPosts;
+const posts = getPostInfo(`https://jsonplaceholder.typicode.com/posts`);
+const users = getPostInfo(`https://jsonplaceholder.typicode.com/users`);
+const comments = getPostInfo(`https://jsonplaceholder.typicode.com/comments`);
+
+export { posts, users, comments };
