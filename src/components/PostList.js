@@ -1,6 +1,6 @@
 import React from 'react';
 import Post from './Post';
-import {getComments, getPosts, getUsers} from './utils';
+import { getComments, getPosts, getUsers } from './utils';
 
 class PostList extends React.Component {
   state = {
