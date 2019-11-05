@@ -63,7 +63,7 @@ export default class App extends Component {
         >
           Load posts
         </button>
-    );
+      );
     } else {
       return (
         <PostList postInfo = {postList} />
