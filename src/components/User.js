@@ -19,7 +19,6 @@ class User extends Component {
             City:
             {address.city}
           </span>
-          <br />
         </p>
       </div>
     );
