@@ -21,12 +21,12 @@ class App extends React.Component {
     });
 
     Promise.all([posts, users, comments])
-      .then(([Posts, Users, Comments]) => {
+      .then(([postsList, usersList, commentsList]) => {
         this.setState({
-          postList: Posts.map(post => ({
+          postList: postsList.map(post => ({
             ...post,
-            user: Users.find(user => user.id === post.userId),
-            comments: Comments.filter(comment => comment.postId === post.id),
+            user: usersList.find(user => user.id === post.userId),
+            comments: commentsList.filter(comment => comment.postId === post.id),
           })),
           isLoading: false,
           hasError: false,
