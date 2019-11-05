@@ -3,7 +3,7 @@ import React from 'react';
 import './App.css';
 
 import PostList from './components/PostList';
-import { getPosts, getUsers, getComments } from './api/api';
+import { postsURL, usersURL, commentsURL } from './api/api';
 
 class App extends React.Component {
   constructor(props) {
@@ -23,7 +23,7 @@ class App extends React.Component {
       error: false,
     });
 
-    Promise.all([getPosts(), getUsers(), getComments()])
+    Promise.all([postsURL, usersURL, commentsURL])
       .then(([postList, userList, commentList]) => {
         this.setState({
           preparedPosts: postList.map(post => ({
@@ -101,7 +101,7 @@ class App extends React.Component {
       );
     }
 
-    if (preparedPosts.length === 0) {
+    if (!preparedPosts.length) {
       return (
         <>
           <p>No posts yet!</p>
