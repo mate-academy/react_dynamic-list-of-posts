@@ -17,7 +17,8 @@ export default class PostList extends Component {
   render() {
     const { postInfo } = this.props;
     const filteredPosts = postInfo
-      .filter(post => post.title.includes(this.state.filter)
+      .filter(post => 
+      post.title.includes(this.state.filter)
       || post.body.includes(this.state.filter));
 
     return (
