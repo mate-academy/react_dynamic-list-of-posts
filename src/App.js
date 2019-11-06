@@ -13,9 +13,6 @@ class App extends Component {
       initialTable: null,
       currentTable: null,
       loading: false,
-      posts: null,
-      users: null,
-      comments: null,
     };
   }
 
@@ -35,9 +32,6 @@ class App extends Component {
     this.setState({
       initialTable: postList,
       currentTable: postList,
-      posts: postList,
-      users: postList.users,
-      comments: postList.comments,
     });
   };
 
@@ -61,11 +55,9 @@ class App extends Component {
   }
 
   rendering = () => {
-    const {
-      posts, users, comments, loading,
-    } = this.state;
+    const { initialTable, loading } = this.state;
 
-    if (users === null && posts === null && comments === null) {
+    if (initialTable === null) {
       if (loading) {
         return <button className="ui loading primary button">Loading</button>;
       }
