@@ -176,3 +176,11 @@ body {
   transform: scale(1.1);
   background-color: #17bebb;
 }
+
+.name {
+  font-weight: bold;
+}
+
+.email {
+  font-style: italic;
+}

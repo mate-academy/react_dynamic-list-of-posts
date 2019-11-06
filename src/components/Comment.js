@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 function Comment({ comment: { name, body, email } }) {
   return (
     <div className="comment">
-      <p>{email}</p>
-      <p>{name}</p>
+      <p className="name">{name}</p>
+      <p className="email">{email}</p>
+      <br />
       <p>
-        Comments:
         {body}
       </p>
     </div>
