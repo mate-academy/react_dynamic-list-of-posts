@@ -39,10 +39,7 @@ class App extends Component {
     if (val) {
       const table = this.state.currentTable;
       const filterTable = table
-        .filter(
-          item => item.body.includes(val)
-            || item.title.includes(val)
-        );
+        .filter(item => item.body.includes(val) || item.title.includes(val));
 
       this.setState({
         currentTable: filterTable,
