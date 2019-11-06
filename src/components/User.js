@@ -1,20 +1,22 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import '../App.css';
+import PropTypes from 'prop-types';
 
-const User = ({ currentUser }) => (
-  <div className="users__info">
-    <p>{currentUser.name}</p>
-    <p>{currentUser.username}</p>
-    <p>{currentUser.email}</p>
-  </div>
-);
+function User({ user: { name, email, username } }) {
+  return (
+    <div className="users__info">
+      <p>{name}</p>
+      <p>{username}</p>
+      <p>{email}</p>
+    </div>
+  );
+}
 
 User.propTypes = {
-  currentUser: PropTypes.shape({
+  user: PropTypes.shape({
     name: PropTypes.string,
-    username: PropTypes.string,
     email: PropTypes.string,
+    address: PropTypes.object,
+    user: PropTypes.object,
   }).isRequired,
 };
 

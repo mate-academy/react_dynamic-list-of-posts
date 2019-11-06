@@ -36,7 +36,7 @@ body {
   min-height: 350px;
 }
 
-.card .header .icon a .fa-heart-o {
+.card .header .icon span .fa-heart-o {
   position: relative;
   background: #17bebb;
   color: white;
@@ -77,7 +77,7 @@ body {
   margin: 10px 30px;
 }
 
-.btn {
+.comments {
   display: block;
   background: #ef3e36;
   color: white;
@@ -88,13 +88,6 @@ body {
   padding: 10px;
   transition: 250ms;
   width: 100%;
-  cursor: pointer;
-  outline: none;
-}
-
-.btn:hover {
-  background: #17bebb;
-  transition: 250ms;
 }
 
 .users__info {

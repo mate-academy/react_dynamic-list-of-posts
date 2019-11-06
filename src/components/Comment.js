@@ -1,17 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import '../App.css';
 
-const Comment = ({ dataComment }) => (
-  <div className="comment">
-    <h3>{dataComment.email}</h3>
-    <p>Comment:</p>
-    <p>{dataComment.body}</p>
-  </div>
-);
+function Comment({ comment: { name, body, email } }) {
+  return (
+    <div className="comment">
+      <p>{email}</p>
+      <p>{name}</p>
+      <p>
+        Comments:
+        {body}
+      </p>
+    </div>
+  );
+}
 
 Comment.propTypes = {
-  dataComment: PropTypes.shape({
+  comment: PropTypes.shape({
     body: PropTypes.string,
     name: PropTypes.string,
     email: PropTypes.string,

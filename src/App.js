@@ -1,84 +1,72 @@
 import React from 'react';
 import './App.css';
-import PostList from './components/PostsList';
 import { getPosts, getUsers, getComments } from './api/api';
+import PostList from './components/PostsList';
 
 class App extends React.Component {
-  state = {
-    listOfPosts: [],
-    isLoaded: false,
-    isLoading: false,
-    posts: [],
-  };
+  constructor(props) {
+    super(props);
 
-  handleClick = async() => {
-    Promise.all([getComments(), getPosts(), getUsers()])
-      .then((result) => {
-        const [comments, posts, users] = result;
-        const usersPosts = posts.map(post => ({
+    this.state = {
+      isLoading: false,
+      listOfPosts: [],
+    };
+  }
+
+  loadData = () => {
+    this.setState({
+      isLoading: true,
+    });
+
+    Promise.all([getPosts(), getUsers(), getComments()])
+      .then(([postsItems, usersItems, commentsItems]) => {
+        const listOfPosts = postsItems.map(post => ({
           ...post,
-          user: users.find(user => user.id === post.userId),
-          comments: comments.filter(comment => comment.postId === post.id),
+          user: usersItems.find(user => user.id === post.userId),
+          comments: commentsItems.filter(comment => comment.postId === post.id),
         }));
 
         this.setState({
-          posts: usersPosts,
-          listOfPosts: usersPosts,
-          isLoading: true,
-          isLoaded: false,
+          listOfPosts,
+          isLoading: false,
         });
-
-        setTimeout(() => {
-          this.setState({
-            isLoaded: true,
-            isLoading: false,
-          });
-        }, 10);
       });
   };
 
-  handleSearch = (someType) => {
-    const search = someType.target.value;
-
-    this.setState(prevState => ({
-      listOfPosts: prevState.posts.filter(
-        word => [word.title, word.body]
-          .join('')
-          .toLowerCase()
-          .includes(search.toLowerCase())
-      ),
-    }));
-  };
-
   render() {
-    return (
-      <div>
-        { this.state.isLoaded && (
-          <>
-            <div className="search__container">
-              <input
-                type="text"
-                className="search__input"
-                placeholder="Search"
-                onChange={this.handleSearch}
-              />
-            </div>
-            <PostList postsCurrent={this.state.listOfPosts} />
-          </>
-        )
-        }
-        {' '}
-        { !this.state.isLoaded && (
+    const { listOfPosts, isLoading } = this.state;
+
+    if (!listOfPosts.length) {
+      if (isLoading) {
+        return (
           <div className="btn-container">
             <button
-              className="load-btn"
               type="button"
-              onClick={this.handleClick}
+              className="load-btn"
+              onClick={this.loadData}
             >
-              {this.state.isLoading ? 'Loading...' : 'Load'}
+              Loading...
             </button>
           </div>
-        )}
+        );
+      }
+
+      return (
+        <div className="btn-container">
+          <button
+            type="button"
+            className="load-btn"
+            onClick={this.loadData}
+          >
+            Load
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="container">
+        <PostList posts={listOfPosts} />
       </div>
     );
   }
