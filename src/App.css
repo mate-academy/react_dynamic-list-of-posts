@@ -1,3 +1,47 @@
-.App {
-  text-align: center;
+#root {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin: 40px auto;
+}
+
+.wrapper {
+  max-width: 1200px;
+  margin: 20px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 40px;
+  justify-items: center;
+  align-items: start;
+}
+
+.ui.card:first-child {
+  margin: 1em 0;
+}
+
+.ui.feed:first-child {
+  margin: 1em 0;
+}
+
+.author {
+  font-weight: bold;
+  color: black;
+}
+
+.input {
+  width: 950px;
+  margin: auto;
+}
+
+.start {
+  max-width: max-content;
+  margin: auto;
+}
+
+.wrap {
+  display: flex;
+  justify-content: center;
+  max-width: 1200px;
+  margin: auto;
+  flex-wrap: wrap;
 }
