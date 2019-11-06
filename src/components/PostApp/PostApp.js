@@ -16,11 +16,13 @@ class PostApp extends Component {
   }
 
   getPostsWithUsersAndComments = (postList, usersList, commentList) => {
-    postList.map(post => ({
+    const iterator = post => ({
       ...post,
       user: usersList.find(user => user.id === post.userId),
       comments: commentList.filter(comment => comment.postId === post.id),
-    }));
+    });
+
+    return postList.map(iterator);
   };
 
   onFilterChange = (event) => {
