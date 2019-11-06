@@ -1,0 +1,9 @@
+.post__author::before {
+  content: "Author: ";
+}
+
+.author,
+.address {
+  color: #555;
+  font-style: italic;
+}
