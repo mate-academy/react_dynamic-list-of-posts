@@ -1,0 +1,12 @@
+.comment__text {
+  font-size: 12px;
+}
+
+.comment__author::before {
+  content: "by: ";
+}
+
+.author {
+  color: #555;
+  font-style: italic;
+}

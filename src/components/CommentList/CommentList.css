@@ -1,0 +1,9 @@
+.comments {
+  margin-top: 15px;
+}
+
+.comments::before {
+  content: "Comments: ";
+  font-size: 18px;
+  font-style: oblique;
+}
