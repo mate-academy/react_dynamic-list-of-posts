@@ -1,9 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import './Post.css';
 import User from '../User/User';
 import CommentList from '../CommentList/CommentList';
 
-// eslint-disable-next-line react/prop-types
 function Post({ post }) {
   const {
     title, body, user, comments,
@@ -22,5 +23,13 @@ function Post({ post }) {
     </li>
   );
 }
+
+Post.defaultProps = {
+  post: {},
+};
+
+Post.propTypes = {
+  post: PropTypes.objectOf,
+};
 
 export default Post;
