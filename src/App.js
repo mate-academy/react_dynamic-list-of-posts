@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import PostList from './components/PostList/PostList';
+import NameList from './components/NameList/NameList';
 
 class App extends React.Component {
   state = {
@@ -99,7 +100,8 @@ class App extends React.Component {
           {sortedData.length}
         </p>
         <h2>Posted users name: </h2>
-        {users.map(person => <strong>{person.name}<br/></strong>)}
+        {users.map(person =>
+          <NameList person={person.name} key={person.id} />)}
         <form onSubmit={this.sortingByName} className="form">
           <div className="ui left icon input">
           <input
