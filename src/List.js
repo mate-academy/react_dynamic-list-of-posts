@@ -1,25 +1,7 @@
 import React from 'react';
 
 import Content from './Content';
-
-async function load (url) {
-  const response = await fetch(url);
-  const items = await response.json();
-  return items;
-}
-
-async function loadConect (commentsUrl, postsUrl, usersUrl) {
-  const comments = await load(commentsUrl);
-  const posts = await load(postsUrl);
-  const users = await load(usersUrl);
-  return posts.map(post =>{
-    return {
-      ...post,
-      user: users.find(user => user.id === post.userId),
-      comments: comments.filter(comment => post.id === comment.postId),
-    }
-  })
-}
+import loadConnect from './loadConnect';
 
 class List extends React.Component {
   constructor (props) {
@@ -28,27 +10,41 @@ class List extends React.Component {
     this.state = {
       posts: null,
       isLoaded: false,
+      value: '',
     };
 
     this.loads = this.loads.bind(this);
+    this.filterName = this.filterName.bind(this);
   }
 
   async loads() {
     this.setState({
       isLoaded: true
     });
-    const posts = await loadConect('https://jsonplaceholder.typicode.com/comments',
-     'https://jsonplaceholder.typicode.com/posts',
-     'https://jsonplaceholder.typicode.com/users');
+    let posts = await loadConnect('https://jsonplaceholder.typicode.com/comments',
+      'https://jsonplaceholder.typicode.com/posts',
+      'https://jsonplaceholder.typicode.com/users');
     this.setState({
       posts,
     });
   }
+
+  filterName (event) {
+    this.setState({value: event.target.value});
+  }
+
   render() {
+    const { value } = this.state;
     return (
       <>
+        <input
+          type={"text"}
+          value={value}
+          onChange={this.filterName}
+          hidden={this.state.posts === null}
+        ></input>
         <button hidden={this.state.isLoaded} onClick={() => this.loads()}>
-        Load
+          Load
         </button>
         <Content list={this.state} />
       </>

@@ -1,18 +1,22 @@
 import React from 'react';
 
 function Content(props) {
-  const posts = props.list.posts;
-  console.log(posts)
-  if(props.list.isLoaded && props.list.posts === null) {
+  const list = props.list;
+  let posts = props.list.posts;
+
+  if(list.isLoaded && posts === null) {
     return <p>...loading</p>
-  } else if (!props.list.isLoaded && props.list.posts === null) {
-    return <p>not load</p>
-  } else if (props.list.isLoaded && props.list.posts !== null) {
+  } else if (!list.isLoaded && posts === null) {
+    return <p>not loaded</p>
+  } else if (list.isLoaded && posts !== null) {
+    if(props.list.value !== '') {
+      posts = posts.filter(post => post.user.name.includes(props.list.value))
+    }
     return posts.map(post => {
       const user = post.user;
       const comments = post.comments;
       return (
-          <div className={'content'} key={post.id}>
+          <div className={'content'} key={post.id + post.title}>
             <div>
               <p>Name: {user.name}</p>
               <p>email: {user.email}</p>
@@ -24,7 +28,7 @@ function Content(props) {
             </div>
             <div>
               <ul>
-                {comments.map(comment => <li>{comment.body}</li>)}
+                {comments.map(comment => <li key={comment.id + comment.body}>{comment.body}</li>)}
               </ul>
             </div>
           </div>
