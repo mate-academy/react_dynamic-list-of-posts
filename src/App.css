@@ -1,3 +1,15 @@
 .App {
   text-align: center;
 }
+
+.app {
+  padding: 30px calc(50% - 300px);
+}
+
+.form {
+  display: inline-block;
+}
+
+.form > div {
+ margin-right: 50px;
+}
