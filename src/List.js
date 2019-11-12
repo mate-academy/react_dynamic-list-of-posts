@@ -46,6 +46,7 @@ class List extends React.Component {
         <button hidden={this.state.isLoaded} onClick={() => this.loads()}>
           Load
         </button>
+        <p hidden={this.state.isLoaded}>not loaded</p>
         <Content list={this.state} />
       </>
     );
