@@ -1,3 +1,14 @@
 .App {
   text-align: center;
 }
+
+.content{
+  display: flex;
+  border: 2px solid black;
+  margin: 10px 0;
+}
+
+.content > div {
+  border: 2px solid black;
+  padding: 3px;
+}
