@@ -10,10 +10,23 @@ function Content(props) {
     return null;
   } else if (list.isLoaded && posts !== null) {
     if(props.list.value !== '') {
-      posts = posts.filter(post =>
-        post.user.name
-          .toLowerCase()
-          .includes(props.list.value.trim().toLowerCase())
+      posts = posts.filter(
+        post =>
+          post.user.name
+            .toLowerCase()
+            .includes(
+              props.list.value.trim().toLowerCase()
+            ) ||
+            post.title
+            .toLowerCase()
+            .includes(
+              props.list.value.trim().toLowerCase()
+            ) ||
+            post.body
+            .toLowerCase()
+            .includes(
+              props.list.value.trim().toLowerCase()
+            )
       );
     }
     return posts.map(post => {

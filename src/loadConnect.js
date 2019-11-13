@@ -9,6 +9,8 @@ async function loadConnect(commentsUrl, postsUrl, usersUrl) {
       ...post,
       user: users.find(user => user.id === post.userId),
       comments: comments.filter(comment => post.id === comment.postId),
+      title: post.title === null ? '' : post.title,
+      body: post.body === null ? '' : post.body,
     }
   })
 }
