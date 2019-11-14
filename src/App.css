@@ -1,3 +1,33 @@
 .App {
   text-align: center;
 }
+
+.post {
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: #e4e4e4;
+}
+
+.post__title {
+  font-weight: bold;
+}
+
+.post__body {
+  border: 1px solid black;
+}
+
+.user {
+  font-style: italic;
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.comments-start-title {
+  font-weight: bold;
+}
+
+.comment {
+  background-color: #fff;
+  border: 1px dashed black;
+}
