@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
+import PostApp from './components/PostApp/PostApp';
 
-function App() {
-  return (
-    <div className="App">
-      <h1>Dynamic list of posts</h1>
-    </div>
-  );
-}
+const App = () => (
+  <div className="App">
+    <h1>Dynamic list of posts</h1>
+    <PostApp />
+  </div>
+);
 
 export default App;
