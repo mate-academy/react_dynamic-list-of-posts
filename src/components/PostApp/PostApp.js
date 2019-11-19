@@ -5,25 +5,13 @@ class PostApp extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      users: null,
       posts: null,
-      comments: null,
       isLoading: false,
       error: false,
       filter: '',
     };
     this.loadPosts = this.loadPosts.bind(this);
   }
-
-  getPostsWithUsersAndComments = (postList, usersList, commentList) => {
-    const iterator = post => ({
-      ...post,
-      user: usersList.find(user => user.id === post.userId),
-      comments: commentList.filter(comment => comment.postId === post.id),
-    });
-
-    return postList.map(iterator);
-  };
 
   onFilterChange = (event) => {
     this.setState({ filter: event.target.value });
@@ -45,7 +33,13 @@ class PostApp extends Component {
         this.getDatafromServer('https://jsonplaceholder.typicode.com/comments'),
       ]);
 
-      this.setState({ users, posts, comments });
+      const postsWithUsersAndComments = posts.map(post => ({
+        ...post,
+        user: users.find(user => user.id === post.userId),
+        comments: comments.filter(comment => comment.postId === post.id),
+      }));
+
+      this.setState({ posts: postsWithUsersAndComments });
     } catch (e) {
       this.setState({ error: true });
     } finally {
@@ -55,10 +49,10 @@ class PostApp extends Component {
 
   render() {
     const {
-      users, posts, comments, isLoading, error, filter,
+      posts, isLoading, error, filter,
     } = this.state;
 
-    if (users === null || posts === null || comments === null) {
+    if (posts === null) {
       return (
         <>
           {error ? <p>Opps...Try again later.</p> : null}
@@ -69,15 +63,13 @@ class PostApp extends Component {
       );
     }
 
-    const postsWithUsersAndComments = this
-      .getPostsWithUsersAndComments(posts, users, comments)
-      .filter(post => (
-        post.title.includes(filter) || post.body.includes(filter)));
+    const filteredPosts = this.state.posts.filter(post => (
+      post.title.includes(filter) || post.body.includes(filter)));
 
     return (
       <>
         <input type="text" value={filter} onChange={this.onFilterChange} />
-        <PostList posts={postsWithUsersAndComments} />
+        <PostList posts={filteredPosts} />
       </>
     );
   }
