@@ -56,6 +56,7 @@ const App = () => {
       <div className="post__start">
         <span className="error">{error}</span>
         <button
+          disabled={isLoading}
           className="post__button"
           type="button"
           onClick={loadPosts}
@@ -81,6 +82,7 @@ const App = () => {
       ) : (
         <div className="post__start">
           <button
+            disabled={isLoading}
             className="post__button"
             type="button"
             onClick={loadPosts}
