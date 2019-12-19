@@ -73,6 +73,7 @@ const App = () => {
         <div className="post">
           <h1 className="title">Dynamic list of posts</h1>
           <DebounceInput
+            className="post__search"
             debounceTimeout={500}
             placeholder="Type to search..."
             onChange={filterPosts}
