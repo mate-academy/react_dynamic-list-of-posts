@@ -1,0 +1,99 @@
+h1 {
+  margin: 0;
+}
+
+.App {
+  margin: auto;
+  color: midnightblue;
+  width: 1000px;
+  display: flex;
+  flex-direction: column;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.post {
+  border-top: 3px solid lightcoral;
+  background-color: aliceblue;
+  padding: 20px 40px;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  margin-bottom: 30px;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.description {
+  margin: 20px 0 0;
+}
+
+.user-info {
+  font-style: italic;
+  font-size: 0.8em;
+}
+
+.comment {
+  color: ghostwhite;
+  background-color: lightblue;
+  padding: 25px;
+  font-size: 0.9em;
+  margin-bottom: 20px;
+  transition: background-color 0.3s, color 0.3s;
+  box-shadow: 0 10px 10px rgba(0,0,0,0.22);
+
+  &:hover {
+    background-color: lightyellow;
+    color: darkslateblue;
+  }
+}
+
+.highlighted {
+  background-color: pink;
+}
+
+.button {
+  cursor: pointer;
+  height: 70px;
+  width: 180px;
+  outline: none;
+  color: white;
+  background-color: darkslateblue;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.3em;
+  margin: 30vh auto;
+}
+
+.button:enabled:hover {
+  background-color: lightblue;
+}
+
+.button:disabled {
+  background-color: lightgrey;
+  cursor: auto;
+  opacity: 0.7;
+}
+
+.search-bar {
+  outline: none;
+  height: 20px;
+  width: 300px;
+
+  &:focus {
+    background-color: ghostwhite;
+  }
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin-top: 40vh;
+  font-size: 1.5em;
+}
