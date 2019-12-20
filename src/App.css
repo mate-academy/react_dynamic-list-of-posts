@@ -1,3 +1,131 @@
-.App {
+
+.post-list {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  cursor: default;
+}
+
+.post-list__post {
+
+  width: 80vw;
+  border: 3px solid #0d7377;
+  border-top-right-radius: 5em;
+  border-top-left-radius: 5em;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.title {
+  background-color: #a8e6cf;
+  border-color: solid #0d7377;
   text-align: center;
+}
+
+.text {
+  background-color: #dcedc1;
+  border: 2px solid #0d7377;
+  text-align: left;
+  width: 50vw;
+}
+
+.author {
+  background-color: #dcedc1;
+  border: 1px solid #0d7377;
+  border-left: none;
+  border-top-right-radius: 2em;
+  border-bottom-right-radius: 2em;
+  padding-right: 5px;
+  display: inline-block;
+  text-align: left;
+}
+
+.author__name,
+.author__address {
+  padding-right: 10px;
+}
+
+.post__title {
+  border-bottom: 2px;
+  margin: 0;
+  padding: 20px 0;
+  font-size: 24px;
+}
+
+.post__body {
+  margin: 20px auto;
+  padding: 20px 5px;
+  font-size: 18px;
+  border-radius: 2em;
+}
+
+.post__comments--title {
+  border-top-right-radius: 2em;
+  border-top-left-radius: 2em;
+
+}
+
+.post__comments--body {
+  border-left: none;
+  border-top-right-radius: 2em;
+  border-bottom-right-radius: 2em;
+  padding-right: 10px;
+}
+
+.post__comments--author {
+  font-size: 14px;
+  margin-top: 3px;
+  margin-bottom: 15px;
+  padding-right: 15px;
+  background-color: #d7fbe8;
+}
+
+.post__user {
+  background-color: #dcedc1;
+  border: 2px solid #0d7377;
+  border-left: none;
+  border-top-right-radius: 2em;
+  border-bottom-right-radius: 2em;
+  padding-right: 5px;
+  display: inline-block;
+  text-align: left;
+}
+
+.init-button {
+  display: flex;
+  justify-content: center;
+  margin: 50px auto;
+  border: none;
+  font: inherit;
+  color: inherit;
+  outline: none;
+  background-color: #dcedc1;
+  border-radius: 1em;
+  width: 30vw;
+  height: 100px;
+  padding: 10px;
+  font-size: 36px;
+  cursor: pointer;
+  transition: background-color 0.6s;
+}
+
+.init-button:hover {
+  background-color: #0d7377;
+}
+
+.post-list__searchInput {
+  display: flex;
+  margin: auto;
+  border: 1px solid #0d7377;
+  background-color: #dcedc1;
+  border-radius: 1em;
+  outline: none;
+
+}
+
+.post-list__post-count {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
