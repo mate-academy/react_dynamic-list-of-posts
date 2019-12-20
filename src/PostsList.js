@@ -7,6 +7,7 @@ function PostsList() {
   const [isLoading, setIsLoading] = useState(false);
   const [isShown, setIsShown] = useState(true);
   const [preparedPosts, setPreparedPosts] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const showPreparedPosts = async() => {
     setIsLoading(true);
@@ -31,8 +32,6 @@ function PostsList() {
     setIsShown(false);
   };
 
-  const [searchTerm, setSearchTerm] = useState('');
-
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -41,9 +40,9 @@ function PostsList() {
     ? preparedPosts
     : preparedPosts
       .filter(post => post.title.toLowerCase()
-        .includes(searchTerm.toLowerCase())
+        .includes(searchTerm.trim().toLowerCase())
             || post.body.toLowerCase()
-              .includes(searchTerm.toLowerCase()));
+              .includes(searchTerm.trim().toLowerCase()));
 
   return (
     <div className="App">
