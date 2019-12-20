@@ -115,6 +115,7 @@
 }
 
 .post-list__searchInput {
+  padding: 0 10px;
   display: flex;
   margin: auto;
   border: 1px solid #0d7377;
