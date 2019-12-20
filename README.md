@@ -2,7 +2,7 @@
 
 ## Demo link
 
-Add link here: `[DEMO LINK]("https://igorskiy.github.io/react_dynamic-list-of-posts/)`
+Add link here: `[DEMO LINK](https://igorskiy.github.io/react_dynamic-list-of-posts/)`
 
 
 ## Task
