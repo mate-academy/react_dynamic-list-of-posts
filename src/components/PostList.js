@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 
 import Post from './Post';
 
-const PostList = ({ list, highlightedSearchResult }) => (
+const PostList = ({ posts, highlightedSearchResult }) => (
   <div className="posts-container">
-    {list.map(
-      item => (
+    {posts.map(
+      post => (
         <Post
           highlightedText={highlightedSearchResult}
-          key={item.id}
-          {...item}
+          key={post.id}
+          {...post}
         />
       )
     )}
@@ -18,7 +18,7 @@ const PostList = ({ list, highlightedSearchResult }) => (
 );
 
 PostList.propTypes = {
-  list: PropTypes.arrayOf(PropTypes.object).isRequired,
+  posts: PropTypes.arrayOf(PropTypes.object).isRequired,
   highlightedSearchResult: PropTypes.string.isRequired,
 };
 

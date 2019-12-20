@@ -1,28 +1,32 @@
 import React, { useState } from 'react';
 import './App.scss';
-import { getData } from './api/fetch';
+import { getPostsFromServer } from './api/getPostsFromServer';
+import { getUsersFromServer } from './api/getUsersFromServer';
+import { getCommentsFromServer } from './api/getCommentsFromServer';
+import { debounce } from './helpers/debounce';
 import PostList from './components/PostList';
 
-const POSTS_URL = 'https://jsonplaceholder.typicode.com/posts';
-const USERS_URL = 'https://jsonplaceholder.typicode.com/users';
-const COMMENTS_URL = 'https://jsonplaceholder.typicode.com/comments';
-
 const App = () => {
-  const [combinedData, setCombinedData] = useState([]);
+  const [combinedPosts, setCombinedPosts] = useState([]);
+  const [originalPosts, setOriginalPosts] = useState([]);
   const [isLoaded, setLoaded] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [searchValue, setInputValue] = useState('');
+
+  let allData;
 
   const loadData = async() => {
     setLoading(true);
 
     try {
-      const postsData = await getData(POSTS_URL);
-      const usersData = await getData(USERS_URL);
-      const commentsData = await getData(COMMENTS_URL);
+      const [postsData, usersData, commentsData] = await Promise.all([
+        getPostsFromServer(),
+        getUsersFromServer(),
+        getCommentsFromServer(),
+      ]);
 
-      const allData = postsData.map(
+      allData = postsData.map(
         post => ({
           ...post,
           user: usersData.find(
@@ -34,7 +38,8 @@ const App = () => {
         })
       );
 
-      setCombinedData(allData);
+      setOriginalPosts(allData);
+      setCombinedPosts(allData);
       setLoading(false);
       setLoaded(true);
     } catch (e) {
@@ -43,16 +48,18 @@ const App = () => {
     }
   };
 
-  const searchPosts = ({ target }) => {
-    setInputValue(
-      target.value.replace(/^\s+/, '').slice(0, 37)
-    );
-  };
+  const applySearchWithDebounce = debounce(value => setCombinedPosts(
+    originalPosts.filter(
+      ({ title, body }) => (title + body).toLowerCase().includes(value)
+    )
+  ), 500);
 
-  const visiblePosts = combinedData
-    .filter(({ title, body }) => (title + body)
-      .toLowerCase()
-      .includes(inputValue.toLowerCase()));
+  const searchPosts = ({ target }) => {
+    const value = target.value.toLowerCase().slice(0, 37);
+
+    setInputValue(value);
+    applySearchWithDebounce(value);
+  };
 
   return (
     <div className="App">
@@ -65,21 +72,19 @@ const App = () => {
             className="posts-search"
             placeholder="Search for posts"
             onChange={searchPosts}
-            value={inputValue}
+            value={searchValue}
           />
 
           <PostList
-            list={visiblePosts}
-            highlightedSearchResult={inputValue}
+            posts={combinedPosts}
+            highlightedSearchResult={searchValue}
           />
         </>
       ) : (
         <>
-          {isError ? (
-            <h2 className="sub-title">Error occured!!!</h2>
-          ) : (
-            <h2 className="sub-title">No PostsList yet!</h2>
-          )}
+          <h2 className="sub-title">
+            {isError ? ('Error occured!!!') : ('No PostsList yet!')}
+          </h2>
 
           <button
             className="load-btn"
