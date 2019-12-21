@@ -1,3 +1,60 @@
 .App {
   text-align: center;
 }
+
+.postlist {
+  width: 80%;
+  background-color: lightblue;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.onepost {
+  background-color: #889b9c;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tileOfPost {
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  width: 80%;
+  margin: 10px 0 0;
+}
+
+.bodypost {
+  margin: 10px 0;
+  text-align: center;
+  color: #ffde0b;
+  border: 3px solid #867c3c;
+  padding: 10px;
+  background-color: #363a36;
+  width: 90%;
+}
+
+.userSection {
+  background-color: #798395;
+  text-align: center;
+  padding: 10px 0;
+}
+
+.commentSection {
+  background-color: lightgreen;
+  text-align: center;
+  box-sizing: border-box;
+  padding: 20px;
+}
+
+.headers {
+  margin: 10px 0 0;
+}
+
+.allPost {
+  border: 3px solid black;
+  width: 80%;
+  margin: 20px 0;
+}
