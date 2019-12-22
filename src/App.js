@@ -9,16 +9,16 @@ const commentsURL = 'https://jsonplaceholder.typicode.com/comments';
 
 let fullPosts = [];
 
-const getPostsWithUsersAndComments = (allPosts, allUsers, allComents) => (
+const getPostsWithUsersAndComments = (allPosts, allUsers, allComments) => (
   allPosts.map((post) => {
     const user = allUsers.find(person => person.id === post.userId);
-    const commentsSet = allComents
+    const postComments = allComments
       .filter(comment => comment.postId === post.id);
 
     return {
       ...post,
       user,
-      commentsSet,
+      postComments,
     };
   })
 );
@@ -72,7 +72,7 @@ const App = () => {
 
       {isInitialized && !isLoading && (
         <PostList
-          posts={[...fullPosts]}
+          posts={fullPosts}
         />
       )}
     </div>

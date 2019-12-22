@@ -10,7 +10,7 @@ const Post = ({ post }) => (
       <p>{post.body}</p>
       <User user={post.user} />
     </article>
-    <CommentList postComments={post.commentsSet} />
+    <CommentList comments={post.postComments} />
     <hr />
   </section>
 );

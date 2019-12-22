@@ -16,7 +16,7 @@ const PostList = ({ posts }) => {
     )));
 
   const visiblePosts = searchingItem
-    ? [...getSearchedPosts(posts, searchingItem)]
+    ? getSearchedPosts(posts, searchingItem)
     : [...posts];
 
   return (
