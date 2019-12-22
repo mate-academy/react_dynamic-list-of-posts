@@ -35,27 +35,32 @@ const App = () => {
     setLoading(false);
   };
 
-  let globalTimerId;
+  const debounce = () => {
+    let globalTimerId = null;
 
-  const filterPosts = (value) => {
-    setSearchError(false);
-    const timerId = setTimeout(() => {
-      if (timerId === globalTimerId) {
-        const filtered = originalPosts.filter(post => post.title.includes(value)
-          || post.body.includes(value));
+    return (value) => {
+      setSearchError(false);
+      const timerId = setTimeout(() => {
+        if (timerId === globalTimerId) {
+          const filtered = originalPosts
+            .filter(post => post.title.includes(value)
+            || post.body.includes(value));
 
-        if (filtered.length === 0) {
-          setSearchError(true);
+          if (filtered.length === 0) {
+            setSearchError(true);
+          } else {
+            setPosts(filtered);
+          }
         } else {
-          setPosts(filtered);
+          clearTimeout(timerId);
         }
-      } else {
-        clearTimeout(timerId);
-      }
-    }, 700);
+      }, 500);
 
-    globalTimerId = timerId;
+      globalTimerId = timerId;
+    };
   };
+
+  const filterPosts = debounce();
 
   return (
     <main className="list">
