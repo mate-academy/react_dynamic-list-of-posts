@@ -12,7 +12,7 @@ const PostList = ({ posts }) => {
   const getSearchedPosts = (listOfPosts, searchingValue) => (
     listOfPosts.filter(post => (
       post.title.toLowerCase().includes(searchingValue.toLowerCase())
-      || post.title.toLowerCase().includes(searchingValue.toLowerCase())
+      || post.body.toLowerCase().includes(searchingValue.toLowerCase())
     )));
 
   const visiblePosts = searchingItem

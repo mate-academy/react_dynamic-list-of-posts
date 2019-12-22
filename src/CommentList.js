@@ -5,6 +5,7 @@ import Comment from './Comment';
 const CommentList = ({ postComments }) => (
   <div className="commentList">
     <h3>Comments</h3>
+    <hr />
     {postComments.map(
       commentItself => (
         <Comment comment={commentItself} key={commentItself.id} />)

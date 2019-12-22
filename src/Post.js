@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import User from './User';
-import CommentList from './Comments';
+import CommentList from './CommentList';
 
 const Post = ({ post }) => (
   <section className="post">
-    <div className="post__content">
+    <article className="post__content">
       <h2>{post.title}</h2>
       <p>{post.body}</p>
       <User user={post.user} />
-    </div>
+    </article>
     <CommentList postComments={post.commentsSet} />
     <hr />
   </section>

@@ -33,6 +33,7 @@ body * {
 
 .comment {
   margin-bottom: 10px;
+  padding-top: 5px;
 }
 
 .commentList {
@@ -54,6 +55,7 @@ body * {
 
 .comment__email {
   text-align: right;
+  margin-bottom: 5px;
 }
 
 .post:nth-child(even) {
@@ -104,4 +106,12 @@ body * {
   border-radius: 10px;
   padding: 10px;
   font-size: 20px;
+}
+
+hr {
+  background-color: grey;
+  color: grey;
+  box-shadow: none;
+  border: none;
+  height: 2px;
 }

@@ -6,6 +6,7 @@ const Comment = ({ comment }) => (
     <div className="comment__name">{comment.name}</div>
     <div className="comment__body">{comment.body}</div>
     <div className="comment__email">{comment.email}</div>
+    <hr />
   </div>
 );
 
