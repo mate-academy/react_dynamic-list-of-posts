@@ -1,3 +1,229 @@
 .App {
   text-align: center;
 }
+
+body {
+  text-align: center;
+}
+
+body:before {
+  content: "";
+  height: 100%;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.btnLoad {
+  margin-top: 20%;
+  border-radius: 10px;
+  background: rgba(250, 150, 0, 0.6);
+  color: #fff;
+  border: none;
+  position: relative;
+  height: 80px;
+  font-size: 1.6em;
+  padding: 0 3em;
+  cursor: pointer;
+  transition: 800ms ease all;
+  outline: none;
+}
+
+.btnLoad:hover {
+  background: #fff;
+  color: #1aab8a;
+}
+
+.btnLoad:before,
+.btnLoad:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 2px;
+  width: 0;
+  background: rgba(250, 200, 0, 0.6);
+  transition: 400ms ease all;
+}
+
+.btnLoad:after {
+  right: inherit;
+  top: inherit;
+  left: 0;
+  bottom: 0;
+}
+
+.btnLoad:hover:before,
+.btnLoad:hover:after {
+  width: 100%;
+  transition: 800ms ease all;
+}
+
+.hoja {
+  color: #dcdce2;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -140px;
+  margin-top: -140px;
+  width: 280px;
+  height: 280px;
+  text-align: center;
+  font-family: "Open Sans", sans-serif;
+  font-size: 35px;
+  line-height: 280px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hoja:after,
+.hoja:before {
+  content: "";
+  border-radius: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-transform-origin: center center;
+  transform-origin: center center;
+}
+
+.hoja:after {
+  box-shadow: inset 0 17.5px 0 rgba(250, 250, 0, 0.6),
+    inset 17.5px 0 0 rgba(250, 200, 0, 0.6),
+    inset 0 -17.5px 0 rgba(250, 150, 0, 0.6),
+    inset -17.5px 0 0 rgba(250, 100, 0, 0.6);
+  -webkit-animation: rotar 2s -0.5s linear infinite;
+  animation: rotar 2s -0.5s linear infinite;
+}
+
+.hoja:before {
+  box-shadow: inset 0 17.5px 0 rgba(0, 250, 250, 0.6),
+    inset 17.5px 0 0 rgba(0, 200, 200, 0.6),
+    inset 0 -17.5px 0 rgba(0, 150, 200, 0.6),
+    inset -17.5px 0 0 rgba(0, 200, 250, 0.6);
+  -webkit-animation: rotariz 2s -0.5s linear infinite;
+  animation: rotarIz 2s -0.5s linear infinite;
+}
+@-webkit-keyframes rotar {
+  0% {
+    -webkit-transform: rotateZ(0deg) scaleX(1) scaleY(1);
+    transform: rotateZ(0deg) scaleX(1) scaleY(1);
+  }
+  50% {
+    -webkit-transform: rotateZ(180deg) scaleX(0.82) scaleY(0.95);
+    transform: rotateZ(180deg) scaleX(0.82) scaleY(0.95);
+  }
+  100% {
+    -webkit-transform: rotateZ(360deg) scaleX(1) scaleY(1);
+    transform: rotateZ(360deg) scaleX(1) scaleY(1);
+  }
+}
+
+@keyframes rotar {
+  0% {
+    -webkit-transform: rotateZ(0deg) scaleX(1) scaleY(1);
+    transform: rotateZ(0deg) scaleX(1) scaleY(1);
+  }
+  50% {
+    -webkit-transform: rotateZ(180deg) scaleX(0.82) scaleY(0.95);
+    transform: rotateZ(180deg) scaleX(0.82) scaleY(0.95);
+  }
+  100% {
+    -webkit-transform: rotateZ(360deg) scaleX(1) scaleY(1);
+    transform: rotateZ(360deg) scaleX(1) scaleY(1);
+  }
+}
+
+@-webkit-keyframes rotariz {
+  0% {
+    -webkit-transform: rotateZ(0deg) scaleX(1) scaleY(1);
+    transform: rotateZ(0deg) scaleX(1) scaleY(1);
+  }
+  50% {
+    -webkit-transform: rotateZ(-180deg) scaleX(0.95) scaleY(0.85);
+    transform: rotateZ(-180deg) scaleX(0.95) scaleY(0.85);
+  }
+  100% {
+    -webkit-transform: rotateZ(-360deg) scaleX(1) scaleY(1);
+    transform: rotateZ(-360deg) scaleX(1) scaleY(1);
+  }
+}
+@keyframes rotariz {
+  0% {
+    -webkit-transform: rotateZ(0deg) scaleX(1) scaleY(1);
+    transform: rotateZ(0deg) scaleX(1) scaleY(1);
+  }
+  50% {
+    -webkit-transform: rotateZ(-180deg) scaleX(0.95) scaleY(0.85);
+    transform: rotateZ(-180deg) scaleX(0.95) scaleY(0.85);
+  }
+  100% {
+    -webkit-transform: rotateZ(-360deg) scaleX(1) scaleY(1);
+    transform: rotateZ(-360deg) scaleX(1) scaleY(1);
+  }
+}
+
+.App {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.flip-container {
+  margin: 15px;
+  perspective: 1000px;
+  align-self: center;
+  justify-self: center;
+  padding: 0.5em;
+  width: 100px;
+  border-radius: 6px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+}
+
+.flip-container:hover .flipper,
+.flip-container.hover .flipper {
+  transform: rotateY(180deg);
+}
+
+.flip-container,
+.front,
+.back {
+  width: 520px;
+  height: 800px;
+}
+
+.flipper {
+  transition: 0.6s;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+.front,
+.back {
+  backface-visibility: hidden;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.front {
+  background-color: lightgoldenrodyellow;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  z-index: 2;
+}
+
+.front-heading {
+  text-transform: uppercase;
+}
+
+.back {
+  transform: rotateY(180deg);
+}
+
+.back-heading {
+  text-transform: uppercase;
+}
