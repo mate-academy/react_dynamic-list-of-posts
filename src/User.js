@@ -6,7 +6,7 @@ function User({ user }) {
 
   return (
     <div>
-      <h3>{name}</h3>
+      <h3 className="user-name">{name}</h3>
       <p>{email}</p>
     </div>
   );

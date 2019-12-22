@@ -5,7 +5,6 @@ import CommentList from './CommentList';
 
 const Post = ({ post }) => {
   const { title, body, user, commentList } = post;
-  const upperTitle = `${title.slice(0, 1).toUpperCase()}${title.slice(1)}`;
 
   return (
     <div
@@ -14,8 +13,8 @@ const Post = ({ post }) => {
     >
       <div className="flipper">
         <div className="front">
-          <h2 className="front-heading">{upperTitle}</h2>
-          <p>{ `"${body}"`}</p>
+          <h2 className="front-heading">{title}</h2>
+          <p className="front-body">{ `"${body}"`}</p>
           <User user={user} />
         </div>
         <div className="back">

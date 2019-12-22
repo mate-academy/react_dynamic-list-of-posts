@@ -2,10 +2,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 const Comment = ({ comment: { name, body, email } }) => (
-  <div>
-    <h3>{name}</h3>
-    <p>{body}</p>
-    <p>
+  <div className="comment">
+    <h3 className="comment-name">{name}</h3>
+    <p className="comment-body">{body}</p>
+    <p className="comment-email">
       <span>By </span>
       {email}
     </p>

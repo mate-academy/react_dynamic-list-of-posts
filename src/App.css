@@ -15,8 +15,7 @@ body:before {
 
 .btnLoad {
   margin-top: 20%;
-  border-radius: 10px;
-  background: rgba(250, 150, 0, 0.6);
+  background-color: goldenrod;
   color: #fff;
   border: none;
   position: relative;
@@ -30,7 +29,7 @@ body:before {
 
 .btnLoad:hover {
   background: #fff;
-  color: #1aab8a;
+  color: cadetblue;
 }
 
 .btnLoad:before,
@@ -167,6 +166,7 @@ body:before {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  box-sizing: border-box;
 }
 
 .flip-container {
@@ -175,8 +175,13 @@ body:before {
   align-self: center;
   justify-self: center;
   padding: 0.5em;
+  background-image: linear-gradient(
+    to right top, #fff, #f8faff, #ebf6ff, #dbf3ff, #c9f1ff
+  );
   border-radius: 6px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  -webkit-box-shadow: -2px 6px 12px -1px rgba(255,216,168,1);
+  -moz-box-shadow: -2px 6px 12px -1px rgba(255,216,168,1);
+  box-shadow: -2px 6px 12px -1px rgba(255,216,168,1);
 }
 
 .flip-container:hover .flipper,
@@ -187,8 +192,8 @@ body:before {
 .flip-container,
 .front,
 .back {
-  width: 320px;
-  height: 500px;
+  width: 360px;
+  height: 550px;
 }
 
 .flipper {
@@ -207,7 +212,9 @@ body:before {
 }
 
 .front {
-  background-color: lightgoldenrodyellow;
+  background-image: linear-gradient(
+    to right top, #fff, #f8faff, #ebf6ff, #dbf3ff, #c9f1ff
+  );
   display: flex;
   justify-content: center;
   align-items: center;
@@ -216,7 +223,13 @@ body:before {
 }
 
 .front-heading {
+  font-family: Perpetua, sans-serif;
+  color: goldenrod;
   text-transform: uppercase;
+}
+
+.front-body {
+  font-style: italic;
 }
 
 .back {
@@ -228,4 +241,31 @@ body:before {
   text-transform: uppercase;
   font-size: 20px;
   font-weight: bold;
+  color: goldenrod;
+}
+
+.comment {
+  border: 1px solid white;
+  -webkit-box-shadow: -5px -12px 147px 28px rgba(255,255,255,1);
+  -moz-box-shadow: -5px -12px 147px 28px rgba(255,255,255,1);
+  box-shadow: -5px -12px 147px 28px rgba(255,255,255,1);
+  background-color: white;
+}
+
+.comment-name {
+  color: cadetblue;
+}
+
+.comment-body {
+  width: 320px;
+  margin: 0 auto;
+}
+
+.comment-email {
+  font-weight: bold;
+  color: rosybrown;
+}
+
+.user-name {
+  color: rosybrown;
 }

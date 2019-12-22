@@ -53,7 +53,7 @@ const App = () => {
           className="btnLoad"
           onClick={loadPostsWithUsersAndComments}
         >
-          Load Posts
+          Load
         </button>
       )}
       <div className="App">
