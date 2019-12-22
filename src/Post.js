@@ -7,10 +7,7 @@ const Post = ({ post }) => {
   const { title, body, user, commentList } = post;
 
   return (
-    <div
-      className="flip-container"
-      onTouchStart="this.classList.toggle('hover');"
-    >
+    <div className="flip-container">
       <div className="flipper">
         <div className="front">
           <h2 className="front-heading">{title}</h2>

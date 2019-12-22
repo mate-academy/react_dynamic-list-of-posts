@@ -25,7 +25,8 @@ body:before {
 
 .btnLoad {
   margin-top: 20%;
-  background-color: goldenrod;
+  background-color: steelblue;
+  opacity: 0.9;
   color: #fff;
   border: none;
   position: relative;
