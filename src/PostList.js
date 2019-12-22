@@ -5,14 +5,14 @@ import Post from './Post';
 const PostList = ({ posts }) => {
   const [searchingItem, setSearchingItem] = useState('');
 
-  const handleSearchingInputChange = ({ target: { value } }) => {
-    setSearchingItem(value);
+  const handleInput = (event) => {
+    setSearchingItem(event.target.value);
   };
 
-  const getSearchedPosts = (ArrOfPosts, searchingValue) => (
+  const getSearchedPosts = (ArrOfPosts, inputValue) => (
     ArrOfPosts.filter(post => (
-      post.title.toLowerCase().includes(searchingValue.toLowerCase())
-      || post.body.toLowerCase().includes(searchingValue.toLowerCase())
+      post.title.toLowerCase().includes(inputValue.toLowerCase())
+      || post.body.toLowerCase().includes(inputValue.toLowerCase())
     )));
 
   const visiblePosts = searchingItem
@@ -22,7 +22,7 @@ const PostList = ({ posts }) => {
   return (
     <>
       <input
-        onChange={handleSearchingInputChange}
+        onChange={handleInput}
         className="search"
         type="text"
         placeholder="Search"

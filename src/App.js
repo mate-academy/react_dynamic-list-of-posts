@@ -7,8 +7,6 @@ import { getComments } from './api/comments';
 
 import PostList from './PostList';
 
-let preparedPosts = [];
-
 const getPostsWithUsersAndComments = (PostsList, UsersList, CommentsArr) => (
   PostsList.map((post) => {
     const user = UsersList.find(person => person.id === post.userId);
@@ -24,6 +22,7 @@ const getPostsWithUsersAndComments = (PostsList, UsersList, CommentsArr) => (
 );
 
 const App = () => {
+  const [preparedPosts, setPreparedPosts] = useState([]);
   const [isInitialized, setInitialized] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [hasError, setError] = useState(false);
@@ -36,7 +35,7 @@ const App = () => {
       const [posts, users, comments] = await Promise
         .all([getPosts(), getUsers(), getComments()]);
 
-      preparedPosts = getPostsWithUsersAndComments(posts, users, comments);
+      setPreparedPosts(getPostsWithUsersAndComments(posts, users, comments));
       setInitialized(true);
     } catch {
       setError(true);
@@ -57,10 +56,6 @@ const App = () => {
         </button>
       )}
       <div className="App">
-        {isLoading && !hasError && (
-          <div className="hoja">Loading...</div>
-        )}
-
         {hasError && (
           <button
             className="btnError"
@@ -71,8 +66,12 @@ const App = () => {
           </button>
         )}
 
-        {isInitialized && !isLoading && (
+        {isInitialized && (
           <PostList posts={preparedPosts} />
+        )}
+
+        {isLoading && !hasError && (
+          <div className="hoja">Loading...</div>
         )}
       </div>
     </>
