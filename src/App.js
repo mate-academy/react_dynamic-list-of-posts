@@ -36,7 +36,7 @@ const App = () => {
       const [posts, users, comments] = await Promise
         .all([getPosts(), getUsers(), getComments()]);
 
-      preparedPosts = [...getPostsWithUsersAndComments(posts, users, comments)];
+      preparedPosts = getPostsWithUsersAndComments(posts, users, comments);
       setInitialized(true);
     } catch {
       setError(true);
@@ -63,15 +63,16 @@ const App = () => {
 
         {hasError && (
           <button
+            className="btnError"
             type="button"
             onClick={loadPostsWithUsersAndComments}
           >
-            Try again
+            Error...Try again
           </button>
         )}
 
         {isInitialized && !isLoading && (
-          <PostList posts={[...preparedPosts]} />
+          <PostList posts={preparedPosts} />
         )}
       </div>
     </>

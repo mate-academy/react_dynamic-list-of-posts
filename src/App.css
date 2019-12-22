@@ -13,6 +13,20 @@ body:before {
   vertical-align: middle;
 }
 
+.btnError {
+  margin-top: 20%;
+  background-color: indianred;
+  color: #fff;
+  border: none;
+  position: relative;
+  height: 50px;
+  font-size: 1.6em;
+  padding: 0 3em;
+  cursor: pointer;
+  transition: 800ms ease all;
+  outline: none;
+}
+
 .btnLoad {
   margin-top: 20%;
   background-color: goldenrod;
@@ -170,7 +184,7 @@ body:before {
 }
 
 .flip-container {
-  margin: 15px;
+  margin: 40px 15px 15px;
   perspective: 1000px;
   align-self: center;
   justify-self: center;
@@ -193,7 +207,7 @@ body:before {
 .front,
 .back {
   width: 360px;
-  height: 550px;
+  height: 560px;
 }
 
 .flipper {
@@ -233,6 +247,8 @@ body:before {
 }
 
 .back {
+  background-color: white;
+  border-radius: 10px;
   font-size: 10px;
   transform: rotateY(180deg);
 }
@@ -267,5 +283,22 @@ body:before {
 }
 
 .user-name {
+  color: rosybrown;
+}
+
+.search {
+  position: absolute;
+  border-radius: 5px;
+  outline: none;
+  height: 24px;
+  width: 220px;
+  margin-bottom: 20px;
+  font-size: 15px;
+  padding-left: 5px;
+}
+
+.result {
+  font-size: 30px;
+  margin-top: 100px;
   color: rosybrown;
 }

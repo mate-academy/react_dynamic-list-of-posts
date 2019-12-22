@@ -26,11 +26,14 @@ const Post = ({ post }) => {
   );
 };
 
-const postProps = PropTypes.shape({
-  id: PropTypes.number,
-  title: PropTypes.string,
-}).isRequired;
-
-Post.propTypes = { post: postProps.isRequired };
+Post.propTypes = {
+  post: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+    user: PropTypes.shape({}).isRequired,
+    commentList: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  }).isRequired,
+};
 
 export default Post;
