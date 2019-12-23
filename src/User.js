@@ -12,6 +12,14 @@ const User = ({ user }) => (
 );
 
 User.propTypes
-  = { user: PropTypes.oneOfType([PropTypes.object]).isRequired };
+  = { user: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    address: PropTypes.shape({
+      city: PropTypes.string.isRequired,
+      street: PropTypes.string.isRequired,
+      suite: PropTypes.string.isRequired,
+    }),
+    email: PropTypes.string.isRequired,
+  }).isRequired };
 
 export default User;

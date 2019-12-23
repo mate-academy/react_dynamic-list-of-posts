@@ -11,6 +11,10 @@ const Comment = ({ comment }) => (
 );
 
 Comment.propTypes
-  = { comment: PropTypes.oneOfType([PropTypes.object]).isRequired };
+  = { comment: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+  }).isRequired };
 
 export default Comment;

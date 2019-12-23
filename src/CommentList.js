@@ -14,6 +14,6 @@ const CommentList = ({ comments }) => (
 );
 
 CommentList.propTypes
-  = { comments: PropTypes.oneOfType([PropTypes.array]).isRequired };
+  = { comments: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired };
 
 export default CommentList;

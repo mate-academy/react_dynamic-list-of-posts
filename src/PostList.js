@@ -34,6 +34,12 @@ const PostList = ({ posts }) => {
 };
 
 PostList.propTypes
-  = { posts: PropTypes.oneOfType([PropTypes.array]).isRequired };
+  = { posts: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+    user: PropTypes.object.isRequired,
+    postComments: PropTypes.array.isRequired,
+  })).isRequired };
 
 export default PostList;

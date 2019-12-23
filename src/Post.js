@@ -16,6 +16,11 @@ const Post = ({ post }) => (
 );
 
 Post.propTypes
-  = { post: PropTypes.oneOfType([PropTypes.object]).isRequired };
+  = { post: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+    user: PropTypes.object.isRequired,
+    postComments: PropTypes.array.isRequired,
+  }).isRequired };
 
 export default Post;
