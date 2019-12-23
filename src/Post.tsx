@@ -1,10 +1,10 @@
 import React from 'react';
 import User from './User';
 import CommentList from './CommentList';
-import { NormalizedPost } from './interfaces';
+import { NormalizedPostInterface } from './interfaces';
 
 interface Props {
-  post: NormalizedPost;
+  post: NormalizedPostInterface;
 }
 
 const Post: React.FC<Props> = ({ post }) => (

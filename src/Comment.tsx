@@ -1,8 +1,8 @@
 import React from 'react';
-import { Comment } from './interfaces';
+import { CommentInterface } from './interfaces';
 
 interface Props {
-  comment: Comment;
+  comment: CommentInterface;
 }
 
 const Comment: React.FC<Props> = ({ comment }) => (

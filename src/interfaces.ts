@@ -1,28 +1,13 @@
-export interface User {
+export interface UserInterface {
   id: number;
   name: string;
-  username: string;
   email: string;
   address: {
-    street: string;
-    suite: string;
     city: string;
-    zipcode: string;
-    geo: {
-      lat: string;
-      lng: string;
-    };
-  };
-  phone: string;
-  website: string;
-  company: {
-    name: string;
-    catchPhrase: string;
-    bs: string;
   };
 }
 
-export interface Comment {
+export interface CommentInterface {
   postId: number;
   id: number;
   name: string;
@@ -30,18 +15,18 @@ export interface Comment {
   body: string;
 }
 
-export interface Post {
+export interface PostInterface {
   userId: number;
   id: number;
   title: string;
   body: string;
 }
 
-export interface NormalizedPost {
+export interface NormalizedPostInterface {
   userId: number;
   id: number;
   title: string;
   body: string;
-  comments: Comment[];
-  user: User;
+  comments: CommentInterface[];
+  user: UserInterface;
 }

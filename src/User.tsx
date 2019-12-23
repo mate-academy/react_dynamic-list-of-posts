@@ -1,8 +1,8 @@
 import React from 'react';
-import { User } from './interfaces';
+import { UserInterface } from './interfaces';
 
 interface Props {
-  user: User;
+  user: UserInterface;
 }
 
 const User: React.FC<Props> = ({ user }) => (

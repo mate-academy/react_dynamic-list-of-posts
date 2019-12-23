@@ -1,9 +1,9 @@
 import React from 'react';
 import Post from './Post';
-import { NormalizedPost } from './interfaces';
+import { NormalizedPostInterface } from './interfaces';
 
 interface Props {
-  posts: NormalizedPost[];
+  posts: NormalizedPostInterface[];
 }
 
 const PostList: React.FC<Props> = ({ posts }) => (

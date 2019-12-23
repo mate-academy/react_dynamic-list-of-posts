@@ -1,34 +1,34 @@
 import React, { useState } from 'react';
 import { DebounceInput as SearchInput } from 'react-debounce-input';
-import { POSTS_URL, USERS_URL, COMMENTS_URL } from './const';
+import { POSTS_URL, USERS_URL, COMMENTS_URL, EMPTY_USER } from './const';
 import { loadFromServer } from './api';
-import { Comment, NormalizedPost, Post, User } from './interfaces';
+import {
+  CommentInterface,
+  NormalizedPostInterface,
+  PostInterface,
+  UserInterface,
+} from './interfaces';
 import PostList from './PostList';
 import './App.css';
 
 const App: React.FC = () => {
-  const [posts, setPosts] = useState<NormalizedPost[]>([]);
+  const [posts, setPosts] = useState<NormalizedPostInterface[]>([]);
   const [isStarted, setIsStarted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [filteredPosts, setFilteredPosts] = useState<NormalizedPost[]>([]);
+  const [filteredPosts, setFilteredPosts] = useState<NormalizedPostInterface[]>(
+    [],
+  );
 
   const normalizePosts: (
-    postsList: Post[],
-    usersList: User[],
-    commentsList: Comment[],
-  ) => {
-    comments: Comment[];
-    id: number;
-    title: string;
-    body: string;
-    userId: number;
-    user: User | undefined;
-  }[] = (postsList, usersList, commentsList) =>
+    postsList: PostInterface[],
+    usersList: UserInterface[],
+    commentsList: CommentInterface[],
+  ) => NormalizedPostInterface[] = (postsList, usersList, commentsList) =>
     postsList.map(post => ({
       ...post,
       comments: commentsList.filter(comment => comment.postId === post.id),
-      user: usersList.find(user => user.id === post.userId),
+      user: usersList.find(user => user.id === post.userId) || EMPTY_USER,
     }));
 
   const loadPosts: () => void = async () => {
@@ -42,7 +42,7 @@ const App: React.FC = () => {
         loadFromServer(COMMENTS_URL),
       ]);
 
-      const postsData: any[] = normalizePosts(
+      const postsData: NormalizedPostInterface[] = normalizePosts(
         postsList,
         usersList,
         commentsList,
@@ -58,7 +58,7 @@ const App: React.FC = () => {
     }
   };
 
-  const filterPosts = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const filterPosts: (e: React.ChangeEvent<HTMLInputElement>) => void = e => {
     const searchQuery = e.target.value.trim().toLowerCase();
 
     setFilteredPosts(
