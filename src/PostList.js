@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Post from './Post';
 
 const PostList = ({ posts }) => (
-  <section className="postlist">
+  <section className="post-list">
     { posts.map(post => (
       <div key={post.id} className="allPost">
         <Post ownpost={post} />

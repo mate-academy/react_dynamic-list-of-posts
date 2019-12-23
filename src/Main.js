@@ -5,16 +5,18 @@ import UnitedBlock from './UnitedBlock';
 import GetDataFromServer from './api/GetDataFromServer';
 
 const Main = () => {
-  const [postList, setPostList] = useState([]);
-  const [userList, setUserList] = useState([]);
-  const [commentsList, setCommentsList] = useState([]);
+  const [posts, setPosts] = useState({
+    post: [],
+    user: [],
+    comments: [],
+  });
   const [isLoaded, setIsLoaded] = useState(false);
   const [loading, setIsLoading] = useState(false);
   const [textInput, setTextInput] = useState('');
   let postsUsersComments
-    = UnitedBlock(postList, userList, commentsList);
+    = UnitedBlock(posts.post, posts.user, posts.comments);
 
-  const load = async() => {
+  const loadPosts = async() => {
     setIsLoading(true);
     const [allUsers, allComments, allPosts]
     = await Promise.all([
@@ -24,16 +26,27 @@ const Main = () => {
     ]);
 
     setIsLoading(true);
-    setUserList(allUsers);
-    setCommentsList(allComments);
-    setPostList(allPosts);
+    setPosts({
+      post: allPosts,
+      user: allUsers,
+      comments: allComments,
+    });
     setIsLoading(false);
     setIsLoaded(true);
   };
 
-  const inputText = (e) => {
-    setTextInput(e.target.value);
-  };
+  function debounce(f, delay) {
+    let timer;
+
+    return () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => f(), delay);
+    };
+  }
+
+  function inputText() {
+    setTextInput(document.querySelector('#text').value);
+  }
 
   if (loading) {
     return (
@@ -46,7 +59,7 @@ const Main = () => {
   if (!isLoaded) {
     return (
       <section className="App">
-        <button type="button" onClick={load}>
+        <button type="button" onClick={loadPosts}>
           Load
         </button>
       </section>
@@ -54,10 +67,11 @@ const Main = () => {
   }
 
   try {
-    postsUsersComments = postsUsersComments.filter(post => (
-      new RegExp(`(${textInput})`, 'g').test(post.title)
-      || new RegExp(`(${textInput})`, 'g').test(post.body)
-    ));
+    postsUsersComments = postsUsersComments.filter((post) => {
+      const postContent = post.title + post.body;
+
+      return postContent.includes(textInput);
+    });
   } catch {
     postsUsersComments = [];
   }
@@ -65,9 +79,10 @@ const Main = () => {
   return (
     <section className="App">
       <input
+        id="text"
         type="text"
         placeholder="Search..."
-        onChange={inputText}
+        onChange={debounce(inputText, 1000)}
       />
       <p>
         {postsUsersComments.length}

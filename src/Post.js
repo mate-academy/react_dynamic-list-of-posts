@@ -1,20 +1,35 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import User from './User';
-import CommentList from './CommentList';
+import Comment from './Comment';
 
 const Post = ({ ownpost }) => (
   <>
-    <section className="onepost">
-      <h1 className="tileOfPost">
+    <section className="post">
+      <h1 className="post__title">
         {ownpost.title}
       </h1>
-      <p className="bodypost">
+      <p className="post__text">
         {ownpost.body}
       </p>
     </section>
-    <User user={ownpost.user} />
-    <CommentList findcommet={ownpost.comments} />
+    <section className="userSection">
+      {ownpost.user.name}
+      <br />
+      {ownpost.user.email}
+      <br />
+      {ownpost.user.address.street}
+      {ownpost.user.address.suite}
+      {ownpost.user.address.city}
+      {ownpost.user.address.zipcode}
+      {ownpost.user.address.geo.lat}
+      {ownpost.user.address.geo.lng}
+    </section>
+    <section className="commentSection">
+      {
+        ownpost.comments.map(comment => (
+          <Comment key={comment.id} comment={comment} />))
+      }
+    </section>
   </>
 );
 
