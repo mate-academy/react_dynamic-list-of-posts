@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import './App.css';
 import { getPosts, getUsers, getComments } from './api';
+import { debounce } from './debounce';
 import PostList from './PostList';
 
 const App = () => {
   const [posts, setPosts] = useState([]);
-  const [isLoading, setLoading] = useState(false);
-  const [isLoaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [filter, setFilter] = useState('');
 
   const loadPosts = async() => {
@@ -33,9 +34,9 @@ const App = () => {
     setLoading(false);
   };
 
-  const filterPosts = (input) => {
-    setFilter(input.toLowerCase());
-  };
+  const filterPosts = debounce((input) => {
+    setFilter(input.toLowerCase().trim());
+  }, 1000);
 
   const filteredPosts = posts
     .filter(post => post.title.toLowerCase().includes(filter)
@@ -44,16 +45,16 @@ const App = () => {
   return (
     <div className="App">
       <h1>Dynamic list of posts</h1>
-      {!isLoaded
+      {!loaded
         ? (
           <button
             className="button--load"
             type="button"
             onClick={loadPosts}
           >
-            {!isLoading
+            {!loading
               ? 'Load list of posts'
-              : 'Loading... Please wait...'}
+              : 'loading... Please wait...'}
           </button>
         )
         : (
