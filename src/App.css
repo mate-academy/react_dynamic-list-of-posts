@@ -78,3 +78,8 @@ button:hover {
   background-color: antiquewhite;
   color: red;
 }
+
+.input {
+  width: 200px;
+  height: 50px;
+}

@@ -3,22 +3,29 @@ import PropTypes from 'prop-types';
 import User from './User';
 import CommentList from './CommentList';
 
-const Post = ({ postOne }) => (
+const Post = ({ postData }) => (
   <div className="post">
-    <User userOne={postOne.user} />
+    <User userOne={postData.user} />
     <p className="post-title">
       {'Post# - '}
-      {postOne.id}
+      {postData.id}
     </p>
     <p>
       {'Topic - '}
-      {postOne.title}
+      {postData.title}
     </p>
-    <p>{postOne.body}</p>
-    <CommentList commentOne={postOne.comments} />
+    <p>{postData.body}</p>
+    <CommentList comments={postData.comments} />
   </div>
 );
 
-Post.propTypes = { postOne: PropTypes.objectOf(PropTypes.any).isRequired };
+Post.propTypes = {
+  postData: PropTypes.shape({
+    userId: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+  }).isRequired,
+};
 
 export default Post;

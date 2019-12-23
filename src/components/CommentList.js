@@ -2,18 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Comment from './Comment';
 
-const CommentList = ({ commentOne }) => (
+const CommentList = ({ comments }) => (
   <div className="comments">
     <h2>Comments</h2>
-    { commentOne.map(comment => (
-      <Comment item={comment} key={comment.id} />
+    { comments.map(comment => (
+      <Comment comment={comment} key={comment.id} />
     )) }
   </div>
 );
 
 CommentList.propTypes = {
-  commentOne: PropTypes.arrayOf(
-    PropTypes.any
+  comments: PropTypes.arrayOf(
+    PropTypes.object
   ).isRequired,
 };
 
