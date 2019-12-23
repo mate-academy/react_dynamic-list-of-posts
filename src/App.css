@@ -12,6 +12,11 @@
   border-radius: 10px;
 }
 
+.search {
+  font-size: 18px;
+  padding: 5px;
+}
+
 .loading {
   font-size: 22px;
   display: block;

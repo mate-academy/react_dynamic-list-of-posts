@@ -11,6 +11,8 @@ const App = () => {
   const [isLoaded, setLoad] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [postsData, setPostsData] = useState([]);
+  const [searchData, setSearchData] = useState([]);
+  const [inputValue, setInputValue] = useState('');
 
   const mergeData = (posts, users, comments) => {
     const data = posts.map(post => ({
@@ -20,6 +22,7 @@ const App = () => {
     }));
 
     setPostsData(data);
+    setSearchData(data);
   };
 
   const loadData = async() => {
@@ -33,6 +36,16 @@ const App = () => {
     setLoad(true);
   };
 
+  const handleSearch = (event) => {
+    setInputValue(event.target.value.toLowerCase());
+
+    const searchValues = postsData.filter(
+      ({ title, body }) => (title + body).toLowerCase().includes(inputValue)
+    );
+
+    setSearchData(searchValues);
+  };
+
   if (isLoading) {
     return <p className="loading">Loading...</p>;
   }
@@ -41,9 +54,16 @@ const App = () => {
     <div className="App">
       {isLoaded
         ? (
-          <PostList
-            posts={postsData}
-          />
+          <>
+            <input
+              className="search"
+              type="search"
+              placeholder="search"
+              value={inputValue}
+              onChange={handleSearch}
+            />
+            <PostList posts={searchData} />
+          </>
         )
         : (
           <button
