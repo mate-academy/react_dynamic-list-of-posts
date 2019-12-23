@@ -2,17 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Comment = ({ commentProps }) => (
-  <React.Fragment key={commentProps.id}>
+  <>
     <section className="post__comments--body text">
       {commentProps.body}
     </section>
     <section className="post__comments--author author">
-      {` Name: ${commentProps.name}`}
-      <br />
-      {`E-mail: ${commentProps.email}`}
+      <div className="author--name">
+        {` Name: ${commentProps.name}`}
+      </div>
+      <div className="author--email">
+        {`E-mail: ${commentProps.email}`}
+      </div>
     </section>
-    <br />
-  </React.Fragment>
+  </>
 );
 
 Comment.propTypes = {

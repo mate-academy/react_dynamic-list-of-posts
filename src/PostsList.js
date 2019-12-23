@@ -11,7 +11,6 @@ function PostsList() {
 
   const showPreparedPosts = async() => {
     setIsLoading(true);
-
     const [listOfPosts, listOfUsers, listOfComments] = await Promise
       .all([getPosts(), getUsers(), getComments()]);
     const mergedPosts = listOfPosts.map((post) => {
@@ -32,17 +31,30 @@ function PostsList() {
     setIsShown(false);
   };
 
-  const handleChange = (event) => {
-    setSearchTerm(event.target.value);
+  const handleChange = (value) => {
+    setSearchTerm(
+      value.trim().toLowerCase()
+    );
   };
+
+  const debounce = (f, delay) => {
+    let timer;
+
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => f(...args), delay);
+    };
+  };
+
+  const debouncedHandleChange = debounce(handleChange, 1000);
 
   const filteredPost = !searchTerm
     ? preparedPosts
     : preparedPosts
       .filter(post => post.title.toLowerCase()
-        .includes(searchTerm.trim().toLowerCase())
+        .includes(searchTerm)
             || post.body.toLowerCase()
-              .includes(searchTerm.trim().toLowerCase()));
+              .includes(searchTerm));
 
   return (
     <div className="App">
@@ -63,21 +75,15 @@ function PostsList() {
               type="text"
               className="post-list__searchInput"
               placeholder="Search"
-              value={searchTerm}
-              onChange={handleChange}
+              onChange={e => debouncedHandleChange(e.target.value)}
             />
             {
-              (filteredPost.length === 1)
-                ? (
-                  <span className="post-list__post-count">
-                    {`${filteredPost.length} post found`}
-                  </span>
-                )
-                : (
-                  <span className="post-list__post-count">
-                    {`${filteredPost.length} posts found`}
-                  </span>
-                )
+              (
+                <span className="post-list__post-count">
+                  {`${filteredPost.length}
+                  ${filteredPost.length === 1 ? 'post' : 'posts'} found`}
+                </span>
+              )
             }
             <article className="post-list">
 
