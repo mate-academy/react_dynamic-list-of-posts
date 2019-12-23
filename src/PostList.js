@@ -6,13 +6,13 @@ const PostList = ({ posts }) => {
   const [searchingItem, setSearchingItem] = useState('');
 
   const handleSearchingInputChange = ({ target: { value } }) => {
-    setSearchingItem(value);
+    setSearchingItem(value.toLowerCase());
   };
 
   const getSearchedPosts = (listOfPosts, searchingValue) => (
     listOfPosts.filter(post => (
-      post.title.toLowerCase().includes(searchingValue.toLowerCase())
-      || post.body.toLowerCase().includes(searchingValue.toLowerCase())
+      post.title.toLowerCase().includes(searchingValue)
+      || post.body.toLowerCase().includes(searchingValue)
     )));
 
   const visiblePosts = searchingItem

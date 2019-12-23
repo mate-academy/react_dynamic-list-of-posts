@@ -7,8 +7,6 @@ const postsURL = 'https://jsonplaceholder.typicode.com/posts';
 const usersURL = 'https://jsonplaceholder.typicode.com/users';
 const commentsURL = 'https://jsonplaceholder.typicode.com/comments';
 
-let fullPosts = [];
-
 const getPostsWithUsersAndComments = (allPosts, allUsers, allComments) => (
   allPosts.map((post) => {
     const user = allUsers.find(person => person.id === post.userId);
@@ -27,6 +25,7 @@ const App = () => {
   const [isInitialized, setInitialized] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState(false);
+  const [fullPosts, setFullPosts] = useState([]);
 
   const loadPostsWithUsersAndComments = async() => {
     try {
@@ -36,7 +35,7 @@ const App = () => {
       const [posts, users, comments] = await Promise
         .all([getData(postsURL), getData(usersURL), getData(commentsURL)]);
 
-      fullPosts = [...getPostsWithUsersAndComments(posts, users, comments)];
+      setFullPosts([...getPostsWithUsersAndComments(posts, users, comments)]);
 
       setInitialized(true);
     } catch {

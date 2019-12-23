@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import Comment from './Comment';
 
 const CommentList = ({ comments }) => (
-  <div className="commentList">
+  <div className="comment-list">
     <h3>Comments</h3>
     <hr />
     {comments.map(
-      commentItself => (
-        <Comment comment={commentItself} key={commentItself.id} />)
+      commentData => (
+        <Comment comment={commentData} key={commentData.id} />)
     )}
   </div>
 );
