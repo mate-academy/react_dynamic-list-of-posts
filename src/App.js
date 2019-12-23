@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { DebounceInput } from 'react-debounce-input';
 import './App.css';
 
 import { getPosts } from './api/posts';
@@ -12,7 +13,6 @@ const App = () => {
   const [isLoading, setLoading] = useState(false);
   const [postsData, setPostsData] = useState([]);
   const [searchData, setSearchData] = useState([]);
-  const [inputValue, setInputValue] = useState('');
 
   const mergeData = (posts, users, comments) => {
     const data = posts.map(post => ({
@@ -36,8 +36,8 @@ const App = () => {
     setLoad(true);
   };
 
-  const handleSearch = (event) => {
-    setInputValue(event.target.value.toLowerCase());
+  const handleSearch = ({ target }) => {
+    const inputValue = target.value.trim().toLowerCase();
 
     const searchValues = postsData.filter(
       ({ title, body }) => (title + body).toLowerCase().includes(inputValue)
@@ -55,12 +55,12 @@ const App = () => {
       {isLoaded
         ? (
           <>
-            <input
+            <DebounceInput
               className="search"
               type="search"
+              debounceTimeout={500}
               placeholder="search"
-              value={inputValue}
-              onChange={handleSearch}
+              onChange={event => handleSearch(event)}
             />
             <PostList posts={searchData} />
           </>

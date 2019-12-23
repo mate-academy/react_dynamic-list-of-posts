@@ -9,6 +9,7 @@
   "dependencies": {
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
+    "react-debounce-input": "^3.2.2",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1"
   },
