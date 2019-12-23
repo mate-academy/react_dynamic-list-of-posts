@@ -1,3 +1,138 @@
+html,
+body {
+  margin: 0;
+}
+
 .App {
   text-align: center;
+  width: 1200px;
+  margin: 0 auto;
+}
+
+.title {
+  display: block;
+  font-family: "Titillium Web", sans-serif;
+  font-size: 50px;
+}
+
+.all {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 800px;
+  margin: 30px 0;
+}
+
+.post {
+  list-style-type: none;
+  padding: 0;
+}
+
+.post__title {
+  padding: 5px;
+  font-family: "Quicksand", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.post__body {
+  text-align: left;
+  font-family: "Quicksand", sans-serif;
+  font-size: 18px;
+  color: #54948c;
+}
+
+.user {
+  list-style-type: none;
+  padding: 10px 0;
+}
+
+.user__name {
+  text-align: right;
+  font-family: "Dancing Script", cursive;
+  font-size: 20px;
+  padding: 10px;
+}
+
+.user__email {
+  text-align: right;
+  font-family: "Abel", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.user__address {
+  text-align: right;
+  font-family: "Abel", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.comments-list {
+  display: flex;
+  width: 800px;
+}
+
+.comment {
+  display: flex;
+  list-style-type: none;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.comment__name {
+  border: 1px solid #bcc4c3;
+  border-radius: 5px;
+  width: 200px;
+  height: 50px;
+  padding: 15px;
+  margin: 5px;
+  font-family: "Quicksand", sans-serif;
+  font-weight: 400;
+}
+
+.comment__body {
+  border: 1px solid #bcc4c3;
+  border-radius: 5px;
+  margin: 5px;
+  width: 200px;
+  height: 180px;
+  padding: 15px;
+  font-family: "Abel", sans-serif;
+  font-size: 16px;
+  color: #1e6e65;
+}
+
+.comment__email {
+  border: 1px solid #bcc4c3;
+  border-radius: 5px;
+  width: 200px;
+  padding: 15px;
+  text-align: center;
+  margin: 5px;
+  font-family: "Quicksand", sans-serif;
+  font-size: 10px;
+  color: #03473f;
+}
+
+.button {
+  width: 200px;
+  border-radius: 40px;
+  font-weight: 600;
+  line-height: 50px;
+  text-align: center;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  margin-top: 50px;
+  margin-right: 20px;
+  margin-bottom: 50px;
+  background-color: #1d703d;
+  color: #fff;
+  outline: none;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #46e081;
 }
