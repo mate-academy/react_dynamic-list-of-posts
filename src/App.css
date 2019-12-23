@@ -1,3 +1,112 @@
-.App {
+body,
+h1,
+h2 {
+  margin: 0;
+  font-family: Crimson Text, serif;
+  background: #f3f1f1;
+}
+
+a {
+  text-decoration: none;
+}
+
+.loadButton {
+  display: block;
+  margin: 0 auto;
+  padding: 10px 40px;
+  font-size: 20px;
+  background: #9494e6;
+  border-radius: 15px;
+  outline: none;
+  border: black 1.5px solid;
+  color: #f3f1f1;
+}
+
+.title {
   text-align: center;
+  margin: 40px;
+}
+
+.postList {
+  border: 2px solid black;
+  width: 60%;
+  padding: 25px;
+  margin: 0 auto;
+  background: #5454ebc9;
+}
+
+.post {
+  border: 1px solid black;
+  margin-bottom: 25px;
+  padding: 20px 20px 0;
+  background: #f3f1f1;
+}
+
+.post__title {
+  text-align: center;
+  font-size: 30px;
+  color: #292977;
+}
+
+.post__body {
+  color: #192a5e;
+  font-size: 22px;
+  font-style: italic;
+}
+
+.userInfo {
+  text-align: right;
+  font-size: 24px;
+  color: rgb(13, 65, 56);
+}
+
+.userInfo__name {
+  color: rgb(77, 33, 179);
+}
+
+.userInfo__email {
+  margin: 10px;
+  color: black;
+}
+
+.comment__sender {
+  text-align: right;
+  font-size: 24px;
+  color: rgb(13, 65, 56);
+}
+
+.line {
+  margin: 30px;
+  height: 2px;
+  background: rgb(6, 43, 20);
+  border-radius: 2px;
+}
+
+.input {
+  position: relative;
+}
+
+.input__title {
+  position: absolute;
+  left: 370px;
+  bottom: 14px;
+}
+
+.input__searсh {
+  display: block;
+  margin: 25px auto;
+  width: 450px;
+  height: 50px;
+  font-size: 18px;
+  padding: 0 20px;
+}
+
+.comment__body {
+  font-size: 22px;
+  font-style: italic;
+}
+
+.comment__name {
+  font-size: 24px;
+  color: rgb(13, 65, 56);
 }
