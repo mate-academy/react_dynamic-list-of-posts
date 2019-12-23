@@ -35,32 +35,29 @@ const App = () => {
     setLoading(false);
   };
 
-  const debounce = () => {
-    let globalTimerId = null;
+  const debounce = (f, delay) => {
+    let timerId = null;
 
     return (value) => {
       setSearchError(false);
-      const timerId = setTimeout(() => {
-        if (timerId === globalTimerId) {
-          const filtered = originalPosts
-            .filter(post => post.title.includes(value)
-            || post.body.includes(value));
-
-          if (filtered.length === 0) {
-            setSearchError(true);
-          } else {
-            setPosts(filtered);
-          }
-        } else {
-          clearTimeout(timerId);
-        }
-      }, 500);
-
-      globalTimerId = timerId;
+      clearTimeout(timerId);
+      timerId = setTimeout(f, delay, value);
     };
   };
 
-  const filterPosts = debounce();
+  const debounced = (value) => {
+    const filtered = originalPosts
+      .filter(post => post.title.includes(value)
+        || post.body.includes(value));
+
+    if (filtered.length === 0) {
+      setSearchError(true);
+    } else {
+      setPosts(filtered);
+    }
+  };
+
+  const filterPosts = debounce(debounced, 300);
 
   return (
     <main className="list">
