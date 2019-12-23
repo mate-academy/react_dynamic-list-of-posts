@@ -1,9 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import User from './User';
 import CommentList from './CommentList';
+import { NormalizedPost } from './interfaces';
 
-const Post = ({ post }) => (
+interface PostProps {
+  post: NormalizedPost;
+}
+
+const Post: React.FC<PostProps> = ({ post }) => (
   <article className="post__item">
     <h2 className="post__title">{post.title}</h2>
     <p className="post__text">{post.body}</p>
@@ -11,9 +15,5 @@ const Post = ({ post }) => (
     <CommentList comments={post.comments} />
   </article>
 );
-
-Post.propTypes = {
-  post: PropTypes.objectOf(PropTypes.any).isRequired,
-};
 
 export default Post;

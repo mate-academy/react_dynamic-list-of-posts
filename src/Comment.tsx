@@ -1,7 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { Commentary } from './interfaces';
 
-const Comment = ({ comment }) => (
+interface CommentProps {
+  comment: Commentary;
+}
+
+const Comment: React.FC<CommentProps> = ({ comment }) => (
   <div className="comments__item">
     <p className="comments__text">{comment.body}</p>
     <div className="comments__author">
@@ -11,9 +15,5 @@ const Comment = ({ comment }) => (
     </div>
   </div>
 );
-
-Comment.propTypes = {
-  comment: PropTypes.objectOf(PropTypes.any).isRequired,
-};
 
 export default Comment;

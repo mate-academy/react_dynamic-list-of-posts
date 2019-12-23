@@ -1,5 +1,5 @@
 {
-  "homepage": "https://mate-academy.github.io/react_dynamic-list-of-posts",
+  "homepage": "https://olesmarola.github.io/react_dynamic-list-of-posts",
   "name": "react_dynamic-list-of-posts",
   "version": "0.1.0",
   "private": true,
@@ -7,19 +7,29 @@
   "author": "Mate Academy",
   "license": "GPL-3.0",
   "dependencies": {
+    "@types/jest": "^24.0.24",
+    "@types/node": "^12.12.21",
+    "@types/react": "^16.9.17",
+    "@types/react-dom": "^16.9.4",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-debounce-input": "^3.2.2",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "react-scripts": "^3.3.0",
+    "typescript": "^3.7.4"
   },
   "devDependencies": {
     "@mate-academy/eslint-config-react": "*",
     "@mate-academy/stylelint-config": "*",
-    "eslint": "^5.16.0",
+    "@typescript-eslint/eslint-plugin": "^2.12.0",
+    "@typescript-eslint/parser": "^2.12.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.2",
     "gh-pages": "^2.0.1",
     "husky": "^1.3.1",
     "lint-staged": "^8.1.5",
+    "prettier": "^1.19.1",
     "stylelint": "^10.0.0"
   },
   "scripts": {
@@ -27,7 +37,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint --ext .jsx,.js ./src/",
+    "lint": "eslint --ext .jsx,.js,.tsx,.ts ./src/",
+    "lintfix": "eslint --ext .jsx,.js,.tsx,.ts ./src/ --fix",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"
   },

@@ -3,7 +3,7 @@ html {
 }
 
 body {
-  margin: 0;
+  margin: 10px;
   background-image: url("./images/Subtle-Prism.svg");
   background-color: #fff;
   background-attachment: fixed;

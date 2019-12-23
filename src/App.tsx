@@ -2,25 +2,36 @@ import React, { useState } from 'react';
 import { DebounceInput } from 'react-debounce-input';
 import { POSTS_URL, USERS_URL, COMMENTS_URL } from './const';
 import { loadFromServer } from './api';
+import { Commentary, NormalizedPost, Post, Client } from './interfaces';
 import PostList from './PostList';
 import './App.css';
 
-const App = () => {
-  const [posts, setPosts] = useState([]);
-  const [isStarted, setIsStarted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [filteredPosts, setFilteredPosts] = useState([]);
+const App: React.FC = () => {
+  const [posts, setPosts] = useState<NormalizedPost[]>([]);
+  const [isStarted, setIsStarted] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const [filteredPosts, setFilteredPosts] = useState<NormalizedPost[]>([]);
 
-  const normalizePosts = (postsList, usersList, commentsList) => postsList.map(
-    post => ({
+  const normalizePosts: (
+    postsList: Post[],
+    usersList: Client[],
+    commentsList: Commentary[],
+  ) => {
+    comments: Commentary[];
+    id: number;
+    title: string;
+    body: string;
+    userId: number;
+    user: Client | undefined;
+  }[] = (postsList, usersList, commentsList) =>
+    postsList.map(post => ({
       ...post,
       comments: commentsList.filter(comment => comment.postId === post.id),
       user: usersList.find(user => user.id === post.userId),
-    })
-  );
+    }));
 
-  const loadPosts = async() => {
+  const loadPosts: () => void = async () => {
     try {
       setIsLoading(true);
       setError('');
@@ -31,7 +42,11 @@ const App = () => {
         loadFromServer(COMMENTS_URL),
       ]);
 
-      const postsData = normalizePosts(postsList, usersList, commentsList);
+      const postsData: any[] = normalizePosts(
+        postsList,
+        usersList,
+        commentsList,
+      );
 
       setPosts(postsData);
       setFilteredPosts(postsData);
@@ -43,12 +58,14 @@ const App = () => {
     }
   };
 
-  const filterPosts = (e) => {
+  const filterPosts = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchQuery = e.target.value.trim().toLowerCase();
 
-    setFilteredPosts(posts.filter(
-      post => (post.title + post.body).toLowerCase().includes(searchQuery)
-    ));
+    setFilteredPosts(
+      posts.filter(post =>
+        (post.title + post.body).toLowerCase().includes(searchQuery),
+      ),
+    );
   };
 
   if (error) {
