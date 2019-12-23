@@ -72,10 +72,5 @@ const PostList = ({ getPosts }) => {
   );
 };
 
-PostList.propTypes = {
-  getPosts: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number.isRequired,
-  })).isRequired,
-};
-
+PostList.propTypes = { getPosts: PropTypes.func.isRequired };
 export default PostList;
