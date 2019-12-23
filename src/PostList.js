@@ -56,9 +56,14 @@ const PostList = ({ getPosts }) => {
       {isLoading && !error && <p>Loading...</p>}
       {loaded && !isLoading && (
         <div>
+          <p>
+            Posts
+            &nbsp;
+            {posts.length}
+          </p>
           <input
             className="input"
-            type="text"
+            type="search"
             placeholder="Search posts"
             onChange={e => debounceHandler(e.target.value)}
           />
