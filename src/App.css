@@ -1,3 +1,72 @@
-.App {
+.App h1 {
   text-align: center;
+}
+
+.post {
+  margin: 10px 20px;
+  padding: 5px 25px;
+  border: 1px solid black;
+  background-color: rgb(243, 237, 170);
+}
+
+.post--header {
+  text-align: center;
+}
+
+.post--body {
+  font-size: 120%;
+}
+
+.user {
+  color: navy;
+  text-align: right;
+}
+
+.user--name {
+  font-size: 110%;
+}
+
+.user--email {
+  color: blue;
+  font-style: italic;
+}
+
+.user--address {
+  font-style: italic;
+}
+
+.comment {
+  background-color: rgb(255, 254, 241);
+  margin: 5px;
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.comment--email {
+  font-style: italic;
+  color: blue;
+}
+
+.comment--body {
+  font-style: italic;
+}
+
+.button--load {
+  display: block;
+  width: 200px;
+  height: 50px;
+  margin: auto;
+  background-color: rgb(255, 254, 241);
+  border: 2px solid rgb(243, 237, 170);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.button--load:hover {
+  background-color: rgb(255, 250, 187);
+  border: 2px solid rgb(243, 237, 170);
+}
+
+.filter--input {
+  width: 200px;
 }
