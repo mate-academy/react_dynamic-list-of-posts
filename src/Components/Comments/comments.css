@@ -1,0 +1,42 @@
+.post__comments {
+  padding-top: 40px;
+  position: relative;
+  color: #253757;
+}
+
+.post__comments:before {
+  content: "";
+  background-color: #00acdc;
+  height: 2px;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  bottom: 48px;
+  border-radius: 2px;
+}
+
+.comments__name {
+  position: relative;
+  margin-top: 50px;
+}
+
+.comments__name:first-child {
+  margin-top: 25px;
+}
+
+.comments__name:before {
+  content: "* * * * *";
+  position: absolute;
+  left: 0;
+  bottom: 18px;
+  border-radius: 2px;
+  font-style: italic;
+}
+
+.comments__name:first-child:before {
+  content: none;
+}
+
+.comments__text {
+  font-style: italic;
+}
