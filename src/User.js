@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const User = ({ post }) => (
+const User = ({ user }) => (
   <>
-    <p className="user">{post.name}</p>
-    <p className="user">{post.email}</p>
+    <p className="user">{user.name}</p>
+    <p className="user">{user.email}</p>
     <p className="user">
-      {`${post.address.city} ${post.address.street} ${post.address.suite}`}
+      {`${user.address.city} ${user.address.street} ${user.address.suite}`}
     </p>
   </>
 );
 
 User.propTypes
-  = { post: PropTypes.objectOf(PropTypes.string).isRequired };
+  = { user: PropTypes.objectOf(PropTypes.string).isRequired };
 
 export default User;

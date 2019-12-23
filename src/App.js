@@ -9,15 +9,13 @@ const App = () => {
       .all([getPosts(), getUsers(), getComments()]);
 
     return posts.map((post) => {
-      const currentuser = users.find(user => user.id === post.userId);
+      const currentUser = users.find(user => user.id === post.userId);
       const userComment = comments
         .filter(comment => comment.postId === post.id);
 
       return {
         ...post,
-        name: currentuser.name,
-        email: currentuser.email,
-        address: currentuser.address,
+        user: currentUser,
         comments: userComment,
       };
     });
@@ -26,7 +24,7 @@ const App = () => {
   return (
     <div className="App">
       <h1>Dynamic list of posts</h1>
-      <PostList GetPosts={modifyPosts} />
+      <PostList getPosts={modifyPosts} />
     </div>
   );
 };

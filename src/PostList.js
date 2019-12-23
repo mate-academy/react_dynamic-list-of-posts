@@ -1,39 +1,45 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import Post from './Post';
 
-const PostList = ({ GetPosts }) => {
-  const [visiblePosts, savePosts] = useState([]);
-  const [isLoading, changeLoading] = useState(false);
-  const [loaded, saveLoaded] = useState(false);
-  const [error, saveError] = useState(false);
-  const [filteredPosts, saveFilteredPosts] = useState([]);
-  const [input, saveInput] = useState('');
+const PostList = ({ getPosts }) => {
+  const [visiblePosts, setPosts] = useState([]);
+  const [isLoading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+  const [filteredPosts, setFilteredPosts] = useState([]);
+  const [input, setInput] = useState('');
 
   const loadPosts = async() => {
     try {
-      changeLoading(true);
+      setLoading(true);
 
-      const posts = await GetPosts();
+      const posts = await getPosts();
 
-      savePosts(posts);
-      changeLoading(false);
-      saveLoaded(true);
-      saveError(false);
+      setPosts(posts);
+      setLoading(false);
+      setLoaded(true);
+      setError(false);
     } catch (e) {
-      saveError(true);
+      setError(true);
     }
   };
 
   const inputHandler = (value) => {
-    saveInput(value);
-    const filtered = visiblePosts.filter(post => post.title.includes(value)
-    || post.body.includes(value));
+    const searchQuery = value.toLowerCase().trim();
 
-    saveFilteredPosts(filtered);
+    setInput(searchQuery);
+    const filtered = visiblePosts
+      .filter(post => post.title.includes(searchQuery)
+        || post.body.includes(searchQuery));
+
+    setFilteredPosts(filtered);
   };
 
-  const PostsToShow = input.length !== 0 ? filteredPosts : visiblePosts;
+  const debouncedInputHandler = _.debounce(inputHandler, 500);
+
+  const postsToShow = input.length !== 0 ? filteredPosts : visiblePosts;
 
   return (
     <div>
@@ -56,10 +62,10 @@ const PostList = ({ GetPosts }) => {
             <input
               className="input"
               type="search"
-              onChange={event => inputHandler(event.target.value)}
+              onChange={event => debouncedInputHandler(event.target.value)}
             />
           </label>
-          {PostsToShow.map(post => (
+          {postsToShow.map(post => (
             <Post post={post} key={post.id} />
           ))}
         </div>
@@ -80,6 +86,6 @@ const PostList = ({ GetPosts }) => {
   );
 };
 
-PostList.propTypes = { GetPosts: PropTypes.func.isRequired };
+PostList.propTypes = { getPosts: PropTypes.func.isRequired };
 
 export default PostList;

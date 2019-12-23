@@ -8,7 +8,7 @@ const Post = ({ post }) => (
     <p className="title">{post.title}</p>
     <p>{post.body}</p>
     <div className="user">
-      <User post={post} />
+      <User user={post.user} />
     </div>
     <ul>
       <p className="title-comment">Comments</p>
