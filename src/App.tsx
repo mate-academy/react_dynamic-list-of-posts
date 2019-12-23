@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { DebounceInput as SearchInput } from 'react-debounce-input';
 import { POSTS_URL, USERS_URL, COMMENTS_URL } from './const';
 import { loadFromServer } from './api';
-import { Commentary, NormalizedPost, Post, Client } from './interfaces';
+import { Comment, NormalizedPost, Post, User } from './interfaces';
 import PostList from './PostList';
 import './App.css';
 
@@ -15,15 +15,15 @@ const App: React.FC = () => {
 
   const normalizePosts: (
     postsList: Post[],
-    usersList: Client[],
-    commentsList: Commentary[],
+    usersList: User[],
+    commentsList: Comment[],
   ) => {
-    comments: Commentary[];
+    comments: Comment[];
     id: number;
     title: string;
     body: string;
     userId: number;
-    user: Client | undefined;
+    user: User | undefined;
   }[] = (postsList, usersList, commentsList) =>
     postsList.map(post => ({
       ...post,

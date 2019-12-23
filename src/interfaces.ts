@@ -1,4 +1,4 @@
-export interface Client {
+export interface User {
   id: number;
   name: string;
   username: string;
@@ -22,7 +22,7 @@ export interface Client {
   };
 }
 
-export interface Commentary {
+export interface Comment {
   postId: number;
   id: number;
   name: string;
@@ -42,6 +42,6 @@ export interface NormalizedPost {
   id: number;
   title: string;
   body: string;
-  comments: Commentary[];
-  user: Client;
+  comments: Comment[];
+  user: User;
 }
