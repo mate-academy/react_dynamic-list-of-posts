@@ -5,8 +5,8 @@ import Comment from './Comment';
 const CommentsList = ({ commentsData }) => (
   <article className="comments">
     <dl>
-      { commentsData.map(({ name, email, body, id }) => (
-        <Comment name={name} email={email} body={body} key={id} />
+      { commentsData.map(comment => (
+        <Comment commentData={comment} key={comment.id} />
       ))}
     </dl>
   </article>

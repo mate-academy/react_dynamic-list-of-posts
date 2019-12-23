@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { DebounceInput as FilterInput } from 'react-debounce-input';
 import PostList from './PostList';
 import { loadFromServer } from './DataApi';
 
@@ -24,14 +25,16 @@ const App = () => {
   const [isLoaded, setLoaded] = useState(false);
   const [inputValue, setValue] = useState('');
   const filtredPosts = posts.filter(
-    ({ title, body }) => (title + body).toLowerCase().includes(inputValue),
+    ({ title, body }) => (
+      (title + body).toLowerCase().includes(inputValue.trim())
+    ),
   );
 
   const handleInput = (event) => {
-    setValue(event.target.value.toLowerCase().trim());
+    setValue(event.target.value);
   };
 
-  const handleClick = async() => {
+  const loadData = async() => {
     setLoading(true);
 
     const [postsFromServer, users, comments] = await Promise.all([
@@ -52,16 +55,17 @@ const App = () => {
       {isLoaded
         ? (
           <>
-            <input
+            <FilterInput
               className="filter"
               type="text"
               value={inputValue}
               onChange={handleInput}
+              debounceTimeout={500}
             />
             <PostList info={filtredPosts} />
           </>
         )
-        : (<button type="button" onClick={handleClick}>Load data</button>)
+        : (<button type="button" onClick={loadData}>Load data</button>)
       }
       {isLoading && <h3>Loading...</h3>}
     </div>
