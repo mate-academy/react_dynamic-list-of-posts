@@ -10,7 +10,8 @@ function CommentsList({ comments }) {
   );
 }
 
-// eslint-disable-next-line max-len
-CommentsList.propTypes = { comments: PropTypes.arrayOf(PropTypes.object).isRequired };
+CommentsList.propTypes = {
+  comments: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
 
 export default CommentsList;

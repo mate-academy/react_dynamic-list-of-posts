@@ -11,6 +11,7 @@ const App = () => {
 
   const [isLoading, setLoading] = useState(false);
   const [isLoaded, setLoaded] = useState(false);
+  const [noResults, setNoResults] = useState(false);
 
   const [postsList, setPostsList] = useState([]);
   const [visiblePosts, setVisiblePosts] = useState([]);
@@ -38,12 +39,14 @@ const App = () => {
   };
 
   const searchPosts = (event) => {
+    setNoResults(false);
     const searchValue = event.target.value.toLowerCase().trim();
 
     const searchedPosts = [...postsList]
       .filter(post => (post.title + post.title).toLowerCase().trim()
         .includes(searchValue));
 
+    setNoResults(!searchedPosts.length);
     setVisiblePosts(searchedPosts);
   };
 
@@ -58,7 +61,7 @@ const App = () => {
             onClick={loadPosts}
             className="button"
           >
-            {isLoading ? (<>Loading...</>) : (<>Load Posts</>)}
+            {isLoading ? ('Loading...') : ('Load Posts')}
           </button>
         )
         : (
@@ -66,10 +69,12 @@ const App = () => {
             <input
               className="search-bar"
               onInput={searchPosts}
-              placeholder="Try &quot;alias odio sit&quot;"
+              placeholder="Try &quot;alias odio&quot;"
             />
             <div className="post__list">
-              <PostList posts={visiblePosts} />
+              {noResults
+                ? (<p>No results! :(</p>)
+                : (<PostList posts={visiblePosts} />)}
             </div>
           </>
         )
