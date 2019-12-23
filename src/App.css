@@ -1,3 +1,77 @@
+body {
+  margin: 0;
+  background-color: rgb(187, 140, 140);
+}
+
 .App {
   text-align: center;
+}
+
+.post {
+  width: 80%;
+  margin: 5px auto;
+  border: 1px solid gray;
+  padding: 15px;
+  box-sizing: border-box;
+  background-color: linen;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 17px;
+}
+
+.title-comment {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.user {
+  font-style: italic;
+}
+
+p {
+  text-align: left;
+}
+
+.user {
+  margin: 0;
+}
+
+.comment {
+  font-size: 13px;
+  margin: 5px 0;
+}
+
+.loading {
+  margin: 0 auto;
+}
+
+.load {
+  width: 70px;
+  height: 30px;
+  background-color: rgb(236, 236, 152);
+  border: none;
+  border-radius: 5px;
+  outline: none;
+}
+
+.button_container {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 5px auto;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}
+
+.input {
+  border-radius: 3px;
+  margin: 5px;
+  border: none;
+  height: 23px;
 }
