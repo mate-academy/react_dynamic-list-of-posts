@@ -12,7 +12,8 @@ const App = () => {
   const [isLoading, setLoading] = useState(false);
   const [isLoaded, setLoaded] = useState(false);
 
-  const [postsListArr, setPostsListArr] = useState([]);
+  const [postsList, setPostsList] = useState([]);
+  const [visiblePosts, setVisiblePosts] = useState([]);
 
   const loadPosts = async() => {
     setLoading(true);
@@ -31,8 +32,19 @@ const App = () => {
       };
     });
 
-    setPostsListArr(combinedData);
+    setVisiblePosts(combinedData);
+    setPostsList(combinedData);
     setLoading(false);
+  };
+
+  const searchPosts = (event) => {
+    const searchValue = event.target.value.toLowerCase().trim();
+
+    const searchedPosts = [...postsList]
+      .filter(post => (post.title + post.title).toLowerCase().trim()
+        .includes(searchValue));
+
+    setVisiblePosts(searchedPosts);
   };
 
   return (
@@ -51,8 +63,13 @@ const App = () => {
         )
         : (
           <>
+            <input
+              className="search-bar"
+              onInput={searchPosts}
+              placeholder="Try &quot;alias odio sit&quot;"
+            />
             <div className="post__list">
-              <PostList postsListArr={postsListArr} />
+              <PostList posts={visiblePosts} />
             </div>
           </>
         )
