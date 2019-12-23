@@ -1,11 +1,11 @@
 import React from 'react';
 import { Commentary } from './interfaces';
 
-interface CommentProps {
+interface Props {
   comment: Commentary;
 }
 
-const Comment: React.FC<CommentProps> = ({ comment }) => (
+const Comment: React.FC<Props> = ({ comment }) => (
   <div className="comments__item">
     <p className="comments__text">{comment.body}</p>
     <div className="comments__author">

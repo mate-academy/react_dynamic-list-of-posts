@@ -3,11 +3,11 @@ import User from './User';
 import CommentList from './CommentList';
 import { NormalizedPost } from './interfaces';
 
-interface PostProps {
+interface Props {
   post: NormalizedPost;
 }
 
-const Post: React.FC<PostProps> = ({ post }) => (
+const Post: React.FC<Props> = ({ post }) => (
   <article className="post__item">
     <h2 className="post__title">{post.title}</h2>
     <p className="post__text">{post.body}</p>

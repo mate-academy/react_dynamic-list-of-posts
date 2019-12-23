@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DebounceInput } from 'react-debounce-input';
+import { DebounceInput as SearchInput } from 'react-debounce-input';
 import { POSTS_URL, USERS_URL, COMMENTS_URL } from './const';
 import { loadFromServer } from './api';
 import { Commentary, NormalizedPost, Post, Client } from './interfaces';
@@ -89,7 +89,7 @@ const App: React.FC = () => {
       {isStarted ? (
         <div className="post">
           <h1 className="title">Dynamic list of posts</h1>
-          <DebounceInput
+          <SearchInput
             className="post__search"
             debounceTimeout={500}
             placeholder="Type to search..."

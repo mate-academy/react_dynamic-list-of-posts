@@ -1,11 +1,11 @@
 import React from 'react';
 import { Client } from './interfaces';
 
-interface UserProps {
+interface Props {
   user: Client;
 }
 
-const User: React.FC<UserProps> = ({ user }) => (
+const User: React.FC<Props> = ({ user }) => (
   <p className="post__author">
     <span>{user.name}</span>
     <br />
