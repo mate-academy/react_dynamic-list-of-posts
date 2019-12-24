@@ -20,18 +20,14 @@ const Main = () => {
     ]);
 
     setIsLoading(true);
-    setOriginalPost(
-      allPosts.map(post => ({
-        ...post,
-        user: allUsers.find(user => user.id === post.userId),
-        comments: allComments.filter(commentId => commentId.postId === post.id),
-      }))
-    );
-    setPosts(allPosts.map(post => ({
+    const unitedPost = allPosts.map(post => ({
       ...post,
       user: allUsers.find(user => user.id === post.userId),
       comments: allComments.filter(commentId => commentId.postId === post.id),
-    })));
+    }));
+
+    setOriginalPost(unitedPost);
+    setPosts(unitedPost);
     setIsLoading(false);
     setIsLoaded(true);
   };
