@@ -1,3 +1,3 @@
-const GetDataFromServer = URL => fetch(URL).then(dataList => dataList.json());
+const getDataFromServer = URL => fetch(URL).then(dataList => dataList.json());
 
-export default GetDataFromServer;
+export default getDataFromServer;

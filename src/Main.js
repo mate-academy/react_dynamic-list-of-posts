@@ -1,36 +1,31 @@
 import React, { useState } from 'react';
 
 import PostList from './PostList';
-import UnitedBlock from './UnitedBlock';
-import GetDataFromServer from './api/GetDataFromServer';
+import getDataFromServer from './api/GetDataFromServer';
 
 const Main = () => {
-  const [posts, setPosts] = useState({
-    post: [],
-    user: [],
-    comments: [],
-  });
+  const [posts, setPosts] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [loading, setIsLoading] = useState(false);
   const [textInput, setTextInput] = useState('');
-  let postsUsersComments
-    = UnitedBlock(posts.post, posts.user, posts.comments);
 
   const loadPosts = async() => {
     setIsLoading(true);
     const [allUsers, allComments, allPosts]
     = await Promise.all([
-      GetDataFromServer('https://jsonplaceholder.typicode.com/users'),
-      GetDataFromServer('https://jsonplaceholder.typicode.com/comments'),
-      GetDataFromServer('https://jsonplaceholder.typicode.com/posts'),
+      getDataFromServer('https://jsonplaceholder.typicode.com/users'),
+      getDataFromServer('https://jsonplaceholder.typicode.com/comments'),
+      getDataFromServer('https://jsonplaceholder.typicode.com/posts'),
     ]);
 
     setIsLoading(true);
-    setPosts({
-      post: allPosts,
-      user: allUsers,
-      comments: allComments,
-    });
+    setPosts(
+      allPosts.map(post => ({
+        ...post,
+        user: allUsers.find(user => user.id === post.userId),
+        comments: allComments.filter(commentId => commentId.postId === post.id),
+      }))
+    );
     setIsLoading(false);
     setIsLoaded(true);
   };
@@ -38,21 +33,21 @@ const Main = () => {
   function debounce(f, delay) {
     let timer;
 
-    return () => {
+    return (...args) => {
       clearTimeout(timer);
-      timer = setTimeout(() => f(), delay);
+      timer = setTimeout(() => {
+        loadPosts();
+
+        return f(...args);
+      }, delay);
     };
   }
 
-  function inputText() {
-    setTextInput(document.querySelector('#text').value);
-  }
+  const inputText = debounce(setTextInput, 1000);
 
   if (loading) {
     return (
-      <p className="App">
-          ...LOADING
-      </p>
+      <p className="App">...LOADING</p>
     );
   }
 
@@ -66,14 +61,18 @@ const Main = () => {
     );
   }
 
-  try {
-    postsUsersComments = postsUsersComments.filter((post) => {
-      const postContent = post.title + post.body;
+  const filteredPost = posts.filter((post) => {
+    const postContent = post.title + post.body;
 
-      return postContent.includes(textInput);
-    });
-  } catch {
-    postsUsersComments = [];
+    return postContent.includes(textInput);
+  });
+
+  if (JSON.stringify(filteredPost) !== JSON.stringify(posts)) {
+    try {
+      setPosts(filteredPost);
+    } catch {
+      setPosts([]);
+    }
   }
 
   return (
@@ -82,14 +81,14 @@ const Main = () => {
         id="text"
         type="text"
         placeholder="Search..."
-        onChange={debounce(inputText, 1000)}
+        onChange={event => inputText(event.target.value)}
       />
       <p>
-        {postsUsersComments.length}
+        {posts.length}
         {' '}
         posts found
       </p>
-      <PostList posts={postsUsersComments} />
+      <PostList posts={posts} />
     </section>
   );
 };
