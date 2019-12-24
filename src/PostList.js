@@ -15,7 +15,7 @@ const PostList = ({ getPosts }) => {
 
       const gotPosts = await getPosts();
 
-      setVisiblePosts([...gotPosts]);
+      setVisiblePosts(gotPosts);
       setPosts(gotPosts);
       setloaded(true);
       setError(false);
@@ -28,8 +28,8 @@ const PostList = ({ getPosts }) => {
   const searchPosts = (value) => {
     const searchQuery = value.toLowerCase();
 
-    setPosts(
-      visiblePosts.filter(({ title, body }) => (title + body)
+    setVisiblePosts(
+      posts.filter(({ title, body }) => (title + body)
         .toLowerCase().includes(searchQuery))
     );
   };
@@ -47,7 +47,7 @@ const PostList = ({ getPosts }) => {
 
   return (
     <div>
-      {posts.length === 0 && !error && (
+      {visiblePosts.length === 0 && !error && (
         <button type="button" className="button" onClick={loadPosts}>
           Load
         </button>
@@ -56,9 +56,9 @@ const PostList = ({ getPosts }) => {
       {loaded && !isLoading && (
         <div>
           <p>
-            {posts.length === 1 ? 'Post' : 'Posts'}
+            {visiblePosts.length === 1 ? 'Post' : 'Posts'}
             &nbsp;
-            {posts.length}
+            {visiblePosts.length}
           </p>
           <input
             className="input"
@@ -67,7 +67,7 @@ const PostList = ({ getPosts }) => {
             onChange={e => debounceHandler(e.target.value)}
           />
 
-          {posts.map(post => (
+          {visiblePosts.map(post => (
             <Post currentPost={post} key={post.id} />
           ))}
         </div>
