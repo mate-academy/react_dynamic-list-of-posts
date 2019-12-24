@@ -8,6 +8,7 @@ const Main = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [loading, setIsLoading] = useState(false);
   const [textInput, setTextInput] = useState('');
+  const [originalPost, setOriginalPost] = useState([]);
 
   const loadPosts = async() => {
     setIsLoading(true);
@@ -19,13 +20,18 @@ const Main = () => {
     ]);
 
     setIsLoading(true);
-    setPosts(
+    setOriginalPost(
       allPosts.map(post => ({
         ...post,
         user: allUsers.find(user => user.id === post.userId),
         comments: allComments.filter(commentId => commentId.postId === post.id),
       }))
     );
+    setPosts(allPosts.map(post => ({
+      ...post,
+      user: allUsers.find(user => user.id === post.userId),
+      comments: allComments.filter(commentId => commentId.postId === post.id),
+    })));
     setIsLoading(false);
     setIsLoaded(true);
   };
@@ -35,11 +41,7 @@ const Main = () => {
 
     return (...args) => {
       clearTimeout(timer);
-      timer = setTimeout(() => {
-        loadPosts();
-
-        return f(...args);
-      }, delay);
+      timer = setTimeout(() => f(...args), delay);
     };
   }
 
@@ -61,7 +63,7 @@ const Main = () => {
     );
   }
 
-  const filteredPost = posts.filter((post) => {
+  const filteredPost = originalPost.filter((post) => {
     const postContent = post.title + post.body;
 
     return postContent.includes(textInput);
