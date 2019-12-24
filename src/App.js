@@ -3,13 +3,16 @@ import getPosts from './api/postsApi';
 import getUsers from './api/usersApi';
 import getComments from './api/CommentsApi';
 import PostList from './Components/PostList/PostList';
+import './App.css';
 
 const App = () => {
   const [posts, setPosts] = useState([]);
   const [isStarted, setIsStarted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [value, setValue] = useState('');
 
   const loadData = async() => {
-    setIsStarted(true);
+    setLoading(true);
     const [
       postsFromServer,
       usersFromServer,
@@ -27,35 +30,43 @@ const App = () => {
         comments: commentsFromServer
           .filter(comment => comment.postId === post.id),
       })));
+    setIsStarted(true);
   };
 
-  const filterData = (event) => {
-    setPosts([...posts]
-      .filter(post => post.body.includes(event.target.value)));
+  const searchPost = (event) => {
+    setValue(event.target.value);
   };
+
+  const results = !value
+    ? posts
+    : posts.filter(post => (post.title.toLowerCase()
+      .includes(value.toLocaleLowerCase()) || post.body.toLowerCase()
+      .includes(value.toLocaleLowerCase())));
 
   return (
     isStarted
       ? (
         <section>
 
-          <div className="ui input">
+          <div className="container">
             <input
+              className="ui input"
               type="text"
               placeholder="Search..."
-              onChange={filterData}
+              value={value}
+              onChange={searchPost}
             />
           </div>
-
-          <PostList list={posts} />
+          <PostList list={results} />
         </section>
 
       ) : (
         <button
           onClick={loadData}
           type="button"
+          className="glow-on-hover"
         >
-          {isStarted ? 'Loading...' : 'Load'}
+          {loading ? 'Loading...' : 'Click me'}
         </button>
       )
   );
