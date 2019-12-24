@@ -1,3 +1,46 @@
 .App {
   text-align: center;
 }
+
+body {
+  background-color: rgb(126, 223, 101);
+  padding: 50px;
+  font-family: cursive;
+}
+
+.h1 {
+  font-size: 40px;
+  margin-bottom: 100px;
+  color: white;
+}
+
+.postList {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 50px;
+}
+
+.onePost {
+  background-color: rgb(241, 236, 226);
+  border-radius: 10px;
+  width: 300px;
+  margin-left: 50px;
+  padding: 20px;
+  margin-top: 40px;
+}
+
+.name {
+  font-style: italic;
+  font-size: 24px;
+}
+
+.title {
+  font-style: italic;
+  font-weight: bold;
+  font-size: 18px;
+  margin: 10px;
+}
+
+.descrip {
+  margin: 10px;
+}
