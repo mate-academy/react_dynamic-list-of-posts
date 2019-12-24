@@ -56,7 +56,7 @@ const PostList = ({ getPosts }) => {
       {loaded && !isLoading && (
         <div>
           <p>
-            Posts
+            {posts.length === 1 ? 'Post' : 'Posts'}
             &nbsp;
             {posts.length}
           </p>
