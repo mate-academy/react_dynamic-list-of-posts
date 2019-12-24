@@ -10,6 +10,7 @@ import PostList from './PostList';
 function App() {
   const [postsWithUsers, setPostsWithUsers] = useState([]);
   const [isLoading, setLoading] = useState(false);
+  const [searchItem, setSearchItem] = useState('');
 
   const loadData = async() => {
     setLoading(!isLoading);
@@ -34,11 +35,29 @@ function App() {
     ));
   };
 
+  const handleChangeItem = (event) => {
+    setSearchItem(event.target.value.toLowerCase());
+  };
+
+  const filteredItems = () => ([...postsWithUsers]
+    .filter(post => post.title.toLowerCase().includes(searchItem)
+      || post.body.toLowerCase().includes(searchItem)));
+
+  const postsToBeShown = searchItem ? filteredItems() : [...postsWithUsers];
+
   return (
     <div className="App">
       <h1 className="title">Dynamic List of Posts</h1>
       {postsWithUsers.length > 0 ? (
-        <PostList posts={postsWithUsers} />
+        <>
+          <input
+            type="text"
+            className="search-bar"
+            placeholder="Search..."
+            onChange={handleChangeItem}
+          />
+          <PostList posts={postsToBeShown} />
+        </>
       ) : (
         <button
           className="button"
@@ -48,7 +67,6 @@ function App() {
           {isLoading ? 'Loading...' : 'Load'}
         </button>
       )}
-
     </div>
   );
 }
