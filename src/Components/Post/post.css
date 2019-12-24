@@ -1,0 +1,23 @@
+.post {
+  background-image: linear-gradient(40deg, #ffdee9 20%, #b5fffc 150%);
+  box-sizing: border-box;
+  text-align: left;
+  border-radius: 15px;
+  width: 800px;
+  margin: 40px auto;
+  padding: 40px;
+}
+
+.post__header {
+  line-height: 2;
+  text-align: center;
+  border-radius: 15px;
+  background-color: #05c8ea;
+}
+
+@media screen and (max-width: 800px) {
+  .post {
+    width: 100vw;
+    border-radius: 0;
+  }
+}
