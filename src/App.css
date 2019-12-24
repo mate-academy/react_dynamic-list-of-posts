@@ -1,3 +1,28 @@
+body {
+  background-color: beige;
+}
+
 .App {
   text-align: center;
+}
+
+.comment__list {
+  display: flex;
+  border: solid 1px black;
+  flex-direction: column;
+  text-align: start;
+  margin: 20px;
+}
+
+.author {
+  margin: 0 auto;
+}
+
+.post__id {
+  color: #baa100;
+  font-size: 40px;
+}
+
+h3 {
+  padding: 5px;
 }
