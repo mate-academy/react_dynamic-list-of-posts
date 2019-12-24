@@ -1,3 +1,79 @@
 .App {
   text-align: center;
 }
+
+.loading {
+  text-align: center;
+}
+
+.posts_button {
+  background-color: #f1f1f1;
+  color: black;
+  font-size: 16px;
+  padding: 16px 30px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.posts_button:hover {
+  background-color: lightblue;
+  color: white;
+}
+
+.post_list {
+  position: relative;
+  left: calc(50% - 35vw);
+  width: 70vw;
+  border: 5px solid lightslategray;
+  border-radius: 1%;
+  margin: 10vh 0;
+}
+
+.comment {
+  width: 95%;
+  padding: 0;
+  margin: 0;
+  background: seagreen;
+}
+
+.li {
+  background: red;
+}
+
+.post1 {
+  background: #f1f1f1;
+  margin: 0;
+  padding: 0;
+}
+
+.posts_search {
+  position: relative;
+  left: calc(50% - 120px);
+  display: block;
+  color: black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.posts_search:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.posts_search.active {
+  background-color: #2196f3;
+  color: white;
+}
+
+.posts_search input[type="text"] {
+  float: right;
+  padding: 6px;
+  border: none;
+  margin-top: 8px;
+  margin-right: 16px;
+  font-size: 17px;
+}
