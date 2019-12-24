@@ -7,16 +7,15 @@ const PostList = ({ getPosts }) => {
   const [loaded, setloaded] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [mutatedPosts, setMutatedPosts] = useState([]);
+  const [visiblePosts, setVisiblePosts] = useState([]);
 
   const loadPosts = async() => {
     try {
       setLoading(true);
 
       const gotPosts = await getPosts();
-      const notOriginalPosts = await getPosts();
 
-      setMutatedPosts(notOriginalPosts);
+      setVisiblePosts([...gotPosts]);
       setPosts(gotPosts);
       setloaded(true);
       setError(false);
@@ -30,7 +29,7 @@ const PostList = ({ getPosts }) => {
     const searchQuery = value.toLowerCase();
 
     setPosts(
-      mutatedPosts.filter(({ title, body }) => (title + body)
+      visiblePosts.filter(({ title, body }) => (title + body)
         .toLowerCase().includes(searchQuery))
     );
   };
