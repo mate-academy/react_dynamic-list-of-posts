@@ -40,8 +40,8 @@ function App() {
   };
 
   const filteredItems = () => ([...postsWithUsers]
-    .filter(post => post.title.toLowerCase().includes(searchItem)
-      || post.body.toLowerCase().includes(searchItem)));
+    .filter(post => (post.title + post.body)
+      .toLowerCase().includes(searchItem)));
 
   const postsToBeShown = searchItem ? filteredItems() : [...postsWithUsers];
 
