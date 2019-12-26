@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Post from './Post';
 
-function PostList(props) {
+function PostList({ posts }) {
   return (
-    props.posts.map(item => <Post post={item} key={item.id} />)
+    posts.map(item => <Post post={item} key={item.id} />)
   );
 }
 

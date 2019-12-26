@@ -1,16 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default function Comment({ name, email }) {
+export default function Comment({ comment }) {
   return (
     <>
-      <li>{name}</li>
-      <li>{email}</li>
+      <li>{comment.name}</li>
+      <li>{comment.email}</li>
     </>
   );
 }
 
 Comment.propTypes = {
-  name: PropTypes.string.isRequired,
-  email: PropTypes.string.isRequired,
+  comment: PropTypes.shape({
+    name: PropTypes.string,
+    email: PropTypes.string,
+  }).isRequired,
 };
