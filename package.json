@@ -7,8 +7,11 @@
   "author": "Mate Academy",
   "license": "GPL-3.0",
   "dependencies": {
+    "lodash": "^4.17.15",
+    "lodash.debounce": "^4.0.8",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
+    "react-debounce-input": "^3.2.2",
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1"
   },

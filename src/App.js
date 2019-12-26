@@ -1,6 +1,7 @@
 import React from 'react';
 
 import './App.css';
+import _ from 'lodash';
 
 import PostList from './components/PostList';
 
@@ -18,8 +19,11 @@ class App extends React.Component {
   state = {
     loading: false,
     postsWithUsersAndComment: [],
-    title: '',
   }
+
+  setQueryWithDebounce = _.debounce((query) => {
+    this.findTitle(query);
+  }, 1000);
 
   LoadPosts = async() => {
     this.setState({
@@ -46,45 +50,35 @@ class App extends React.Component {
     return response.json();
   };
 
-  onInputChange = (event) => {
-    this.setState({
-      title: event.target.value,
-    });
-  }
-
   findTitle = (event) => {
-    event.preventDefault();
     this.setState(prevstete => ({
       postsWithUsersAndComment:
       [...prevstete.postsWithUsersAndComment].filter(item => (
-        item.title.includes(prevstete.title)
-        || item.body.includes(prevstete.title))),
+        (item.title + item.body).includes(event))),
     }));
   };
 
   render() {
+    const { postsWithUsersAndComment, loading } = this.state;
+
     return (
       <>
         <div className="App">
           <h1>Dunamic list of posts</h1>
-          {!this.state.loading
+          {!loading
             && <button type="button" onClick={this.LoadPosts}>Load</button>
           }
-          {this.state.loading && !this.state.postsWithUsersAndComment.length
+          {loading && !postsWithUsersAndComment.length
             ? 'loading...' : ''}
-          {this.state.loading && this.state.postsWithUsersAndComment.length
+          {loading && postsWithUsersAndComment.length
             ? (
-              <form onSubmit={this.findTitle}>
-                <input
-                  placeholder="find post"
-                  onChange={this.onInputChange}
-                  value={this.state.title}
-                />
-              </form>
+              <input onChange={event => (
+                this.setQueryWithDebounce(event.target.value))}
+              />
             )
             : ''}
-          {this.state.postsWithUsersAndComment.length && this.state.loading
-            ? <PostList posts={this.state.postsWithUsersAndComment} /> : ''
+          {postsWithUsersAndComment.length && loading
+            ? <PostList posts={postsWithUsersAndComment} /> : ''
           }
         </div>
       </>

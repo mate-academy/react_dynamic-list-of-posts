@@ -4,15 +4,15 @@ import PropTypes from 'prop-types';
 export default function User(props) {
   return (
     <>
-      <td>
+      <li>
         {props.user.name}
-      </td>
-      <td>
+      </li>
+      <li>
         {props.user.email}
-      </td>
-      <td>
+      </li>
+      <li>
         {props.user.address.street}
-      </td>
+      </li>
     </>
   );
 }
