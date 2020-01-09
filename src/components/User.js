@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default function User(props) {
+export default function User({ user }) {
   return (
     <>
       <li>
-        {props.user.name}
+        {user.name}
       </li>
       <li>
-        {props.user.email}
+        {user.email}
       </li>
       <li>
-        {props.user.address.street}
+        {user.address.street}
       </li>
     </>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import './App.css';
 import _ from 'lodash';
@@ -15,75 +15,61 @@ function getPostsWithUsersAndComment(posts, users, comments) {
   }));
 }
 
-class App extends React.Component {
-  state = {
-    loading: false,
-    postsWithUsersAndComment: [],
-  }
+const App = () => {
+  const [loading, setLoading] = useState(false);
+  const [arr, setArr] = useState([]);
+  const [title, setTitle] = useState('');
 
-  setQueryWithDebounce = _.debounce((query) => {
-    this.findTitle(query);
+  const setQueryWithDebounce = _.debounce((query) => {
+    setTitle(query);
   }, 1000);
 
-  LoadPosts = async() => {
-    this.setState({
-      loading: true,
-    });
-    this.setState({
-      postsWithUsersAndComment: await this.getPostsList(),
-    });
+  const loadPosts = async() => {
+    setLoading(true);
+    setArr(await getPostsList());
   };
 
-  getPostsList = async() => {
+  const getPostsList = async() => {
     const [posts, users, comments] = await Promise.all([
-      this.getDataFromServer('posts'),
-      this.getDataFromServer('users'),
-      this.getDataFromServer('comments'),
+      getDataFromServer('posts'),
+      getDataFromServer('users'),
+      getDataFromServer('comments'),
     ]);
 
     return getPostsWithUsersAndComment(posts, users, comments);
   };
 
-  getDataFromServer = async(url) => {
+  const getDataFromServer = async(url) => {
     const response = await fetch(`${BaseUrl}${url}`);
 
     return response.json();
   };
 
-  findTitle = (event) => {
-    this.setState(prevstete => ({
-      postsWithUsersAndComment:
-      [...prevstete.postsWithUsersAndComment].filter(item => (
-        (item.title + item.body).includes(event))),
-    }));
-  };
+  const findPost = () => arr.filter(item => (
+    (item.title + item.body).includes(title)));
 
-  render() {
-    const { postsWithUsersAndComment, loading } = this.state;
-
-    return (
-      <>
-        <div className="App">
-          <h1>Dunamic list of posts</h1>
-          {!loading
-            && <button type="button" onClick={this.LoadPosts}>Load</button>
-          }
-          {loading && !postsWithUsersAndComment.length
-            ? 'loading...' : ''}
-          {loading && postsWithUsersAndComment.length
-            ? (
-              <input onChange={event => (
-                this.setQueryWithDebounce(event.target.value))}
-              />
-            )
-            : ''}
-          {postsWithUsersAndComment.length && loading
-            ? <PostList posts={postsWithUsersAndComment} /> : ''
-          }
-        </div>
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <div className="App">
+        <h1>Dunamic list of posts</h1>
+        {!loading
+          && <button type="button" onClick={loadPosts}>Load</button>
+        }
+        {loading && !arr.length
+          ? 'loading...' : ''}
+        {loading && arr.length
+          ? (
+            <input onChange={event => (
+              setQueryWithDebounce(event.target.value))}
+            />
+          )
+          : ''}
+        {arr.length && loading
+          ? <PostList posts={findPost()} /> : ''
+        }
+      </div>
+    </>
+  );
+};
 
 export default App;
