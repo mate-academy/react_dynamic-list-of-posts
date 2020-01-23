@@ -1,1 +1,6 @@
-/// <reference types="react-scripts" />
+// / <reference types="react-scripts" />
+
+type Post = {
+  title: string;
+  body: string;
+};

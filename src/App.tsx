@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import './App.css';
 
 import * as api from './api';
+import PostsList from './PostList';
 
-const App = () => {
-  const [posts, setPosts] = useState([]);
+const App: React.FC = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const loadData = async() => {
+  const loadData = async () => {
     setIsLoading(true);
 
     const postsFromServer = await api.getPosts();
@@ -28,32 +29,15 @@ const App = () => {
           type="button"
           onClick={loadData}
         >
-          {isLoading ? 'Loading...' : 'Load'}
+          {isLoading ? (
+            'Loading...'
+          ) : (
+            'Load'
+          )}
         </button>
       )}
     </>
   );
 };
-
-interface Post {
-  title: string;
-  body: string;
-}
-
-interface PostListProps {
-  posts: Post[];
-}
-
-const PostsList = ({ posts }: PostListProps) => (
-  <ul>
-    {posts.map(post => (
-      <li>
-        <b>{post.title}</b>
-        <div>{post.body}</div>
-        <hr />
-      </li>
-    ))}
-  </ul>
-);
 
 export default App;

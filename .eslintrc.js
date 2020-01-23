@@ -1,6 +1,7 @@
 module.exports = {
   "extends": [
     "@mate-academy/eslint-config-react",
+    "airbnb-typescript",
     "plugin:@typescript-eslint/recommended"
   ],
   "plugins": [

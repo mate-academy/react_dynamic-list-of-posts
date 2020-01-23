@@ -1,15 +1,16 @@
 const API_URL = 'https://jsonplaceholder.typicode.com';
 
-const getData = async(url: string) => {
+const getItems = async<T>(url: string): Promise<T[]> => {
   const response = await fetch(API_URL + url);
 
-  if (response.ok) {
-    return response.json();
+  if (!response.ok) {
+    return [];
   }
 
-  return [];
+  return response.json()
+    .catch(() => []);
 };
 
-export const getPosts = () => getData('/posts');
-export const getUsers = () => getData('/users');
-export const getComments = () => getData('/comments');
+export const getPosts = () => getItems<Post>('/posts');
+export const getUsers = () => getItems('/users');
+export const getComments = () => getItems('/comments');
