@@ -2,8 +2,10 @@ import React, {
   FC,
   useState,
   useMemo,
+  useCallback,
   ChangeEvent,
 } from 'react';
+import debounce from 'lodash/debounce';
 
 import { Button } from './components/Button';
 import { PostsList } from './components/PostsList';
@@ -16,6 +18,8 @@ import { getVisiblePosts } from './utils/helpers';
 import { FullPost, User } from './constants/types';
 import './App.css';
 
+const DEBOUNCE_DELAY = 1000;
+
 
 export const App: FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -23,6 +27,7 @@ export const App: FC = () => {
   const [hasLoadError, setHasLoadError] = useState<boolean>(false);
   const [posts, setPosts] = useState<FullPost[]>([]);
   const [inputValue, setInputValue] = useState<string>('');
+  const [filterQuery, setFilterQuery] = useState<string>('');
 
   const handleLoadButtonClick = async () => {
     setIsLoading(true);
@@ -71,13 +76,19 @@ export const App: FC = () => {
     return <Button text="Load" onClick={handleLoadButtonClick} />;
   };
 
+  const setFilterQueryWithDebounce = useCallback(
+    debounce(setFilterQuery, DEBOUNCE_DELAY),
+    [],
+  );
+
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
+    setFilterQueryWithDebounce(event.target.value);
   };
 
   const visiblePosts = useMemo(
-    () => getVisiblePosts(posts, inputValue),
-    [inputValue, posts],
+    () => getVisiblePosts(posts, filterQuery),
+    [filterQuery, posts],
   );
 
   return (
