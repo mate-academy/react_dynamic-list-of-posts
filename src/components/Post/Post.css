@@ -1,0 +1,8 @@
+.post {
+  border: 3px solid green;
+  border-radius: 20px;
+  background-color: lightgray;
+  text-align: left;
+  padding: 10px;
+  margin: 10px;
+}

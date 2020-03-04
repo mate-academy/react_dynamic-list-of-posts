@@ -1,0 +1,9 @@
+.comment {
+  border: 3px solid black;
+  border-radius: 10px;
+  background-color: lightskyblue;
+  text-align: start;
+  list-style-type: none;
+  padding: 10px;
+  margin: 10px;
+}
