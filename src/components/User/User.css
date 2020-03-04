@@ -1,0 +1,7 @@
+.user {
+  padding: 0 10px 5px;
+  text-align: left;
+  border: 2px solid grey;
+  border-radius: 10px;
+  background-color: lightgrey;
+}

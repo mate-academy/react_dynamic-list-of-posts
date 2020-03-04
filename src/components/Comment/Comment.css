@@ -1,0 +1,14 @@
+.comment {
+  margin-bottom: 5px;
+  padding: 0 10px;
+  border: 2px solid grey;
+  border-radius: 10px;
+  text-align: left;
+  background-color: mediumturquoise;
+}
+
+.comment__name {
+  font-size: 18px;
+  font-weight: bold;
+  font-style: italic;
+}
