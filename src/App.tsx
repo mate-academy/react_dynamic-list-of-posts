@@ -7,17 +7,14 @@ import './App.css';
 import { dataDownload } from './util';
 import { PostList } from './components/PostList/PostList';
 
-const URL_POSTS = 'posts';
-const URL_USERS = 'users';
-const URL_COMMENTS = 'comments';
-const URL_START = 'https://jsonplaceholder.typicode.com/';
+const URL = 'https://jsonplaceholder.typicode.com/';
 
 const App: FC<{}> = () => {
   const [posts, setPosts] = useState<PostWithComments[]>([]);
-  const [isError, setIsError] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [query, setQuery] = useState<string>('');
-  const [filterQuery, setFilterQuery] = useState<string>('');
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [query, setQuery] = useState('');
+  const [filterQuery, setFilterQuery] = useState('');
 
 
   function filterPosts(initialPosts: PostWithComments[], filter: string): PostWithComments[] {
@@ -42,16 +39,16 @@ const App: FC<{}> = () => {
     setIsError(false);
     setIsLoading(true);
     Promise.all([
-      dataDownload<User[]>(URL_START + URL_USERS),
-      dataDownload<Post[]>(URL_START + URL_POSTS),
-      dataDownload<Comment[]>(URL_START + URL_COMMENTS),
-    ]).then(response => {
+      dataDownload<User[]>(URL + 'users'),
+      dataDownload<Post[]>(URL + 'posts'),
+      dataDownload<Comment[]>(URL + 'comments'),
+    ]).then(([usersFromApi, postsFromApi, commentsFromApi]) => {
       setIsLoading(false);
-      const newPosts = response[1].map(post => {
+      const newPosts = postsFromApi.map(post => {
         return {
           ...post,
-          user: (response[0].find(item => item.id === post.userId) as User),
-          comments: response[2].filter(item => item.postId === post.id),
+          user: (usersFromApi.find(item => item.id === post.userId) as User),
+          comments: commentsFromApi.filter(item => item.postId === post.id),
         };
       });
 
