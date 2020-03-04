@@ -1,0 +1,43 @@
+.post {
+  max-width: 500px;
+  padding: 20px;
+  padding-bottom: 20px;
+  margin: auto;
+  margin-bottom: 30px;
+  background-color: lightblue;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+}
+
+.post-title {
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.post-body {
+  padding: 10px 50px;
+  margin-bottom: 20px;
+  background-color: blanchedalmond;
+  border-radius: 10px;
+}
+
+.post-comments {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: end;
+}
+
+.post-comments__item {
+  max-width: 350px;
+  border: 1px solid black;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: aliceblue;
+}
+
+.post-comments__email {
+  font-size: 0.8em;
+  text-align: right;
+}
