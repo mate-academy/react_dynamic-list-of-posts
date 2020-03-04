@@ -7,7 +7,7 @@ interface Props {
 }
 
 
-export const Button: FC<Props> = props => {
+export const Button: FC<Props> = (props) => {
   const { text, disabled, onClick } = props;
 
   return (

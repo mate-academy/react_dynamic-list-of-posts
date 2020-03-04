@@ -16,22 +16,21 @@ import { loadUsers } from './utils/users';
 import { loadComments } from './utils/comments';
 import { getVisiblePosts } from './utils/helpers';
 import { FullPost, User } from './constants/types';
+import { DEBOUNCE_DELAY } from './constants/general';
 import './App.css';
-
-const DEBOUNCE_DELAY = 1000;
 
 
 export const App: FC = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [dataWasLoaded, setDataWasLoaded] = useState<boolean>(false);
-  const [hasLoadError, setHasLoadError] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState(false);
+  const [isLoaded, setLoaded] = useState(false);
+  const [isLoadError, setLoadError] = useState(false);
   const [posts, setPosts] = useState<FullPost[]>([]);
-  const [inputValue, setInputValue] = useState<string>('');
-  const [filterQuery, setFilterQuery] = useState<string>('');
+  const [inputValue, setInputValue] = useState('');
+  const [filterQuery, setFilterQuery] = useState('');
 
   const handleLoadButtonClick = async () => {
-    setIsLoading(true);
-    setHasLoadError(false);
+    setLoading(true);
+    setLoadError(false);
 
     try {
       const [initialPosts, initialUsers, initialComments] = await Promise.all([
@@ -52,16 +51,16 @@ export const App: FC = () => {
         }),
       );
 
-      setDataWasLoaded(true);
+      setLoaded(true);
     } catch (error) {
-      setHasLoadError(true);
+      setLoadError(true);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   const renderLoadButton = (): JSX.Element | null => {
-    if (dataWasLoaded) {
+    if (isLoaded) {
       return null;
     }
 
@@ -69,7 +68,7 @@ export const App: FC = () => {
       return <Button text="Loading" disabled />;
     }
 
-    if (hasLoadError) {
+    if (isLoadError) {
       return <Button text="Try again" onClick={handleLoadButtonClick} />;
     }
 
@@ -93,14 +92,16 @@ export const App: FC = () => {
 
   return (
     <div>
-      {hasLoadError ? 'There was an error during data loading' : null}
+      <p>
+        {isLoadError && 'There was an error during data loading'}
+      </p>
       {renderLoadButton()}
-      {dataWasLoaded ? (
+      {isLoaded && (
         <div>
           <SearchBar value={inputValue} onChange={handleInputChange} />
           <PostsList posts={visiblePosts} />
         </div>
-      ) : null}
+      )}
     </div>
   );
 };

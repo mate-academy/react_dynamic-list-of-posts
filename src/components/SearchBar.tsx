@@ -6,7 +6,7 @@ interface Props {
 }
 
 
-export const SearchBar: FC<Props> = props => {
+export const SearchBar: FC<Props> = (props) => {
   const { value, onChange } = props;
 
   return <input type="text" value={value} onChange={onChange} />;

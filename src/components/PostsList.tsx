@@ -10,7 +10,7 @@ interface Props {
 }
 
 
-export const PostsList: FC<Props> = props => {
+export const PostsList: FC<Props> = (props) => {
   const { posts } = props;
 
   return (
