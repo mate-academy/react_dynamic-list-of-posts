@@ -18,7 +18,7 @@ const App: FC<{}> = () => {
 
 
   function filterPosts(initialPosts: PostWithComments[], filter: string): PostWithComments[] {
-    const pattern = new RegExp(filter, 'gi');
+    const pattern = new RegExp(filter.trim(), 'gi');
 
     return initialPosts.filter(post => {
       return pattern.test(post.title) || pattern.test(post.body);
