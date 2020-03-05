@@ -1,0 +1,25 @@
+.post {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  width: 1000px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 17px -1px rgba(0,0,0,0.81);
+}
+
+.post__heading {
+  text-align: center;
+  margin: 40px 0;
+}
+
+.post__text {
+  margin-bottom: 40px;
+}
+
+.post__text::after {
+  content: "";
+  display: block;
+  margin: 40px auto;
+  width: 95%;
+  border-bottom: 1px solid black;
+}
