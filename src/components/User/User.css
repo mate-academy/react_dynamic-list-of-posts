@@ -1,0 +1,15 @@
+.user__heading {
+  margin-top: 0;
+  color: #385898;
+}
+
+.user__email {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.user__address {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}

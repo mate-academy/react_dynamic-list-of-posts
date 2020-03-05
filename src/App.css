@@ -1,0 +1,24 @@
+.App {
+  width: 1000px;
+  padding: 8px;
+}
+
+.control {
+  margin-bottom: 10px;
+}
+
+.button-load {
+  display: block;
+  height: 50px;
+  width: 100px;
+  font-weight: 600;
+  font-size: 15px;
+  color: #fff;
+  background-color: #07613b;
+  border-radius: 5px;
+  margin: 0 auto;
+}
+
+.button-load:disabled {
+  color: black;
+}
