@@ -8,7 +8,7 @@ import { getPostsWithUsersAndComments } from './components/getData/getData';
 const App: FC = () => {
   const [posts, setPosts] = useState<PostWithUserAndComment[]>([]);
   const [originalPosts, setOriginalPosts] = useState<PostWithUserAndComment[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState('');
 
   const handleStart = async () => {
