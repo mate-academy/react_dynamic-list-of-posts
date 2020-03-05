@@ -24,9 +24,11 @@ export const getPostsWithUsersAndComments = async (): Promise<PostWithUserAndCom
   const commentsToPost = await getComments();
 
   return posts.map((post: Post) => {
-    const user = users.find((person: User) => person.id === post.userId) as User;
+    const user = users.find((person: User) => (
+      person.id === post.userId)) as User;
     const comments = commentsToPost
-      .filter((message: Comment) => message.postId === post.userId) as Comment[];
+      .filter((message: Comment) => (
+        message.postId === post.userId)) as Comment[];
 
     return {
       ...post,

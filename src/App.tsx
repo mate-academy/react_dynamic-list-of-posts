@@ -37,38 +37,38 @@ const App: FC = () => {
         || post.body.toLowerCase().includes(text)));
   }, [text]);
 
-  if (isLoading) {
-    return (
-      <div className="title">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  if (!originalPosts.length) {
-    return (
-      <div className="title">
-        <button type="button" onClick={handleStart}>Load</button>
-      </div>
-    );
-  }
-
   return (
-    <div className="app">
-      <h1 className="title is-1 is-spaced">Dynamic list of posts</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="field">
-          <input
-            className="input is-medium"
-            placeholder="Find posts"
-            onChange={handleInput}
-            value={text}
-            type="text"
-          />
-        </div>
-      </form>
-      <PostList posts={posts} />
-    </div>
+    <>
+      {(!originalPosts.length)
+        ? (
+          <div className="title">
+            <button
+              type="button"
+              onClick={handleStart}
+            >
+              {isLoading ? 'Loading...' : 'Press to Load'}
+            </button>
+          </div>
+        )
+        : (
+          <div className="app">
+            <h1 className="title is-1 is-spaced">Dynamic list of posts</h1>
+            <form onSubmit={handleSubmit}>
+              <div className="field">
+                <input
+                  className="input is-medium"
+                  placeholder="Find posts"
+                  onChange={handleInput}
+                  value={text}
+                  type="text"
+                />
+              </div>
+            </form>
+            <PostList posts={posts} />
+          </div>
+        )}
+    </>
+
   );
 };
 
