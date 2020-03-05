@@ -1,0 +1,24 @@
+.load-btn {
+  display: block;
+  margin: auto;
+  width: 140px;
+  height: 60px;
+  margin-top: calc(50% - 100px);
+  border-radius: 5px;
+  background-color: yellow;
+  color: black;
+  font-weight: bold;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.load-btn:hover {
+  background-color: lightblue;
+  color: darkorange;
+  text-shadow: 1px 2px 2px black;
+}
+
+.loading-text {
+  font-size: 20px;
+  text-align: center;
+}
