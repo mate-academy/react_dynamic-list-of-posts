@@ -19,7 +19,7 @@ const App: FC = () => {
       getPosts(),
       getUsers(),
       getComments(),
-    ]).finally(() => setLoaded(true));
+    ]);
 
     const postsData = [...posts];
     const combinedData = postsData.map((post) => {
@@ -36,7 +36,7 @@ const App: FC = () => {
 
     setVisiblePosts(combinedData);
     setPostsList(combinedData);
-    setLoading(false);
+    setLoaded(true);
   };
 
   const searchPosts = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,7 +54,7 @@ const App: FC = () => {
   };
 
   return (
-    <div className="App">
+    <div className="app">
       <h1>Static list of posts</h1>
       {!isLoaded
         ? (
