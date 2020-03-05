@@ -36,33 +36,32 @@ const App: FC = () => {
       .toLowerCase()
       .includes(searchValue.toLowerCase()));
 
-  if (posts.length === 0) {
-    return (
-      <>
-        <button
-          type="button"
-          className="btn"
-          onClick={handleLoad}
-        >
-          Load
-        </button>
-        {isLoading && (
-          <p className="text">Loading...</p>
-        )}
-      </>
-    );
-  }
-
   return (
     <>
-      <input
-        type="text"
-        className="input"
-        value={searchValue}
-        placeholder="Enter some text"
-        onChange={handleSearch}
-      />
-      <PostsList posts={searchedPosts} />
+      {!posts.length
+        ? (
+          <>
+            <button
+              type="button"
+              className="btn"
+              onClick={handleLoad}
+            >
+              Load
+            </button>
+            {isLoading && <p className="text">Loading...</p>}
+          </>
+        ) : (
+          <>
+            <input
+              type="text"
+              className="input"
+              value={searchValue}
+              placeholder="Enter some text"
+              onChange={handleSearch}
+            />
+            <PostsList posts={searchedPosts} />
+          </>
+        )}
     </>
   );
 };
