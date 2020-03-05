@@ -1,0 +1,21 @@
+.post {
+  padding: 20px;
+  border: 1px solid #0f4c75;
+  border-radius: 10px;
+  color: #1b262c;
+  background-color: #bbe1fa;
+}
+
+.post__title {
+  font-size: 18px;
+}
+
+.post__text {
+  font-size: 16px;
+}
+
+.post__comments {
+  font-size: 16px;
+  line-height: 20px;
+  border-bottom: 1px solid #0f4c75;
+}

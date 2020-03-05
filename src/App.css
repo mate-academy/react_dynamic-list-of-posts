@@ -1,0 +1,33 @@
+.app {
+  width: 280px;
+  margin: auto;
+  text-align: center;
+}
+
+.start-button {
+  display: block;
+  width: 150px;
+  margin: auto;
+  margin-top: 100px;
+  border-radius: 5px;
+  border: 1px solid lightblue;
+  padding: 20px;
+  cursor: pointer;
+}
+
+.app__label {
+  width: 280px;
+  margin: auto;
+}
+
+.app__input {
+  border-radius: 3px;
+  border: 1px solid lightblue;
+  padding: 10px;
+}
+
+@media (min-width: 768px) {
+  .app {
+    width: 720px;
+  }
+}
