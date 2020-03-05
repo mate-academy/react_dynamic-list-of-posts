@@ -1,0 +1,21 @@
+.app {
+  text-align: center;
+}
+
+.button {
+  margin: 10px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.loading-text {
+  margin: 10px;
+}
+
+.input {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  margin: 10px;
+  padding: 10px;
+}
