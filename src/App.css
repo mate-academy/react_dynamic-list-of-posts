@@ -1,0 +1,20 @@
+.app {
+  text-align: center;
+  margin: 1vh auto;
+}
+
+#input {
+  margin: 30px auto;
+  width: 600px;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+
+}
+
+.list__item {
+  width: 550px;
+  margin: 40px;
+}
