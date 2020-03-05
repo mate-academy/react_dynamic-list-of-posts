@@ -9,7 +9,7 @@ import { PostList } from './components/PostList/PostList';
 
 const URL = 'https://jsonplaceholder.typicode.com/';
 
-const App: FC<{}> = () => {
+const App: FC = () => {
   const [posts, setPosts] = useState<PostWithComments[]>([]);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -88,7 +88,7 @@ const App: FC<{}> = () => {
         className="search-field"
         value={query}
         type="text"
-        placeholder="Enter title or body"
+        placeholder="Enter search query"
         onChange={searchHandler}
       />
       <div className="App">
