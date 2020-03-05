@@ -1,4 +1,9 @@
-import React, { useState, FC, ChangeEvent } from 'react';
+import React, {
+  useState,
+  FC,
+  ChangeEvent,
+  useMemo,
+} from 'react';
 import './App.css';
 import { getPosts, getUsers, getComments } from './api';
 import { PostsList } from './components/PostsList/PostsList';
@@ -28,13 +33,13 @@ const App: FC = () => {
     setValue(value);
   };
 
-  const searchedPosts = !searchValue
-    ? posts
-    : posts.filter(post => post.title
+  const searchedPosts = useMemo(() => posts
+    .filter(post => post.title
       .toLowerCase()
       .includes(searchValue.toLowerCase()) || post.body
       .toLowerCase()
-      .includes(searchValue.toLowerCase()));
+      .includes(searchValue.toLowerCase())),
+  [searchValue, posts]);
 
   return (
     <>
