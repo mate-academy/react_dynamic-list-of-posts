@@ -29,7 +29,6 @@ export const PostsList: FC<Props> = ({ posts }) => {
 
   const visiblePosts = inputValue ? filteredPosts : posts;
 
-
   return (
     <>
       <label
