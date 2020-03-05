@@ -3,7 +3,7 @@
   margin: auto;
   width: 140px;
   height: 60px;
-  margin-top: calc(50% - 100px);
+  margin-top: calc(50vh - 50px);
   border-radius: 5px;
   background-color: yellow;
   color: black;
