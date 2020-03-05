@@ -25,9 +25,9 @@ const App: FC = () => {
           }
         ));
 
+        setPostList(preparedPosts);
         setButtonVisible(false);
         setIsLoading(false);
-        setPostList(preparedPosts);
       });
   };
 
