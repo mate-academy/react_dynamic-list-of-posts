@@ -39,6 +39,16 @@ export const App: FC = () => {
     || post.body.toLowerCase().includes(findQuery)
   ));
 
+  // const filteredPost = useMemo(
+  //   () => (
+  //     posts.filter(post => (
+  //       post.title.toLowerCase().includes(findQuery)
+  //       || post.body.toLowerCase().includes(findQuery)
+  //     ))
+  //   ),
+  //   [findQuery],
+  // );
+
   if (posts.length === 0) {
     return (
       <>

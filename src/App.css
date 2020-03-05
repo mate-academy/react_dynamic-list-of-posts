@@ -9,20 +9,18 @@
 
 body {
   background-color: #7ad489;
-}
-
-.app__load-btn,
-.app__loader {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 50%);
+  padding: 10px;
 }
 
 .app__load-btn {
-  top: 45%;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   padding: 10px 30px;
   font-size: 30px;
   border-radius: 10px;
+  min-width: 220px;
   border: 2px solid #455c98;
   color: #455c98;
   background-color: transparent;
@@ -40,7 +38,10 @@ body {
 }
 
 .app__loader {
-  top: 50%;
+  position: absolute;
+  left: 50%;
+  top: 65%;
+  transform: translate(-50%, -50%);
   width: 200px;
   height: 200px;
   overflow: hidden;
@@ -59,7 +60,7 @@ body {
 
 .post-finder {
   position: relative;
-  width: fit-content;
+  max-width: 400px;
   margin: 0 auto 50px;
 }
 
