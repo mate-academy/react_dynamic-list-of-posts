@@ -4,7 +4,7 @@ import { CommentList } from '../CommentsList/CommentsList';
 import './PostItem.css';
 
 interface Props {
-  postItem: PrepearedUser;
+  postItem: PrepearedPost;
 }
 
 export const PostItem: FC<Props> = ({ postItem }) => {

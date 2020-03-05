@@ -43,9 +43,7 @@ interface User {
   company: Company;
 }
 
-interface PrepearedUser extends Post {
-  comments: [
-    ...Comment,
-  ];
+interface PrepearedPost extends Post {
+  comments: Comment[];
   user: User;
 }

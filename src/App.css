@@ -12,6 +12,12 @@
   cursor: pointer;
 }
 
+.load-btn:disabled {
+  background-color: lightblue;
+  color: darkorange;
+  text-shadow: 1px 2px 2px black;
+}
+
 .load-btn:hover {
   background-color: lightblue;
   color: darkorange;

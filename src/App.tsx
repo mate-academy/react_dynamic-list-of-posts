@@ -3,19 +3,15 @@ import { getData } from './api/getDataFromServer';
 import { PostsList } from './components/PostList/PostsList';
 import './App.css';
 
-const API_URL_POST = 'https://jsonplaceholder.typicode.com/posts';
-const API_URL_USER = 'https://jsonplaceholder.typicode.com/users';
-const API_URL_COMMENT = 'https://jsonplaceholder.typicode.com/comments';
-
 const App: FC = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [buttonVisible, setButtonVisible] = useState(true);
-  const [postList, setPostList] = useState<PrepearedUser[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [buttonVisible, setButtonVisible] = useState<boolean>(true);
+  const [postList, setPostList] = useState<PrepearedPost[]>([]);
 
   const loadData = () => {
-    const PostsPromise = getData<Post[]>(API_URL_POST);
-    const UsersPromise = getData<User[]>(API_URL_USER);
-    const CommentsPromise = getData<Comment[]>(API_URL_COMMENT);
+    const PostsPromise = getData<Post[]>('posts');
+    const UsersPromise = getData<User[]>('users');
+    const CommentsPromise = getData<Comment[]>('comments');
 
     setIsLoading(true);
 

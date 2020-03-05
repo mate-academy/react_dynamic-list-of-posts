@@ -4,11 +4,11 @@ import { PostItem } from '../PostItem/PostItem';
 import './PostsList.css';
 
 interface Props {
-  postList: PrepearedUser[];
+  postList: PrepearedPost[];
 }
 
-function filterPosts(arr: PrepearedUser[], value: string) {
-  return [...arr].filter(post => (
+function filterPosts(prepearedPosts: PrepearedPost[], value: string) {
+  return [...prepearedPosts].filter(post => (
     post.title.toLowerCase().includes(value.toLowerCase())
     || post.body.toLowerCase().includes(value.toLowerCase())
   ));
