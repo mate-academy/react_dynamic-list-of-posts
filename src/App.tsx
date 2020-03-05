@@ -1,13 +1,13 @@
 import React, { FC, useState } from 'react';
 import './App.css';
 
-import { PreparedPost, UserType } from './utils/interfaces';
+import { PreparedPostType, UserType } from './utils/interfaces';
 import { getPosts, getUsers, getComments } from './api/getData';
 import { PostList } from './components/PostList/PostList';
 
 const App: FC = () => {
-  const [postsList, setPostsList] = useState<PreparedPost[]>([]);
-  const [visiblePosts, setVisiblePosts] = useState<PreparedPost[]>([]);
+  const [postsList, setPostsList] = useState<PreparedPostType[]>([]);
+  const [visiblePosts, setVisiblePosts] = useState<PreparedPostType[]>([]);
 
   const [isLoading, setLoading] = useState(false);
   const [isLoaded, setLoaded] = useState(false);

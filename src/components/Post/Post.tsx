@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import './Post.css';
-import { PreparedPost } from '../../utils/interfaces';
+import { PreparedPostType } from '../../utils/interfaces';
 import { User } from '../User/User';
 import { CommentList } from '../CommentList/CommentList';
 
 interface Props {
-  post: PreparedPost;
+  post: PreparedPostType;
 }
 
 export const Post: FC<Props> = ({ post }) => {

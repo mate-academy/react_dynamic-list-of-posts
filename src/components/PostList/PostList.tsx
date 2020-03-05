@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
-import { PreparedPost } from '../../utils/interfaces';
+import { PreparedPostType } from '../../utils/interfaces';
 import { Post } from '../Post/Post';
 import './PostList.css';
 
 interface Props {
-  postlist: PreparedPost[];
+  postlist: PreparedPostType[];
 }
 
 export const PostList: FC<Props> = ({ postlist }) => (

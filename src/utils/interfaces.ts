@@ -18,32 +18,32 @@ export interface UserType {
   name: string;
   username: string;
   email: string;
-  address: Address;
+  address: AddressType;
   phone: string;
   website: string;
-  company: Company;
+  company: CompanyType;
 }
 
-interface Address {
+interface AddressType {
   street: string;
   suite: string;
   city: string;
   zipcode: string;
-  geo: Geo;
+  geo: GeoType;
 }
 
-interface Geo {
+interface GeoType {
   lat: number;
   lng: number;
 }
 
-interface Company {
+interface CompanyType {
   name: string;
   catchPhrase: string;
   bs: string;
 }
 
-export interface PreparedPost extends PostType {
+export interface PreparedPostType extends PostType {
   author: UserType;
   postComments: CommentType[];
 }
