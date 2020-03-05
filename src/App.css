@@ -1,0 +1,68 @@
+.app {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  margin: 0;
+  background-color: #ececf8;
+}
+
+.heading {
+  text-align: center;
+}
+
+.search {
+  margin: 30px 0 30px 40%;
+  padding: 10px;
+}
+
+.load {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.post {
+  margin: 0 auto;
+  width: 75%;
+  background-color: #f2f2f2;
+  padding: 20px 30px;
+  margin-bottom: 20px;
+  box-shadow: 3px 1px 5px #b3b3b3;
+}
+
+.title {
+  margin-top: 0;
+  color: #000f33;
+  text-align: center;
+  font-size: 24px;
+}
+
+.user {
+  color: #808080;
+  font-size: 15px;
+}
+
+.comments {
+  list-style-type: none;
+  margin-top: 40px;
+  padding: 0;
+}
+
+.comment {
+  background-color: #d9d9f2;
+  opacity: 0.8;
+  padding: 10px 20px;
+  width: 90%;
+  margin: 0 auto 10px;
+  border-radius: 20px;
+}
+
+.caption {
+  margin: 5px 0 10px;
+}
+
+.email {
+  margin: 5px 0 2px;
+  color: #21215f;
+  font-size: 14px;
+}
