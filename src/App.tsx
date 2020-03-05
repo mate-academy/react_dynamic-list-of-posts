@@ -5,19 +5,19 @@ import { getPosts, getUsers, getComments } from './api';
 
 const App: FC = () => {
   const [posts, setPosts] = useState<PostWithComments[]>([]);
-  const [searchValue, setSearchValue] = useState<string>('');
+  const [searchValue, setSearchValue] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [isLoaded, setLoaded] = useState(false);
 
   const handleLoad = async () => {
     setLoading(true);
-    const [postsResponse, usersResponse, commentsResponse] = await Promise
+    const [postList, users, comments] = await Promise
       .all([getPosts(), getUsers(), getComments()]);
 
-    const preparedPosts = postsResponse.map(post => ({
+    const preparedPosts = postList.map(post => ({
       ...post,
-      user: (usersResponse.find(user => user.id === post.userId)) as User,
-      comments: commentsResponse.filter(comment => comment.postId === post.id) as Comment[],
+      user: (users.find(user => user.id === post.userId)) as User,
+      comments: comments.filter(comment => comment.postId === post.id) as Comment[],
     }));
 
     setPosts(preparedPosts);
@@ -33,8 +33,11 @@ const App: FC = () => {
   const filteredPosts = (searchValue === '')
     ? posts
     : posts.filter(post => post.title
-      .toLowerCase().includes(searchValue.toLowerCase())
-      || post.body.toLowerCase().includes(searchValue.toLowerCase()));
+      .toLowerCase()
+      .includes(searchValue.trim().toLowerCase())
+      || post.body
+        .toLowerCase()
+        .includes(searchValue.trim().toLowerCase()));
 
   return (
     <>
