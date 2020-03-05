@@ -54,7 +54,7 @@ export const App: FC = () => {
           <div className="app__loader loader">
             <img
               className="loader__gif"
-              src="https://i.gifer.com/origin/34/34338d26023e5515f6cc8969aa027bca_w200.gif"
+              src="https://www.eventbus.nz/wp-content/themes/eventbus/assets/images/widget-loader-lg-en.gif"
               alt="Loading..."
             />
           </div>
@@ -64,17 +64,18 @@ export const App: FC = () => {
   }
 
   return (
-    <>
+    <div className="wrapper">
       <div className="post-finder">
         <input
           type="text"
           onChange={handleChange}
+          className="post-finder__input"
           placeholder="Find post by body ot title"
         />
       </div>
       <PostsList
         posts={filteredPost}
       />
-    </>
+    </div>
   );
 };

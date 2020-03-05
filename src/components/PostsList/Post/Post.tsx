@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import './Post.css';
 import { CommentsList } from './CommentsList/CommentsList';
 
 interface Props {
@@ -16,7 +17,7 @@ export const Post: FC<Props> = ({
   } = post;
 
   return (
-    <div className="post">
+    <li className="post">
       <div className="post__author author">
         <p className="author__name">
           {user.name}
@@ -31,10 +32,13 @@ export const Post: FC<Props> = ({
         </p>
       </div>
       <div className="post__comments">
+        <p className="post__comments-title">
+          Comments
+        </p>
         <CommentsList
           comments={comments}
         />
       </div>
-    </div>
+    </li>
   );
 };

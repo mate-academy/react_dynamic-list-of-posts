@@ -1,0 +1,22 @@
+.comment {
+  padding: 20px;
+  border: 3px solid #0ac2a1;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.comment__name {
+  color: #0094bb;
+  margin: 20px 0;
+}
+
+.comment__email {
+  text-align: left;
+  color: #455c98;
+}
+
+.comment__body {
+  text-align: left;
+  font-size: 20px;
+  color: #444;
+}

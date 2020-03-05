@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import './PostsList.css';
 import { Post } from './Post/Post';
 
 interface Props {
@@ -9,13 +10,13 @@ export const PostsList: FC<Props> = ({
   posts,
 }) => {
   return (
-    <div className="post-list">
+    <ul className="post-list">
       {posts.map(post => (
         <Post
           key={post.id}
           post={post}
         />
       ))}
-    </div>
+    </ul>
   );
 };
