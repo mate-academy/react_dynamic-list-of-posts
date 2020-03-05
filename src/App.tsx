@@ -28,7 +28,7 @@ export const App: FC = () => {
     setText(event.target.value);
   };
 
-  const filteredMovies = posts.filter(post => (
+  const filteredPosts = posts.filter(post => (
     post.title.toLowerCase().includes(text)
     || post.body.toLowerCase().includes(text)
   ));
@@ -72,7 +72,7 @@ export const App: FC = () => {
         onChange={handleChange}
       />
       <div className="wrapper--post">
-        <PostList posts={filteredMovies} />
+        <PostList posts={filteredPosts} />
       </div>
     </div>
   );
