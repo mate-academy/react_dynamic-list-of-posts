@@ -1,0 +1,18 @@
+.user-info__part {
+  list-style: none;
+  font-size: 0.8em;
+}
+
+.user-info {
+  text-align: right;
+  margin-right: 10px;
+}
+
+.email {
+  color: #35477d;
+  text-decoration: none;
+}
+
+.email:hover {
+  color: #e22c63;
+}

@@ -1,0 +1,36 @@
+.post__title {
+  text-transform: uppercase;
+  margin-bottom: 15px;
+  padding-left: 20px;
+}
+
+.post {
+  background-color: white;
+  width: 70%;
+  margin: 0 auto 25px;
+  padding: 10px;
+  border-radius: 20px;
+  border: 5px solid #b2dffb;
+  box-shadow: 5px 5px 5px 1px rgba(60,108,176,1);
+  box-sizing: border-box;
+}
+
+.post__text {
+  padding: 0 10px;
+}
+
+.post:first-of-type {
+  margin-top: 25px;
+}
+
+.post__line {
+  border-top: 2px solid #e22c63;
+  border-radius: 2px;
+}
+
+.post__comments_title {
+  text-transform: uppercase;
+  font-size: 0.9em;
+  text-align: center;
+  margin-top: 20px;
+}

@@ -1,8 +1,70 @@
-import React from 'react';
+import React, { useState, FC, ChangeEvent } from 'react';
 import './App.css';
+import { getPosts, getUsers, getComments } from './api';
+import { PostsList } from './components/PostsList/PostsList';
 
-const App = () => (
-  <h1>Dynamic list of posts</h1>
-);
+const App: FC = () => {
+  const [posts, setPosts] = useState<PostExtended[]>([]);
+  const [isLoading, setLoading] = useState(false);
+  const [searchValue, setValue] = useState('');
+
+  const handleLoad = async () => {
+    setLoading(true);
+    const [postsLoaded, usersLoaded, commentsLoaded] = await Promise
+      .all([getPosts(), getUsers(), getComments()]);
+
+    const postsWithUserComments = postsLoaded.map(post => ({
+      ...post,
+      user: (usersLoaded.find(user => user.id === post.userId)) as User,
+      comments: commentsLoaded.filter(comment => comment.postId === post.id),
+    }));
+
+    setPosts(postsWithUserComments);
+  };
+
+  const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    const { target: { value } } = event;
+
+    setValue(value);
+  };
+
+  const searchedPosts = !searchValue
+    ? posts
+    : posts.filter(post => post.title
+      .toLowerCase()
+      .includes(searchValue.toLowerCase()) || post.body
+      .toLowerCase()
+      .includes(searchValue.toLowerCase()));
+
+  if (posts.length === 0) {
+    return (
+      <>
+        <button
+          type="button"
+          className="btn"
+          onClick={handleLoad}
+        >
+          Load
+        </button>
+        {isLoading && (
+          <p className="text">Loading...</p>
+        )}
+      </>
+    );
+  }
+
+  return (
+    <>
+      <input
+        type="text"
+        className="input"
+        value={searchValue}
+        placeholder="Enter some text"
+        onChange={handleSearch}
+      />
+      <PostsList posts={searchedPosts} />
+    </>
+  );
+};
 
 export default App;
