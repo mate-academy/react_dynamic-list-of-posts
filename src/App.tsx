@@ -31,7 +31,7 @@ export const App: FC = () => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFindQuery(event.target.value);
+    setFindQuery(event.target.value.toLocaleLowerCase());
   };
 
   const filteredPost = posts.filter(post => (
