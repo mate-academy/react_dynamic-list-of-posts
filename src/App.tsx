@@ -11,9 +11,7 @@ import { Button } from './components/Button';
 import { PostsList } from './components/PostsList';
 import { SearchBar } from './components/SearchBar';
 
-import { loadPosts } from './utils/posts';
-import { loadUsers } from './utils/users';
-import { loadComments } from './utils/comments';
+import { loadPosts, loadUsers, loadComments } from './utils/api';
 import { getVisiblePosts } from './utils/helpers';
 import { FullPost, User } from './constants/types';
 import { DEBOUNCE_DELAY } from './constants/general';
@@ -43,7 +41,9 @@ export const App: FC = () => {
         initialPosts.map(post => {
           return {
             ...post,
-            user: initialUsers.find(user => user.id === post.userId) as User,
+            user: initialUsers.find(
+              user => user.id === post.userId,
+            ) as User,
             comments: initialComments.filter(
               comment => comment.postId === post.id,
             ),

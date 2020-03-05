@@ -11,18 +11,13 @@ interface Props {
 
 
 export const PostItem: FC<Props> = (props) => {
+  const { post } = props;
   const {
-    post: {
-      title,
-      body,
-      user: {
-        name,
-        email,
-        address,
-      },
-      comments,
-    },
-  } = props;
+    title,
+    body,
+    user,
+    comments,
+  } = post;
 
   return (
     <>
@@ -36,11 +31,7 @@ export const PostItem: FC<Props> = (props) => {
         {' '}
         {body}
       </p>
-      <User
-        name={name}
-        email={email}
-        address={address}
-      />
+      <User user={user} />
       <CommentsList comments={comments} />
     </>
   );

@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
 
-import { Address } from '../constants/types';
+import { User as UserInterface } from '../constants/types';
 import './User.css';
 
 interface Props {
-  name: string;
-  email: string;
-  address: Address;
+  user: UserInterface;
 }
 
 
 export const User: FC<Props> = (props) => {
-  const { name, email, address: { zipcode, street, city } } = props;
+  const { user } = props;
+  const { name, email, address } = user;
+  const { zipcode, street, city } = address;
 
   return (
     <p className="user">
