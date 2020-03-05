@@ -8,7 +8,7 @@ import { PostList } from './components/PostList/PostList';
 
 
 export const App: FC = () => {
-  const [allPosts, setAllPosts] = useState<PostInterface[]>([]);
+  const [allPosts, setAllPosts] = useState<CompletePostInterface[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState('');
   const [filterQuery, setFilterQuery] = useState('');

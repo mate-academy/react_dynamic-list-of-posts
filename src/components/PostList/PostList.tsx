@@ -3,7 +3,7 @@ import './PostList.css';
 import { Post } from '../Post/Post';
 
 interface Props {
-  allPosts: PostInterface[];
+  allPosts: CompletePostInterface[];
 }
 
 export const PostList: FC<Props> = ({ allPosts }) => {

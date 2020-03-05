@@ -14,6 +14,13 @@ interface PostInterface {
   id: number;
   title: string;
   body: string;
+}
+
+interface CompletePostInterface {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
   comments: CommentInterface[];
   user: UserInterface;
 }

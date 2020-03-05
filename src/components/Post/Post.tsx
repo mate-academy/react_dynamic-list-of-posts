@@ -4,7 +4,7 @@ import { User } from '../User/User';
 import { CommentList } from '../CommentList/CommentList';
 
 interface Props {
-  post: PostInterface;
+  post: CompletePostInterface;
 }
 
 export const Post: FC<Props> = ({ post }) => {
