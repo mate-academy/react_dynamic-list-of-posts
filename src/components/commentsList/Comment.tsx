@@ -1,8 +1,6 @@
 import React, { FC } from 'react';
 
-type Props = Comment;
-
-export const Comment: FC<Props> = ({ name, body, email }) => (
+export const Comment: FC<Comment> = ({ name, body, email }) => (
   <div className="comment">
     <span>
       comment:

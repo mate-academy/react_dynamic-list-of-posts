@@ -2,9 +2,7 @@ import React, { FC } from 'react';
 import { CommentList } from '../commentsList/CommentsList';
 import { User } from '../user/User';
 
-type Props = Posts;
-
-export const Post: FC<Props> = ({
+export const Post: FC<Posts> = ({
   title,
   body,
   user,
