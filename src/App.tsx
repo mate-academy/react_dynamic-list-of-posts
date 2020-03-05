@@ -37,7 +37,8 @@ export const App: FC = () => {
     }
 
     return allPosts
-      .filter(post => post.body.includes(filterQuery) || post.title.includes(filterQuery));
+      .filter(post => post.body.toLowerCase().includes(filterQuery.toLowerCase())
+      || post.title.toLowerCase().includes(filterQuery.toLowerCase()));
   }, [filterQuery, allPosts]);
 
   return (
