@@ -4,8 +4,8 @@ import { PostsList } from './components/PostList/PostsList';
 import './App.css';
 
 const App: FC = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [buttonVisible, setButtonVisible] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [buttonVisible, setButtonVisible] = useState(true);
   const [postList, setPostList] = useState<PrepearedPost[]>([]);
 
   const loadData = () => {

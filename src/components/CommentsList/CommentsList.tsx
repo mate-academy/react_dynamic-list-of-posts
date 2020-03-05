@@ -5,15 +5,12 @@ interface Props {
   comments: Comment[];
 }
 
-export const CommentList: FC<Props> = ({ comments }) => {
-
-  return (
-    <>
-      {
-        comments.map(comment => (
-          <CommentItem comments={comment} key={comment.id} />
-        ))
-      }
-    </>
-  );
-};
+export const CommentList: FC<Props> = ({ comments }) => (
+  <>
+    {
+      comments.map(comment => (
+        <CommentItem comments={comment} key={comment.id} />
+      ))
+    }
+  </>
+);

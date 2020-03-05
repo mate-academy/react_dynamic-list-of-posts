@@ -7,7 +7,7 @@ interface Props {
   postList: PrepearedPost[];
 }
 
-function filterPosts(prepearedPosts: PrepearedPost[], value: string) {
+function filterPosts(prepearedPosts: PrepearedPost[], value: string): PrepearedPost[] {
   return [...prepearedPosts].filter(post => (
     post.title.toLowerCase().includes(value.toLowerCase())
     || post.body.toLowerCase().includes(value.toLowerCase())

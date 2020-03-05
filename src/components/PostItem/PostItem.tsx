@@ -7,20 +7,17 @@ interface Props {
   postItem: PrepearedPost;
 }
 
-export const PostItem: FC<Props> = ({ postItem }) => {
+export const PostItem: FC<Props> = ({ postItem }) => (
+  <div className="post">
+    <UserItem user={postItem.user} />
 
-  return (
-    <div className="post">
-      <UserItem user={postItem.user} />
-
-      <div className="post-body">
-        <p className="post-title">{postItem.title}</p>
-        <p className="post-desctiption">{postItem.body}</p>
-      </div>
-
-      <div className="post-comments">
-        <CommentList comments={postItem.comments} />
-      </div>
+    <div className="post-body">
+      <p className="post-title">{postItem.title}</p>
+      <p className="post-desctiption">{postItem.body}</p>
     </div>
-  );
-};
+
+    <div className="post-comments">
+      <CommentList comments={postItem.comments} />
+    </div>
+  </div>
+);
