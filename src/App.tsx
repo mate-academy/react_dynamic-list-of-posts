@@ -1,4 +1,6 @@
-import React, { FC, useState, ChangeEvent } from 'react';
+import React, {
+  FC, useState, ChangeEvent, useMemo
+} from 'react';
 import './App.css';
 import { PostList } from './components/PostList';
 import { getPosts, getUsers, getComments } from './api';
@@ -30,15 +32,15 @@ const App: FC = () => {
     setSearchValue(target.value);
   };
 
-  const filteredPosts = (searchValue === '')
-    ? posts
-    : posts.filter(post => post.title
-      .toLowerCase()
-      .includes(searchValue.trim().toLowerCase())
-      || post.body
+  const filteredPosts = useMemo(() => 
+      posts.filter(post => post.title
         .toLowerCase()
-        .includes(searchValue.trim().toLowerCase()));
-
+        .includes(searchValue.trim().toLowerCase())
+        || post.body
+          .toLowerCase()
+          .includes(searchValue.trim().toLowerCase())),
+    [searchValue, posts]
+  )
   return (
     <>
       {!isLoaded ? (
