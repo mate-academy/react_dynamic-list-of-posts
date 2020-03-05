@@ -10,8 +10,8 @@ const App: FC = () => {
   const [posts, setPosts] = useState<PostWithComments[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [isStarted, setStarted] = useState(true);
-  const [query, setQuery] = useState<string>('');
-  const [filterQuery, setFilterQuery] = useState<string>('');
+  const [query, setQuery] = useState('');
+  const [filterQuery, setFilterQuery] = useState('');
 
   const loadData = () => {
     setLoading(true);
