@@ -7,7 +7,7 @@ const App: FC = () => {
   const [listOfPosts, setPost] = useState<CompletedPost[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<CompletedPost[]>([]);
   const [query, setQuery] = useState('');
-  const [isLoaded, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const loadPosts = () => {
     setLoading(true);
@@ -55,7 +55,7 @@ const App: FC = () => {
           <button type="button" onClick={() => loadPosts()}>
           Load data
           </button>
-          {isLoaded && <p>Loading...</p>}
+          {isLoading && <p>Loading...</p>}
         </div>
       )
         : (
