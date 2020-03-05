@@ -1,4 +1,6 @@
-import React, { FC, useState, useMemo, useCallback } from 'react';
+import React, {
+  FC, useState, useMemo, useCallback,
+} from 'react';
 import debounce from 'lodash/debounce';
 import { getPosts, getUsers, getComments } from './api/api';
 import { PostList } from './components/PostList/PostList';
@@ -38,8 +40,11 @@ const App: FC = () => {
   };
 
   const filtered = useMemo<PostWithComments[]>(() => {
+    const filterValue = filterQuery.toLowerCase();
+
     return posts.filter(post => (
-      post.title.includes(filterQuery) || post.body.includes(filterQuery)
+      post.title.toLowerCase().includes(filterValue)
+      || post.body.toLowerCase().includes(filterValue)
     ));
   }, [filterQuery, posts]);
 
@@ -70,7 +75,7 @@ const App: FC = () => {
                 />
               </div>
             </label>
-            <PostList postlist={query ? filtered : posts} />
+            <PostList postlist={filterQuery ? filtered : posts} />
           </div>
         )}
     </>
