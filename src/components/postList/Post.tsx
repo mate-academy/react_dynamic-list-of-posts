@@ -2,12 +2,7 @@ import React, { FC } from 'react';
 import { CommentList } from '../commentsList/CommentsList';
 import { User } from '../user/User';
 
-interface Props {
-  title: string;
-  body: string;
-  user: User;
-  comments: Comment[];
-}
+type Props = Posts;
 
 export const Post: FC<Props> = ({
   title,

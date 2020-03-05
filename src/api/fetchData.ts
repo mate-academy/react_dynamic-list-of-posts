@@ -10,14 +10,14 @@ const getData = async <T>(url: string): Promise<T> => {
   return response.json();
 };
 
-export const getPosts = async () => {
+export const getPosts = async (): Promise<Post[]> => {
   return getData<Post[]>(posts);
 };
 
-export const getUsers = async () => {
+export const getUsers = async (): Promise<User[]> => {
   return getData<User[]>(users);
 };
 
-export const getComments = async () => {
+export const getComments = async (): Promise<Comment[]> => {
   return getData<Comment[]>(comments);
 };

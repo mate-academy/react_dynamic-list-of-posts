@@ -1,10 +1,6 @@
 import React, { FC } from 'react';
 
-interface Props {
-  name: string;
-  email: string;
-  body: string;
-}
+type Props = Comment;
 
 export const Comment: FC<Props> = ({ name, body, email }) => (
   <div className="comment">
