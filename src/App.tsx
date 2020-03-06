@@ -2,6 +2,7 @@ import React, { FC, useState, useMemo } from 'react';
 import { PreparedPost } from './types';
 import { getPreparedPosts } from './api_helpers';
 import { PostsList } from './components/PostsList/PostsList';
+import { SearchPost } from './components/SearchPost/SearchPost';
 import './App.css';
 
 export const App: FC = () => {
@@ -37,7 +38,6 @@ export const App: FC = () => {
      </p>
    );
  }
- console.log(posts);
 
   return (
     <div className="wrapper">
@@ -60,15 +60,9 @@ export const App: FC = () => {
            )
           : (
               <>
-                <label htmlFor="search-query" className="label">
-                  Search Post
-                </label>
-                <input
-                  type="text"
-                  id="search-query"
-                  className="search_input"
-                  placeholder="Type search word"
-                  onChange={filtered}
+                <SearchPost
+                  searchPost={searchPost}
+                  filtered={filtered}
                 />
                 <PostsList posts={searchedPost} />
               </>
