@@ -1,0 +1,7 @@
+.postList {
+  border: 3px solid red;
+  border-radius: 30px;
+  background-color: lightyellow;
+  padding: 20px;
+  list-style-type: none;
+}
