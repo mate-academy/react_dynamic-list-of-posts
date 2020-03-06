@@ -1,0 +1,29 @@
+.wrapper {
+  text-align: center;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.loading {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.loading_button {
+  cursor: pointer;
+  width: 100px;
+  height: 30px;
+  border-radius: 5px;
+  outline: none;
+  border: 1px solid #cecece;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background-color 300ms linear,
+    color 300ms linear;
+}
+
+.loading_button:hover {
+  background-color: #62989e;
+  color: #fff;
+}

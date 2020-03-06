@@ -1,0 +1,23 @@
+.user_info {
+  text-align: right;
+  margin-bottom: 30px;
+  padding-bottom: 10px;
+  display: block;
+  position: relative;
+}
+
+.user_info:after {
+  content: "";
+  display: block;
+  position: absolute;
+  height: 1px;
+  width: 200px;
+  background-color: #cecece;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.user_info span {
+  display: block;
+}
