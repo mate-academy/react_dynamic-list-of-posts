@@ -4,10 +4,10 @@ import './SearchPost.css';
 
 interface Props {
   filtered: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  searchPost: string
+  searchValue: string
 }
 
-export const SearchPost: FC<Props> = ({ filtered, searchPost }) => (
+export const SearchPost: FC<Props> = ({ filtered, searchValue }) => (
   <>
     <label htmlFor="search-query" className="label">
       Search Post
@@ -17,7 +17,7 @@ export const SearchPost: FC<Props> = ({ filtered, searchPost }) => (
       id="search-query"
       className="search_input"
       placeholder="Type search word"
-      value={searchPost}
+      value={searchValue}
       onChange={filtered}
     />
   </>

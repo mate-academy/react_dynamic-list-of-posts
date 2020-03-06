@@ -7,7 +7,7 @@ import './App.css';
 
 export const App: FC = () => {
   const [posts, setPosts] = useState<PreparedPost[]>([]);
-  const [searchPost, setSearchPost] = useState('');
+  const [searchValue, setSearchValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -23,13 +23,13 @@ export const App: FC = () => {
 
   const filtered = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value: search } = event.target;
-    setSearchPost(search);
+    setSearchValue(search);
   }
 
   const searchedPost = useMemo(() => posts.filter(
-    post => post.title.toLowerCase().includes(searchPost)
-    || post.body.toLowerCase().includes(searchPost),
-  ), [posts, searchPost]);
+    post => post.title.toLowerCase().includes(searchValue)
+    || post.body.toLowerCase().includes(searchValue),
+  ), [posts, searchValue]);
 
   if (isLoading) {
    return (
@@ -44,7 +44,7 @@ export const App: FC = () => {
     <h1>Dynamic list of posts</h1>
     {(
         !isLoaded
-        ? (
+          ? (
             <>
               <p className="initual_loading">
                 Load posts
@@ -61,7 +61,7 @@ export const App: FC = () => {
           : (
               <>
                 <SearchPost
-                  searchPost={searchPost}
+                  searchValue={searchValue}
                   filtered={filtered}
                 />
                 <PostsList posts={searchedPost} />
