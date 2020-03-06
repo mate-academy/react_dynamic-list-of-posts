@@ -1,5 +1,7 @@
 import React, { FC, useState, useMemo } from 'react';
-import { Post, User, Comment, CompletePost } from './types';
+import {
+  Post, User, Comment, CompletePost,
+} from './types';
 import { loadPosts, loadUsers, loadComments } from './loadData';
 import { PostList } from './components/PostList/PostList';
 import './App.css';
@@ -36,28 +38,41 @@ const App: FC = () => {
         setPosts(completePost);
         setIsLoading(false);
       });
-  }
+  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
 
     setQuery(value);
-  }
+  };
 
   const filteredPosts = useMemo<CompletePost[]>(() => {
-    const filterValue = query;
+    const filterValue = query.toLowerCase();
 
-    return posts.filter(post =>
-      (post.title.includes(filterValue))
-      || (post.body.includes(filterValue)));
+    return posts.filter(post => (post.title.toLowerCase().includes(filterValue))
+      || (post.body.toLowerCase().includes(filterValue)));
   }, [query, posts]);
 
   return (
     <>
       <h1>Dynamic list of posts</h1>
       {
-        posts.length === 0
+        posts.length
           ? (
+            <div className="app">
+              <input
+                className="input"
+                type="text"
+                placeholder="Serch the post"
+                value={query}
+                onChange={(event) => handleChange(event)}
+              />
+              <PostList
+                posts={query ? filteredPosts : posts}
+              />
+            </div>
+          )
+          : (
             <button
               className="button"
               type="button"
@@ -67,20 +82,7 @@ const App: FC = () => {
               {isLoading ? 'Loading...' : 'Load Posts'}
             </button>
           )
-          : (
-            <div className="app">
-              <input
-                className="input"
-                type="text"
-                value={query}
-                onChange={(event) => handleChange(event)}
-              />
-              <PostList
-                posts={query ? filteredPosts : posts}
-              />
-            </div>
-          )
-        }
+      }
     </>
   );
 };
