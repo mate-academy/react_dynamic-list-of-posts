@@ -20,16 +20,17 @@ export const getUsers = (): Promise<UserInterface[]> => {
   return getData(URL + USERS);
 };
 
-export const getPreparedPosts = async (): Promise<PreparedPost[]> => {
-  const [postsFromServer,
+export const getPreparedPosts = async (): Promise<PreparedPostInterface[]> => {
+  const [
+    postsFromServer,
     usersFromServer,
-    commentsFromServer]
-          = await Promise.all(
-            [getPosts(),
-              getUsers(),
-              getComments(),
-            ],
-          );
+    commentsFromServer,
+  ]
+    = await Promise.all([
+      getPosts(),
+      getUsers(),
+      getComments(),
+    ]);
 
   return postsFromServer.map(post => ({
     ...post,

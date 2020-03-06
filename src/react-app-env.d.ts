@@ -9,20 +9,20 @@ interface PostInterface {
   body: string;
 }
 
-interface Geo {
+interface GeoInterface {
   lat: string;
   lng: string;
 }
 
-interface Address {
+interface AddressInterface {
   street: string;
   suite: string;
   city: string;
   zipcode: string;
-  geo: Geo;
+  geo: GeoInterface;
 }
 
-interface Company {
+interface CompanyInterface {
   name: string;
   catchPhrase: string;
   bs: string;
@@ -33,10 +33,10 @@ interface UserInterface {
   name: string;
   username: string;
   email: string;
-  address: Address;
+  address: AddressInterface;
   phone: string;
   website: string;
-  company: Company;
+  company: CompanyInterface;
 }
 
 interface CommentInterface {
@@ -47,7 +47,7 @@ interface CommentInterface {
   body: string;
 }
 
-interface PreparedPost extends PostInterface {
+interface PreparedPostInterface extends PostInterface {
   user?: UserInterface;
   comments?: CommentInterface[];
 }

@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 
 interface Props {
-  name: string;
-  email: string;
-  body: string;
+  comment: CommentInterface;
 }
 
-export const Comment: FC<Props> = ({ name, email, body }) => {
+export const Comment: FC<Props> = ({ comment }) => {
+  const { name, email, body } = comment;
+
   return (
     <>
       <h5 className="comment__name">{name}</h5>

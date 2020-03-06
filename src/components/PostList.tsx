@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Post } from './Post';
 
 interface Props {
-  posts: PreparedPost[];
+  posts: PreparedPostInterface[];
 }
 
 export const PostList: FC<Props> = ({ posts }) => (

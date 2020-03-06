@@ -10,7 +10,7 @@ import { LoaderContainer } from './components/LoaderContainer';
 import { filterPosts } from './api/filter';
 
 export const App: FC = () => {
-  const [posts, setPosts] = useState<PreparedPost[]>([]);
+  const [posts, setPosts] = useState<PreparedPostInterface[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState('');
@@ -40,6 +40,7 @@ export const App: FC = () => {
     <>
       {isLoaded && <Search query={query} handleSearch={handleSearch} /> }
       {!isLoaded && <LoadButton handleLoad={handleLoad} />}
+
       {isLoaded && <PostList posts={postsToShow} />}
       {isLoading && <LoaderContainer />}
     </>
