@@ -11,17 +11,11 @@ interface Props {
 export const PostList: FC<Props> = ({ postList }) => (
   <ul className="postList">
     {postList.map((post) => {
-      const {
-        user, comments, id, title, body,
-      } = post;
 
       return (
         <Post
-          key={id}
-          title={title}
-          body={body}
-          user={user}
-          comments={comments}
+          key={post.id}
+          post={post}
         />
       );
     })}

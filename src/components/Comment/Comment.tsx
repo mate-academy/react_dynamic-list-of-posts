@@ -5,8 +5,8 @@ interface Props {
   comment: Comment;
 }
 
-export const Comment: FC<Props> = (props) => {
-  const { comment: { name, email, body } } = props;
+export const Comment: FC<Props> = ({ comment }) => {
+  const { name, email, body } = comment;
 
   return (
     <li className="comment">

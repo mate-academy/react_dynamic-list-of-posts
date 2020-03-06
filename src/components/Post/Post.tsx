@@ -4,16 +4,13 @@ import { User } from '../User/User';
 import { CommentList } from '../CommentList/CommentList';
 
 interface Props {
-  title: string;
-  body: string;
-  user: User;
-  comments: Comment[];
+  post: PostWithComments
 }
 
-export const Post: FC<Props> = (props) => {
+export const Post: FC<Props> = ({post}) => {
   const {
     title, body, user, comments,
-  } = props;
+  } = post;
 
   return (
     <li className="post">

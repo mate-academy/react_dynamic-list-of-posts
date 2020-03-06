@@ -4,10 +4,10 @@ import React, {
 import debounce from 'lodash/debounce';
 import './App.css';
 
-import { dataDownload } from './util';
+import { getComments, getUsers, getPosts } from './util';
 import { PostList } from './components/PostList/PostList';
 
-const URL = 'https://jsonplaceholder.typicode.com/';
+
 
 const App: FC = () => {
   const [posts, setPosts] = useState<PostWithComments[]>([]);
@@ -39,9 +39,9 @@ const App: FC = () => {
     setIsError(false);
     setIsLoading(true);
     Promise.all([
-      dataDownload<User[]>(URL + 'users'),
-      dataDownload<Post[]>(URL + 'posts'),
-      dataDownload<Comment[]>(URL + 'comments'),
+      getUsers(),
+      getPosts(),
+      getComments(),
     ]).then(([usersFromApi, postsFromApi, commentsFromApi]) => {
       setIsLoading(false);
       const newPosts = postsFromApi.map(post => {
