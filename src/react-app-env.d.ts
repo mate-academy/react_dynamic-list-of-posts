@@ -16,6 +16,17 @@ interface Comment {
   body: string;
 }
 
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+  address: UserAddress;
+  phone: string;
+  website: string;
+  company: UserCompany;
+}
+
 interface UserAddress {
   street: string;
   suite: string;
@@ -33,17 +44,6 @@ interface UserCompany {
   name: string;
   catchPhrase: string;
   bs: string;
-}
-
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-  address: UserAddress;
-  phone: string;
-  website: string;
-  company: UserCompany;
 }
 
 interface Posts extends Post {

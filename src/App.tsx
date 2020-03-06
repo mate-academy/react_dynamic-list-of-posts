@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useMemo } from 'react';
 import { getPosts, getUsers, getComments } from './api/fetchData';
 import './App.scss';
 import { PostList } from './components/postList/PostList';
@@ -28,10 +28,10 @@ export const App: FC = () => {
     setText(event.target.value);
   };
 
-  const filteredPosts = posts.filter(post => (
+  const filteredPosts = useMemo(() => posts.filter(post => (
     post.title.toLowerCase().includes(text)
     || post.body.toLowerCase().includes(text)
-  ));
+  )), [text, posts]);
 
   if (!posts.length) {
     return (
