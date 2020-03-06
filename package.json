@@ -11,12 +11,14 @@
     "@types/react-dom": "^16.9.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-loader-spinner": "^3.1.5",
     "react-scripts": "3.4.0",
     "typescript": "^3.7.5"
   },
   "devDependencies": {
     "@mate-academy/eslint-config-react-typescript": "*",
     "@mate-academy/stylelint-config": "*",
+    "@types/react-loader-spinner": "^3.1.0",
     "eslint": "^6.8.0",
     "gh-pages": "^2.2.0",
     "husky": "^4.0.10",
