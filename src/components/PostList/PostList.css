@@ -1,0 +1,15 @@
+ul {
+  list-style: none;
+}
+
+.postlist {
+  border-radius: 20px;
+}
+
+.post {
+  width: 90%;
+  margin: 0 auto 30px;
+  background-color: #faf4ea;
+  border-radius: 20px;
+  padding: 30px;
+}
