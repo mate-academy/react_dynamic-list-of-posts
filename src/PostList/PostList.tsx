@@ -8,7 +8,7 @@ interface Props {
 export const PostList: FC<Props> = ({ listOfPosts }) => (
   <div>
     {listOfPosts.map(post => (
-      <div className="post">
+      <div className="post" key={post.id}>
         <p className="user">
           {post.user.name}
         </p>

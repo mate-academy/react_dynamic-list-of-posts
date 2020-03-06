@@ -7,7 +7,7 @@ interface Props {
 export const CommentList: FC<Props> = ({ comments }) => (
   <div>
     {comments.map(comment => (
-      <div className="comment">
+      <div className="comment" key={comment.id}>
         <span className="comment__name">
           {comment.name}
         </span>

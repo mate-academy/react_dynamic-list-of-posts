@@ -6,7 +6,7 @@ import './App.css';
 const App: FC = () => {
   const [listOfPosts, setPost] = useState<CompletedPost[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<CompletedPost[]>([]);
-  const [query, setQuery] = useState('');
+  const [searchString, setSearchString] = useState('');
   const [isLoading, setLoading] = useState(false);
 
   const loadPosts = () => {
@@ -17,21 +17,21 @@ const App: FC = () => {
       getComments(),
     ])
       .then(([posts, users, comments]) => {
-        const preperdPosts = posts.map((post) => ({
+        const preparedPosts = posts.map((post) => ({
           ...post,
           user: users.find(person => person.id === post.userId) as User,
           comments: comments.filter(comment => comment.postId === post.id),
         }));
 
-        setPost(preperdPosts);
-        setFilteredPosts(preperdPosts);
+        setPost(preparedPosts);
+        setFilteredPosts(preparedPosts);
       }).finally(() => setLoading(false));
   };
 
   const searchPosts = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
 
-    setQuery(value);
+    setSearchString(value);
 
     const string = value.toLowerCase().trim();
 
@@ -60,7 +60,7 @@ const App: FC = () => {
       )
         : (
           <>
-            <input value={query} onChange={searchPosts} />
+            <input value={searchString} onChange={searchPosts} />
             <PostList listOfPosts={filteredPosts} />
           </>
         )}
