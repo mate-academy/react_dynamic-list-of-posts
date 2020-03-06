@@ -1,4 +1,6 @@
-import React, { FC, useState, useMemo } from 'react';
+import React, {
+  FC, useState, useMemo, ChangeEvent,
+} from 'react';
 import {
   Post, User, Comment, CompletePost,
 } from './types';
@@ -40,7 +42,7 @@ const App: FC = () => {
       });
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
 
     setQuery(value);

@@ -11,8 +11,8 @@ export const NewComment: FC<Props> = ({ comment }) => {
 
   return (
     <div className="comment">
-      <div className="comment__name">{name}</div>
-      <div className="comment__body">{body}</div>
+      <p className="comment__name">{name}</p>
+      <p className="comment__body">{body}</p>
       <div className="comment__email">
         <a href={`mailto:${email}`}>
           {email}

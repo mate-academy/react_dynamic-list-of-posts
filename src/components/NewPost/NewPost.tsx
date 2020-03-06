@@ -27,14 +27,14 @@ export const NewPost: FC<Props> = ({ post }) => {
           </a>
         </div>
         <div className="address">
-          <div>{city}</div>
-          <div>{street}</div>
-          <div>{suite}</div>
-          <div>{zipcode}</div>
+          <p>{city}</p>
+          <p>{street}</p>
+          <p>{suite}</p>
+          <p>{zipcode}</p>
         </div>
       </div>
       <h3>{title}</h3>
-      <div>{body}</div>
+      <p>{body}</p>
       <div className="comment__wrapper">
         {comments.map((comment: Comment) => (
           <NewComment
