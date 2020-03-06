@@ -1,0 +1,68 @@
+body {
+  margin: 0;
+}
+
+.app {
+  padding-top: 10px;
+
+  &__heading {
+    text-align: center;
+    font-size: 35px;
+    color: gray;
+  }
+
+  &__input {
+    display: block;
+    width: 300px;
+    margin: 30px auto;
+  }
+
+  &__button {
+    display: block;
+    margin: 10px auto;
+  }
+}
+
+.person__address-list {
+  list-style: none;
+  margin-bottom: 40px;
+}
+
+.posts {
+  max-width: 700px;
+  margin: auto;
+  list-style: none;
+}
+
+.post {
+  background-color: rgba(230, 252, 239, 0.97);
+  border: 2px solid teal;
+  border-radius: 15px;
+  margin-bottom: 10px;
+  padding: 20px;
+
+  &__body {
+    margin-bottom: 30px;
+  }
+
+  &__title,
+  &__body {
+    text-align: center;
+  }
+}
+
+.comment {
+  margin-top: 20px;
+  border-top: 1.5px solid teal;
+  height: 100%;
+
+  &__email {
+    font-style: italic;
+  }
+
+  &__address-list {
+    list-style: none;
+    margin-bottom: 40px;
+  }
+
+}

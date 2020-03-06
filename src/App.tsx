@@ -1,7 +1,7 @@
 import React, {
   FC, useState, ChangeEvent, useMemo,
 } from 'react';
-import './App.css';
+import './App.scss';
 import { PreparedPosts } from './interfaces';
 import { getPostsWithUsersComments } from './api';
 import { PostList } from './components/PostList';
@@ -48,6 +48,7 @@ const App: FC = () => {
               type="button"
               onClick={loadPosts}
               disabled={isLoading}
+              className="button is-primary is-light app__button"
             >
           Load posts
             </button>
@@ -60,7 +61,7 @@ const App: FC = () => {
           <>
             <form onSubmit={handleSubmit}>
               <input
-                className="app__input"
+                className="app__input input is-primary"
                 placeholder="Type search word"
                 onChange={handleInput}
                 type="text"
