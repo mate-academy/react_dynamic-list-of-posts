@@ -4,7 +4,7 @@ import { PostList } from './PostList/PostList';
 import './App.css';
 
 const App: FC = () => {
-  const [listOfPosts, setPost] = useState<CompletedPost[]>([]);
+  const [posts, setPost] = useState<CompletedPost[]>([]);
   const [filteredPosts, setFilteredPosts] = useState<CompletedPost[]>([]);
   const [searchString, setSearchString] = useState('');
   const [isLoading, setLoading] = useState(false);
@@ -16,11 +16,11 @@ const App: FC = () => {
       getUsers(),
       getComments(),
     ])
-      .then(([posts, users, comments]) => {
-        const preparedPosts = posts.map((post) => ({
+      .then(([RawPosts, RawUsers, RawComments]) => {
+        const preparedPosts = RawPosts.map((post) => ({
           ...post,
-          user: users.find(person => person.id === post.userId) as User,
-          comments: comments.filter(comment => comment.postId === post.id),
+          user: RawUsers.find(person => person.id === post.userId) as User,
+          comments: RawComments.filter(comment => comment.postId === post.id),
         }));
 
         setPost(preparedPosts);
@@ -36,11 +36,11 @@ const App: FC = () => {
     const string = value.toLowerCase().trim();
 
     if (string === '') {
-      setFilteredPosts(listOfPosts);
+      setFilteredPosts(posts);
     }
 
     if (string.length) {
-      const serchedPosts = [...listOfPosts]
+      const serchedPosts = [...posts]
         .filter(post => post.title.includes(string)
         || post.body.includes(string));
 
@@ -50,7 +50,7 @@ const App: FC = () => {
 
   return (
     <div className="wrapper">
-      {!listOfPosts.length ? (
+      {!posts.length ? (
         <div>
           <button type="button" onClick={() => loadPosts()}>
           Load data
