@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
-import { AllPostProps } from '../types';
+import { PostProps } from '../types';
 
 import './Post.css';
 
 interface Props {
-  post: AllPostProps;
+  post: PostProps;
 }
 
 export const Post: FC<Props> = ({ post: { title, body } }) => (

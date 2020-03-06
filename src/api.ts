@@ -8,14 +8,14 @@ async function getData<T>(url: string): Promise<T> {
   return response.json();
 }
 
-export const getPosts = () => {
+export const getPosts = (): Promise<PostProps[]> => {
   return getData<PostProps[]>('/posts');
 };
 
-export const getUsers = () => {
+export const getUsers = (): Promise<UserProps[]> => {
   return getData<UserProps[]>('/users');
 };
 
-export const getComments = () => {
+export const getComments = (): Promise<CommentProps[]> => {
   return getData<CommentProps[]>('/comments');
 };

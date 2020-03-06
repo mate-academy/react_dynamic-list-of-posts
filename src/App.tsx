@@ -6,29 +6,35 @@ import './App.css';
 
 import {
   AllPostProps,
-  PostProps,
   UserProps,
   CommentProps,
 } from './types';
 
 const App: FC = () => {
-  const [postedList, setPosts] = useState<AllPostProps[]>([]);
+  const [posts, setPosts] = useState<AllPostProps[]>([]);
   const [isLoading, setLoading] = useState(false);
 
   const showPosts = async () => {
     setLoading(true);
 
-    const [loadedPosts, loadedUsers, loadedComments] = await Promise
-      .all([getPosts(), getUsers(), getComments()]);
+    const [
+      loadedPosts,
+      loadedUsers,
+      loadedComments,
+    ] = await Promise.all([
+      getPosts(),
+      getUsers(),
+      getComments(),
+    ]);
 
-    const allPosts = loadedPosts.map((post: PostProps) => ({
+    const allPosts = loadedPosts.map((post) => ({
       ...post,
       user: loadedUsers
-        .find((person: UserProps) => (
+        .find((person) => (
           person.id === post.userId
         )) as UserProps,
       comments: loadedComments
-        .filter((comment: CommentProps) => (
+        .filter((comment) => (
           post.id === comment.postId
         )) as CommentProps[],
     }));
@@ -39,7 +45,7 @@ const App: FC = () => {
 
   return (
     <>
-      {!postedList.length
+      {!posts.length
         ? (
           <button
             type="button"
@@ -51,7 +57,7 @@ const App: FC = () => {
         )
         : (
           <div className="app">
-            <PostsList posts={postedList} />
+            <PostsList posts={posts} />
           </div>
         )}
     </>
