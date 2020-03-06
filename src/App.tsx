@@ -2,13 +2,7 @@ import React, { FC, useState } from 'react';
 import './App.css';
 import { PostsList } from './components/PostsList/PostsList';
 import { getPosts, getUsers, getComments } from './utils/api';
-
-import {
-  FullPostType,
-  PostType,
-  UserType,
-  CommentType,
-} from './utils/interfaces';
+import { FullPostType, UserType, CommentType } from './utils/interfaces';
 
 const App: FC = () => {
   const [posts, setPosts] = useState<FullPostType[]>([]);
@@ -20,12 +14,12 @@ const App: FC = () => {
     const [loadedPosts, loadedUsers, loadedComments] = await Promise
       .all([getPosts(), getUsers(), getComments()]);
 
-    const fullPosts = loadedPosts.map((post: PostType) => ({
+    const fullPosts = loadedPosts.map((post) => ({
       ...post,
       user: loadedUsers
-        .find((person: UserType) => person.id === post.userId) as UserType,
+        .find((person) => person.id === post.userId) as UserType,
       comments: loadedComments
-        .filter((comment: CommentType) => post.id === comment.postId) as CommentType[],
+        .filter((comment) => post.id === comment.postId) as CommentType[],
     }));
 
     setPosts(fullPosts);

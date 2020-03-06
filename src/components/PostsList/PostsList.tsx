@@ -1,4 +1,9 @@
-import React, { FC, useState, ChangeEvent } from 'react';
+import React, {
+  FC,
+  useState,
+  useMemo,
+  ChangeEvent,
+} from 'react';
 import { Post } from '../Post/Post';
 import { FullPostType } from '../../utils/interfaces';
 import './PostsList.css';
@@ -17,7 +22,7 @@ export const PostsList: FC<Props> = ({ posts }) => {
   };
 
   const inputValueToLowerCase = inputValue.toLowerCase();
-  const filteredPosts = posts.filter((post) => {
+  const filteredPosts = useMemo(() => posts.filter((post) => {
     const titleToLowerCase = post.title.toLowerCase();
     const bodyToLowerCase = post.body.toLowerCase();
 
@@ -25,7 +30,7 @@ export const PostsList: FC<Props> = ({ posts }) => {
       titleToLowerCase.includes(inputValueToLowerCase)
       || bodyToLowerCase.includes(inputValueToLowerCase)
     );
-  });
+  }), [posts, inputValueToLowerCase]);
 
   const visiblePosts = inputValue ? filteredPosts : posts;
 
