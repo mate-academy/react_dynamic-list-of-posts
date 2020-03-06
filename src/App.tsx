@@ -6,7 +6,7 @@ import { PostList } from './components/postList/PostList';
 export const App: FC = () => {
   const [posts, setPosts] = useState<Posts[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [text, setText] = useState('');
+  const [query, setQuery] = useState('');
 
   const loadPosts = async () => {
     setIsLoading(true);
@@ -25,13 +25,13 @@ export const App: FC = () => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setText(event.target.value);
+    setQuery(event.target.value);
   };
 
   const filteredPosts = useMemo(() => posts.filter(post => (
-    post.title.toLowerCase().includes(text)
-    || post.body.toLowerCase().includes(text)
-  )), [text, posts]);
+    post.title.toLowerCase().includes(query)
+    || post.body.toLowerCase().includes(query)
+  )), [query, posts]);
 
   if (!posts.length) {
     return (
