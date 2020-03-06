@@ -1,0 +1,23 @@
+.post__wrapper {
+  max-width: 600px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  border-radius: 10px;
+  margin: 20px;
+  padding: 10px;
+}
+
+.comment__wrapper {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.address {
+  display: flex;
+  justify-content: space-around;
+}
+
+.user__email {
+  margin: 10px;
+}

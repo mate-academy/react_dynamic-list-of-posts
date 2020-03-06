@@ -1,0 +1,13 @@
+.comment {
+  max-width: 45%;
+}
+
+.comment__name {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 10px 0;
+}
+
+.comment__email {
+  margin: 10px 0;
+}
