@@ -32,7 +32,7 @@ const App: FC = () => {
     setQuery(target.value);
   };
 
-  const filteredPosts = useMemo(() => preparedPosts.filter(post => post.title
+  const filteredPosts = useMemo<PreparedPost[]>(() => preparedPosts.filter(post => post.title
     .trim()
     .toLowerCase()
     .includes(query.trim().toLowerCase())
