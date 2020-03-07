@@ -14,14 +14,15 @@ const App: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState('');
   const [filterQuery, setFilterQuery] = useState('');
+  const [error, setError] = useState('');
 
   const handleLoad = () => {
     setIsLoading(true);
 
     getCorrectPosts.then(postsList => {
       setPosts(postsList);
-      setIsLoading(false);
-    });
+    }).catch(error => setError(error.toString()))
+      .finally(() => setIsLoading(false));
   };
 
   const visiblePosts = useMemo(
@@ -61,6 +62,16 @@ const App: FC = () => {
         >
           {isLoading ? 'Loading...' : 'Load'}
         </button>
+      )}
+
+      {error && (
+        <div className="alert alert-dismissible alert-warning">
+          <span>
+            {`Server responded
+            ${error}
+            Check your internet connection and try again.`}
+          </span>
+        </div>
       )}
 
       {posts.length !== 0 && (
