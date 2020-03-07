@@ -1,4 +1,6 @@
-import React, { FC, useState, useMemo } from 'react';
+import React, {
+  FC, useState, useMemo, useCallback, ChangeEvent,
+} from 'react';
 import debounce from 'lodash/debounce';
 import { getCorrectPosts } from './utils/api';
 import { PostList } from './components/PostList';
@@ -10,7 +12,8 @@ import './App.css';
 const App: FC = () => {
   const [posts, setPosts] = useState<CorrectPost[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [searchingValue, setSearchValue] = useState('');
+  const [query, setQuery] = useState('');
+  const [filterQuery, setFilterQuery] = useState('');
 
   const handleLoad = () => {
     setIsLoading(true);
@@ -25,16 +28,24 @@ const App: FC = () => {
     () => posts
       .filter(({ title, body }) => {
         return (
-          title.includes(searchingValue.toLocaleLowerCase())
-          || body.includes(searchingValue.toLocaleLowerCase())
+          title.includes(filterQuery.toLocaleLowerCase())
+          || body.includes(filterQuery.toLocaleLowerCase())
         );
       }),
-    [searchingValue, posts],
+    [filterQuery, posts],
   );
 
-  const handleSetValue = debounce((value) => {
-    setSearchValue(value.toLocaleLowerCase());
-  }, 1000);
+  const setFilterQueryWithDebounce = useCallback(
+    debounce(setFilterQuery, 2000),
+    [],
+  );
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+
+    setQuery(value);
+    setFilterQueryWithDebounce(value);
+  };
 
   return (
     <main className="container">
@@ -55,8 +66,8 @@ const App: FC = () => {
       {posts.length !== 0 && (
         <>
           <SearchField
-            setValue={(e) => handleSetValue(e.target.value)}
-            searchingValue={searchingValue}
+            setValue={handleChange}
+            searchingValue={query}
           />
           <PostList posts={visiblePosts} />
         </>
