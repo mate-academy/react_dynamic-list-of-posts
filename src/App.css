@@ -1,0 +1,35 @@
+body {
+  font-family: "Montserrat", sans-serif;
+  background: linear-gradient(45deg, #7cd8f0, #70bdeb, #7b9fdc, #8e7ec0);
+}
+
+.front-page {
+  background: linear-gradient(45deg, #7cd8f0, #70bdeb, #9c5d98, #9c3c67);
+  height: 100vh;
+}
+
+.front-page__wrapper {
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -65%);
+}
+
+.front-page__title {
+  color: #fff;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 900;
+  letter-spacing: 4px;
+  text-shadow: 2px 3px 0 #898999;
+}
+
+.front-page__btn {
+  outline: none;
+  background-color: #dabbee;
+  border: none;
+  width: 200px;
+  height: 50px;
+  border-radius: 25px;
+  box-shadow: 10px 10px 14px 1px rgba(00,00,00,0.2);
+}
