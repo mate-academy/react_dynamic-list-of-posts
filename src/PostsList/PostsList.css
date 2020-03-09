@@ -1,0 +1,13 @@
+.card {
+  background-color: #f0d4d7;
+  list-style: none;
+  padding: 50px;
+  margin: 40px;
+}
+
+.card__comments {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: green;
+}
