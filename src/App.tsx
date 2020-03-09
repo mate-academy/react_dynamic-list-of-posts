@@ -18,7 +18,9 @@ export const App: FC = () => {
   };
 
   const handleQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
+    const queryFrominput = event.target.value;
+
+    setQuery(queryFrominput);
   };
 
   const filterPostsByQuery = useMemo(() => posts.filter(

@@ -4,18 +4,22 @@ interface Props {
   user: UserInterface;
 }
 
-export const User: FC<Props> = ({ user }) => (
-  <>
-    <p>
-      {user.name}
-    </p>
-    <p>
-      {user.address.city}
-      <br />
-      {user.address.street}
-    </p>
-    <a href={user.email}>
-      {user.email}
-    </a>
-  </>
-);
+export const User: FC<Props> = ({ user }) => {
+  const { name, address, email } = user;
+
+  return (
+    <>
+      <p>
+        {name}
+      </p>
+      <p>
+        {address.city}
+        <br />
+        {address.street}
+      </p>
+      <a href={email}>
+        {email}
+      </a>
+    </>
+  );
+};
