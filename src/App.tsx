@@ -5,13 +5,13 @@ import { getPosts, getUsers, getComments } from './api';
 import './App.css';
 
 import {
-  AllPostProps,
-  UserProps,
-  CommentProps,
+  PostWithUser,
+  User,
+  Comment,
 } from './types';
 
 const App: FC = () => {
-  const [posts, setPosts] = useState<AllPostProps[]>([]);
+  const [posts, setPosts] = useState<PostWithUser[]>([]);
   const [isLoading, setLoading] = useState(false);
 
   const showPosts = async () => {
@@ -32,11 +32,11 @@ const App: FC = () => {
       user: loadedUsers
         .find((person) => (
           person.id === post.userId
-        )) as UserProps,
+        )) as User,
       comments: loadedComments
         .filter((comment) => (
           post.id === comment.postId
-        )) as CommentProps[],
+        )) as Comment[],
     }));
 
     setPosts(allPosts);

@@ -1,34 +1,34 @@
-export interface UserProps {
+export interface User {
   id: number;
   name: string;
   username: string;
   email: string;
-  address: AddressProps;
+  address: Address;
   phone: string;
   website: string;
-  company: CompanyProps;
+  company: Company;
 }
 
-interface CompanyProps {
+interface Company {
   name: string;
   catchPhrase: string;
   bs: string;
 }
 
-interface GeoProps {
+interface Geo {
   lat: number;
   lng: number;
 }
 
-interface AddressProps {
+interface Address {
   street: string;
   suite: string;
   city: string;
   zipcode: string;
-  geo: GeoProps;
+  geo: Geo;
 }
 
-export interface CommentProps {
+export interface Comment {
   postId: number;
   id: string;
   name: string;
@@ -36,14 +36,14 @@ export interface CommentProps {
   body: string;
 }
 
-export interface PostProps {
+export interface Post {
   userId: number;
   id: number;
   title: string;
   body: string;
 }
 
-export interface AllPostProps extends PostProps {
-  user: UserProps;
-  comments: CommentProps[];
+export interface PostWithUser extends Post {
+  user: User;
+  comments: Comment[];
 }

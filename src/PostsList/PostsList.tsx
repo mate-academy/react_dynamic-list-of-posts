@@ -2,12 +2,12 @@ import React, { FC, useState, ChangeEvent } from 'react';
 import { Post } from '../Post/Post';
 import { User } from '../User/User';
 import { CommentList } from '../CommentList/CommentList';
-import { AllPostProps } from '../types';
+import { PostWithUser } from '../types';
 
 import './PostsList.css';
 
 interface Props {
-  posts: AllPostProps[];
+  posts: PostWithUser[];
 }
 
 export const PostsList: FC<Props> = ({ posts }) => {
