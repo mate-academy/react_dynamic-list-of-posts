@@ -1,7 +1,6 @@
 import React, {
-  FC, useState, useMemo, /* useCallback, */
+  FC, useState, useMemo,
 } from 'react';
-/* import { debounce } from 'lodash'; */
 import './App.css';
 import { getPreparedPosts } from './api/utils';
 import { PostsList } from './components/PostList/PostList';
@@ -21,8 +20,6 @@ export const App: FC = () => {
   const handleQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value);
   };
-
-  /* const debounceHandleQuery = useCallback(debounce(handleQuery, 1000), []); */
 
   const filterPostsByQuery = useMemo(() => posts.filter(
     post => post.title.toLowerCase().includes(query)
