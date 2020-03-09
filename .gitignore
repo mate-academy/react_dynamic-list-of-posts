@@ -2,6 +2,7 @@
 .vscode
 build
 node_modules
+my-app
 .DS_Store
 yarn.lock
 package-lock.json
