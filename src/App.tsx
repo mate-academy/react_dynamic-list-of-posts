@@ -1,5 +1,11 @@
-/* eslint-disable object-curly-newline */
-import React, { FC, useState, ChangeEvent, useMemo, useCallback } from 'react';
+import React, {
+  FC,
+  useState,
+  ChangeEvent,
+  useMemo,
+  useCallback,
+} from 'react';
+
 import debounce from 'lodash.debounce';
 
 import './App.css';
@@ -8,7 +14,7 @@ import { PostList } from './components/PostList/PostList';
 
 
 export const App: FC = () => {
-  const [allPosts, setAllPosts] = useState<CompletePostInterface[]>([]);
+  const [posts, setPosts] = useState<CompletePostInterface[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState('');
   const [filterQuery, setFilterQuery] = useState('');
@@ -18,7 +24,7 @@ export const App: FC = () => {
     setIsLoading(true);
     const postFromServer = await getCompletePosts();
 
-    setAllPosts(postFromServer);
+    setPosts(postFromServer);
   };
 
   const setFilterQueryWithDebounce = useCallback(
@@ -32,20 +38,16 @@ export const App: FC = () => {
   };
 
   const postsToShow = useMemo(() => {
-    if (!allPosts.length) {
-      return [];
-    }
-
-    return allPosts
+    return posts
       .filter(post => post.body.toLowerCase().includes(filterQuery.toLowerCase())
       || post.title.toLowerCase().includes(filterQuery.toLowerCase()));
-  }, [filterQuery, allPosts]);
+  }, [filterQuery, posts]);
 
   return (
     <div className="App">
       <h1>Dynamic list of posts</h1>
 
-      {!allPosts.length
+      {!posts.length
         ? (
           <button type="button" onClick={loadPosts} disabled={isLoading}>
             {isLoading ? 'Loading...' : 'Load Posts'}
