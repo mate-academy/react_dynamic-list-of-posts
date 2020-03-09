@@ -1,5 +1,5 @@
 import React, {
-  FC, useState, ChangeEvent, useMemo,
+  FC, useState, ChangeEvent, useMemo, FormEvent,
 } from 'react';
 import './App.scss';
 import { PreparedPosts } from './interfaces';
@@ -26,7 +26,7 @@ const App: FC = () => {
     setQuery(target.value.toLowerCase());
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setQuery('');
   };
