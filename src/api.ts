@@ -23,11 +23,11 @@ export const loadPreparedPosts = async (): Promise<PreparedPosts> => {
   const posts: Posts = await getPosts();
   const comments: Comments = await getComments();
 
-  const preparedPost = posts.map(post => ({
-    ...post,
-    user: users.find(user => user.id === post.userId) as User,
-    comments: comments.filter(comment => comment.postId === post.id),
-  }));
-
-  return preparedPost;
+  return (
+    posts.map(post => ({
+      ...post,
+      user: users.find(user => user.id === post.userId) as User,
+      comments: comments.filter(comment => comment.postId === post.id),
+    }))
+  );
 };
