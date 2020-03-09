@@ -31,8 +31,6 @@ interface Company {
   bs: string;
 }
 
-type Users = User[];
-
 interface Comment {
   postId: number;
   id: number;
@@ -41,16 +39,12 @@ interface Comment {
   body: string;
 }
 
-type Comments = Comment[];
-
 interface Post {
   userId: number;
   id: number;
   title: string;
   body: string;
 }
-
-type Posts = Post[];
 
 interface PreparedPost extends Post {
   comments: Comments;

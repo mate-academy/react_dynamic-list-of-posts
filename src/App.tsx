@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import './App.css';
-import { getUsers, getComments, getPosts } from './api';
+import { getData } from './api';
 import { PostsList } from './components/PostsList/PostsList';
 
 export const App: FC = () => {
@@ -16,15 +16,15 @@ export const App: FC = () => {
       loadedUsers,
       loadedComments,
     ] = await Promise.all([
-      getPosts(),
-      getUsers(),
-      getComments(),
+      getData<Post[]>('posts'),
+      getData<User[]>('users'),
+      getData<Comment[]>('comments'),
     ]);
 
-    setPosts(loadedPosts.map((post: { userId: number; id: number }) => ({
+    setPosts(loadedPosts.map((post) => ({
       ...post,
-      user: loadedUsers.find((user: { id: number }) => user.id === post.userId) as User,
-      comments: loadedComments.filter((comment: { postId: number }) => comment.postId === post.id),
+      user: loadedUsers.find(user => user.id === post.userId) as User,
+      comments: loadedComments.filter(comment => comment.postId === post.id),
     })));
 
     setLoading(false);
