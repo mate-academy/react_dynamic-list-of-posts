@@ -1,0 +1,18 @@
+.post {
+  border: 1px solid blue;
+  border-radius: 20px;
+  margin: 20px;
+  padding: 20px;
+}
+
+.post__autor {
+  text-align: left;
+}
+
+.post__text {
+  font-style: italic;
+}
+
+.post__comment-list {
+  text-align: left;
+}
