@@ -5,7 +5,6 @@ interface Props {
   person: User;
 }
 
-
 export const User: React.FC<Props> = ({ person: { name, email, address } }) => (
   <div className="user">
     <h3>

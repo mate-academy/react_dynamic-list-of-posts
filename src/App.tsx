@@ -26,8 +26,8 @@ const App: React.FC = () => {
   };
 
   const filteredPosts = posts.filter(post => (
-    post.title.includes(query)
-    || post.body.includes(query)
+    post.title.toLowerCase().includes(query.toLowerCase())
+    || post.body.toLowerCase().includes(query.toLowerCase())
   ));
 
   return (
