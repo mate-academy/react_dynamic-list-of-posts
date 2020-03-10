@@ -6,14 +6,14 @@ async function getData<T>(url: string): Promise<T> {
   return response.json();
 }
 
-export const getPosts = (): Promise<PostType[]> => {
-  return getData<PostType[]>(`${API_URL}posts`);
+export const getPosts = (): Promise<Post[]> => {
+  return getData<Post[]>(`${API_URL}posts`);
 };
 
 export const getUsers = (): Promise<User[]> => {
   return getData<User[]>(`${API_URL}users`);
 };
 
-export const getComments = (): Promise<CommentType[]> => {
-  return getData<CommentType[]>(`${API_URL}comments`);
+export const getComments = (): Promise<Comment[]> => {
+  return getData<Comment[]>(`${API_URL}comments`);
 };

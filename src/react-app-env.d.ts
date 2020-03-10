@@ -28,7 +28,7 @@ interface Address {
   geo: Geo;
 }
 
-interface CommentType {
+interface Comment {
   postId: number;
   id: string;
   name: string;
@@ -36,14 +36,14 @@ interface CommentType {
   body: string;
 }
 
-interface PostType {
+interface Post {
   userId: number;
   id: number;
   title: string;
   body: string;
 }
 
-interface FullPostType extends PostType {
+interface FullPost extends Post {
   user: UserType;
   comment: CommentType[];
 }

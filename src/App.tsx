@@ -6,7 +6,7 @@ import './App.css';
 import { getPosts, getUsers, getComments } from './api/api';
 
 const App: FC = () => {
-  const [posts, setPosts] = useState<FullPostType[]>([]);
+  const [posts, setPosts] = useState<FullPost[]>([]);
   const [isLoading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState('');
 
@@ -21,7 +21,7 @@ const App: FC = () => {
       user: loadedUsers
         .find((person) => person.id === post.userId) as User,
       comment: loadedComments
-        .filter((comment) => post.id === comment.postId) as CommentType[],
+        .filter((comment) => post.id === comment.postId) as Comment[],
     }));
 
     setPosts(preparedPosts);
@@ -36,38 +36,36 @@ const App: FC = () => {
 
   const filteredPosts = useMemo(() => posts.filter(post => post.title.toLowerCase()
     .includes(searchValue.trim().toLowerCase())
-        || post.body
-          .toLowerCase()
-          .includes(searchValue.trim().toLowerCase())),
+    || post.body
+      .toLowerCase()
+      .includes(searchValue.trim().toLowerCase())),
   [searchValue, posts]);
 
   return (
-    <>
-      {!posts.length
-        ? (
-          <button
-            className="start-button"
-            type="button"
-            onClick={showPosts}
-            disabled={isLoading}
-          >
-            {isLoading ? 'Loading...' : 'Start load posts'}
-          </button>
-        )
-        : (
-          <div className="app">
-            <h1 className="main-title">Dynamic list of posts</h1>
-            <input
-              className="input"
-              placeholder="Search the post"
-              value={searchValue}
-              onChange={handleChange}
-              type="text"
-            />
-            <PostList postlists={filteredPosts} />
-          </div>
-        )}
-    </>
+    !posts.length
+      ? (
+        <button
+          className="start-button"
+          type="button"
+          onClick={showPosts}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Loading...' : 'Start load posts'}
+        </button>
+      )
+      : (
+        <div className="app">
+          <h1 className="main-title">Dynamic list of posts</h1>
+          <input
+            className="input"
+            placeholder="Search the post"
+            value={searchValue}
+            onChange={handleChange}
+            type="text"
+          />
+          <PostList postlists={filteredPosts} />
+        </div>
+      )
   );
 };
 

@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Comment } from '../Comment/Comment';
 
 interface Props {
-  commentsList: CommentType[];
+  commentsList: Comment[];
 }
 
 export const CommentList: FC<Props> = ({ commentsList }) => (

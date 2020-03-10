@@ -3,7 +3,7 @@ import { User } from '../User/User';
 import { CommentList } from '../CommentList/CommentList';
 
 interface Props {
-  post: FullPostType;
+  post: FullPost;
 }
 
 export const Post: FC<Props> = ({ post }) => {
