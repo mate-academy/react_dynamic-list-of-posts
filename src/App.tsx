@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useMemo } from 'react';
 import './App.css';
 import { getData } from './api';
 import { PostsList } from './components/PostsList/PostsList';
@@ -34,20 +34,15 @@ export const App: FC = () => {
     setFindQuery(event.target.value.toLocaleLowerCase());
   };
 
-  const filteredPost = posts.filter(post => (
-    post.title.toLowerCase().includes(findQuery)
-    || post.body.toLowerCase().includes(findQuery)
-  ));
-
-  // const filteredPost = useMemo(
-  //   () => (
-  //     posts.filter(post => (
-  //       post.title.toLowerCase().includes(findQuery)
-  //       || post.body.toLowerCase().includes(findQuery)
-  //     ))
-  //   ),
-  //   [findQuery],
-  // );
+  const filteredPost = useMemo(
+    () => (
+      posts.filter(post => (
+        post.title.toLowerCase().includes(findQuery)
+        || post.body.toLowerCase().includes(findQuery)
+      ))
+    ),
+    [findQuery, posts],
+  );
 
   if (posts.length === 0) {
     return (
