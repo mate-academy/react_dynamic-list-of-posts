@@ -6,17 +6,28 @@ interface Props {
 }
 
 
-export const Person: FC<Props> = ({ user }) => (
-  <>
-    <div className="person">
-      <h3>{user.name}</h3>
-      <p>{user.email}</p>
-      <ul className="person__address-list">
-        <li>{user.address.street}</li>
-        <li>{user.address.suite}</li>
-        <li>{user.address.city}</li>
-        <li>{user.address.zipcode}</li>
-      </ul>
-    </div>
-  </>
-);
+export const Person: FC<Props> = ({ user }) => {
+  const {
+    street,
+    suite,
+    city,
+    zipcode,
+  } = user.address;
+
+  const { name, email } = user;
+
+  return (
+    <>
+      <div className="person">
+        <h3>{name}</h3>
+        <p>{email}</p>
+        <ul className="person__address-list">
+          <li>{street}</li>
+          <li>{suite}</li>
+          <li>{city}</li>
+          <li>{zipcode}</li>
+        </ul>
+      </div>
+    </>
+  );
+};
