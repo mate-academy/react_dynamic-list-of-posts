@@ -1,0 +1,57 @@
+* {
+  box-sizing: border-box;
+}
+
+label {
+  display: block;
+}
+
+.title {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  text-transform: uppercase;
+}
+
+.button-load {
+  display: block;
+  width: 50%;
+  margin: 0 auto 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5em;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.button-load:focus,
+.button-load:active,
+.button-load:visited {
+  outline: none;
+}
+
+.primary-bg {
+  background: #1a1a1a;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-group {
+  list-style: none;
+}
+
+.card-title {
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.posts {
+  padding: 15px;
+  margin: 0;
+  list-style: none;
+}
+
+.comments {
+  margin-left: 10%;
+}
