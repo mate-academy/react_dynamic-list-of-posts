@@ -4,6 +4,7 @@ export const getData = <T>(url: string): Promise<T> => fetch(url).then(response 
 export const getPosts = (): Promise<PostInterface[]> => getData<PostInterface[]>(`${API_URL}posts`);
 export const getUsers = (): Promise<UserInterface[]> => getData<UserInterface[]>(`${API_URL}users`);
 export const getComments = (): Promise<CommentInterface[]> => getData<CommentInterface[]>(`${API_URL}comments`);
+
 export const getPreparedPosts = async () => {
   const posts: PostInterface[] = await getPosts();
   const users: UserInterface[] = await getUsers();

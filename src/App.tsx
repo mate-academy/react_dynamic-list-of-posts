@@ -11,10 +11,15 @@ export const App: FC = () => {
   const [query, setQuery] = useState('');
 
   const handleLoadButton = async () => {
-    setIsLoadind(true);
-    const postsFromServer = await getPreparedPosts();
+    try {
+      setIsLoadind(true);
+      const postsFromServer = await getPreparedPosts();
 
-    setPosts(postsFromServer);
+      setPosts(postsFromServer);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e);
+    }
   };
 
   const handleQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
