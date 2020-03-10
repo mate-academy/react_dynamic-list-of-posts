@@ -14,9 +14,7 @@ const getData = async <T>(url: string): Promise<T> => {
   }
 
   return response.json()
-    .catch(error => {
-      return error;
-    });
+    .catch(error => error);
 };
 
 

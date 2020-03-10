@@ -37,7 +37,7 @@ const App: FC = () => {
   );
 
   const setFilterQueryWithDebounce = useCallback(
-    debounce(setFilterQuery, 2000),
+    debounce(setFilterQuery, 1000),
     [],
   );
 
