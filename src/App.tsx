@@ -35,7 +35,7 @@ const App: FC = () => {
     setPosts(originalPosts
       .filter(post => post.title.toLowerCase().includes(query)
         || post.body.toLowerCase().includes(query)));
-  }, [query]);
+  }, [query, originalPosts]);
 
 
   return (

@@ -17,17 +17,16 @@ export const Person: FC<Props> = ({ user }) => {
   const { name, email } = user;
 
   return (
-    <>
-      <div className="person">
-        <h3>{name}</h3>
-        <p>{email}</p>
-        <ul className="person__address-list">
-          <li>{street}</li>
-          <li>{suite}</li>
-          <li>{city}</li>
-          <li>{zipcode}</li>
-        </ul>
-      </div>
-    </>
+    <div className="person">
+      <h3>{name}</h3>
+      <p>{email}</p>
+      <ul className="person__address-list">
+        <li>{street}</li>
+        <li>{suite}</li>
+        <li>{city}</li>
+        <li>{zipcode}</li>
+      </ul>
+    </div>
+
   );
 };
