@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import './App.css';
 import { loadPreparedPosts } from './api';
 import { PostList } from './components/PostList/PostList';
 
-const App: React.FC = () => {
+const App: FC = () => {
   const [isLoaded, setLoad] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [posts, setPosts] = useState<PreparedPosts>([]);

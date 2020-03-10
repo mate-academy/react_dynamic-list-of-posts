@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import './Post.css';
 import { User } from '../User/User';
 import { Comments } from '../Comments/Comments';
@@ -7,7 +7,7 @@ interface Props {
   postInfo: PreparedPost;
 }
 
-export const Post: React.FC<Props> = ({
+export const Post: FC<Props> = ({
   postInfo: {
     title,
     body,

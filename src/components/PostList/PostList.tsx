@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import './PostList.css';
 import { Post } from '../Post/Post';
 
@@ -8,7 +8,7 @@ interface Props {
   inputValue: string;
 }
 
-export const PostList: React.FC<Props> = ({ posts, onInputChange, inputValue }) => (
+export const PostList: FC<Props> = ({ posts, onInputChange, inputValue }) => (
   <div className="posts">
     <div className="posts__search-wrapper">
       <label htmlFor="search-field">

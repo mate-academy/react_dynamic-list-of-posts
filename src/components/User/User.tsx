@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { FC } from 'react';
 import './User.css';
 
 interface Props {
   person: User;
 }
 
-export const User: React.FC<Props> = ({ person: { name, email, address } }) => (
+export const User: FC<Props> = ({ person: { name, email, address } }) => (
   <div className="user">
     <h3>
       <span>author: </span>
