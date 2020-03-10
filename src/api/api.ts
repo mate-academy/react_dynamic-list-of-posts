@@ -10,8 +10,8 @@ export const getPosts = (): Promise<PostType[]> => {
   return getData<PostType[]>(`${API_URL}posts`);
 };
 
-export const getUsers = (): Promise<UserType[]> => {
-  return getData<UserType[]>(`${API_URL}users`);
+export const getUsers = (): Promise<User[]> => {
+  return getData<User[]>(`${API_URL}users`);
 };
 
 export const getComments = (): Promise<CommentType[]> => {

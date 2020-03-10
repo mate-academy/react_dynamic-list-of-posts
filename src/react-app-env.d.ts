@@ -1,7 +1,4 @@
-// eslint-disable-next-line
-/// <reference types="react-scripts" />
-
-interface UserType {
+interface User {
   id: number;
   name: string;
   username: string;

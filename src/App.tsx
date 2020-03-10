@@ -1,5 +1,5 @@
 import React, {
-  FC, useState, ChangeEvent, useMemo
+  FC, useState, ChangeEvent, useMemo,
 } from 'react';
 import { PostList } from './components/PostList/PostList';
 import './App.css';
@@ -19,7 +19,7 @@ const App: FC = () => {
     const preparedPosts = loadedPosts.map((post) => ({
       ...post,
       user: loadedUsers
-        .find((person) => person.id === post.userId) as UserType,
+        .find((person) => person.id === post.userId) as User,
       comment: loadedComments
         .filter((comment) => post.id === comment.postId) as CommentType[],
     }));

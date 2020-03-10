@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
 interface Props {
-  user: UserType;
+  user: User;
 }
 
 export const User: FC<Props> = ({ user }) => {
