@@ -4,10 +4,10 @@ import { loadPreparedPosts } from './api';
 import { PostList } from './components/PostList/PostList';
 
 const App: React.FC = () => {
-  const [isLoaded, setLoad] = useState<boolean>(false);
-  const [isLoading, setLoading] = useState<boolean>(false);
+  const [isLoaded, setLoad] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [posts, setPosts] = useState<PreparedPosts>([]);
-  const [query, setQuery] = useState<string>('');
+  const [query, setQuery] = useState('');
 
   const handleLoad = () => {
     setLoading(true);
