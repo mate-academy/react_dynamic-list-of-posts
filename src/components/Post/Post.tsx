@@ -16,24 +16,22 @@ export const Post: FC<Props> = ({ post }) => {
   } = post;
 
   return (
-    <>
-      <ul className="post">
-        <li>
-          <h3>
-            {title}
-          </h3>
-        </li>
-        <li>
-          {body}
-        </li>
-        <li>
-          <User user={user} />
-        </li>
-        <li className="comments">
-          <p>Comments:</p>
-          <CommentList key={post.id} comments={comments} />
-        </li>
-      </ul>
-    </>
+    <ul className="post">
+      <li>
+        <h3>
+          {title}
+        </h3>
+      </li>
+      <li>
+        {body}
+      </li>
+      <li>
+        <User user={user} />
+      </li>
+      <li className="comments">
+        <p>Comments:</p>
+        <CommentList key={post.id} comments={comments} />
+      </li>
+    </ul>
   );
 };

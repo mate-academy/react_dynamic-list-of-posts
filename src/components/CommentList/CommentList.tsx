@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import './CommentList.css';
 import { Comment } from '../Comment/Comment';
 
 interface Props {

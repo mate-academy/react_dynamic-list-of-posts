@@ -22,7 +22,11 @@ const getComments = (): Promise<CommentInterface[]> => {
 };
 
 export const getCompletePosts = async (): Promise<CompletePostInterface[]> => {
-  const [posts, users, comments] = await Promise.all([getPosts(), getUsers(), getComments()]);
+  const [posts, users, comments] = await Promise.all([
+    getPosts(),
+    getUsers(),
+    getComments(),
+  ]);
 
   const completePosts = posts.map(post => ({
     ...post,

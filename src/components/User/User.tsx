@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import './User.css';
 
 interface Props {
   user: UserInterface;
