@@ -1,0 +1,96 @@
+ul,
+li,
+h1,
+h2,
+h3,
+p,
+input,
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-family: Trebuchet MS, Lucida Sans Unicode, Lucida Sans, sans-serif;
+}
+
+.title {
+  text-align: center;
+  font-size: 50px;
+  margin-top: 15px;
+}
+
+.loading-text {
+  text-align: center;
+  font-size: 18px;
+}
+
+.loading-button {
+  display: flex;
+  margin: 20px auto 10px;
+  border: 0;
+  outline: 0;
+  width: 150px;
+  height: 40px;
+  font-size: 25px;
+  justify-content: center;
+  align-content: center;
+  border-radius: 20px;
+  transition: all 0.3s;
+}
+
+.loading-button:hover {
+  cursor: pointer;
+  color: #fff;
+  background-color: rgb(139, 127, 127);
+}
+
+.post {
+  width: 900px;
+  border: 1px solid rgb(167, 121, 64);
+  border-radius: 25px;
+  padding: 10px;
+  margin: 0 auto 30px;
+
+  &__title {
+    text-align: center;
+    font-size: 25px;
+  }
+
+  &__body {
+    text-align: center;
+    color: rgb(202, 152, 86);
+  }
+
+  &__comm {
+    margin-top: 15px;
+  }
+}
+
+.comm {
+  border: 1px solid goldenrod;
+  margin-bottom: 5px;
+  padding: 10px;
+  border-radius: 25px;
+
+  &__name {
+    font-size: 18px;
+    color: rgb(112, 151, 52);
+  }
+
+  &__email {
+    color: rgb(57, 138, 57);
+  }
+
+  &__body {
+    text-align: center;
+  }
+}
+
+.inputContainer {
+  width: 450px;
+  margin: 0 auto 25px;
+}
+
+.error {
+  text-align: center;
+  font-size: 18px;
+}
