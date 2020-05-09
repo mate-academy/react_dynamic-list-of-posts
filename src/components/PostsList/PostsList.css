@@ -1,0 +1,16 @@
+.post-list {
+  list-style: none;
+  width: 280px;
+  margin: auto;
+  padding: 0;
+}
+
+.post-list__item {
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .post-list {
+    width: 720px;
+  }
+}
