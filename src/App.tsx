@@ -42,9 +42,9 @@ class App extends React.PureComponent {
 
     return posts
       .filter(post => (post.title + post.body)
-        .replace(/\s*/g, '')
+        .replace(/\s*/g, ' ')
         .includes(filteredValue
-          .replace(/\s*/g, '')));
+          .replace(/\s*/g, ' ')));
   };
 
   startSearch = () => {
