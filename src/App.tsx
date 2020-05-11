@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import './App.css';
 import { preparePosts } from './api';
 import { StateApp } from './components/Interface';
 import { Button } from './components/Button';

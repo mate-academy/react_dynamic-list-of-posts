@@ -1,5 +1,5 @@
 import React from 'react';
-import { User } from '../Interface';
+import { User, Comment } from '../Interface';
 import { CommentList } from '../Comments';
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
   title: string;
   body: string;
   user: User;
-  comments: any;
+  comments: Comment[];
 }
 
 export const PostItem: React.FC<Props> = ({
