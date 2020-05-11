@@ -11,6 +11,7 @@ class App extends Component {
     isLoading: false,
     isLoaded: false,
     hasError: false,
+    searchQuery: '',
   };
 
   loadPosts = () => {
@@ -22,13 +23,36 @@ class App extends Component {
       .catch(() => this.setState({ hasError: true }));
   };
 
+  setSearchQuery = (query: string) => {
+    this.setState({
+      searchQuery: query
+        .trim()
+        .toLocaleLowerCase()
+        .replace(/\s/g, ' '),
+    });
+  };
+
+  searchPosts = () => {
+    const { posts, searchQuery } = this.state;
+    const filteredPosts = posts.filter(post => {
+      const content = `${post.title} ${post.body}`
+        .toLocaleLowerCase()
+        .replace(/\s/g, ' ');
+
+      return content.includes(searchQuery);
+    });
+
+    return filteredPosts;
+  };
+
   render() {
     const {
-      posts,
       isLoading,
       isLoaded,
       hasError,
     } = this.state;
+
+    const searchedPosts = this.searchPosts();
 
     return (
       <section className="section">
@@ -42,7 +66,7 @@ class App extends Component {
             />
           )}
           {isLoading && (
-            <progress className="progress is-primary is-info" max="100">
+            <progress className="progress is-primary" max="100">
               Loading...
             </progress>
           )}
@@ -58,9 +82,14 @@ class App extends Component {
           )}
           {isLoaded && (
             <>
-              <Search />
-              <PostList posts={posts} />
+              <Search setSearchQuery={this.setSearchQuery} />
+              <PostList posts={searchedPosts} />
             </>
+          )}
+          {isLoaded && !searchedPosts.length && (
+            <div className="notification is-warning">
+              Posts not found....
+            </div>
           )}
         </div>
       </section>

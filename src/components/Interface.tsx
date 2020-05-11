@@ -1,10 +1,10 @@
 export interface Post {
-  [key: string]: string | number | boolean | User | Comment;
-  key: number;
+  userId: number;
   id: number;
   title: string;
   body: string;
   user: User;
+  comments: Comment[];
 }
 
 export interface User {
@@ -13,9 +13,11 @@ export interface User {
 }
 
 export interface Comment {
-  [key: string]: string | number;
   id: number;
   postId: number;
+  name: string;
+  email: string;
+  body: string;
 }
 
 export interface StateApp {
@@ -23,4 +25,9 @@ export interface StateApp {
   isLoading: boolean;
   isLoaded: boolean;
   hasError: boolean;
+  searchQuery: string;
+}
+
+export interface StateSearch {
+  searchQuery: string;
 }

@@ -19,8 +19,8 @@ export const preparePosts = async () => {
   const preparedPosts = posts.map((post) => {
     return {
       ...post,
-      user: users.find((user) => user.id === post.userId),
-      comments: comments.filter((comment) => comment.postId === post.id),
+      user: users.find(user => user.id === post.userId),
+      comments: comments.filter(comment => comment.postId === post.id),
     };
   });
 
