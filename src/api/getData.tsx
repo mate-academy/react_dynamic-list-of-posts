@@ -1,8 +1,9 @@
 import { Post, User, Comment } from '../components/Interface';
 
-const API_URL_POSTS = 'https://jsonplaceholder.typicode.com/posts';
-const API_URL_USERS = 'https://jsonplaceholder.typicode.com/users';
-const API_URL_COMMENTS = 'https://jsonplaceholder.typicode.com/comments';
+const API_URL = 'https://jsonplaceholder.typicode.com';
+const API_URL_POSTS = `${API_URL}/posts/`;
+const API_URL_USERS = `${API_URL}/users/`;
+const API_URL_COMMENTS = `${API_URL}/comments/`;
 
 const getData = async (url: string) => {
   const response = await fetch(url);
@@ -12,15 +13,18 @@ const getData = async (url: string) => {
 };
 
 export const preparePosts = async () => {
-  const posts: Post[] = await getData(API_URL_POSTS);
-  const users: User[] = await getData(API_URL_USERS);
-  const comments: Comment[] = await getData(API_URL_COMMENTS);
+  const [posts, users, comments] = await Promise.all([
+    getData(API_URL_POSTS),
+    getData(API_URL_USERS),
+    getData(API_URL_COMMENTS),
+  ]);
 
-  const preparedPosts = posts.map((post) => {
+
+  const preparedPosts = posts.map((post: Post) => {
     return {
       ...post,
-      user: users.find(user => user.id === post.userId),
-      comments: comments.filter(comment => comment.postId === post.id),
+      user: users.find((user: User) => user.id === post.userId),
+      comments: comments.filter((comment: Comment) => comment.postId === post.id),
     };
   });
 

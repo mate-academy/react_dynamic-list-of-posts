@@ -15,13 +15,26 @@ class App extends Component {
     searchQuery: '',
   };
 
-  loadPosts = () => {
-    this.setState({ isLoading: true });
+  loadPosts = async () => {
+    this.setState({
+      isLoading: true,
+      hasError: false,
+    });
 
-    preparePosts()
-      .then(posts => this.setState({ posts, isLoaded: true }))
-      .finally(() => this.setState({ isLoading: false }))
-      .catch(() => this.setState({ hasError: true }));
+    try {
+      const data = await preparePosts();
+
+      this.setState({
+        posts: data,
+        isLoaded: true,
+      });
+    } catch {
+      this.setState({
+        hasError: true,
+      });
+    }
+
+    this.setState({ isLoading: false });
   };
 
   setSearchQuery = (query: string) => {
@@ -59,7 +72,7 @@ class App extends Component {
       <section className="section">
         <div className="container">
           <h1 className="title is-1">Dynamic List of Posts</h1>
-          {!isLoading && !isLoaded && (
+          {!isLoading && !isLoaded && !hasError && (
             <Button
               text="Load Posts"
               className="button"
@@ -73,7 +86,7 @@ class App extends Component {
           )}
           {hasError && (
             <>
-              <p>Something went wrong...</p>
+              <div className="notification is-warning">Something went wrong...</div>
               <Button
                 text="Try Again"
                 className="button"
@@ -88,9 +101,7 @@ class App extends Component {
             </>
           )}
           {isLoaded && !searchedPosts.length && (
-            <div className="notification is-warning">
-              Posts not found....
-            </div>
+            <div className="notification is-warning">Posts not found....</div>
           )}
         </div>
       </section>
