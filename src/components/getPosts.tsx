@@ -1,24 +1,22 @@
 import { Post, User, Comments } from './interfaces';
 
-const postsUrl = 'https://jsonplaceholder.typicode.com/posts';
-const usersUrl = 'https://jsonplaceholder.typicode.com/users';
-const commentsUrl = 'https://jsonplaceholder.typicode.com/comments';
-
 const getDatas = async (url: string) => {
-  const getInfo = await fetch(url);
+  const getInfo = await fetch(`https://jsonplaceholder.typicode.com/${url}`);
   const infoToJson = getInfo.json();
 
   return infoToJson;
 };
 
 export const preparedDatas = async () => {
-  const posts: Post[] = await getDatas(postsUrl);
-  const users: User[] = await getDatas(usersUrl);
-  const comments: Comments[] = await getDatas(commentsUrl);
+  const [posts, users, comments] = await Promise.all([
+    getDatas('posts'),
+    getDatas('users'),
+    getDatas('comments'),
+  ])
 
-  const finallyDatas = posts.map(post => {
-    const user = users.find(ownerPost => ownerPost.id === post.userId);
-    const postsComments = comments.filter(comment => comment.postId === post.id);
+  const finallyDatas = posts.map((post: Post) => {
+    const user = users.find((ownerPost: User) => ownerPost.id === post.userId);
+    const postsComments = comments.filter((comment: Comments) => comment.postId === post.id);
 
     return {
       ...post,
