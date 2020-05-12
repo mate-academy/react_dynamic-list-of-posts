@@ -22,10 +22,10 @@ class App extends Component {
     });
 
     try {
-      const data = await preparePosts();
+      const preparedPosts = await preparePosts();
 
       this.setState({
-        posts: data,
+        posts: preparedPosts,
         isLoaded: true,
       });
     } catch {
