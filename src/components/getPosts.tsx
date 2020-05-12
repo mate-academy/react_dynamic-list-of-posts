@@ -1,7 +1,7 @@
 import { Post, User, Comments } from './interfaces';
 
 const getDatas = async (url: string) => {
-  const getInfo = await fetch(`https://jsonplaceholder.typicode.com/${url}`);
+  const getInfo = await fetch(`./api/${url}.json`);
   const infoToJson = getInfo.json();
 
   return infoToJson;
@@ -12,7 +12,7 @@ export const preparedDatas = async () => {
     getDatas('posts'),
     getDatas('users'),
     getDatas('comments'),
-  ])
+  ]);
 
   const finallyDatas = posts.map((post: Post) => {
     const user = users.find((ownerPost: User) => ownerPost.id === post.userId);
