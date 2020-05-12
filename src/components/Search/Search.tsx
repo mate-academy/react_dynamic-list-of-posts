@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import { StateSearch } from '../Interface';
 import { debounce } from '../../helpers';
 
-interface Props {
+type State = {
+  searchQuery: string;
+};
+
+type Props = {
   setSearchQuery: (query: string) => void;
-}
+};
 
 export class Search extends Component<Props> {
-  state: StateSearch = {
+  state: State = {
     searchQuery: '',
   };
 

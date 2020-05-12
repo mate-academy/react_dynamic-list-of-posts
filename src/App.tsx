@@ -1,13 +1,21 @@
 import React, { Component } from 'react';
 import './App.css';
 import { preparePosts } from './helpers';
-import { StateApp } from './components/Interface';
+import { Post } from './components/Interface';
 import { Button } from './components/Button';
 import { PostList } from './components/PostList';
 import { Search } from './components/Search';
 
-class App extends Component<{}, StateApp> {
-  state: StateApp = {
+type State = {
+  posts: Post[];
+  isLoading: boolean;
+  isLoaded: boolean;
+  hasError: boolean;
+  searchQuery: string;
+};
+
+class App extends Component<{}, State> {
+  state: State = {
     posts: [],
     isLoading: false,
     isLoaded: false,

@@ -1,15 +1,3 @@
-export type StateApp = {
-  posts: Post[];
-  isLoading: boolean;
-  isLoaded: boolean;
-  hasError: boolean;
-  searchQuery: string;
-};
-
-export type StateSearch = {
-  searchQuery: string;
-};
-
 export interface Post {
   id: number;
   title: string;
