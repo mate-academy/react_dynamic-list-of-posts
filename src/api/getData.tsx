@@ -1,9 +1,6 @@
 import { Post, User, Comment } from '../components/Interface';
 
-const API_URL = 'https://jsonplaceholder.typicode.com';
-const API_URL_POSTS = `${API_URL}/posts/`;
-const API_URL_USERS = `${API_URL}/users/`;
-const API_URL_COMMENTS = `${API_URL}/comments/`;
+const API_URL = './api';
 
 const getData = async (url: string) => {
   const response = await fetch(url);
@@ -14,9 +11,9 @@ const getData = async (url: string) => {
 
 export const preparePosts = async () => {
   const [posts, users, comments] = await Promise.all([
-    getData(API_URL_POSTS),
-    getData(API_URL_USERS),
-    getData(API_URL_COMMENTS),
+    getData(`${API_URL}/posts.json`),
+    getData(`${API_URL}/users.json`),
+    getData(`${API_URL}/comments.json`),
   ]);
 
 
