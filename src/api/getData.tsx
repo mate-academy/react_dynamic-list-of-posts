@@ -16,14 +16,9 @@ export const preparePosts = async () => {
     getData(`${API_URL}/comments.json`),
   ]);
 
-
-  const preparedPosts = posts.map((post: Post) => {
-    return {
-      ...post,
-      user: users.find((user: User) => user.id === post.userId),
-      comments: comments.filter((comment: Comment) => comment.postId === post.id),
-    };
-  });
-
-  return preparedPosts;
+  return posts.map((post: Post) => ({
+    ...post,
+    user: users.find((user: User) => user.id === post.userId),
+    comments: comments.filter((comment: Comment) => comment.postId === post.id),
+  }));
 };
