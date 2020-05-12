@@ -16,8 +16,7 @@ class App extends React.PureComponent {
   };
 
   debounce = (f: Function, delay: number) => {
-    // Не знаю, как описать setTimeout, как функцию - нельзя.
-    let timerId: any = null;
+    let timerId: ReturnType<typeof setTimeout>;
 
     const debounced = () => {
       clearTimeout(timerId);
