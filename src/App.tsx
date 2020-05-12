@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
-import { preparePosts } from './api';
+import { preparePosts } from './helpers';
 import { StateApp } from './components/Interface';
 import { Button } from './components/Button';
 import { PostList } from './components/PostList';
 import { Search } from './components/Search';
 
-class App extends Component {
+class App extends Component<{}, StateApp> {
   state: StateApp = {
     posts: [],
     isLoading: false,
@@ -86,7 +86,7 @@ class App extends Component {
           )}
           {hasError && (
             <>
-              <div className="notification is-warning">Something went wrong...</div>
+              <div className="notification is-warning">Oops! Something went wrong... :(</div>
               <Button
                 text="Try Again"
                 className="button"

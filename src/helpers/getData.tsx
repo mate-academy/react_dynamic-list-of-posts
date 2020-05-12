@@ -1,6 +1,6 @@
 import { Post, User, Comment } from '../components/Interface';
 
-const API_URL = './api';
+const API_URL = 'https://seialek.github.io/react_dynamic-list-of-posts/api';
 
 const getData = async (url: string) => {
   const response = await fetch(url);

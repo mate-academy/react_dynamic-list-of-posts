@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { StateSearch } from '../Interface';
+import { debounce } from '../../helpers';
 
 interface Props {
   setSearchQuery: (query: string) => void;
@@ -10,30 +11,16 @@ export class Search extends Component<Props> {
     searchQuery: '',
   };
 
-  // eslint-disable-next-line react/sort-comp
-  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ searchQuery: e.target.value });
-  };
-
-  debounce = (f: Function, delay: number) => {
-    let timerId: any;
-
-    const debounced = () => {
-      clearTimeout(timerId);
-      timerId = setTimeout(f, delay);
-    };
-
-    return debounced;
-  };
-
-  sendQuery = () => {
+  debouncedSendQuery = debounce(() => {
     const { setSearchQuery } = this.props;
     const { searchQuery } = this.state;
 
     setSearchQuery(searchQuery);
-  };
+  }, 1000);
 
-  wrapper = this.debounce(this.sendQuery, 1000);
+  handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ searchQuery: e.target.value });
+  };
 
   render() {
     const { searchQuery } = this.state;
@@ -48,7 +35,7 @@ export class Search extends Component<Props> {
             value={searchQuery}
             onChange={e => {
               this.handleInputChange(e);
-              this.wrapper();
+              this.debouncedSendQuery();
             }}
           />
         </div>
