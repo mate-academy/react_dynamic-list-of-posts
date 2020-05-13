@@ -1,104 +1,80 @@
-import React from 'react';
+import React, { FC, useState } from 'react';
 import './App.scss';
-import { AppState, Post } from './components/interfaces';
+import { Post } from './components/interfaces';
 import { preparedDatas } from './components/getPosts';
 import { DownloadButton } from './components/DownloadButton';
 import { PostsList } from './components/PostsList';
+import { debounce } from './helper/customDebounce';
 
-class App extends React.PureComponent {
-  state: AppState = {
-    posts: [],
-    isLoading: false,
-    isLoaded: false,
-    downloadError: false,
-    filteredValue: '',
-    searchValue: '',
+const App: FC = () => {
+  const [isLoading, dataGeneration] = useState(false);
+  const [isLoaded, loadStatus] = useState(false);
+  const [posts, getPost] = useState([]);
+  const [downloadError, setError] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  let visiblePosts: Post[];
+
+  const loadData = () => {
+    dataGeneration(true);
+    preparedDatas()
+      .then(data => {
+        getPost(data);
+        loadStatus(true);
+        setError(false);
+      })
+      .catch(() => setError(true))
+      .finally(() => dataGeneration(false));
   };
 
-  debounce = (f: Function, delay: number) => {
-    let timerId: ReturnType<typeof setTimeout>;
+  const startSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
 
-    const debounced = () => {
-      clearTimeout(timerId);
-      timerId = setTimeout(() => f(), delay);
-    };
-
-    return debounced;
+    debounceWrapper(value);
   };
 
-  field = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const letter = e.target.value;
-
-    this.setState({ searchValue: letter });
+  const setValue = (value: string) => {
+    setSearchValue(value);
   };
 
-  filterPost = () => {
-    const { filteredValue, posts } = this.state;
-
-    if (!filteredValue) {
+  const filterPosts = (value: string) => {
+    if (!value) {
       return posts;
     }
 
     return posts
-      .filter(post => (post.title + post.body)
+      .filter((post: Post) => (post.title + post.body)
         .replace(/\s*/g, ' ')
-        .includes(filteredValue
+        .includes(value
           .replace(/\s*/g, ' ')));
   };
 
-  startSearch = () => {
-    const { searchValue } = this.state;
+  const debounceWrapper = debounce((value: string) => setValue(value), 1000);
 
-    this.setState({ filteredValue: searchValue });
-  };
+  visiblePosts = filterPosts(searchValue);
 
-  wrapper = this.debounce(this.startSearch, 1000);
-
-  dataGeneration = () => {
-    this.setState({ isLoading: true });
-
-    preparedDatas()
-      .then(allPosts => this.setState(() => ({
-        posts: allPosts, isLoaded: true, downloadError: false,
-      })))
-      .catch(() => this.setState(() => ({ downloadError: true })))
-      .finally(() => this.setState(() => ({ isLoading: false })));
-  };
-
-  render() {
-    const {
-      isLoading, isLoaded, searchValue, downloadError,
-    } = this.state;
-    const filteredPosts: Post[] = this.filterPost();
-
-    return (
-      <>
-        <h1 className="title">Posts</h1>
-        {!isLoaded
-          && <DownloadButton isLoading={isLoading} dataGeneration={this.dataGeneration} />}
-        {downloadError && (
-          <p className="error">Loading error, please, try again.</p>
-        )}
-        {isLoaded && (
-          <>
-            <div className="inputContainer">
-              <input
-                type="text"
-                className="input"
-                placeholder="write a text for search"
-                value={searchValue}
-                onChange={(e) => {
-                  this.wrapper();
-                  this.field(e);
-                }}
-              />
-            </div>
-            <PostsList posts={filteredPosts} />
-          </>
-        )}
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <h1 className="title">Posts</h1>
+      {!isLoaded
+        && <DownloadButton isLoading={isLoading} dataGeneration={loadData} />}
+      {downloadError && (
+        <p className="error">Loading error, please, try again.</p>
+      )}
+      {isLoaded && (
+        <>
+          <div className="inputContainer">
+            <input
+              type="text"
+              className="input"
+              placeholder="write a text for search"
+              onChange={startSearch}
+            />
+          </div>
+          <PostsList posts={visiblePosts} />
+        </>
+      )}
+    </>
+  );
+};
 
 export default App;
