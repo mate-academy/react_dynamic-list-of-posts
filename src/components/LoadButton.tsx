@@ -8,7 +8,7 @@ export const LoadButton: React.FC<Props> = ({ loadPosts }) => {
   const [title, setTitle] = useState<string>('Load');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const loading = () => {
+  const loadTodos = () => {
     setTitle('Loading...');
     setIsLoading(true);
 
@@ -22,7 +22,7 @@ export const LoadButton: React.FC<Props> = ({ loadPosts }) => {
       type="button"
       className="waves-effect waves-light btn-large"
       disabled={isLoading}
-      onClick={loading}
+      onClick={loadTodos}
     >
       {title}
     </button>

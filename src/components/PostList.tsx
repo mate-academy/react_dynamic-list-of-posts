@@ -7,7 +7,7 @@ type Props = {
 };
 
 export const PostList: React.FC<Props> = ({ posts }) => {
-  const [query, setQuery] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [filterQuery, setFilterQuery] = useState<string>('');
 
   const visiblePosts = useMemo(() => {
@@ -22,7 +22,7 @@ export const PostList: React.FC<Props> = ({ posts }) => {
   );
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
+    setSearchQuery(event.target.value);
     setFilterQueryWithDebounce(event.target.value);
   };
 
@@ -36,7 +36,7 @@ export const PostList: React.FC<Props> = ({ posts }) => {
               id="search"
               type="text"
               className="validate"
-              value={query}
+              value={searchQuery}
               onChange={handleChange}
             />
           </label>

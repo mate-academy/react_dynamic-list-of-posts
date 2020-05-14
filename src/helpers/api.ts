@@ -19,7 +19,8 @@ export const getUsers = async (): Promise<User[]> => {
 };
 
 export const getPreparedPosts = async (): Promise<Post[]> => {
-  const [posts,
+  const [
+    posts,
     users,
     comments,
   ] = await Promise.all([getPosts(), getUsers(), getComments()]);
