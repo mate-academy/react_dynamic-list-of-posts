@@ -19,7 +19,7 @@ h1 {
 
 .list {
   list-style-type: none;
-  width: 800px;
+  max-width: 800px;
 }
 
 .list__userInfo {
