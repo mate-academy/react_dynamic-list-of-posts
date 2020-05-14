@@ -1,37 +1,15 @@
-import React, {
-  FC, useState, useCallback, useMemo, ChangeEvent,
-} from 'react';
-import debounce from 'lodash/debounce';
+import React, { FC } from 'react';
 import { User } from './User';
 import { CommentList } from './CommentList';
 import { SearchPost } from './SearchPost';
+import { usePostList } from './hooks/usePostList';
 
-export const PostList: FC<Posts> = ({ posts }) => {
-  const [query, setQuery] = useState('');
-  const [filteredQuery, setFilteredQuery] = useState('');
-
-  const visiblePosts = useMemo(() => {
-    const filteredPosts = [...posts].filter(post => {
-      const title = post.title.toLowerCase();
-      const body = post.body.toLowerCase();
-
-      return (title + body).includes(filteredQuery.toLowerCase());
-    });
-
-    return filteredPosts;
-  }, [posts, filteredQuery]);
-
-  const setFilteredQueryWithDebounce = useCallback(
-    debounce(setFilteredQuery, 1000),
-    [],
-  );
-
-  const handleSearch = useCallback(({ target }: ChangeEvent<HTMLTextAreaElement>) => {
-    const { value } = target;
-
-    setQuery(value);
-    setFilteredQueryWithDebounce(value);
-  }, [setFilteredQueryWithDebounce]);
+export const PostList: FC<PostListProps> = (props) => {
+  const {
+    query,
+    handleSearch,
+    visiblePosts
+  } = usePostList(props);
 
   return (
     <>
