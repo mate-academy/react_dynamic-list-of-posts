@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { getCommentsFromServer, getPostsFromServer, getUsersFromServer } from './api';
-import { PostType } from './interfaces';
+import { PostType, UserType, Comment } from './interfaces';
 import { ListOfPosts } from './ListOfPosts';
 import { debounce } from './helpers';
 
@@ -9,12 +9,7 @@ import { debounce } from './helpers';
 const App: React.FC<{}> = () => {
   const [loadButtonText, setLoadButtonText] = useState('Load');
   const [isLoadButtonVisible, setIsLoadButtonVisible] = useState(true);
-  const [comments, setComments] = useState([]);
-  const [isCommentsLoaded, setIsCommentsLoaded] = useState(false);
-  const [posts, setPosts] = useState([]);
-  const [isPostsLoaded, setIsPostsLoaded] = useState(false);
-  const [users, setUsers] = useState([]);
-  const [isUsersLoaded, setIsUsersLoaded] = useState(false);
+  const [customisedPosts, setCustomisedPosts] = useState([]);
   const [filterFieldValue, setFilterFieldValue] = useState('');
   const [isFilterFieldVisible, setIsFilterFieldVisible] = useState(false);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -22,35 +17,34 @@ const App: React.FC<{}> = () => {
 
   useEffect(() => {
     debounce(() => {
-      setFilteredPosts(posts.filter((post: PostType) => {
+      setFilteredPosts(customisedPosts.filter((post: PostType) => {
         return (
           post.title.includes(filterFieldValue)
           || post.body.includes(filterFieldValue)
         );
       }));
     }, 1000);
-  }, [filterFieldValue, posts]);
+  }, [filterFieldValue, customisedPosts]);
 
 
   const handleLoadButtonClick = (): void => {
     setLoadButtonText('Loading...');
-    setIsLoadButtonVisible(false);
-    setIsFilterFieldVisible(true);
-    getCommentsFromServer().then((commentsFromServer) => {
-      setComments(commentsFromServer);
-      setIsCommentsLoaded(true);
-    });
 
-    getPostsFromServer().then(postsFromServer => {
-      setPosts(postsFromServer);
-      setIsPostsLoaded(true);
-      setFilteredPosts(postsFromServer);
-    });
 
-    getUsersFromServer().then(usersFromServer => {
-      setUsers(usersFromServer);
-      setIsUsersLoaded(true);
-    });
+    Promise.all([getCommentsFromServer(), getPostsFromServer(), getUsersFromServer()])
+      .then(([commentsFromServer, postsFromServer, usersFromServer]) => {
+        setCustomisedPosts(postsFromServer.map((post: PostType) => {
+          return {
+            ...post,
+            user: usersFromServer.find((user: UserType) => user.id === post.userId),
+            commentsList: commentsFromServer
+              .filter((comment: Comment) => comment.postId === post.id),
+          };
+        }));
+        setFilteredPosts(customisedPosts);
+        setIsFilterFieldVisible(true);
+        setIsLoadButtonVisible(false);
+      });
   };
 
   return (
@@ -72,14 +66,10 @@ const App: React.FC<{}> = () => {
         }}
         className={isFilterFieldVisible ? '' : 'un-visible'}
       />
-      {isPostsLoaded
-        && isCommentsLoaded
-        && isUsersLoaded
+      {customisedPosts.length !== 0
         && (
           <ListOfPosts
             posts={filteredPosts}
-            comments={comments}
-            users={users}
           />
         )}
     </>

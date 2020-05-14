@@ -17,6 +17,15 @@ export interface PostType {
   body: string;
 }
 
+export interface CustomisedPostType {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+  user: UserType;
+  commentsList: Comment[];
+}
+
 export interface UserType {
   id: number;
   name: string;
@@ -41,9 +50,7 @@ export interface Comment {
 }
 
 export interface PostPropsType {
-  user: UserType[];
-  post: PostType;
-  commentsList: Comment[];
+  post: CustomisedPostType;
 }
 
 export interface CommentsListPropsType {
@@ -51,7 +58,10 @@ export interface CommentsListPropsType {
 }
 
 export interface ListOfPostsPropsType {
-  users: UserType[];
-  posts: PostType[];
-  comments: Comment[];
+  posts: CustomisedPostType[];
+
+}
+
+export interface UserPropsType {
+  user: UserType;
 }
