@@ -7,33 +7,29 @@ import { PostsList } from './components/PostsList';
 import { debounce } from './helper/customDebounce';
 
 const App: FC = () => {
-  const [isLoading, dataGeneration] = useState(false);
-  const [isLoaded, loadStatus] = useState(false);
-  const [posts, getPost] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [posts, setPosts] = useState([]);
   const [downloadError, setError] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   let visiblePosts: Post[];
 
   const loadData = () => {
-    dataGeneration(true);
+    setLoading(true);
     preparedDatas()
       .then(data => {
-        getPost(data);
-        loadStatus(true);
+        setPosts(data);
+        setIsLoaded(true);
         setError(false);
       })
       .catch(() => setError(true))
-      .finally(() => dataGeneration(false));
+      .finally(() => setLoading(false));
   };
 
   const startSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
 
-    debounceWrapper(value);
-  };
-
-  const setValue = (value: string) => {
-    setSearchValue(value);
+    debouncedSearch(value);
   };
 
   const filterPosts = (value: string) => {
@@ -48,7 +44,7 @@ const App: FC = () => {
           .replace(/\s*/g, ' ')));
   };
 
-  const debounceWrapper = debounce((value: string) => setValue(value), 1000);
+  const debouncedSearch = debounce((searchQuery: string) => setSearchValue(searchQuery), 1000);
 
   visiblePosts = filterPosts(searchValue);
 
@@ -56,7 +52,7 @@ const App: FC = () => {
     <>
       <h1 className="title">Posts</h1>
       {!isLoaded
-        && <DownloadButton isLoading={isLoading} dataGeneration={loadData} />}
+        && <DownloadButton isLoading={loading} dataGeneration={loadData} />}
       {downloadError && (
         <p className="error">Loading error, please, try again.</p>
       )}

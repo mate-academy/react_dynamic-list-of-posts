@@ -1,6 +1,6 @@
 import { Post, User, Comments } from './interfaces';
 
-const getDatas = async (url: string) => {
+const getData = async (url: string) => {
   const getInfo = await fetch(`./api/${url}.json`);
   const infoToJson = getInfo.json();
 
@@ -9,12 +9,12 @@ const getDatas = async (url: string) => {
 
 export const preparedDatas = async () => {
   const [posts, users, comments] = await Promise.all([
-    getDatas('posts'),
-    getDatas('users'),
-    getDatas('comments'),
+    getData('posts'),
+    getData('users'),
+    getData('comments'),
   ]);
 
-  const finallyDatas = posts.map((post: Post) => {
+  const preparedPosts = posts.map((post: Post) => {
     const user = users.find((ownerPost: User) => ownerPost.id === post.userId);
     const postsComments = comments.filter((comment: Comments) => comment.postId === post.id);
 
@@ -25,5 +25,5 @@ export const preparedDatas = async () => {
     };
   });
 
-  return finallyDatas;
+  return preparedPosts;
 };
