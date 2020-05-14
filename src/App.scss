@@ -1,0 +1,49 @@
+body {
+  margin: 0;
+  background-color: rosybrown;
+}
+
+.post {
+  &__list {
+    list-style: none;
+    background-color: rosybrown;
+
+  }
+
+  &__item {
+    width: 800px;
+    padding: 16px;
+    margin: 8px auto;
+    background-color: papayawhip;
+    border-radius: 16px;
+  }
+
+  &__input-wrapper {
+    width: 800px;
+    margin: 8px auto;
+    transform: translate(15px);
+  }
+
+  &__input {
+    width: 100%;
+    height: 32px;
+  }
+
+  &__btn {
+    display: block;
+    width: 280px;
+    height: 80px;
+    margin: 300px auto;
+    background-color: papayawhip;
+    font-size: 24px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &__load {
+    text-align: center;
+    font-size: 24px;
+  }
+}

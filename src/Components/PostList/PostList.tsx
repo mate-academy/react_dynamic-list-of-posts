@@ -10,8 +10,7 @@ interface Props {
   comments: CommentType[];
 }
 
-export const PostList = (props: Props) => {
-  const { posts, users, comments } = props;
+export const PostList: React.FC<Props> = ({ posts, users, comments }) => {
   const noUser: UserType = {
     address: {
       city: '',
@@ -32,12 +31,12 @@ export const PostList = (props: Props) => {
   let TempUser: UserType | undefined;
 
   return (
-    <ul>
+    <ul className="post__list">
       {posts.map(post => {
         TempUser = users.find(user => user.id === post.userId);
 
         return (
-          <li key={post.id}>
+          <li key={post.id} className="post__item">
             <div>
               <Post post={post} />
               <User user={TempUser === undefined ? noUser : TempUser} />

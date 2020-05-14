@@ -4,17 +4,13 @@ interface Props {
   post: PostType;
 }
 
-export const Post = (props: Props) => {
-  const { post } = props;
-
-  return (
-    <div>
-      <h1>
-        {post.title}
-      </h1>
-      <p>
-        {post.body}
-      </p>
-    </div>
-  );
-};
+export const Post: React.FC<Props> = ({ post }) => (
+  <div>
+    <h1>
+      {post.title}
+    </h1>
+    <p>
+      {post.body}
+    </p>
+  </div>
+);

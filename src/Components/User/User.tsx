@@ -4,9 +4,7 @@ interface Props {
   user: UserType;
 }
 
-export const User = (props: Props) => {
-  const { user } = props;
-
+export const User: React.FC<Props> = ({ user }) => {
   const address = `${user.address.street}
   ${user.address.suite}
   ${user.address.city}

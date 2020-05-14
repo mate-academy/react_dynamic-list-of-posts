@@ -5,16 +5,12 @@ type Props = {
   comments: CommentType[];
 };
 
-export const CommentList = (props: Props) => {
-  const { comments } = props;
-
-  return (
-    <ul>
-      {comments.map(comment => (
-        <li key={comment.id}>
-          <Comment comment={comment} />
-        </li>
-      ))}
-    </ul>
-  );
-};
+export const CommentList: React.FC<Props> = ({ comments }) => (
+  <ul>
+    {comments.map(comment => (
+      <li key={comment.id}>
+        <Comment comment={comment} />
+      </li>
+    ))}
+  </ul>
+);
