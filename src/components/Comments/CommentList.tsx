@@ -1,5 +1,4 @@
 import React from 'react';
-import { Comment } from '../Interface';
 import { CommentItem } from './CommentItem';
 
 interface Props {

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Post } from '../Interface';
 import { PostItem } from './PostItem';
 
 interface Props {

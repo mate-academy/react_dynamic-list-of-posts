@@ -1,5 +1,3 @@
-import { Post, User, Comment } from '../components/Interface';
-
 const API_URL = 'https://seialek.github.io/react_dynamic-list-of-posts/api';
 
 const getData = async (url: string) => {
@@ -9,7 +7,7 @@ const getData = async (url: string) => {
   return json;
 };
 
-export const preparePosts = async () => {
+export const preparePosts = async (): Promise<Post[]> => {
   const [posts, users, comments] = await Promise.all([
     getData(`${API_URL}/posts.json`),
     getData(`${API_URL}/users.json`),

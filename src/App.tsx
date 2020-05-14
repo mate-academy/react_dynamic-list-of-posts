@@ -1,29 +1,26 @@
 import React, { useState } from 'react';
 import './App.css';
 import { preparePosts } from './helpers';
-import { Post } from './components/Interface';
 import { Button } from './components/Button';
 import { PostList } from './components/PostList';
 import { Search } from './components/Search';
 
 const App = () => {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
   const loadPosts = async () => {
     setIsLoading(true);
-    setHasError(false);
+    setErrorMessage('');
 
     try {
-      const preparedPosts = await preparePosts();
-
-      setPosts(preparedPosts);
+      setPosts(await preparePosts());
       setIsLoaded(true);
-    } catch {
-      setHasError(true);
+    } catch (error) {
+      setErrorMessage(error.message);
     }
 
     setIsLoading(false);
@@ -45,7 +42,7 @@ const App = () => {
     <section className="section">
       <div className="container">
         <h1 className="title is-1">Dynamic List of Posts</h1>
-        {!isLoading && !isLoaded && !hasError && (
+        {!isLoading && !isLoaded && !errorMessage && (
           <Button
             text="Load Posts"
             className="button"
@@ -57,9 +54,12 @@ const App = () => {
             Loading...
           </progress>
         )}
-        {hasError && (
+        {errorMessage && (
           <>
-            <div className="notification is-warning">Oops! Something went wrong... :(</div>
+            <div className="notification is-warning">
+              <p>Oops! Something went wrong... :(</p>
+              <p>{errorMessage}</p>
+            </div>
             <Button
               text="Try Again"
               className="button"

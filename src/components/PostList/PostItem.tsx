@@ -1,5 +1,4 @@
 import React from 'react';
-import { User, Comment } from '../Interface';
 import { CommentList } from '../Comments';
 
 interface Props {
