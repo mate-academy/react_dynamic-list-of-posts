@@ -1,22 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.scss';
-import { getPreparedPosts } from './api/data';
 import { PostList } from './components/PostList';
+import { useApp } from './useApp';
 
 const App = () => {
-  const [posts, setPosts] = useState([]);
-  const [isLoading, setLoading] = useState(false);
-  const [isLoaded, setLoaded] = useState(false);
-
-  const loadPosts = () => {
-    setLoading(true);
-
-    getPreparedPosts()
-      .then(data => setPosts(data));
-
-    setLoading(false);
-    setLoaded(true);
-  };
+  const {
+    posts,
+    isLoaded,
+    isLoading,
+    loadPosts,
+  } = useApp();
 
   return (
     <main className="app">

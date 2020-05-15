@@ -10,6 +10,7 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
+    "@welldone-software/why-did-you-render": "^4.2.1",
     "lodash": "^4.17.15",
     "lodash.debounce": "^4.0.8",
     "node-sass": "^4.14.1",
@@ -34,8 +35,8 @@
     "eject": "react-scripts eject",
     "lint-js": "eslint --ext .ts,.tsx ./src/ --fix",
     "lint-css": "stylelint src/**/*.css src/**/*.scss --fix",
-    "lint": "npm run lint-js && npm run lint-css",
-    "predeploy": "npm run build",
+    "lint": "yarn lint-js && yarn lint-css",
+    "predeploy": "yarn build",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {

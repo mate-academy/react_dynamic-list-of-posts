@@ -17,7 +17,7 @@ const getComments = () => {
 
 export const getPreparedPosts = async () => {
   const [posts, users, comments] = await Promise.all(
-    [getPosts(), getUsers(), getComments()]
+    [getPosts(), getUsers(), getComments()],
   );
 
   const preparedPosts = posts.map((post: Post) => ({

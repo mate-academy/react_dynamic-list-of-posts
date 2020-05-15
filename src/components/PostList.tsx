@@ -8,7 +8,7 @@ export const PostList: FC<PostListProps> = (props) => {
   const {
     query,
     handleSearch,
-    visiblePosts
+    visiblePosts,
   } = usePostList(props);
 
   return (

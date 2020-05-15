@@ -1,7 +1,7 @@
 // eslint-disable-next-line
 /// <reference types="react-scripts" />
 
-type Posts = {
+type PostListProps = {
   posts: Post[];
 };
 

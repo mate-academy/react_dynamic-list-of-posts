@@ -12,7 +12,9 @@ export const SearchPost: FC<SearchPost> = ({ onSearch, query }) => {
               className="materialize-textarea"
               onChange={(event) => onSearch(event)}
             />
-            <label htmlFor="textarea1">Type something to search post...</label>
+            <label htmlFor="textarea1">
+              Type something to search post...
+            </label>
           </div>
         </div>
       </form>
