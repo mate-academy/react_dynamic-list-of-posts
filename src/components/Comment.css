@@ -1,0 +1,25 @@
+.comment__list {
+  padding: 20px;
+  font-size: 15px;
+  background-color: rgb(245, 234, 221);
+  border-radius: 20px;
+}
+
+.comment__item:not(:last-child) {
+  margin-bottom: 25px;
+}
+
+.comment__user-name {
+  text-transform: capitalize;
+  font-weight: bold;
+  color: rgb(202, 39, 39);
+}
+
+.comment__user-email {
+  margin: 3px 0 10px;
+  color: rgb(189, 111, 111);
+}
+
+.comment__user-text {
+  color: rgb(141, 81, 7);
+}
