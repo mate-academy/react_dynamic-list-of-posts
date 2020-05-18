@@ -63,7 +63,7 @@ const App = () => {
               className="button"
               onClick={loadPosts}
             >
-              Load
+              Load Posts
             </button>
           )}
       {isLoading
@@ -71,21 +71,16 @@ const App = () => {
         : (isVisible
           && (
             <>
-              <div className="form__group field">
-
-                <label htmlFor="fname">
-                  Filter Posts:
-                  <input
-                    type="textarea"
-                    id="fname"
-                    name="firstname"
-                    placeholder="Your filter..."
-                    value={query}
-                    onChange={handleChange}
-                  />
-                </label>
-
-              </div>
+              <label htmlFor="filter">
+                Filter Posts:
+                <input
+                  type="textarea"
+                  id="filter"
+                  placeholder="Your filter..."
+                  value={query}
+                  onChange={handleChange}
+                />
+              </label>
               <PostList posts={filteredPosts} />
             </>
           )
