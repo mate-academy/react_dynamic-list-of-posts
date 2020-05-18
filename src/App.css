@@ -1,0 +1,76 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  background-color: #eee;
+}
+
+.page.ui.container {
+  margin: 1.5em 0;
+  background-color: #eee;
+  text-align: center;
+}
+
+.page.ui.container .page__title {
+  text-transform: uppercase;
+}
+
+.page.ui.container .page__btn {
+  margin-top: 10px;
+}
+
+.page.ui.container .items {
+  padding: 1em 0.6em;
+  text-align: left;
+}
+
+.page.ui.container .header.post__title[title] {
+  display: block;
+  font-size: 1.7em;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.page.ui.container .description.post__text {
+  margin-bottom: 0.6em;
+  font-size: 1.25em;
+  line-height: 1.5;
+}
+
+.page.ui.container .description.post__text::first-letter {
+  margin-left: 1em;
+  text-transform: uppercase;
+}
+
+.page.ui.container .summary.user__summary {
+  margin-bottom: 0.25em;
+  font-size: 1.2em;
+}
+
+.page.ui.container .user__address[aria-label] {
+  margin: 0;
+}
+
+.page.ui.container .comment__title {
+  margin-bottom: 0.3em;
+  text-transform: capitalize;
+}
+
+.page.ui.container .comment__text {
+  margin-left: 0.5em;
+}
+
+.page.ui.container .comment__text::first-letter {
+  text-transform: uppercase;
+}
