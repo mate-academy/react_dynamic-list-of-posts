@@ -21,9 +21,16 @@ const getUsers = (usersUrl: string): Promise<User[]> => {
 };
 
 export const getPrepearedPosts = async (): Promise<PostWithUser[]> => {
-  const posts = await getPosts(POSTS_URL);
-  const comments = await getComments(COMMENTS_URL);
-  const users = await getUsers(USERS_URL);
+  const [
+    posts,
+    comments,
+    users,
+  ] = await Promise.all([
+    getPosts(POSTS_URL),
+    getComments(COMMENTS_URL),
+    getUsers(USERS_URL),
+  ]);
+
   const PrepearedPosts = posts.map(post => ({
     ...post,
     user: users.find(user => user.id === post.userId) as User,
