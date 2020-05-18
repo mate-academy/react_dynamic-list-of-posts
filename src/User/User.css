@@ -1,0 +1,9 @@
+.user__address {
+  color: rgb(36, 40, 110);
+  font-size: 18px;
+}
+
+.user__name {
+  font-style: italic;
+  font-size: 20px;
+}
