@@ -7,17 +7,23 @@ const generateNumber = (min = 0, max = 70) => Math.floor(
 );
 
 type PropsUser = User & {
-  cmtsId: number;
+  commentId: number;
 };
 
-export const User: React.FC<PropsUser> = ({ id, cmtsId, name, email, address }) => (
+export const User: React.FC<PropsUser> = ({
+  id,
+  commentId,
+  name,
+  email,
+  address
+}) => (
   <Feed className="user">
     <Feed.Event>
       <Feed.Content>
         <Feed.Summary className="user__summary">
           <Feed.User>{name}</Feed.User>
           <Feed.Date>
-            {`added this post on ${getMessageDate(cmtsId + id)}`}
+            {`added this post on ${getMessageDate(commentId + id)}`}
           </Feed.Date>
         </Feed.Summary>
         <p className="user__address" aria-label={email}>

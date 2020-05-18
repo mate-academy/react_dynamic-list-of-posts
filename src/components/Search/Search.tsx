@@ -25,7 +25,7 @@ export const Search: React.FC<PropsSearch> = ({ setSearchQuery }) => {
         size="big"
         icon
       >
-        <input onChange={event => handleInputChange(event)} />
+        <input onChange={handleInputChange} />
         <Icon name="search" />
       </Input>
     </div>

@@ -42,10 +42,11 @@ body {
 
 .page.ui.container .header.post__title[title] {
   display: block;
-  font-size: 1.7em;
+  font-size: 1.4em;
   line-height: 1.2;
   text-align: center;
-  text-transform: capitalize;
+  text-transform: uppercase;
+  transform: translateX(-3%);
 }
 
 .page.ui.container .description.post__text {

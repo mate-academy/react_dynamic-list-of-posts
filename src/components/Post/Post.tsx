@@ -44,7 +44,7 @@ export const Post: React.FC<PropsPost> = ({
               content={highlightText(title)}
             />
             <Item.Meta>
-              <User {...user} cmtsId={comments[comments.length - 1].id} />
+              <User {...user} commentId={comments[comments.length - 1].id} />
             </Item.Meta>
             <Item.Description
               className="post__text"
