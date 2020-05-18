@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Container, Header } from 'semantic-ui-react';
 import PostList from './components/PostList';
+import Search from './components/Search';
 import { getPosts } from './api/getPosts';
 import './App.css';
 
@@ -9,7 +10,7 @@ const App = () => {
   const [isLoaded, setLoaded] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [isError, setError] = useState('');
-  // const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const loadData = async () => {
     setLoading(true);
@@ -26,13 +27,38 @@ const App = () => {
     }
   };
 
+  // const debouncedSearch = debounce(value => setCombinedMovies(
+  //   moviesFromServer.filter(
+  //     ({ title, description }) => (title + description)
+  //       .toLowerCase().includes(value),
+  //   ),
+  // ), 1000);
+
+  const searchPosts = () => {
+    if (!searchQuery) {
+      return posts;
+    }
+
+    return posts.filter(({ title, body }) => (`${title} ${body}`)
+      .toLowerCase()
+      .includes(searchQuery));
+  };
+
+  const searchedPosts = searchPosts();
+
   return (
     <Container className="page">
       <Header as="h1" className="page__title" color="blue">
-        Static list of posts
+        Dynamic list of posts
       </Header>
       {isLoaded ? (
-        <PostList list={posts} />
+        <>
+          <Search setSearchQuery={setSearchQuery} />
+          <PostList
+            list={searchedPosts}
+            highlightSearch={searchQuery}
+          />
+        </>
       ) : (
         <>
           <Header as="h2" color="red">{isError}</Header>

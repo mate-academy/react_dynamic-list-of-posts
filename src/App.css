@@ -34,6 +34,12 @@ body {
   text-align: left;
 }
 
+.page.ui.container .field__search {
+  max-width: 330px;
+  width: 90%;
+  color: #2185d0;
+}
+
 .page.ui.container .header.post__title[title] {
   display: block;
   font-size: 1.7em;
@@ -51,6 +57,10 @@ body {
 .page.ui.container .description.post__text::first-letter {
   margin-left: 1em;
   text-transform: uppercase;
+}
+
+.page.ui.container .highlighted-text {
+  background-color: lightskyblue;
 }
 
 .page.ui.container .summary.user__summary {
