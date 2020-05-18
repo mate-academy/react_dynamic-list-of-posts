@@ -1,6 +1,6 @@
 import React from 'react';
 import { User } from '../User/User';
-import { CommentList } from '../CommentList';
+import { CommentList } from '../CommentList/CommentList';
 import './Post.css';
 
 export const Post: React.FC<Post> = ({
