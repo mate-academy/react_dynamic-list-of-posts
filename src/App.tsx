@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Container, Header } from 'semantic-ui-react';
-import PostList from './components/PostList';
-import Search from './components/Search';
+import { PostList } from './components/PostList';
+import { Search } from './components/Search';
 import { getPosts } from './api/getPosts';
 import './App.css';
 

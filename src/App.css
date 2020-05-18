@@ -16,7 +16,7 @@ body {
 }
 
 .page.ui.container {
-  margin: 2em 0;
+  margin: 2em auto !important;
   background-color: #eee;
   text-align: center;
 }

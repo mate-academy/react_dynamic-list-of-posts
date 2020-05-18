@@ -1,12 +1,12 @@
 import React from 'react';
-import Post from './Post';
+import { Post } from '../Post';
 
 type PropsPostList = {
   list: Post[];
   highlightSearch: string;
 };
 
-const PostList: React.FC<PropsPostList> = ({ list, highlightSearch }) => (
+export const PostList: React.FC<PropsPostList> = ({ list, highlightSearch }) => (
   <>
     {list.map((post: Post) => (
       <Post
@@ -17,5 +17,3 @@ const PostList: React.FC<PropsPostList> = ({ list, highlightSearch }) => (
     ))}
   </>
 );
-
-export default PostList;

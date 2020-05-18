@@ -1,12 +1,16 @@
 import React from 'react';
 import { Feed, Icon } from 'semantic-ui-react';
-import { getMessageDate } from './getMessageDate';
+import { getMessageDate } from '../../helpers';
 
 const generateNumber = (min = 0, max = 70) => Math.floor(
   Math.random() * (max - min + 1) + min,
 );
 
-const User = ({ id, cmtsId, name, email, address }) => (
+type PropsUser = User & {
+  cmtsId: number;
+};
+
+export const User: React.FC<PropsUser> = ({ id, cmtsId, name, email, address }) => (
   <Feed className="user">
     <Feed.Event>
       <Feed.Content>
@@ -32,5 +36,3 @@ const User = ({ id, cmtsId, name, email, address }) => (
     </Feed.Event>
   </Feed>
 );
-
-export default User;

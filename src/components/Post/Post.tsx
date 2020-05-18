@@ -1,16 +1,16 @@
 import React, { Fragment } from 'react';
 import { Item, Segment } from 'semantic-ui-react';
-import User from './User';
-import CommentList from './CommentList';
+import { User } from '../User';
+import { CommentList } from '../CommentList';
 
 type PropsPost = Post;
 
-const Post: React.FC<PropsPost> = ({
+export const Post: React.FC<PropsPost> = ({
   title,
   body,
   user,
   comments,
-  highlightedText
+  highlightedText,
 }) => {
   const highlightText = (text: string) => {
     if (!highlightedText) {
@@ -59,5 +59,3 @@ const Post: React.FC<PropsPost> = ({
     </Segment>
   );
 };
-
-export default Post;

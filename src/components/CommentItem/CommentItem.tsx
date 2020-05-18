@@ -1,8 +1,15 @@
 import React from 'react';
 import { Comment } from 'semantic-ui-react';
-import { getMessageDate } from './getMessageDate';
+import { getMessageDate } from '../../helpers';
 
-const CommentItem = ({ id, name, email, body }) => (
+type PropsCommentItem = Comment;
+
+export const CommentItem: React.FC<PropsCommentItem> = ({
+  id,
+  name,
+  email,
+  body,
+}) => (
   <>
     <Comment className="comment">
       <Comment.Content>
@@ -18,5 +25,3 @@ const CommentItem = ({ id, name, email, body }) => (
     </Comment>
   </>
 );
-
-export default CommentItem;
