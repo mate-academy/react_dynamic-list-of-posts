@@ -3,7 +3,7 @@ import { User } from './User';
 import { CommentsList } from './CommentList';
 
 type Props = {
-  post: PostsFromServer;
+  post: PostFromServer;
 };
 
 export const PostItem: React.FC<Props> = ({ post }) => {

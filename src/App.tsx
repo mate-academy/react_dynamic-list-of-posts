@@ -6,7 +6,7 @@ import { PostList } from './components/PostList';
 
 
 const App: React.FC = () => {
-  const [posts, setPosts] = useState<PostsFromServer[]>([]);
+  const [posts, setPosts] = useState<PostFromServer[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingFirstPage, setLoadingFirstPage] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -15,14 +15,17 @@ const App: React.FC = () => {
   const downLoadPosts = () => {
     setLoading(true);
     setTimeout(() => {
-      preparedPostList().then(post => setPosts(post));
-      setLoading(false);
-      setLoadingFirstPage(true);
+      preparedPostList()
+        .then(post => setPosts(post))
+        .finally(() => {
+          setLoading(false);
+          setLoadingFirstPage(true);
+        });
     }, 500);
   };
 
   const visiblePosts = useMemo(() => {
-    const filteredPosts = [...posts].filter(post => {
+    const filteredPosts = posts.filter(post => {
       const title = post.title.toLowerCase();
       const body = post.body.toLowerCase();
 
@@ -37,7 +40,7 @@ const App: React.FC = () => {
   );
 
 
-  const handdleSearchPhrase = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchPhrase = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
     setFilterQueryWithDebounce(event.target.value);
   };
@@ -54,7 +57,7 @@ const App: React.FC = () => {
               className="form-control mr-sm-2"
               placeholder="Search"
               value={searchQuery}
-              onChange={handdleSearchPhrase}
+              onChange={handleSearchPhrase}
             />
           </div>
         )

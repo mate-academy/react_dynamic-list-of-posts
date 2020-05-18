@@ -2,7 +2,7 @@ import React from 'react';
 import { PostItem } from './PostItem';
 
 type Props = {
-  posts: PostsFromServer[];
+  posts: PostFromServer[];
 };
 
 export const PostList: React.FC<Props> = ({ posts }) => {

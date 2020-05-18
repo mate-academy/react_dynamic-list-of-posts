@@ -29,7 +29,7 @@ interface Comment {
   body: string;
 }
 
-interface PostsFromServer {
+interface PostFromServer {
   userId: number;
   id: number;
   title: string;

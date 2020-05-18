@@ -5,11 +5,6 @@ const getPosts = () => {
     .then(posts => posts.json());
 };
 
-// const getPosts = async () => {
-//   const posts = await fetch(`${BASE_URL}/posts`);
-//   return posts.json();
-// };
-
 const getUsers = () => {
   return fetch(`${BASE_URL}/users`)
     .then(users => users.json());

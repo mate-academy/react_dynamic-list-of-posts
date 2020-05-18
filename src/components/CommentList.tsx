@@ -17,7 +17,7 @@ export const CommentsList: React.FC<Props> = ({ comment }) => {
         {name}
       </h3>
       <p>
-        <a href={`mailot:${email}`}>
+        <a href={`mailto:${email}`}>
           {email}
         </a>
       </p>
