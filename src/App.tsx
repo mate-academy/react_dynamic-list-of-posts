@@ -1,13 +1,16 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import './App.css';
+import debounce from 'lodash/debounce';
 import { preparedPostList } from './api';
 import { PostList } from './components/PostList';
+
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState<PostsFromServer[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingFirstPage, setLoadingFirstPage] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [filterQuery, setFilterQuery] = useState<string>('');
 
   const downLoadPosts = () => {
     setLoading(true);
@@ -15,7 +18,7 @@ const App: React.FC = () => {
       preparedPostList().then(post => setPosts(post));
       setLoading(false);
       setLoadingFirstPage(true);
-    }, 1000);
+    }, 500);
   };
 
   const visiblePosts = useMemo(() => {
@@ -23,14 +26,20 @@ const App: React.FC = () => {
       const title = post.title.toLowerCase();
       const body = post.body.toLowerCase();
 
-      return (title + body).includes(searchQuery.toLowerCase());
+      return (title + body).includes(filterQuery.toLowerCase());
     });
 
     return filteredPosts;
-  }, [posts, searchQuery]);
+  }, [posts, filterQuery]);
+
+  const setFilterQueryWithDebounce = useCallback(
+    debounce(setFilterQuery, 1000), [],
+  );
+
 
   const handdleSearchPhrase = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
+    setFilterQueryWithDebounce(event.target.value);
   };
 
   return (
