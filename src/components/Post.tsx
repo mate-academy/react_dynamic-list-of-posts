@@ -3,8 +3,16 @@ import { Item, Segment } from 'semantic-ui-react';
 import User from './User';
 import CommentList from './CommentList';
 
-const Post = ({ title, body, user, comments, highlightedText }) => {
-  const highlightText = (text) => {
+type PropsPost = Post;
+
+const Post: React.FC<PropsPost> = ({
+  title,
+  body,
+  user,
+  comments,
+  highlightedText
+}) => {
+  const highlightText = (text: string) => {
     if (!highlightedText) {
       return text;
     }

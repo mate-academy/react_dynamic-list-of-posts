@@ -27,13 +27,6 @@ const App = () => {
     }
   };
 
-  // const debouncedSearch = debounce(value => setCombinedMovies(
-  //   moviesFromServer.filter(
-  //     ({ title, description }) => (title + description)
-  //       .toLowerCase().includes(value),
-  //   ),
-  // ), 1000);
-
   const searchPosts = () => {
     if (!searchQuery) {
       return posts;

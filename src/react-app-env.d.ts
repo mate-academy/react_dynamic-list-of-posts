@@ -20,6 +20,7 @@ interface User {
   email: string;
   address: Address;
   phone: string;
+  photo?: string;
   website: string;
   company: Company;
 }
