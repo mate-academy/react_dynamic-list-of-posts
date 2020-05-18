@@ -1,0 +1,63 @@
+.container {
+  width: 90%;
+  margin: 16px auto;
+}
+
+.App {
+  text-align: center;
+  min-width: 460px;
+}
+
+.form-control {
+  width: 50%;
+}
+
+.post__list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.post__item {
+  padding: 16px;
+  border: 2px solid darkgrey;
+  border-radius: 4px;
+  margin: 16px auto;
+}
+
+.personalInfo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  background-color: lightpink;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.personalInfo__address {
+  display: flex;
+  flex-direction: column;
+}
+
+.personalInfo__address,
+.personalInfo__name,
+.personalInfo__email {
+  margin: 8px 0;
+}
+
+.personalInfo__email {
+  font-weight: bold;
+  color: white;
+}
+
+.comment__list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.comment__item {
+  padding: 0 16px;
+  border: 1px solid rgb(171, 180, 184);
+  border-radius: 4px;
+  margin: 16px auto;
+  box-sizing: border-box;
+}
