@@ -1,0 +1,26 @@
+.user {
+  font-size: 15px;
+}
+
+.user__item:not(:last-child) {
+  margin-bottom: 3px;
+}
+
+.user__name {
+  font-weight: bold;
+  color: rgb(202, 39, 39);
+}
+
+.user__email {
+  color: rgb(189, 111, 111);
+}
+
+.user__street {
+  margin: 0 10px;
+}
+
+.user__city,
+.user__street,
+.user__zipcode {
+  font-style: italic;
+}
