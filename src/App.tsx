@@ -20,8 +20,8 @@ const App = () => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const loadPosts = async () => {
-    setIsLoading(!isLoading);
-    setIsVisible(!isVisible);
+    setIsLoading(true);
+    setIsVisible(true);
     const postFromServer = await getPosts();
     const usersFromServer = await getUsers();
     const commentsFromServer = await getComments();
@@ -40,6 +40,8 @@ const App = () => {
     });
 
     setPosts(preparedPosts);
+
+
     setIsLoading(false);
   };
 
@@ -58,13 +60,15 @@ const App = () => {
     <div className="container">
       {!isVisible
           && (
-            <button
-              type="button"
-              className="button"
-              onClick={loadPosts}
-            >
-              Load Posts
-            </button>
+            <>
+              <button
+                type="button"
+                className="button"
+                onClick={loadPosts}
+              >
+                Load Posts
+              </button>
+            </>
           )}
       {isLoading
         ? <div className="loader" />
