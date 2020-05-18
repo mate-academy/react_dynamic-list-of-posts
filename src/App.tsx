@@ -42,15 +42,15 @@ const App: React.FC = () => {
             <input
               type="text"
               id="search-query"
-              className="input"
-              placeholder="Type search word"
+              className="form-control mr-sm-2"
+              placeholder="Search"
               value={searchQuery}
               onChange={handdleSearchPhrase}
             />
           </div>
         )
         : (
-          <button type="button" className="button button__loadPosts" onClick={downLoadPosts}>
+          <button type="button" className="btn btn-primary" onClick={downLoadPosts}>
             {loading ? 'Loading...' : 'Load Todos'}
           </button>
         )}

@@ -35,5 +35,5 @@ interface PostsFromServer {
   title: string;
   body: string;
   user: User;
-  comment: Comment;
+  comments: Comment[];
 }

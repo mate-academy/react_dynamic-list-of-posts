@@ -29,7 +29,7 @@ export const preparedPostList = async () => {
     return {
       ...post,
       user: users.find((user: User) => user.id === post.userId),
-      comment: comments.filter((comment: Comment) => comment.postId === post.id),
+      comments: comments.filter((comment: Comment) => comment.postId === post.id),
     };
   });
 };

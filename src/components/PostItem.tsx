@@ -11,7 +11,7 @@ export const PostItem: React.FC<Props> = ({ post }) => {
     title,
     body,
     user,
-    comment,
+    comments,
   } = post;
 
   return (
@@ -22,7 +22,13 @@ export const PostItem: React.FC<Props> = ({ post }) => {
         <User user={user} />
       </section>
       <section className="comments">
-        <CommentsList comment={comment} />
+        <ul className="comment__list">
+          {comments.map((comment: Comment) => (
+            <li className="comment__item" key={comment.id}>
+              <CommentsList comment={comment} />
+            </li>
+          ))}
+        </ul>
       </section>
     </div>
   );
