@@ -1,0 +1,44 @@
+body {
+  margin: 0;
+}
+
+.post__list {
+  list-style: none;
+  padding: 0;
+}
+
+.form-control {
+  width: 800px;
+  margin: 20px auto;
+}
+
+.post__item {
+  width: 800px;
+  padding: 20px;
+  margin: 20px auto;
+  background-color: rgb(224, 223, 220);
+  border-radius: 15px;
+}
+
+.post__btn {
+  display: block;
+  width: 280px;
+  height: 80px;
+  margin: 300px auto;
+  background-color: papayawhip;
+  font-size: 24px;
+
+}
+.post:hover {
+  cursor: pointer;
+}
+
+.text-success {
+  text-align: center;
+}
+
+.btn-outline-warning {
+  display: block;
+  margin: 0 auto;
+  width: 300px;
+}
