@@ -1,4 +1,4 @@
-const API_URL = 'https://jsonplaceholder.typicode.com/';
+const API_URL = 'https://mate-academy.github.io/react_dynamic-list-of-posts/api/';
 
 const getData = async (url: string) => {
   const response =  await fetch(url);
@@ -13,9 +13,9 @@ export const getPrepearedPosts = async (): Promise<PostWithUser[]> => {
     comments,
     users,
   ] = await Promise.all([
-    getData(`${API_URL}posts`),
-    getData(`${API_URL}comments`),
-    getData(`${API_URL}users`),
+    getData(`${API_URL}posts.json`),
+    getData(`${API_URL}comments.json`),
+    getData(`${API_URL}users.json`),
   ]);
 
   const PrepearedPosts = posts.map((post: Post) => ({
