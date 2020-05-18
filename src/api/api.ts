@@ -1,24 +1,26 @@
-const API__URL__POSTS = 'https://jsonplaceholder.typicode.com/posts';
-const API__URL__USERS = 'https://jsonplaceholder.typicode.com/users';
-const API__URL__COMMENTS = 'https://jsonplaceholder.typicode.com/comments';
+const API_URL = 'https://jsonplaceholder.typicode.com';
 
 const posts = () => {
-  return fetch(`${API__URL__POSTS}`)
+  return fetch(`${API_URL}/posts`)
     .then(response => response.json());
 };
 
 const users = () => {
-  return fetch(`${API__URL__USERS}`)
+  return fetch(`${API_URL}/users`)
     .then(response => response.json());
 };
 
 const comments = () => {
-  return fetch(`${API__URL__COMMENTS}`)
+  return fetch(`${API_URL}/comments`)
     .then(response => response.json());
 };
 
 export const getPosts = async () => {
-  const [postsData, usersData, commentsData] = await Promise.all([posts(), users(), comments()]);
+  const [
+    postsData,
+    usersData,
+    commentsData
+  ] = await Promise.all([posts(), users(), comments()]);
 
   return postsData.map((post: PostFromServer) => {
     const postUser = usersData.find((user: UserFromServer) => user.id === post.userId);

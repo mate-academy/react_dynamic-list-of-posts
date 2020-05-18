@@ -32,16 +32,17 @@ const App = () => {
   ));
 
   const setFilterQueryWithDebounce = useCallback(
-    debounce(setFilterQuery, 1000), [],
+    debounce(setFilterQuery, 500), [],
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-    setFilterQueryWithDebounce(e.target.value);
+    const {value} = e.target;
+    setQuery(value);
+    setFilterQueryWithDebounce(value);
   };
 
   return (
-    <div className="App">
+    <div className="app">
       <h1 className="post__header">Dynamic list of posts</h1>
       {
         visibleSearchField
