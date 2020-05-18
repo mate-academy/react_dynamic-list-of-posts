@@ -6,9 +6,9 @@
 ## Task
 Basing on [Static list of posts](https://github.com/mate-academy/react_static-list-of-posts)
 create the App downloading the data from API (follow the links):
-  - [posts](https://jsonplaceholder.typicode.com/posts)
-  - [users](https://jsonplaceholder.typicode.com/users)
-  - [comments](https://jsonplaceholder.typicode.com/comments)
+  - [posts](https://mate-academy.github.io/react_dynamic-list-of-posts/api/posts.json)
+  - [users](https://mate-academy.github.io/react_dynamic-list-of-posts/api/users.json)
+  - [comments](https://mate-academy.github.io/react_dynamic-list-of-posts/api/comments.json)
 
 1. Initially `PostList` shows a `Load` button.
 1. After a click disable the button, change its text to `Loading...` and download the data.
