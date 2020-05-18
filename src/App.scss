@@ -1,0 +1,67 @@
+h1 {
+  font-size: 32px;
+}
+
+.input-field > label {
+  position: relative;
+}
+
+.posts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 20px;
+}
+
+.post {
+  margin: 0 auto;
+  background-color: #f1f3f4;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px;
+
+  &__title {
+    font-size: 24px;
+    color: #512b58;
+    text-transform: capitalize;
+  }
+
+  &__comments {
+    padding: 0;
+  }
+
+  &__comment {
+    list-style: none;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #c7e1e4;
+  }
+}
+
+.user {
+  text-align: right;
+
+  &__name {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+
+  &__address {
+    margin-top: 5px;
+  }
+}
+
+.comment {
+
+  &__name {
+    font-size: 18px;
+  }
+
+  &__email {
+    font-size: 14px;
+  }
+}
+
+.mb30 {
+  margin-bottom: 30px;
+}
