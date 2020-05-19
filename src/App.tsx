@@ -32,10 +32,10 @@ const App = () => {
     );
 
   const visibleTodos = useMemo(() => {
-    const postsFromFiler = (posts: Post[], query: string) =>{
+    const postsFromFilter = (posts: Post[], query: string) =>{
       return posts.filter( post => post.title.includes(query) || post.body.includes(query))
     }
-    return postsFromFiler(posts, filterQuery);
+    return postsFromFilter(posts, filterQuery);
    }, [posts, filterQuery]);
 
   return (
