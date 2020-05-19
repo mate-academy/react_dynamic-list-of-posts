@@ -66,3 +66,8 @@ body {
   font-size: 18px;
   padding: 10px;
 }
+
+.posts__error {
+  margin-top: 20px;
+  text-align: center;
+}

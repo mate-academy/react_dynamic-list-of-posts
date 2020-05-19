@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 
 type Props = {
-  postsSearchFilter: (searchQuery: string) => void;
+  searchFilter: (searchQuery: string) => void;
   posts: Post[];
 };
 
-const PostSearch: React.FC<Props> = ({ postsSearchFilter, posts }) => {
+const PostSearch: React.FC<Props> = ({ searchFilter, posts }) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearchInput = (e: React.FormEvent<HTMLInputElement>) => {
     const inputValue = e.currentTarget.value;
 
     setSearchQuery(inputValue);
-    postsSearchFilter(searchQuery);
+    searchFilter(searchQuery);
   };
 
   return (

@@ -11,7 +11,10 @@ const CommentsList: React.FC<Props> = ({ comments }) => {
       Comments:
       <ul className="posts__comments-list">
         {comments.map(comment => (
-          <Comment comment={comment} />
+          <Comment
+            key={comment.id}
+            comment={comment}
+          />
         ))}
       </ul>
     </>

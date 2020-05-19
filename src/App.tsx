@@ -1,24 +1,36 @@
 import React, { useState } from 'react';
 import './App.css';
-import _ from 'lodash';
+// import _ from 'lodash';
 import PostList from './components/PostList';
 import { getPosts, getUsers, getComments } from './helpers/api';
 import PostSearch from './components/PostSearch';
 
+function debounce(func: (...args: string[]) => void, delay: number) {
+  let timeoutId: ReturnType<typeof setTimeout>;
+
+  return (...args: string[]): void => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+}
+
 
 const App = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [initPosts, setInitPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleLoadPosts = () => {
     setIsLoading(true);
-    const postsPromise = getPosts();
-    const usersPromise = getUsers();
-    const commentsPromise = getComments();
 
-    Promise.all([postsPromise, usersPromise, commentsPromise])
+    Promise.all([getPosts(), getUsers(), getComments()])
       .then(([postsFromServer, usersFromServer, commentsFromServer]) => {
         const preparedPostsList = postsFromServer.map(post => {
           return {
@@ -31,23 +43,29 @@ const App = () => {
         });
 
         setPosts(preparedPostsList);
-        setInitPosts(preparedPostsList);
         setIsLoading(false);
         setIsLoaded(true);
+        setErrorMessage('');
+      })
+      .catch(error => {
+        setErrorMessage(`Error occur: ${error.message}. Please try again later`);
+        setIsLoading(false);
       });
   };
 
-  const postsSearchFilter = _.debounce((searchQuery: string) => {
-    if (searchQuery === '') {
-      setPosts(initPosts);
-    } else {
+  const searchFilter = debounce((query: string) => {
+    setSearchQuery(query);
+  }, 500);
+
+  const preparedPostsList = posts.filter(post => {
+    if (searchQuery) {
       const regExp = new RegExp(searchQuery);
 
-      setPosts(initPosts.filter(post => {
-        return post.title.match(regExp) || post.body.match(regExp);
-      }));
+      return post.title.match(regExp) || post.body.match(regExp);
     }
-  }, 300);
+
+    return post;
+  });
 
   return (
     <div className="posts">
@@ -61,10 +79,15 @@ const App = () => {
           {isLoading ? 'Loading...' : 'Load'}
         </button>
       )}
+      {errorMessage && (
+        <div className="posts__error">
+          {errorMessage}
+        </div>
+      )}
       {isLoaded && (
         <>
-          <PostSearch postsSearchFilter={postsSearchFilter} posts={posts} />
-          <PostList posts={posts} />
+          <PostSearch searchFilter={searchFilter} posts={preparedPostsList} />
+          <PostList posts={preparedPostsList} />
         </>
       )}
     </div>
