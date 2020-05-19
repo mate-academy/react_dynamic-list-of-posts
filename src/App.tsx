@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import './App.css';
 import { getUsers, getPosts, getComments } from './helpers/api';
 import { PostsList } from './components/PostsList/PostList';
@@ -18,21 +18,32 @@ const App = () => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [postSearch, setPostSearch] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
   const loadPosts = async () => {
     setIsLoading(true);
 
-    const [usersFromServer, commentsFromServer, postsFromServer] = await Promise.all(
-      [getUsers(), getComments(), getPosts()],
-    );
+    let usersFromServer: User[];
+    let commentsFromServer: Comment[];
+    let postsFromServer: Post[];
+    let preparedPosts: Post[];
 
-    const preparedPosts = postsFromServer.map(post => ({
-      ...post,
-      author: usersFromServer.find(user => user.id === post.userId),
-      comments: commentsFromServer.filter(comment => comment.postId === post.id),
-    }));
+    try {
+      [usersFromServer, commentsFromServer, postsFromServer] = await Promise.all(
+        [getUsers(), getComments(), getPosts()],
+      );
 
-    setPosts(preparedPosts);
+      preparedPosts = postsFromServer.map(post => ({
+        ...post,
+        author: usersFromServer.find(user => user.id === post.userId),
+        comments: commentsFromServer.filter(comment => comment.postId === post.id),
+      }));
+
+      setPosts(preparedPosts);
+    } catch (e) {
+      setError(e);
+    }
+
     setIsLoading(false);
     setIsLoaded(true);
   };
@@ -43,7 +54,7 @@ const App = () => {
     setPostSearch(value);
   };
 
-  const filtredPosts = getFiltredPosts(posts, postSearch);
+  const filtredPosts = useMemo(() => getFiltredPosts(posts, postSearch), [posts, postSearch]);
 
   return (
     <div className="container">
@@ -68,6 +79,7 @@ const App = () => {
             {isLoading ? 'Loading...' : 'Load'}
           </button>
         )}
+        <p>{error}</p>
     </div>
   );
 };
