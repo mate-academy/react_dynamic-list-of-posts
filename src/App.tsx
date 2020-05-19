@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import './App.css';
 import PostsList from './Components/PostsList';
 
@@ -34,7 +34,7 @@ const App: React.FunctionComponent = () => {
     setSearchQuery(event.target.value);
   };
 
-  const visiblePosts = (searchingQuery: string, postsList: Post[]) => {
+  const getVisiblePosts = (searchingQuery: string, postsList: Post[]) => {
     const normalizedQuery = searchingQuery.toLowerCase();
 
     return postsList.filter(
@@ -42,6 +42,9 @@ const App: React.FunctionComponent = () => {
         || post.body.toLowerCase().includes(normalizedQuery),
     );
   };
+
+  const visiblePosts = useMemo(() => getVisiblePosts(searchQuery, posts),
+    [searchQuery, posts]);
 
   return (
     <div className="App">
@@ -62,7 +65,7 @@ const App: React.FunctionComponent = () => {
             onChange={filterPosts}
             placeholder="search the post"
           />
-          <PostsList posts={visiblePosts(searchQuery, posts)} />
+          <PostsList posts={visiblePosts} />
         </>
       )}
     </div>
