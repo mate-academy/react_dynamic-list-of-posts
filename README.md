@@ -1,6 +1,9 @@
 # React dynamic list of Posts
-- Replace `<your_account>` with your Github username in the
-  [DEMO LINK](https://<your_account>.github.io/react_dynamic-list-of-posts/)
+- Replace `<your_account>` with your Github username in the links
+
+    - [DEMO LINK](https://andreas-just.github.io/react_dynamic-list-of-posts/)
+    - [PULL REQUEST](https://github.com/mate-academy/react_dynamic-list-of-posts/pull/159)
+
 - Follow the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline)
 
 ## Task
