@@ -1,13 +1,13 @@
 import React from 'react';
 import './Loading.css';
-// import classNames from 'classnames/bind';
 
 type Props = {
   isLoaded: boolean;
+  errorMessage: string;
 };
 
-const Loading: React.FC<Props> = ({ isLoaded }) => (
-  <div className={isLoaded ? 'has-background-success' : 'lds-roller'}>
+const Loading: React.FC<Props> = ({ isLoaded, errorMessage }) => (
+  <div className={(isLoaded || errorMessage !== '') ? '' : 'lds-roller'}>
     <div />
     <div />
     <div />

@@ -12,6 +12,7 @@ interface User {
   id: number;
   name: string;
   email: string;
+  address: Address;
   [key: string]: number| string | Address | Company;
 }
 

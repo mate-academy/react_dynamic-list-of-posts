@@ -2,6 +2,7 @@ import React from 'react';
 import './PostItem.css';
 import User from '../User/User';
 import CommentList from '../CommentList/CommentList';
+import { capitalize } from '../../helpers/capitalize';
 
 type Props = {
   id: number;
@@ -17,13 +18,13 @@ const PostItem: React.FC<Props> = ({
   <section className="post">
 
     <h2 className="post__title">
-      {title[0].toUpperCase() + title.slice(1)}
+      {capitalize(title)}
     </h2>
 
     <User {...user} />
 
     <article className="post__text">
-      {body[0].toUpperCase() + body.slice(1)}
+      {capitalize(body)}
     </article>
 
     <CommentList comments={comments} />

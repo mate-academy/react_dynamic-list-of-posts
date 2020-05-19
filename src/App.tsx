@@ -1,9 +1,12 @@
-import React, { useState, ChangeEvent, useCallback } from 'react';
+import React, {
+  useState, ChangeEvent, useCallback, useMemo,
+} from 'react';
 import { getPreparedPosts } from './helpers/api';
 import { debounce } from './helpers/debounce';
 import './App.css';
 import Loading from './components/Loading/Loading';
 import PostList from './components/PostList/PostList';
+import Button from './components/Button/Button';
 
 const App = () => {
   const [isToggle, setIsToggle] = useState(false);
@@ -11,6 +14,7 @@ const App = () => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [query, setQuery] = useState<string>('');
   const [filterQuery, setFilterQuery] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const loadPosts = () => {
     setIsToggle(!isToggle);
@@ -18,7 +22,10 @@ const App = () => {
       .then((postsFromServer: PreparedPost[]) => {
         setPosts(postsFromServer);
         setIsLoaded(true);
-      });
+      })
+      .catch(() => (
+        setErrorMessage('Oops! Something went wrong... :(')
+      ));
   };
 
   const setFilterQueryWithDebounce = useCallback(
@@ -32,26 +39,29 @@ const App = () => {
     setFilterQueryWithDebounce(value);
   };
 
-  const visiblePosts = posts.filter(({ title, body }) => (
-    (title + body).toLowerCase().includes(filterQuery.toLowerCase())
-  ));
+  const visiblePosts = useMemo(
+    () => posts.filter(({ title, body }) => (
+      (title + body).toLowerCase().includes(filterQuery.toLowerCase())
+    )),
+    [filterQuery, posts],
+  );
 
   return (
     <div className="container-header">
       <h1>Dynamic list of posts</h1>
 
-      {!isToggle
+      {(!isToggle && !errorMessage)
         ? (
-          <button
-            type="button"
-            className="button"
-            onClick={loadPosts}
-          >
-            Load
-          </button>
+          <Button
+            handleOnClick={loadPosts}
+            text="Load"
+          />
         )
         : (
-          <Loading isLoaded={isLoaded} />
+          <Loading
+            isLoaded={isLoaded}
+            errorMessage={errorMessage}
+          />
         )}
 
       {isLoaded
@@ -74,6 +84,18 @@ const App = () => {
             <PostList posts={visiblePosts} />
           </>
         )}
+      {errorMessage
+      && (
+        <div className="is-error">
+          <p className="is-error__text">
+            {errorMessage}
+          </p>
+          <Button
+            handleOnClick={loadPosts}
+            text="Try again"
+          />
+        </div>
+      )}
     </div>
   );
 };
