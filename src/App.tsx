@@ -20,7 +20,7 @@ const App = () => {
     const postsFromServer = await getPosts();
     const commentsFromServer = await getComments();
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 500));
 
     const preparedPosts = postsFromServer.map(post => ({
       ...post,
