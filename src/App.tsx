@@ -13,7 +13,7 @@ const App = () => {
     postsFromServer.then(data => {
       setLoading(false);
 
-      return setPosts(data.slice(0, 3));
+      return setPosts(data);
     });
   };
 
