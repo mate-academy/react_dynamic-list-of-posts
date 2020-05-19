@@ -5,15 +5,15 @@ import { PostList } from './PostList';
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState<PreparedPost[]>([]);
-  const [isDownloaded, setDownload] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [isDownloaded, setDownloaded] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const handleDownloadData = () => {
     setLoading(true);
     preparedPosts().then((data) => {
       setPosts(data);
       setLoading(false);
-      setDownload(true);
+      setDownloaded(true);
     });
   };
 
@@ -25,7 +25,7 @@ const App: React.FC = () => {
           className="button"
           onClick={handleDownloadData}
         >
-          { loading ? 'loading...' : 'Load'}
+          {isLoading ? 'loading...' : 'Load'}
         </button>
       )}
       {isDownloaded && (

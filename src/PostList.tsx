@@ -11,14 +11,14 @@ export const PostList: React.FC<Props> = ({ posts }) => {
 
   const visiblePosts = useMemo(() => {
     return posts.filter(post => (
-      post.title.toLowerCase().includes(filterValue.toLowerCase())
-     || post.body.toLowerCase().includes(filterValue.toLowerCase())
-    ));
+      (post.title+post.body).toLowerCase().includes(filterValue.toLowerCase())
+      ));
   }, [posts, filterValue]);
 
   const hangleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
-    setFilterValue(e.target.value);
+    const { value } = e.target;
+    setSearchValue(value);
+    setFilterValue(value);
   };
 
   return (
