@@ -1,0 +1,13 @@
+.post {
+  margin-bottom: 5px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background-color: rgb(248, 249, 252);
+  border: 1px solid rgb(200, 199, 199);
+}
+
+.post__text {
+  font-size: 20px;
+}
