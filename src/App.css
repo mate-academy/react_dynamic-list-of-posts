@@ -1,0 +1,12 @@
+.app {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+  text-align: center;
+}
+
+.title,
+.button {
+  display: flex;
+  justify-content: center;
+}
