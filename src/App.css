@@ -1,0 +1,77 @@
+.buttons {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+h1 {
+  text-align: center;
+}
+
+.spinner-border {
+  margin-left: calc(50% - 15px);
+}
+
+.mrl {
+  margin: 0 15%;
+}
+
+.list {
+  list-style-type: none;
+  max-width: 800px;
+}
+
+.list__userInfo {
+  background-color: #f7f6f6;
+  border-radius: 20px;
+}
+
+.title {
+  font-size: 20px;
+  text-align: center;
+}
+
+.body {
+  font-size: 16px;
+  text-align: center;
+}
+
+.address,
+.email,
+.author {
+  font-size: 14px;
+}
+
+.address {
+  text-align: center;
+}
+
+.comment {
+  font-size: 14px;
+  background-color: rgb(207, 203, 203);
+  list-style-type: none;
+  border-radius: 20px;
+}
+
+ul {
+  padding-left: 0;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.user_info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.comments {
+  text-align: center;
+}
