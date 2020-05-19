@@ -1,6 +1,6 @@
 const API_URL = 'https://mate-academy.github.io/react_dynamic-list-of-posts/api/';
 
-export interface Posts {
+export interface Post {
   userId: number;
   id: number;
   title: string;
@@ -35,6 +35,6 @@ const getData = <T>(url: string): Promise<T[]> => (
   fetch(API_URL + url).then(response => response.json())
 );
 
-export const getPosts = () => getData<Posts>('/posts.json');
+export const getPosts = () => getData<Post>('/posts.json');
 export const getComments = () => getData<Comment>('/comments.json');
 export const getUsers = () => getData<User>('/users.json');
