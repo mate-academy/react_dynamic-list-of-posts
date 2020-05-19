@@ -1,0 +1,98 @@
+
+.header {
+  text-align: center;
+  color: grey;
+  font-style: italic;
+  text-transform: uppercase;
+  font-size: 24px;
+
+}
+
+.input {
+  width: 200px;
+  height: 20px;
+}
+
+.post {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  background-color: lightsteelblue;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+.post__title {
+  text-align: center;
+  color: dimgray;
+  text-transform: uppercase;
+}
+
+.post__text {
+  font-style: italic;
+}
+
+.user {
+  display: flex;
+  flex-direction: column;
+}
+
+.user__name {
+  color: red;
+  margin: 0;
+}
+
+.user__email {
+  font-size: 14px;
+  margin: 5px;
+}
+
+.comments {
+  background-color: lightgoldenrodyellow;
+  border-radius: 2%;
+  margin-bottom: 15px;
+}
+
+.comments__title {
+  text-decoration: underline;
+}
+
+.comments__text {
+  font-style: italic;
+}
+
+.button {
+  width: 200px;
+  font-size: 11px;
+  color: rgb(68,68,68);
+  text-decoration: none;
+  user-select: none;
+  padding: 0.2em 1.2em;
+  outline: none;
+  border: 1px solid rgba(0,0,0,0.1);
+  border-radius: 5px;
+  background: rgb(245,245,245) linear-gradient(#f4f4f4, #f1f1f1);
+  transition: all 0.22s ease 0s;
+}
+
+.button:hover {
+  color: rgb(24,24,24);
+  border: 1px solid rgb(198,198,198);
+  background: #f7f7f7 linear-gradient(#f7f7f7, #f1f1f1);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.button:active {
+  color: rgb(51,51,51);
+  border: 1px solid rgb(204,204,204);
+  background: rgb(238,238,238)
+    linear-gradient(rgb(238,238,238), rgb(224,224,224));
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1) inset;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

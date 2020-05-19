@@ -17,6 +17,7 @@
   "devDependencies": {
     "@mate-academy/eslint-config-react-typescript": "*",
     "@mate-academy/stylelint-config": "*",
+    "@types/lodash": "^4.14.151",
     "eslint": "^6.8.0",
     "gh-pages": "^2.2.0",
     "husky": "^4.0.10",
