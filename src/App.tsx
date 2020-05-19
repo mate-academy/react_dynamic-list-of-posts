@@ -1,18 +1,20 @@
-import React, { useState} from 'react';
+import React, { useState, useMemo} from 'react';
 import { getUsers, getPosts, Post, getComments } from './helper/api';
 import debounce from 'lodash/debounce';
 import './App.css';
 
-const postsFromFiler = (posts: Post[], qery: string) =>{
-  return posts.filter( post => post.title.includes(qery) || post.body.includes(qery))
+const postsFromFiler = (posts: Post[], query: string) =>{
+  return posts.filter( post => post.title.includes(query) || post.body.includes(query))
 }
 
+
+
 const App = () => {
-  const [posts, setPost] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [qery, setQery] = useState('');
+  const [query, setQuery] = useState('');
   const [filterQuery, setFilterQuery] = useState('');
-const setFilterQueryDebounce = debounce(setFilterQuery, 1000)
+  const setFilterQueryDebounce = debounce(setFilterQuery, 1000)
 
   const handleLoadClick = async () => {
     setIsLoading(true);
@@ -28,11 +30,13 @@ const setFilterQueryDebounce = debounce(setFilterQuery, 1000)
 
     }));
 
-    setPost(fullPost);
+    setPosts(fullPost);
   };
-
+  const visibleTodos = useMemo(() => {
+    return postsFromFiler(posts, filterQuery);
+  }, [posts, filterQuery]);
   return (
-    <>
+
     <div>
       <h1>Dynamic list of TODOs</h1>
 
@@ -45,23 +49,25 @@ const setFilterQueryDebounce = debounce(setFilterQuery, 1000)
         <input
           className= "search"
           type="text"
-          value={qery}
-          onChange={(event) => {setQery(event.target.value);
-            setFilterQueryDebounce(event.target.value)}
+          value={query}
+          onChange={({target:{value}}) => {
+            setQuery(value);
+            setFilterQueryDebounce(value)}
           }
         />
         <div className="post-container">
-          {postsFromFiler(posts, filterQuery).map(post =>
-            <div  className="post" key={post.id}>
-              <h2 className="post_title">{post.title}</h2>
-              <p className="post_name_user">{post.user?.name}</p>
-              <p className="post_body">{post.body}</p>
+          {visibleTodos
+            .map(({id,user,title,body, comments,}) =>
+            <div  className="post" key={id}>
+              <h2 className="post_title">{title}</h2>
+              <p className="post_name_user">{user?.name}</p>
+              <p className="post_body">{body}</p>
               <ul className="comment-container">
-                {post.comments?.map(c =>
+                {comments?.map(({name,email,body}) =>
                 <li className="comment">
-                  <h4 className="comment_name">{c.name}</h4>
-                  <a href={`mailto:${c.email}`} className="comment_email">{c.email}</a>
-                  <p className="comment_body">{c.body}</p>
+                  <h4 className="comment_name">{name}</h4>
+                  <a href={`mailto:${email}`} className="comment_email">{email}</a>
+                  <p className="comment_body">{body}</p>
                 </li>)}
               </ul>
             </div>
@@ -70,8 +76,6 @@ const setFilterQueryDebounce = debounce(setFilterQuery, 1000)
         </>
       )}
     </div>
-
-      </>
   );
 };
 

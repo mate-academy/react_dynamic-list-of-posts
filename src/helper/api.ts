@@ -22,11 +22,11 @@ export interface Post {
   comments?: Comment[];
 }
 
-const getAll = <T>(url: string): Promise<T[]> => {
+const getData = <T>(url: string): Promise<T[]> => {
   return fetch(API_URL + url)
     .then(response => response.json());
 }
 
-export const getUsers = () => getAll<User>('/users');
-export const getPosts = () => getAll<Post>('/posts');
-export const getComments = () => getAll<Comment>('/comments');
+export const getUsers = () => getData<User>('/users');
+export const getPosts = () => getData<Post>('/posts');
+export const getComments = () => getData<Comment>('/comments');
