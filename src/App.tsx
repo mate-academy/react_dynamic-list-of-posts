@@ -44,8 +44,7 @@ const App: React.FunctionComponent = () => {
     const normalizedQuery = searchingQuery.toLowerCase();
 
     return postsList.filter(
-      (post: Post) => post.title.toLowerCase().includes(normalizedQuery)
-        || post.body.toLowerCase().includes(normalizedQuery),
+      (post: Post) => (post.title + post.body).toLowerCase().includes(normalizedQuery),
     );
   };
 
