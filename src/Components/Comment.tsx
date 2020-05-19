@@ -9,7 +9,7 @@ const Comment: React.FunctionComponent<Props> = ({ comment }) => {
     <section className="post__comment">
       <p className="post__comment-body">{comment.body}</p>
       <div className="post__comment-author">
-        <a href="link" className="post__comment-author-email">
+        <a href="/" className="post__comment-author-email">
           {comment.email}
         </a>
         <span className="post__comment-author-name">{comment.name}</span>

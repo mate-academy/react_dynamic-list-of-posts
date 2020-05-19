@@ -4,8 +4,7 @@ import './Post.scss';
 import CommentsList from './CommentsList';
 
 type Props = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  post: Post | any;
+  post: Post;
 };
 
 const Post: React.FunctionComponent<Props> = ({ post }) => {

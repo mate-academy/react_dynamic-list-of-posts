@@ -39,6 +39,6 @@ interface Post {
   postId: number;
   title: string;
   body: string;
-  comments: Comment;
+  comments: Comment[];
   user: User;
 }
