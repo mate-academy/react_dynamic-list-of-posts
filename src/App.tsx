@@ -7,13 +7,13 @@ import './App.scss';
 const App = () => {
   const [posts, setPosts] = useState<FullList[]>([]);
   const [filterPage, setFilterPage] = useState<string>('');
-  const [loadButton, setLoadButton] = useState<boolean>(true);
+  const [isButtonVisible, setButtonVisible] = useState<boolean>(true);
   const [isDataLoaded, setDataLoaded] = useState<boolean>(false);
   const [textInput, setTextInput] = useState<boolean>(false);
 
   const getNewPosts = () => {
     setDataLoaded(true);
-    setLoadButton(!loadButton);
+    setButtonVisible(!isButtonVisible);
     getFullList().then(data => {
       setPosts(data);
       setDataLoaded(false);
@@ -45,7 +45,7 @@ const App = () => {
       }
 
       {
-        loadButton
+        isButtonVisible
         && (
           <button
             type="button"
@@ -61,7 +61,7 @@ const App = () => {
         && (
           <input
             type="text"
-            onChange={(e) => changedInput(e)}
+            onChange={changedInput}
             value={filterPage}
           />
         )
@@ -69,7 +69,7 @@ const App = () => {
 
       {
         !!visiblePosts.length
-        && <PostList list={visiblePosts} />
+        && <PostList postList={visiblePosts} />
       }
     </>
   );
