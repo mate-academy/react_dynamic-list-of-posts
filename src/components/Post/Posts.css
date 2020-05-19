@@ -1,0 +1,11 @@
+.post {
+  text-align: start;
+  background-color: #f0e68c;
+  padding: 10px;
+  width: 70%;
+  box-sizing: border-box;
+}
+
+.post__header {
+  margin-bottom: 10px;
+}

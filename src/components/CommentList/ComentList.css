@@ -1,0 +1,11 @@
+.commentList {
+  list-style-type: none;
+}
+
+.commentList__item {
+  text-align: start;
+  margin: 10px 0 0 30%;
+  padding: 10px;
+  background-color: #f0e68c;
+  border-radius: 25px;
+}
