@@ -1,0 +1,41 @@
+
+.container-header {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.app h1 {
+  text-align: center;
+}
+
+.inputFilter {
+  height: 20px;
+  width: 300px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
+.label {
+  font-size: 20px;
+  padding-right: 20px;
+}
+
+.is-error {
+  width: 40%;
+  height: 100px;
+  margin: 20px 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.is-error__text {
+  padding: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 10px;
+  background-color: hsl(180, 8%, 91%);
+}
