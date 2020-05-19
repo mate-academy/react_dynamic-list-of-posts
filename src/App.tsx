@@ -20,8 +20,6 @@ const App = () => {
     const postsFromServer = await getPosts();
     const commentsFromServer = await getComments();
 
-    await new Promise(resolve => setTimeout(resolve, 500));
-
     const preparedPosts = postsFromServer.map(post => ({
       ...post,
       user: usersFromServer.find(user => user.id === post.userId),
@@ -36,8 +34,10 @@ const App = () => {
   );
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-    setFilterQueryWithDebounce(event.target.value);
+    const { value } = event.target;
+
+    setSearchQuery(value);
+    setFilterQueryWithDebounce(value);
   };
 
   return (
@@ -60,7 +60,7 @@ const App = () => {
             />
           </label>
           {
-            posts.filter(post => post.body.includes(filterQuery)).map(post => (
+            posts.filter(post => post.body.includes(filterQuery) || post.title.includes(filterQuery)).map(post => (
               <PostList post={post} />
             ))
           }
