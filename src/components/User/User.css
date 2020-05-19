@@ -1,0 +1,14 @@
+.user {
+  width: 30%;
+  text-align: start;
+}
+
+.user__nick {
+  margin-bottom: 10px;
+}
+
+.user__contacts-item {
+  padding-bottom: 5px;
+  word-spacing: 5px;
+  display: inline-block;
+}

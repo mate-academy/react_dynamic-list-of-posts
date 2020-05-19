@@ -1,0 +1,17 @@
+.postList {
+  margin: 0 auto;
+  list-style-type: none;
+  width: 80%;
+  padding: 0;
+}
+
+.postList__wrapper {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #bdb76b;
+}
+
+.postList__item {
+  display: flex;
+  padding-bottom: 15px;
+}
