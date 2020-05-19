@@ -13,7 +13,7 @@ const PostList: React.FC<Props> = ({ posts }) => {
       <>
         <ul>
           {posts.map(post => (
-            <li>
+            <li key={post.id}>
               <Post post={post} />
             </li>
           ))}

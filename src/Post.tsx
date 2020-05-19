@@ -1,7 +1,7 @@
 import React from 'react';
 import { Posts } from './helper';
 import CommentList from './CommentList';
-import User from './User';
+import UserItem from './UserItem';
 
 type Props = {
   post: Posts;
@@ -12,7 +12,7 @@ const Post: React.FC<Props> = ({ post }) => {
     <>
       <h2>{post.title}</h2>
       <p>{post.body}</p>
-      <User users={post.user} />
+      <UserItem user={post.user} />
       <CommentList comments={post.comments} />
     </>
   );

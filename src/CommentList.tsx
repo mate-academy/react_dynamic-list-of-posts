@@ -1,9 +1,9 @@
 import React from 'react';
-import Comment from './Comment';
-import { Comments } from './helper';
+import CommentItem from './CommentItem';
+import { Comment } from './helper';
 
 type Props = {
-  comments: Comments[];
+  comments: Comment[];
 };
 
 const CommentList: React.FC<Props> = ({ comments }) => {
@@ -11,8 +11,8 @@ const CommentList: React.FC<Props> = ({ comments }) => {
     <>
       <ul>
         {comments.map(comment => (
-          <li className="li__inside">
-            <Comment comment={comment} />
+          <li className="li__inside" key={comment.id}>
+            <CommentItem comment={comment} />
           </li>
         ))}
       </ul>

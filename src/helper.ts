@@ -3,18 +3,18 @@ export interface Posts {
   id: number;
   title: string;
   body: string;
-  user: Users[];
-  comments: Comments[];
+  user: User;
+  comments: Comment[];
 }
 
-export interface Users {
+export interface User{
   id: number;
   name: string;
   email: string;
   address: Address;
 }
 
-export interface Comments {
+export interface Comment {
   postId: number;
   id: number;
   name: string;
@@ -27,4 +27,12 @@ export interface Address {
   suite: string;
   city: string;
   zipcode: string;
+}
+
+export function ensure<T>(argument: T | undefined | null, message = 'This value was promised to be there.'): T {
+  if (argument === undefined || argument === null) {
+    throw new TypeError(message);
+  }
+
+  return argument;
 }
