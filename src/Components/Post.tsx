@@ -18,5 +18,4 @@ const Post: React.FunctionComponent<Props> = ({ post }) => {
   );
 };
 
-
 export default Post;

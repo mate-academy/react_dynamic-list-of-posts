@@ -14,4 +14,3 @@ export const getUsersFromServer = () => {
   return fetch(`${URL}/users`)
     .then(response => response.json());
 };
-

@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useDebounce } from './helpers/use-debounce';
 import './App.css';
 import PostsList from './Components/PostsList';
 
@@ -36,6 +37,8 @@ const App: React.FunctionComponent = () => {
     }
   };
 
+  const debouncedValue = useDebounce(searchQuery, 1000);
+
   const filterPosts = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
@@ -43,13 +46,16 @@ const App: React.FunctionComponent = () => {
   const getVisiblePosts = (searchingQuery: string, postsList: Post[]) => {
     const normalizedQuery = searchingQuery.toLowerCase();
 
-    return postsList.filter(
-      (post: Post) => (post.title + post.body).toLowerCase().includes(normalizedQuery),
-    );
+    return postsList
+      .filter((post: Post) => (post.title + post.body)
+        .toLowerCase()
+        .includes(normalizedQuery));
   };
 
-  const visiblePosts = useMemo(() => getVisiblePosts(searchQuery, posts),
-    [searchQuery, posts]);
+  const visiblePosts = useMemo(() => getVisiblePosts(debouncedValue, posts), [
+    debouncedValue,
+    posts,
+  ]);
 
   return (
     <div className="App">
