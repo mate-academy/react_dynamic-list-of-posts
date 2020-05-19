@@ -12,22 +12,28 @@ const App: React.FunctionComponent = () => {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [hasError, handleErrorStatus] = useState(false);
 
   const loadData = async () => {
     setIsLoading(true);
-    const postsFromServer = await getPostsFromServer();
-    const commentsFromServer = await getCommentsFromServer();
-    const usersFromServer = await getUsersFromServer();
+    try {
+      const postsFromServer = await getPostsFromServer();
+      const commentsFromServer = await getCommentsFromServer();
+      const usersFromServer = await getUsersFromServer();
 
-    const preparedPosts = postsFromServer.map((post: Post) => ({
-      ...post,
-      user: usersFromServer.find((user: User) => user.id === post.userId),
-      comments: commentsFromServer.filter(
-        (comment: Comment) => comment.postId === post.id,
-      ),
-    }));
+      const preparedPosts = postsFromServer.map((post: Post) => ({
+        ...post,
+        user: usersFromServer.find((user: User) => user.id === post.userId),
+        comments: commentsFromServer.filter(
+          (comment: Comment) => comment.postId === post.id,
+        ),
+      }));
 
-    setPosts(preparedPosts);
+      setPosts(preparedPosts);
+    } catch {
+      handleErrorStatus(true);
+      setIsLoading(false);
+    }
   };
 
   const filterPosts = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,6 +55,7 @@ const App: React.FunctionComponent = () => {
   return (
     <div className="App">
       <h1>Dynamic list of posts</h1>
+      {hasError && <h2>Some error appeared, please try again</h2>}
       {posts.length === 0 ? (
         <button
           type="button"
