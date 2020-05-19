@@ -1,0 +1,27 @@
+.App {
+  text-align: center;
+}
+
+ol {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+li {
+
+  background-color: rgb(247, 255, 139);
+  list-style: none;
+  display: inline-block;
+  margin: 10px;
+  padding: 5px;
+}
+
+.li__inside {
+  display: flex;
+  justify-content: left;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid red;
+}
