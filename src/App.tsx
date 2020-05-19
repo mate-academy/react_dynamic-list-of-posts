@@ -20,7 +20,7 @@ const emptyUser = {
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [input] = useState('');
+  const [input, setInput] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -42,8 +42,16 @@ const App: React.FC = () => {
   }
 
   const handleInput = (event: ChangeEvent<HTMLInputElement> ) => {
+    event.preventDefault();
+
     console.log(event.target.value);
+    setInput(event.target.value);
   }
+
+  const visiblePosts = [...posts].filter(post => (
+    post.title.toLowerCase()
+      .includes(input.toLowerCase())
+  ));
 
   return (
     <>
@@ -54,7 +62,7 @@ const App: React.FC = () => {
       ) : (
       <>
         <input type="text" value={input} onChange={(event) => handleInput(event)} />
-        <PostList posts={posts} />
+        <PostList posts={visiblePosts} />
       </>
       )}
     </>
