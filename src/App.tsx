@@ -36,10 +36,8 @@ const App = () => {
     return postsFromFiler(posts, filterQuery);
   }, [posts, filterQuery]);
   return (
-
     <div>
       <h1>Dynamic list of TODOs</h1>
-
       {posts.length === 0 ? (
         <button type="button" onClick={handleLoadClick} disabled={isLoading}>
           {isLoading ? 'Loading...' : 'Load'}
@@ -57,7 +55,7 @@ const App = () => {
         />
         <div className="post-container">
           {visibleTodos
-            .map(({id,user,title,body, comments,}) =>
+            .map(({id,user,title,body,comments}) =>
             <div  className="post" key={id}>
               <h2 className="post_title">{title}</h2>
               <p className="post_name_user">{user?.name}</p>
