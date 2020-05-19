@@ -43,7 +43,7 @@ interface Comment {
   body: string;
 }
 
-interface FullList {
+interface FullPostList {
   id: number;
   body: string;
   comments: Comment[];

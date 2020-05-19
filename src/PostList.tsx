@@ -2,14 +2,14 @@ import React from 'react';
 import { PostListItem } from './PostListItem';
 
 type Props = {
-  postList: FullList[];
+  postList: FullPostList[];
 };
 
 export const PostList: React.FC<Props> = ({ postList }) => {
   return (
     <ul className="post-list">
       {(
-        postList.map((item: FullList) => {
+        postList.map((item: FullPostList) => {
           const {
             id,
             comments,

@@ -5,7 +5,7 @@ import { getFullList } from './api';
 import './App.scss';
 
 const App = () => {
-  const [posts, setPosts] = useState<FullList[]>([]);
+  const [posts, setPosts] = useState<FullPostList[]>([]);
   const [filterPage, setFilterPage] = useState<string>('');
   const [isButtonVisible, setButtonVisible] = useState<boolean>(true);
   const [isDataLoaded, setDataLoaded] = useState<boolean>(false);
