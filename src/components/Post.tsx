@@ -18,6 +18,8 @@ export const Post: React.FC<Props> = ({ post }) => (
       </p>
     </div>
     <User user={post.user} />
+    <hr />
+    <h3>Comments:</h3>
     <CommentList comments={post.comments} />
   </li>
 );

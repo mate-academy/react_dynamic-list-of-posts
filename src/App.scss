@@ -2,11 +2,15 @@ body {
   background-color: #edeef0;
 }
 
+ul {
+  padding: 0;
+}
+
 .app__header {
-  text-align: center;
 
   .heading {
-    font-size: 50px;
+    text-align: center;
+    font-size: 60px;
     margin: 20px;
   }
 
@@ -41,6 +45,7 @@ body {
       padding: 10px;
       border: 1px solid white;
       border-radius: 5px;
+      margin-bottom: 20px;
 
       &:focus {
         border: 1px solid skyblue;
