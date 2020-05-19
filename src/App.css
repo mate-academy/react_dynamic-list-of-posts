@@ -1,0 +1,15 @@
+html,
+body {
+  margin: 0;
+}
+
+.app {
+  text-align: center;
+  width: 45%;
+  margin: 30px auto;
+}
+
+.app__heading {
+  font-size: 38px;
+  color: rgb(30, 30, 177);
+}

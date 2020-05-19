@@ -1,0 +1,25 @@
+.post__comments-list p {
+  font-size: 20px;
+  width: 94%;
+  margin: auto;
+}
+
+.comment {
+  width: 94%;
+  list-style: none;
+  text-align: justify;
+  border-bottom: 4px solid rgb(255, 255, 255);
+}
+
+.comment p {
+  margin-bottom: 15px;
+  font-size: 15px;
+}
+
+.comment__contacts {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  color: rgb(5, 25, 116);
+  font-weight: 700;
+}
