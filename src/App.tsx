@@ -1,31 +1,49 @@
 import React, { useState, useMemo } from 'react';
 import './App.scss';
 import { getPosts, getComments, getUsers } from './api';
+// import { getPreparedPosts } from './api';
 import PostList from './PostList';
 
 
 const App = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isloading, setLoading] = useState<boolean>(false);
-  const [isLoaded, setLoad] = useState<boolean>(false);
   const [query, setQuery] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const loadPosts = async () => {
     setLoading(true);
-    const postFromServer = await getPosts();
-    const usersFromServer = await getUsers();
-    const commentsFromServer = await getComments();
 
-    const prepearedPosts = postFromServer.map((post: Post) => ({
-      ...post,
-      user: usersFromServer.find((user: User) => user.id === post.userId),
-      comments: commentsFromServer.filter((comment: Comment) => comment.postId === post.id),
-    }));
+    try {
+      const postFromServer = await getPosts();
+      const usersFromServer = await getUsers();
+      const commentsFromServer = await getComments();
 
-    setPosts(prepearedPosts);
-    setLoad(true);
+      const prepearedPosts = postFromServer.map((post: Post) => ({
+        ...post,
+        user: usersFromServer.find((user: User) => user.id === post.userId),
+        comments: commentsFromServer.filter((comment: Comment) => comment.postId === post.id),
+      }));
+
+      setPosts(prepearedPosts);
+    } catch (e) {
+      setErrorMessage('Error, try again later');
+    }
+
     setLoading(false);
   };
+
+  // const loadPosts = async () => {
+  //   setLoading(true);
+  //   try {
+  //    const preparedPosts = await getPreparedPosts()
+  //    setPosts(preparedPosts);
+  //   } catch(e) {
+  //     setError('Error, try again later')
+  //   }
+  //   setLoading(false);
+  // };
+
 
   const searchQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target.value;
@@ -37,18 +55,20 @@ const App = () => {
     return (post.title + post.body).toLowerCase().includes(query.trim().toLowerCase());
   }), [query, posts]);
 
-
   return (
     <div className="App">
       <h1>Dynamic list of posts</h1>
-      {!isLoaded ? (
-        <button
-          type="button"
-          className="button"
-          onClick={loadPosts}
-        >
-          {isloading ? 'Loading...' : 'Click to Load'}
-        </button>
+      {!posts.length ? (
+        <>
+          <button
+            type="button"
+            className="button"
+            onClick={loadPosts}
+          >
+            {isloading ? 'Loading...' : 'Click to Load'}
+          </button>
+          {errorMessage && <p className="error">{errorMessage}</p>}
+        </>
       ) : (
         <>
           <input
