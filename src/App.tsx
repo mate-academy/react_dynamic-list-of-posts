@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './App.css';
+import './App.scss';
 import { getPosts } from './helpers/api';
 import { PostList } from './components/PostList';
 
@@ -23,13 +23,18 @@ const App = () => {
   }
 
   return (
-    <>
-      <h1>Dynamic list of posts</h1>
+    <div className="app__header">
+      <h1 className="heading">Dynamic list of posts</h1>
       {!posts.length
         ? (
           <>
-            <button type="button" onClick={handleLoadClick} disabled={isLoading}>
-              {isLoading ? 'Loading' : 'Load'}
+            <button
+              type="button"
+              className="loading__btn"
+              onClick={handleLoadClick}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Loading...' : 'Load'}
             </button>
             {errorMessage && <span className="error">{errorMessage}</span>}
           </>
@@ -37,7 +42,7 @@ const App = () => {
         : (
           <PostList posts={posts} />
         )}
-    </>
+    </div>
   );
 };
 

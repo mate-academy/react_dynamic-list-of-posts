@@ -8,12 +8,12 @@ type Props = {
 };
 
 export const Post: React.FC<Props> = ({ post }) => (
-  <li className="posts__item post">
-    <div>
-      <h1>
+  <li className="post__item">
+    <div className="post__article">
+      <h3 className="post__title">
         {post.title}
-      </h1>
-      <p>
+      </h3>
+      <p className="post_text">
         {post.body}
       </p>
     </div>
