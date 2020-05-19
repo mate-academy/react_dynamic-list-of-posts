@@ -22,8 +22,10 @@ export const PostList: React.FC<Props> = ({ posts }) => {
     [],
   );
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-    setFilterQueryWithDebounce(event.target.value);
+    const { value } = event.target;
+
+    setSearchQuery(value);
+    setFilterQueryWithDebounce(value);
   };
 
   return (
