@@ -9,6 +9,7 @@ const App = () => {
   const [filterPage, setFilterPage] = useState<string>('');
   const [loadButton, setLoadButton] = useState<boolean>(true);
   const [isDataLoaded, setDataLoaded] = useState<boolean>(false);
+  const [textInput, setTextInput] = useState<boolean>(false);
 
   const getNewPosts = () => {
     setDataLoaded(true);
@@ -16,6 +17,7 @@ const App = () => {
     getFullList().then(data => {
       setPosts(data);
       setDataLoaded(false);
+      setTextInput(true);
     });
   };
 
@@ -55,7 +57,7 @@ const App = () => {
       }
 
       {
-        !!visiblePosts.length
+        textInput
         && (
           <input
             type="text"
