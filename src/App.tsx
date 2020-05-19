@@ -3,12 +3,6 @@ import { getUsers, getPosts, Post, getComments } from './helper/api';
 import debounce from 'lodash/debounce';
 import './App.css';
 
-const postsFromFiler = (posts: Post[], query: string) =>{
-  return posts.filter( post => post.title.includes(query) || post.body.includes(query))
-}
-
-
-
 const App = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,9 +26,14 @@ const App = () => {
 
     setPosts(fullPost);
   };
+
   const visibleTodos = useMemo(() => {
+    const postsFromFiler = (posts: Post[], query: string) =>{
+      return posts.filter( post => post.title.includes(query) || post.body.includes(query))
+    }
     return postsFromFiler(posts, filterQuery);
   }, [posts, filterQuery]);
+
   return (
     <div>
       <h1>Dynamic list of TODOs</h1>
