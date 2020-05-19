@@ -1,20 +1,13 @@
-import React, { useState, useMemo} from 'react';
+import React, {useState, useMemo, useCallback} from 'react';
 import { getUsers, getPosts, Post, getComments } from './helper/api';
-//import debounce from 'lodash/debounce';
+import debounce from 'lodash/debounce';
 import './App.css';
-
-const postsFromFiler = (posts: Post[], query: string) =>{
-  return posts.filter( post => post.title.includes(query) || post.body.includes(query))
-}
-
-
 
 const App = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState('');
-  //const [filterQuery, setFilterQuery] = useState('');
-  //const setFilterQueryDebounce = debounce(setFilterQuery, 1000)
+  const [filterQuery, setFilterQuery] = useState('');
 
   const handleLoadClick = async () => {
     setIsLoading(true);
@@ -32,9 +25,18 @@ const App = () => {
 
     setPosts(fullPost);
   };
+  
+  const setFilterQueryDebounce = useCallback(
+    debounce(setFilterQuery, 1000),
+    []
+    );
+
   const visibleTodos = useMemo(() => {
-    return postsFromFiler(posts, query);
-  }, [posts, query]);
+    const postsFromFiler = (posts: Post[], query: string) =>{
+      return posts.filter( post => post.title.includes(query) || post.body.includes(query))
+    }
+    return postsFromFiler(posts, filterQuery);
+   }, [posts, filterQuery]);
 
   return (
     <div>
@@ -51,7 +53,7 @@ const App = () => {
           value={query}
           onChange={({target:{value}}) => {
             setQuery(value);
-            //setFilterQuery(value)
+            setFilterQueryDebounce(value)
           }
           }
         />
