@@ -1,0 +1,45 @@
+.App {
+  text-align: center;
+}
+
+.postList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.postList__item {
+  border-radius: 50px;
+  border: 1px solid dodgerblue;
+  margin: 20px auto;
+}
+
+.post__title {
+  margin: 20px;
+}
+
+.post__body {
+  text-align: left;
+}
+
+.user {
+  margin-left: 10px;
+  text-align: left;
+
+}
+
+.comments {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.comments__item {
+  background-color: darkgrey;
+  text-align: left;
+  padding: 0 0 10px 10px;
+}
+
+.comment__title {
+  font-size: 1.2em;
+}

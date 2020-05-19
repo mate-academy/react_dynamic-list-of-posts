@@ -6,7 +6,7 @@ export interface Post {
   body: string;
   title: string;
   user?: User;
-  comment?: Comment[];
+  comments?: Comment[];
 }
 
 export interface User {
