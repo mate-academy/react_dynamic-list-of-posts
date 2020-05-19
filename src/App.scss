@@ -1,0 +1,25 @@
+.post-list {
+  list-style: none;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  &__item {
+    background-color: lightseagreen;
+    border: 1px solid black;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+}
+
+.comment-list {
+  list-style: none;
+  padding-left: 20px;
+  padding-right: 20px;
+
+  &__item {
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: yellowgreen;
+    margin-bottom: 20px;
+  }
+}
