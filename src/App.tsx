@@ -27,15 +27,15 @@ const App = () => {
   return (
     <>
       <h1>Dynamic list of posts</h1>
-
       <LoadingButtons
         posts={posts}
         isLoading={isLoading}
         handleLoadClick={handleLoadClick}
         errorMessage={errorMessage}
       />
-      <PostList posts={posts} />
-
+      {posts.length !== 0
+        ? <PostList posts={posts} />
+        : ''}
     </>
   );
 };
