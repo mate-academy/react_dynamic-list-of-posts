@@ -26,6 +26,7 @@ export const PostList: React.FC<Props> = ({ posts }) => {
   };
 
   const visiblePosts = useMemo(() => getVisiblePosts(posts, filterQuery), [posts, filterQuery]);
+  const noData = visiblePosts.length;
 
   return (
     <div className="post__list">
@@ -39,6 +40,8 @@ export const PostList: React.FC<Props> = ({ posts }) => {
           onChange={handleChange}
         />
       </label>
+      {noData === 0 && <p>No requested data here, friend</p>}
+
       {visiblePosts.map(post => (
         <div className="item" key={post.id}>
           <Post post={post} />
