@@ -1,0 +1,8 @@
+.post__comments-list {
+  margin: 10px;
+  border: 1px solid salmon;
+}
+
+.post__comments-list-title {
+  font-weight: 700;
+}
