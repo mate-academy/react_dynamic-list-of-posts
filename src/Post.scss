@@ -1,0 +1,23 @@
+.post {
+  background-color: rgb(224, 202, 202);
+  padding: 20px;
+  border-radius: 50px;
+
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 340px);
+    justify-content: center;
+    grid-gap: 50px;
+  }
+
+  &__title {
+    text-align: center;
+  }
+
+  &__body {
+    font-style: italic;
+    font-weight: 500;
+    text-align: start;
+  }
+
+}
