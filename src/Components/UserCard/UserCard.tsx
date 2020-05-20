@@ -3,11 +3,18 @@ import { User } from '../../Helpers/api';
 import './UserCard.css';
 
 type Props = {
-  user: User,
-}
+  user?: User;
+};
 
-export const UserCard: React.FC<Props> = ({ user: { name, email, address }}) => {
-  const { street, suite, city, zipcode } = address;
+export const UserCard: React.FC<Props> = ({ user }) => {
+  const name = user?.name;
+  const email = user?.email;
+  const address = user?.address;
+
+  const street = address?.street;
+  const suite = address?.suite;
+  const city = address?.city;
+  const zipcode = address?.zipcode;
 
   return (
     <div className="post__user">
@@ -23,4 +30,4 @@ export const UserCard: React.FC<Props> = ({ user: { name, email, address }}) => 
       </div>
     </div>
   );
-}
+};

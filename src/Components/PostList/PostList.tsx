@@ -4,8 +4,8 @@ import { Post } from '../../Helpers/api';
 import './PostList.css';
 
 type Props = {
-  posts: Post[],
-}
+  posts: Post[];
+};
 
 export const PostList: React.FC<Props> = ({ posts }) => {
   return (
