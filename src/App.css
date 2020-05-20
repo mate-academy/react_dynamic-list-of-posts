@@ -1,0 +1,29 @@
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.post-list {
+  width: 630px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 68px;
+  margin: 0 auto;
+
+  font-family: sans-serif;
+}
+
+.post-list__title {
+  margin-bottom: 48px;
+  padding: 24px 0;
+  width: 100%;
+  text-align: center;
+
+  background-color: rgba(231,215,226, 1);
+  border: 2px solid rgba(231,137,201, 1);
+  box-shadow: 0 8px 12px rgba(231,137,201, 0.4);
+  text-transform: uppercase;
+}
