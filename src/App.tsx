@@ -1,9 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import './App.scss';
-import { getPosts, getComments, getUsers } from './api';
-// import { getPreparedPosts } from './api';
+import { getPreparedPosts } from './api';
 import PostList from './PostList';
-
 
 const App = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -13,46 +11,22 @@ const App = () => {
 
   const loadPosts = async () => {
     setLoading(true);
-
     try {
-      const postFromServer = await getPosts();
-      const usersFromServer = await getUsers();
-      const commentsFromServer = await getComments();
-
-      const prepearedPosts = postFromServer.map((post: Post) => ({
-        ...post,
-        user: usersFromServer.find((user: User) => user.id === post.userId),
-        comments: commentsFromServer.filter((comment: Comment) => comment.postId === post.id),
-      }));
-
-      setPosts(prepearedPosts);
-    } catch (e) {
-      setErrorMessage('Error, try again later');
+     const preparedPosts = await getPreparedPosts()
+     setPosts(preparedPosts);
+    } catch(e) {
+      setErrorMessage('Error, try again later')
     }
-
     setLoading(false);
   };
 
-  // const loadPosts = async () => {
-  //   setLoading(true);
-  //   try {
-  //    const preparedPosts = await getPreparedPosts()
-  //    setPosts(preparedPosts);
-  //   } catch(e) {
-  //     setError('Error, try again later')
-  //   }
-  //   setLoading(false);
-  // };
-
-
   const searchQuery = (event: React.ChangeEvent<HTMLInputElement>) => {
     const target = event.target.value;
-
     setQuery(target);
   };
 
   const filteredposts = useMemo(() => posts.filter(post => {
-    return (post.title + post.body).toLowerCase().includes(query.trim().toLowerCase());
+    return(post.title + post.body).toLowerCase().includes(query.trim().toLowerCase());
   }), [query, posts]);
 
   return (

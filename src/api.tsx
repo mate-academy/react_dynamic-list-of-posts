@@ -18,16 +18,16 @@ export const getComments = () => {
     .then(response => response.json());
 };
 
-// export const getPreparedPosts = async () => {
-//   const [postFromServer, usersFromServer, commentsFromServer] = await Promise.all([
-//     getUsers(),
-//     getPosts(),
-//     getComments(),
-//   ]);
+export const getPreparedPosts = async () => {
+  const [postFromServer, usersFromServer, commentsFromServer] = await Promise.all([
+    getPosts(),
+    getUsers(),
+    getComments(),
+  ]);
 
-//  return postFromServer.map((post: Post) => ({
-//     ...post,
-//     user: usersFromServer.find((user: User) => user.id === post.userId),
-//     comments: commentsFromServer.filter((comment: Comment) => comment.postId === post.id),
-//   }));
-// };
+ return postFromServer.map((post: Post) => ({
+    ...post,
+    user: usersFromServer.find((user: User) => user.id === post.userId),
+    comments: commentsFromServer.filter((comment: Comment) => comment.postId === post.id),
+  }));
+};
