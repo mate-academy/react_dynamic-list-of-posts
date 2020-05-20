@@ -1,0 +1,44 @@
+.input {
+  box-sizing: border-box;
+  display: block;
+  width: 70%;
+  height: 30px;
+  margin: 20px auto 0;
+  padding-left: 10px;
+  border-radius: 4px;
+  border: 2px solid #b2dffb;
+  outline: none;
+}
+
+.input:hover {
+  box-shadow: 0 0 5px 0 rgba(60,108,176,1);
+}
+
+.input:focus {
+  border-color: #8eb2c9;
+}
+
+.btn {
+  display: block;
+  width: 100px;
+  height: 40px;
+  margin: 30px auto 0;
+  border: none;
+  border-radius: 2px;
+  outline: none;
+  background: #b2dffb;
+  text-transform: uppercase;
+  transition: box-shadow 0.4s, scale 0.5s;
+}
+
+.btn:hover {
+  box-shadow: 2px 2px 5px 1px rgba(60,108,176,1);
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+.text {
+  text-align: center;
+}

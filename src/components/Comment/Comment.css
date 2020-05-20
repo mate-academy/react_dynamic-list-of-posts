@@ -1,0 +1,30 @@
+.comment {
+  margin: 10px;
+  background: #ffd369;
+  list-style: none;
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.comment__email {
+  margin-top: 10px;
+  font-size: 0.85em;
+  color: #35477d;
+  text-decoration: none;
+}
+
+.comment__email:hover {
+  color: #e22c63;
+}
+
+.comment__name {
+  text-transform: uppercase;
+  font-size: 0.9em;
+  margin-bottom: 8px;
+}
+
+.comment__body {
+  font-style: italic;
+  font-size: 0.9em;
+  margin-bottom: 8px;
+}
