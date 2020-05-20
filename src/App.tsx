@@ -9,10 +9,11 @@ import { Filter } from './Components/Filter';
 const App = () => {
   const [posts, setPost] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [term, setTerm] = useState('');
+  const [filterValue, setFilterValue] = useState('');
   const [value, setValue] = useState('');
+
   const handleLoadClick = async () => {
     setIsLoading(true);
     try {
@@ -28,7 +29,7 @@ const App = () => {
       }));
 
       setPost(completedPost);
-      setLoaded(true);
+      setIsLoaded(true);
     } catch (e) {
       setErrorMessage('loading error, please try again later');
     }
@@ -37,33 +38,34 @@ const App = () => {
   };
 
   const setTermWithDebounce = useCallback(
-    debounce(setTerm, 1000), []
+    debounce(setFilterValue, 1000), []
   )
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
-    setTermWithDebounce(value);
+    setTermWithDebounce(e.target.value);
   };
 
 
-  const search = (postsSearch: Post[], termSearch: string) => {
-    if (term.length === 0) {
+  const searchBlog = (postsSearch: Post[], termSearch: string) => {
+    if (filterValue.length === 0) {
       return postsSearch;
     }
 
-    return postsSearch.filter(post => (
-      post.body.toLowerCase().includes(termSearch.toLowerCase())
-      || post.title.toLowerCase().includes(termSearch.toLowerCase())
-    ));
+    return postsSearch.filter(post => {
+      const bodyNormalize = post.body.toLowerCase();
+      const titleNormalize = post.title.toLowerCase();
+      return (bodyNormalize + titleNormalize).includes(termSearch.toLowerCase())
+    })
   };
 
-  const visiblePost = search(posts, term);
+  const visiblePost = searchBlog(posts, filterValue);
 
   return (
     <div className="container">
       <h1 className="text-center">Dynamic list of posts</h1>
 
-      {!loaded ? (
+      {!isLoaded ? (
         <div className="text-center">
           <button type="button" className="btn btn-primary" onClick={handleLoadClick}>
             {isLoading && 'Loading...'}
