@@ -31,9 +31,10 @@ export const PostList: React.FC<Props> = ({ posts }) => {
   return (
     <div className="post__list">
       <label htmlFor="input">
-        C&apos;mon, let&apos;s find smth
+        C&apos;mon, let&apos;s find
         <input
           type="text"
+          placeholder=" something interesting"
           className="ml5"
           id="input"
           value={query}
