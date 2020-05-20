@@ -1,0 +1,27 @@
+.post {
+  width: 99.5%;
+  height: auto;
+  border: 2px solid rgb(38, 38, 187);
+  background-color: rgba(177, 204, 238, 0.12);
+  border-radius: 25px;
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+}
+
+.post__title {
+  width: 90%;
+  margin: 20px auto;
+  text-decoration: underline;
+  font-size: 25px;
+  color: rgb(30, 30, 177);
+}
+
+.post__body {
+  width: 94%;
+  margin: auto;
+}
+
+.post__body p {
+  text-align: justify;
+  line-height: 1.6;
+}

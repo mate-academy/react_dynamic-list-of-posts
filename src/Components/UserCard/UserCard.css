@@ -1,0 +1,22 @@
+.post__user {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 94%;
+  font-size: 16px;
+  color: grey;
+  margin: auto;
+}
+
+.post__user-name {
+  top: 30%;
+}
+
+.post__user p {
+  margin: 0;
+}
+
+.post__user-address p {
+  margin: 0;
+  text-align: right;
+}
