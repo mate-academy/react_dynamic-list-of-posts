@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import './App.css';
 
 import
@@ -13,6 +13,7 @@ import
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [search, setSearch] = useState<string>('');
 
   const handleLoadClick = async () => {
     setIsLoading(true);
@@ -32,6 +33,12 @@ const App: React.FC = () => {
     setPosts(postsWithComments);
   };
 
+  const filterPostList = useMemo(() => (
+    posts.filter(({ title, body }) => (title + body)
+      .toLowerCase()
+      .includes(search.toLowerCase()))
+  ), [search, posts]);
+
   return (
     <div className="App">
       <h1 className="title">Dynamic list of posts</h1>
@@ -41,9 +48,15 @@ const App: React.FC = () => {
         </button>
       ) : (
         <>
+          <input
+            className="filter-input"
+            type="text"
+            onChange={event => (setSearch(event.target.value))}
+            placeholder="search by title or text"
+          />
           <ul className="post-list">
-            {posts.map(post => (
-              <li className="post-card">
+            {filterPostList.map(post => (
+              <li className="post-card" key={post.id}>
                 <h2>{post.title}</h2>
                 <p>{post.body}</p>
                 <div>
@@ -57,8 +70,8 @@ const App: React.FC = () => {
                     <span className="bold-font">User-address: </span>
                     {
                       `${post.user?.address.suite},
-                  ${post.user?.address.street},
-                  ${post.user?.address.city}`
+                      ${post.user?.address.street},
+                      ${post.user?.address.city}`
                     }
                   </address>
                 </div>

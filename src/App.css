@@ -22,6 +22,22 @@ body {
   background-color: #f1f9f9;
 }
 
+.filter-input {
+  height: 25px;
+  width: 250px;
+  border-radius: 10px;
+  background-color: #f1f9f9;
+  border: 2px solid #40818e;
+  margin: 10px;
+  padding-left: 10px;
+  font-size: inherit;
+}
+
+.filter-input:focus {
+  outline: none;
+  background-color: #e1f2fb;
+}
+
 .post-list {
   list-style: none;
   background-color: #e1f2fb;
