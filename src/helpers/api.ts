@@ -18,11 +18,11 @@ export const getPostsData = async (): Promise<PostWithUser[]> => {
     getDataFromServer(`${API_URL}users.json`),
   ]);
 
-  const PrepearedPosts = posts.map((post: Post) => ({
+  const prepearedPosts = posts.map((post: Post) => ({
     ...post,
     user: users.find((user: User) => user.id === post.userId),
     comments: comments.filter((comment: Comment) => comment.postId === post.id),
   }));
 
-  return PrepearedPosts;
+  return prepearedPosts;
 };

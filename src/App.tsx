@@ -22,11 +22,11 @@ const App: FC = () => {
   };
 
   const changeHandler = (event: ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
+    setQuery((event.target.value).trim());
   };
 
   const filteredPosts = useMemo(() => posts.filter(post => {
-    return (post.title + post.body).toLowerCase().includes(query.trim().toLowerCase());
+    return (post.title + post.body).toLowerCase().includes(query.toLowerCase());
   }), [query, posts]);
 
   return (
