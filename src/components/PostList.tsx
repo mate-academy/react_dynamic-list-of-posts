@@ -14,7 +14,8 @@ export const PostList: React.FC<Props> = ({ posts }) => {
   const visiblePosts = useMemo(() => {
     const pattern = new RegExp(filterQuery, 'i');
 
-    return posts.filter(({ body, title }) => pattern.test(body + title));
+    return posts
+      .filter(({ body, title }) => pattern.test(body + title));
   }, [posts, filterQuery]);
 
   const setFilterQueryWithDebounce = useCallback(
@@ -23,8 +24,10 @@ export const PostList: React.FC<Props> = ({ posts }) => {
   );
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-    setFilterQueryWithDebounce(event.target.value);
+    const { value } = event.target;
+
+    setQuery(value);
+    setFilterQueryWithDebounce(value);
   };
 
   return (

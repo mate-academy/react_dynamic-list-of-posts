@@ -1,15 +1,15 @@
 const API_URL = 'https://mate-academy.github.io/react_dynamic-list-of-posts/api';
 
-const getAll = <T>(url: string): Promise<T[]> => {
+const getAllData = <T>(url: string): Promise<T[]> => {
   return fetch(API_URL + url)
     .then(response => response.json());
 };
 
-export const posts = () => getAll<PostType>('/posts.json');
+export const posts = () => getAllData<PostType>('/posts.json');
 
-export const users = () => getAll<UserType>('/users.json');
+export const users = () => getAllData<UserType>('/users.json');
 
-export const comments = () => getAll<CommentType>('/comments.json');
+export const comments = () => getAllData<CommentType>('/comments.json');
 
 export const getPosts = async (): Promise<PostType[]> => {
   const [
