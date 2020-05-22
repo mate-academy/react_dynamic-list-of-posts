@@ -1,0 +1,32 @@
+.comment__list {
+  list-style-type: none;
+  background-color: dodgerblue;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 15px;
+}
+
+.comment__item {
+  background-color: orange;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 15px;
+}
+
+.comment__name {
+  text-align: center;
+  font-size: 140%;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.comment__body {
+  font-size: 120%;
+  font-weight: 500;
+}
+
+.comment__email {
+  display: flex;
+  justify-content: center;
+  text-decoration: none;
+}

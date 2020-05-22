@@ -47,3 +47,7 @@ interface Comment {
   email: string;
   body: string;
 }
+
+interface CostsWithUsersAndComments extends Post{
+
+}
