@@ -12,13 +12,6 @@ export interface User {
   }
 }
 
-export interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
-
 export interface Comment {
   postId: number;
   id: number;
@@ -27,11 +20,20 @@ export interface Comment {
   body: string;
 }
 
-const getAll = <T>(url: string): Promise<T[]> => {
+export interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+  user?: User;
+  comments?: Comment[];
+}
+
+const getData = <T>(url: string): Promise<T[]> => {
   return fetch(API_URL + url).then(response => response.json());
 }
 
-export const getUsers = () => getAll<User>('/users.json');
-export const getPosts = () => getAll<Post>('/posts.json');
-export const getComments = () => getAll<Comment>('/comments.json');
+export const getUsers = () => getData<User>('/users.json');
+export const getPosts = () => getData<Post>('/posts.json');
+export const getComments = () => getData<Comment>('/comments.json');
 

@@ -2,27 +2,25 @@ import React from 'react'
 import { User } from '../../helpers/api';
 import './UserCard.css';
 
-type Props = {
-  user: User;
-}
+type Props = User;
 
-export const UserCard: React.FC<Props> = ({ user }) => (
-  <div className="post__autor user" key={user.id}>
+export const UserCard: React.FC<Props> = ({ id, name, email, address }) => (
+  <div className="post__autor user" key={id}>
     <div className="user__info">
       <span className="user__info-decor">Autor: </span>
-      {user.name}
+      {name}
     </div>
     <div className="user__info">
       <span className="user__info-decor">Email: </span>
-      {user.email}
+      {email}
     </div>
     <div className="user__info">
       <span className="user__info-decor">Address: </span>
-      {user.address.city}
+      {address.city}
       ,{' '}
-      {user.address.street}
+      {address.street}
       ,{' '}
-      {user.address.suite}
+      {address.suite}
     </div>
   </div>
 )

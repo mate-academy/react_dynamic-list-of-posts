@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import './App.css';
 import { PostList } from './components/PostList/PostList';
 
@@ -8,16 +8,14 @@ import {
   getComments,
   User,
   Post,
-  Comment } from './helpers/api';
+  Comment
+} from './helpers/api';
 
 export const App = () => {
-  const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [comments, setCommnets] = useState<Comment[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
   const [filterQuery, setFilterQuery] = useState('');
 
   const handleClick = async () => {
@@ -28,14 +26,19 @@ export const App = () => {
       const usersFromServer = await getUsers();
       const commentsFromServer = await getComments();
 
-      setPosts(postsFromServer);
-      setFilteredPosts(postsFromServer);
-      setUsers(usersFromServer);
-      setCommnets(commentsFromServer);
+      const modifiedPostList = postsFromServer.map((post: Post) => ({
+        ...post,
+        user: usersFromServer.find((user: User) => user.id === post.userId),
+        comments: commentsFromServer.filter((comment: Comment) =>
+          comment.postId === post.id),
+      }));
+
+      setPosts(modifiedPostList);
       setIsLoaded(true);
       setErrorMessage('');
     } catch (exeption) {
       setErrorMessage('Error');
+      setIsLoading(false);
     }
 
     setIsLoading(false);
@@ -43,19 +46,21 @@ export const App = () => {
 
   const changeFilterInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilterQuery(event.target.value);
-
-    setTimeout(() => {
-      setFilteredPosts(posts.filter(({ title, body }) => (title + body)
-        .toLowerCase()
-        .includes(filterQuery.toLowerCase())));
-    }, 1000);
   }
 
   const resetFilter = () => {
-    setFilteredPosts(posts);
     setFilterQuery('');
   }
 
+  const filterPosts = (filterQuery: string, posts: Post[]) => (
+    posts.filter(({ title, body }) =>
+      (title + body).toLowerCase().includes(filterQuery.toLowerCase()))
+  );
+
+  const visiblePosts = useMemo(() => filterPosts(filterQuery, posts), [
+    filterQuery,
+    posts,
+  ]);
 
   return (
     <section className="post-list">
@@ -90,9 +95,7 @@ export const App = () => {
           </div>
 
           <PostList
-            posts={filteredPosts}
-            users={users}
-            comments={comments}
+            posts={visiblePosts}
           />
         </>
 
