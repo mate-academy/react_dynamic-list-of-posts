@@ -1,0 +1,25 @@
+.comment {
+  margin: 32px 0;
+  padding: 16px 12px;
+
+  background-color: rgb(255,246,255);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+
+  transition: all 0.35s;
+}
+
+.comment:hover {
+  box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+  transform: translateY(-4px);
+}
+
+.comment__title {
+  margin-top: 4px;
+
+  font-size: 18px;
+}
+
+.comment__text,
+.comment__email {
+  font-size: 14px;
+}

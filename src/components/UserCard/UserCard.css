@@ -1,0 +1,13 @@
+.user {
+  margin: 32px 0 48px;
+  padding: 16px 0;
+
+  border-top: 1px solid grey;
+  border-bottom: 1px solid grey;
+  font-size: 16px;
+}
+
+.user__info-decor {
+  color: grey;
+  font-size: 14px;
+}
