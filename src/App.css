@@ -1,0 +1,21 @@
+.wrapper {
+  width: 800px;
+  margin: 0 auto;
+}
+
+.post {
+  background-color: aqua;
+  padding: 15px;
+  margin: 10px 0 0;
+}
+
+.post__title {
+  text-align: center;
+}
+
+.comment {
+  width: 600px;
+  padding: 5px;
+  margin: 15px auto 0;
+  background-color: burlywood;
+}
