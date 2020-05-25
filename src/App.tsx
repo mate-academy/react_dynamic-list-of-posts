@@ -4,12 +4,12 @@ import {
   getUsers,
   getPosts,
   getComents,
-  Posts,
+  Post,
 } from './helpers/api';
 import PostList from './components/PostList/PostList';
 
 const App = () => {
-  const [posts, setPosts] = useState<Posts[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
@@ -37,9 +37,9 @@ const App = () => {
   };
 
   const visiblePosts = useMemo(() => {
-    const postsFromFilter = (postsItem: Posts[], queryItem: string) => {
+    const postsFromFilter = (postsItem: Post[], queryItem: string) => {
       return postsItem
-        .filter(post => post.title.includes(queryItem) || post.body.includes(queryItem));
+        .filter(post => (post.title + post.body).includes(queryItem));
     };
 
     return postsFromFilter(posts, query);

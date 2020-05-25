@@ -1,8 +1,8 @@
 import React from 'react';
 import './Comment.css';
-import { Comments } from '../../helpers/api';
+import { Comment } from '../../helpers/api';
 
-const Comment: React.FC<Comments> = ({ name, body, email }) => (
+const CommentItem: React.FC<Comment> = ({ name, body, email }) => (
   <div className="post__comments-list_comment">
     <p className="post__comments-list_comment-name">
       {name}
@@ -16,4 +16,4 @@ const Comment: React.FC<Comments> = ({ name, body, email }) => (
   </div>
 );
 
-export default Comment;
+export default CommentItem;

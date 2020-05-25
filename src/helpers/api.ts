@@ -1,5 +1,5 @@
 
-const getAll = <T>(url: string): Promise<T[]> => {
+const getAllData = <T>(url: string): Promise<T[]> => {
   const API_URL = 'https://mate-academy.github.io/react_dynamic-list-of-posts/api/';
 
   return fetch(`${API_URL}${url}.json`)
@@ -17,16 +17,16 @@ export interface User {
   company: object;
 }
 
-export interface Posts {
+export interface Post {
   userId: number;
   id: number;
   title: string;
   body: string;
   user?: User;
-  comments?: Comments[];
+  comments?: Comment[];
 }
 
-export interface Comments {
+export interface Comment {
   postId: number;
   id: number;
   name: string;
@@ -35,6 +35,6 @@ export interface Comments {
   user?: User;
 }
 
-export const getUsers = () => (getAll<User>('users'));
-export const getPosts = () => (getAll<Posts>('posts'));
-export const getComents = () => (getAll<Comments>('comments'));
+export const getUsers = () => (getAllData<User>('users'));
+export const getPosts = () => (getAllData<Post>('posts'));
+export const getComents = () => (getAllData<Comment>('comments'));

@@ -1,10 +1,10 @@
 import React from 'react';
-import Comment from '../Comment/Comment';
+import CommentItem from '../Comment/Comment';
 import './CommentsList.css';
-import { Comments } from '../../helpers/api';
+import { Comment } from '../../helpers/api';
 
 interface CommentsList {
-  comments: Comments[];
+  comments: Comment[];
 }
 
 const CommentsList: React.FC<CommentsList> = ({ comments }) => (
@@ -13,7 +13,7 @@ const CommentsList: React.FC<CommentsList> = ({ comments }) => (
       Comments:
     </p>
     {comments.map(comment => (
-      <Comment key={comment.id} {...comment} />
+      <CommentItem key={comment.id} {...comment} />
     ))}
   </div>
 );

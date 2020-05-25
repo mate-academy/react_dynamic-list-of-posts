@@ -2,9 +2,9 @@ import React from 'react';
 import CommentsList from '../CommentsList/CommentsList';
 import UserItem from '../User/User';
 import './Post.css';
-import { Posts } from '../../helpers/api';
+import { Post } from '../../helpers/api';
 
-const Post: React.FC<Posts> = ({
+const PostItem: React.FC<Post> = ({
   title,
   body,
   user,
@@ -36,4 +36,4 @@ const Post: React.FC<Posts> = ({
   </div>
 );
 
-export default Post;
+export default PostItem;
