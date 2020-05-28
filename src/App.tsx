@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import './App.css';
 import PostList from './components/PostList';
 
@@ -25,15 +25,14 @@ const App = () => {
     setPosts(postsWithUsersAndComments);
   };
 
- const foundPosts = (searchQuery: string): Post[] => {
 
-   return posts.filter((post) => {
-     const string = (`${post.title} ${post.body}`).toLowerCase();
+  const foundPosts = useMemo(() => (searchQuery: string): Post[] => {
+    return posts.filter((post) => {
+      const string = (`${post.title} ${post.body}`).toLowerCase();
 
-     return string.includes(searchQuery);
-   });
-
- };
+      return string.includes(searchQuery);
+    });
+  }, [posts, inputValue]);
 
   return (
     <div className="wrapper">
@@ -48,7 +47,7 @@ const App = () => {
             onChange={event => steInputValue(event.target.value.toLowerCase())}
           />
 
-          <PostList posts={foundPosts(inputValue)}/>
+          <PostList posts={foundPosts(inputValue)} />
         </div>
       ) : (
         <button
