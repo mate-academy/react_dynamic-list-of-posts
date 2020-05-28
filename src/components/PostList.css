@@ -1,0 +1,28 @@
+.post__list {
+  list-style-type: none;
+}
+
+.post__item {
+  background-color: deepskyblue;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 20px;
+}
+
+.post__title {
+  font-size: 200%;
+  font-style: revert;
+  text-align: center;
+  background-color: mediumspringgreen;
+}
+
+.post__author {
+  font-size: 140%;
+  font-style: revert;
+}
+
+.post__body {
+  font-size: 180%;
+  font-style: italic;
+  text-align: center;
+}
