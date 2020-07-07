@@ -1,0 +1,38 @@
+.control {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.control__button {
+  margin-bottom: 50px;
+}
+
+.post {
+  margin-bottom: 80px;
+}
+
+.post__comment {
+  margin-left: 24px;
+  padding-left: 24px;
+  border-left: 1px solid #f44336;
+}
+
+.post__email {
+  color: #c62828;
+  transition: color 0.2s;
+}
+
+.post__email:hover {
+  color: #e57373;
+}
+
+.form {
+  max-width: 500px;
+  margin-bottom: 80px;
+}
+
+.input-field input[type="text"]:focus {
+  border-bottom: 1px solid #f44336 !important;
+  box-shadow: 0 1px 0 0 #f44336 !important;
+}
