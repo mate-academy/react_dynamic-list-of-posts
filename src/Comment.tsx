@@ -1,7 +1,7 @@
 import React from 'react';
 import { commentsType } from './interfaces';
 
-export type commentType = {
+type commentType = {
   comment: commentsType;
 };
 

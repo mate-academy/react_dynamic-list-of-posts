@@ -3,7 +3,7 @@ import React from 'react';
 import { preparedPostsType } from './interfaces';
 import { Comment } from './Comment';
 
-export type postType = {
+type postType = {
   post: preparedPostsType;
 };
 
