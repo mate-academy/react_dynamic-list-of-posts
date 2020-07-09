@@ -1,16 +1,22 @@
 /* eslint-disable no-console */
 import React from 'react';
-import { getUsers, getPosts, getComments } from './api';
 import {
-  commentsType, postsType, usersType, preparedPostsType, handleLoadingType,
+  fetchData, URLComments, URLPosts, URLUsers,
+} from './api';
+import {
+  commentsType, postsType, usersType, preparedPostsType,
 } from './interfaces';
+
+type handleLoadingType = {
+  handleSetIsLoading: (state: string, list: preparedPostsType[]) => (void);
+};
 
 export const ButtonLoading: React.FC<handleLoadingType> = ({ handleSetIsLoading }) => {
   const loadFromServer = async () => {
     handleSetIsLoading('isLoadingNow', []);
-    const users: usersType[] = await getUsers();
-    const posts: postsType[] = await getPosts();
-    const comments: commentsType[] = await getComments();
+    const users = await fetchData<usersType>(URLUsers);
+    const posts = await fetchData<postsType>(URLPosts);
+    const comments = await fetchData<commentsType>(URLComments);
 
     const findAuthor = (userId: number) => {
       const person: usersType | undefined = users.find(user => user.id === userId);

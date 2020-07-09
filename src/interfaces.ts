@@ -6,10 +6,6 @@ export type commentsType = {
   body: string;
 };
 
-export type commentType = {
-  comment: commentsType;
-};
-
 export type postsType = {
   userId: number;
   id: number;
@@ -50,16 +46,4 @@ export type preparedPostsType = {
   id: number;
   title: string;
   body: string;
-};
-
-export type postType = {
-  post: preparedPostsType;
-};
-
-export type postsListType = {
-  posts: preparedPostsType[];
-};
-
-export type handleLoadingType = {
-  handleSetIsLoading: (state: string, list: preparedPostsType[]) => void;
 };
