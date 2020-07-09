@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { UserInterface } from '../../interfaces/UserInterface';
 import { CommentInterface } from '../../interfaces/CommentInterface';
 import { Comment } from '../Comment';
@@ -10,7 +10,7 @@ interface PostItemProps {
   comments: CommentInterface[];
 }
 
-export const PostItem: React.FC<PostItemProps> = ({
+export const PostItem: FC<PostItemProps> = ({
   title,
   body,
   user,

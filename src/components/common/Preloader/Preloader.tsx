@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { FC } from 'react';
 
-export const Preloader: React.FC = () => (
+export const Preloader: FC = () => (
   <div className="preloader-wrapper medium active">
     <div className="spinner-layer spinner-blue">
       <div className="circle-clipper left">

@@ -1,15 +1,11 @@
 import { UserInterface } from './UserInterface';
 import { CommentInterface } from './CommentInterface';
 
-export interface PostOriginalInterface {
+export interface PostInterface {
   userId: number;
   id: number;
   title: string;
   body: string;
-}
-
-export interface PostInterface extends PostOriginalInterface {
-  [key: string]: string | number | UserInterface | CommentInterface[];
-  user: UserInterface;
-  comments: CommentInterface[];
+  user?: UserInterface;
+  comments?: CommentInterface[];
 }

@@ -1,33 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import debounce from 'lodash/debounce';
 import { fetchData } from '../../api/api';
 import { Preloader } from '../common/Preloader';
 import { PostsList } from '../PostsList';
-import { PostInterface, PostOriginalInterface } from '../../interfaces/PostInterface';
+import { PostInterface } from '../../interfaces/PostInterface';
 import { UserInterface } from '../../interfaces/UserInterface';
 import { CommentInterface } from '../../interfaces/CommentInterface';
 import { FilterField } from '../FilterField/FilterField';
 
-export const Posts: React.FC = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isFetched, setIsFetched] = useState<boolean>(false);
+export const Posts: FC = () => {
+  const [isLoading, setLoading] = useState<boolean>(false);
+  const [isFetched, setFetched] = useState<boolean>(false);
   const [posts, setPosts] = useState<PostInterface[]>([]);
   const [visiblePosts, setVisiblePosts] = useState<PostInterface[]>([]);
 
   const load = async () => {
-    setIsLoading(true);
+    setLoading(true);
 
-    const users = await fetchData('users');
-    const postsFromServer = await fetchData('posts');
-    const comments = await fetchData('comments');
+    const users = await fetchData<UserInterface>('users');
+    const postsFromServer = await fetchData<PostInterface>('posts');
+    const comments = await fetchData<CommentInterface>('comments');
 
-    setPosts(postsFromServer.map((post: PostOriginalInterface) => ({
+    setPosts(postsFromServer.map((post) => ({
       ...post,
-      user: users.find((person: UserInterface) => person.id === post.userId),
-      comments: comments.filter((comment: CommentInterface) => comment.postId === post.id),
+      user: users.find((person) => person.id === post.userId),
+      comments: comments.filter((comment) => comment.postId === post.id),
     })));
 
-    setIsFetched(true);
+    setFetched(true);
   };
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export const Posts: React.FC = () => {
 
   const handleChange = debounce((value: string) => {
     setVisiblePosts(posts
-      .filter((post: PostInterface) => (
+      .filter((post) => (
         post.title.includes(value) || post.body.includes(value)
       )));
   }, 1000);
