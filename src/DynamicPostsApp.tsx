@@ -25,7 +25,7 @@ export const DynamicPostsApp: React.FC = () => {
 
     setInputValue(value);
     const filtered = postsList.filter(post => post.title.includes(value)
-      || post.body.includes(value));
+    || post.body.includes(value));
 
     setFilteredList(filtered);
   };

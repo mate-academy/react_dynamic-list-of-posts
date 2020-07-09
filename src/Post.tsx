@@ -32,7 +32,7 @@ export const Post: React.FC<postType> = ({ post }) => {
       </div>
       <ul>
         {
-          post.comments.map(comment => <Comment comment={comment} />)
+          post.comments.map(comment => <Comment key={uuid()} comment={comment} />)
         }
       </ul>
     </li>
