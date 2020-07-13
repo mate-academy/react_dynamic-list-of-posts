@@ -4,11 +4,11 @@ import { uuid } from 'uuidv4';
 import { preparedPostsType } from './interfaces';
 import { Post } from './Post';
 
-type postsListType = {
+type Props = {
   posts: preparedPostsType[];
 };
 
-export const PostsList: React.FC<postsListType> = ({ posts }) => (
+export const PostsList: React.FC<Props> = ({ posts }) => (
   <ul className="posts">
     {
       posts.map(post => <Post key={uuid()} post={post} />)

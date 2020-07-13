@@ -7,11 +7,11 @@ import {
   commentsType, postsType, usersType, preparedPostsType,
 } from './interfaces';
 
-type handleLoadingType = {
+type Props = {
   handleSetIsLoading: (state: string, list: preparedPostsType[]) => (void);
 };
 
-export const ButtonLoading: React.FC<handleLoadingType> = ({ handleSetIsLoading }) => {
+export const ButtonLoading: React.FC<Props> = ({ handleSetIsLoading }) => {
   const loadFromServer = async () => {
     handleSetIsLoading('isLoadingNow', []);
     const users = await fetchData<usersType>(URLUsers);

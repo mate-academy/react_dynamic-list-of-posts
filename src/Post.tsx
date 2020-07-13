@@ -3,11 +3,11 @@ import React from 'react';
 import { preparedPostsType } from './interfaces';
 import { Comment } from './Comment';
 
-type postType = {
+type Props = {
   post: preparedPostsType;
 };
 
-export const Post: React.FC<postType> = ({ post }) => (
+export const Post: React.FC<Props> = ({ post }) => (
   <li className="post shadow-lg p-3 mb-5 bg-white font-italic">
     <h4 className="post__title">{post.title}</h4>
     <p>{post.body}</p>
