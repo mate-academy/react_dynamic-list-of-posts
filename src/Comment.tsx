@@ -1,9 +1,9 @@
 import React from 'react';
-import { commentsType } from './interfaces';
+import { CommentsInterface } from './interfaces';
 
-type Props = {
-  comment: commentsType;
-};
+interface Props {
+  comment: CommentsInterface;
+}
 
 export const Comment: React.FC<Props> = ({ comment }) => (
   <li className="comment">

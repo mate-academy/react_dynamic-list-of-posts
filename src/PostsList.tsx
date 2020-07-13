@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
 import React from 'react';
 import { uuid } from 'uuidv4';
-import { preparedPostsType } from './interfaces';
+import { PreparedPostsInterface } from './interfaces';
 import { Post } from './Post';
 
-type Props = {
-  posts: preparedPostsType[];
-};
+interface Props {
+  posts: PreparedPostsInterface[];
+}
 
 export const PostsList: React.FC<Props> = ({ posts }) => (
   <ul className="posts">

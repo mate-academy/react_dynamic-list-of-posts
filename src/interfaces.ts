@@ -1,19 +1,19 @@
-export type commentsType = {
+export interface CommentsInterface {
   postId: number;
   id: number;
   name: string;
   email: string;
   body: string;
-};
+}
 
-export type postsType = {
+export interface PostsInterface {
   userId: number;
   id: number;
   title: string;
   body: string;
-};
+}
 
-export type usersType = {
+export interface UsersInterface {
   id: number;
   name: string;
   username: string;
@@ -35,15 +35,15 @@ export type usersType = {
     catchPhrase: string;
     bs: string;
   };
-};
+}
 
-export type preparedPostsType = {
+export interface PreparedPostsInterface {
   author: string;
   email: string;
   address: string;
-  comments: commentsType[];
+  comments: CommentsInterface[];
   userId: number;
   id: number;
   title: string;
   body: string;
-};
+}

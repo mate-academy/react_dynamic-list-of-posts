@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
 import React from 'react';
-import { preparedPostsType } from './interfaces';
+import { PreparedPostsInterface } from './interfaces';
 import { Comment } from './Comment';
 
-type Props = {
-  post: preparedPostsType;
-};
+interface Props {
+  post: PreparedPostsInterface;
+}
 
 export const Post: React.FC<Props> = ({ post }) => (
   <li className="post shadow-lg p-3 mb-5 bg-white font-italic">

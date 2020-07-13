@@ -4,22 +4,22 @@ import {
   fetchData, URLComments, URLPosts, URLUsers,
 } from './api';
 import {
-  commentsType, postsType, usersType, preparedPostsType,
+  CommentsInterface, PostsInterface, UsersInterface, PreparedPostsInterface,
 } from './interfaces';
 
 type Props = {
-  handleSetIsLoading: (state: string, list: preparedPostsType[]) => (void);
+  handleSetIsLoading: (state: string, list: PreparedPostsInterface[]) => (void);
 };
 
 export const ButtonLoading: React.FC<Props> = ({ handleSetIsLoading }) => {
   const loadFromServer = async () => {
     handleSetIsLoading('isLoadingNow', []);
-    const users = await fetchData<usersType>(URLUsers);
-    const posts = await fetchData<postsType>(URLPosts);
-    const comments = await fetchData<commentsType>(URLComments);
+    const users = await fetchData<UsersInterface>(URLUsers);
+    const posts = await fetchData<PostsInterface>(URLPosts);
+    const comments = await fetchData<CommentsInterface>(URLComments);
 
     const findAuthor = (userId: number) => {
-      const person: usersType | undefined = users.find(user => user.id === userId);
+      const person: UsersInterface | undefined = users.find(user => user.id === userId);
 
       if (person) {
         const address = Object.entries(person.address)
@@ -37,7 +37,7 @@ export const ButtonLoading: React.FC<Props> = ({ handleSetIsLoading }) => {
       return comments.filter(comment => comment.postId === id);
     }
 
-    const preparedPosts: preparedPostsType[] = posts.map((post) => {
+    const preparedPosts: PreparedPostsInterface[] = posts.map((post) => {
       const [author, email, address] = findAuthor(post.userId);
 
       return {
