@@ -3,23 +3,23 @@ import debounce from 'lodash/debounce';
 import { fetchData } from '../../api/api';
 import { Preloader } from '../common/Preloader';
 import { PostsList } from '../PostsList';
-import { PostInterface } from '../../interfaces/PostInterface';
-import { UserInterface } from '../../interfaces/UserInterface';
-import { CommentInterface } from '../../interfaces/CommentInterface';
+import { Post } from '../../interfaces/Post';
+import { User } from '../../interfaces/User';
+import { Comment } from '../../interfaces/Comment';
 import { FilterField } from '../FilterField/FilterField';
 
 export const Posts: FC = () => {
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [isFetched, setFetched] = useState<boolean>(false);
-  const [posts, setPosts] = useState<PostInterface[]>([]);
-  const [visiblePosts, setVisiblePosts] = useState<PostInterface[]>([]);
+  const [isLoading, setLoading] = useState(false);
+  const [isFetched, setFetched] = useState(false);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [visiblePosts, setVisiblePosts] = useState<Post[]>([]);
 
   const load = async () => {
     setLoading(true);
 
-    const users = await fetchData<UserInterface>('users');
-    const postsFromServer = await fetchData<PostInterface>('posts');
-    const comments = await fetchData<CommentInterface>('comments');
+    const users = await fetchData<User>('users');
+    const postsFromServer = await fetchData<Post>('posts');
+    const comments = await fetchData<Comment>('comments');
 
     setPosts(postsFromServer.map((post) => ({
       ...post,

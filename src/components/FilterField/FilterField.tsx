@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 
-interface FilterFieldProps {
+interface Props {
   handleChange(value: string): void;
 }
 
-export const FilterField: FC<FilterFieldProps> = ({ handleChange }) => (
+export const FilterField: FC<Props> = ({ handleChange }) => (
   <div>
     <label htmlFor="filterField">
       Filter by title and body

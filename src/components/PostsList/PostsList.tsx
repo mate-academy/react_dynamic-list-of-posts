@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
-import { PostInterface } from '../../interfaces/PostInterface';
+import { Post } from '../../interfaces/Post';
 import { PostItem } from '../PostItem';
 
-interface PostsListProps {
-  posts: PostInterface[];
+interface Props {
+  posts: Post[];
 }
 
-export const PostsList: FC<PostsListProps> = ({ posts }) => {
+export const PostsList: FC<Props> = ({ posts }) => {
   return (
     <ul>
       {

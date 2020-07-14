@@ -1,16 +1,16 @@
 import React, { FC } from 'react';
-import { UserInterface } from '../../interfaces/UserInterface';
-import { CommentInterface } from '../../interfaces/CommentInterface';
-import { Comment } from '../Comment';
+import { User } from '../../interfaces/User';
+import { Comment } from '../../interfaces/Comment';
+import { CommentItem } from '../CommentItem';
 
-interface PostItemProps {
+interface Props {
   title: string;
   body: string;
-  user: UserInterface;
-  comments: CommentInterface[];
+  user: User;
+  comments: Comment[];
 }
 
-export const PostItem: FC<PostItemProps> = ({
+export const PostItem: FC<Props> = ({
   title,
   body,
   user,
@@ -33,7 +33,7 @@ export const PostItem: FC<PostItemProps> = ({
       <ul>
         {
           comments.map(comment => (
-            <Comment
+            <CommentItem
               key={comment.id}
               body={comment.body}
               name={comment.name}

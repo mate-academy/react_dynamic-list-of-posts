@@ -1,12 +1,12 @@
 import React from 'react';
 
-interface CommentProps {
+interface Props {
   body: string;
   name: string;
   email: string;
 }
 
-export const Comment: React.FC<CommentProps> = ({ body, name, email }) => (
+export const CommentItem: React.FC<Props> = ({ body, name, email }) => (
   <li className="post__comment">
     <a href={`mailto:${email}`} className="post__email">
       {email.toLowerCase()}
