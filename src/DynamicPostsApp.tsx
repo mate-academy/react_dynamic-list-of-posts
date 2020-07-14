@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { ButtonLoading } from './ButtonLoading';
-import { PreparedPostsInterface } from './interfaces';
+import { Post } from './interfaces';
 import { PostsList } from './PostsList';
 
 export const DynamicPostsApp: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetched, setIsFetched] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [postsList, setPostsList] = useState<PreparedPostsInterface[]>([]);
-  const [filteredList, setFilteredList] = useState<PreparedPostsInterface[]>([]);
-  const handleSetIsLoading = (state: string, list: PreparedPostsInterface[]) => {
+  const [postsList, setPostsList] = useState<Post[]>([]);
+  const [filteredList, setFilteredList] = useState<Post[]>([]);
+  const handleSetIsLoading = (state: string, list: Post[]) => {
     if (state === 'isLoadingNow') {
       setIsLoading(true);
     } else {

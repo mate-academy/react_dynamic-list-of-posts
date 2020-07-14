@@ -1,4 +1,4 @@
-export interface CommentsInterface {
+export interface Comment {
   postId: number;
   id: number;
   name: string;
@@ -6,14 +6,14 @@ export interface CommentsInterface {
   body: string;
 }
 
-export interface PostsInterface {
+export interface PostFromServer {
   userId: number;
   id: number;
   title: string;
   body: string;
 }
 
-export interface UsersInterface {
+export interface User {
   id: number;
   name: string;
   username: string;
@@ -37,11 +37,11 @@ export interface UsersInterface {
   };
 }
 
-export interface PreparedPostsInterface {
+export interface Post{
   author: string;
   email: string;
   address: string;
-  comments: CommentsInterface[];
+  comments: Comment[];
   userId: number;
   id: number;
   title: string;

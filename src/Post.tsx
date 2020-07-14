@@ -1,13 +1,13 @@
 /* eslint-disable no-console */
 import React from 'react';
-import { PreparedPostsInterface } from './interfaces';
-import { Comment } from './Comment';
+import { Post } from './interfaces';
+import { CommentItem } from './Comment';
 
 interface Props {
-  post: PreparedPostsInterface;
+  post: Post;
 }
 
-export const Post: React.FC<Props> = ({ post }) => (
+export const PostItem: React.FC<Props> = ({ post }) => (
   <li className="post shadow-lg p-3 mb-5 bg-white font-italic">
     <h4 className="post__title">{post.title}</h4>
     <p>{post.body}</p>
@@ -34,7 +34,7 @@ export const Post: React.FC<Props> = ({ post }) => (
     </div>
     <ul>
       {
-        post.comments.map(comment => <Comment key={comment.id} comment={comment} />)
+        post.comments.map(comment => <CommentItem key={comment.id} comment={comment} />)
       }
     </ul>
   </li>
