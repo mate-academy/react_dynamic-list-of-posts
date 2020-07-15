@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 import { uuid } from 'uuidv4';
 import { Post } from './interfaces';

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 import { Post } from './interfaces';
 import { CommentItem } from './Comment';

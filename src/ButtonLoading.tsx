@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 import {
   fetchData, URLComments, URLPosts, URLUsers,
@@ -7,7 +6,7 @@ import {
   Comment, PostFromServer, User, Post,
 } from './interfaces';
 
-type Props = {
+interface Props {
   handleSetIsLoading: (state: string, list: Post[]) => (void);
 };
 

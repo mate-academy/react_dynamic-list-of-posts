@@ -33,18 +33,14 @@ export const DynamicPostsApp: React.FC = () => {
   return (
     <>
       {
-        !isLoading && !isFetched
-          ? <ButtonLoading handleSetIsLoading={handleSetIsLoading} />
-          : <></>
+        !isLoading && !isFetched && <ButtonLoading handleSetIsLoading={handleSetIsLoading} />
       }
       {
-        isLoading && !isFetched
-          ? <p className="ml mail">Loading ...</p>
-          : <></>
+        isLoading && !isFetched && <p className="ml mail">Loading ...</p>
       }
       {
         !isLoading && isFetched
-          ? (
+          && (
             <>
               <div className="input-field col s12">
                 <input
@@ -60,7 +56,6 @@ export const DynamicPostsApp: React.FC = () => {
               <PostsList posts={filteredList} />
             </>
           )
-          : <></>
       }
     </>
   );
