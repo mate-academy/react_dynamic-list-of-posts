@@ -1,35 +1,35 @@
 export interface Post {
-  readonly userId: number;
-  readonly id: number;
-  readonly title: string;
-  readonly body: string;
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
 }
 
 interface UserAddress {
-  readonly street: string;
-  readonly suite: string;
-  readonly city: string;
+  street: string;
+  suite: string;
+  city: string;
 }
 
 export interface User {
-  readonly id: number;
-  readonly name: string;
-  readonly email: string;
-  readonly address: UserAddress;
+  id: number;
+  name: string;
+  email: string;
+  address: UserAddress;
 }
 
 export interface Comment {
-  readonly postId: number;
-  readonly id: number;
-  readonly name: string;
-  readonly email: string;
-  readonly body: string;
+  postId: number;
+  id: number;
+  name: string;
+  email: string;
+  body: string;
 }
 
 export interface PostExtended {
-  readonly id: number;
-  readonly title: string;
-  readonly body: string;
-  readonly author: User;
-  readonly comments: Comment[];
+  id: number;
+  title: string;
+  body: string;
+  author?: User;
+  comments: Comment[];
 }

@@ -13,7 +13,9 @@ export const PostItem: React.FC<PostExtended> = ({
     <section className="post">
       <h2 className="post__title">{title}</h2>
       <p className="post__body">{body}</p>
-      <PostAuthor {...author} />
+      {
+        !!author && <PostAuthor {...author} />
+      }
       <CommentList comments={comments} />
     </section>
   );

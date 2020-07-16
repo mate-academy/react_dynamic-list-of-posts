@@ -32,7 +32,7 @@ const App: React.FC = () => {
         id,
         title,
         body,
-        author: users.find(user => user.id === userId)!,
+        author: users.find(user => user.id === userId),
         comments: comments.filter(({ postId }) => postId === id),
       }));
 
