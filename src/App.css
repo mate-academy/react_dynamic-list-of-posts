@@ -1,0 +1,17 @@
+html {
+  font-size: 14px;
+}
+
+.App {
+  text-align: center;
+}
+
+ul,
+li {
+  list-style: none;
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+}

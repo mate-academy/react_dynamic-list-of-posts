@@ -1,0 +1,20 @@
+.post__comments {
+  display: flex;
+  align-self: center;
+  flex-wrap: wrap;
+}
+
+.comment__item {
+  display: flex;
+  flex-direction: column;
+
+  width: 200px;
+  padding: 5px;
+
+  text-align: center;
+  border: 1px dashed green;
+}
+
+.comment__item:not(:last-child) {
+  margin-right: 50px;
+}

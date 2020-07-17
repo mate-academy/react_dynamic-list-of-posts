@@ -1,0 +1,21 @@
+.post__title {
+  align-self: center;
+  margin-bottom: 20px;
+
+  font-size: 32px;
+  text-align: center;
+}
+
+.post__body {
+  width: 300px;
+  padding: 5px;
+
+  font-style: italic;
+  border: 1px solid blue;
+}
+
+.post__user {
+  margin-bottom: 50px;
+
+  text-align: center;
+}
