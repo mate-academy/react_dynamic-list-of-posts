@@ -1,0 +1,16 @@
+.list-group {
+  padding: 25px;
+}
+
+.post__item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  width: 80%;
+  /* margin-bottom: 50px; */
+  margin: 0 auto 25px;
+  padding: 25px;
+
+  border: 1px solid black;
+}

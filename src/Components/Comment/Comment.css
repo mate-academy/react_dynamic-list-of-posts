@@ -1,0 +1,8 @@
+.comments__item--name {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.comments__item--body {
+  font-style: italic;
+}
