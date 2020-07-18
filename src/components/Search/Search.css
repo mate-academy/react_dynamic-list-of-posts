@@ -1,0 +1,13 @@
+.buttons-block {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.btn {
+  margin-right: 10px;
+}
+
+.btn:last-child {
+  margin-right: 0;
+}
