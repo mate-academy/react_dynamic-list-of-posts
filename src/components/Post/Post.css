@@ -1,0 +1,12 @@
+.post {
+  border: 3px solid black;
+  border-radius: 30px;
+  padding: 30px;
+  margin-bottom: 20px;
+}
+
+.post__comments {
+  list-style: none;
+
+  display: flex;
+}
