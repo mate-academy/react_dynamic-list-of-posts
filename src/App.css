@@ -1,0 +1,27 @@
+.app {
+  text-align: center;
+}
+
+.comment-list {
+  list-style: none;
+}
+
+.comment-list__item {
+  border: 1px solid black;
+  border-radius: 1%;
+
+  margin: 5px auto;
+  width: 50%;
+}
+
+.post {
+  border: 3px solid black;
+  border-radius: 1%;
+
+  margin-bottom: 5px;
+  padding: 5px;
+}
+
+.post-list {
+  list-style: none;
+}
