@@ -2,17 +2,15 @@
   text-align: center;
 }
 
-.input {
-  width: 20%;
-  height: 30px;
-  font-size: 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  outline: none;
-  border: 1px solid grey;
+.btn {
+  width: 150px;
+  height: 50px;
+  font-size: 30px;
+  line-height: 30px;
 }
 
-.input:focus {
-  background-color: beige;
-  border: 1px solid darkgrey;
+.form-control-lg {
+  width: 50%;
+  margin-bottom: 20px;
+  display: inline-block;
 }
