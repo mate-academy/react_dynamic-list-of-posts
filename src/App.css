@@ -1,0 +1,18 @@
+.App {
+  text-align: center;
+}
+
+.input {
+  width: 20%;
+  height: 30px;
+  font-size: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  outline: none;
+  border: 1px solid grey;
+}
+
+.input:focus {
+  background-color: beige;
+  border: 1px solid darkgrey;
+}
