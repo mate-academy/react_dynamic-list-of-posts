@@ -1,0 +1,27 @@
+* {
+  margin: 0;
+  padding: 10px;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.post__list {
+  list-style: none;
+}
+
+.post__user {
+  width: 50%;
+  margin: 0 auto;
+  padding: 10px;
+  border: 2px solid black;
+}
+
+.post__text {
+  margin: 0 auto;
+  width: 50%;
+  border: 2px solid black;
+}
+
+.post__body {
+  padding: 10px;
+}
