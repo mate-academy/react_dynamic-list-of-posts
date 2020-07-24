@@ -4,10 +4,11 @@ import LoadButton from './components/LoadButton';
 import { PostList } from './components/PostList';
 
 export const App: React.FC = () => {
-  const [praperedList, setPraperedList] = useState<PreparedProps[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isStarted, setIsStarted] = useState<boolean>(false);
+  const [posts, setPosts] = useState<PreparedProps[]>([]);
+  const [filterPosts, setFilterPosts] = useState<PreparedProps[]>([]);
 
   const beforeLoaded = () => {
     setIsLoading(true);
@@ -15,9 +16,20 @@ export const App: React.FC = () => {
   };
 
   const afterLoaded = (list: PreparedProps[]) => {
-    setPraperedList(list);
+    setPosts(list);
+    setFilterPosts(list);
     setIsLoading(false);
     setIsLoaded(true);
+  };
+
+  const inputHandler = (event: { target: { value: string }}) => {
+    const { value } = event.target;
+
+    setFilterPosts(
+      [...posts].filter(post => (
+        post.title.toLowerCase().includes(value.toLowerCase())
+      || post.body.toLowerCase().includes(value.toLowerCase()))),
+    );
   };
 
   return (
@@ -38,7 +50,15 @@ export const App: React.FC = () => {
       }
       {
         isLoaded
-          ? <PostList list={praperedList} />
+          ? (
+            <>
+              <input
+                onChange={inputHandler}
+                placeholder="search..."
+                type="text"/>
+              <PostList list={filterPosts} />
+            </>
+          )
           : <></>
       }
     </div>
