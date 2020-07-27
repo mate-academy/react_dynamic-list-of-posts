@@ -1,0 +1,25 @@
+.commentList {
+  border: solid 2px rgb(0, 192, 160);
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: 50px;
+  max-width: 600px;
+  padding: 10px;
+}
+
+.commentList__title {
+  text-align: center;
+  margin: 5px;
+}
+
+.commentList__mail {
+  text-align: right;
+  font-size: 0.7em;
+}
+
+.commentList__comment {
+  margin: 5px 0;
+  padding: 10px;
+  border: solid 1px rgb(179, 58, 118);
+
+}
