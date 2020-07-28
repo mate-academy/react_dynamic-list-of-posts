@@ -1,13 +1,13 @@
-import React from 'react';
+import React, {FC} from 'react';
 import { Post } from './Post';
 import './PostList.css';
 import { PreparedPosts } from '../interfaces';
 
-interface PostList {
+interface Props {
   preparedPosts: PreparedPosts[];
 }
 
-export const PostList = ({ preparedPosts }: PostList) => (
+export const PostList: FC<Props> = ({ preparedPosts }) => (
   <>
     {preparedPosts.map(post => (
 

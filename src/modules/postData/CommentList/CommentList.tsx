@@ -1,12 +1,12 @@
-import React from 'react';
+import React, {FC} from 'react';
 import './CommentList.css';
 import { Comment } from '../../interfaces';
 
-interface CommentList {
+interface Props {
   props: Comment[];
 }
 
-export const CommentList = ({ props }: CommentList) => (
+export const CommentList: FC<Props> = ({ props }) => (
   <div className="commentList">
 
     {props.map(({ name, body, email, id }) => {

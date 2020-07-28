@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {FC} from 'react';
 import './User.css';
 import { User as UserInterface } from '../../interfaces';
 
-export const User = ({ name, email, address, id }: UserInterface) => (
+export const User: FC<UserInterface> = ({ name, email, address, id }) => (
   <div className="user" key={id}>
 
     <b className="user__name">
