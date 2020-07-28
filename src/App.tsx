@@ -20,8 +20,8 @@ const App = () => {
     setPreparedPosts(
       posts.map(post => ({
         ...post,
-        user: users.find((person: any) => person.id === post.userId),
-        comments: comments.filter((comment: any) => comment.postId === post.id),
+        user: users.find(person => person.id === post.userId),
+        comments: comments.filter(comment => comment.postId === post.id),
       }) as PreparedPosts),
     );
     setLoaded(true);
@@ -48,7 +48,7 @@ const App = () => {
     return (
       <>
         <input type="text"
-          onChange={(event: any) => {
+          onChange={event => {
             setFilterTitle(event.target.value)
           }
         }
