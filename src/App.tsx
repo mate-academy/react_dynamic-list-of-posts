@@ -1,8 +1,67 @@
-import React from 'react';
-import './App.css';
+import React, { useState, useMemo } from 'react';
+import { fetchData } from './modules/fetchData';
+import { PostList } from './modules/postData/PostList';
+import { PreparedPosts, User, Post, Comment } from './modules/interfaces';
 
-const App = () => (
-  <h1>Dynamic list of posts</h1>
-);
+import './App.css';
+import { DownloadTask } from './modules/DownloadTask';
+
+const App = () => {
+  const [preparedPosts, setPreparedPosts] = useState<PreparedPosts[]>([]);
+  const [isLoaded, setLoaded] = useState(false);
+  const [buttonText, setButtonText] = useState('Download tasks');
+  const [filterTitle, setFilterTitle] = useState('');
+
+  async function getData() {
+    const posts: Post[] = await fetchData('posts.json');
+    const users: User[] = await fetchData('users.json');
+    const comments: Comment[] = await fetchData('comments.json');
+
+    setPreparedPosts(
+      posts.map(post => ({
+        ...post,
+        user: users.find(person => person.id === post.userId),
+        comments: comments.filter(comment => comment.postId === post.id),
+      }) as PreparedPosts),
+    );
+    setLoaded(true);
+  }
+
+  const filteredPosts = useMemo(() => preparedPosts.filter(post => post.title.includes(filterTitle.trim())
+    || post.body.includes(filterTitle.trim())),
+  [filterTitle, preparedPosts]);
+
+  if (!isLoaded) {
+    return (
+      <>
+        <DownloadTask
+          setButtonText={setButtonText}
+          getData={getData}
+          buttonText={buttonText}
+        />
+      </>
+    );
+  }
+
+  if (isLoaded) {
+
+    return (
+      <>
+        <input type="text"
+          onChange={event => {
+            setFilterTitle(event.target.value)
+          }
+        }
+        />
+
+        <PostList
+          preparedPosts={filteredPosts}
+        />
+      </>
+    );
+  }
+
+  return null;
+};
 
 export default App;
