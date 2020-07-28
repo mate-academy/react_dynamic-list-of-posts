@@ -1,0 +1,11 @@
+.user {
+  width: max-content;
+  text-align: left;
+  border: 2px dashed blue;
+  padding: 10px;
+}
+
+.user__name {
+  font-size: 20px;
+  font-weight: bold;
+}
