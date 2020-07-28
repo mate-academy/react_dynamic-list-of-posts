@@ -1,8 +1,8 @@
 import React from 'react';
 
-type Props = {
+interface Props {
   comment: Comment;
-};
+}
 
 export const Comment: React.FC<Props> = (props) => {
   const { comment } = props;

@@ -3,9 +3,9 @@ import './Post.css';
 import { User } from '../User/User';
 import { CommentList } from '../CommentList/CommentList';
 
-type PostProps = {
+interface PostProps {
   post: Post;
-};
+}
 
 export const Post: React.FC<PostProps> = (props) => {
   const { post } = props;

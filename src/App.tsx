@@ -5,8 +5,8 @@ import { getPreparedPosts } from './api/api';
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [searchValue, setSearchValue] = useState<string>('');
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
 
   const handleStart = async () => {

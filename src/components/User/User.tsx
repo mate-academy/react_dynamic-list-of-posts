@@ -1,9 +1,9 @@
 import React from 'react';
 import './User.css';
 
-type UserProps = {
+interface UserProps {
   userData: User;
-};
+}
 
 export const User: React.FC<UserProps> = (props) => {
   const { userData } = props;
