@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, FormEvent } from 'react';
 
 import './App.css';
 import { PostList } from './components/PostList/PostList';
@@ -22,8 +22,8 @@ const App: React.FC = () => {
     setLoaded(true);
   };
 
-  const handleQuery = (event: { target: { value: string }}) => {
-    const { value } = event.target;
+  const handleQuery = (event: FormEvent<HTMLInputElement>) => {
+    const { value } = event.currentTarget;
 
     setFilteredPosts(
       [...posts].filter(post => (
