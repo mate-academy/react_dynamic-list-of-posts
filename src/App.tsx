@@ -14,7 +14,6 @@ export const App = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [query, setQuery] = useState<string>('');
   const [posts, setPosts] = useState<Post[]>([]);
-  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
 
@@ -29,7 +28,6 @@ export const App = () => {
     getData<Post>(API.POSTS)
       .then((postsFromServer: Post[]) => {
         setPosts(postsFromServer);
-        setFilteredPosts(postsFromServer);
       });
 
     getData<Comment>(API.COMMENTS)
@@ -50,11 +48,10 @@ export const App = () => {
     }
 
     return [...posts];
-  }, [query]);
+  }, [query, posts]);
 
   const handleChange = (value: string) => {
     setQuery(value);
-    setFilteredPosts(filterPosts);
   };
 
   if (isLoading) {
@@ -74,6 +71,7 @@ export const App = () => {
 
   return (
     <div className="app">
+      <span>Search:</span>
       <input
         type="text"
         value={query}
@@ -82,7 +80,7 @@ export const App = () => {
       <PostsList
         users={users}
         comments={comments}
-        posts={filteredPosts}
+        posts={filterPosts}
       />
     </div>
   );
