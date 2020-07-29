@@ -11,8 +11,8 @@ const API = {
 };
 
 export const App = () => {
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [query, setQuery] = useState<string>('');
+  const [isLoading, setLoading] = useState(false);
+  const [query, setQuery] = useState('');
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
