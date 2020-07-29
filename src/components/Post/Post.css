@@ -1,0 +1,27 @@
+.posts__item {
+  background-color: lightgrey;
+  text-align: left;
+  border-radius: 10px;
+  width: 80%;
+  padding: 10px;
+  margin: 20px 20px 0;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+
+}
+
+.post__comments {
+  width: 60%;
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 10px;
+  align-self: flex-end;
+}
+
+.test {
+  display: flex;
+  flex-direction: column;
+}
+
+.posts__text {
+  font-size: 20px;
+}

@@ -1,0 +1,16 @@
+.App {
+  text-align: center;
+}
+
+.btn {
+  width: 150px;
+  height: 50px;
+  font-size: 30px;
+  line-height: 30px;
+}
+
+.form-control-lg {
+  width: 50%;
+  margin-bottom: 20px;
+  display: inline-block;
+}
