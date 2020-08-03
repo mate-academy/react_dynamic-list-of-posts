@@ -1,12 +1,13 @@
 import { Post, User, Comment, PreparedPost } from '../interfaces';
 import { getData, postsUrl, usersUrl, commentsUrl } from '../API/API';
+import { noUser } from '../constants';
 
 export const preparePosts = (posts: Post[], users: User[], comments: Comment[]) => {
   return posts.map(post => {
-    const matchedUser = users.find(user => user.id === post.userId);
+    const matchedUser = users.find(user => user.id === post.userId) || noUser;
     const matchedComments = comments.filter(comment => comment.postId === post.id);
 
-    return { posts, users: matchedUser, comments: matchedComments };
+    return { posts, users: { ...matchedUser }, comments: matchedComments };
   });
 };
 
