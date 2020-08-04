@@ -44,7 +44,7 @@ export interface Comment {
 }
 
 export interface PreparedPost {
-  posts: Post[];
+  post: Post;
   user: User;
   comments: Comment[];
 }

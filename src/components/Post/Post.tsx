@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { PreparedPost } from '../../interfaces';
-import { UserItem } from '../User/User';
+import { UserItem } from '../UserItem/UserItem';
 import { CommentList } from '../CommentList/CommentList';
 
 interface Props {
@@ -8,8 +8,8 @@ interface Props {
 }
 
 export const Post: FC<Props> = ({ content }) => {
-  const { posts, user, comments } = content;
-  const { title, body } = posts;
+  const { post, user, comments } = content;
+  const { title, body } = post;
 
   return (
     <div>

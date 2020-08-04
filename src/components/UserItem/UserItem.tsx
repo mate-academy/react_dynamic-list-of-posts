@@ -6,13 +6,12 @@ interface Props {
 }
 
 export const UserItem: FC<Props> = ({ user }) => {
-  const { name, email, address } = user;
+  const { name, email } = user;
 
   return (
     <div>
       <p>{name}</p>
       <p>{email}</p>
-      <AddressItem content={address} />
     </div>
   );
 };
