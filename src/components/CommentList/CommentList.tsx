@@ -8,10 +8,13 @@ interface Props {
 
 export const CommentList: FC<Props> = ({ comments }) => {
   return (
-    <div>
-      {
-        comments.map(comment => <CommentItem content={comment} />)
-      }
+    <div className="card text-white bg-primary mb-3">
+      <div className="card-header">Comments</div>
+      <div className="card-body">
+        {
+          comments.map(comment => <CommentItem content={comment} />)
+        }
+      </div>
     </div>
   );
 };

@@ -19,7 +19,6 @@ export const makePosts = async (): Promise<PreparedPost[]> => {
   const posts = await getData<Post>(postsUrl);
   const users = await getData<User>(usersUrl);
   const comments = await getData<Comment>(commentsUrl);
-  console.log(posts,users);
 
   return preparePosts(posts, users, comments);
 };
