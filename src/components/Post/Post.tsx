@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { PreparedPost } from '../../interfaces';
 import { UserItem } from '../User/User';
+import { CommentList } from '../CommentList/CommentList';
 
 interface Props {
   content: PreparedPost;
