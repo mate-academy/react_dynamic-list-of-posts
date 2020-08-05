@@ -9,10 +9,7 @@ export const UserItem: FC<Props> = ({ user }) => {
   const { name, email } = user;
 
   return (
-    <div
-      className="card-header"
-      style={{ display: 'flex', justifyContent: 'space-between' }}
-    >
+    <div className="card-header">
       <div>{ name }</div>
       <div>{ email }</div>
     </div>

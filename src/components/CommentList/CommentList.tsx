@@ -12,7 +12,7 @@ export const CommentList: FC<Props> = ({ comments }) => {
       <div className="card-header">Comments</div>
       <div className="card-body">
         {
-          comments.map(comment => <CommentItem content={comment} />)
+          comments.map(comment => <CommentItem content={comment} key={comment.id} />)
         }
       </div>
     </div>
