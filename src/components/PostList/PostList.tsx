@@ -3,6 +3,7 @@ import { PreparedPost } from '../../interfaces';
 import { Post } from '../Post/Post';
 import { getFilteredPosts } from '../../utils/filterTodos';
 import './PostList.css';
+import { Input } from '../Input/Input';
 
 interface Props {
   posts: PreparedPost[];
@@ -17,12 +18,9 @@ export const PostList: FC<Props> = ({ posts }) => {
 
   return (
     <div className="post-list">
-      <input
-        type="text"
+      <Input
         value={filter}
         onChange={({ target }) => setFilter(target.value)}
-        className="form-control"
-        placeholder="Filter posts by title or body"
       />
       {
         memoPosts.map(memoPost => <Post content={memoPost} key={memoPost.post.id} />)
