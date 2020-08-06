@@ -1,0 +1,10 @@
+.post-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-control {
+  max-width: 40rem;
+  margin-bottom: 2rem;
+}
