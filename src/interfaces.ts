@@ -48,3 +48,5 @@ export interface PreparedPost {
   user: User;
   comments: Comment[];
 }
+
+export type OnChangeCallback = (event: React.ChangeEvent<HTMLInputElement>) => void;

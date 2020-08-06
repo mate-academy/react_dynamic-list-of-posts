@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
+import { OnChangeCallback } from '../../interfaces';
 
 interface Props {
   value: string;
-  onChange: (event: { target: HTMLInputElement }) => void;
+  onChange: OnChangeCallback;
 }
 
 export const Input: FC<Props> = ({ value, onChange }) => {
