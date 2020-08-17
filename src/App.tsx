@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import './App.scss';
 import debounce from 'lodash/debounce';
 import LoadButton from './components/LoadButton';
@@ -61,21 +61,19 @@ const App = () => {
     setLoading(true);
 
     Promise.all([
-      await loadData<Comment>(COMMENTS_URL),
-      await loadData<Post>(POSTS_URL),
-      await loadData<User>(USERS_URL),
+      setComments(await loadData<Comment>(COMMENTS_URL)),
+      setPosts(await loadData<Post>(POSTS_URL)),
+      setUsers(await loadData<User>(USERS_URL)),
     ])
-      .then(values => {
-        setComments([...values[0]]);
-        setPosts([...values[1]]);
-        setUsers([...values[2]]);
+      .then(() => {
         setLoaded(true);
+        setLoading(false);
       });
   };
 
   useEffect(() => {
     preparePosts();
-    setLoading(false);
+    // eslint-disable-next-line
   }, [loaded]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
