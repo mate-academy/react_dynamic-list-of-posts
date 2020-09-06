@@ -1,0 +1,22 @@
+.Post {
+  max-width: 1000px;
+  display: flex;
+  justify-content: space-between;
+  background: #516cf0;
+  padding: 40px 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.PostInfo {
+  max-width: 700px;
+}
+
+.PostBody {
+  background: #7c95f9;
+  padding: 10px;
+}
+
+.PostTitle {
+  font-size: 1.5em;
+  font-weight: bold;
+}
