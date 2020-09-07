@@ -1,0 +1,22 @@
+.Comment {
+  border-radius: 25px;
+  background: #7c95f9;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.Comment > * {
+  margin-top: 5px;
+
+  &:first-child {
+    margin-top: 30px;
+  }
+}
+
+.decorator {
+  font-weight: bold;
+}
+
+.CommentEmail > a {
+  color: #ddd;
+}
