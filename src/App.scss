@@ -1,1 +1,67 @@
-/* styles go here */
+h2 {
+  font-size: 1.5rem;
+  border-bottom: 1px solid #000;
+  margin: 0;
+}
+
+%stretch-panel {
+  flex-grow: 1;
+  margin: 5px;
+  padding: 10px;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 5px;
+}
+
+.App {
+  &__header {
+    position: sticky;
+    padding: 10px;
+  }
+
+  &__main {
+    display: flex;
+    justify-content: stretch;
+    align-content: stretch;
+  }
+
+  &__sidebar {
+    @extend %stretch-panel;
+
+    flex-basis: 60%;
+    border-color: blue;
+  }
+
+  &__content {
+    @extend %stretch-panel;
+
+    flex-basis: 30%;
+    border-color: green;
+  }
+}
+
+.TodoList {
+  &__list {
+    list-style: none;
+    padding-left: 5px;
+  }
+
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed lightgray;
+  }
+
+  &__user-button {
+    flex-shrink: 0;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+
+    &:hover {
+      background-color: lightblue;
+    }
+  }
+}
