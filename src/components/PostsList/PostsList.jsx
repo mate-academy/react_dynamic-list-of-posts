@@ -11,7 +11,12 @@ export const PostsList = () => (
           <b>[User #1]: </b>
           sunt aut facere repellat provident occaecati excepturi optio
         </div>
-        <button type="button">Close</button>
+        <button
+          type="button"
+          className="PostsList__button button"
+        >
+          Close
+        </button>
       </li>
 
       <li className="PostsList__item">
@@ -20,7 +25,12 @@ export const PostsList = () => (
           et ea vero quia laudantium autem
         </div>
 
-        <button type="button">Open</button>
+        <button
+          type="button"
+          className="PostsList__button button"
+        >
+          Open
+        </button>
       </li>
     </ul>
   </div>
