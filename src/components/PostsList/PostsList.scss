@@ -6,7 +6,7 @@
     padding: 5px 10px;
     border-radius: 5px;
     font-weight: bold;
-  
+
     &:hover {
       background-color: lightblue;
     }
@@ -21,6 +21,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px dashed lightgray;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #fafafd;
+    line-height: 1.5;
+  }
+
+  &__button {
+    margin-left: 10px;
   }
 }

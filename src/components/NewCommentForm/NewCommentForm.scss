@@ -1,0 +1,19 @@
+.NewCommentForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+
+  &__input {
+    border: none;
+    border-bottom: 1px solid #4d457b;
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 10px 5px;
+    color: #4d457b;
+  }
+
+  &__submit-button {
+    margin-top: 10px;
+  }
+}
