@@ -4,7 +4,7 @@
 - Follow the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline)
 
 ## Task
-You are given a basic markup and [the API](https://github.com/mate-academy/fe-students-api#mate-students-api).
+You are given a basic markup and [the API](https://mate-academy.github.io/fe-students-api/).
 
 Implement the app to manage post comments.
 
