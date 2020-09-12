@@ -1,37 +1,55 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({ posts, postId, setSelection }) => {
+  const select = (id) => {
+    if (postId === id) {
+      setSelection(0);
+    } else {
+      setSelection(id);
+    }
+  };
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+      <ul className="PostsList__list">
+        {posts.map(({ id, userId, title }) => (
+          <li
+            className="PostsList__item"
+            key={id}
+          >
+            <div>
+              <b>
+                [User #
+                {userId}
+                ]:
+                {' '}
+              </b>
+              {title}
+            </div>
+            <button
+              type="button"
+              className="PostsList__button button"
+              onClick={() => select(id)}
+            >
+              {postId === id ? 'Close' : 'Open'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+PostsList.propTypes = {
+  posts: PropTypes.objectOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    userId: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+  })).isRequired,
+  postId: PropTypes.number.isRequired,
+  setSelection: PropTypes.func.isRequired,
+};
