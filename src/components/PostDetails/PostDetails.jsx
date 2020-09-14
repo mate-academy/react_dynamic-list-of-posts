@@ -1,45 +1,104 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
+import { removeComment, getPostComments } from '../../api/comments';
 import './PostDetails.scss';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({ postId, details }) => {
+  const [hiddenComments, switchHidden] = useState(false);
+  const [comments, setComments] = useState([]);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  useEffect(() => {
+    switchHidden(false);
+    getPostComments(postId).then(response => setComments(response));
+  }, [postId, comments]);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const deleteComment = (commentId) => {
+    removeComment(commentId);
+  };
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  return (
+    <>
+      {!details
+        ? 'Please choose a post'
+        : (
+          <div className="PostDetails">
+            <h2>Post details:</h2>
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+            <section className="PostDetails__post">
+              <p>{details.title}</p>
+            </section>
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+            {!!comments.length
+              && (
+                <section className="PostDetails__comments">
+                  <button
+                    type="button"
+                    className="button"
+                    onClick={() => {
+                      switchHidden(!hiddenComments);
+                    }}
+                  >
+                    {!hiddenComments ? 'Hide ' : 'Show '}
+                    {comments.length}
+                    {' '}
+                    {comments.length === 1 ? 'comment' : 'comments'}
+                  </button>
+
+                  <ul className="PostDetails__list">
+                    {!hiddenComments
+                      && (
+                        <>
+                          {comments.map(comment => (
+                            <li
+                              key={comment.id}
+                              className="PostDetails__list-item"
+                            >
+                              <button
+                                type="button"
+                                className="PostDetails__remove-button button"
+                                onClick={() => {
+                                  deleteComment(comment.id);
+                                }}
+                              >
+                                X
+                              </button>
+                              <p>{comment.body}</p>
+                            </li>
+                          ))}
+                        </>
+                      )
+                    }
+                  </ul>
+                </section>
+              )
+            }
+            <section>
+              <div className="PostDetails__form-wrapper">
+                <NewCommentForm
+                  postId={details.id}
+                />
+              </div>
+            </section>
+          </div>
+        )
+      }
+    </>
+  );
+};
+
+PostDetails.defaultProps = {
+  postId: 0,
+  details: {
+    title: '',
+    id: 0,
+  },
+};
+
+PostDetails.propTypes = {
+  postId: PropTypes.number,
+  details: PropTypes.shape({
+    title: PropTypes.string,
+    id: PropTypes.number,
+  }),
+};
