@@ -45,7 +45,10 @@ export const PostDetails = ({ selectedPostId }) => {
           {isHidden || (
             <ul className="PostDetails__list">
               {comments.map(comment => (
-                <li className="PostDetails__list-item">
+                <li
+                  className="PostDetails__list-item"
+                  key={comment.id}
+                >
                   <button
                     type="button"
                     className="PostDetails__remove-button button"

@@ -11,13 +11,11 @@ const App = () => {
 
   useEffect(() => {
     getUserPosts(0)
-      .then(result => setPosts(result));
+      .then(setPosts);
   }, []);
 
   const handleChange = async(userId) => {
-    const result = await getUserPosts(userId);
-
-    setPosts(result);
+    setPosts(await getUserPosts(userId));
   };
 
   return (

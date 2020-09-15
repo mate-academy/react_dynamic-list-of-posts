@@ -25,9 +25,7 @@ export const PostsList = ({ posts, setPostId, selectedPostId }) => {
             <button
               type="button"
               className="PostsList__button button"
-              onClick={() => {
-                handleClick(post.id);
-              }}
+              onClick={() => handleClick(post.id)}
             >
               {selectedPostId === post.id ? 'Close' : 'Open'}
             </button>
