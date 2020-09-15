@@ -1,22 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
 
 export const NewCommentForm = ({ postId, addNewComment }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [body, setBody] = useState('');
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const { name, email, body } = event.target;
-
     const newComment = {
       postId,
-      name: name.value,
-      email: email.value,
-      body: body.value,
+      name,
+      email,
+      body,
     };
 
     addNewComment(newComment);
-    event.target.reset();
+
+    setName('');
+    setEmail('');
+    setBody('');
   };
 
   return (
@@ -27,6 +32,8 @@ export const NewCommentForm = ({ postId, addNewComment }) => {
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
+          value={name}
+          onChange={event => setName(event.target.value)}
         />
       </div>
 
@@ -36,6 +43,8 @@ export const NewCommentForm = ({ postId, addNewComment }) => {
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
+          value={email}
+          onChange={event => setEmail(event.target.value)}
         />
       </div>
 
@@ -44,6 +53,8 @@ export const NewCommentForm = ({ postId, addNewComment }) => {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
+          value={body}
+          onChange={event => setBody(event.target.value)}
         />
       </div>
 
