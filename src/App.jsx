@@ -9,6 +9,7 @@ const App = () => {
   const [postsFromServer, setPosts] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
+  console.log(selectedPostId)
 
   useEffect(() => {
     if (+selectedUserId === 0) {

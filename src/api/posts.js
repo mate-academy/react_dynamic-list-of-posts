@@ -1,6 +1,6 @@
 import { BASE_URL } from './api';
 
-export const getAllPosts = async(userId) => {
+export const getAllPosts = async() => {
   const response = await fetch(`${BASE_URL}/posts`);
   const posts = await response.json();
 

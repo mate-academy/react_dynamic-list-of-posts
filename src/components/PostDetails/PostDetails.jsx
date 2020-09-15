@@ -71,7 +71,7 @@ export const PostDetails = ({ selectedPostId }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm сurrentPost={selectedPost} />
+          <NewCommentForm selectedPostId={selectedPostId} />
         </div>
       </section>
     </div>
