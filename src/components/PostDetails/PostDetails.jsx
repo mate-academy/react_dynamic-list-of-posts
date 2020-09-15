@@ -1,45 +1,76 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
+import { getPostDetails } from '../../api/posts';
+import { getComments, removeComment } from '../../api/comments';
 import './PostDetails.scss';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({ selectedPost }) => {
+  const [post, setPost] = useState(null);
+  const [isCommentsVisible, setCommentsVisibility] = useState(false);
+  const [comments, setComments] = useState([]);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  useEffect(() => {
+    getPostDetails(selectedPost)
+      .then(setPost);
+  }, [selectedPost]);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  useEffect(() => {
+    getComments(selectedPost)
+      .then(setComments);
+  }, [comments]);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  return (
+    <div className="PostDetails">
+      {post && (
+        <>
+          <section className="PostDetails__post">
+            <h2>{post.title}</h2>
+            <p>{post.body}</p>
+          </section>
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+          <section className="PostDetails__comments">
+            <button
+              type="button"
+              className="button"
+              onClick={() => setCommentsVisibility(!isCommentsVisible)}
+            >
+              {isCommentsVisible
+                ? `Hide ${comments.length} comments`
+                : `Show ${comments.length} comments`}
+            </button>
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+            {isCommentsVisible && (
+              <ul className="PostDetails__list">
+                {comments.map(({ id, email, body }) => (
+                  <li className="PostDetails__list-item">
+                    <button
+                      type="button"
+                      className="PostDetails__remove-button button"
+                      onClick={() => removeComment(id)}
+                    >
+                      X
+                    </button>
+                    <span>{`${email}:`}</span>
+                    <p>{body}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+          <section>
+            <div className="PostDetails__form-wrapper">
+              <NewCommentForm
+                selectedPost={selectedPost}
+              />
+            </div>
+          </section>
+        </>
+      )}
+    </div>
+  );
+};
+
+PostDetails.propTypes = {
+  selectedPost: PropTypes.number.isRequired,
+};
