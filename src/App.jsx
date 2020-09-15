@@ -8,7 +8,6 @@ const App = () => {
   const [posts, setPosts] = useState([]);
   const [selectedUser, setSelectedUser] = useState('0');
   const [selectedPostId, setPostId] = useState('0');
-  const selectedPost = posts.find(post => post.id === selectedPostId);
 
   return (
     <div className="App">
@@ -18,7 +17,10 @@ const App = () => {
 
           <select
             value={selectedUser}
-            onChange={event => setSelectedUser(event.target.value)}
+            onChange={event => {
+              setSelectedUser(event.target.value);
+              setPostId('0');
+            }}
             className="App__user-selector"
           >
             <option value="0">All users</option>
@@ -50,7 +52,8 @@ const App = () => {
         {selectedPostId !== '0' && (
           <div className="App__content">
             <PostDetails
-              selectedPost={selectedPost}
+              posts={posts}
+              selectedPostId={selectedPostId}
             />
           </div>
         )}

@@ -4,14 +4,15 @@ import { getPostComments, deletePostComment } from '../../api/comments';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails = ({ selectedPost }) => {
+export const PostDetails = ({ posts, selectedPostId }) => {
   const [comments, setComments] = useState([]);
   const [hidden, setHidden] = useState(true);
+  const selectedPost = posts.find(post => post.id === selectedPostId);
 
   useEffect(() => {
-    getPostComments(selectedPost.id)
+    getPostComments(selectedPostId)
       .then(setComments);
-  }, [selectedPost.id]);
+  }, [selectedPostId]);
 
   return (
     <div className="PostDetails">
@@ -57,7 +58,7 @@ export const PostDetails = ({ selectedPost }) => {
       <section>
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
-            id={selectedPost.id}
+            id={selectedPostId}
             getPostComments={getPostComments}
             setComments={setComments}
           />
