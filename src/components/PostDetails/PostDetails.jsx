@@ -50,9 +50,7 @@ export const PostDetails = ({ postId }) => {
             className="button"
             onClick={() => changeVisibility(!areVisible)}
           >
-            {areVisible
-              ? (`Hide ${comments.length} comments`)
-              : (`Show ${comments.length} comments`)}
+            {`${areVisible ? 'Show' : 'Hide'} ${comments.length} comments`}
           </button>
 
           {areVisible && (
