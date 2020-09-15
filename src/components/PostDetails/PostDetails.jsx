@@ -1,20 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { NewCommentForm } from '../NewCommentForm';
-import './PostDetails.scss';
-import { deleteComment } from '../../api/comments';
 
-export const PostDetails = ({ post, comments, selectPost }) => {
+import './PostDetails.scss';
+import { NewCommentForm } from '../NewCommentForm';
+import { getPostComments, deleteComment } from '../../api/comments';
+import { getPostDetails } from '../../api/posts';
+
+export const PostDetails = ({ selectedPostId }) => {
   const [isVisibleComments, setIsVisibleComments] = useState(true);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [comments, setComments] = useState([]);
+
+  useEffect(() => {
+    getPostDetails(selectedPostId)
+      .then(setSelectedPost);
+
+    getPostComments(selectedPostId)
+      .then(setComments);
+  }, [selectedPostId, comments]);
+
+  if (!selectedPost) {
+    return <span>Loading...</span>;
+  }
 
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
 
       <section className="PostDetails__post">
-        <p>{post.title}</p>
+        <p>{selectedPost.title}</p>
         <br />
-        <p>{post.body}</p>
+        <p>{selectedPost.body}</p>
       </section>
 
       <section className="PostDetails__comments">
@@ -41,10 +57,7 @@ export const PostDetails = ({ post, comments, selectPost }) => {
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
-                  onClick={() => {
-                    deleteComment(comment.id);
-                    selectPost(post.id);
-                  }}
+                  onClick={() => deleteComment(comment.id)}
                 >
                   X
                 </button>
@@ -58,10 +71,7 @@ export const PostDetails = ({ post, comments, selectPost }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            currentPost={post}
-            selectPost={selectPost}
-          />
+          <NewCommentForm сurrentPost={selectedPost} />
         </div>
       </section>
     </div>
@@ -69,18 +79,5 @@ export const PostDetails = ({ post, comments, selectPost }) => {
 };
 
 PostDetails.propTypes = {
-  post: PropTypes.objectOf(
-    PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      body: PropTypes.string.isRequired,
-      id: PropTypes.number.isRequired,
-    }).isRequired,
-  ).isRequired,
-  comments: PropTypes.arrayOf(
-    PropTypes.shape({
-      body: PropTypes.string.isRequired,
-      id: PropTypes.number.isRequired,
-    }).isRequired,
-  ).isRequired,
-  selectPost: PropTypes.func.isRequired,
+  selectedPostId: PropTypes.number.isRequired,
 };

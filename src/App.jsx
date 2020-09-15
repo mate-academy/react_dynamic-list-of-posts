@@ -3,37 +3,22 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getAllPosts, getPostDetails, getUserPosts } from './api/posts';
-import { getPostComments } from './api/comments';
+import { getAllPosts, getUserPosts } from './api/posts';
 
 const App = () => {
   const [postsFromServer, setPosts] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
-  const [selectedPost, setSelectedPost] = useState({});
-  const [commentsFromServer, setComments] = useState([]);
 
   useEffect(() => {
-    (async() => {
-      setPosts(await getAllPosts());
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async() => {
-      if (+selectedUserId === 0) {
-        setPosts(await getAllPosts());
-      } else {
-        setPosts(await getUserPosts(+selectedUserId));
-      }
-    })();
+    if (+selectedUserId === 0) {
+      getAllPosts()
+        .then(setPosts);
+    } else {
+      getUserPosts(+selectedUserId)
+        .then(setPosts);
+    }
   }, [selectedUserId]);
-
-  const selectPost = async(postId) => {
-    setSelectedPostId(postId);
-    setSelectedPost(await getPostDetails(postId));
-    setComments(await getPostComments(postId));
-  };
 
   return (
     <div className="App">
@@ -66,18 +51,13 @@ const App = () => {
           <PostsList
             posts={postsFromServer}
             selectedPostId={selectedPostId}
-            selectPost={selectPost}
             setSelectedPostId={setSelectedPostId}
           />
         </div>
 
         <div className="App__content">
           {selectedPostId > 0 && (
-            <PostDetails
-              post={selectedPost}
-              comments={commentsFromServer}
-              selectPost={selectPost}
-            />
+            <PostDetails selectedPostId={selectedPostId} />
           )}
         </div>
 

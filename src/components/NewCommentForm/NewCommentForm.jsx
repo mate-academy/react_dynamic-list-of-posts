@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
 import { addComment } from '../../api/comments';
 
-export const NewCommentForm = ({ currentPost, selectPost }) => {
+export const NewCommentForm = ({ currentPost }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
@@ -11,7 +11,6 @@ export const NewCommentForm = ({ currentPost, selectPost }) => {
   const handleSendComment = () => {
     if (name.length > 0 && email.length > 0 && body.length > 0) {
       addComment(currentPost.id, name, email, body);
-      selectPost(currentPost.id);
       setName('');
       setEmail('');
       setBody('');
@@ -67,10 +66,13 @@ export const NewCommentForm = ({ currentPost, selectPost }) => {
 };
 
 NewCommentForm.propTypes = {
-  currentPost: PropTypes.objectOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-    }).isRequired,
-  ).isRequired,
-  selectPost: PropTypes.func.isRequired,
+  currentPost: PropTypes.shape({
+    id: PropTypes.number,
+  }),
+};
+
+NewCommentForm.defaultProps = {
+  currentPost: {
+    id: 0,
+  },
 };

@@ -5,7 +5,6 @@ import './PostsList.scss';
 export const PostsList = ({
   posts,
   selectedPostId,
-  selectPost,
   setSelectedPostId,
 }) => (
   <div className="PostsList">
@@ -22,12 +21,9 @@ export const PostsList = ({
             type="button"
             className="PostsList__button button"
             onClick={() => {
-              selectPost(post.id);
-              if (selectedPostId === post.id) {
-                setSelectedPostId(0);
-              } else {
-                setSelectedPostId(post.id);
-              }
+              selectedPostId === post.id
+                ? setSelectedPostId(0)
+                : setSelectedPostId(post.id);
             }}
           >
             {(selectedPostId === post.id)
@@ -50,6 +46,5 @@ PostsList.propTypes = {
     }).isRequired,
   ).isRequired,
   selectedPostId: PropTypes.number.isRequired,
-  selectPost: PropTypes.func.isRequired,
   setSelectedPostId: PropTypes.func.isRequired,
 };
