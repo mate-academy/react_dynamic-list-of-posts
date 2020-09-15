@@ -1,41 +1,69 @@
-import React from 'react';
-import './App.scss';
-import './styles/general.scss';
+import React, { useState } from 'react';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { UserSelect } from './components/UserSelect';
+import { getPostDetails, getPostComments, deleteComment } from './api/posts';
+import './App.scss';
+import './styles/general.scss';
 
-const App = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+const App = () => {
+  const [person, setPerson] = useState({});
+  const [postId, setPostId] = useState();
+  const [post, setPost] = useState({});
+  const [isChoosen, setIsChoosen] = useState(false);
+  const [comments, setComments] = useState([]);
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+  const select = (user) => {
+    setPerson(user);
+  };
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+  const loadComments = (id) => {
+    getPostComments(id)
+      .then(result => setComments(result));
+  };
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+  const selectedPostId = (id, buttonStatus) => {
+    setIsChoosen(buttonStatus);
+    setPostId(id);
+
+    getPostDetails(id)
+      .then(result => setPost(result.data));
+
+    loadComments(id);
+  };
+
+  return (
+    <div className="App">
+      <header className="App__header">
+        <UserSelect
+          select={select}
+          name={person.name}
+        />
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            person={person}
+            postId={postId}
+            selectedPostId={selectedPostId}
+          />
+        </div>
+
+        <div className="App__content">
+          <PostDetails
+            post={post}
+            comments={comments}
+            deleteComment={commentId => deleteComment(commentId)
+              .then(() => loadComments(postId))
+            }
+            loadComments={loadComments}
+            isChoosen={isChoosen}
+          />
+        </div>
+      </main>
+    </div>
+  );
+};
 
 export default App;

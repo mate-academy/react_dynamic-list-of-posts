@@ -1,45 +1,94 @@
-import React from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
+import { addComment } from '../../api/posts';
 import './PostDetails.scss';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({
+  post,
+  comments,
+  deleteComment,
+  loadComments,
+  isChoosen,
+}) => {
+  const { title, id } = post;
+  const [hidden, setHidden] = useState(true);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  const commentUpdate = (postId, name, email, body) => addComment(postId, name, email, body);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+      {isChoosen && Object.keys(post).length !== 0 && (
+        <>
+          <section className="PostDetails__post">
+            <p>{title}</p>
+          </section>
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+          <section className="PostDetails__comments">
+            <button
+              type="button"
+              className="button"
+              onClick={() => setHidden(!hidden)}
+            >
+              {hidden
+                ? `Hidden ${comments.length} `
+                  + `comment${comments.length !== 1 ? 's' : ''}`
+                : `Hide ${comments.length} `
+                  + `comment${comments.length !== 1 ? 's' : ''}`}
+            </button>
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+            {!hidden && (
+              <ul className="PostDetails__list">
+                {comments.map(comment => (
+                  <li className="PostDetails__list-item" key={comment.id}>
+                    <button
+                      type="button"
+                      className="PostDetails__remove-button button"
+                      onClick={() => {
+                        deleteComment(comment.id);
+                      }}
+                    >
+                      X
+                    </button>
+                    <p>{comment.body}</p>
+                  </li>
+                ))}
+
+              </ul>
+            )}
+          </section>
+
+          <section>
+            <div className="PostDetails__form-wrapper">
+              <NewCommentForm
+                postId={id}
+                commentUpdate={(postId, name, email, body) => {
+                  commentUpdate(postId, name, email, body)
+                    .then(() => loadComments(id));
+                }}
+              />
+            </div>
+          </section>
+        </>
+      )}
+    </div>
+  );
+};
+
+PostDetails.propTypes = {
+  post: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+  }).isRequired,
+  comments: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      body: PropTypes.string.isRequired,
+    }).isRequired,
+  ).isRequired,
+  deleteComment: PropTypes.func.isRequired,
+  loadComments: PropTypes.func.isRequired,
+  isChoosen: PropTypes.bool.isRequired,
+};
