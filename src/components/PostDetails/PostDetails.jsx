@@ -60,15 +60,18 @@ export const PostDetails = ({ postId }) => {
 
       {}
       <section className="PostDetails__comments">
-        <button
-          type="button"
-          className="button PostDetails__button"
-          onClick={() => setButtonClick(!isButtonClicked)}
-        >
-          {`${!isButtonClicked ? 'Hide' : 'Show'}
-          ${' '}
-          ${postComments && postComments.length} comments`}
-        </button>
+
+        {postComments && postComments.length !== 0 && (
+          <button
+            type="button"
+            className="button PostDetails__button"
+            onClick={() => setButtonClick(!isButtonClicked)}
+          >
+            {`${!isButtonClicked ? 'Hide' : 'Show'}
+            ${' '}
+            ${postComments && postComments.length} comments`}
+          </button>
+        )}
 
         {postComments && !isButtonClicked && (
           <ul className="PostDetails__list">

@@ -68,11 +68,17 @@ export const NewCommentForm = ({
 };
 
 NewCommentForm.propTypes = {
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   setName: PropTypes.func.isRequired,
-  email: PropTypes.string.isRequired,
+  email: PropTypes.string,
   setEmail: PropTypes.func.isRequired,
-  comment: PropTypes.string.isRequired,
+  comment: PropTypes.string,
   setComment: PropTypes.func.isRequired,
   addToList: PropTypes.func.isRequired,
+};
+
+NewCommentForm.defaultProps = {
+  name: '',
+  email: '',
+  comment: '',
 };
