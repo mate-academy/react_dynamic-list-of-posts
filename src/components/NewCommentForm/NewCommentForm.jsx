@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
-import {addPostComment, getPostComments} from '../../api/comments';
+import { addPostComment, getPostComments } from '../../api/comments';
 
-export const NewCommentForm = ({ postId, setComments, comments }) => {
+export const NewCommentForm = ({ postId, setComments }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (name && email && body){
-      addPostComment(postId, name, email, body);
-      setComments([...comments, {postId, name, email, body}]);
+    if (name && email && body) {
+      addPostComment(postId, name, email, body)
+        .then(() => getPostComments(postId))
+        .then(setComments);
 
       setName('');
       setEmail('');
@@ -66,4 +67,5 @@ export const NewCommentForm = ({ postId, setComments, comments }) => {
 
 NewCommentForm.propTypes = {
   postId: PropTypes.number.isRequired,
+  setComments: PropTypes.func.isRequired,
 };

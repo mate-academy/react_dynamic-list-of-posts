@@ -8,15 +8,12 @@ import { getUserPosts } from './api/posts';
 const App = () => {
   const [posts, setPosts] = useState([]);
   const [selectedPostId, setSelectedPostId] = useState(0);
+  const [selectedUser, setSelectedUser] = useState(0);
 
   useEffect(() => {
-    getUserPosts(0)
+    getUserPosts(selectedUser)
       .then(setPosts);
-  }, []);
-
-  const handleChange = async(userId) => {
-    setPosts(await getUserPosts(userId));
-  };
+  }, [selectedUser]);
 
   return (
     <div className="App">
@@ -26,7 +23,7 @@ const App = () => {
 
           <select
             className="App__user-selector"
-            onChange={event => handleChange(+event.target.value)}
+            onChange={event => setSelectedUser(+event.target.value)}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>

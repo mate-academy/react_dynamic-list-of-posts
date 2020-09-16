@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { getPostDetails } from '../../api/posts';
-import {getPostComments, deletePostComment, addPostComment} from '../../api/comments';
+import { getPostComments, deletePostComment } from '../../api/comments';
 
 export const PostDetails = ({ selectedPostId }) => {
   const [selectedDetails, setSelectedDetails] = useState(null);
@@ -21,10 +21,6 @@ export const PostDetails = ({ selectedPostId }) => {
   const hide = () => {
     setIsHidden(!isHidden);
   };
-
-  const deleteComment = (commentId) => {
-
-  }
 
   return (
     selectedDetails && (
