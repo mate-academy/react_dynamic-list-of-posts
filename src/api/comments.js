@@ -27,7 +27,7 @@ export const deletePostComment = async(commentId) => {
   };
 
   const comments = await fetch(url, options);
-  const response = await comments.json();
+  // const response = await comments.json();
 
-  return response.data;
+  return comments;
 };

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
-import { addPostComment } from '../../api/comments';
+import {addPostComment, getPostComments} from '../../api/comments';
 
-export const NewCommentForm = ({ postId }) => {
+export const NewCommentForm = ({ postId, setComments, comments }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
@@ -12,6 +12,7 @@ export const NewCommentForm = ({ postId }) => {
     event.preventDefault();
     if (name && email && body){
       addPostComment(postId, name, email, body);
+      setComments([...comments, {postId, name, email, body}]);
 
       setName('');
       setEmail('');

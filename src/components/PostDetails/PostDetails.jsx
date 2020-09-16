@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { getPostDetails } from '../../api/posts';
-import { getPostComments, deletePostComment } from '../../api/comments';
+import {getPostComments, deletePostComment, addPostComment} from '../../api/comments';
 
 export const PostDetails = ({ selectedPostId }) => {
   const [selectedDetails, setSelectedDetails] = useState(null);
@@ -16,11 +16,15 @@ export const PostDetails = ({ selectedPostId }) => {
 
     getPostComments(selectedPostId)
       .then(result => setComments(result));
-  }, [selectedPostId, comments]);
+  }, [selectedPostId]);
 
   const hide = () => {
     setIsHidden(!isHidden);
   };
+
+  const deleteComment = (commentId) => {
+
+  }
 
   return (
     selectedDetails && (
@@ -33,7 +37,7 @@ export const PostDetails = ({ selectedPostId }) => {
         </section>
 
         <section className="PostDetails__comments">
-          {!comments.length || (
+          {comments.length !== 0 && (
             <button
               type="button"
               className="button"
@@ -42,7 +46,7 @@ export const PostDetails = ({ selectedPostId }) => {
               {`${isHidden ? 'Show' : 'Hide'} ${comments.length} comments`}
             </button>
           )}
-          {isHidden || (
+          {!isHidden && (
             <ul className="PostDetails__list">
               {comments.map(comment => (
                 <li
@@ -52,7 +56,11 @@ export const PostDetails = ({ selectedPostId }) => {
                   <button
                     type="button"
                     className="PostDetails__remove-button button"
-                    onClick={() => deletePostComment(comment.id)}
+                    onClick={() => {
+                      deletePostComment(comment.id)
+                        .then(() => getPostComments(selectedPostId))
+                        .then(data => setComments(data));
+                    }}
                   >
                     X
                   </button>
@@ -67,6 +75,8 @@ export const PostDetails = ({ selectedPostId }) => {
           <div className="PostDetails__form-wrapper">
             <NewCommentForm
               postId={selectedPostId}
+              setComments={setComments}
+              comments={comments}
             />
           </div>
         </section>
