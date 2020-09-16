@@ -17,7 +17,7 @@ export const PostDetails = ({ selectedPostId }) => {
 
     getPostComments(selectedPostId)
       .then(setComments);
-  }, [selectedPostId, comments]);
+  }, [selectedPostId]);
 
   if (!selectedPost) {
     return <span>Loading...</span>;
@@ -57,7 +57,11 @@ export const PostDetails = ({ selectedPostId }) => {
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
-                  onClick={() => deleteComment(comment.id)}
+                  onClick={() => {
+                    deleteComment(comment.id);
+                    getPostComments(selectedPostId)
+                      .then(setComments);
+                  }}
                 >
                   X
                 </button>
@@ -71,7 +75,11 @@ export const PostDetails = ({ selectedPostId }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm selectedPostId={selectedPostId} />
+          <NewCommentForm
+            selectedPostId={selectedPostId}
+            comments={comments}
+            setComments={setComments}
+          />
         </div>
       </section>
     </div>
