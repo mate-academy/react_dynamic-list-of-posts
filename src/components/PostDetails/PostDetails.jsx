@@ -7,15 +7,19 @@ import { getPostDetails } from '../../api/posts';
 
 export const PostDetails = ({ postId }) => {
   const [comments, setComments] = useState([]);
+  const [postTitle, setPostTitle] = useState('');
   const [postDetails, setPostDetails] = useState('');
   const [commentsHidden, setCommentsHidden] = useState(false);
 
   useEffect(() => {
     getPostComments(postId)
-      .then(commentsList => setComments(commentsList));
+      .then(setComments);
 
     getPostDetails(postId)
-      .then(post => setPostDetails(post.body));
+      .then((post) => {
+        setPostDetails(post.body);
+        setPostTitle(post.title);
+      });
   }, [postId, comments]);
 
   const hide = () => {
@@ -27,6 +31,7 @@ export const PostDetails = ({ postId }) => {
       <h2>Post details:</h2>
 
       <section className="PostDetails__post">
+        <h3>{postTitle}</h3>
         <p>{postDetails}</p>
       </section>
 
@@ -51,7 +56,12 @@ export const PostDetails = ({ postId }) => {
                   >
                     X
                   </button>
-                  <p>{comment.body}</p>
+                  <p>
+                    <i>{comment.name}</i>
+                  </p>
+                  <p>
+                    {comment.body}
+                  </p>
                 </li>
               ))}
             </ul>

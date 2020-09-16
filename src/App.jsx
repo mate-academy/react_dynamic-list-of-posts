@@ -7,7 +7,6 @@ import { PostDetails } from './components/PostDetails';
 const App = () => {
   const [userId, setUserId] = useState(0);
   const [postId, setPostId] = useState(0);
-  // console.log(postId);
 
   return (
     <div className="App">

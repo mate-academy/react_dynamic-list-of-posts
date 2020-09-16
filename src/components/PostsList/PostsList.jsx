@@ -8,7 +8,7 @@ export const PostsList = ({ userId, postId, setPostId }) => {
 
   useEffect(() => {
     getUserPosts(userId)
-      .then(postsOfUser => setPosts(postsOfUser));
+      .then(setPosts);
   }, [userId]);
 
   const handleClick = (openPostId) => {
