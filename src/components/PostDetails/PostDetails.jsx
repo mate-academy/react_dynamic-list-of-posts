@@ -20,10 +20,16 @@ export const PostDetails = ({ postId }) => {
         setPostDetails(post.body);
         setPostTitle(post.title);
       });
-  }, [postId, comments]);
+  }, [postId]);
 
   const hide = () => {
     setCommentsHidden(!commentsHidden);
+  };
+
+  const handleDelete = async(id) => {
+    await deleteComment(id);
+    getPostComments(postId)
+      .then(setComments);
   };
 
   return (
@@ -52,7 +58,7 @@ export const PostDetails = ({ postId }) => {
                   <button
                     type="button"
                     className="PostDetails__remove-button button"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => handleDelete(comment.id)}
                   >
                     X
                   </button>
@@ -71,7 +77,10 @@ export const PostDetails = ({ postId }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm comments={comments} postId={postId} />
+          <NewCommentForm
+            postId={postId}
+            setComments={setComments}
+          />
         </div>
       </section>
     </div>
