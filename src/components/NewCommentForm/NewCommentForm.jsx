@@ -28,19 +28,19 @@ export const NewCommentForm = ({ postId, commentUpdate }) => {
           className="NewCommentForm__input"
           required
           value={name}
-          onChange={event => setName(event.target.value)}
+          onChange={({target}) => setName(target.value)}
         />
       </div>
 
       <div className="form-field">
         <input
-          type="text"
+          type="email"
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
           required
           value={email}
-          onChange={event => setEmail(event.target.value)}
+          onChange={({target}) => setEmail(target.value)}
         />
       </div>
 
@@ -51,7 +51,7 @@ export const NewCommentForm = ({ postId, commentUpdate }) => {
           className="NewCommentForm__input"
           required
           value={title}
-          onChange={event => setTitle(event.target.value)}
+          onChange={({target}) => setTitle(target.value)}
         />
       </div>
 

@@ -23,7 +23,7 @@ const App = () => {
   };
 
   const selectedPostId = (id, buttonStatus) => {
-    debugger;
+
     setIsChoosen(buttonStatus);
     setPostId(id);
 
