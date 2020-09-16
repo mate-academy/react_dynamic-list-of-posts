@@ -1,45 +1,73 @@
-import React from 'react';
-import { NewCommentForm } from '../NewCommentForm';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+
 import './PostDetails.scss';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+import { NewCommentForm } from '../NewCommentForm';
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+import { getPostDetails } from '../../api/posts';
+import { getPostComments } from '../../api/comments';
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+export const PostDetails = ({ selectedPostId }) => {
+  const [selectedPost, setSelectedPost] = useState([]);
+  // const [commentsVisibility, setCommentsVisibility] = useState(true);
+  const [comments, setComments] = useState([]);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  useEffect(() => {
+    const fetchPostDetails = async() => {
+      const postResponse = await getPostDetails(selectedPostId);
+      const commentsResponse = await getPostComments(selectedPostId);
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+      setSelectedPost(postResponse);
+      setComments(commentsResponse);
+    };
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+    fetchPostDetails();
+  }, [selectedPostId]);
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <h3>{selectedPost.title}</h3>
+      </section>
+
+      <section className="PostDetails__comments">
+        <button type="button" className="button">
+          Hide
+          {comments.length}
+          {' '}
+          comments
+        </button>
+        <ul className="PostDetails__list">
+
+          {comments.map(comment => (
+
+            <li
+              className="PostDetails__list-item"
+              key={comment.id}
+            >
+              <button
+                type="button"
+                className="PostDetails__remove-button button"
+              >
+                X
+              </button>
+              <p>{comment.body}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm />
+        </div>
+      </section>
+    </div>
+  );
+};
+
+PostDetails.propTypes = {
+  selectedPostId: PropTypes.number.isRequired,
+};
