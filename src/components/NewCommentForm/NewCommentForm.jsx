@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
-import { addComment } from '../../api/comments';
+import { addComment, getPostComments } from '../../api/comments';
 
-export const NewCommentForm = ({ selectedPostId, comments, setComments }) => {
+export const NewCommentForm = ({ selectedPostId, setComments }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
@@ -12,12 +12,10 @@ export const NewCommentForm = ({ selectedPostId, comments, setComments }) => {
     event.preventDefault();
 
     if (name && email && body) {
-      const newComment = {
-        selectedPostId, name, email, body,
-      };
+      addComment(selectedPostId, name, email, body)
+        .then(() => getPostComments(selectedPostId))
+        .then(setComments);
 
-      addComment(newComment);
-      setComments([...comments, newComment]);
       setName('');
       setEmail('');
       setBody('');
@@ -73,12 +71,5 @@ export const NewCommentForm = ({ selectedPostId, comments, setComments }) => {
 
 NewCommentForm.propTypes = {
   selectedPostId: PropTypes.number.isRequired,
-  comments: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      email: PropTypes.string.isRequired,
-      body: PropTypes.string.isRequired,
-    }).isRequired,
-  ).isRequired,
   setComments: PropTypes.func.isRequired,
 };

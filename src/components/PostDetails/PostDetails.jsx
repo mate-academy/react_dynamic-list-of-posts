@@ -58,8 +58,8 @@ export const PostDetails = ({ selectedPostId }) => {
                   type="button"
                   className="PostDetails__remove-button button"
                   onClick={() => {
-                    deleteComment(comment.id);
-                    getPostComments(selectedPostId)
+                    deleteComment(comment.id)
+                      .then(() => getPostComments(selectedPostId))
                       .then(setComments);
                   }}
                 >
