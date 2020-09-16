@@ -34,7 +34,6 @@ export const PostsList = ({ posts, selectedPostId, setSelectedPostId }) => (
           >
             {selectedPostId === id ? 'Close' : 'Open'}
           </button>
-
         </li>
       ))}
     </ul>
@@ -48,6 +47,10 @@ PostsList.propTypes = {
     userId: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
   })).isRequired,
-  selectedPostId: PropTypes.number.isRequired,
-  setSelectedPostId: PropTypes.number.isRequired,
+  selectedPostId: PropTypes.number,
+  setSelectedPostId: PropTypes.func.isRequired,
+};
+
+PostsList.defaultProps = {
+  selectedPostId: 0,
 };

@@ -7,3 +7,20 @@ export async function getPostComments(id) {
 
   return comments.filter(comment => comment.postId === +id);
 }
+
+export function addComment(comment) {
+  const options = {
+    method: 'POST',
+    body: JSON.stringify(comment),
+  };
+
+  return fetch(`${BASE_URL}`, options);
+}
+
+export function deleteComment(comment) {
+  const options = {
+    method: 'DELETE',
+  };
+
+  return fetch(`${BASE_URL}/${comment}`, options);
+}

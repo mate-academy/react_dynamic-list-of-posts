@@ -9,8 +9,7 @@ import { getPosts } from './api/posts';
 
 const App = () => {
   const [posts, setPosts] = useState([]);
-  const [selectedPostId, setSelectedPostId] = useState('');
-  // ??? const [selectedUserId, setSelectedUserId] = useState('')
+  const [selectedPostId, setSelectedPostId] = useState(null);
 
   useEffect(() => {
     getPosts()
@@ -18,6 +17,7 @@ const App = () => {
   }, []);
 
   const handleChange = (event) => {
+    setSelectedPostId();
     getPosts(event.target.value)
       .then(result => setPosts(result));
   };

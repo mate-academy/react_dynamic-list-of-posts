@@ -6,11 +6,11 @@ import './PostDetails.scss';
 import { NewCommentForm } from '../NewCommentForm';
 
 import { getPostDetails } from '../../api/posts';
-import { getPostComments } from '../../api/comments';
+import { deleteComment, getPostComments } from '../../api/comments';
 
 export const PostDetails = ({ selectedPostId }) => {
   const [selectedPost, setSelectedPost] = useState([]);
-  // const [commentsVisibility, setCommentsVisibility] = useState(true);
+  const [commentsVisibility, setCommentsVisibility] = useState(true);
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
@@ -34,34 +34,50 @@ export const PostDetails = ({ selectedPostId }) => {
       </section>
 
       <section className="PostDetails__comments">
-        <button type="button" className="button">
-          Hide
-          {comments.length}
-          {' '}
-          comments
+        <button
+          type="button"
+          className="button"
+          onClick={() => {
+            setCommentsVisibility(!commentsVisibility);
+          }}
+        >
+          {`${commentsVisibility
+            ? 'Hide' : 'Show'} ${comments.length} comments`
+          }
         </button>
-        <ul className="PostDetails__list">
+        {commentsVisibility && (
+          <ul className="PostDetails__list">
 
-          {comments.map(comment => (
+            {comments.map(({ id, body }) => (
 
-            <li
-              className="PostDetails__list-item"
-              key={comment.id}
-            >
-              <button
-                type="button"
-                className="PostDetails__remove-button button"
+              <li
+                className="PostDetails__list-item"
+                key={id}
               >
-                X
-              </button>
-              <p>{comment.body}</p>
-            </li>
-          ))}
-        </ul>
+                <button
+                  type="button"
+                  className="PostDetails__remove-button button"
+                  onClick={() => {
+                    deleteComment(id)
+                      .then(() => getPostComments(selectedPostId))
+                      .then(setComments);
+                  }}
+                >
+                  X
+                </button>
+                <p>{body}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+
       </section>
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm />
+          <NewCommentForm
+            postId={selectedPostId}
+            setComments={setComments}
+          />
         </div>
       </section>
     </div>
