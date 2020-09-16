@@ -5,7 +5,7 @@ import { NewCommentForm } from '../NewCommentForm';
 import { deleteComment } from '../../api/api';
 import './PostDetails.scss';
 
-export const PostDetails = ({ title, postId, comments }) => {
+export const PostDetails = ({ title, postId, comments, loadComments }) => {
   const [commentsShow, hideComments] = useState(true);
 
   return (
@@ -39,7 +39,9 @@ export const PostDetails = ({ title, postId, comments }) => {
                     <button
                       type="button"
                       className="PostDetails__remove-button button"
-                      onClick={() => deleteComment(comment.id)}
+                      onClick={() => deleteComment(comment.id)
+                        .then(loadComments)
+                      }
                       value={comment.id}
                     >
                       X
@@ -57,6 +59,7 @@ export const PostDetails = ({ title, postId, comments }) => {
             <div className="PostDetails__form-wrapper">
               <NewCommentForm
                 postId={postId}
+                loadComments={loadComments}
               />
             </div>
           </section>
@@ -76,4 +79,5 @@ PostDetails.propTypes = {
   title: PropTypes.string,
   postId: PropTypes.string.isRequired,
   comments: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  loadComments: PropTypes.func.isRequired,
 };

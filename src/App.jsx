@@ -30,7 +30,7 @@ const App = () => {
     loadUsers();
     createList();
     loadComments();
-  }, [comments]);
+  }, []);
 
   const showPostInfo = (event) => {
     if (event.target.value === postId) {
@@ -83,6 +83,7 @@ const App = () => {
             postId={postId}
             {...selectedPost}
             comments={commentsFromSelectedPosts}
+            loadComments={loadComments}
           />
         </div>
       </main>
