@@ -12,14 +12,9 @@ const App = () => {
   const [selectedPostId, setSelectedPostId] = useState(0);
 
   useEffect(() => {
-    postApi.getTodos()
+    postApi.getTodos(selectedUserId)
       .then((result) => {
-        setTodosFromServer(
-          result.data
-            .filter(todo => ((+selectedUserId === 0)
-              ? todo
-              : todo.userId === +selectedUserId)),
-        );
+        setTodosFromServer(result);
       });
   }, [selectedUserId]);
 
