@@ -19,8 +19,9 @@ export const PostsList = ({ person, selectedPostId, postId }) => {
     }
   }, [name, id]);
 
-  const handleClick = (postID) => {
-    selectedPostId(postID, buttonStatus);
+  const handleClick = (postID, choosen) => {
+    selectedPostId(postID, choosen);
+    setButtonStatus(choosen)
   };
 
   return (
@@ -43,10 +44,11 @@ export const PostsList = ({ person, selectedPostId, postId }) => {
               type="button"
               className="PostsList__button button"
               onClick={(event) => {
+                debugger;
                 event.target.innerText === 'Open'
-                  ? setButtonStatus(true)
-                  : setButtonStatus(false);
-                handleClick(post.id);
+                  ? handleClick(post.id, true)
+                  : handleClick(post.id, false);
+                ;
               }}
             >
               {buttonStatus && post.id === postId ? 'Close' : 'Open'}
@@ -60,9 +62,16 @@ export const PostsList = ({ person, selectedPostId, postId }) => {
 
 PostsList.propTypes = {
   person: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    id: PropTypes.number.isRequired,
+    name: PropTypes.string,
+    id: PropTypes.number,
   }).isRequired,
   selectedPostId: PropTypes.func.isRequired,
-  postId: PropTypes.number.isRequired,
+  postId: PropTypes.number,
+};
+
+PostsList.defaultProps = {
+  person: PropTypes.shape({
+    name: '',
+  }).isRequired,
+  postId: null,
 };

@@ -9,7 +9,7 @@ import './styles/general.scss';
 const App = () => {
   const [person, setPerson] = useState({});
   const [postId, setPostId] = useState();
-  const [post, setPost] = useState({});
+  const [post, setPost] = useState(null);
   const [isChoosen, setIsChoosen] = useState(false);
   const [comments, setComments] = useState([]);
 
@@ -23,6 +23,7 @@ const App = () => {
   };
 
   const selectedPostId = (id, buttonStatus) => {
+    debugger;
     setIsChoosen(buttonStatus);
     setPostId(id);
 

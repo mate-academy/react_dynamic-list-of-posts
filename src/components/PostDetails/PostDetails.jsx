@@ -11,7 +11,6 @@ export const PostDetails = ({
   loadComments,
   isChoosen,
 }) => {
-  const { title, id } = post;
   const [hidden, setHidden] = useState(true);
 
   const commentUpdate = (postId, name, email, body) => addComment(postId, name, email, body);
@@ -20,10 +19,10 @@ export const PostDetails = ({
     <div className="PostDetails">
       <h2>Post details:</h2>
 
-      {isChoosen && Object.keys(post).length !== 0 && (
+      {isChoosen && post && (
         <>
           <section className="PostDetails__post">
-            <p>{title}</p>
+            <p>{post.title}</p>
           </section>
 
           <section className="PostDetails__comments">
@@ -63,10 +62,10 @@ export const PostDetails = ({
           <section>
             <div className="PostDetails__form-wrapper">
               <NewCommentForm
-                postId={id}
+                postId={post.id}
                 commentUpdate={(postId, name, email, body) => {
                   commentUpdate(postId, name, email, body)
-                    .then(() => loadComments(id));
+                    .then(() => loadComments(post.id));
                 }}
               />
             </div>
@@ -81,7 +80,7 @@ PostDetails.propTypes = {
   post: PropTypes.shape({
     title: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
-  }).isRequired,
+  }),
   comments: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
@@ -91,4 +90,8 @@ PostDetails.propTypes = {
   deleteComment: PropTypes.func.isRequired,
   loadComments: PropTypes.func.isRequired,
   isChoosen: PropTypes.bool.isRequired,
+};
+
+PostDetails.defaultProps = {
+  post: null,
 };

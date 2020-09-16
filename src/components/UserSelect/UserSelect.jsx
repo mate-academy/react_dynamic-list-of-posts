@@ -49,5 +49,9 @@ export const UserSelect = ({ select, name }) => {
 
 UserSelect.propTypes = {
   select: PropTypes.func.isRequired,
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
+};
+
+UserSelect.defaultProps = {
+  name: '',
 };
