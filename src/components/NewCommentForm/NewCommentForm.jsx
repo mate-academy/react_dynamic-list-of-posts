@@ -1,23 +1,31 @@
 import React, { useState } from 'react';
 import './NewCommentForm.scss';
 import PropTypes from 'prop-types';
-import { addComment } from '../../api/comments';
+import { addComment, getComments } from '../../api/comments';
 
-export const NewCommentForm = ({ selectedPost }) => {
+export const NewCommentForm = ({ selectedPost, setComments }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (name && email && body) {
+      addComment(selectedPost, name, email, body)
+        .then(() => getComments(selectedPost))
+        .then(setComments);
+
+      setName('');
+      setEmail('');
+      setBody('');
+    }
+  };
+
   return (
     <form
       className="NewCommentForm"
-      onSubmit={(event) => {
-        event.preventDefault();
-        addComment(selectedPost, name, email, body);
-        setName('');
-        setEmail('');
-        setBody('');
-      }}
+      onSubmit={handleSubmit}
     >
       <div className="form-field">
         <input
@@ -26,7 +34,7 @@ export const NewCommentForm = ({ selectedPost }) => {
           placeholder="Your name"
           className="NewCommentForm__input"
           value={name}
-          onChange={event => setName(event.target.value)}
+          onChange={event => setName(event.target.value.trimLeft())}
         />
       </div>
 
@@ -37,7 +45,7 @@ export const NewCommentForm = ({ selectedPost }) => {
           placeholder="Your email"
           className="NewCommentForm__input"
           value={email}
-          onChange={event => setEmail(event.target.value)}
+          onChange={event => setEmail(event.target.value.trimLeft())}
         />
       </div>
 
@@ -47,7 +55,7 @@ export const NewCommentForm = ({ selectedPost }) => {
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={body}
-          onChange={event => setBody(event.target.value)}
+          onChange={event => setBody(event.target.value.trimLeft())}
         />
       </div>
 
@@ -63,4 +71,5 @@ export const NewCommentForm = ({ selectedPost }) => {
 
 NewCommentForm.propTypes = {
   selectedPost: PropTypes.number.isRequired,
+  setComments: PropTypes.func.isRequired,
 };

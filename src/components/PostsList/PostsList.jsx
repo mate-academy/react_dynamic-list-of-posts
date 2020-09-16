@@ -21,7 +21,10 @@ export const PostsList = ({ posts, selectedPost, selectPost }) => {
 
       <ul className="PostsList__list">
         {posts.map(({ userId, title, id }) => (
-          <li className="PostsList__item">
+          <li
+            className="PostsList__item"
+            key={id}
+          >
             <div>
               <b>{`[User #${userId}] `}</b>
               {title}

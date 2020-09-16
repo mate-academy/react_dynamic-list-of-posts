@@ -13,12 +13,16 @@ export const PostDetails = ({ selectedPost }) => {
   useEffect(() => {
     getPostDetails(selectedPost)
       .then(setPost);
-  }, [selectedPost]);
 
-  useEffect(() => {
     getComments(selectedPost)
       .then(setComments);
-  }, [comments]);
+  }, [selectedPost]);
+
+  const deleteComment = (id) => {
+    removeComment(id)
+      .then(() => getComments(selectedPost)
+        .then(setComments));
+  };
 
   return (
     <div className="PostDetails">
@@ -43,11 +47,14 @@ export const PostDetails = ({ selectedPost }) => {
             {isCommentsVisible && (
               <ul className="PostDetails__list">
                 {comments.map(({ id, email, body }) => (
-                  <li className="PostDetails__list-item">
+                  <li
+                    className="PostDetails__list-item"
+                    key={id}
+                  >
                     <button
                       type="button"
                       className="PostDetails__remove-button button"
-                      onClick={() => removeComment(id)}
+                      onClick={() => deleteComment(id)}
                     >
                       X
                     </button>
@@ -62,6 +69,7 @@ export const PostDetails = ({ selectedPost }) => {
             <div className="PostDetails__form-wrapper">
               <NewCommentForm
                 selectedPost={selectedPost}
+                setComments={setComments}
               />
             </div>
           </section>
