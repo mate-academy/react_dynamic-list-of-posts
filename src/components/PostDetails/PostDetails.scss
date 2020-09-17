@@ -1,4 +1,6 @@
 .PostDetails {
+  position: sticky;
+  top: 50px;
   &__post {
     padding: 10px 0 15px;
   }
