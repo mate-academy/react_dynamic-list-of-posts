@@ -9,8 +9,8 @@ export const NewCommentForm = ({ id, setComments }) => {
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');
 
-  const handleSubmit = (postId, userName, userEmail, body) => {
-    addPostComment(postId, userName, userEmail, body)
+  const handleSubmit = () => {
+    addPostComment(id, name, email, comment)
       .then(() => getPostComments(id)
         .then(result => setComments(result)));
 
@@ -24,7 +24,7 @@ export const NewCommentForm = ({ id, setComments }) => {
       className="NewCommentForm"
       onSubmit={(event) => {
         event.preventDefault();
-        handleSubmit(id, name, email, comment);
+        handleSubmit();
       }}
     >
       <div className="form-field">
