@@ -4,7 +4,7 @@ import './PostsList.scss';
 import { Loader } from '../Loader/Loader';
 
 export const PostsList = ({ posts, selectedPost, selectPost }) => {
-  const onClick = (postId) => {
+  const handleClick = (postId) => {
     if (selectedPost === postId) {
       selectPost(0);
     } else {
@@ -32,7 +32,7 @@ export const PostsList = ({ posts, selectedPost, selectPost }) => {
             <button
               type="button"
               className="PostsList__button button"
-              onClick={() => onClick(id)}
+              onClick={() => handleClick(id)}
             >
               {selectedPost === id ? 'Close' : 'Open'}
             </button>
