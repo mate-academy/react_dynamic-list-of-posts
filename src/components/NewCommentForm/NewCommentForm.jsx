@@ -10,15 +10,22 @@ export const NewCommentForm = ({ id, getPostComments, setComments }) => {
     body: '',
   });
 
+  const setCommentField = (field, fieldValue) => {
+    setNewComment(prevComment => ({
+      ...prevComment,
+      [field]: fieldValue,
+    }));
+  };
+
   return (
     <form
       className="NewCommentForm"
       onSubmit={(event) => {
         event.preventDefault();
         newComment.postId = id;
-        if (newComment.name === ''
-          || newComment.email === ''
-          || newComment.body === '') {
+        if (!newComment.name
+          || !newComment.email
+          || !newComment.body) {
           return;
         }
 
@@ -39,10 +46,7 @@ export const NewCommentForm = ({ id, getPostComments, setComments }) => {
           value={newComment.name}
           placeholder="Your name"
           className="NewCommentForm__input"
-          onChange={event => setNewComment({
-            ...newComment,
-            name: event.target.value,
-          })}
+          onChange={({ target }) => setCommentField(target.name, target.value)}
         />
       </div>
 
@@ -53,10 +57,7 @@ export const NewCommentForm = ({ id, getPostComments, setComments }) => {
           value={newComment.email}
           placeholder="Your email"
           className="NewCommentForm__input"
-          onChange={event => setNewComment({
-            ...newComment,
-            email: event.target.value,
-          })}
+          onChange={({ target }) => setCommentField(target.name, target.value)}
         />
       </div>
 
@@ -66,10 +67,7 @@ export const NewCommentForm = ({ id, getPostComments, setComments }) => {
           value={newComment.body}
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          onChange={event => setNewComment({
-            ...newComment,
-            body: event.target.value,
-          })}
+          onChange={({ target }) => setCommentField(target.name, target.value)}
         />
       </div>
 

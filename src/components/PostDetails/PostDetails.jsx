@@ -7,7 +7,7 @@ import './PostDetails.scss';
 export const PostDetails = ({ posts, selectedPostId }) => {
   const [comments, setComments] = useState([]);
   const [hidden, setHidden] = useState(true);
-  const selectedPost = posts.find(post => post.id === selectedPostId);
+  const selectedPost = posts.find(post => +post.id === selectedPostId);
 
   useEffect(() => {
     getPostComments(selectedPostId)
@@ -25,6 +25,7 @@ export const PostDetails = ({ posts, selectedPostId }) => {
       <section className="PostDetails__comments">
         <button
           type="button"
+          hidden={!comments.length}
           className="button"
           onClick={() => setHidden(!hidden)}
         >
@@ -36,7 +37,7 @@ export const PostDetails = ({ posts, selectedPostId }) => {
         </button>
 
         <ul hidden={hidden} className="PostDetails__list">
-          {comments && comments.map(comment => (
+          {comments.map(comment => (
             <li key={comment.id} className="PostDetails__list-item">
               <button
                 type="button"
@@ -69,8 +70,6 @@ export const PostDetails = ({ posts, selectedPostId }) => {
 };
 
 PostDetails.propTypes = {
-  selectedPost: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-  }).isRequired,
+  posts: PropTypes.arrayOf(PropTypes.object).isRequired,
+  selectedPostId: PropTypes.number.isRequired,
 };

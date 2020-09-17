@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { getUserPosts } from '../../api/posts';
+import { getPosts } from '../../api/posts';
 import './PostsList.scss';
 
 export const PostsList = ({
@@ -11,10 +11,11 @@ export const PostsList = ({
   setPosts,
 }) => {
   useEffect(() => {
-    getUserPosts()
+    getPosts()
       .then(data => setPosts(
-        data.filter(post => post.userId === +selectedUser
-          || selectedUser === '0'),
+        data.filter(post => (selectedUser === '0'
+          ? post
+          : post.userId === +selectedUser)),
       ));
   }, [selectedUser]);
 
@@ -39,7 +40,7 @@ export const PostsList = ({
               onClick={() => (
                 selectedPostId !== post.id
                   ? setPostId(post.id)
-                  : setPostId('0')
+                  : setPostId(null)
               )}
               className="PostsList__button button"
             >
@@ -54,8 +55,12 @@ export const PostsList = ({
 
 PostsList.propTypes = {
   posts: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
-  selectedPostId: PropTypes.number.isRequired,
-  selectedUser: PropTypes.number.isRequired,
+  selectedPostId: PropTypes.number,
+  selectedUser: PropTypes.string.isRequired,
   setPostId: PropTypes.func.isRequired,
   setPosts: PropTypes.func.isRequired,
+};
+
+PostsList.defaultProps = {
+  selectedPostId: null,
 };

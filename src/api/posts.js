@@ -1,6 +1,6 @@
 import { BASE_URL } from './api';
 
-export const getUserPosts = () => fetch(`${BASE_URL}posts/`)
+export const getPosts = () => fetch(`${BASE_URL}posts/`)
   .then(response => response.json())
   .then(result => result.data);
 
