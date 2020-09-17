@@ -4,7 +4,12 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getUserPosts, getPostDetails, getPostComments } from './api/posts';
+import { getUserPosts, getPostDetails } from './api/posts';
+import {
+  getPostComments,
+  addPostComments,
+  deletePostComments,
+} from './api/comments';
 
 const App = () => {
   const [userSelect, setUserSelect] = useState('0');
@@ -21,7 +26,18 @@ const App = () => {
     setPostComments(comments);
   };
 
-  // console.log(selectedPostId);
+  const addComment = async(newComment) => {
+    const comment = await addPostComments(newComment);
+
+    setPostComments(prevState => [...prevState, comment.data]);
+  };
+
+  const deleteComment = async(commentId) => {
+    await deletePostComments(commentId);
+
+    setPostComments(prevState => prevState
+      .filter(item => item.id !== commentId));
+  };
 
   return (
     <div className="App">
@@ -33,7 +49,6 @@ const App = () => {
             className="App__user-selector"
             onChange={(event) => {
               setUserSelect(event.target.value);
-              // console.log(event.target.value);
             }}
           >
             <option value="0">All users</option>
@@ -71,6 +86,8 @@ const App = () => {
                 getPostDetails={getPostDetails}
                 selectedPostDetails={selectedPostDetails}
                 postComments={postComments}
+                addComment={addComment}
+                deleteComment={deleteComment}
               />
             )
           }

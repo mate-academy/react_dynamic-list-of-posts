@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames/bind';
 
 import { Loader } from '../Loader';
 
@@ -12,12 +13,9 @@ export const PostsList = ({
   setSelectedPostId,
   loadPostDetails,
 }) => {
-  // const [chosenUser, setChosenUser] = useState(null);
   const [posts, setPosts] = useState('');
-  // const [postDetailsOpen, setPostDetailsOpen] = useState(null);
 
   const onTogglePostDetails = (id) => {
-    // setSelectedPostId(id);
     loadPostDetails(id);
 
     if (selectedPostId === id) {
@@ -32,7 +30,6 @@ export const PostsList = ({
   useEffect(() => {
     getUserPosts(userSelect)
       .then((data) => {
-        // console.log(data);
         setPosts(data);
       });
   }, [userSelect]);
@@ -57,7 +54,11 @@ export const PostsList = ({
               </div>
               <button
                 type="button"
-                className="PostsList__button button"
+                className={(classNames(
+                  'PostsList__button button',
+                  { opened: selectedPostId === post.id },
+                ))}
+
                 onClick={() => onTogglePostDetails(post.id)}
               >
                 {

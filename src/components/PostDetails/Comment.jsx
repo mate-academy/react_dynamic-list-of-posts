@@ -1,22 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export const Comment = ({ comment }) => (
-  // console.log(comment);
-
-  // return (
+export const Comment = ({ comment, deleteComment }) => (
   <>
     <button
       type="button"
       className="PostDetails__remove-button button"
+      onClick={() => deleteComment(comment.id)}
     >
       X
     </button>
-    <p>{comment.id}</p>
+    <h4>{comment.name}</h4>
+    <p>{comment.body}</p>
   </>
 );
-// };
 
 Comment.propTypes = {
-  comment: PropTypes.string.isRequired,
+  comment: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+  }).isRequired,
+  deleteComment: PropTypes.func.isRequired,
 };
