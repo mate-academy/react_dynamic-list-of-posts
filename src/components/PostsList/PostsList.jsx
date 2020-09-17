@@ -1,37 +1,66 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { getPosts } from '../../api/posts';
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({
+  selectedPostId,
+  posts,
+  selectedUser,
+  setPostId,
+  setPosts,
+}) => {
+  useEffect(() => {
+    getPosts()
+      .then(data => setPosts(
+        data.filter(post => (selectedUser === '0'
+          ? post
+          : post.userId === +selectedUser)),
+      ));
+  }, [selectedUser]);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+      <ul className="PostsList__list">
+        {posts.map(post => (
+          <li key={post.id} className="PostsList__item">
+            <div>
+              <b>
+                [User #
+                {post.userId}
+                ]:
+                {' '}
+              </b>
+              {post.body}
+            </div>
+            <button
+              type="button"
+              onClick={() => (
+                selectedPostId !== post.id
+                  ? setPostId(post.id)
+                  : setPostId(null)
+              )}
+              className="PostsList__button button"
+            >
+              {selectedPostId !== post.id ? 'Open' : 'Close'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  selectedPostId: PropTypes.number,
+  selectedUser: PropTypes.string.isRequired,
+  setPostId: PropTypes.func.isRequired,
+  setPosts: PropTypes.func.isRequired,
+};
+
+PostsList.defaultProps = {
+  selectedPostId: null,
+};
