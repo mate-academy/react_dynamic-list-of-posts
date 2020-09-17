@@ -4,22 +4,29 @@ import PropTypes from 'prop-types';
 import { addComment, getComments } from '../../api/comments';
 
 export const NewCommentForm = ({ selectedPost, setComments }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    formData.postId = selectedPost;
 
-    if (name && email && body) {
-      addComment(selectedPost, name, email, body)
-        .then(() => getComments(selectedPost))
-        .then(setComments);
-
-      setName('');
-      setEmail('');
-      setBody('');
+    if (!formData.name || !formData.email || !formData.body) {
+      return;
     }
+
+    addComment(formData)
+      .then(() => getComments(selectedPost)
+        .then(setComments));
+
+    setFormData({
+      name: '',
+      email: '',
+      body: '',
+    });
   };
 
   return (
@@ -32,9 +39,12 @@ export const NewCommentForm = ({ selectedPost, setComments }) => {
           type="text"
           name="name"
           placeholder="Your name"
+          value={formData.name}
           className="NewCommentForm__input"
-          value={name}
-          onChange={event => setName(event.target.value.trimLeft())}
+          onChange={({ target }) => setFormData(prevData => ({
+            ...prevData,
+            name: target.value.trimLeft(),
+          }))}
         />
       </div>
 
@@ -43,9 +53,12 @@ export const NewCommentForm = ({ selectedPost, setComments }) => {
           type="text"
           name="email"
           placeholder="Your email"
+          value={formData.email}
           className="NewCommentForm__input"
-          value={email}
-          onChange={event => setEmail(event.target.value.trimLeft())}
+          onChange={({ target }) => setFormData(prevData => ({
+            ...prevData,
+            email: target.value.trimLeft(),
+          }))}
         />
       </div>
 
@@ -53,9 +66,12 @@ export const NewCommentForm = ({ selectedPost, setComments }) => {
         <textarea
           name="body"
           placeholder="Type comment here"
+          value={formData.body}
           className="NewCommentForm__input"
-          value={body}
-          onChange={event => setBody(event.target.value.trimLeft())}
+          onChange={({ target }) => setFormData(prevData => ({
+            ...prevData,
+            body: target.value.trimLeft(),
+          }))}
         />
       </div>
 

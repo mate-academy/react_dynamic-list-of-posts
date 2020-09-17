@@ -23,7 +23,7 @@ const App = () => {
 
           <select
             className="App__user-selector"
-            onChange={event => setUserId(event.target.value)}
+            onChange={({ target }) => setUserId(target.value)}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>

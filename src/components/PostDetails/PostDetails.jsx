@@ -7,7 +7,7 @@ import './PostDetails.scss';
 
 export const PostDetails = ({ selectedPost }) => {
   const [post, setPost] = useState(null);
-  const [isCommentsVisible, setCommentsVisibility] = useState(false);
+  const [isCommentsVisible, setIsCommentsVisible] = useState(false);
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export const PostDetails = ({ selectedPost }) => {
             <button
               type="button"
               className="button"
-              onClick={() => setCommentsVisibility(!isCommentsVisible)}
+              onClick={() => setIsCommentsVisible(!isCommentsVisible)}
             >
               {isCommentsVisible
                 ? `Hide ${comments.length} comments`
