@@ -3,14 +3,15 @@ import PropTypes from 'prop-types';
 
 import { NewCommentForm } from '../NewCommentForm';
 import { getPostDetails } from '../../api/posts';
-// import { getPostComments } from '../../api/comments';
+import { getPostComments, deleteComment } from '../../api/comments';
 
 import './PostDetails.scss';
 
 export const PostDetails = ({ selectedPostId }) => {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
-  // const [commentBody, setCommentBody] = useState('');
+  const [comments, setComments] = useState([]);
+  const [isCommentsHidden, setIsCommentsHidden] = useState(false);
 
   useEffect(() => {
     getPostDetails(selectedPostId)
@@ -18,7 +19,22 @@ export const PostDetails = ({ selectedPostId }) => {
         setTitle(post.title);
         setBody(post.body);
       });
+
+    getPostComments(selectedPostId)
+      .then(setComments);
+
+    setIsCommentsHidden(false);
   }, [selectedPostId]);
+
+  const handleClick = () => {
+    setIsCommentsHidden(!isCommentsHidden);
+  };
+
+  const handleDelete = async(id) => {
+    await deleteComment(id);
+    getPostComments(selectedPostId)
+      .then(setComments);
+  };
 
   return (
     <div className="PostDetails">
@@ -30,28 +46,30 @@ export const PostDetails = ({ selectedPostId }) => {
       </section>
 
       <section className="PostDetails__comments">
-        <button type="button" className="button">Hide 2 comments</button>
+        {comments.length > 0 && (
+          <button
+            type="button"
+            className="button"
+            onClick={handleClick}
+          >
+            {isCommentsHidden ? `Hide ` : 'Show '}
+            comments
+          </button>
+        )}
 
         <ul className="PostDetails__list">
-          <li className="PostDetails__list-item">
-            <button
-              type="button"
-              className="PostDetails__remove-button button"
-            >
-              X
-            </button>
-            <p>My first comment</p>
-          </li>
-
-          <li className="PostDetails__list-item">
-            <button
-              type="button"
-              className="PostDetails__remove-button button"
-            >
-              X
-            </button>
-            <p>sad sds dfsadf asdf asdf</p>
-          </li>
+          {isCommentsHidden && comments.map(comment => (
+            <li key={comment.id} className="PostDetails__list-item">
+              <button
+                type="button"
+                className="PostDetails__remove-button button"
+                onClick={() => handleDelete(comment.id)}
+              >
+                X
+              </button>
+              <p>{comment.body}</p>
+            </li>
+          ))}
         </ul>
       </section>
 
@@ -65,6 +83,5 @@ export const PostDetails = ({ selectedPostId }) => {
 };
 
 PostDetails.propTypes = {
-  // getPostComments: PropTypes.func.isRequired,
   selectedPostId: PropTypes.number.isRequired,
 };

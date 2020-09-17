@@ -7,3 +7,8 @@ export const getPostComments = async(postId) => {
 
   return data.filter(comment => comment.postId === postId);
 };
+
+export const deleteComment = async commenId => fetch(
+  `${BASE_URL}/comments/${commenId}`,
+  { method: 'DELETE' },
+);
