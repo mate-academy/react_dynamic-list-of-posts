@@ -1,37 +1,55 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './PostsList.scss';
+import { Loader } from '../Loader/Loader';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({ posts, selectedPost, selectPost }) => {
+  const handleClick = (postId) => {
+    if (selectedPost === postId) {
+      selectPost(0);
+    } else {
+      selectPost(postId);
+    }
+  };
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+      {!posts && (
+        <Loader />
+      )}
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+      <ul className="PostsList__list">
+        {posts.map(({ userId, title, id }) => (
+          <li
+            className="PostsList__item"
+            key={id}
+          >
+            <div>
+              <b>{`[User #${userId}] `}</b>
+              {title}
+            </div>
+            <button
+              type="button"
+              className="PostsList__button button"
+              onClick={() => handleClick(id)}
+            >
+              {selectedPost === id ? 'Close' : 'Open'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      userId: PropTypes.number.isRequired,
+    }).isRequired,
+  ).isRequired,
+  selectedPost: PropTypes.number.isRequired,
+  selectPost: PropTypes.func.isRequired,
+};
