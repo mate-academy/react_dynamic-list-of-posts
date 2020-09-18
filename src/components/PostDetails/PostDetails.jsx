@@ -23,15 +23,20 @@ export const PostDetails = ({
       </section>
 
       <section className="PostDetails__comments">
-        <button
-          type="button"
-          className="button"
-          onClick={() => setHideComments(!hideComments)}
-        >
-          {!hideComments ? 'Hide ' : 'Show '}
-          { postComments.length }
-          { postComments.length === 1 ? ' comment' : ' comments'}
-        </button>
+        {postComments.length !== 0
+        && (
+          <button
+            type="button"
+            className="button"
+            onClick={() => setHideComments(!hideComments)}
+          >
+            {!hideComments ? 'Hide ' : 'Show '}
+            { postComments.length }
+            { postComments.length === 1 ? ' comment' : ' comments'}
+          </button>
+        )
+        }
+
         {!hideComments
         && (
           <CommentsList

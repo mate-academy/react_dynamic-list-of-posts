@@ -2,9 +2,9 @@ import { BASE_URL } from './api';
 
 export const getPostComments = async(postId) => {
   const response = await fetch(`${BASE_URL}/comments`);
-  const data = await response.json();
+  const result = await response.json();
 
-  return data.data.filter(comment => comment.postId === postId);
+  return result.data.filter(comment => comment.postId === postId);
 };
 
 export const addPostComments = (newComment) => {
