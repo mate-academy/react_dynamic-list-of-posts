@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
+
 import { getPostDetails } from '../../api/posts';
 import { getPostComments, deleteComment } from '../../api/comments';
 
@@ -47,8 +49,12 @@ export const PostDetails = ({ selectedPostId }) => {
       <section className="PostDetails__comments">
         <button
           type="button"
-          className="button"
+          className={classNames({
+            button: true,
+            'button--visibility': !postComments.length,
+          })}
           onClick={() => setHideComments(!hideComments)}
+
         >
           {
             hideComments
