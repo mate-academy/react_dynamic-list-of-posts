@@ -12,6 +12,14 @@ export const NewCommentForm = ({ postId, addComment }) => {
       className="NewCommentForm"
       onSubmit={(event) => {
         event.preventDefault();
+
+        if (body && userName && email) {
+          addComment(postId, userName, email, body);
+
+          setUserName('');
+          setEmail('');
+          setBody('');
+        }
       }}
     >
       <div className="form-field">
@@ -58,15 +66,6 @@ export const NewCommentForm = ({ postId, addComment }) => {
       <button
         type="submit"
         className="NewCommentForm__submit-button button"
-        onClick={() => {
-          if (body && userName && email) {
-            addComment(postId, userName, email, body);
-
-            setUserName('');
-            setEmail('');
-            setBody('');
-          }
-        }}
       >
         Add a comment
       </button>
