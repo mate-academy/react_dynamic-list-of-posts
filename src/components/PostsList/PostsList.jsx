@@ -12,14 +12,14 @@ export const PostsList = ({ onTakePost, searchByUser }) => {
   useEffect(() => {
     if (+searchByUser === 0) {
       getPosts()
-        .then(result => setPosts(result));
+        .then(setPosts);
 
       return;
     }
 
     getPosts()
       .then(result => result.filter(item => item.userId === +searchByUser))
-      .then(filteredResult => setPosts(filteredResult));
+      .then(setPosts);
   }, [searchByUser]);
 
   return (

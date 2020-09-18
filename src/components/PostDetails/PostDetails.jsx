@@ -7,27 +7,27 @@ import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
 export const PostDetails = ({ selectedPostId }) => {
-  const [postComments, setpostComments] = useState(null);
+  const [postComments, setPostComments] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
   const [hideComments, setHideComments] = useState(false);
 
   const handleDelete = async(id) => {
     await deleteComment(id);
     getPostComments(selectedPostId)
-      .then(result => setpostComments(result));
+      .then(setPostComments);
   };
 
   const newRenderOfComments = () => {
     getPostComments(selectedPostId)
-      .then(result => setpostComments(result));
+      .then(setPostComments);
   };
 
   useEffect(() => {
     getPostComments(selectedPostId)
-      .then(result => setpostComments(result));
+      .then(setPostComments);
 
     getPostDetails(selectedPostId)
-      .then(result => setSelectedPost(result));
+      .then(setSelectedPost);
   }, [selectedPostId]);
 
   if (!selectedPost || !postComments) {

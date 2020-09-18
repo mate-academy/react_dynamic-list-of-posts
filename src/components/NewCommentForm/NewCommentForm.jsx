@@ -34,7 +34,7 @@ export const NewCommentForm = ({ selectedPostId, newRenderOfComments }) => {
 
       <div className="form-field">
         <input
-          type="text"
+          type="email"
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
@@ -49,7 +49,8 @@ export const NewCommentForm = ({ selectedPostId, newRenderOfComments }) => {
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={comment}
-          onChange={({ target }) => setComment(target.value)}
+          onChange={({ target }) => setComment(target.value.trimLeft())}
+          required
         />
       </div>
 
