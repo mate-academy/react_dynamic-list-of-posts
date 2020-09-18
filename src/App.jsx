@@ -13,14 +13,14 @@ const App = () => {
 
   useEffect(() => {
     getUserPosts(userId)
-      .then(result => setPosts(result));
+      .then(setPosts);
   }, [userId]);
 
   const setSelectedPostId = (selectedPostId) => {
     setPostId(selectedPostId);
 
     getPostDetails(selectedPostId)
-      .then(result => setPost(result));
+      .then(setPost);
   };
 
   const setPostClosing = () => {

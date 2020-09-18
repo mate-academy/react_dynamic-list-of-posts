@@ -10,7 +10,7 @@ export const PostDetails = ({ post }) => {
 
   useEffect(() => {
     getPostComments(post.id)
-      .then(result => setPostComments(result));
+      .then(setPostComments);
   }, [post.id]);
 
   const changeCommentsVisibility = () => {
@@ -21,7 +21,7 @@ export const PostDetails = ({ post }) => {
     deleteComment(commentId)
       .then(() => {
         getPostComments(post.id)
-          .then(result => setPostComments(result));
+          .then(setPostComments);
       });
   };
 
@@ -29,7 +29,7 @@ export const PostDetails = ({ post }) => {
     addComment(postId, name, body, email)
       .then(() => {
         getPostComments(post.id)
-          .then(result => setPostComments(result));
+          .then(setPostComments);
       });
   };
 
@@ -42,18 +42,19 @@ export const PostDetails = ({ post }) => {
       </section>
 
       <section className="PostDetails__comments">
-        <button
-          type="button"
-          className="button PostDetails__button"
-          onClick={() => {
-            changeCommentsVisibility();
-          }}
-        >
-          {visibleComments
-            ? `Hide ${comments.length} comments`
-            : `Show ${comments.length} comments`
-          }
-        </button>
+        {comments.length > 0 && (
+          <button
+            type="button"
+            className="button PostDetails__button"
+            onClick={() => {
+              changeCommentsVisibility();
+            }}
+          >
+            {visibleComments ? `Hide ` : `Show `}
+            {`${comments.length}
+              ${comments.length > 1 ? 'comments' : 'comment'}`}
+          </button>
+        )}
 
         {visibleComments && (
           <ul className="PostDetails__list">

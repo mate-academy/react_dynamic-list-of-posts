@@ -19,25 +19,19 @@ export const PostsList = ({ posts, postId, onPostIdSelect, onPostClose }) => (
             {post.title}
           </div>
 
-          {post.id !== postId && (
-            <button
-              type="button"
-              className="PostsList__button button"
-              onClick={() => onPostIdSelect(post.id)}
-            >
-              Open
-            </button>
-          )}
-
-          {post.id === postId && (
-            <button
-              type="button"
-              className="PostsList__button button"
-              onClick={() => onPostClose()}
-            >
-              Close
-            </button>
-          )}
+          <button
+            type="button"
+            className="PostsList__button button"
+            onClick={() => {
+              if (post.id !== postId) {
+                onPostIdSelect(post.id);
+              } else {
+                onPostClose();
+              }
+            }}
+          >
+            {(post.id !== postId) ? 'Open' : 'Close'}
+          </button>
         </li>
       ))}
     </ul>
