@@ -30,5 +30,13 @@
 
   &__button {
     margin-left: 10px;
+
+    &--close {
+      content: "Close";
+    }
+
+    &--open {
+      content: "open";
+    }
   }
 }
