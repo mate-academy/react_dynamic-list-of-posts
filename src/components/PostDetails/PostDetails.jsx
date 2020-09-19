@@ -13,13 +13,13 @@ export const PostDetails = ({ selectedPostId }) => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [hideComments, setHideComments] = useState(false);
 
-  const handleDelete = async(id) => {
+  const handleCommentDeletion = async(id) => {
     await deleteComment(id);
     getPostComments(selectedPostId)
       .then(setPostComments);
   };
 
-  const newRenderOfComments = () => {
+  const getCommentsFromServer = () => {
     getPostComments(selectedPostId)
       .then(setPostComments);
   };
@@ -72,7 +72,7 @@ export const PostDetails = ({ selectedPostId }) => {
                   <button
                     type="button"
                     className="PostDetails__remove-button button"
-                    onClick={() => handleDelete(item.id)}
+                    onClick={() => handleCommentDeletion(item.id)}
                   >
                     X
                   </button>
@@ -88,7 +88,7 @@ export const PostDetails = ({ selectedPostId }) => {
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             selectedPostId={selectedPostId}
-            newRenderOfComments={newRenderOfComments}
+            getCommentsFromServer={getCommentsFromServer}
           />
         </div>
       </section>

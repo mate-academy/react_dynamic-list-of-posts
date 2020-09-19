@@ -5,7 +5,7 @@ import { getPosts } from '../../api/api';
 import { getPostDetails } from '../../api/posts';
 import './PostsList.scss';
 
-export const PostsList = ({ onTakePost, searchByUser }) => {
+export const PostsList = ({ setPost, searchByUser }) => {
   const [posts, setPosts] = useState([]);
   const [viewDetails, setViewDetails] = useState(0);
 
@@ -21,6 +21,19 @@ export const PostsList = ({ onTakePost, searchByUser }) => {
       .then(result => result.filter(item => item.userId === +searchByUser))
       .then(setPosts);
   }, [searchByUser]);
+
+  const seeMore = (post) => {
+    if (viewDetails === post.id) {
+      setPost(null, null);
+      setViewDetails(null);
+
+      return;
+    }
+
+    getPostDetails(post.id);
+    setViewDetails(post.id);
+    setPost(post.id, post);
+  };
 
   return (
     <div className="PostsList">
@@ -42,18 +55,7 @@ export const PostsList = ({ onTakePost, searchByUser }) => {
                 PostsList__button: true,
                 button: true,
               })}
-              onClick={() => {
-                if (viewDetails === item.id) {
-                  onTakePost(null, null);
-                  setViewDetails(null);
-
-                  return;
-                }
-
-                getPostDetails(item.id);
-                setViewDetails(item.id);
-                onTakePost(item.id, item);
-              }}
+              onClick={() => seeMore(item)}
             >
               {
                 viewDetails === item.id
@@ -69,7 +71,7 @@ export const PostsList = ({ onTakePost, searchByUser }) => {
 };
 
 PostsList.propTypes = {
-  onTakePost: PropTypes.func.isRequired,
+  setPost: PropTypes.func.isRequired,
   searchByUser: PropTypes.number,
 };
 

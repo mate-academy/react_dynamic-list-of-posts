@@ -5,13 +5,13 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
 const App = () => {
-  const [selectedPostId, setSelecteUserId] = useState(null);
-  const [selectedPost, setSelecteUser] = useState(null);
+  const [selectedPostId, setSelectedPostId] = useState(null);
+  const [selectedPost, setSelectedPost] = useState(null);
   const [searchByUser, setSearchByUser] = useState(0);
 
-  const getPost = (userId, post) => {
-    setSelecteUserId(userId);
-    setSelecteUser(post);
+  const setPost = (postId, post) => {
+    setSelectedPostId(postId);
+    setSelectedPost(post);
   };
 
   return (
@@ -25,71 +25,27 @@ const App = () => {
             value={searchByUser}
             onChange={({ target }) => setSearchByUser(target.value)}
           >
-            <option
-              value={0}
-            >
-              All users
-            </option>
+            <option value={0}>All</option>
 
-            <option
-              value={1}
-            >
-              Leanne Graham
-            </option>
+            <option value={1}>Leanne Graham</option>
 
-            <option
-              value={2}
-            >
-              Ervin Howell
-            </option>
+            <option value={2}>Ervin Howell</option>
 
-            <option
-              value={3}
-            >
-              Clementine Bauch
-            </option>
+            <option value={3}>Clementine Bauch</option>
 
-            <option
-              value={4}
-            >
-              Patricia Lebsack
-            </option>
+            <option value={4}>Patricia Lebsack</option>
 
-            <option
-              value={5}
-            >
-              Chelsey Dietrich
-            </option>
+            <option value={5}>Chelsey Dietrich</option>
 
-            <option
-              value={6}
-            >
-              Mrs. Dennis Schulist
-            </option>
+            <option value={6}>Mrs. Dennis Schulist</option>
 
-            <option
-              value={7}
-            >
-              Kurtis Weissnat
-            </option>
+            <option value={7}>Kurtis Weissnat</option>
 
-            <option
-              value={8}
-            >
-              Nicholas Runolfsdottir V
-            </option>
+            <option value={8}>Nicholas Runolfsdottir V</option>
 
-            <option
-              value={9}
-            >
-              Glenna Reichert
-            </option>
+            <option value={9}>Glenna Reichert</option>
 
-            <option
-              value={10}
-            >
-              Leanne Graham
-            </option>
+            <option value={10}>Leanne Graham</option>
           </select>
         </label>
       </header>
@@ -97,7 +53,7 @@ const App = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            onTakePost={getPost}
+            setPost={setPost}
             searchByUser={searchByUser}
           />
         </div>

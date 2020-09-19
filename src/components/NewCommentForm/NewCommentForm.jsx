@@ -3,14 +3,27 @@ import PropTypes from 'prop-types';
 import { addComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ selectedPostId, newRenderOfComments }) => {
-  const [userName, setUserName] = useState('');
-  const [userEmail, setUserEmail] = useState('');
-  const [comment, setComment] = useState('');
+export const NewCommentForm = ({ selectedPostId, getCommentsFromServer }) => {
+  const [comment, setComment] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
 
   const addNewComment = async() => {
-    await addComment(selectedPostId, userName, userEmail, comment);
-    newRenderOfComments(selectedPostId);
+    const { name, email, body } = comment;
+
+    await addComment(selectedPostId, name, email, body);
+    getCommentsFromServer(selectedPostId);
+  };
+
+  const handleCommentSubmit = (target) => {
+    const { name, value } = target;
+
+    setComment({
+      ...comment,
+      [name]: value,
+    });
   };
 
   return (
@@ -27,8 +40,8 @@ export const NewCommentForm = ({ selectedPostId, newRenderOfComments }) => {
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={userName}
-          onChange={({ target }) => setUserName(target.value)}
+          value={comment.name}
+          onChange={({ target }) => handleCommentSubmit(target)}
         />
       </div>
 
@@ -38,8 +51,8 @@ export const NewCommentForm = ({ selectedPostId, newRenderOfComments }) => {
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={userEmail}
-          onChange={({ target }) => setUserEmail(target.value)}
+          value={comment.email}
+          onChange={({ target }) => handleCommentSubmit(target)}
         />
       </div>
 
@@ -48,8 +61,8 @@ export const NewCommentForm = ({ selectedPostId, newRenderOfComments }) => {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={comment}
-          onChange={({ target }) => setComment(target.value.trimLeft())}
+          value={comment.body}
+          onChange={({ target }) => handleCommentSubmit(target)}
           required
         />
       </div>
@@ -66,5 +79,5 @@ export const NewCommentForm = ({ selectedPostId, newRenderOfComments }) => {
 
 NewCommentForm.propTypes = {
   selectedPostId: PropTypes.number.isRequired,
-  newRenderOfComments: PropTypes.func.isRequired,
+  getCommentsFromServer: PropTypes.func.isRequired,
 };
