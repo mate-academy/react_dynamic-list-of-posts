@@ -24,7 +24,7 @@ export const PostsList = ({
       <h2>Posts:</h2>
       <ul className="PostsList__list">
       {
-        posts.map(({userId, title, id}) => {
+        posts.map(({ userId, title, id }) => {
           return (
             <li
               className="PostsList__item"
@@ -46,11 +46,10 @@ export const PostsList = ({
             </li>
           )
         })
-       
       }
       </ul>
     </div>
-  )
+  );
 };
 
 PostsList.propTypes = {

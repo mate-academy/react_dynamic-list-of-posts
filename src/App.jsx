@@ -16,12 +16,12 @@ const App = () => {
   useEffect(() => {
     selectedPostId(selectedUser)
       .then(setPosts);
-
-  }, [selectedUser])
+  }, [selectedUser]);
 
   async function viewPostUser(id) {
     const result = await getPostDetails(id);
-      setPostDetails(() => result);
+
+    setPostDetails(() => result);
   }
 
   return (
@@ -64,8 +64,8 @@ const App = () => {
 
         <div className="App__content">
           <PostDetails
-           postDetails={postDetails}
-           postId={postId}
+            postDetails={postDetails}
+            postId={postId}
           />
         </div>
       </main>

@@ -3,9 +3,9 @@ import './PostDetails.scss';
 import PropTypes from 'prop-types';
 
 import { NewCommentForm } from '../NewCommentForm';
-import { getPostComments, deleteComment} from '../../api/comments';
+import { getPostComments, deleteComment } from '../../api/comments';
 
-export const PostDetails = ({ postDetails, postId}) => {
+export const PostDetails = ({ postDetails, postId }) => {
   const { title, body, id } = postDetails;
   const [comments, setComments] = useState([]);
   const [hideComent, setHideComment] = useState(true);
@@ -13,7 +13,7 @@ export const PostDetails = ({ postDetails, postId}) => {
   useEffect(() => {
     getPostComments(postId)
       .then(comments => setComments(comments));
-  }, [comments])
+  }, [comments]);
 
   function habdleButton() {
     setHideComment(() => !hideComent);
@@ -21,7 +21,7 @@ export const PostDetails = ({ postDetails, postId}) => {
 
   async function deleteComments(commentId) {
     await deleteComment(commentId);
-  };
+  }
 
   return (
     <div className="PostDetails">
@@ -74,7 +74,7 @@ export const PostDetails = ({ postDetails, postId}) => {
         </>
       )}
     </div>
-  )
+  );
 };
 
 PostDetails.propTypes = {
@@ -83,4 +83,4 @@ PostDetails.propTypes = {
     title: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,
   })).isRequired,
-}
+};
