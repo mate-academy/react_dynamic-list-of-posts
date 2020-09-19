@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { addComment } from '../../api/comments';
+import { addComment, getPostComments } from '../../api/comments';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ postId }) => {
+export const NewCommentForm = ({ postId, setComments }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    addComment(postId, name, email, body);
+    if (name && email && body) {
+      addComment(postId, name, email, body)
+        .then(() => getPostComments(postId))
+        .then(setComments);
+    }
+
     setName('');
     setEmail('');
     setBody('');
@@ -23,7 +28,7 @@ export const NewCommentForm = ({ postId }) => {
           type="text"
           name="name"
           value={name}
-          onChange={event => setName(event.target.value)}
+          onChange={event => setName(event.target.value.trim())}
           placeholder="Your name"
           className="NewCommentForm__input"
         />
@@ -34,7 +39,7 @@ export const NewCommentForm = ({ postId }) => {
           type="text"
           name="email"
           value={email}
-          onChange={event => setEmail(event.target.value)}
+          onChange={event => setEmail(event.target.value.trim())}
           placeholder="Your email"
           className="NewCommentForm__input"
         />
@@ -44,7 +49,7 @@ export const NewCommentForm = ({ postId }) => {
         <textarea
           name="body"
           value={body}
-          onChange={event => setBody(event.target.value)}
+          onChange={event => setBody(event.target.value.trimLeft())}
           placeholder="Type comment here"
           className="NewCommentForm__input"
         />
@@ -62,4 +67,5 @@ export const NewCommentForm = ({ postId }) => {
 
 NewCommentForm.propTypes = {
   postId: PropTypes.number.isRequired,
+  setComments: PropTypes.func.isRequired,
 };

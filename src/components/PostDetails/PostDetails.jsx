@@ -7,6 +7,7 @@ import { getPostDetails } from '../../api/posts';
 
 export const PostDetails = ({ postId }) => {
   const [comments, setComments] = useState([]);
+  const [postTitle, setPostTitle] = useState('');
   const [postDetails, setPostDetails] = useState('');
   const [commentsHidden, setCommentsHidden] = useState(false);
 
@@ -15,11 +16,20 @@ export const PostDetails = ({ postId }) => {
       .then(commentsList => setComments(commentsList));
 
     getPostDetails(postId)
-      .then(post => setPostDetails(post.body));
-  }, [postId, comments]);
+      .then((post) => {
+        setPostDetails(post.body);
+        setPostTitle(post.title);
+      });
+  }, [postId]);
 
   const toggleComments = () => {
     setCommentsHidden(!commentsHidden);
+  };
+
+  const handleDelete = async(id) => {
+    await deleteComment(id);
+    getPostComments(postId)
+      .then(commentsList => setComments(commentsList));
   };
 
   return (
@@ -27,6 +37,7 @@ export const PostDetails = ({ postId }) => {
       <h2>Post details:</h2>
 
       <section className="PostDetails__post">
+        <h3>{postTitle}</h3>
         <p>{postDetails}</p>
       </section>
 
@@ -47,10 +58,11 @@ export const PostDetails = ({ postId }) => {
                   <button
                     type="button"
                     className="PostDetails__remove-button button"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => handleDelete(comment.id)}
                   >
                     X
                   </button>
+                  <p>{comment.name}</p>
                   <p>{comment.body}</p>
                 </li>
               ))}
@@ -61,7 +73,7 @@ export const PostDetails = ({ postId }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm comments={comments} postId={postId} />
+          <NewCommentForm setComments={setComments} postId={postId} />
         </div>
       </section>
     </div>
