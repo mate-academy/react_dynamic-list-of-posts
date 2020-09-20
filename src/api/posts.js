@@ -17,19 +17,3 @@ export const getPostDetails = async(postId) => {
 
   return result.data;
 };
-
-// Comment for comparing of different promise methods async and .then
-// export const getUserPosts = async(userId) => {
-//   const response = await fetch(`${BASE_URL}/posts`);
-
-//   if (!userId) {
-//     return response.json()
-//       .then(responseOfPostsObject => responseOfPostsObject.data);
-//   }
-
-//   return response.json()
-//     .then(responseOfPostsObject => responseOfPostsObject.data)
-//     .then(posts => posts.filter(
-//       post => post.userId === userId,
-//     ));
-// };

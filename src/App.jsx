@@ -10,12 +10,12 @@ import { getUsers } from './api/users';
 const App = () => {
   const [posts, setPosts] = useState([]);
   const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState('');
-  const [selectedPostId, setSelectedPost] = useState();
+  const [selectedUserId, setSelectedUserId] = useState('');
+  const [selectedPostId, setSelectedPostId] = useState(null);
 
   useEffect(() => {
-    getUserPosts(+selectedUser).then(setPosts);
-  }, [selectedUser]);
+    getUserPosts(+selectedUserId).then(setPosts);
+  }, [selectedUserId]);
 
   useEffect(() => {
     getUsers().then(setUsers);
@@ -29,8 +29,8 @@ const App = () => {
 
           <select
             className="App__user-selector"
-            value={selectedUser}
-            onChange={event => setSelectedUser(event.target.value)}
+            value={selectedUserId}
+            onChange={event => setSelectedUserId(event.target.value)}
           >
             <option value="">All users</option>
             {users.map(user => (
@@ -49,18 +49,17 @@ const App = () => {
         <div className="App__sidebar">
           <PostsList
             posts={posts}
-            selectedPostId={setSelectedPost}
+            setPostId={setSelectedPostId}
           />
         </div>
 
-        <div className="App__content">
-          {selectedPostId
-          && (
+        {selectedPostId && (
+          <div className="App__content">
             <PostDetails
               postId={selectedPostId}
             />
-          )}
-        </div>
+          </div>
+        )}
       </main>
     </div>
   );

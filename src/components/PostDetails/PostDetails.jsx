@@ -12,9 +12,11 @@ export const PostDetails = ({ postId }) => {
   const [isButtonClicked, setButtonClick] = useState(false);
   const [postDetails, setPostDetails] = useState();
   const [postComments, setPostComments] = useState();
-  const [writerName, setWriterName] = useState();
-  const [writerEmail, setWriterEmail] = useState();
-  const [commentBody, setCommentBody] = useState();
+  const [commentData, setCommentData] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
 
   const getDetails = () => {
     getPostDetails(postId).then(setPostDetails);
@@ -35,11 +37,12 @@ export const PostDetails = ({ postId }) => {
   };
 
   const addCommentToList = () => {
-    addComment(postId, writerName, writerEmail, commentBody)
-      .then(getComments);
-    setWriterName('');
-    setWriterEmail('');
-    setCommentBody('');
+    addComment(postId, commentData).then(getComments);
+    setCommentData({
+      name: '',
+      email: '',
+      body: '',
+    });
   };
 
   return (
@@ -69,7 +72,7 @@ export const PostDetails = ({ postId }) => {
           >
             {`${!isButtonClicked ? 'Hide' : 'Show'}
             ${' '}
-            ${postComments && postComments.length} comments`}
+            ${postComments.length} comments`}
           </button>
         )}
 
@@ -89,6 +92,10 @@ export const PostDetails = ({ postId }) => {
                 </button>
 
                 <p>
+                  {comment.name}
+                </p>
+
+                <p>
                   {comment.body}
                 </p>
               </li>
@@ -100,13 +107,9 @@ export const PostDetails = ({ postId }) => {
       <section>
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
-            name={writerName}
-            setName={setWriterName}
-            email={writerEmail}
-            setEmail={setWriterEmail}
-            comment={commentBody}
-            setComment={setCommentBody}
             addToList={addCommentToList}
+            data={commentData}
+            setData={setCommentData}
           />
         </div>
       </section>

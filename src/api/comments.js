@@ -9,7 +9,7 @@ export const getPostComments = async(postId) => {
     : '';
 };
 
-async function getCommentFromServer(commentId, options) {
+async function makeOperationWithComment(commentId, options) {
   const response = await fetch(`${BASE_URL}/comments/${commentId}`, options);
   const result = await response.json();
 
@@ -17,13 +17,25 @@ async function getCommentFromServer(commentId, options) {
 }
 
 export function deleteComment(commentId) {
-  return getCommentFromServer(commentId, {
+  return makeOperationWithComment(commentId, {
     method: 'DELETE',
   });
 }
 
-export function addComment(postId, name, email, body) {
-  return getCommentFromServer('', {
+// export function addComment(postId, name, email, body) {
+//   return makeOperationWithComment('', {
+//     method: 'POST',
+//     body: JSON.stringify({
+//       postId,
+//       name,
+//       email,
+//       body,
+//     }),
+//   });
+// }
+
+export function addComment(postId, { name, email, body }) {
+  return makeOperationWithComment('', {
     method: 'POST',
     body: JSON.stringify({
       postId,

@@ -3,18 +3,18 @@ import './PostsList.scss';
 
 import PropTypes from 'prop-types';
 
-export const PostsList = ({ posts, selectedPostId }) => {
-  const [detailedPostId, setDetailedPostId] = useState();
+export const PostsList = ({ posts, setPostId }) => {
+  const [detailedPostId, setDetailedPostId] = useState(null);
 
   const checkDetailsOpeness = (postId) => {
     if (detailedPostId === postId) {
-      selectedPostId();
-      setDetailedPostId();
+      setPostId(null);
+      setDetailedPostId(null);
 
       return;
     }
 
-    selectedPostId(postId);
+    setPostId(postId);
     setDetailedPostId(postId);
   };
 
@@ -57,5 +57,5 @@ PostsList.propTypes = {
       title: PropTypes.string.isRequired,
     }).isRequired,
   ).isRequired,
-  selectedPostId: PropTypes.func.isRequired,
+  setPostId: PropTypes.func.isRequired,
 };

@@ -4,20 +4,20 @@ import './NewCommentForm.scss';
 import PropTypes from 'prop-types';
 
 export const NewCommentForm = ({
-  name,
-  setName,
-  email,
-  setEmail,
-  comment,
-  setComment,
   addToList,
+  data,
+  setData,
 }) => {
   const formSubmit = (event) => {
     event.preventDefault();
     addToList();
-    setName('');
-    setEmail('');
-    setComment('');
+  };
+
+  const addDataToComment = (target) => {
+    setData(prevData => ({
+      ...prevData,
+      [target.name]: target.value,
+    }));
   };
 
   return (
@@ -31,8 +31,8 @@ export const NewCommentForm = ({
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={name}
-          onChange={event => setName(event.target.value)}
+          value={data.name}
+          onChange={({ target }) => addDataToComment(target)}
         />
       </div>
 
@@ -42,8 +42,8 @@ export const NewCommentForm = ({
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={email}
-          onChange={event => setEmail(event.target.value)}
+          value={data.email}
+          onChange={({ target }) => addDataToComment(target)}
         />
       </div>
 
@@ -52,8 +52,8 @@ export const NewCommentForm = ({
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={comment}
-          onChange={event => setComment(event.target.value)}
+          value={data.body}
+          onChange={({ target }) => addDataToComment(target)}
         />
       </div>
 
@@ -68,17 +68,19 @@ export const NewCommentForm = ({
 };
 
 NewCommentForm.propTypes = {
-  name: PropTypes.string,
-  setName: PropTypes.func.isRequired,
-  email: PropTypes.string,
-  setEmail: PropTypes.func.isRequired,
-  comment: PropTypes.string,
-  setComment: PropTypes.func.isRequired,
+  data: PropTypes.shape({
+    name: PropTypes.string,
+    email: PropTypes.string,
+    body: PropTypes.string,
+  }),
+  setData: PropTypes.func.isRequired,
   addToList: PropTypes.func.isRequired,
 };
 
 NewCommentForm.defaultProps = {
-  name: '',
-  email: '',
-  comment: '',
+  data: {
+    name: '',
+    email: '',
+    comment: '',
+  },
 };
