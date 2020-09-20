@@ -1,39 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = () => (
-  <form className="NewCommentForm">
-    <div className="form-field">
-      <input
-        type="text"
-        name="name"
-        placeholder="Your name"
-        className="NewCommentForm__input"
-      />
-    </div>
+export const NewCommentForm = ({ postId, onAddComment }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [body, setBody] = useState('');
 
-    <div className="form-field">
-      <input
-        type="text"
-        name="email"
-        placeholder="Your email"
-        className="NewCommentForm__input"
-      />
-    </div>
+  const handleCommentSubmition = () => {
+    onAddComment(postId, name, email, body);
 
-    <div className="form-field">
-      <textarea
-        name="body"
-        placeholder="Type comment here"
-        className="NewCommentForm__input"
-      />
-    </div>
+    setName('');
+    setEmail('');
+    setBody('');
+  };
 
-    <button
-      type="submit"
-      className="NewCommentForm__submit-button button"
+  return (
+    <form
+      className="newCommentForm"
+      onSubmit={(event) => {
+        event.preventDefault();
+        handleCommentSubmition();
+      }}
     >
-      Add a comment
-    </button>
-  </form>
-);
+      <div className="form-field">
+        <input
+          type="text"
+          value={name}
+          name="name"
+          placeholder="Your name"
+          className="newCommentForm__input"
+          onChange={event => setName(event.target.value.trimLeft())}
+          required
+        />
+      </div>
+
+      <div className="form-field">
+        <input
+          type="email"
+          value={email}
+          name="email"
+          placeholder="Your email"
+          className="newCommentForm__input"
+          onChange={event => setEmail(event.target.value.trimLeft())}
+          required
+        />
+      </div>
+
+      <div className="form-field">
+        <textarea
+          name="body"
+          value={body}
+          placeholder="Type comment here"
+          className="newCommentForm__input"
+          onChange={event => setBody(event.target.value.trimLeft())}
+          required
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="newCommentForm__submit-button button"
+      >
+        Add a comment
+      </button>
+    </form>
+  );
+};
+
+NewCommentForm.propTypes = {
+  postId: PropTypes.number.isRequired,
+  onAddComment: PropTypes.func.isRequired,
+};
