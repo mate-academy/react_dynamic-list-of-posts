@@ -1,37 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import * as api from '../../api/posts';
+import { Loader } from '../Loader';
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({ userId, postId, setPostId }) => {
+  const [posts, setPosts] = useState([]);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  useEffect(() => {
+    api.getUserPosts(userId)
+      .then(setPosts);
+  }, [userId]);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+      {!posts && (
+        <Loader />
+      )}
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      <ul className="PostsList__list">
+        {posts.map(post => (
+          <li
+            className="PostsList__item"
+            key={post.id}
+          >
+            <div>
+              <b>
+                User #
+                {post.userId}
+                {' '}
+              </b>
+              {post.title}
+            </div>
+            <button
+              type="button"
+              className="PostsList__button button"
+              onClick={() => (
+                postId === post.id ? setPostId(0) : setPostId(post.id)
+              )}
+            >
+              {postId === post.id ? 'Close' : 'Open'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
