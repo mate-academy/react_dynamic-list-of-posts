@@ -20,8 +20,10 @@ export const PostDetails = ({ postId }) => {
 
   const deleteComment = (id) => {
     commentsApi.removeComment(id)
-      .then(commentsApi.getPostComments(postId))
-      .then(setComments);
+      .then(() => {
+        commentsApi.getPostComments(postId)
+          .then(setComments);
+      });
   };
 
   return (
@@ -70,7 +72,10 @@ export const PostDetails = ({ postId }) => {
 
           <section>
             <div className="PostDetails__form-wrapper">
-              <NewCommentForm setComments={setComments} />
+              <NewCommentForm
+                postId={postId}
+                setComments={setComments}
+              />
             </div>
           </section>
         </>

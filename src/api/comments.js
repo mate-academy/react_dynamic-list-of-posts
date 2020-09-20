@@ -17,7 +17,9 @@ export const removeComment = async(commentId) => {
     .then(result => result.data);
 };
 
-export const addComment = async comment => fetch(`${BASE_URL}/comments`, {
-  method: 'POST',
-  body: JSON.stringify(comment),
-});
+export const addComment = async(comment) => {
+  fetch(`${BASE_URL}/comments`, {
+    method: 'POST',
+    body: JSON.stringify(comment),
+  });
+};
