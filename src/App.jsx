@@ -7,8 +7,8 @@ import { PostDetails } from './components/PostDetails';
 import { getUserPosts, getPostDetails } from './api/posts';
 import {
   getPostComments,
-  addPostComments,
-  deletePostComments,
+  addPostComment,
+  deletePostComment,
 } from './api/comments';
 
 const App = () => {
@@ -27,13 +27,13 @@ const App = () => {
   };
 
   const addComment = async(newComment) => {
-    const comment = await addPostComments(newComment);
+    const comment = await addPostComment(newComment);
 
     setPostComments(prevState => [...prevState, comment.data]);
   };
 
   const deleteComment = async(commentId) => {
-    await deletePostComments(commentId);
+    await deletePostComment(commentId);
 
     setPostComments(prevState => prevState
       .filter(item => item.id !== commentId));
@@ -47,8 +47,8 @@ const App = () => {
 
           <select
             className="App__user-selector"
-            onChange={(event) => {
-              setUserSelect(event.target.value);
+            onChange={({ target }) => {
+              setUserSelect(target.value);
             }}
           >
             <option value="0">All users</option>

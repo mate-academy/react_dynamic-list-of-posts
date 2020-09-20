@@ -7,7 +7,7 @@ export const getPostComments = async(postId) => {
   return result.data.filter(comment => comment.postId === postId);
 };
 
-export const addPostComments = (newComment) => {
+export const addPostComment = (newComment) => {
   const url = `${BASE_URL}/comments`;
   const options = {
     method: 'POST',
@@ -18,7 +18,7 @@ export const addPostComments = (newComment) => {
     .then(result => result.json());
 };
 
-export const deletePostComments = (commentId) => {
+export const deletePostComment = (commentId) => {
   const url = `${BASE_URL}/comments/${commentId}`;
   const options = {
     method: 'DELETE',

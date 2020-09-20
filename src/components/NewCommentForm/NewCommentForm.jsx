@@ -4,25 +4,34 @@ import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
 
 export const NewCommentForm = ({ selectedPostId, addComment }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [comment, setComment] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
+
+  const setCommentPart = (key, value) => {
+    setComment(prevComment => ({
+      ...prevComment,
+      [key]: value,
+    }));
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const newComment = {
-      name,
-      email,
-      body,
+      ...comment,
       postId: selectedPostId,
     };
 
     addComment(newComment);
 
-    setName('');
-    setEmail('');
-    setBody('');
+    setComment({
+      name: '',
+      email: '',
+      body: '',
+    });
   };
 
   return (
@@ -36,8 +45,8 @@ export const NewCommentForm = ({ selectedPostId, addComment }) => {
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={name}
-          onChange={event => setName(event.target.value)}
+          value={comment.name}
+          onChange={({ target }) => setCommentPart(target.name, target.value)}
         />
       </div>
 
@@ -47,8 +56,8 @@ export const NewCommentForm = ({ selectedPostId, addComment }) => {
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={email}
-          onChange={event => setEmail(event.target.value)}
+          value={comment.email}
+          onChange={({ target }) => setCommentPart(target.name, target.value)}
         />
       </div>
 
@@ -57,8 +66,8 @@ export const NewCommentForm = ({ selectedPostId, addComment }) => {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={body}
-          onChange={event => setBody(event.target.value)}
+          value={comment.body}
+          onChange={({ target }) => setCommentPart(target.name, target.value)}
         />
       </div>
 
