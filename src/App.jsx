@@ -58,7 +58,7 @@ const App = () => {
         </div>
 
         <div className="App__content">
-          { (selectedPost)
+          { (selectedPost !== 0)
           && <PostDetails selectedPost={selectedPost} />}
         </div>
       </main>

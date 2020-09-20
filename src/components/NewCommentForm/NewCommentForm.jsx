@@ -37,6 +37,7 @@ export const NewCommentForm = ({ selectedPost, loadPostComments }) => {
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
+          autoComplete="off"
           value={newCommentName}
           onChange={({ target }) => setNewCommentName(target.value)}
         />
@@ -48,6 +49,7 @@ export const NewCommentForm = ({ selectedPost, loadPostComments }) => {
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
+          autoComplete="off"
           value={newCommentEmail}
           onChange={({ target }) => setNewCommentEmail(target.value)}
         />
@@ -58,6 +60,7 @@ export const NewCommentForm = ({ selectedPost, loadPostComments }) => {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
+          autoComplete="off"
           value={newCommentBody}
           onChange={({ target }) => setNewCommentBody(target.value)}
         />
