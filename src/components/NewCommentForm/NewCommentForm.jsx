@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ id, onAddComment }) => {
+export const NewCommentForm = ({ postId, onAddComment }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
 
-  const handleSubmit = () => {
-    onAddComment(id, name, email, body);
+  const handleCommentSubmition = () => {
+    onAddComment(postId, name, email, body);
 
     setName('');
     setEmail('');
@@ -17,10 +17,10 @@ export const NewCommentForm = ({ id, onAddComment }) => {
 
   return (
     <form
-      className="NewCommentForm"
+      className="newCommentForm"
       onSubmit={(event) => {
         event.preventDefault();
-        handleSubmit();
+        handleCommentSubmition();
       }}
     >
       <div className="form-field">
@@ -29,7 +29,7 @@ export const NewCommentForm = ({ id, onAddComment }) => {
           value={name}
           name="name"
           placeholder="Your name"
-          className="NewCommentForm__input"
+          className="newCommentForm__input"
           onChange={event => setName(event.target.value.trimLeft())}
           required
         />
@@ -41,7 +41,7 @@ export const NewCommentForm = ({ id, onAddComment }) => {
           value={email}
           name="email"
           placeholder="Your email"
-          className="NewCommentForm__input"
+          className="newCommentForm__input"
           onChange={event => setEmail(event.target.value.trimLeft())}
           required
         />
@@ -52,7 +52,7 @@ export const NewCommentForm = ({ id, onAddComment }) => {
           name="body"
           value={body}
           placeholder="Type comment here"
-          className="NewCommentForm__input"
+          className="newCommentForm__input"
           onChange={event => setBody(event.target.value.trimLeft())}
           required
         />
@@ -60,7 +60,7 @@ export const NewCommentForm = ({ id, onAddComment }) => {
 
       <button
         type="submit"
-        className="NewCommentForm__submit-button button"
+        className="newCommentForm__submit-button button"
       >
         Add a comment
       </button>
@@ -69,6 +69,6 @@ export const NewCommentForm = ({ id, onAddComment }) => {
 };
 
 NewCommentForm.propTypes = {
-  id: PropTypes.number.isRequired,
+  postId: PropTypes.number.isRequired,
   onAddComment: PropTypes.func.isRequired,
 };

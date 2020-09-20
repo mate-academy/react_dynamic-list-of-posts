@@ -1,7 +1,7 @@
 const BASE_URL = 'https://mate-api.herokuapp.com';
 
 export function getPostDetails(postID) {
-  return fetch(`${BASE_URL}/posts/${+postID}`)
+  return fetch(`${BASE_URL}/posts/${postID}`)
     .then(response => response.json())
     .then(result => result.data);
 }

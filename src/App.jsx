@@ -7,22 +7,22 @@ import { PostDetails } from './components/PostDetails';
 
 const App = () => {
   const [posts, setPosts] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(0);
+  const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
   const [selectedPost, setSelectedPost] = useState(null);
 
   useEffect(() => {
-    getUserPosts(selectedUser)
+    getUserPosts(selectedUserId)
       .then(setPosts);
-  }, [selectedUser]);
+  }, [selectedUserId]);
 
-  const getUserId = (event) => {
+  const setUserId = (event) => {
     const { value } = event.target;
 
-    setSelectedUser(+value);
+    setSelectedUserId(+value);
   };
 
-  const postClose = () => {
+  const closePost = () => {
     setSelectedPostId(null);
     setSelectedPost(null);
   };
@@ -40,7 +40,7 @@ const App = () => {
         <label>
           Select a user: &nbsp;
 
-          <select className="App__user-selector" onChange={getUserId}>
+          <select className="App__user-selector" onChange={setUserId}>
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
             <option value="2">Ervin Howell</option>
@@ -61,7 +61,7 @@ const App = () => {
           <PostsList
             posts={posts}
             selectedPostId={selectedPostId}
-            postClose={postClose}
+            closePost={closePost}
             postSelection={postSelection}
           />
         </div>

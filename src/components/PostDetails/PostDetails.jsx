@@ -73,7 +73,7 @@ export const PostDetails = ({ id, body }) => {
           {!showComments && (
             <ul className="PostDetails__list">
               {comments.map(comment => (
-                <li className="PostDetails__list-item" key={comment.body}>
+                <li className="PostDetails__list-item" key={comment.id}>
                   <button
                     type="button"
                     className="PostDetails__remove-button button"
@@ -94,7 +94,7 @@ export const PostDetails = ({ id, body }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm id={id} onAddComment={handleCommentAdd} />
+          <NewCommentForm postId={id} onAddComment={handleCommentAdd} />
         </div>
       </section>
     </div>

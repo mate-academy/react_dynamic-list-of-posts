@@ -4,7 +4,7 @@ import './PostsList.scss';
 
 export const PostsList = ({
   posts,
-  postClose,
+  closePost,
   selectedPostId,
   postSelection,
 }) => (
@@ -40,7 +40,7 @@ export const PostsList = ({
             <button
               type="submit"
               className="PostsList__button button"
-              onClick={postClose}
+              onClick={closePost}
             >
               Close
             </button>
@@ -61,7 +61,7 @@ PostsList.propTypes = {
     title: PropTypes.string.isRequired,
     userId: PropTypes.number.isRequired,
   })),
-  postClose: PropTypes.func.isRequired,
+  closePost: PropTypes.func.isRequired,
   selectedPostId: PropTypes.number.isRequired,
   postSelection: PropTypes.func.isRequired,
 };
