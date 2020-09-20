@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
@@ -69,11 +70,15 @@ export const PostDetails = ({ postId }) => {
 
           <section>
             <div className="PostDetails__form-wrapper">
-              <NewCommentForm />
+              <NewCommentForm setComments={setComments} />
             </div>
           </section>
         </>
       )}
     </div>
   );
+};
+
+PostDetails.propTypes = {
+  postId: PropTypes.number.isRequired,
 };

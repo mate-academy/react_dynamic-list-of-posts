@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
+import * as api from './api/posts';
+
 const App = () => {
   const [userId, setUserId] = useState();
   const [postId, setPostId] = useState();
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    api.getUserPosts(+userId)
+      .then(setPosts);
+  }, [userId]);
 
   return (
     <div className="App">
@@ -16,7 +24,7 @@ const App = () => {
 
           <select
             className="App__user-selector"
-            onChange={event => setUserId(event.target.value)}
+            onChange={({ target }) => setUserId(target.value)}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
@@ -36,9 +44,9 @@ const App = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            userId={userId}
             postId={postId}
             setPostId={setPostId}
+            posts={posts}
           />
         </div>
 
