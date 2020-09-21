@@ -1,32 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import './App.scss';
 import './styles/general.scss';
+import { getUserPosts } from './api/posts';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getUserPosts } from './api/posts';
-
 
 const App = () => {
   const [posts, updatePosts] = useState([]);
-  const [selectedUser, updateUser] = useState(0);
-  const [selectedPostId, setPost] = useState(0);
-  const [activeButton, toggleButton] = useState(false);
+  const [selectedPostId, setPostId] = useState(0);
+  const [selectedUserId, setUserId] = useState(0);
+  const [postIsSelected, updatePostSelect] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     const fetchData = async() => {
-      const result = await getUserPosts(selectedUser);
+      const result = await getUserPosts(selectedUserId);
 
       updatePosts(result);
     };
 
     fetchData();
-  }, [selectedUser]);
+  }, [selectedUserId]);
 
-  function consolium(selectObject) {
-    console.log(selectObject);
-  }
-
-  const selectPost = (postID) => (setPost(postID));
+  const handlePostSelection = (postId, action) => {
+    switch (action) {
+      case 'open':
+        setPostId(postId);
+        updatePostSelect(true);
+        break;
+      case 'close':
+        setPostId(0);
+        updatePostSelect(false);
+        break;
+      default:
+    }
+  };
 
   return (
     <div className="App">
@@ -35,8 +42,8 @@ const App = () => {
           Select a user: &nbsp;
 
           <select
-            onChange={event => updateUser(+event.target.value)}
             className="App__user-selector"
+            onChange={event => setUserId(+event.target.value)}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
@@ -57,22 +64,18 @@ const App = () => {
         <div className="App__sidebar">
           <PostsList
             posts={posts}
-            selectPost={selectPost}
-            activeButton={activeButton}
-            toggleButton={toggleButton}
-            selectedPostId={selectedPostId}
+            handleClick={handlePostSelection}
+            postIsOpened={postIsSelected}
+            activePostId={selectedPostId}
           />
         </div>
 
         <div className="App__content">
-          <PostDetails
-            posts={posts}
-            selectedPostId={selectedPostId}
-          />
+          {postIsSelected && <PostDetails postId={selectedPostId} />}
         </div>
       </main>
     </div>
   );
-}
+};
 
 export default App;
