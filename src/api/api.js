@@ -1,7 +1,7 @@
 export const BASE_URL = 'https://mate-api.herokuapp.com';
 
-export const getUserPosts = (userId, options) => (
-  fetch(`${BASE_URL}/${userId}`, options)
+export const getUserPosts = (path, options) => (
+  fetch(`${BASE_URL}/${path}`, options)
     .then(promise => promise.json())
     .then(result => result.data)
 );
@@ -11,13 +11,8 @@ export const deleteComment = commentId => (
     method: 'DELETE',
   }));
 
-export const addComment = (name, email, body, postId) => (
+export const addComment = comment => (
   getUserPosts(`comments`, {
     method: 'POST',
-    body: JSON.stringify({
-      name,
-      email,
-      body,
-      postId,
-    }),
+    body: JSON.stringify(comment),
   }));

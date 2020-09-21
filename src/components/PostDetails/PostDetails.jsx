@@ -21,13 +21,17 @@ export const PostDetails = ({ title, postId, comments, loadComments }) => {
           </section>
 
           <section className="PostDetails__comments">
-            <button
-              type="button"
-              className="button"
-              onClick={() => hideComments(!commentsShow)}
-            >
-              {`${commentsShow ? 'Hide' : 'Show'} ${comments.length} comments`}
-            </button>
+            {comments.length > 0 && (
+              <button
+                type="button"
+                className="button"
+                onClick={() => hideComments(!commentsShow)}
+              >
+                {`${commentsShow
+                  ? 'Hide'
+                  : 'Show'} ${comments.length} comments`}
+              </button>
+            )}
 
             {commentsShow && (
               <ul className="PostDetails__list">
@@ -40,7 +44,7 @@ export const PostDetails = ({ title, postId, comments, loadComments }) => {
                       type="button"
                       className="PostDetails__remove-button button"
                       onClick={() => deleteComment(comment.id)
-                        .then(loadComments)
+                        .then(loadComments('comments'))
                       }
                       value={comment.id}
                     >
@@ -59,7 +63,7 @@ export const PostDetails = ({ title, postId, comments, loadComments }) => {
             <div className="PostDetails__form-wrapper">
               <NewCommentForm
                 postId={postId}
-                loadComments={loadComments}
+                loadComments={[loadComments('comments')]}
               />
             </div>
           </section>

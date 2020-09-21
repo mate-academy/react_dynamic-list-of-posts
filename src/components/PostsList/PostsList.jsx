@@ -1,20 +1,20 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import './PostsList.scss';
 
 export const PostsList = ({ select, posts, showPostInfo, postSelected }) => {
-  let list = posts;
-
-  if (select !== '0') {
-    list = posts.filter(post => post.userId === +select);
-  }
+  const filterList = useMemo(() => (
+    select === '0'
+      ? posts
+      : posts.filter(post => post.userId === +select)
+  ), [select, posts]);
 
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
 
       <ul className="PostsList__list">
-        {list.map(post => (
+        {filterList.map(post => (
           <li
             key={post.id}
             className="PostsList__item"

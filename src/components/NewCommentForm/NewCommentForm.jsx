@@ -5,28 +5,41 @@ import { addComment } from '../../api/api';
 import './NewCommentForm.scss';
 
 export const NewCommentForm = ({ postId, loadComments }) => {
-  const [name, changeName] = useState('');
-  const [email, changeEmail] = useState('');
-  const [body, changeBody] = useState('');
+  const [newComment, setNewComment] = useState({
+    name: '',
+    email: '',
+    body: '',
+    postId,
+  });
+
+  const setCommentPart = (key, value) => {
+    setNewComment({
+      ...newComment,
+      [key]: value,
+      postId,
+    });
+  };
 
   return (
     <form
       className="NewCommentForm"
       onSubmit={(event) => {
         event.preventDefault();
-        addComment(name, email, body, postId)
+        addComment(newComment)
           .then(loadComments);
-        changeName('');
-        changeEmail('');
-        changeBody('');
+        setNewComment({
+          name: '',
+          email: '',
+          body: '',
+        });
       }}
     >
       <div className="form-field">
         <input
+          value={newComment.name}
+          onChange={({ target }) => setCommentPart(target.name, target.value)}
           type="text"
           name="name"
-          value={name}
-          onChange={event => changeName(event.target.value)}
           placeholder="Your name"
           className="NewCommentForm__input"
         />
@@ -34,8 +47,8 @@ export const NewCommentForm = ({ postId, loadComments }) => {
 
       <div className="form-field">
         <input
-          value={email}
-          onChange={event => changeEmail(event.target.value)}
+          value={newComment.email}
+          onChange={({ target }) => setCommentPart(target.name, target.value)}
           type="email"
           name="email"
           placeholder="Your email"
@@ -45,8 +58,8 @@ export const NewCommentForm = ({ postId, loadComments }) => {
 
       <div className="form-field">
         <textarea
-          value={body}
-          onChange={event => changeBody(event.target.value)}
+          value={newComment.body}
+          onChange={({ target }) => setCommentPart(target.name, target.value)}
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
@@ -65,5 +78,5 @@ export const NewCommentForm = ({ postId, loadComments }) => {
 
 NewCommentForm.propTypes = {
   postId: PropTypes.string.isRequired,
-  loadComments: PropTypes.func.isRequired,
+  loadComments: PropTypes.arrayOf(PropTypes.object).isRequired,
 };

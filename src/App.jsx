@@ -6,37 +6,40 @@ import { PostDetails } from './components/PostDetails';
 import { getUserPosts } from './api/api';
 
 const App = () => {
-  const [select, changeSelect] = useState('0');
+  const [selectedUserId, setSelectedUserId] = useState('0');
 
-  const [users, createUsers] = useState([]);
+  const [users, setUsers] = useState([]);
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
 
-  const [postId, changePostId] = useState('');
+  const [postId, setPostId] = useState('');
 
-  const createList = async() => {
-    setPosts(await getUserPosts('posts'));
-  };
+  const getDataFromServer = async(dataType) => {
+    const data = await getUserPosts(dataType);
 
-  const loadUsers = async() => {
-    createUsers(await getUserPosts('users'));
-  };
-
-  const loadComments = async() => {
-    setComments(await getUserPosts('comments'));
+    switch (dataType) {
+      case 'posts':
+        setPosts(data);
+        break;
+      case 'users':
+        setUsers(data);
+        break;
+      default:
+        setComments(data);
+    }
   };
 
   useEffect(() => {
-    loadUsers();
-    createList();
-    loadComments();
+    getDataFromServer('posts');
+    getDataFromServer('users');
+    getDataFromServer('comments');
   }, []);
 
   const showPostInfo = (event) => {
     if (event.target.value === postId) {
-      changePostId('');
+      setPostId('');
     } else {
-      changePostId(event.target.value);
+      setPostId(event.target.value);
     }
   };
 
@@ -52,8 +55,8 @@ const App = () => {
 
           <select
             className="App__user-selector"
-            value={select}
-            onChange={event => changeSelect(event.target.value)}
+            value={selectedUserId}
+            onChange={event => setSelectedUserId(event.target.value)}
           >
             <option value="0">All users</option>
             {users.map(user => (
@@ -71,7 +74,7 @@ const App = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            select={select}
+            select={selectedUserId}
             posts={posts}
             showPostInfo={showPostInfo}
             postSelected={postId}
@@ -83,7 +86,7 @@ const App = () => {
             postId={postId}
             {...selectedPost}
             comments={commentsFromSelectedPosts}
-            loadComments={loadComments}
+            loadComments={getDataFromServer}
           />
         </div>
       </main>
