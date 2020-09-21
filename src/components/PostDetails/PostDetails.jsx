@@ -1,45 +1,35 @@
-import React from 'react';
-import { NewCommentForm } from '../NewCommentForm';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { PostComments } from '../PostComments';
 import './PostDetails.scss';
+import { getPostDetails } from '../../api/posts';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({ selectPostId }) => {
+  const [postById, setPostById] = useState(null);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  useEffect(() => {
+    if (selectPostId === 0) {
+      setPostById(null);
+    } else {
+      getPostDetails(selectPostId).then(result => setPostById(result));
+    }
+  }, [selectPostId]);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+      {postById && (
+        <section className="PostDetails__post">
+          <p className="PostDetails__title">{postById.title}</p>
+          <PostComments selectPostId={selectPostId} />
+        </section>
+      )}
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+    </div>
+  );
+};
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+PostDetails.propTypes = {
+  selectPostId: PropTypes.number.isRequired,
+};
