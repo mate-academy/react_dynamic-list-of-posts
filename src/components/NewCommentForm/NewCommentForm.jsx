@@ -25,6 +25,10 @@ export const NewCommentForm = ({ selectedPostId, addComment }) => {
       postId: selectedPostId,
     };
 
+    if (!newComment.body) {
+      return;
+    }
+
     addComment(newComment);
 
     setComment({
