@@ -12,16 +12,19 @@ export const getPostComments = async(postId) => {
   return preparedComments.filter(comment => comment.postId === postId);
 };
 
-export const addPostComment = async(selectedPostId, name, email, body) => {
+export const addPostComment = async(postId, name, email, body) => {
   const url = `${BASE_URL}/comments/`;
   const options = {
     method: 'POST',
     body: JSON.stringify({
-      selectedPostId, name, email, body,
+      postId, name, email, body,
     }),
   };
 
-  return fetch(url, options);
+  const responce = await fetch(url, options);
+  const comments = await responce.json();
+
+  return comments.data;
 };
 
 export const deletePostComment = async(commentId) => {

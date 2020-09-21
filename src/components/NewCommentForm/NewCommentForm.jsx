@@ -12,8 +12,8 @@ export const NewCommentForm = ({ selectedPostId, setComments }) => {
     event.preventDefault();
     if (name && email && body) {
       addPostComment(selectedPostId, name, email, body)
-        .then(() => getPostComments(selectedPostId))
-        .then(setComments);
+        .then(() => getPostComments(selectedPostId)
+          .then(setComments));
 
       setName('');
       setEmail('');
