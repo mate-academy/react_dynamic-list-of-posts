@@ -38,6 +38,7 @@ export const NewCommentForm = ({ selectedPost, loadPostComments }) => {
           placeholder="Your name"
           className="NewCommentForm__input"
           autoComplete="off"
+          required
           value={newCommentName}
           onChange={({ target }) => setNewCommentName(target.value)}
         />
@@ -45,11 +46,12 @@ export const NewCommentForm = ({ selectedPost, loadPostComments }) => {
 
       <div className="form-field">
         <input
-          type="text"
+          type="email"
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
           autoComplete="off"
+          required
           value={newCommentEmail}
           onChange={({ target }) => setNewCommentEmail(target.value)}
         />
@@ -61,6 +63,7 @@ export const NewCommentForm = ({ selectedPost, loadPostComments }) => {
           placeholder="Type comment here"
           className="NewCommentForm__input"
           autoComplete="off"
+          required
           value={newCommentBody}
           onChange={({ target }) => setNewCommentBody(target.value)}
         />

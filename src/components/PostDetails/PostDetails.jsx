@@ -44,7 +44,7 @@ export const PostDetails = ({ selectedPost }) => {
             setHideComments(!hideComments);
           }}
         >
-          {`Hide ${commentData.length} comments`}
+          {`${hideComments ? 'Show' : 'Hide'} ${commentData.length} comments`}
         </button>
         {hideComments && (
           <>
