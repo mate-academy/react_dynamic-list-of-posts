@@ -43,7 +43,7 @@ export const NewCommentForm = ({ selectPostId }) => {
   return (
     <form
       className="NewCommentForm"
-      onSubmit={event => handleSubmit(event)}
+      onSubmit={handleSubmit}
     >
       <div className="form-field">
         <input
@@ -52,7 +52,7 @@ export const NewCommentForm = ({ selectPostId }) => {
           placeholder="Your name"
           className="NewCommentForm__input"
           value={userName}
-          onChange={event => handleChange(event)}
+          onChange={handleChange}
         />
       </div>
 
@@ -63,7 +63,7 @@ export const NewCommentForm = ({ selectPostId }) => {
           placeholder="Your email"
           className="NewCommentForm__input"
           value={email}
-          onChange={event => handleChange(event)}
+          onChange={handleChange}
         />
       </div>
 
@@ -73,7 +73,7 @@ export const NewCommentForm = ({ selectPostId }) => {
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={body}
-          onChange={event => handleChange(event)}
+          onChange={handleChange}
         />
       </div>
 

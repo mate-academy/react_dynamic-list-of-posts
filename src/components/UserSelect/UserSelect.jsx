@@ -1,12 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { getUserPosts } from '../../api/posts';
 
-export const UserSelect = ({
-  selectUser,
-  setSelectUser,
-  setPosts,
-}) => {
+export const UserSelect = ({ setPosts }) => {
+  const [selectUser, setSelectUser] = useState(0);
+
   const handleChange = (event) => {
     const userId = +event.target.value;
 
@@ -22,7 +20,7 @@ export const UserSelect = ({
       <select
         className="App__user-selector"
         value={selectUser}
-        onChange={event => handleChange(event)}
+        onChange={handleChange}
       >
         <option value="0">All users</option>
         <option value="1">Leanne Graham</option>
@@ -41,7 +39,5 @@ export const UserSelect = ({
 };
 
 UserSelect.propTypes = {
-  selectUser: PropTypes.number.isRequired,
-  setSelectUser: PropTypes.func.isRequired,
   setPosts: PropTypes.func.isRequired,
 };

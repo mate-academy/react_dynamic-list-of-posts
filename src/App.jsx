@@ -8,7 +8,6 @@ import { getUserPosts } from './api/posts';
 
 const App = () => {
   const [posts, setPosts] = useState([]);
-  const [selectUser, setSelectUser] = useState(0);
   const [selectPostId, setSelectPostId] = useState(0);
 
   useEffect(() => {
@@ -19,9 +18,8 @@ const App = () => {
     <div className="App">
       <header className="App__header">
         <UserSelect
-          selectUser={selectUser}
-          setSelectUser={setSelectUser}
           setPosts={setPosts}
+          posts={posts}
         />
       </header>
 

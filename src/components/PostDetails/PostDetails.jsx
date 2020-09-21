@@ -19,7 +19,7 @@ export const PostDetails = ({ selectPostId }) => {
     <div className="PostDetails">
       <h2>Post details:</h2>
 
-      {!postById || (
+      {postById && (
         <section className="PostDetails__post">
           <p className="PostDetails__title">{postById.title}</p>
           <PostComments selectPostId={selectPostId} />

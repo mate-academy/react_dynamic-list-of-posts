@@ -5,7 +5,7 @@ import { deletePostComment, getPostComments } from '../../api/comments';
 
 export const PostComments = ({ selectPostId }) => {
   const [comments, setComments] = useState([]);
-  const [isHide, setIsHide] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
 
   const deleteComment = (commentId) => {
     deletePostComment(commentId);
@@ -22,13 +22,13 @@ export const PostComments = ({ selectPostId }) => {
           <button
             type="button"
             className="button"
-            onClick={() => setIsHide(!isHide)}
+            onClick={() => setIsHidden(!isHidden)}
           >
-            {`${isHide ? 'Show ' : 'Hide '} ${comments.length} comments`}
+            {`${isHidden ? 'Show ' : 'Hide '} ${comments.length} comments`}
           </button>
         )
       }
-      {isHide || (
+      {!isHidden && (
         <ul className="PostDetails__list">
           {comments && comments.length > 0
             && comments.map(comment => (
