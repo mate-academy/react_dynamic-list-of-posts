@@ -1,45 +1,70 @@
-import React from 'react';
+import React, { useState } from 'react';
+import PropTypes, { object } from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
+import { CommentsList } from './CommenstList';
+
 import './PostDetails.scss';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({
+  selectedPostDetails,
+  postComments,
+  selectedPostId,
+  addComment,
+  deleteComment,
+}) => {
+  const [hideComments, setHideComments] = useState(false);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+      <section className="PostDetails__post">
+        <p>{selectedPostDetails.body}</p>
+      </section>
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
+      <section className="PostDetails__comments">
+        {postComments.length !== 0
+        && (
           <button
             type="button"
-            className="PostDetails__remove-button button"
+            className="button"
+            onClick={() => setHideComments(!hideComments)}
           >
-            X
+            {!hideComments ? 'Hide ' : 'Show '}
+            { postComments.length }
+            { postComments.length === 1 ? ' comment' : ' comments'}
           </button>
-          <p>My first comment</p>
-        </li>
+        )
+        }
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+        {!hideComments
+        && (
+          <CommentsList
+            postComments={postComments}
+            deleteComment={deleteComment}
+          />
+        )
+        }
+      </section>
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            selectedPostId={selectedPostId}
+            addComment={addComment}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};
+
+PostDetails.propTypes = {
+  selectedPostId: PropTypes.number.isRequired,
+  addComment: PropTypes.func.isRequired,
+  selectedPostDetails: PropTypes.shape({
+    body: PropTypes.string.isRequired,
+  }).isRequired,
+  postComments: PropTypes.arrayOf(object).isRequired,
+  deleteComment: PropTypes.func.isRequired,
+};
