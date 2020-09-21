@@ -75,7 +75,7 @@ export const PostDetails = ({ selectedPost }) => {
               </div>
             </section>
           </>
-        ) : null}
+        ) : <p>Post not selected</p>}
     </div>
   );
 };

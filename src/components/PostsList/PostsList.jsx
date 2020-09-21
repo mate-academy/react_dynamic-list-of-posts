@@ -11,9 +11,7 @@ export const PostsList = ({ posts, selectedPost, selectPost }) => {
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
-      {!posts
-        ? <Loader /> : null
-      }
+      {!posts && <Loader />}
       <ul className="PostsList__list">
         {posts.map(elem => (
           <li
