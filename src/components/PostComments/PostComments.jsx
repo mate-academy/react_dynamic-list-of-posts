@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
-import { deletePostComment, getPostComments } from '../../api/posts';
+import { deletePostComment, getPostComments } from '../../api/comments';
 
 export const PostComments = ({ selectPostId }) => {
-  const [comments, setComments] = useState(null);
+  const [comments, setComments] = useState([]);
   const [isHide, setIsHide] = useState(false);
 
   const deleteComment = (commentId) => {
@@ -17,7 +17,7 @@ export const PostComments = ({ selectPostId }) => {
 
   return (
     <section className="PostDetails__comments">
-      {comments && comments.length > 0
+      {comments.length > 0
         && (
           <button
             type="button"

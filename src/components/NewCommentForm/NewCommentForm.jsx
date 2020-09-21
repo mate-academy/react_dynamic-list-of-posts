@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { addPostComment } from '../../api/posts';
+import { addPostComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
 export const NewCommentForm = ({ selectPostId }) => {
