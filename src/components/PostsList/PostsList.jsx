@@ -1,37 +1,61 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+import PropTypes from 'prop-types';
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList = ({ posts, setPostId }) => {
+  const [detailedPostId, setDetailedPostId] = useState(null);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  const checkDetailsOpeness = (postId) => {
+    if (detailedPostId === postId) {
+      setPostId(null);
+      setDetailedPostId(null);
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      return;
+    }
+
+    setPostId(postId);
+    setDetailedPostId(postId);
+  };
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul className="PostsList__list">
+        {posts.map(post => (
+          <li
+            key={post.id}
+            className="PostsList__item"
+          >
+            <div>
+              <b>{`[User #${post.userId}]: `}</b>
+              {post.title}
+            </div>
+
+            <button
+              type="button"
+              className="PostsList__button button"
+              onClick={() => checkDetailsOpeness(post.id)}
+            >
+              {detailedPostId && detailedPostId === post.id
+                ? 'Close'
+                : 'Open'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      userId: PropTypes.number.isRequired,
+      title: PropTypes.string.isRequired,
+    }).isRequired,
+  ).isRequired,
+  setPostId: PropTypes.func.isRequired,
+};
