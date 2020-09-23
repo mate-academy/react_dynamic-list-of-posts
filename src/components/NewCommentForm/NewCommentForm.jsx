@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './NewCommentForm.scss';
 
 import PropTypes from 'prop-types';
@@ -8,8 +8,18 @@ export const NewCommentForm = ({
   data,
   setData,
 }) => {
+  const [commentBody, setCommentBody] = useState('');
+  const [isCommentBodyEmpty, setCommentBodyEmptiness] = useState(false);
+
   const formSubmit = (event) => {
     event.preventDefault();
+
+    if (!commentBody) {
+      setCommentBodyEmptiness(true);
+
+      return;
+    }
+
     addToList();
   };
 
@@ -53,7 +63,11 @@ export const NewCommentForm = ({
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={data.body}
-          onChange={({ target }) => addDataToComment(target)}
+          onChange={({ target }) => {
+            addDataToComment(target);
+            setCommentBody(target.value);
+            setCommentBodyEmptiness(false);
+          }}
         />
       </div>
 
@@ -63,6 +77,12 @@ export const NewCommentForm = ({
       >
         Add a comment
       </button>
+
+      {isCommentBodyEmpty && (
+        <p style={{ color: 'red' }}>
+          Add a comment, please
+        </p>
+      )}
     </form>
   );
 };

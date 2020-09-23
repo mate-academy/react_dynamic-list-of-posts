@@ -22,18 +22,6 @@ export function deleteComment(commentId) {
   });
 }
 
-// export function addComment(postId, name, email, body) {
-//   return makeOperationWithComment('', {
-//     method: 'POST',
-//     body: JSON.stringify({
-//       postId,
-//       name,
-//       email,
-//       body,
-//     }),
-//   });
-// }
-
 export function addComment(postId, { name, email, body }) {
   return makeOperationWithComment('', {
     method: 'POST',
