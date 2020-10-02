@@ -1,40 +1,47 @@
-/* eslint-disable react/prop-types */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import './PostsList.scss';
-import { GetUserPosts } from '../../api/posts';
 
-export const PostsList = ({ userId }) => {
-  const [posts, setPosts] = useState([]);
+export const PostsList = ({ posts, selectPostId, selectedPostId }) => (
+  <div className="PostsList">
+    <h2>Posts:</h2>
 
-  useEffect(async() => {
-    setPosts(await GetUserPosts(userId));
-  }, [userId]);
-
-  return (
-    <div className="PostsList">
-      <h2>Posts:</h2>
-
-      <ul className="PostsList__list">
-        {posts.map(post => (
-          <li className="PostsList__item">
+    <ul className="PostsList__list">
+      {
+        posts.map(post => (
+          <li
+            key={post.id}
+            className="PostsList__item"
+          >
             <div>
-              <b>
-                [User #
-                {post.userId}
-                ]:
-                {' '}
-              </b>
+              <b>{`[User #${post.userId}]:`}</b>
               {post.title}
             </div>
+
             <button
               type="button"
               className="PostsList__button button"
+              onClick={() => {
+                selectedPostId !== post.id
+                  ? selectPostId(post.id)
+                  : selectPostId(0);
+              }}
             >
-              Open
+              {
+                selectedPostId === post.id
+                  ? 'Close'
+                  : 'Open'
+              }
             </button>
           </li>
-        ))}
-      </ul>
-    </div>
-  );
+        ))
+      }
+    </ul>
+  </div>
+);
+
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf(PropTypes.object).isRequired,
+  selectPostId: PropTypes.func.isRequired,
+  selectedPostId: PropTypes.number.isRequired,
 };

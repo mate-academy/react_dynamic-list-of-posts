@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { GetUserPosts } from './api/posts';
+import { Loader } from './components/Loader';
 
 const App = () => {
   const [selectedUser, setSelectedUser] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [posts, setPosts] = useState(null);
+
+  useEffect(() => {
+    GetUserPosts(selectedUser)
+      .then(setPosts);
+  }, [selectedUser, selectedPostId]);
 
   return (
     <div className="App">
@@ -13,7 +22,14 @@ const App = () => {
         <label>
           Select a user: &nbsp;
 
-          <select className="App__user-selector">
+          <select
+            className="App__user-selector"
+            onChange={(event) => {
+              const { value } = event.target;
+
+              setSelectedUser(+value);
+            }}
+          >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
             <option value="2">Ervin Howell</option>
@@ -31,11 +47,25 @@ const App = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList userId={selectedUser} />
+          {
+            !posts
+              ? (<Loader />)
+              : (
+                <PostsList
+                  posts={posts}
+                  selectPostId={setSelectedPostId}
+                  selectedPostId={selectedPostId}
+                />
+              )
+          }
         </div>
 
         <div className="App__content">
-          <PostDetails />
+          {
+            !selectedPostId
+              ? <h2>No selected post</h2>
+              : <PostDetails selectedPostId={selectedPostId} />
+          }
         </div>
       </main>
     </div>
