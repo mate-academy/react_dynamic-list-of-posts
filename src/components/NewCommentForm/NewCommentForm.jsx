@@ -11,7 +11,7 @@ export const NewCommentForm = ({ postId, setComments }) => {
   const onSubmit = (e) => {
     e.preventDefault();
 
-    if (!name && !email && !body) {
+    if (!name || !email || !body) {
       return;
     }
 
