@@ -1,37 +1,59 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { getUserPosts } from '../../api/posts';
+import { Loader } from '../Loader';
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({ userId }) => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  useEffect(() => {
+    loadPosts();
+  }, [userId]);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  const loadPosts = async() => {
+    setLoading(true);
+    const postsFromServer = await getUserPosts(userId);
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+    setPosts(postsFromServer);
+    setLoading(false);
+  };
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul className="PostsList__list">
+        {loading
+          ? (<Loader />)
+          : (
+            posts.map(post => (
+              <li
+                key={post.id}
+                className="PostsList__item"
+              >
+                <div>
+                  <b>{`[User #${post.userId}]: `}</b>
+                  {post.title}
+                </div>
+
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                >
+                  Close
+                </button>
+              </li>
+            ))
+          )
+
+        }
+      </ul>
+    </div>
+  );
+};
+
+PostsList.propTypes = {
+  userId: PropTypes.number.isRequired,
+};
