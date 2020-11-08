@@ -1,41 +1,99 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.scss';
 import './styles/general.scss';
+import { getAllPosts, getUserPosts } from './api/posts';
+import { getUsers } from './api/users';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { AsideSelect } from './components/AsideSelect';
 
-const App = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+const App = () => {
+  const [users, setUsers] = useState([]);
+  const [userID, setUserID] = useState(0);
+  const [posts, setPosts] = useState([]);
+  const [detailsPostId, setDetailsPostId] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+  const selectUser = async(event) => {
+    const { value } = event.target;
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+    setUserID(Number(value));
+    const receivedPosts = await getUserPosts(Number(value));
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+    const preparedPosts = receivedPosts.map(post => ({
+      id: post.id,
+      userId: post.userId,
+      title: post.title,
+    }
+    ));
+
+    setPosts(preparedPosts);
+  };
+
+  const setRecievedUsers = async() => {
+    const receivedUsers = await getUsers();
+
+    setUsers(receivedUsers);
+  };
+
+  const setRecievedPosts = async() => {
+    const receivedPosts = await getAllPosts();
+
+    setIsLoading(false);
+
+    const preparedPosts = receivedPosts.map(post => ({
+      id: post.id,
+      userId: post.userId,
+      title: post.title,
+    }
+    ));
+
+    setPosts(preparedPosts);
+  };
+
+  useEffect(() => {
+    setRecievedUsers();
+    setRecievedPosts();
+  }, []);
+
+  const toggletPost = (postId) => {
+    if (postId === detailsPostId) {
+      setDetailsPostId(0);
+
+      return;
+    }
+
+    setDetailsPostId(postId);
+  };
+
+  return (
+    <div className="App">
+      <AsideSelect
+        userID={userID}
+        selectUser={selectUser}
+        users={users}
+      />
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            posts={posts}
+            toggletPost={toggletPost}
+            postId={detailsPostId}
+            users={users}
+            isLoading={isLoading}
+          />
+        </div>
+
+        <div className="App__content">
+          <PostDetails
+            postId={detailsPostId}
+            users={users}
+          />
+        </div>
+      </main>
+    </div>
+  );
+};
 
 export default App;
