@@ -1,37 +1,44 @@
 import React from 'react';
 import './PostsList.scss';
+import PropTypes from 'prop-types';
+import { PostShape } from '../shapes/PostShape';
+import { UserShape } from '../shapes/UserShape';
+import { Post } from '../Post';
+import { Loader } from '../Loader';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = (props) => {
+  const { posts, toggletPost, postId, users, isLoading } = props;
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  if (isLoading) {
+    return <Loader />;
+  }
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  return (
+    <div className="PostsList">
+      <h2 className="PostsList__title">Posts:</h2>
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      <ul className="PostsList__list">
+        {
+          posts.map(post => (
+            <Post
+              key={post.id}
+              id={post.id}
+              title={post.title}
+              user={users.find(user => user.id === post.userId)}
+              isOpen={post.id === postId}
+              toggletPost={toggletPost}
+            />
+          ))
+        }
+      </ul>
+    </div>
+  );
+};
+
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf(PropTypes.shape(PostShape)).isRequired,
+  toggletPost: PropTypes.func.isRequired,
+  postId: PropTypes.number.isRequired,
+  users: PropTypes.arrayOf(PropTypes.shape(UserShape)).isRequired,
+  isLoading: PropTypes.bool.isRequired,
+};

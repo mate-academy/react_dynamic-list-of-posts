@@ -1,42 +1,127 @@
 .PostDetails {
+  position: sticky;
+  padding-right: 3px;
+  top: 30px;
+  right: 0;
+
+  color: #58656a;
+  overflow: hidden;
+
+  &__wrapper {
+    height: calc(100vh - 40px);
+
+    transform: translateX(20px);
+    overflow-y: scroll;
+  }
+
+  &__title {
+    margin-bottom: 15px;
+
+    font-size: 22px;
+    font-weight: 600;
+
+    &:first-letter {
+      text-transform: uppercase;
+    }
+  }
+
   &__post {
-    padding: 10px 0 15px;
+    padding: 10px 0 25px;
+  }
+
+  &__info-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  &__icon {
+    font-size: 30px;
+    margin-right: 20px;
+    color: #000;
+  }
+
+  &__general-info {
+    padding: 5px;
+
+    color: #999;
+  }
+
+  &__text {
+    padding-right: 5px;
+  }
+
+  &__body {
+    line-height: 1.7;
+    &:first-letter {
+      text-transform: uppercase;
+    }
   }
 
   &__comments {
     text-align: right;
   }
 
+  &__coments-info {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 15px;
+  }
+
+  &__comments-icon {
+    font-size: 18px;
+    margin-right: 10px;
+  }
+
   &__list {
     list-style: none;
+    border-top: 1px solid#ccc;
+    margin-bottom: 30px;
   }
 
   &__list-item {
-    margin: 5px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    border-radius: 10px;
+
+    margin: 12px 2px;
+    padding: 0 10px;
+
+    border-bottom: 1px solid #ccc;
+
     font-style: italic;
     font-weight: 300;
     font-size: 0.9rem;
-    background: linear-gradient(
-      to right, rgba(255,255,255,1) 0%,
-      rgba(246,246,246,1) 47%,
-      rgba(250,250,253,1) 100%
-    );
+  }
+
+  &__list-item-user {
+    text-transform: capitalize;
+  }
+
+  &__comment-wrapper {
+    padding: 5px;
+    padding-bottom: 15px;
+  }
+
+  &__button {
+    background: #fff;
+    color: #999;
+
+    &:hover {
+      background-color: #fff;
+    }
   }
 
   &__remove-button {
     min-width: 20px;
     color: inherit;
     background-color: transparent;
-    transition: color 0.12s;
+    transition: color 0.12s, transform 0.12s;
     margin-right: 10px;
 
     &:hover {
-      color: #e9e6f2;
+      transform: scale(1.4);
       background-color: transparent;
     }
 
@@ -47,7 +132,23 @@
   }
 
   &__form-wrapper {
-    background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='10' ry='10' stroke='%234D457BFF' stroke-width='4' stroke-dasharray='6%2c 14' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
     border-radius: 10px;
   }
+
+  &__no-post {
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__no-post-icon {
+    font-size: 100px;
+    color: #666;
+  }
+}
+
+.blue-text {
+  color: #57a8a0;
 }
