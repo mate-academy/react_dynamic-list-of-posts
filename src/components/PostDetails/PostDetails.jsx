@@ -42,7 +42,11 @@ export const PostDetails = ({ postId, users }) => {
   };
 
   const handleDelete = async(comment) => {
-    deleteComment(comment);
+    const respones = await deleteComment(comment);
+
+    if (!respones.ok) {
+      return;
+    }
 
     getComments(postId);
   };

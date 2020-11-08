@@ -37,7 +37,11 @@ export const NewCommentForm = ({ postId, getComments }) => {
       body: comment,
     };
 
-    postComment(data, errors);
+    const respones = await postComment(data, errors);
+
+    if (!respones.ok) {
+      return;
+    }
 
     setComment('');
     getComments(postId);
