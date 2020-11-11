@@ -12,32 +12,37 @@ export const PostDetails = ({ postId }) => {
   const [post, setPost] = useState(null);
   const [isShowedComments, setIsShowedComments] = useState(false);
 
-  const add = (newComment) => {
-    addComment(newComment)
-      .then(() => allComments());
+  const add = async(newComment) => {
+    await addComment(newComment);
+
+    setComments([...comments, newComment]);
   };
 
-  const remove = (removedCommentId) => {
-    removeComment(removedCommentId)
-      .then(() => allComments());
-  };
+  const remove = async(removedCommentId) => {
+    await removeComment(removedCommentId);
+    const filteredComments = comments.filter(
+      comment => removedCommentId !== comment.id,
+    );
 
-  const choosenPost = async() => {
-    const postFromServer = await getPostDetails(postId);
-
-    setPost(postFromServer);
-  };
-
-  const allComments = async() => {
-    const commentsFromServer = await getPostComments(postId);
-
-    setComments(commentsFromServer);
+    setComments(filteredComments);
   };
 
   useEffect(() => {
-    choosenPost();
-    allComments();
-  }, [postId, comments, post]);
+    const getDetails = async() => {
+      const postFromServer = await getPostDetails(postId);
+
+      setPost(postFromServer);
+    };
+
+    const getComments = async() => {
+      const commentsFromServer = await getPostComments(postId);
+
+      setComments(commentsFromServer);
+    };
+
+    getDetails();
+    getComments();
+  }, [postId]);
 
   const isShowedCommentsOnClick = (bool) => {
     setIsShowedComments(bool);

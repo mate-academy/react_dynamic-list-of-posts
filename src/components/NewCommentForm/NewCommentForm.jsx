@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
+import { v4 as uuidv4 } from 'uuid';
 
 export const NewCommentForm = ({
   postId,
@@ -9,7 +10,7 @@ export const NewCommentForm = ({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
-  const id = 1;
+  const [id, setId] = useState(uuidv4());
 
   const setValueName = (event) => {
     const { value } = event.target;
@@ -45,6 +46,7 @@ export const NewCommentForm = ({
     setName('');
     setEmail('');
     setBody('');
+    setId(uuidv4());
   };
 
   return (

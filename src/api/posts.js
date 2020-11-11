@@ -1,7 +1,7 @@
 import { request } from './api';
 
 export const getUserPosts = async(userId) => {
-  const posts = await request('/posts');
+  const posts = await request('/posts', { method: 'GET' });
 
   if (!userId) {
     return posts;
@@ -11,7 +11,7 @@ export const getUserPosts = async(userId) => {
 };
 
 export const getPostDetails = async(postId) => {
-  const post = await request(`/posts/${postId}`);
+  const post = await request(`/posts/${postId}`, { method: 'GET' });
 
   if (!postId) {
     return null;
