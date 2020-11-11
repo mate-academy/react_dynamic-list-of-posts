@@ -1,20 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
-import { Loader } from './components/Loader/Loader';
 import { PostDetails } from './components/PostDetails';
 
 const App = () => {
   const [selectedUser, setUser] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(null);
-  const [loading, setloading] = useState(false);
-  const [loadingPosts, setloadingPosts] = useState(false);
-
-  useEffect(() => {
-    setTimeout(() => setloading(false), 1000);
-    setTimeout(() => setloadingPosts(false), 1000);
-  }, [loading, loadingPosts]);
 
   return (
     <div className="App">
@@ -27,7 +19,6 @@ const App = () => {
             value={selectedUser}
             onChange={(event) => {
               setUser(+event.target.value);
-              setloadingPosts(true);
             }}
           >
             <option value="0">All users</option>
@@ -47,25 +38,14 @@ const App = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          {loadingPosts
-            ? <Loader />
-            : (
-              <PostsList
-                loading={loading}
-                setLoading={setloading}
-                userId={selectedUser}
-                selectedPostId={selectedPostId}
-                setSelectedPostId={setSelectedPostId}
-              />
-            )
-          }
-
+          <PostsList
+            userId={selectedUser}
+            selectedPostId={selectedPostId}
+            setSelectedPostId={setSelectedPostId}
+          />
         </div>
         <div className="App__content">
-          {loading
-            ? <Loader />
-            : <PostDetails selectedPostId={selectedPostId} />
-          }
+          <PostDetails selectedPostId={selectedPostId} />
         </div>
       </main>
     </div>

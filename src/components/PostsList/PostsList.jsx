@@ -1,5 +1,7 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { Loader } from '../Loader/Loader';
 import { GetUserPosts } from '../../api/posts';
 import './PostsList.scss';
 
@@ -9,7 +11,17 @@ export const PostsList = ({
   setSelectedPostId,
   setLoading,
 }) => {
+  const [loadingPosts, setloadingPosts] = useState(true);
   const [posts, updatePosts] = useState([]);
+
+  useEffect(() => {
+    setloadingPosts(true);
+    GetUserPosts(userId)
+      .then((user) => {
+        updatePosts(user);
+        setloadingPosts(false);
+      });
+  }, [userId]);
 
   useEffect(() => {
     GetUserPosts(userId)
@@ -18,46 +30,51 @@ export const PostsList = ({
   // console.log(loading)
 
   return (
-    <div className="PostsList">
-      <h2>Posts:</h2>
+    <>
+      {loadingPosts
+        ? <Loader />
+        : (
+          <div className="PostsList">
+            <h2>Posts:</h2>
 
-      <ul className="PostsList__list">
-        {posts.map(post => (
-          <li
-            className="PostsList__item"
-            key={post.id}
-          >
-            <div>
-              <b>
-                [User #
-                {post.userId}
-                ]
-              </b>
-              Post text:
-              {' '}
-              {post.title}
+            <ul className="PostsList__list">
+              {posts.map(post => (
+                <li
+                  className="PostsList__item"
+                  key={post.id}
+                >
+                  <div>
+                    <b>
+                      `[User #${post.userId}]`
+                    </b>
+                    Post text:
+                    {' '}
+                    {post.title}
 
-            </div>
-            <button
-              type="button"
-              className="PostsList__button button"
-              onClick={() => {
-                selectedPostId === post.id
-                  ? setSelectedPostId(null)
-                  : setSelectedPostId(post.id);
-                setLoading(true);
-              }
-              }
-            >
-              {selectedPostId === post.id
-                ? 'Close'
-                : 'Open'
-              }
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+                  </div>
+                  <button
+                    type="button"
+                    className="PostsList__button button"
+                    onClick={() => {
+                      selectedPostId === post.id
+                        ? setSelectedPostId(null)
+                        : setSelectedPostId(post.id);
+                    }
+                    }
+                  >
+                    {selectedPostId === post.id
+                      ? 'Close'
+                      : 'Open'
+                    }
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+
+      }
+    </>
   );
 };
 
