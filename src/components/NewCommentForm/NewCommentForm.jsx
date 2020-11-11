@@ -8,15 +8,15 @@ export const NewCommentForm = ({ postId, updateComments }) => {
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async(event) => {
     event.preventDefault();
 
     if (!name || !email.includes('@') || !body) {
       return;
     }
 
-    postComment(postId, name, email, body)
-      .then(() => updateComments());
+    await postComment(postId, name, email, body);
+    updateComments();
     setBody('');
   };
 

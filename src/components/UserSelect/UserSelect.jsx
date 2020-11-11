@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { getUsers } from '../../api/users';
-import './UserSelect.scss';
 
 export const UserSelect = ({ selectedUserId, handleUserSelect }) => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    async function inner() {
-      const usersFromServer = await getUsers();
-
-      setUsers(usersFromServer.slice(0, 10));
-    }
-
-    inner();
+    loadUsers();
   }, []);
+
+  const loadUsers = async() => {
+    const usersFromServer = await getUsers();
+
+    setUsers(usersFromServer.slice(0, 10));
+  };
 
   return (
     <label>

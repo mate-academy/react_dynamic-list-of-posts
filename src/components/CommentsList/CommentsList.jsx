@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './CommentsList.scss';
 import { deleteComment } from '../../api/comments';
 
 export const CommentsList = ({ comments, updateComments }) => {
-  const handleDelete = (commentId) => {
-    deleteComment(commentId)
-      .then(() => updateComments());
+  const handleDelete = async(commentId) => {
+    await deleteComment(commentId);
+    updateComments();
   };
 
   return (
