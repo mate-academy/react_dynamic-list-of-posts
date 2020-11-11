@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { CommentProps } from '../../props/CommentProps';
 
 export const Comment = ({ body, id, removeComment }) => (
@@ -6,9 +6,12 @@ export const Comment = ({ body, id, removeComment }) => (
     <button
       type="button"
       className="PostDetails__remove-button button"
-      onClick={() => {
-        removeComment(id);
-      }}
+      onClick={useCallback(
+        () => {
+          removeComment(id);
+        },
+        [id, removeComment],
+      )}
     >
       X
     </button>

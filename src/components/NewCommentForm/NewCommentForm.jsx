@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { NewCommentFormProps } from '../../props/NewCommentFormProps';
 import './NewCommentForm.scss';
 
@@ -11,28 +11,34 @@ export const NewCommentForm = ({ addComment }) => {
 
   const [commentProperties, setCommentProperties] = useState(defaultComment);
 
-  function onChange({ target }) {
-    const { name, value } = target;
+  const handleChange = useCallback(
+    ({ target }) => {
+      const { name, value } = target;
 
-    setCommentProperties(properties => ({
-      ...properties,
-      [name]: value,
-    }));
-  }
+      setCommentProperties(properties => ({
+        ...properties,
+        [name]: value,
+      }));
+    },
+    [],
+  );
 
-  function onSubmit(event) {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    (event) => {
+      event.preventDefault();
 
-    addComment(commentProperties);
+      addComment(commentProperties);
 
-    setCommentProperties(defaultComment);
-  }
+      setCommentProperties(defaultComment);
+    },
+    [addComment, commentProperties, defaultComment],
+  );
 
   return (
     <form
       className="NewCommentForm"
       method="POST"
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit}
     >
       <div className="form-field">
         <input
@@ -41,7 +47,7 @@ export const NewCommentForm = ({ addComment }) => {
           placeholder="Your name"
           className="NewCommentForm__input"
           value={commentProperties.name}
-          onChange={onChange}
+          onChange={handleChange}
         />
       </div>
 
@@ -52,7 +58,7 @@ export const NewCommentForm = ({ addComment }) => {
           placeholder="Your email"
           className="NewCommentForm__input"
           value={commentProperties.email}
-          onChange={onChange}
+          onChange={handleChange}
         />
       </div>
 
@@ -62,7 +68,7 @@ export const NewCommentForm = ({ addComment }) => {
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={commentProperties.body}
-          onChange={onChange}
+          onChange={handleChange}
         />
       </div>
 

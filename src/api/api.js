@@ -1,53 +1,30 @@
+/* eslint-disable no-console */
 export const BASE_URL = 'https://mate-api.herokuapp.com';
 
-export async function getAllPosts() {
-  const response = await fetch(`${BASE_URL}/posts`);
+export const request = async(url, option = { method: 'GET' }) => {
+  const response = await fetch(`${BASE_URL}${url}`, option);
+
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
 
   const result = await response.json();
 
   return result.data;
-}
+};
 
-export async function getUserPosts(userId) {
-  const posts = await getAllPosts();
+export const remove = id => request(
+  `/comments/${id}`,
+  { method: 'DELETE' },
+);
 
-  return posts.filter(post => post.userId === userId);
-}
-
-export async function getPostDetails(postId) {
-  const response = await fetch(`${BASE_URL}/posts/${postId}`);
-
-  const post = await response.json();
-
-  return post.data;
-}
-
-export async function getPostComments(postId) {
-  const response = await fetch(`${BASE_URL}/comments`);
-
-  const comments = await response.json();
-
-  return comments
-    .data
-    .filter(comment => comment.postId === postId);
-}
-
-export function deletePostComment(commentId) {
-  return fetch(`${BASE_URL}/comments/${commentId}`, {
-    method: 'DELETE',
-  });
-}
-
-export async function postComment(body) {
-  const response = await fetch(`${BASE_URL}/comments`, {
+export const post = body => request(
+  '/comments',
+  {
     method: 'POST',
     headers: {
       'Content-type': 'application/json; charset=UTF-8',
     },
     body: JSON.stringify(body),
-  });
-
-  const comment = await response.json();
-
-  return comment.data;
-}
+  },
+);

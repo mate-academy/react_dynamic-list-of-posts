@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ProstProps } from '../../props/PostProps';
 
 export const Post = ({ id, userId, title, postId, setPostId }) => (
@@ -10,11 +10,14 @@ export const Post = ({ id, userId, title, postId, setPostId }) => (
     <button
       type="button"
       className="PostsList__button button"
-      onClick={() => {
-        postId === id
-          ? setPostId(NaN)
-          : setPostId(id);
-      }}
+      onClick={useCallback(
+        () => {
+          postId === id
+            ? setPostId(null)
+            : setPostId(id);
+        },
+        [id, postId, setPostId],
+      )}
     >
       {postId === id ? 'Close' : 'Open'}
     </button>
