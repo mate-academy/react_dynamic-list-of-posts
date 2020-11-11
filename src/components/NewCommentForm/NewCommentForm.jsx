@@ -4,12 +4,12 @@ import './NewCommentForm.scss';
 
 export const NewCommentForm = ({
   postId,
-  getNewComment,
+  add,
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
-  const id = 888;
+  const id = 1;
 
   const setValueName = (event) => {
     const { value } = event.target;
@@ -40,7 +40,7 @@ export const NewCommentForm = ({
       body,
     };
 
-    getNewComment(newComment);
+    add(newComment);
 
     setName('');
     setEmail('');
@@ -96,5 +96,5 @@ export const NewCommentForm = ({
 
 NewCommentForm.propTypes = {
   postId: PropTypes.number.isRequired,
-  getNewComment: PropTypes.func.isRequired,
+  add: PropTypes.func.isRequired,
 };

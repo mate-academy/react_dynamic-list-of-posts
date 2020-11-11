@@ -11,34 +11,33 @@ export const PostDetails = ({ postId }) => {
   const [comments, setComments] = useState([]);
   const [post, setPost] = useState(null);
   const [isShowedComments, setIsShowedComments] = useState(false);
-  const [newComment, setNewComment] = useState(null);
-  const [commentId, setCommentId] = useState(0);
 
-  const getNewComment = (newCommentFromForm) => {
-    setNewComment(newCommentFromForm);
+  const add = (newComment) => {
+    addComment(newComment)
+      .then(() => allComments());
   };
 
-  const getCommentId = (commentIdClick) => {
-    setCommentId(commentIdClick);
+  const remove = (removedCommentId) => {
+    removeComment(removedCommentId)
+      .then(() => allComments());
+  };
+
+  const choosenPost = async() => {
+    const postFromServer = await getPostDetails(postId);
+
+    setPost(postFromServer);
+  };
+
+  const allComments = async() => {
+    const commentsFromServer = await getPostComments(postId);
+
+    setComments(commentsFromServer);
   };
 
   useEffect(() => {
-    getPostDetails(postId)
-      .then((postFromServer) => {
-        setPost(postFromServer);
-      });
-
-    getPostComments(postId)
-      .then((commentsFromServer) => {
-        setComments(commentsFromServer);
-      });
-
-    addComment(newComment)
-      .then();
-
-    removeComment(commentId)
-      .then();
-  }, [postId, comments, post, newComment, commentId]);
+    choosenPost();
+    allComments();
+  }, [postId, comments, post]);
 
   const isShowedCommentsOnClick = (bool) => {
     setIsShowedComments(bool);
@@ -72,7 +71,7 @@ export const PostDetails = ({ postId }) => {
                       <button
                         type="button"
                         className="PostDetails__remove-button button"
-                        onClick={() => getCommentId(comment.id)}
+                        onClick={() => remove(comment.id)}
                       >
                         X
                       </button>
@@ -88,7 +87,7 @@ export const PostDetails = ({ postId }) => {
             <div className="PostDetails__form-wrapper">
               <NewCommentForm
                 postId={postId}
-                getNewComment={getNewComment}
+                add={add}
               />
             </div>
           </section>
