@@ -10,8 +10,10 @@ export const getPostComments = async(postId) => {
   return comments.filter(comment => comment.postId === postId);
 };
 
-export const addComment = newComment => post('/comments', {
+export const addComment = async newComment => post('/comments', {
   ...newComment,
 });
 
-export const removeComment = commentId => remove(`/comments/${commentId}`);
+export const removeComment = async commentId => remove(
+  `/comments/${commentId}`,
+);
