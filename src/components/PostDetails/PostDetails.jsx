@@ -1,45 +1,93 @@
-import React from 'react';
+/* eslint-disable no-console */
+import React, { useEffect, useState } from 'react';
+import {
+  getPostComments,
+  getPostDetails,
+  deletePostComment,
+  postComment,
+} from '../../api/api';
+import { PostDetailsProps } from '../../props/PostDetailsProps';
+import { Comments } from '../Comments';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({ postId }) => {
+  const [post, setPost] = useState({ body: '' });
+  const [comments, setComments] = useState(null);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  useEffect(
+    () => {
+      updetePostDetails(postId);
+      updeteComments(postId);
+    },
+    [postId],
+  );
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  async function updetePostDetails(postIdForUpdete) {
+    try {
+      const postData = await getPostDetails(postIdForUpdete);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+      setPost(postData);
+    } catch (err) {
+      console.warn(err);
+    }
+  }
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  async function updeteComments(postIdForUpdete) {
+    try {
+      const commentsData = await getPostComments(postIdForUpdete);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+      setComments(commentsData);
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
+  function removeComment(commentId) {
+    try {
+      deletePostComment(commentId);
+
+      setComments(comments.filter(comment => comment.id !== commentId));
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
+  async function addComment(comment) {
+    try {
+      const newComment = await postComment({
+        postId: post.id,
+        ...comment,
+      });
+
+      setComments(currentComments => [...currentComments, newComment]);
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <p>{post.body}</p>
+      </section>
+
+      {comments && (
+        <Comments
+          comments={comments}
+          removeComment={removeComment}
+        />
+      )}
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm addComment={addComment} />
+        </div>
+      </section>
+    </div>
+  );
+};
+
+PostDetails.propTypes = PostDetailsProps;
