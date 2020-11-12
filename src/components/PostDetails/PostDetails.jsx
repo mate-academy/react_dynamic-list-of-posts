@@ -4,11 +4,13 @@ import { getPostComments, deleteCommentFromServer } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import { Loader } from '../Loader/Loader';
 
 export function PostDetails({ selectedPostId }) {
   const [openPost, setOpenPost] = useState({});
   const [openComments, setOpenComments] = useState([]);
   const [hiddenComments, setHiddenComments] = useState(true);
+  const [loader, setLoader] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -28,6 +30,7 @@ export function PostDetails({ selectedPostId }) {
     }
 
     fetchData();
+    setLoader(false);
   }, [openPost.id]);
 
   const commentsVisibility = () => {
@@ -44,58 +47,64 @@ export function PostDetails({ selectedPostId }) {
   };
 
   return (
-    <div className="PostDetails App__PostDetails">
-      <h2>Post details:</h2>
+    <>
+      {loader
+        ? <Loader />
+        : (
+          <div className="PostDetails App__PostDetails">
+            <h2>Post details:</h2>
 
-      <section className="PostDetails__post">
-        <p>{openPost.body}</p>
-      </section>
+            <section className="PostDetails__post">
+              <p>{openPost.body}</p>
+            </section>
 
-      <section className="PostDetails__comments">
-        {openComments.length === 0
-          ? <p className="PostDetails__noCommentsMessage">No comments</p>
-          : (
-            <>
-              <button
-                type="button"
-                className="button PostDetails__showCommentsButton"
-                onClick={commentsVisibility}
-              >
-                {hiddenComments
-                  ? `Show ${openComments.length} comment(s)`
-                  : `Hide ${openComments.length} comment(s)`
-                }
-              </button>
+            <section className="PostDetails__comments">
+              {openComments.length === 0
+                ? <p className="PostDetails__noCommentsMessage">No comments</p>
+                : (
+                  <>
+                    <button
+                      type="button"
+                      className="button PostDetails__showCommentsButton"
+                      onClick={commentsVisibility}
+                    >
+                      {hiddenComments
+                        ? `Show ${openComments.length} comment(s)`
+                        : `Hide ${openComments.length} comment(s)`
+                      }
+                    </button>
 
-              {!hiddenComments && (
-                <ul className="PostDetails__list">
-                  {openComments.map(comment => (
-                    <li className="PostDetails__list-item" key={comment.id}>
-                      <button
-                        type="button"
-                        className="PostDetails__remove-button button"
-                        onClick={() => removeComment(comment.id)}
-                      >
-                        X
-                      </button>
-                      <p>{comment.body}</p>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </>
-          )}
-      </section>
+                    {!hiddenComments && (
+                      <ul className="PostDetails__list">
+                        {openComments.map(comment => (
+                          <li className="PostDetails__list-item" key={comment.id}>
+                            <button
+                              type="button"
+                              className="PostDetails__remove-button button"
+                              onClick={() => removeComment(comment.id)}
+                            >
+                              X
+                            </button>
+                            <p>{comment.body}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </>
+                )}
+            </section>
 
-      <section>
-        <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            setOpenComments={setOpenComments}
-            openPostId={openPost.id}
-          />
-        </div>
-      </section>
-    </div>
+            <section>
+              <div className="PostDetails__form-wrapper">
+                <NewCommentForm
+                  setOpenComments={setOpenComments}
+                  openPostId={openPost.id}
+                />
+              </div>
+            </section>
+          </div>
+        )}
+    </>
   );
 }
 

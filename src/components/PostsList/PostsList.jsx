@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import './PostsList.scss';
 import { Loader } from '../Loader/Loader';
@@ -20,13 +20,11 @@ export function PostsList({ seletedUser, setPostId, selectedPostId }) {
   }, [seletedUser]);
 
   const buttonStatus = (postId) => {
-    setPostId((current) => {
-      if (current === postId) {
-        return '';
-      }
-
-      return postId;
-    });
+    setPostId(current => (
+      current === postId
+        ? ''
+        : postId
+    ));
   };
 
   return (
