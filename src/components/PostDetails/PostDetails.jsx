@@ -1,45 +1,69 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import { getPostDetails } from '../../api/posts';
+import { getComments } from '../../api/comments';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+// eslint-disable-next-line react/prop-types
+export const PostDetails = ({ postId }) => {
+  const [post, setPost] = useState(null);
+  const [comments, setComments] = useState([]);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  useEffect(() => {
+    const fetchData = async() => {
+      const [commetnsFromServer, postFromServer] = await Promise
+        .all([getComments(postId), getPostDetails(postId)]);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+      setPost(postFromServer);
+      setComments(commetnsFromServer);
+    };
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+    fetchData();
+  }, [postId]);
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  if (!post) {
+    return null;
+  }
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <p>{post.title}</p>
+      </section>
+
+      <section className="PostDetails__comments">
+        {comments.length
+          ? (
+            <button
+              type="button"
+              className="button"
+            >
+              {`Hide ${comments.length} comments`}
+            </button>
+          ) : ''}
+
+        <ul className="PostDetails__list">
+          {comments.map(comment => (
+            <li key={comment.id} className="PostDetails__list-item">
+              <button
+                type="button"
+                className="PostDetails__remove-button button"
+              >
+                X
+              </button>
+              <p>{comment.body}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm />
+        </div>
+      </section>
+    </div>
+  );
+};
