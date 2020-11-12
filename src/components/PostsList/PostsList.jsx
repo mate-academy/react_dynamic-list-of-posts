@@ -1,37 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getUserPosts } from '../../api/posts';
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({ selectedUserId }) => {
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  const [posts, setPosts] = useState([])
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  useEffect(() => {
+    loadPosts();
+  }, [selectedUserId])
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+  const loadPosts = async() => {
+    const postsFromServer = await getUserPosts(selectedUserId);
+    setPosts(postsFromServer);
+  }
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul className="PostsList__list">
+        {posts.map( post => (
+          <li key={post.id} className="PostsList__item">
+            <div>
+              <b>[User #{post.userId}]: </b>
+              {post.title}
+            </div>
+            <button
+              type="button"
+              className="PostsList__button button"
+            >
+              Open
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+};
