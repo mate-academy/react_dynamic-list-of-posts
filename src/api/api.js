@@ -11,4 +11,3 @@ export const request = (url, options) => fetch(`${BASE_URL}${url}`, options)
   .then(result => result.data);
 
 export const remove = url => request(url, { method: 'DELETE' });
-// export const post = url =>
