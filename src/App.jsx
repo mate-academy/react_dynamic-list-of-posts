@@ -14,13 +14,14 @@ const App = () => {
     setSelectedUserId(+event.target.value);
   }, []);
 
-  const selectPost = useCallback((postId) => {
+  const selectPost = (postId) => {
     if (postId === selectedPostId) {
       setSelectedPostId(0);
       return;
     }
+
     setSelectedPostId(postId);
-  }, [selectedPostId]);
+  };
 
   return (
     <div className="App">
@@ -41,9 +42,14 @@ const App = () => {
         </div>
 
         <div className="App__content">
-          <PostDetails
-            selectedPostId={selectedPostId}
-          />
+        {selectedPostId ? (
+            <PostDetails
+              selectedPostId={selectedPostId}
+            />
+          ) : (
+            <h4>Open a post to see details</h4>
+          )}
+
         </div>
       </main>
     </div>

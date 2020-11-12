@@ -7,8 +7,13 @@ export const getPostComments = async(postId) => {
   return postComments;
 };
 
-export const postComment = async postedComment => post('/comments', {
-  ...postedComment,
-});
+export const addComment = async(postId, name, email, body) => post(
+  '/comments', {
+    postId,
+    name,
+    email,
+    body,
+  },
+);
 
 export const removeComment = commentId => remove(`/comments/${commentId}`);

@@ -17,8 +17,9 @@ export const PostDetails = ( { selectedPostId }) => {
   }, [selectedPostId]);
 
   const loadDetails = async() => {
-    const postDetails = await getPostDetails(selectedPostId);
-    setDetails(postDetails);
+    const loadedDetails = await getPostDetails(selectedPostId);
+    setDetails(loadedDetails);
+    setIsVisible(false);
   };
 
   const updateComments = async() => {
@@ -35,7 +36,7 @@ export const PostDetails = ( { selectedPostId }) => {
       </section>
 
       <section className="PostDetails__comments">
-        {comments ? (
+        {comments.length ? (
             <button
               type="button"
               className="button"
@@ -58,7 +59,10 @@ export const PostDetails = ( { selectedPostId }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm />
+          <NewCommentForm
+            selectedPostId={selectedPostId}
+            updateComments={updateComments}
+          />
         </div>
       </section>
     </div>
