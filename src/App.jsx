@@ -1,24 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getUserPosts } from './api/posts';
 
 function App() {
   const [seletedUser, setSeletedUser] = useState(0);
-  const [posts, setPosts] = useState([]);
   const [selectedPostId, setPostId] = useState('');
-
-  useEffect(() => {
-    async function fetchData() {
-      const requestedPosts = await getUserPosts(seletedUser);
-
-      setPosts(requestedPosts);
-    }
-
-    fetchData();
-  }, [seletedUser]);
 
   return (
     <div className="App">
@@ -48,7 +36,7 @@ function App() {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            posts={posts}
+            seletedUser={Number(seletedUser)}
             setPostId={setPostId}
             selectedPostId={Number(selectedPostId)}
           />

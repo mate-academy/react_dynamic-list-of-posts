@@ -1,4 +1,12 @@
 .PostDetails {
+  &__showCommentsButton {
+    margin-bottom: 10px;
+  }
+
+  &__noCommentsMessage {
+    margin-bottom: 10px;
+  }
+
   &__post {
     padding: 10px 0 15px;
   }

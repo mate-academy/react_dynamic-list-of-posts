@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { getPostComments, deleteComment } from '../../api/comments';
+import { getPostComments, deleteCommentFromServer } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
@@ -40,11 +40,11 @@ export function PostDetails({ selectedPostId }) {
     ));
 
     setOpenComments(filteredComments);
-    deleteComment(commentIdForRemove);
+    deleteCommentFromServer(commentIdForRemove);
   };
 
   return (
-    <div className="PostDetails">
+    <div className="PostDetails App__PostDetails">
       <h2>Post details:</h2>
 
       <section className="PostDetails__post">
@@ -53,12 +53,12 @@ export function PostDetails({ selectedPostId }) {
 
       <section className="PostDetails__comments">
         {openComments.length === 0
-          ? <p>No comments</p>
+          ? <p className="PostDetails__noCommentsMessage">No comments</p>
           : (
             <>
               <button
                 type="button"
-                className="button"
+                className="button PostDetails__showCommentsButton"
                 onClick={commentsVisibility}
               >
                 {hiddenComments

@@ -1,10 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './PostsList.scss';
 import { Loader } from '../Loader/Loader';
+import { getUserPosts } from '../../api/posts';
 
-export function PostsList({ posts, setPostId, selectedPostId }) {
+export function PostsList({ seletedUser, setPostId, selectedPostId }) {
+  const [posts, setPosts] = useState([]);
   const [loader, setLoader] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      const requestedPosts = await getUserPosts(seletedUser);
+
+      setPosts(requestedPosts);
+    }
+
+    fetchData();
+    setLoader(false);
+  }, [seletedUser]);
 
   const buttonStatus = (postId) => {
     setPostId((current) => {
@@ -43,38 +56,12 @@ export function PostsList({ posts, setPostId, selectedPostId }) {
             ))}
           </ul>
         )}
-      <ul className="PostsList__list">
-        {posts.map(post => (
-          <li
-            className="PostsList__item"
-            key={post.id}
-          >
-            <div>
-              <b>{`[User #${post.userId}]: `}</b>
-              {post.body}
-            </div>
-            <button
-              type="button"
-              className="PostsList__button button"
-              onClick={() => buttonStatus(post.id)}
-            >
-              {selectedPostId === post.id ? `Close` : `Open`}
-            </button>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }
 
 PostsList.propTypes = {
-  posts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      body: PropTypes.string.isRequired,
-      userId: PropTypes.number.isRequired,
-    }).isRequired,
-  ).isRequired,
+  seletedUser: PropTypes.number.isRequired,
   setPostId: PropTypes.func.isRequired,
   selectedPostId: PropTypes.number.isRequired,
 };
