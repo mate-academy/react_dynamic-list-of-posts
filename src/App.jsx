@@ -8,6 +8,7 @@ import { usersDataFromServer } from './api/post';
 const App = () => {
   const [users, setUsers] = useState([]);
   const [userId, setUserId] = useState(0);
+  // const [postId, setPostId] = useState(0);
 
   useEffect(() => {
     usersDataFromServer()
@@ -16,9 +17,22 @@ const App = () => {
       });
   }, []);
 
-  const selectUserId = ({target}) => {
-    setUserId(target.value);
-  }
+  // const selectedUsers = (postUserId) => {
+  //   if (postUserId === postId) {
+  //     setPostId(0);
+
+  //     return;
+  //   }
+
+  //   setPostId(postUserId);
+  // };
+
+  // console.log(`Post  -  ` + postId);
+  // console.log('User id  -  ' + userId);
+
+  const selectUserId = ({ target }) => {
+    setUserId(+target.value);
+  };
 
   return (
     <div className="App">
@@ -27,9 +41,9 @@ const App = () => {
           Select a user: &nbsp;
 
           <select
-          className="App__user-selector"
-          value={userId}
-          onChange={selectUserId}
+            className="App__user-selector"
+            value={userId}
+            onChange={selectUserId}
           >
             <option value="0">All users</option>
             {
@@ -43,7 +57,7 @@ const App = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList userId={userId}/>
+          <PostsList userId={userId} />
         </div>
 
         <div className="App__content">
