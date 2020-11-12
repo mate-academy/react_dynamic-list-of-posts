@@ -14,7 +14,7 @@ const App = () => {
     setSelectedPostId(postId);
   };
 
-  const handleChangeOnSelect = (event) => {
+  const handleChangeUserId = (event) => {
     const { value } = event.target;
 
     setUserId(+value);
@@ -36,7 +36,7 @@ const App = () => {
           <select
             className="App__user-selector"
             value={userId}
-            onChange={handleChangeOnSelect}
+            onChange={handleChangeUserId}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>

@@ -5,12 +5,11 @@ import './PostDetails.scss';
 import { Loader } from '../Loader';
 import { getPostDetails } from '../../api/posts';
 import { getPostComments, addComment, removeComment } from '../../api/comments';
-import { ButtonShowHide } from '../ButtonShowHide';
+import { CommentsDetails } from '../CommentsDetails';
 
 export const PostDetails = ({ postId }) => {
   const [comments, setComments] = useState([]);
   const [post, setPost] = useState(null);
-  const [isShowedComments, setIsShowedComments] = useState(false);
 
   const add = async(newComment) => {
     await addComment(newComment);
@@ -44,10 +43,6 @@ export const PostDetails = ({ postId }) => {
     getComments();
   }, [postId]);
 
-  const isShowedCommentsOnClick = (bool) => {
-    setIsShowedComments(bool);
-  };
-
   return (
     <>
       {!post ? (
@@ -61,31 +56,11 @@ export const PostDetails = ({ postId }) => {
           </section>
 
           {!!comments.length && (
-            <section className="PostDetails__comments">
-              <ButtonShowHide
-                commentsLength={comments.length}
-                isShowedCommentsOnClick={isShowedCommentsOnClick}
-              />
-              {isShowedComments && (
-                <ul className="PostDetails__list">
-                  {comments.map(comment => (
-                    <li
-                      key={comment.id}
-                      className="PostDetails__list-item"
-                    >
-                      <button
-                        type="button"
-                        className="PostDetails__remove-button button"
-                        onClick={() => remove(comment.id)}
-                      >
-                        X
-                      </button>
-                      <p>{comment.body}</p>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
+            <CommentsDetails
+              commentsLength={comments.length}
+              comments={comments}
+              remove={remove}
+            />
           )}
 
           <section>
