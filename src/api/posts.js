@@ -5,8 +5,8 @@ export const getUserPosts = async(userId) => {
 
   return (
     userId !== 0
-      ? posts.filter(post => post.userId === userId)
-      : posts
+      ? posts.data.filter(post => post.userId === userId)
+      : posts.data
   );
 };
 
