@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { getPostDetails } from '../../api/posts';
-import { getPostComments } from '../../api/comments';
+import { getPostComments, deleteComment } from '../../api/comments';
 
 export const PostDetails = ({ selectedPostId }) => {
   const [postDetails, setDatails] = useState({});
@@ -11,24 +11,27 @@ export const PostDetails = ({ selectedPostId }) => {
   const [hideStatus, setHideStatus] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
-      const [details, comments] = await Promise.all(
-        [getPostDetails(selectedPostId), getPostComments(selectedPostId)],
-      );
-
-      setDatails(details);
-      setPostComments(comments);
-    }
-
-    fetchData();
+    loadData();
   }, []);
+
+  const loadData = async() => {
+    const [details, comments] = await Promise.all(
+      [getPostDetails(selectedPostId), getPostComments(selectedPostId)],
+    );
+
+    setDatails(details);
+    setPostComments(comments);
+  };
 
   const handleHide = () => {
     setHideStatus(!hideStatus);
   };
 
-  // console.log(postDetails);
-  // console.log(postComments);
+  const handleDelete = async(commentId) => {
+    await deleteComment(commentId);
+
+    loadData();
+  };
 
   return (
     <div className="PostDetails">
@@ -58,6 +61,7 @@ export const PostDetails = ({ selectedPostId }) => {
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
+                  onClick={() => handleDelete(comment.id)}
                 >
                   X
                 </button>
