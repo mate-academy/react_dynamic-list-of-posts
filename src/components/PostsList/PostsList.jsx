@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { getUserPosts } from '../../api/posts';
 import { Loader } from '../Loader';
@@ -17,13 +17,13 @@ export const PostsList = ({
     loadPosts();
   }, [userId]);
 
-  const loadPosts = async() => {
+  const loadPosts = useCallback(async() => {
     setLoading(true);
     const postsFromServer = await getUserPosts(userId);
 
     setPosts(postsFromServer);
     setLoading(false);
-  };
+  }, [userId]);
 
   return (
     <div className="PostsList">

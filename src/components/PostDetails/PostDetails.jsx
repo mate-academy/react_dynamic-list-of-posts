@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { getPostComments } from '../../api/coments';
@@ -19,19 +19,19 @@ export const PostDetails = ({ selectedPostId }) => {
     loadComments();
   }, [selectedPostId]);
 
-  const loadPostDetails = async() => {
+  const loadPostDetails = useCallback(async() => {
     setLoading(true);
     const postFromServer = await getPostDetail(selectedPostId);
 
     setPost(postFromServer);
     setLoading(false);
-  };
+  }, [selectedPostId]);
 
-  const loadComments = async() => {
+  const loadComments = useCallback(async() => {
     const commentsFromServer = await getPostComments(selectedPostId);
 
     setComments(commentsFromServer);
-  };
+  }, [selectedPostId]);
 
   const showComments = () => {
     setIsCommentVisible(true);
@@ -44,68 +44,65 @@ export const PostDetails = ({ selectedPostId }) => {
   return (
     <div className="PostDetails">
       {
-        // eslint-disable-next-line no-nested-ternary
-        loading
-          ? (
-            <Loader />
-          )
-          : (post
-            ? (
-              <>
-                <h2>Post details:</h2>
+        loading && <Loader />
+      }
+      {
+        (post && !loading)
+          && (
+            <>
+              <h2>Post details:</h2>
 
-                <section className="PostDetails__post">
-                  <p>{post.title}</p>
-                </section>
+              <section className="PostDetails__post">
+                <p>{post.title}</p>
+              </section>
 
-                <section className="PostDetails__comments">
-                  {
-                    isCommentsVisible
-                      ? (
-                        <>
-                          <button
-                            type="button"
-                            className="button"
-                            onClick={hideComments}
-                          >
-                            {`Hide ${comments.length} comments`}
-                          </button>
-
-                          <CommentList
-                            comments={comments}
-                            updateComments={loadComments}
-                          />
-                        </>
-                      )
-                      : (
+              <section className="PostDetails__comments">
+                {
+                  isCommentsVisible
+                    ? (
+                      <>
                         <button
                           type="button"
                           className="button"
-                          onClick={showComments}
+                          onClick={hideComments}
                         >
-                          {`Show ${comments.length} comments`}
+                          {`Hide ${comments.length} comments`}
                         </button>
-                      )
-                  }
 
-                </section>
+                        <CommentList
+                          comments={comments}
+                          updateComments={loadComments}
+                        />
+                      </>
+                    )
+                    : (
+                      <button
+                        type="button"
+                        className="button"
+                        onClick={showComments}
+                      >
+                        {`Show ${comments.length} comments`}
+                      </button>
+                    )
+                }
 
-                <section>
-                  <div className="PostDetails__form-wrapper">
-                    <NewCommentForm
-                      postId={selectedPostId}
-                      updateComments={loadComments}
-                    />
-                  </div>
-                </section>
-              </>
-            )
-            : (
-              <h2>Post is unvaliable</h2>
-            )
+              </section>
+
+              <section>
+                <div className="PostDetails__form-wrapper">
+                  <NewCommentForm
+                    postId={selectedPostId}
+                    updateComments={loadComments}
+                  />
+                </div>
+              </section>
+            </>
           )
       }
-
+      {
+        (!post && !loading)
+          && (<h2>Post is unvaliable</h2>)
+      }
     </div>
   );
 };
