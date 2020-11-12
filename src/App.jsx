@@ -8,8 +8,8 @@ const App = () => (
   <div className="App">
     <header className="App__header">
       <label>
-        Select a user: &nbsp;
-
+        Select a user: &nbsp please;
+        
         <select className="App__user-selector">
           <option value="0">All users</option>
           <option value="1">Leanne Graham</option>
