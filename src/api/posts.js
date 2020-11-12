@@ -1,20 +1,22 @@
-import { request } from './api';
+import { BASE_URL } from './api';
 
-export const BASE_URL = 'https://mate-api.herokuapp.com';
+export const getUserPosts = async(userId) => {
+  const response = await fetch(`${BASE_URL}/posts/`);
+  const userPosts = await response.json();
 
-export const getUserPosts2 = (userId) => {
-  const getPosts = () => {
-    request(`/posts`);
-  };
+  if (Number(userId) === 0) {
+    return userPosts.data;
+  }
 
-  getPosts()
-    // eslint-disable-next-line no-console
-    .then(posts => console.log(posts));
+  const filteredUserPosts = userPosts.data.filter(userPost => (
+    userPost.userId === Number(userId)));
+
+  return filteredUserPosts;
 };
 
-export async function getUserPosts(userId) {
-  const response = await fetch(`${BASE_URL}/posts/`);
-  const result = await response.json();
+export const getPostDetails = async(postId) => {
+  const response = await fetch(`${BASE_URL}/posts/${postId}`);
+  const postDetails = await response.json();
 
-  return result;
-}
+  return postDetails.data;
+};

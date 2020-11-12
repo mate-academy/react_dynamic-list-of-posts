@@ -1,45 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getUserPosts2, getUserPosts } from './api/posts';
-// import { BASE_URL } from './api/api';
-import { request } from './api/api';
-
-const getPosts = () => request('/posts');
-
-getUserPosts2();
 
 function App() {
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [posts, setPosts] = useState([]);
-  const [selectedPostId, setSelectedPostId] = useState(null);
-
-  useEffect(() => {
-    async function fetchData() {
-      const requestedPosts = await getUserPosts();
-
-      if (Number(selectedUser) === 0) {
-        setPosts(requestedPosts.data);
-      } else {
-        const filteredPosts = requestedPosts.data.filter(
-          post => (post.uerId === Number(selectedUser)),
-        );
-
-        setPosts(filteredPosts);
-      }
-    }
-
-    getPosts()
-      .then((data) => {
-        // eslint-disable-next-line no-console
-        console.log(data);
-      });
-
-    getPosts();
-    fetchData();
-  }, [selectedUser]);
+  const [selectedUser, setSelectedUser] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState('');
 
   return (
     <div className="App">
@@ -69,14 +36,15 @@ function App() {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            selectedPostId={selectedPostId}
-            posts={posts}
+            selectedUser={Number(selectedUser)}
             setSelectedPostId={setSelectedPostId}
+            selectedPostId={Number(selectedPostId)}
           />
         </div>
 
         <div className="App__content">
-          <PostDetails />
+          {selectedPostId
+          && <PostDetails selectedPostId={Number(selectedPostId)} />}
         </div>
       </main>
     </div>
