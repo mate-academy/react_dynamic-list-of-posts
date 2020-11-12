@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.scss';
 import './styles/general.scss';
 
@@ -11,22 +11,22 @@ const App = () => {
   const [userId, setUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
-  const changePostId = (postId) => {
-    setSelectedPostId(postId);
-  };
-
-  const changeUserId = (event) => {
-    const { value } = event.target;
-
-    setUserId(+value);
-  };
-
   useEffect(() => {
     getUserPosts(userId)
       .then((userPostsFromServer) => {
         setPosts(userPostsFromServer);
       });
   }, [userId, posts]);
+
+  const changeUserId = (event) => {
+    setUserId(Number(event.target.value));
+  };
+
+  const selectPost = useCallback((postId) => {
+    postId === selectedPostId
+      ? setSelectedPostId(0)
+      : setSelectedPostId(postId);
+  }, []);
 
   return (
     <div className="App">
@@ -58,7 +58,8 @@ const App = () => {
         <div className="App__sidebar">
           <PostsList
             posts={posts}
-            changePostId={changePostId}
+            selectedPostId={selectedPostId}
+            selectPost={selectPost}
           />
         </div>
         <div className="App__content">
