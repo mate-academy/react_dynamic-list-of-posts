@@ -6,3 +6,10 @@ export const getUserPosts = async(userId) => {
 
   return posts.data;
 };
+
+export const getPostDetails = async(postId) => {
+  const response = await fetch(BASE_URL + POSTS_URL + postId);
+  const postDetails = await response.json();
+
+  return postDetails.data;
+};
