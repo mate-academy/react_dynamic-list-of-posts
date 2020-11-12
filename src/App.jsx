@@ -7,6 +7,7 @@ import { PostDetails } from './components/PostDetails';
 const App = () => (
   <div className="App">
     <header className="App__header">
+      <p>hey</p>
       <label>
         Select a user: &nbsp;
 
