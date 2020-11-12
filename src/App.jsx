@@ -5,22 +5,29 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getUsers } from './api/users';
 import { getUserPosts } from './api/posts';
-// test for merge
+import { getComments } from './api/comments';
 
 const App = () => {
   const [users, setUsers] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [commentsToRender, setCommentsToRender] = useState([]);
   const [selectedUser, selectUser] = useState('All');
   const [selectedPost, selectPost] = useState(null);
 
-  useEffect(() => {
-    const fetchUsers = async() => {
-      const response = await getUsers();
+  // eslint-disable-next-line no-console
+  console.log('App');
 
-      setUsers(response);
+  useEffect(() => {
+    const fetchData = async() => {
+      const [usersFromServer, commentsFromServer] = await Promise
+        .all([getUsers(), getComments()]);
+
+      setUsers(usersFromServer);
+      setComments(commentsFromServer);
     };
 
-    fetchUsers();
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -32,6 +39,23 @@ const App = () => {
 
     fetchPosts();
   }, [selectedUser]);
+
+  useEffect(() => {
+    const fiterComments = (postId) => {
+      const filteredComments = comments
+        .filter(comment => comment.postId === +postId);
+
+      setCommentsToRender(filteredComments);
+    };
+
+    fiterComments(selectedPost);
+  }, [selectedPost, comments]);
+
+  const updateComments = async() => {
+    const updated = await getComments();
+
+    setComments(updated);
+  };
 
   return (
     <div className="App">
@@ -63,7 +87,15 @@ const App = () => {
         </div>
 
         <div className="App__content">
-          {selectedPost ? <PostDetails postId={selectedPost} /> : 'Select post'}
+          {selectedPost
+            ? (
+              <PostDetails
+                postId={selectedPost}
+                comments={commentsToRender}
+                handleUpdateComments={updateComments}
+              />
+            )
+            : 'Select post'}
         </div>
       </main>
     </div>

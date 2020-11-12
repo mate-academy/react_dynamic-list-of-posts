@@ -1,31 +1,36 @@
 import React from 'react';
 
+export const Post = React.memo(
 // eslint-disable-next-line react/prop-types
-export const Post = ({ userId, title, id, selectPost, selectedPost }) => {
-  const choosePost = () => {
-    if (selectedPost === id) {
-      selectPost(null);
+  ({ userId, title, id, selectPost, selectedPost }) => {
+    const choosePost = () => {
+      if (selectedPost === id) {
+        selectPost(null);
 
-      return;
-    }
+        return;
+      }
 
-    selectPost(id);
-  };
+      selectPost(id);
+    };
 
-  return (
-    <>
-      <div>
-        <b>{`User #${userId}`}</b>
-        <p>{title}</p>
-      </div>
+    // eslint-disable-next-line no-console
+    console.log('Post');
 
-      <button
-        type="button"
-        className="PostsList__button button"
-        onClick={choosePost}
-      >
-        {selectedPost === id ? 'Close' : 'Open'}
-      </button>
-    </>
-  );
-};
+    return (
+      <>
+        <div>
+          <b>{`User #${userId}`}</b>
+          <p>{title}</p>
+        </div>
+
+        <button
+          type="button"
+          className="PostsList__button button"
+          onClick={choosePost}
+        >
+          {selectedPost === id ? 'Close' : 'Open'}
+        </button>
+      </>
+    );
+  },
+);
