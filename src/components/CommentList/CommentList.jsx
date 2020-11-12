@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Loader } from '../Loader';
+
 import { deleteComment } from '../../api/coments';
 
 export const CommentList = ({ comments, updateComments }) => {
-  const removeComment = (commentId) => {
-    deleteComment(commentId)
-      .then(() => updateComments());
+  const [deletingCommentId, setDeletingComment] = useState(0);
+
+  const removeComment = async(commentId) => {
+    setDeletingComment(commentId);
+    await deleteComment(commentId);
+    await updateComments();
+    setDeletingComment(0);
   };
 
   return (
@@ -20,7 +26,10 @@ export const CommentList = ({ comments, updateComments }) => {
             className="PostDetails__remove-button button"
             onClick={() => removeComment(comment.id)}
           >
-            X
+            {deletingCommentId === comment.id
+              ? <Loader />
+              : 'X'
+            }
           </button>
           <p>{comment.body}</p>
         </li>
