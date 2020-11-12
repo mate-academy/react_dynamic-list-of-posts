@@ -1,13 +1,14 @@
 import React from 'react';
+import { PropTypes } from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails = () => (
+const PostDetails = ({ body }) => (
   <div className="PostDetails">
     <h2>Post details:</h2>
 
     <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
+      <p>{body}</p>
     </section>
 
     <section className="PostDetails__comments">
@@ -43,3 +44,9 @@ export const PostDetails = () => (
     </section>
   </div>
 );
+
+PostDetails.propTypes = {
+  body: PropTypes.string.isRequired,
+};
+
+export { PostDetails };
