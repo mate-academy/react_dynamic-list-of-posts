@@ -5,6 +5,7 @@ import { getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { Loader } from '../Loader/Loader';
+import { Comment } from '../Comment';
 
 export function PostDetails({ selectedPostId }) {
   const [openPost, setOpenPost] = useState({});
@@ -77,16 +78,11 @@ export function PostDetails({ selectedPostId }) {
                     {!hiddenComments && (
                       <ul className="PostDetails__list">
                         {openComments.map(comment => (
-                          <li className="PostDetails__list-item" key={comment.id}>
-                            <button
-                              type="button"
-                              className="PostDetails__remove-button button"
-                              onClick={() => removeComment(comment.id)}
-                            >
-                              X
-                            </button>
-                            <p>{comment.body}</p>
-                          </li>
+                          <Comment
+                            commentId={comment.id}
+                            commentBody={comment.body}
+                            removeComment={removeComment}
+                          />
                         ))}
                       </ul>
                     )}
