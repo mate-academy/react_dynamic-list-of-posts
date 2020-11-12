@@ -41,7 +41,7 @@ export const NewCommentForm = ({
     setName('');
     setEmail('');
     setBody('');
-  }
+  };
 
   return (
     <form

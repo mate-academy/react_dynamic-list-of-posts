@@ -2,19 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './CommentList.scss';
 
-import closeButton from '../../images/close-btn.svg';
-
 export const CommentList = ({ remove, comments }) => (
   <ul className="PostDetails__list">
     {comments.map(comment => (
-      <li className="PostDetails__list-item">
-        <img
-          role="button"
-          src={closeButton}
+      <li className="PostDetails__list-item button">
+        <button
+          type="button"
           className="PostDetails__remove-button"
           onClick={() => remove(comment.id)}
         >
-        </img>
+          X
+        </button>
         <p>{comment.body}</p>
       </li>
     ))}
