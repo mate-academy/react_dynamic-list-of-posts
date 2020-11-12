@@ -4,6 +4,8 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
+//  started to work
+
 const App = () => (
   <div className="App">
     <header className="App__header">
