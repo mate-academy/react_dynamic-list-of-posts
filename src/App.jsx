@@ -5,10 +5,19 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
 const App = () => {
-  const [userId, setUserId] = useState(0);
+  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState(0);
 
   const selectUser = (event) => {
-    setUserId(Number(event.target.value));
+    setSelectedUserId(Number(event.target.value));
+  };
+
+  const openPost = (postId) => {
+    setSelectedPostId(postId);
+  };
+
+  const closePost = () => {
+    setSelectedPostId(0);
   };
 
   return (
@@ -19,7 +28,7 @@ const App = () => {
 
           <select
             className="App__user-selector"
-            value={userId}
+            value={selectedUserId}
             onChange={selectUser}
           >
             <option value="0">All users</option>
@@ -40,12 +49,26 @@ const App = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            userId={userId}
+            userId={selectedUserId}
+            openPost={openPost}
+            closePost={closePost}
+            selectedPostId={selectedPostId}
           />
         </div>
 
         <div className="App__content">
-          <PostDetails />
+          {
+            selectedPostId
+              ? (
+                <PostDetails
+                  selectedPostId={selectedPostId}
+                />
+              )
+              : (
+                <h3>Select the post</h3>
+              )
+          }
+
         </div>
       </main>
     </div>

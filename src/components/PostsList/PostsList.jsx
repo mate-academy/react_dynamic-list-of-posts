@@ -4,7 +4,12 @@ import { getUserPosts } from '../../api/posts';
 import { Loader } from '../Loader';
 import './PostsList.scss';
 
-export const PostsList = ({ userId }) => {
+export const PostsList = ({
+  userId,
+  openPost,
+  selectedPostId,
+  closePost,
+}) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -38,12 +43,28 @@ export const PostsList = ({ userId }) => {
                   {post.title}
                 </div>
 
-                <button
-                  type="button"
-                  className="PostsList__button button"
-                >
-                  Close
-                </button>
+                {
+                  selectedPostId === post.id
+                    ? (
+                      <button
+                        type="button"
+                        className="PostsList__button button"
+                        onClick={closePost}
+                      >
+                        Close
+                      </button>
+                    )
+                    : (
+                      <button
+                        type="button"
+                        className="PostsList__button button"
+                        onClick={() => openPost(post.id)}
+                      >
+                        Open
+                      </button>
+                    )
+                }
+
               </li>
             ))
           )
@@ -56,4 +77,7 @@ export const PostsList = ({ userId }) => {
 
 PostsList.propTypes = {
   userId: PropTypes.number.isRequired,
+  openPost: PropTypes.func.isRequired,
+  selectedPostId: PropTypes.number.isRequired,
+  closePost: PropTypes.func.isRequired,
 };

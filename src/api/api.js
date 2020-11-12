@@ -1,6 +1,6 @@
 export const BASE_URL = 'https://mate-api.herokuapp.com';
 
-export const request = url => fetch(`${BASE_URL}${url}`)
+export const request = (url, options) => fetch(`${BASE_URL}${url}`, options)
   .then((response) => {
     if (!response.ok) {
       throw new Error(`${response.status}-${response.statusText}`);
@@ -9,3 +9,6 @@ export const request = url => fetch(`${BASE_URL}${url}`)
     return response.json();
   })
   .then(result => result.data);
+
+export const remove = url => request(url, { method: 'DELETE' });
+// export const post = url =>
