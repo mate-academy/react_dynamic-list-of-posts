@@ -5,6 +5,7 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getUsers } from './api/users';
 import { getUserPosts } from './api/posts';
+// test for merge
 
 const App = () => {
   const [users, setUsers] = useState([]);
