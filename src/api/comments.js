@@ -3,7 +3,7 @@ import { getData, post, remove } from './api';
 export const getPostComments = async(postId) => {
   const comments = await getData('/comments');
 
-  return postId ? comments.filter(comment => comment.postId === postId) : [];
+  return comments.filter(comment => comment.postId === postId);
 };
 
 export const addComment = async newComment => (

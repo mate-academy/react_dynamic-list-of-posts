@@ -3,11 +3,19 @@ import { getData } from './api';
 export const getUserPosts = async(userId) => {
   const posts = await getData('/posts', { method: 'GET' });
 
-  return userId ? posts.filter(post => post.userId === userId) : posts;
+  if (!userId) {
+    return posts;
+  }
+
+  return posts.filter(post => post.userId === userId);
 };
 
 export const getPostDetails = async(postId) => {
   const post = await getData(`/posts/${postId}`, { method: 'GET' });
 
-  return postId ? post : null;
+  if (!postId) {
+    return null;
+  }
+
+  return post;
 };

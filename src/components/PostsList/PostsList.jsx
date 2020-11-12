@@ -26,30 +26,29 @@ export const PostsList = ({ posts, changePostId }) => {
                   {post.title}
                 </div>
 
-                {isClicked
-                  ? (
-                    <button
-                      type="button"
-                      className="PostsList__button button"
-                      onClick={() => {
-                        changePostId(0);
-                        setIsClicked(false);
-                      }}
-                    >
-                      Close
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      className="PostsList__button button"
-                      onClick={() => {
-                        changePostId(post.id);
-                        setIsClicked(true);
-                      }}
-                    >
-                      Open
-                    </button>
-                  )}
+                {isClicked ? 
+                (<button
+                    type="button"
+                    className="PostsList__button button"
+                    onClick={() => {
+                      changePostId(0);
+                      setIsClicked(false);
+                    }}
+                  >
+                    Close
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="PostsList__button button"
+                    onClick={() => {
+                      changePostId(post.id);
+                      setIsClicked(true);
+                    }}
+                  >
+                    Open
+                  </button>
+                )}
               </li>
             ))}
           </ul>
@@ -57,7 +56,7 @@ export const PostsList = ({ posts, changePostId }) => {
       )}
     </>
   );
-};
+}
 
 PostsList.propTypes = {
   posts: PropTypes.arrayOf(PropTypes.shape({

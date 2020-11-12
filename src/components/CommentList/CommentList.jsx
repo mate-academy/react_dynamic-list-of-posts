@@ -5,10 +5,10 @@ import './CommentList.scss';
 export const CommentList = ({ remove, comments }) => (
   <ul className="PostDetails__list">
     {comments.map(comment => (
-      <li className="PostDetails__list-item button">
+      <li className="PostDetails__list-item">
         <button
           type="button"
-          className="PostDetails__remove-button"
+          className="PostDetails__remove-button button"
           onClick={() => remove(comment.id)}
         >
           X
