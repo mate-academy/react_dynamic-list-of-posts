@@ -7,13 +7,18 @@ import { usersDataFromServer } from './api/post';
 
 const App = () => {
   const [users, setUsers] = useState([]);
+  const [userId, setUserId] = useState(0);
 
   useEffect(() => {
     usersDataFromServer()
       .then((user) => {
-        setUsers(user.slice(0, 11));
+        setUsers(user.slice(0, 10));
       });
   }, []);
+
+  const selectUserId = ({target}) => {
+    setUserId(target.value);
+  }
 
   return (
     <div className="App">
@@ -21,7 +26,11 @@ const App = () => {
         <label>
           Select a user: &nbsp;
 
-          <select className="App__user-selector">
+          <select
+          className="App__user-selector"
+          value={userId}
+          onChange={selectUserId}
+          >
             <option value="0">All users</option>
             {
               users.map((user, index) => (
@@ -34,7 +43,7 @@ const App = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList />
+          <PostsList userId={userId}/>
         </div>
 
         <div className="App__content">
