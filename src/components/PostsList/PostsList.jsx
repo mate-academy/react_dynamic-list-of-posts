@@ -15,7 +15,6 @@ export const PostsList = () => (
           type="button"
           className="PostsList__button button"
         >
-          Close
         </button>
       </li>
 
