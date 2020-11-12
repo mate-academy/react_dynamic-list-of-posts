@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Loader } from '../Loader';
+
 import { addComment } from '../../api/coments';
 import './NewCommentForm.scss';
 
@@ -7,10 +9,11 @@ export const NewCommentForm = ({ postId, updateComments }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
+  const [addingComment, setAddingComment] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async(event) => {
     event.preventDefault();
-
+    setAddingComment(true);
     // eslint-disable-next-line max-len
     const emailRegEx = /^(([^<>()\\[\]\\.,;:\s@"]+(\.[^<>()\\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -18,9 +21,10 @@ export const NewCommentForm = ({ postId, updateComments }) => {
       return;
     }
 
-    addComment(postId, name, email, body)
-      .then(() => updateComments());
+    await addComment(postId, name, email, body);
+    await updateComments();
     setBody('');
+    setAddingComment(false);
   };
 
   return (
@@ -66,6 +70,8 @@ export const NewCommentForm = ({ postId, updateComments }) => {
       >
         Add a comment
       </button>
+
+      {addingComment && (<Loader />)}
     </form>
   );
 };
