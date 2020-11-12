@@ -12,16 +12,9 @@ function App() {
 
   useEffect(() => {
     async function fetchData() {
-      const requestedPosts = await getUserPosts();
+      const requestedPosts = await getUserPosts(seletedUser);
 
-      if (Number(seletedUser) === 0) {
-        setPosts(requestedPosts.data);
-      } else {
-        const filteredPosts = requestedPosts.data.filter(post => (
-          post.userId === Number(seletedUser)));
-
-        setPosts(filteredPosts);
-      }
+      setPosts(requestedPosts);
     }
 
     fetchData();
@@ -57,12 +50,13 @@ function App() {
           <PostsList
             posts={posts}
             setPostId={setPostId}
-            selectedPostId={selectedPostId}
+            selectedPostId={Number(selectedPostId)}
           />
         </div>
 
         <div className="App__content">
-          <PostDetails />
+          {selectedPostId
+            && <PostDetails selectedPostId={Number(selectedPostId)} />}
         </div>
       </main>
     </div>
