@@ -1,9 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import './App.scss';
-import './styles/general.scss';
+
 import { UserSelect } from './components/UserSelect';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+
+import './App.scss';
+import './styles/general.scss';
 
 
 const App = () => {

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import { removeComment } from '../../api/comments';
 
 export const PostComments = ({ comments, updateComments }) => {
@@ -12,8 +13,8 @@ export const PostComments = ({ comments, updateComments }) => {
     <ul className="PostDetails__list">
       {comments.map(comment => (
         <li
-          className="PostDetails__list-item"
           key={comment.id}
+          className="PostDetails__list-item"
         >
           <button
             type="button"
@@ -22,6 +23,7 @@ export const PostComments = ({ comments, updateComments }) => {
           >
             X
           </button>
+
           <p>
             {comment.body}
           </p>

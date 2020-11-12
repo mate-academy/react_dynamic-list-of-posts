@@ -11,9 +11,9 @@ export const UserSelect = ({ selectedUserId, selectUser }) => {
   }, []);
 
   const loadUsers = async() => {
-    const usersFromServer = await getUsers();
+    const loadedUser = await getUsers();
 
-    setUsers(usersFromServer.slice(0, 10));
+    setUsers(loadedUser.slice(0, 10));
   };
 
   return (

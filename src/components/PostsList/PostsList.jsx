@@ -14,27 +14,29 @@ export const PostsList = ({ selectedUserId, selectedPostId, selectPost }) => {
   }, [selectedUserId]);
 
   const loadPosts = async() => {
-    const postsFromServer = await getUserPosts(selectedUserId);
-    setPosts(postsFromServer);
+    const loadedPosts = await getUserPosts(selectedUserId);
+    setPosts(loadedPosts);
     setIsLoading(false);
   }
 
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
+
       {isLoading ? (
         <Loader />
       ) : (
         <ul>
         {posts.map(post => (
               <li
-                className="PostsList__item"
                 key={post.id}
+                className="PostsList__item"
               >
                 <div>
                   <b>{`[User #${post.userId}]:`}</b>
                   {post.title}
                 </div>
+
                 <button
                   type="button"
                   className="PostsList__button button"
@@ -52,6 +54,6 @@ export const PostsList = ({ selectedUserId, selectedPostId, selectPost }) => {
 
 PostsList.propTypes = {
   selectedUserId: PropTypes.number.isRequired,
-  selectPost: PropTypes.func.isRequired,
   selectedPostId: PropTypes.number.isRequired,
+  selectPost: PropTypes.func.isRequired,
 };

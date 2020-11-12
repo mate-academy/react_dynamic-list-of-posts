@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+
 import { getPostDetails } from '../../api/posts';
 import { getPostComments } from '../../api/comments';
 import { NewCommentForm } from '../NewCommentForm';
 import { PostComments } from '../PostComments';
+
 import './PostDetails.scss';
 
 export const PostDetails = ( { selectedPostId }) => {
@@ -17,8 +19,8 @@ export const PostDetails = ( { selectedPostId }) => {
   }, [selectedPostId]);
 
   const loadDetails = async() => {
-    const loadedDetails = await getPostDetails(selectedPostId);
-    setDetails(loadedDetails);
+    const postDetails = await getPostDetails(selectedPostId);
+    setDetails(postDetails);
     setIsVisible(false);
   };
 
@@ -45,7 +47,7 @@ export const PostDetails = ( { selectedPostId }) => {
               {isVisible ? 'Hide comments' : 'Show comments'}
             </button>
           ) : (
-            <h4>No Comments</h4>
+            <h3>No Comments</h3>
         )}
 
         {isVisible &&
@@ -54,13 +56,12 @@ export const PostDetails = ( { selectedPostId }) => {
             updateComments={updateComments}
           />
         }
-
       </section>
 
       <section>
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
-            selectedPostId={selectedPostId}
+            postId={selectedPostId}
             updateComments={updateComments}
           />
         </div>
