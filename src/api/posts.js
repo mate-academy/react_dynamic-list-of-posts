@@ -7,3 +7,9 @@ export const getUserPosts = userId => (
       ? posts.data.filter(post => post.userId === +userId)
       : posts.data))
 );
+
+export const getPostDetails = postId => (
+  fetch(`${BASE_URL}/posts/${postId}`)
+    .then(response => response.json())
+    .then(post => post.data)
+);
