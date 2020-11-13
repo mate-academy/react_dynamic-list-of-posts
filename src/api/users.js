@@ -1,15 +1,15 @@
 import { request } from './api';
 
-export const getUsersList = async() => {
+export const getUsers = async() => {
   const users = await request('/users');
-
-  if (!users.length) {
-    return [];
-  }
 
   const preparedUsers = users.filter(user => user.name !== null);
   const noRepeatNames = [];
-  const noRepeatUsers = [];
+  const noRepeatUsers = [
+    {
+      id: -1,
+      name: 'All users',
+    }];
 
   for (let i = 0; i < preparedUsers.length;) {
     if (!noRepeatNames.includes(preparedUsers[i].name)) {

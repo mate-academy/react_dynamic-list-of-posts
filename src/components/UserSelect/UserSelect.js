@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import './Select.scss';
+import './UserSelect.scss';
 // import PropTypes from 'prop-types';
-import { getUsersList } from '../../api/users';
+import { getUsers } from '../../api/users';
 
-export const Select = () => {
+export const UserSelect = () => {
   const [usersList, setUsersList] = useState([]);
 
   const loadNames = async() => {
-    const loadedNames = await getUsersList();
+    const loadedNames = await getUsers();
 
     setUsersList(loadedNames);
   };
@@ -36,4 +36,4 @@ export const Select = () => {
   );
 };
 
-Select.propTypes = {};
+UserSelect.propTypes = {};

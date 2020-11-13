@@ -3,11 +3,11 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { Select } from './components/Select';
+import { UserSelect } from './components/UserSelect';
 
 const App = () => (
   <div className="App">
-    <Select />
+    <UserSelect />
 
     <main className="App__main">
       <div className="App__sidebar">
