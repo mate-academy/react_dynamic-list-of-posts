@@ -1,20 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { getPostComments } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import { Loader } from '../Loader';
+import { Comments } from '../Comments';
 
 export const PostDetails = ({ selectedPostId }) => {
-  const [openPost, setOpenPost] = useState({});
-  const [openComments, setOpenComments] = useState([]);
   const [hiddenComments, setHiddenComments] = useState(true);
+  const [post, setPost] = useState({});
+  const [comments, setComments] = useState([]);
+  const [loader, setLoader] = useState(true);
+  const [commentErrorId, setCommentErrorId] = useState(0);
 
   useEffect(() => {
     const fetchData = async() => {
       const requestedPost = await getPostDetails(selectedPostId);
 
-      setOpenPost(requestedPost);
+      setPost(requestedPost);
     };
 
     fetchData();
@@ -22,70 +26,91 @@ export const PostDetails = ({ selectedPostId }) => {
 
   useEffect(() => {
     const fetchData = async() => {
-      const requestedComment = await getPostComments(openPost.id);
+      const requestedComment = await getPostComments(post.id);
 
-      setOpenComments(requestedComment);
+      setComments(requestedComment);
     };
 
     fetchData();
-  }, [openPost.id]);
+    setLoader(false);
+  }, [post.id]);
 
-  const showComments = () => {
+  const showComments = useCallback(() => {
     setHiddenComments(currentHidenComments => !currentHidenComments);
-  };
+  }, []);
+
+  const deleteComment = useCallback(async(commentId) => {
+    const response = await deleteComment(commentId);
+
+    if (response === 'Error') {
+      setCommentErrorId(commentId);
+
+      return;
+    }
+
+    const filteredComments = comments.filter(comment => (
+      comment.id !== commentId
+    ));
+
+    setComments(filteredComments);
+  }, [comments]);
 
   return (
-    <div className="PostDetails">
-      <h2>Post details:</h2>
+    <>
+      {loader
+        ? <Loader />
+        : (
+          <div className="PostDetails">
+            <h2>Post details:</h2>
 
-      <section className="PostDetails__post">
-        <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-      </section>
+            <section className="PostDetails__post">
+              <p>{post.body}</p>
+            </section>
 
-      <section className="PostDetails__comments">
-        {openComments.length === 0
-          ? <p>No comments</p>
-          : (
-            <>
-              <button
-                type="button"
-                className="button"
-                onClick={showComments}
-              >
-                {hiddenComments
-                  ? `Show ${openComments.length} comment(s)`
-                  : `Hide ${openComments.length} comment(s)`
-                }
-              </button>
+            <section className="PostDetails__comments">
+              {comments.length === 0
+                ? <p>No comments</p>
+                : (
+                  <>
+                    <button
+                      type="button"
+                      className="button"
+                      onClick={showComments}
+                    >
+                      {hiddenComments
+                        ? `Show ${comments.length} comment(s)`
+                        : `Hide ${comments.length} comment(s)`
+                      }
+                    </button>
 
-              {hiddenComments && (
-                <ul className="PostDetails__list">
-                  {openComments.map(comment => (
-                    <li className="PostDetails__list-item" key={comment.id}>
-                      <button
-                        type="button"
-                        className="PostDetails__remove-button button"
-                      >
-                        X
-                      </button>
-                      <p>{comment.body}</p>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </>
-          )}
-      </section>
+                    {!hiddenComments && (
+                      <ul className="PostDetails__list">
+                        {comments.map(comment => (
+                          <Comments
+                            key={comment.id}
+                            commentId={comment.Id}
+                            commentErrorId={commentErrorId}
+                            deleteComment={deleteComment}
+                            commentBody={comment.body}
+                          />
+                        ))}
+                      </ul>
+                    )}
+                  </>
+                )}
+            </section>
 
-      <section>
-        <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            setOpenComments={setOpenComments}
-            openPostId={openPost.id}
-          />
-        </div>
-      </section>
-    </div>
+            <section>
+              <div className="PostDetails__form-wrapper">
+                <NewCommentForm
+                  setOpenComments={setComments}
+                  openPostId={post.id}
+                />
+              </div>
+            </section>
+          </div>
+        )}
+    </>
   );
 };
 

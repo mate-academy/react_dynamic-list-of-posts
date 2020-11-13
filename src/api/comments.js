@@ -9,3 +9,21 @@ export const getPostComments = async(postId) => {
 
   return filteredPostComments;
 };
+
+export const postCommentToServer = async(comment) => {
+  const response = await fetch(`${BASE_URL}/comments`, {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json; charset-UTF-8',
+    },
+    body: JSON.stringify(comment),
+  });
+
+  if (!response.ok) {
+    return 'Error';
+  }
+
+  const postComent = response.json();
+
+  return postComent.data;
+};
