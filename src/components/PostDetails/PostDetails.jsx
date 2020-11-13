@@ -19,7 +19,6 @@ export const PostDetails = () => {
         <button
           type="button"
           className="button"
-          // onClick={toggleComment}
         >
           Hide 2 comments
         </button>
