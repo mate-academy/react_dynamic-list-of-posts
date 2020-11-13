@@ -7,5 +7,18 @@ export const getUsersList = async() => {
     return [];
   }
 
-  return users.slice(0, 9);
+  const preparedUsers = users.filter(user => user.name !== null);
+  const noRepeatNames = [];
+  const noRepeatUsers = [];
+
+  for (let i = 0; i < preparedUsers.length;) {
+    if (!noRepeatNames.includes(preparedUsers[i].name)) {
+      noRepeatNames.push(preparedUsers[i].name);
+      noRepeatUsers.push(preparedUsers[i]);
+    }
+
+    i += 1;
+  }
+
+  return noRepeatUsers;
 };
