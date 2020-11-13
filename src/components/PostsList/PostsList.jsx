@@ -1,37 +1,33 @@
 import React from 'react';
 import './PostsList.scss';
+import { Post } from '../Post/Post';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = React.memo(
+// eslint-disable-next-line react/prop-types
+  ({ posts, selectPost, selectedPost }) => {
+    // eslint-disable-next-line no-console
+    console.log('PostList');
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+    return (
+      <div className="PostsList">
+        <h2>Posts:</h2>
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
+        <ul className="PostsList__list">
+          {/* eslint-disable-next-line react/prop-types */}
+          {posts.map(post => (
+            <li
+              key={post.id}
+              className="PostsList__item"
+            >
+              <Post
+                {...post}
+                selectPost={selectPost}
+                selectedPost={selectedPost}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  },
 );
