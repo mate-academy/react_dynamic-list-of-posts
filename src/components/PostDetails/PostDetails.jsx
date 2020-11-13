@@ -12,7 +12,7 @@ export const PostDetails = ({ selectedPostId }) => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [selectedPostId]);
 
   const loadData = async() => {
     const [details, comments] = await Promise.all(
@@ -47,11 +47,12 @@ export const PostDetails = ({ selectedPostId }) => {
           className="button"
           onClick={handleHide}
         >
-          Hide
-          {' '}
-          {postComments.length}
-          {' '}
-          comments
+          {
+            hideStatus
+              ? `Hide ${postComments.length} comments`
+              : `Show ${postComments.length} comments`
+          }
+
         </button>
 
         {hideStatus && (

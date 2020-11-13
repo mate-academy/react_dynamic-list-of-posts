@@ -7,21 +7,31 @@ export const NewCommentForm = ({ selectedPostId, loadData }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');
+  const [validation, setValidation] = useState(false);
 
   const handleName = (event) => {
     setName(event.target.value);
+    setValidation(false);
   };
 
   const handleEmail = (event) => {
     setEmail(event.target.value);
+    setValidation(false);
   };
 
   const handleComment = (event) => {
     setComment(event.target.value);
+    setValidation(false);
   };
 
   const submitComment = async(event) => {
     event.preventDefault();
+
+    if (name === '' || email === '' || comment === '') {
+      setValidation(true);
+
+      return;
+    }
 
     await addComment({
       name,
@@ -70,6 +80,12 @@ export const NewCommentForm = ({ selectedPostId, loadData }) => {
           className="NewCommentForm__input"
         />
       </div>
+
+      {validation && (
+        <p className="NewCommentForm__error">
+          All fields must be filled
+        </p>
+      )}
 
       <button
         onClick={submitComment}

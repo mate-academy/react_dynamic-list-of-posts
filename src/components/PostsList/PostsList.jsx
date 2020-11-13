@@ -8,13 +8,13 @@ export const PostsList = ({
   selectedPostId,
   setSelectedPostId,
   statusPost,
-  setStatusPost,
+  showPost,
 }) => {
   const [visiblePosts, setVisiblePosts] = useState([]);
 
-  const handlePostId = (event) => {
-    setSelectedPostId(Number(event.target.value));
-    setStatusPost(!statusPost);
+  const handlePost = (post) => {
+    setSelectedPostId(post.id);
+    showPost(post);
   };
 
   useEffect(() => {
@@ -69,8 +69,7 @@ export const PostsList = ({
             <button
               type="button"
               className="PostsList__button button"
-              onClick={handlePostId}
-              value={post.id}
+              onClick={() => handlePost(post)}
             >
               {selectedPostId === post.id && statusPost ? 'Close' : 'Open'}
             </button>
@@ -82,7 +81,7 @@ export const PostsList = ({
 };
 
 PostsList.propTypes = {
-  setStatusPost: PropTypes.func.isRequired,
+  showPost: PropTypes.func.isRequired,
   statusPost: PropTypes.bool.isRequired,
   setSelectedPostId: PropTypes.func.isRequired,
   selectedPostId: PropTypes.number.isRequired,

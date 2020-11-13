@@ -13,6 +13,16 @@ const App = () => {
     setUserSelectId(Number(event.target.value));
   };
 
+  const showPost = (post) => {
+    if (post.id === selectedPostId) {
+      setStatusPost(false);
+
+      return;
+    }
+
+    setStatusPost(true);
+  };
+
   return (
     <div className="App">
       <header className="App__header">
@@ -45,7 +55,7 @@ const App = () => {
             selectedPostId={selectedPostId}
             setSelectedPostId={setSelectedPostId}
             statusPost={statusPost}
-            setStatusPost={setStatusPost}
+            showPost={showPost}
           />
         </div>
 
