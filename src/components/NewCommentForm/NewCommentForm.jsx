@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
 import { addCommentToServer } from '../../api/comments';
@@ -9,7 +9,7 @@ export function NewCommentForm({ onAdd, postId }) {
   const [body, setBody] = useState('');
   const [addCommentError, setAddCommentError] = useState('');
 
-  const addComment = async(event) => {
+  const addComment = useCallback(async(event) => {
     event.preventDefault();
 
     if (!name || !email || !body) {
@@ -35,7 +35,7 @@ export function NewCommentForm({ onAdd, postId }) {
     setName('');
     setEmail('');
     setBody('');
-  };
+  }, [body, email, name, onAdd, postId]);
 
   return (
     <form className="NewCommentForm" onSubmit={addComment}>

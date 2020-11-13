@@ -22,11 +22,11 @@ export const Comment = (
     </li>
 
     {commentErrorId === commentId
-        && (
-          <p className="errorText">
-            Something goes wrong, cannot delete comment. Try again later.
-          </p>
-        )}
+      && (
+        <p className="errorText">
+          Something goes wrong, cannot delete comment. Try again later.
+        </p>
+      )}
   </>
 );
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { getPostComments, deleteCommentFromServer } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
@@ -8,8 +8,8 @@ import { Loader } from '../Loader/Loader';
 import { Comment } from '../Comment';
 
 export function PostDetails({ selectedPostId }) {
-  const [openPost, setOpenPost] = useState({});
-  const [openComments, setOpenComments] = useState([]);
+  const [post, setPost] = useState({});
+  const [comments, setComments] = useState([]);
   const [hiddenComments, setHiddenComments] = useState(true);
   const [loader, setLoader] = useState(true);
   const [commentErrorId, setCommentErrorId] = useState(0);
@@ -18,7 +18,7 @@ export function PostDetails({ selectedPostId }) {
     async function fetchData() {
       const requestedPost = await getPostDetails(selectedPostId);
 
-      setOpenPost(requestedPost);
+      setPost(requestedPost);
     }
 
     fetchData();
@@ -26,20 +26,20 @@ export function PostDetails({ selectedPostId }) {
 
   useEffect(() => {
     async function fetchData() {
-      const requestedComment = await getPostComments(openPost.id);
+      const requestedComment = await getPostComments(post.id);
 
-      setOpenComments(requestedComment);
+      setComments(requestedComment);
     }
 
     fetchData();
     setLoader(false);
-  }, [openPost.id]);
+  }, [post.id]);
 
-  const commentsVisibility = () => {
+  const commentsVisibility = useCallback(() => {
     setHiddenComments(currentHiddenComments => !currentHiddenComments);
-  };
+  }, []);
 
-  const removeComment = async(commentIdForRemove) => {
+  const removeComment = useCallback(async(commentIdForRemove) => {
     const response = await deleteCommentFromServer(commentIdForRemove);
 
     if (response === 'Error') {
@@ -48,12 +48,12 @@ export function PostDetails({ selectedPostId }) {
       return;
     }
 
-    const filteredComments = openComments.filter(comment => (
+    const filteredComments = comments.filter(comment => (
       comment.id !== commentIdForRemove
     ));
 
-    setOpenComments(filteredComments);
-  };
+    setComments(filteredComments);
+  }, [comments]);
 
   return (
     <>
@@ -64,11 +64,11 @@ export function PostDetails({ selectedPostId }) {
             <h2>Post details:</h2>
 
             <section className="PostDetails__post">
-              <p>{openPost.body}</p>
+              <p>{post.body}</p>
             </section>
 
             <section className="PostDetails__comments">
-              {openComments.length === 0
+              {comments.length === 0
                 ? <p className="PostDetails__noCommentsMessage">No comments</p>
                 : (
                   <>
@@ -78,14 +78,14 @@ export function PostDetails({ selectedPostId }) {
                       onClick={commentsVisibility}
                     >
                       {hiddenComments
-                        ? `Show ${openComments.length} comment(s)`
-                        : `Hide ${openComments.length} comment(s)`
+                        ? `Show ${comments.length} comment(s)`
+                        : `Hide ${comments.length} comment(s)`
                       }
                     </button>
 
                     {!hiddenComments && (
                       <ul className="PostDetails__list">
-                        {openComments.map(comment => (
+                        {comments.map(comment => (
                           <Comment
                             key={comment.id}
                             commentErrorId={commentErrorId}
@@ -103,8 +103,8 @@ export function PostDetails({ selectedPostId }) {
             <section>
               <div className="PostDetails__form-wrapper">
                 <NewCommentForm
-                  onAdd={setOpenComments}
-                  postId={openPost.id}
+                  onAdd={setComments}
+                  postId={post.id}
                 />
               </div>
             </section>

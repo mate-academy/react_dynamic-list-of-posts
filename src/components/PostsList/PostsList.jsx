@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import './PostsList.scss';
 import { Loader } from '../Loader/Loader';
@@ -19,13 +19,13 @@ export function PostsList({ seletedUser, setPostId, selectedPostId }) {
     setLoader(false);
   }, [seletedUser]);
 
-  const buttonStatus = (postId) => {
+  const setButtonStatus = useCallback((postId) => {
     setPostId(current => (
       current === postId
         ? ''
         : postId
     ));
-  };
+  }, [setPostId]);
 
   return (
     <div className="PostsList">
@@ -46,7 +46,7 @@ export function PostsList({ seletedUser, setPostId, selectedPostId }) {
                 <button
                   type="button"
                   className="PostsList__button button"
-                  onClick={() => buttonStatus(post.id)}
+                  onClick={() => setButtonStatus(post.id)}
                 >
                   {selectedPostId === post.id ? `Close` : `Open`}
                 </button>
