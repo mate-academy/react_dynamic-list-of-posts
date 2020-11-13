@@ -1,35 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
-import { v4 as uuidv4 } from 'uuid';
 import { addCommentToServer } from '../../api/comments';
 
-export function NewCommentForm({ setOpenComments, openPostId }) {
-  const [commentName, setCommentName] = useState('');
-  const [commentEmail, setCommentEmail] = useState('');
-  const [commentBody, setCommentBody] = useState('');
+export function NewCommentForm({ onAdd, postId }) {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [body, setBody] = useState('');
+  const [addCommentError, setAddCommentError] = useState('');
 
-  const addComment = (event) => {
+  const addComment = useCallback(async(event) => {
     event.preventDefault();
 
-    setOpenComments((prevComments) => {
-      const newComment = {
-        name: commentName,
-        email: commentEmail,
-        body: commentBody,
-        postId: openPostId,
-      };
+    if (!name || !email || !body) {
+      return;
+    }
 
-      setCommentName('');
-      setCommentEmail('');
-      setCommentBody('');
-      addCommentToServer(newComment);
+    const newComment = {
+      name,
+      email,
+      body,
+      postId,
+    };
+    const addedComment = await addCommentToServer(newComment);
 
-      return [...prevComments, {
-        ...newComment, id: uuidv4(),
-      }];
-    });
-  };
+    if (addedComment === 'Error') {
+      setAddCommentError('Error');
+
+      return;
+    }
+
+    onAdd(prevComments => [...prevComments, addedComment]);
+
+    setName('');
+    setEmail('');
+    setBody('');
+  }, [body, email, name, onAdd, postId]);
 
   return (
     <form className="NewCommentForm" onSubmit={addComment}>
@@ -39,8 +45,8 @@ export function NewCommentForm({ setOpenComments, openPostId }) {
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={commentName}
-          onChange={event => setCommentName(event.target.value)}
+          value={name}
+          onChange={event => setName(event.target.value)}
         />
       </div>
 
@@ -50,8 +56,8 @@ export function NewCommentForm({ setOpenComments, openPostId }) {
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={commentEmail}
-          onChange={event => setCommentEmail(event.target.value)}
+          value={email}
+          onChange={event => setEmail(event.target.value)}
         />
       </div>
 
@@ -60,8 +66,8 @@ export function NewCommentForm({ setOpenComments, openPostId }) {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={commentBody}
-          onChange={event => setCommentBody(event.target.value)}
+          value={body}
+          onChange={event => setBody(event.target.value)}
         />
       </div>
 
@@ -71,15 +77,21 @@ export function NewCommentForm({ setOpenComments, openPostId }) {
       >
         Add a comment
       </button>
+      {addCommentError
+        && (
+          <p className="errorText">
+            Something goes wrong, cannot add a new comment. Try again later.
+          </p>
+        )}
     </form>
   );
 }
 
 NewCommentForm.propTypes = {
-  setOpenComments: PropTypes.func.isRequired,
-  openPostId: PropTypes.number,
+  onAdd: PropTypes.func.isRequired,
+  postId: PropTypes.number,
 };
 
 NewCommentForm.defaultProps = {
-  openPostId: 0,
+  postId: 0,
 };

@@ -42,10 +42,13 @@ function App() {
           />
         </div>
 
-        <div className="App__content">
-          {selectedPostId
-            && <PostDetails selectedPostId={Number(selectedPostId)} />}
-        </div>
+        {selectedPostId
+        && (
+          <div className="App__content">
+            <PostDetails selectedPostId={Number(selectedPostId)} />
+          </div>
+        )}
+
       </main>
     </div>
   );

@@ -1,20 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { getPostComments, deleteCommentFromServer } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import { Loader } from '../Loader/Loader';
+import { Comment } from '../Comment';
 
 export function PostDetails({ selectedPostId }) {
-  const [openPost, setOpenPost] = useState({});
-  const [openComments, setOpenComments] = useState([]);
+  const [post, setPost] = useState({});
+  const [comments, setComments] = useState([]);
   const [hiddenComments, setHiddenComments] = useState(true);
+  const [loader, setLoader] = useState(true);
+  const [commentErrorId, setCommentErrorId] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
       const requestedPost = await getPostDetails(selectedPostId);
 
-      setOpenPost(requestedPost);
+      setPost(requestedPost);
     }
 
     fetchData();
@@ -22,80 +26,91 @@ export function PostDetails({ selectedPostId }) {
 
   useEffect(() => {
     async function fetchData() {
-      const requestedComment = await getPostComments(openPost.id);
+      const requestedComment = await getPostComments(post.id);
 
-      setOpenComments(requestedComment);
+      setComments(requestedComment);
     }
 
     fetchData();
-  }, [openPost.id]);
+    setLoader(false);
+  }, [post.id]);
 
-  const commentsVisibility = () => {
+  const commentsVisibility = useCallback(() => {
     setHiddenComments(currentHiddenComments => !currentHiddenComments);
-  };
+  }, []);
 
-  const removeComment = (commentIdForRemove) => {
-    const filteredComments = openComments.filter(comment => (
+  const removeComment = useCallback(async(commentIdForRemove) => {
+    const response = await deleteCommentFromServer(commentIdForRemove);
+
+    if (response === 'Error') {
+      setCommentErrorId(commentIdForRemove);
+
+      return;
+    }
+
+    const filteredComments = comments.filter(comment => (
       comment.id !== commentIdForRemove
     ));
 
-    setOpenComments(filteredComments);
-    deleteCommentFromServer(commentIdForRemove);
-  };
+    setComments(filteredComments);
+  }, [comments]);
 
   return (
-    <div className="PostDetails App__PostDetails">
-      <h2>Post details:</h2>
+    <>
+      {loader
+        ? <Loader />
+        : (
+          <div className="PostDetails App__PostDetails">
+            <h2>Post details:</h2>
 
-      <section className="PostDetails__post">
-        <p>{openPost.body}</p>
-      </section>
+            <section className="PostDetails__post">
+              <p>{post.body}</p>
+            </section>
 
-      <section className="PostDetails__comments">
-        {openComments.length === 0
-          ? <p className="PostDetails__noCommentsMessage">No comments</p>
-          : (
-            <>
-              <button
-                type="button"
-                className="button PostDetails__showCommentsButton"
-                onClick={commentsVisibility}
-              >
-                {hiddenComments
-                  ? `Show ${openComments.length} comment(s)`
-                  : `Hide ${openComments.length} comment(s)`
-                }
-              </button>
+            <section className="PostDetails__comments">
+              {comments.length === 0
+                ? <p className="PostDetails__noCommentsMessage">No comments</p>
+                : (
+                  <>
+                    <button
+                      type="button"
+                      className="button PostDetails__showCommentsButton"
+                      onClick={commentsVisibility}
+                    >
+                      {hiddenComments
+                        ? `Show ${comments.length} comment(s)`
+                        : `Hide ${comments.length} comment(s)`
+                      }
+                    </button>
 
-              {!hiddenComments && (
-                <ul className="PostDetails__list">
-                  {openComments.map(comment => (
-                    <li className="PostDetails__list-item" key={comment.id}>
-                      <button
-                        type="button"
-                        className="PostDetails__remove-button button"
-                        onClick={() => removeComment(comment.id)}
-                      >
-                        X
-                      </button>
-                      <p>{comment.body}</p>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </>
-          )}
-      </section>
+                    {!hiddenComments && (
+                      <ul className="PostDetails__list">
+                        {comments.map(comment => (
+                          <Comment
+                            key={comment.id}
+                            commentErrorId={commentErrorId}
+                            commentId={comment.id}
+                            commentBody={comment.body}
+                            removeComment={removeComment}
+                          />
+                        ))}
+                      </ul>
+                    )}
+                  </>
+                )}
+            </section>
 
-      <section>
-        <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            setOpenComments={setOpenComments}
-            openPostId={openPost.id}
-          />
-        </div>
-      </section>
-    </div>
+            <section>
+              <div className="PostDetails__form-wrapper">
+                <NewCommentForm
+                  onAdd={setComments}
+                  postId={post.id}
+                />
+              </div>
+            </section>
+          </div>
+        )}
+    </>
   );
 }
 
