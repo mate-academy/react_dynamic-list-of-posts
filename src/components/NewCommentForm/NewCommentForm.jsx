@@ -3,11 +3,15 @@ import PropTypes from 'prop-types';
 import { addComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ selectedPostId, loadData }) => {
+export const NewCommentForm = ({
+  selectedPostId,
+  loadData,
+  validation,
+  setValidation,
+}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');
-  const [validation, setValidation] = useState(false);
 
   const handleName = (event) => {
     setName(event.target.value);
@@ -99,6 +103,8 @@ export const NewCommentForm = ({ selectedPostId, loadData }) => {
 };
 
 NewCommentForm.propTypes = {
+  setValidation: PropTypes.func.isRequired,
+  validation: PropTypes.bool.isRequired,
   selectedPostId: PropTypes.number.isRequired,
   loadData: PropTypes.func.isRequired,
 }.isRequired;

@@ -9,6 +9,7 @@ export const PostDetails = ({ selectedPostId }) => {
   const [postDetails, setDatails] = useState({});
   const [postComments, setPostComments] = useState([]);
   const [hideStatus, setHideStatus] = useState(true);
+  const [validation, setValidation] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -19,6 +20,7 @@ export const PostDetails = ({ selectedPostId }) => {
       [getPostDetails(selectedPostId), getPostComments(selectedPostId)],
     );
 
+    setValidation(false);
     setDatails(details);
     setPostComments(comments);
   };
@@ -79,6 +81,8 @@ export const PostDetails = ({ selectedPostId }) => {
           <NewCommentForm
             selectedPostId={selectedPostId}
             loadData={loadData}
+            validation={validation}
+            setValidation={setValidation}
           />
         </div>
       </section>

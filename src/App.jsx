@@ -7,7 +7,7 @@ import { PostDetails } from './components/PostDetails';
 const App = () => {
   const [userSelectId, setUserSelectId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(null);
-  const [statusPost, setStatusPost] = useState(false);
+  const [isVisiblePost, setStatusPost] = useState(false);
 
   const handleSelect = (event) => {
     setUserSelectId(Number(event.target.value));
@@ -16,10 +16,12 @@ const App = () => {
   const showPost = (post) => {
     if (post.id === selectedPostId) {
       setStatusPost(false);
+      setSelectedPostId(null);
 
       return;
     }
 
+    setSelectedPostId(post.id);
     setStatusPost(true);
   };
 
@@ -53,13 +55,12 @@ const App = () => {
           <PostsList
             userSelectId={userSelectId}
             selectedPostId={selectedPostId}
-            setSelectedPostId={setSelectedPostId}
-            statusPost={statusPost}
+            isVisiblePost={isVisiblePost}
             showPost={showPost}
           />
         </div>
 
-        {statusPost && (
+        {isVisiblePost && (
           <div className="App__content">
             <PostDetails selectedPostId={selectedPostId} />
           </div>

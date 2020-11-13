@@ -6,16 +6,10 @@ import { getUserPosts } from '../../api/posts';
 export const PostsList = ({
   userSelectId,
   selectedPostId,
-  setSelectedPostId,
-  statusPost,
+  isVisiblePost,
   showPost,
 }) => {
   const [visiblePosts, setVisiblePosts] = useState([]);
-
-  const handlePost = (post) => {
-    setSelectedPostId(post.id);
-    showPost(post);
-  };
 
   useEffect(() => {
     async function fetchData() {
@@ -69,9 +63,9 @@ export const PostsList = ({
             <button
               type="button"
               className="PostsList__button button"
-              onClick={() => handlePost(post)}
+              onClick={() => showPost(post)}
             >
-              {selectedPostId === post.id && statusPost ? 'Close' : 'Open'}
+              {selectedPostId === post.id && isVisiblePost ? 'Close' : 'Open'}
             </button>
           </li>
         ))}
@@ -82,8 +76,7 @@ export const PostsList = ({
 
 PostsList.propTypes = {
   showPost: PropTypes.func.isRequired,
-  statusPost: PropTypes.bool.isRequired,
-  setSelectedPostId: PropTypes.func.isRequired,
+  isVisiblePost: PropTypes.bool.isRequired,
   selectedPostId: PropTypes.number.isRequired,
   userSelectId: PropTypes.number.isRequired,
 }.isRequired;
