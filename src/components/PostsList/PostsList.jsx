@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import PropTypes from 'prop-types';
 import './PostsList.scss';
 import { getUserPosts } from '../../api/posts';
 
-export const PostsList = ({
+export const PostsList = memo(({
   userSelectId,
   selectedPostId,
   isVisiblePost,
@@ -72,7 +72,7 @@ export const PostsList = ({
       </ul>
     </div>
   );
-};
+});
 
 PostsList.propTypes = {
   showPost: PropTypes.func.isRequired,

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -9,11 +9,11 @@ const App = () => {
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [isVisiblePost, setStatusPost] = useState(false);
 
-  const handleSelect = (event) => {
+  const handleSelect = useCallback((event) => {
     setUserSelectId(Number(event.target.value));
-  };
+  }, []);
 
-  const showPost = (post) => {
+  const showPost = useCallback((post) => {
     if (post.id === selectedPostId) {
       setStatusPost(false);
       setSelectedPostId(null);
@@ -23,7 +23,7 @@ const App = () => {
 
     setSelectedPostId(post.id);
     setStatusPost(true);
-  };
+  }, [selectedPostId]);
 
   return (
     <div className="App">

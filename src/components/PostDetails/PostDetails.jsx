@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, memo } from 'react';
 import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { getPostDetails } from '../../api/posts';
 import { getPostComments, deleteComment } from '../../api/comments';
 
-export const PostDetails = ({ selectedPostId }) => {
+export const PostDetails = memo(({ selectedPostId }) => {
   const [postDetails, setDatails] = useState({});
   const [postComments, setPostComments] = useState([]);
   const [hideStatus, setHideStatus] = useState(true);
@@ -15,7 +15,7 @@ export const PostDetails = ({ selectedPostId }) => {
     loadData();
   }, [selectedPostId]);
 
-  const loadData = async() => {
+  const loadData = useCallback(async() => {
     const [details, comments] = await Promise.all(
       [getPostDetails(selectedPostId), getPostComments(selectedPostId)],
     );
@@ -23,17 +23,17 @@ export const PostDetails = ({ selectedPostId }) => {
     setValidation(false);
     setDatails(details);
     setPostComments(comments);
-  };
+  }, []);
 
-  const handleHide = () => {
+  const handleHide = useCallback(() => {
     setHideStatus(!hideStatus);
-  };
+  }, []);
 
-  const handleDelete = async(commentId) => {
+  const handleDelete = useCallback(async(commentId) => {
     await deleteComment(commentId);
 
     loadData();
-  };
+  }, []);
 
   return (
     <div className="PostDetails">
@@ -88,7 +88,7 @@ export const PostDetails = ({ selectedPostId }) => {
       </section>
     </div>
   );
-};
+});
 
 PostDetails.propTypes = {
   selectedPostId: PropTypes.number.isRequired,

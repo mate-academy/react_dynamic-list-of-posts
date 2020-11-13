@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import PropTypes from 'prop-types';
 import { addComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({
+export const NewCommentForm = memo(({
   selectedPostId,
   loadData,
   validation,
@@ -13,22 +13,22 @@ export const NewCommentForm = ({
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');
 
-  const handleName = (event) => {
+  const handleName = useCallback((event) => {
     setName(event.target.value);
     setValidation(false);
-  };
+  }, []);
 
-  const handleEmail = (event) => {
+  const handleEmail = useCallback((event) => {
     setEmail(event.target.value);
     setValidation(false);
-  };
+  }, []);
 
-  const handleComment = (event) => {
+  const handleComment = useCallback((event) => {
     setComment(event.target.value);
     setValidation(false);
-  };
+  }, []);
 
-  const submitComment = async(event) => {
+  const submitComment = useCallback(async(event) => {
     event.preventDefault();
 
     if (name === '' || email === '' || comment === '') {
@@ -49,7 +49,7 @@ export const NewCommentForm = ({
     setComment('');
 
     loadData();
-  };
+  }, [name, email, comment, selectedPostId]);
 
   return (
     <form className="NewCommentForm">
@@ -100,7 +100,7 @@ export const NewCommentForm = ({
       </button>
     </form>
   );
-};
+});
 
 NewCommentForm.propTypes = {
   setValidation: PropTypes.func.isRequired,
