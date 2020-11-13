@@ -7,10 +7,15 @@ export const getPostComments = async(postId) => {
   return comments.data.filter(comment => comment.postId === postId);
 };
 
+export const addComment = async(comment) => {
+  await fetch(COMMENTS_URL, {
+    method: 'POST',
+    body: JSON.stringify(comment),
+  });
+};
+
 export const deleteComment = async(commentId) => {
-  const response = await fetch(`${COMMENTS_URL}${commentId}`, {
+  await fetch(`${COMMENTS_URL}${commentId}`, {
     method: 'DELETE',
   });
-
-  return response;
 };

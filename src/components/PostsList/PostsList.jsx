@@ -82,7 +82,9 @@ export const PostsList = ({
 };
 
 PostsList.propTypes = {
-  changePostId: PropTypes.func.isRequired,
+  setStatusPost: PropTypes.func.isRequired,
+  statusPost: PropTypes.bool.isRequired,
+  setSelectedPostId: PropTypes.func.isRequired,
   selectedPostId: PropTypes.number.isRequired,
   userSelectId: PropTypes.number.isRequired,
 }.isRequired;
