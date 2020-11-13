@@ -1,45 +1,57 @@
 import React from 'react';
 import { NewCommentForm } from '../NewCommentForm';
+import { getPostComments } from '../../api/comments';
+
 import './PostDetails.scss';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = () => {
+  getPostComments();
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+      <section className="PostDetails__post">
+        <p>sunt aut facere repellat provident occaecati excepturi optio</p>
+      </section>
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+      <section className="PostDetails__comments">
+        <button
+          type="button"
+          className="button"
+          // onClick={toggleComment}
+        >
+          Hide 2 comments
+        </button>
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+        <ul className="PostDetails__list">
+          <li className="PostDetails__list-item">
+            <button
+              type="button"
+              className="PostDetails__remove-button button"
+            >
+              X
+            </button>
+            <p>My first comment</p>
+          </li>
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+          <li className="PostDetails__list-item">
+            <button
+              type="button"
+              className="PostDetails__remove-button button"
+            >
+              X
+            </button>
+            <p>sad sds dfsadf asdf asdf</p>
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm />
+        </div>
+      </section>
+    </div>
+  );
+};

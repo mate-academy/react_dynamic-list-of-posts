@@ -11,3 +11,9 @@ export async function getUserPosts(userId) {
 
   return posts.filter(post => post.userId === +userId);
 }
+
+export async function getPostDetails(postId) {
+  const response = await fetch(`${BASE_URL}/posts/${postId}`);
+
+  return response.data;
+}
