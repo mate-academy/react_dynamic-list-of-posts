@@ -12,6 +12,7 @@ export function PostDetails({ selectedPostId }) {
   const [openComments, setOpenComments] = useState([]);
   const [hiddenComments, setHiddenComments] = useState(true);
   const [loader, setLoader] = useState(true);
+  const [commentErrorId, setCommentErrorId] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
@@ -38,13 +39,20 @@ export function PostDetails({ selectedPostId }) {
     setHiddenComments(currentHiddenComments => !currentHiddenComments);
   };
 
-  const removeComment = (commentIdForRemove) => {
+  const removeComment = async(commentIdForRemove) => {
+    const response = await deleteCommentFromServer(commentIdForRemove);
+
+    if (response === 'Error') {
+      setCommentErrorId(commentIdForRemove);
+
+      return;
+    }
+
     const filteredComments = openComments.filter(comment => (
       comment.id !== commentIdForRemove
     ));
 
     setOpenComments(filteredComments);
-    deleteCommentFromServer(commentIdForRemove);
   };
 
   return (
@@ -79,6 +87,8 @@ export function PostDetails({ selectedPostId }) {
                       <ul className="PostDetails__list">
                         {openComments.map(comment => (
                           <Comment
+                            key={comment.id}
+                            commentErrorId={commentErrorId}
                             commentId={comment.id}
                             commentBody={comment.body}
                             removeComment={removeComment}
@@ -93,8 +103,8 @@ export function PostDetails({ selectedPostId }) {
             <section>
               <div className="PostDetails__form-wrapper">
                 <NewCommentForm
-                  setOpenComments={setOpenComments}
-                  openPostId={openPost.id}
+                  onAdd={setOpenComments}
+                  postId={openPost.id}
                 />
               </div>
             </section>
