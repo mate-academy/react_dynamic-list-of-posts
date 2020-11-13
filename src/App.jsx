@@ -41,7 +41,7 @@ const App = () => {
 
         <div className="App__content">
           {selectedPost
-            ? <PostDetails />
+            ? <PostDetails selectedPost={selectedPost} />
             : null
           }
         </div>
