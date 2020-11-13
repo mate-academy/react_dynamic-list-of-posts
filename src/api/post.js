@@ -5,11 +5,14 @@ const request = url => fetch(`${BASE_URL}${url}`)
   .then(res => res.data)
   .catch(error => error);
 
-export const getUserPosts = (userId) => {
-  request(`/posts/${userId}`)
-    .then(posts => (userId
+export const getUserPosts = async(userId) => {
+  const posts = await request('/posts');
+
+  return (
+    userId
       ? posts.filter(post => post.userId === userId)
-      : posts));
+      : posts
+  );
 };
 
 export const usersPosts = () => request('/posts');

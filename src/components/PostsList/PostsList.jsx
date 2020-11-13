@@ -1,27 +1,18 @@
 import React, { useEffect, useState } from 'react';
+// import React from 'react'
 import './PostsList.scss';
 import PropTypes from 'prop-types';
-import { usersPosts } from '../../api/post'; // getUserPosts
+import { getUserPosts } from '../../api/post'; // getUserPosts
 
 export const PostsList = ({ userId }) => {
   const [posts, setPost] = useState([]);
-  // const [filteredPosts, setFilteredPosts] = useState([]);
 
-  // console.log(userId);
   useEffect(() => {
-    usersPosts()
+    getUserPosts(userId)
       .then((post) => {
         setPost(post);
       });
-  }, []);
-
-  // useEffect(() => {
-
-  // },[userId])
-
-  // const filterPosts = (userId) => {
-
-  // }
+  }, [userId]);
 
   return (
     <div className="PostsList">

@@ -8,31 +8,22 @@ import { usersDataFromServer } from './api/post';
 const App = () => {
   const [users, setUsers] = useState([]);
   const [userId, setUserId] = useState(0);
-  // const [postId, setPostId] = useState(0);
 
   useEffect(() => {
     usersDataFromServer()
       .then((user) => {
         setUsers(user.slice(0, 10));
+        // console.log(user);
       });
   }, []);
 
-  // const selectedUsers = (postUserId) => {
-  //   if (postUserId === postId) {
-  //     setPostId(0);
-
-  //     return;
-  //   }
-
-  //   setPostId(postUserId);
-  // };
-
   // console.log(`Post  -  ` + postId);
-  // console.log('User id  -  ' + userId);
 
   const selectUserId = ({ target }) => {
     setUserId(+target.value);
   };
+
+  // console.log(userId);
 
   return (
     <div className="App">
