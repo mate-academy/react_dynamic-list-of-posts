@@ -5,17 +5,16 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable indent */
 /* eslint-disable arrow-parens */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import './PostsList.scss';
-import PropTypes from 'prop-types';
+import { AppContext } from '../../AppContext';
 
 import { PostsListItem } from '../PostListItem';
-
 import { getUserPosts } from '../../api/posts';
 
 export const PostsList = (props) => {
   const [posts, setPosts] = useState([]);
-  const { userId, setSelectedPostId, selectedPostId } = props;
+  const { userId } = useContext(AppContext);
 
   useEffect(() => {
     getUserPosts(userId).then((res) => setPosts(res));
@@ -33,26 +32,11 @@ export const PostsList = (props) => {
         {posts.length > 0
           ? posts.map((item) => (
               <li key={item.id} className="PostsList__item">
-                <PostsListItem
-                  post={item}
-                  setSelectedPostId={setSelectedPostId}
-                  selectedPostId={selectedPostId}
-                />
+                <PostsListItem post={item} />
               </li>
             ))
           : 'no posts'}
       </ul>
     </div>
   );
-};
-
-PostsList.propTypes = {
-  userId: PropTypes.string,
-  setSelectedPostId: PropTypes.func.isRequired,
-  selectedPostId: PropTypes.number,
-};
-
-PostsList.defaultProps = {
-  userId: '',
-  selectedPostId: 0,
 };

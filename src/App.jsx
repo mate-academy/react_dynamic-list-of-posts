@@ -1,13 +1,13 @@
 /* eslint-disable arrow-parens */
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { AppContext } from './AppContext';
 
 const App = () => {
-  const [userId, setUserId] = useState('0');
-  const [selectedPostId, setSelectedPostId] = useState(0);
+  const { userId, setUserId } = useContext(AppContext);
 
   return (
     <div className="App">
@@ -16,6 +16,7 @@ const App = () => {
           Select a user: &nbsp;
           <select
             className="App__user-selector"
+            value={userId}
             onChange={(e) => setUserId(e.target.value)}
           >
             <option value="0">All users</option>
@@ -35,15 +36,11 @@ const App = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList
-            userId={userId}
-            setSelectedPostId={setSelectedPostId}
-            selectedPostId={selectedPostId}
-          />
+          <PostsList />
         </div>
 
         <div className="App__content">
-          <PostDetails selectedPostId={selectedPostId} />
+          <PostDetails />
         </div>
       </main>
     </div>

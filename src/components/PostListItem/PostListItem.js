@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
+import { AppContext } from '../../AppContext';
 
 export const PostsListItem = (props) => {
   const {
     post: { title, userId, id },
-    setSelectedPostId,
-    selectedPostId,
   } = props;
   const [isClicked, setIsClicked] = useState(false);
+  const { selectedPostId, setSelectedPostId } = useContext(AppContext);
 
   const onClick = () => {
     if (isClicked) {
@@ -46,11 +46,8 @@ PostsListItem.propTypes = {
     userId: PropTypes.number,
     id: PropTypes.number,
   }),
-  setSelectedPostId: PropTypes.func.isRequired,
-  selectedPostId: PropTypes.number,
 };
 
 PostsListItem.defaultProps = {
   post: [],
-  selectedPostId: 0,
 };
