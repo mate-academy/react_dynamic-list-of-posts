@@ -29,10 +29,7 @@ export const NewCommentForm = () => (
       />
     </div>
 
-    <button
-      type="submit"
-      className="NewCommentForm__submit-button button"
-    >
+    <button type="submit" className="NewCommentForm__submit-button button">
       Add a comment
     </button>
   </form>

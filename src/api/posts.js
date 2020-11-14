@@ -16,3 +16,8 @@ export const getUserPosts = (userId) => {
 
 export const getPostDetails = (postId) =>
   request(`posts/${postId}`).then((res) => res.data);
+
+export const getPostComments = (postId) =>
+  request(`comments`).then((res) =>
+    res.data.filter((comment) => comment.postId === postId)
+  );

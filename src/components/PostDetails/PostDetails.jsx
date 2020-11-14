@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-indent */
+/* eslint-disable indent */
 /* eslint-disable arrow-parens */
 /* eslint-disable arrow-body-style */
 import React, { useEffect, useState } from 'react';
@@ -5,16 +7,22 @@ import PropTypes from 'prop-types';
 import './PostDetails.scss';
 
 import { NewCommentForm } from '../NewCommentForm';
-import { getPostDetails } from '../../api/posts';
+import { getPostDetails, getPostComments } from '../../api/posts';
 
 export const PostDetails = (props) => {
   const [post, setPost] = useState(null);
+  const [comments, setComments] = useState(null);
+  const [isShownComments, setIsShownComments] = useState(true);
   const { selectedPostId } = props;
 
   useEffect(() => {
     if (selectedPostId) {
       getPostDetails(selectedPostId).then((res) => setPost(res));
     }
+
+    getPostComments(selectedPostId).then((res) => {
+      setComments(res);
+    });
   }, [selectedPostId]);
 
   return (
@@ -29,29 +37,23 @@ export const PostDetails = (props) => {
 
           <section className="PostDetails__comments">
             <button type="button" className="button">
-              Hide 2 comments
+              Hide comments
             </button>
 
             <ul className="PostDetails__list">
-              <li className="PostDetails__list-item">
-                <button
-                  type="button"
-                  className="PostDetails__remove-button button"
-                >
-                  X
-                </button>
-                <p>My first comment</p>
-              </li>
-
-              <li className="PostDetails__list-item">
-                <button
-                  type="button"
-                  className="PostDetails__remove-button button"
-                >
-                  X
-                </button>
-                <p>sad sds dfsadf asdf asdf</p>
-              </li>
+              {comments.length > 0
+                ? comments.map((item) => (
+                    <li className="PostDetails__list-item" key={item.id}>
+                      <button
+                        type="button"
+                        className="PostDetails__remove-button button"
+                      >
+                        X
+                      </button>
+                      <p>{item.body}</p>
+                    </li>
+                  ))
+                : 'No comments'}
             </ul>
           </section>
 
