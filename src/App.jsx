@@ -3,7 +3,7 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getAllPosts } from './api/api';
+import { getUserPosts } from './api/api';
 
 function openPost(setSelectedPost, postId) {
   setSelectedPost(postId);
@@ -14,16 +14,17 @@ function closePost(setSelectedPost) {
 }
 
 const App = () => {
-  const [allPosts, setAllPosts] = useState([]);
+  const [posts, setPosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
+  const [selectedUserId, setSelectedUserId] = useState(0);
 
   useEffect(() => {
     const fetchData = async() => {
-      setAllPosts(await getAllPosts());
+      setPosts(await getUserPosts(selectedUserId));
     };
 
     fetchData();
-  }, []);
+  }, [selectedUserId]);
 
   return (
     <div className="App">
@@ -31,7 +32,10 @@ const App = () => {
         <label>
           Select a user: &nbsp;
 
-          <select className="App__user-selector">
+          <select
+            onChange={event => setSelectedUserId(+event.target.value)}
+            className="App__user-selector"
+          >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
             <option value="2">Ervin Howell</option>
@@ -50,7 +54,7 @@ const App = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            posts={allPosts}
+            posts={posts}
             selectedPost={selectedPost}
             openPost={openPost}
             closePost={closePost}

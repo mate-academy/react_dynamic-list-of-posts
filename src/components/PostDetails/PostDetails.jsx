@@ -2,14 +2,25 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
-import { getPostDetails } from '../../api/api';
+import {
+  getPostDetails,
+  getPostComments,
+  deleteComment,
+  addComment,
+} from '../../api/api';
+import { CommentsList } from './CommentsList';
 
 export const PostDetails = ({ selectedPostId }) => {
   const [postDetails, setPostDetails] = useState(null);
+  const [postComments, setPostComments] = useState([]);
 
   useEffect(() => {
     const fetchData = async() => {
+      setPostComments([]);
+      const commentsPromise = getPostComments(selectedPostId);
+
       setPostDetails(await getPostDetails(selectedPostId));
+      setPostComments(await commentsPromise);
     };
 
     fetchData();
@@ -23,35 +34,25 @@ export const PostDetails = ({ selectedPostId }) => {
         <p>{postDetails ? postDetails.body : 'Loading...'}</p>
       </section>
 
-      <section className="PostDetails__comments">
-        <button type="button" className="button">Hide 2 comments</button>
-
-        <ul className="PostDetails__list">
-          <li className="PostDetails__list-item">
-            <button
-              type="button"
-              className="PostDetails__remove-button button"
-            >
-              X
-            </button>
-            <p>My first comment</p>
-          </li>
-
-          <li className="PostDetails__list-item">
-            <button
-              type="button"
-              className="PostDetails__remove-button button"
-            >
-              X
-            </button>
-            <p>sad sds dfsadf asdf asdf</p>
-          </li>
-        </ul>
-      </section>
+      <CommentsList
+        postComments={postComments}
+        deleteComment={async(commentId) => {
+          await deleteComment(commentId);
+          setPostComments(await getPostComments(selectedPostId));
+        }}
+      />
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm />
+          <NewCommentForm onSubmit={async(comment) => {
+            const newComment = {
+              ...comment, postId: selectedPostId,
+            };
+
+            await addComment(newComment);
+            setPostComments(await getPostComments(selectedPostId));
+          }}
+          />
         </div>
       </section>
     </div>
