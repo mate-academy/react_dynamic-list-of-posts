@@ -10,6 +10,10 @@
   font-size: inherit;
   min-width: 100px;
 
+  &--selected {
+    background-color: #4d457b;
+  }
+
   &:hover {
     background-color: #4d457b;
   }

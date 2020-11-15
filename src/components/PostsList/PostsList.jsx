@@ -4,18 +4,18 @@ import './PostsList.scss';
 
 import { getUserPosts } from '../../api/posts';
 
-export const PostsList = ({ userId }) => {
+export const PostsList = ({ userId, getSelectedPostId, postId }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    getUserPosts(userId)
+    getUserPosts(Number(userId))
       .then(postsFromServer => (
         setPosts(postsFromServer)
       ));
   }, []);
 
   useEffect(() => {
-    getUserPosts(userId).then(postsFromServer => (
+    getUserPosts(Number(userId)).then(postsFromServer => (
       setPosts(postsFromServer)
     ));
   }, [userId]);
@@ -31,28 +31,31 @@ export const PostsList = ({ userId }) => {
               <b>{`[User #${post.userId}]: `}</b>
               {post.title}
             </div>
-            <button
-              type="button"
-              className="PostsList__button button"
-            >
-              Open
-            </button>
+            {postId === post.id
+              ? (
+                <button
+                  type="button"
+                  className="PostsList__button button button--selected"
+                  onClick={() => {
+                    getSelectedPostId(0);
+                  }}
+                >
+                  Close
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  onClick={() => {
+                    getSelectedPostId(post.id);
+                  }}
+                >
+                  Open
+                </button>
+              )
+            }
           </li>
         ))}
-
-        {/* <li className="PostsList__item">
-          <div>
-            <b>[User #2]: </b>
-            et ea vero quia laudantium autem
-          </div>
-
-          <button
-            type="button"
-            className="PostsList__button button"
-          >
-            Close
-          </button>
-        </li> */}
       </ul>
     </div>
   );
@@ -60,4 +63,6 @@ export const PostsList = ({ userId }) => {
 
 PostsList.propTypes = {
   userId: PropTypes.string.isRequired,
+  getSelectedPostId: PropTypes.func.isRequired,
+  postId: PropTypes.number.isRequired,
 };

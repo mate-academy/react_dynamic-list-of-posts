@@ -3,9 +3,19 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { getPostDetails } from './api/posts';
 
 const App = () => {
-  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [selectedUserId, setSelectedUserId] = useState('0');
+  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [postDetails, setPostDetails] = useState(null);
+
+  const getSelectedPostId = (postId) => {
+    getPostDetails(postId)
+      .then(post => setPostDetails(post));
+
+    setSelectedPostId(postId);
+  };
 
   return (
     <div className="App">
@@ -34,11 +44,22 @@ const App = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList userId={selectedUserId} />
+          <PostsList
+            userId={selectedUserId}
+            getSelectedPostId={getSelectedPostId}
+            postId={selectedPostId}
+          />
         </div>
 
         <div className="App__content">
-          <PostDetails />
+          {
+            postDetails ? (
+              <PostDetails post={postDetails} />
+            )
+              : (
+                <p>No post selected</p>
+              )
+          }
         </div>
       </main>
     </div>
