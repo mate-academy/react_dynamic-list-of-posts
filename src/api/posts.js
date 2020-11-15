@@ -1,26 +1,31 @@
 import { BASE_URL } from './api';
 
-export const getUserPosts = userId => fetch(`${BASE_URL}/posts/`)
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error(`${response.status} - ${response.statusText}`);
-    }
+export const getPosts = async(userId) => {
+  const response = await fetch(`${BASE_URL}/posts`);
 
-    return response.json();
-  })
-  .then((postsFromServer) => {
-    if (userId === 'All') {
-      return postsFromServer.data;
-    }
+  if (!response.ok) {
+    throw new Error(`${response.status} - Posts is ${response.statusText}`);
+  }
 
-    return postsFromServer.data.filter(post => post.userId === +userId);
-  });
+  const json = await response.json();
 
-export const getPostDetails = postId => fetch(`${BASE_URL}/posts/${postId}`)
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error(`${response.status} - ${response.statusText}`);
-    }
+  const posts = json.data;
 
-    return response.json();
-  }).then(postFromServer => postFromServer.data);
+  if (userId === 'All') {
+    return posts;
+  }
+
+  return posts.filter(post => post.userId === +userId);
+};
+
+export const getPostDetails = async(postId) => {
+  const response = await fetch(`${BASE_URL}/posts/${postId}`);
+
+  if (!response.ok) {
+    throw new Error(`${response.status} - Post is ${response.statusText}`);
+  }
+
+  const json = await response.json();
+
+  return json.data;
+};
