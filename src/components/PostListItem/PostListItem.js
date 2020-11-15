@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import cn from 'classnames';
@@ -8,13 +9,16 @@ export const PostsListItem = (props) => {
     post: { title, userId, id },
   } = props;
   const [isClicked, setIsClicked] = useState(false);
-  const { selectedPostId, setSelectedPostId } = useContext(AppContext);
+  const { selectedPostId, setSelectedPostId, setDetailsLoader } = useContext(
+    AppContext
+  );
 
   const onClick = () => {
     if (isClicked) {
       setIsClicked(false);
       setSelectedPostId(0);
     } else {
+      setDetailsLoader(true);
       setIsClicked(true);
       setSelectedPostId(id);
     }

@@ -1,18 +1,21 @@
 /* eslint-disable arrow-parens */
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './NewCommentForm.scss';
 import PropTypes from 'prop-types';
 import { post } from '../../api/api';
 import { getPostComments } from '../../api/posts';
+import { AppContext } from '../../AppContext';
 
 export const NewCommentForm = ({ selectedPostId, setComments }) => {
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
+  const { setDetailsLoader } = useContext(AppContext);
 
   const onSubmit = (e) => {
     e.preventDefault();
     if ((userName, email, body)) {
+      setDetailsLoader(true);
       post('comments', {
         postId: selectedPostId,
         name: userName,
@@ -21,6 +24,7 @@ export const NewCommentForm = ({ selectedPostId, setComments }) => {
       }).then(() => {
         getPostComments(selectedPostId).then((res) => {
           setComments(res);
+          setDetailsLoader(false);
         });
       });
     }

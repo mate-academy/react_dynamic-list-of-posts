@@ -6,17 +6,22 @@ export const AppContext = React.createContext({
   setSelectedPostId: () => {},
   userId: '0',
   setUserId: () => {},
+  detailsLoader: false,
+  setDetailsLoader: () => {},
 });
 
 export const AppProvider = ({ children }) => {
   const [userId, setUserId] = useState('0');
   const [selectedPostId, setSelectedPostId] = useState(0);
+  const [detailsLoader, setDetailsLoader] = useState(false);
 
   const AppProps = {
     userId,
     setUserId,
     selectedPostId,
     setSelectedPostId,
+    detailsLoader,
+    setDetailsLoader,
   };
 
   return <AppContext.Provider value={AppProps}>{children}</AppContext.Provider>;
