@@ -1,45 +1,123 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import { getPostDetails } from '../../api/posts';
+import { deleteComment, getComments } from '../../api/comments';
+import { Loader } from '../Loader';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({ postId }) => {
+  const [post, setPost] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isVisibleComments, setVisibleComments] = useState(true);
+  const [isLoading, setLoading] = useState(false);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  useEffect(() => {
+    const fetchPostAndComments = async(id) => {
+      try {
+        setLoading(true);
+        const [commentsFromServer, postFromServer] = await Promise
+          .all([getComments(id), getPostDetails(id)]);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+        setLoading(false);
+        setPost(postFromServer);
+        setComments(commentsFromServer);
+      } catch (error) {
+        setLoading(false);
+        setErrorMessage(`${error}`);
+      }
+    };
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+    fetchPostAndComments(postId);
+  }, [postId]);
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  const handleUpdateComments = useCallback(async() => {
+    try {
+      const updatedComments = await getComments(postId);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
+      setComments(updatedComments);
+    } catch (error) {
+      setErrorMessage(`${error}`);
+    }
+  }, [postId]);
+
+  const handleDeleteComment = async(id) => {
+    await deleteComment(id);
+
+    handleUpdateComments();
+  };
+
+  if (errorMessage) {
+    return (
+      <div className="PostDetails">
+        <h3>{errorMessage}</h3>
       </div>
-    </section>
-  </div>
-);
+    );
+  }
+
+  if (!post) {
+    return null;
+  }
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      {isLoading
+        ? <Loader />
+        : (
+          <>
+            <section className="PostDetails__post">
+              <p>{post.body}</p>
+            </section>
+            {comments.length
+              ? (
+                <section className="PostDetails__comments">
+                  <button
+                    type="button"
+                    className="button"
+                    onClick={() => setVisibleComments(prevState => !prevState)}
+                  >
+                    {`${isVisibleComments
+                      ? 'Hide'
+                      : 'Show'} ${comments.length} comments`}
+                  </button>
+                  {isVisibleComments && (
+                    <ul className="PostDetails__list">
+                      {comments.map(comment => (
+                        <li
+                          className="PostDetails__list-item"
+                          key={comment.id}
+                        >
+                          <button
+                            type="button"
+                            className="PostDetails__remove-button button"
+                            onClick={() => handleDeleteComment(comment.id)}
+                          >
+                            X
+                          </button>
+                          <p>{comment.body}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              ) : ''}
+            <section>
+              <div className="PostDetails__form-wrapper">
+                <NewCommentForm
+                  postId={postId}
+                  handleUpdateComments={handleUpdateComments}
+                />
+              </div>
+            </section>
+          </>
+        )}
+    </div>
+  );
+};
+
+PostDetails.propTypes = {
+  postId: PropTypes.number.isRequired,
+};
