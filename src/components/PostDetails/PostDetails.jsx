@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Comments } from '../Comments';
 import { getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import { getPostComments } from '../../api/comments';
@@ -9,25 +8,20 @@ import './PostDetails.scss';
 
 export const PostDetails = ({ selectedPost }) => {
   const [post, setPost] = useState(null);
-  const [comments, setComments] = useState([]);
+  const [comments, setComment] = useState([]);
   const [commentsVisibility, setCommentsVisibility] = useState(false);
 
   useEffect(() => {
-    loadPost();
-    updateComments();
-  }, [selectedPost]);
+    getPostDetails(selectedPost)
+      .then((info) => {
+        setPost(info);
+      });
+  }, [selectedPost, setPost]);
 
-  const loadPost = async() => {
-    const postDetails = await getPostDetails(selectedPost);
-
-    setPost(postDetails);
-  };
-
-  const updateComments = async() => {
-    const postComments = await getPostComments(selectedPost);
-
-    setComments(postComments);
-  };
+  getPostComments(selectedPost)
+    .then((postComments) => {
+      setComment(postComments);
+    });
 
   const toggleComments = () => {
     setCommentsVisibility(!commentsVisibility);
@@ -57,14 +51,18 @@ export const PostDetails = ({ selectedPost }) => {
         </button>
 
         {
-          commentsVisibility && (
+          commentsVisibility && comments && (
             <ul className="PostDetails__list">
               {comments.map(comment => (
-                <Comments
-                  id={comment.id}
-                  body={comment.body}
-                  updateComments={updateComments}
-                />
+                <li className="PostDetails__list-item">
+                  <button
+                    type="button"
+                    className="PostDetails__remove-button button"
+                  >
+                    X
+                  </button>
+                  <p>{comment.body}</p>
+                </li>
               ))}
             </ul>
           )
@@ -73,10 +71,7 @@ export const PostDetails = ({ selectedPost }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            postId={selectedPost}
-            updateComments={updateComments}
-          />
+          <NewCommentForm postId={selectedPost} />
         </div>
       </section>
     </div>

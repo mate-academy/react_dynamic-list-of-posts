@@ -3,33 +3,15 @@ import PropTypes from 'prop-types';
 import { createComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ postId, updateComments }) => {
+export const NewCommentForm = ({ postId }) => {
   const [body, setBody] = useState('');
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
-  const [error, setError] = useState('');
 
-  const sendComment = async(event) => {
+  const sendComment = (event) => {
     event.preventDefault();
 
-    if (!userName || !body || !email) {
-      setError('Fill all fields, please');
-
-      return;
-    }
-
-    if (!email.includes('@')) {
-      setError('Enter valid email');
-
-      return;
-    }
-
-    await createComment(postId, userName, email, body);
-    updateComments();
-
-    setBody('');
-    setUserName('');
-    setEmail('');
+    createComment(postId, userName, email, body);
   };
 
   const handleChange = (event) => {
@@ -42,8 +24,6 @@ export const NewCommentForm = ({ postId, updateComments }) => {
     } else if (name === 'email') {
       setEmail(value);
     }
-
-    setError('');
   };
 
   return (
@@ -86,12 +66,10 @@ export const NewCommentForm = ({ postId, updateComments }) => {
       >
         Add a comment
       </button>
-      {error && <p className="NewCommentForm__error">{error}</p>}
     </form>
   );
 };
 
 NewCommentForm.propTypes = {
   postId: PropTypes.number.isRequired,
-  updateComments: PropTypes.func.isRequired,
 };
