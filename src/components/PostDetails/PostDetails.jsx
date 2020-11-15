@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { getPostDetails } from '../../api/posts';
@@ -39,13 +40,23 @@ export const PostDetails = ({ postId }) => {
       </section>
 
       <section className="PostDetails__comments">
-        <button
-          type="button"
-          className="button"
-          onClick={() => toggleCommentsVisibility(!isCommentsShown)}
-        >
-          {`${isCommentsShown ? 'Hide' : 'Show'} ${comments.length} comments`}
-        </button>
+        {comments.length
+          ? (
+            <button
+              type="button"
+              className={classNames({
+                button: true,
+                'PostDetails__remove-button': isCommentsShown,
+              })}
+              onClick={() => toggleCommentsVisibility(!isCommentsShown)}
+            >
+              {`${isCommentsShown
+                ? 'Hide'
+                : 'Show'} ${comments.length} comments`}
+            </button>
+          )
+          : (<p>No comments here yet</p>)
+        }
 
         {isCommentsShown && (
           <CommentsList comments={comments} updateComments={updateComments} />
