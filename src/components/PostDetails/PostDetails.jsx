@@ -30,7 +30,7 @@ export const PostDetails = () => {
         setDetailsLoader(false);
       });
     }
-  }, [selectedPostId]);
+  }, [selectedPostId, setDetailsLoader]);
 
   const deleteComment = (id) => {
     setDetailsLoader(true);

@@ -1,3 +1,4 @@
+/* eslint-disable arrow-parens */
 /* eslint-disable comma-dangle */
 import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';

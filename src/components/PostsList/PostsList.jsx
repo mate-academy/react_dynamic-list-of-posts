@@ -18,10 +18,6 @@ export const PostsList = (props) => {
 
   useEffect(() => {
     getUserPosts(userId).then((res) => setPosts(res));
-  }, []);
-
-  useEffect(() => {
-    getUserPosts(userId).then((res) => setPosts(res));
   }, [userId]);
 
   return (
