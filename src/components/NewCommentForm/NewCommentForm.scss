@@ -16,4 +16,11 @@
   &__submit-button {
     margin-top: 10px;
   }
+
+  &__error {
+    margin-top: 10px;;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: rgb(255, 64, 64);
+  }
 }

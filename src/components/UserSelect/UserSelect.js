@@ -1,39 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import './UserSelect.scss';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { getUsers } from '../../api/users';
 
-export const UserSelect = () => {
-  const [usersList, setUsersList] = useState([]);
+export const UserSelect = ({ selectedUserId, selectUser }) => {
+  const [users, setUsers] = useState([]);
 
-  const loadNames = async() => {
-    const loadedNames = await getUsers();
+  const loadUsers = async() => {
+    const loadedUser = await getUsers();
 
-    setUsersList(loadedNames);
+    setUsers(loadedUser.slice(0, 9));
   };
 
   useEffect(() => {
-    loadNames();
+    loadUsers();
   }, []);
 
   return (
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+    <label>
+      Select a user: &nbsp;
 
-        <select className="App__user-selector">
-          {usersList.map(user => (
-            <option
-              key={user.id}
-              value={user.id}
-            >
-              {user.name}
-            </option>
-          ))}
-        </select>
-      </label>
-    </header>
+      <select
+        className="App__user-selector"
+        value={selectedUserId}
+        onChange={selectUser}
+      >
+        <option value="0">All users</option>
+        {users.map(user => (
+          <option
+            key={user.id}
+            value={user.id}
+          >
+            {user.name}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 };
 
-UserSelect.propTypes = {};
+UserSelect.propTypes = {
+  selectedUserId: PropTypes.number.isRequired,
+  selectUser: PropTypes.func.isRequired,
+};
