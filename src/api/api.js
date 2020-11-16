@@ -12,7 +12,7 @@ export async function request(apiSection, options) {
   return posts.data;
 }
 
-export const postRequest = (url, data) => request(url, {
+export const postRequest = (apiSection, data) => request(apiSection, {
   method: 'POST',
   headers: {
     'Content-type': 'application/json; charset=UTF-8',
@@ -20,6 +20,6 @@ export const postRequest = (url, data) => request(url, {
   body: JSON.stringify(data),
 });
 
-export const removeRequest = url => request(url, {
+export const removeRequest = apiSection => request(apiSection, {
   method: 'DELETE',
 });

@@ -14,7 +14,7 @@ const App = () => {
     setSelectedPostId(postId);
   };
 
-  const handleChangeUserId = (event) => {
+  const changeUserId = (event) => {
     const { value } = event.target;
 
     setUserId(+value);
@@ -23,11 +23,14 @@ const App = () => {
   useEffect(() => {
     getUserPosts(userId)
       .then((userPostsFromServer) => {
-        setPosts(userPostsFromServer);
+        userId !== 0 ? setPosts(userPostsFromServer
+          .filter(post => post.userId === userId))
+          : setPosts(userPostsFromServer);
       });
-  }, []);
+  }, [userId]);
 
   return (
+
     <div className="App">
       <header className="App__header">
         <label>
@@ -36,7 +39,7 @@ const App = () => {
           <select
             className="App__user-selector"
             value={userId}
-            onChange={handleChangeUserId}
+            onChange={changeUserId}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
