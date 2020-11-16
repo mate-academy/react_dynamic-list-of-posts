@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { getUsers } from '../../api/users';
 
-
 export const UserSelect = ({ changeHandler, selectedUser }) => {
-
-  const [users, setUsers] = useState([])
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     loadUsers();
@@ -37,5 +36,10 @@ export const UserSelect = ({ changeHandler, selectedUser }) => {
         </select>
       </label>
     </header>
-  )
-}
+  );
+};
+
+UserSelect.propTypes = {
+  changeHandler: PropTypes.func.isRequired,
+  selectedUser: PropTypes.number.isRequired,
+};

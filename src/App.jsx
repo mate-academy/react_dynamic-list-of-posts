@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -11,11 +11,11 @@ const App = () => {
 
   const handleUserSelect = (event) => {
     setSelectedUserId(+event.target.value);
-  }
+  };
 
   const handlePostId = (postId) => {
     setSelectedPostId(postId === selectedPostId ? 0 : postId);
-  }
+  };
 
   return (
     <div className="App">
@@ -32,11 +32,11 @@ const App = () => {
           />
         </div>
         <div className="App__content">
-          {!!selectedPostId && <PostDetails selectedPostId={selectedPostId}/>}
+          {!!selectedPostId && <PostDetails selectedPostId={selectedPostId} />}
         </div>
       </main>
     </div>
-  )
+  );
 };
 
 export default App;

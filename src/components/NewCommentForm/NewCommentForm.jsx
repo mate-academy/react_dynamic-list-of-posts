@@ -63,3 +63,8 @@ export const NewCommentForm = ({ postId, updateComments }) => {
     </form>
   );
 };
+
+NewCommentForm.propTypes = {
+  postId: PropTypes.number.isRequired,
+  updateComments: PropTypes.func.isRequired,
+};

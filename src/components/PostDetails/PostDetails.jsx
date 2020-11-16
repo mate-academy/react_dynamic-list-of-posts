@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import cn from 'classnames';
 import { NewCommentForm } from '../NewCommentForm';
 import { CommentsList } from '../CommentsList';
-import { getPostDetails } from '../../api/posts'
-import cn from 'classnames'
+import { getPostDetails } from '../../api/posts';
 import './PostDetails.scss';
 import { getPostComments } from '../../api/comments';
 
@@ -14,7 +15,7 @@ export const PostDetails = ({ selectedPostId }) => {
   useEffect(() => {
     loadPostDetails();
     loadComments();
-  }, [selectedPostId])
+  }, [selectedPostId]);
 
   const loadPostDetails = async() => {
     const postDetailsFromServer = await getPostDetails(selectedPostId);
@@ -62,9 +63,16 @@ export const PostDetails = ({ selectedPostId }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-        <NewCommentForm postId={selectedPostId} updateComments={loadComments} />
+          <NewCommentForm
+            postId={selectedPostId}
+            updateComments={loadComments}
+          />
         </div>
       </section>
     </div>
-  )
+  );
+};
+
+PostDetails.propTypes = {
+  selectedPostId: PropTypes.number.isRequired,
 };
