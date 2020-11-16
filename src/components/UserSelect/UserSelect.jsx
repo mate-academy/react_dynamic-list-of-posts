@@ -28,8 +28,8 @@ export const UserSelect = ({ changeHandler, selectedUser }) => {
           <option value="0">All users</option>
           {users.map(user => (
             <option
-              value={user.id}
               key={user.id}
+              value={user.id}
             >
               {user.name}
             </option>
