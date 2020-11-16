@@ -1,71 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import './App.scss';
-import './styles/general.scss';
+import React, { useState, useCallback } from 'react';
+
+import { UserSelect } from './components/UserSelect';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getUserPosts } from './api/posts';
+
+import './App.scss';
+import './styles/general.scss';
 
 const App = () => {
-  const [posts, setPosts] = useState([]);
-  const [userId, setUserId] = useState(0);
+  const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
-  const changePostId = (postId) => {
+  const selectUser = useCallback((event) => {
+    setSelectedUserId(+event.target.value);
+  }, []);
+
+  const selectPost = (postId) => {
+    if (postId === selectedPostId) {
+      setSelectedPostId(0);
+
+      return;
+    }
+
     setSelectedPostId(postId);
   };
-
-  const handleChangeUserId = (event) => {
-    const { value } = event.target;
-
-    setUserId(+value);
-  };
-
-  useEffect(() => {
-    getUserPosts(userId)
-      .then((userPostsFromServer) => {
-        setPosts(userPostsFromServer);
-      });
-  }, [userId, posts]);
 
   return (
     <div className="App">
       <header className="App__header">
-        <label>
-          Select a user: &nbsp;
-
-          <select
-            className="App__user-selector"
-            value={userId}
-            onChange={handleChangeUserId}
-          >
-            <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
-          </select>
-        </label>
+        <UserSelect
+          selectUser={selectUser}
+          selectedUserId={selectedUserId}
+        />
       </header>
 
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            posts={posts}
-            changePostId={changePostId}
+            selectedUserId={selectedUserId}
+            selectPost={selectPost}
+            selectedPostId={selectedPostId}
           />
         </div>
+
         <div className="App__content">
           {selectedPostId ? (
             <PostDetails
-              postId={selectedPostId}
+              selectedPostId={selectedPostId}
             />
-          ) : (<div>Please, choose an item</div>)}
+          ) : (
+            <h4>Open a post to see details</h4>
+          )}
+
         </div>
       </main>
     </div>

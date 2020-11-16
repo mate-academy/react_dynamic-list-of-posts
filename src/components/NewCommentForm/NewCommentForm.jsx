@@ -1,51 +1,60 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+
+import { addComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ postId, add }) => {
+export const NewCommentForm = ({ postId, updateComments }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
+  const [error, setError] = useState('');
 
-  const setValueName = (event) => {
-    const { value } = event.target;
-
-    setName(value);
-  };
-
-  const setValueEmail = (event) => {
-    const { value } = event.target;
-
-    setEmail(value);
-  };
-
-  const setValueBody = (event) => {
-    const { value } = event.target;
-
-    setBody(value);
-  };
-
-  const handleSubmitNewComment = (event) => {
+  const handleSubmit = async(event) => {
     event.preventDefault();
 
-    const newComment = {
-      postId,
-      name,
-      email,
-      body,
-    };
+    if (!name || !body || !email) {
+      setError('Fill all fields, please');
 
-    add(newComment);
+      return;
+    }
 
-    setName('');
-    setEmail('');
+    if (!email.includes('@')) {
+      setError('Something wrong with entered email');
+
+      return;
+    }
+
+    await addComment(postId, name, email, body);
+    updateComments();
+
     setBody('');
+    setError('');
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+
+    setError('');
+
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+      case 'email':
+        setEmail(value);
+        break;
+      case 'body':
+        setBody(value);
+        break;
+      default: setError('');
+    }
   };
 
   return (
     <form
       className="NewCommentForm"
-      onSubmit={handleSubmitNewComment}
+      onSubmit={handleSubmit}
     >
       <div className="form-field">
         <input
@@ -54,7 +63,7 @@ export const NewCommentForm = ({ postId, add }) => {
           placeholder="Your name"
           className="NewCommentForm__input"
           value={name}
-          onChange={setValueName}
+          onChange={handleChange}
         />
       </div>
 
@@ -65,7 +74,7 @@ export const NewCommentForm = ({ postId, add }) => {
           placeholder="Your email"
           className="NewCommentForm__input"
           value={email}
-          onChange={setValueEmail}
+          onChange={handleChange}
         />
       </div>
 
@@ -75,7 +84,7 @@ export const NewCommentForm = ({ postId, add }) => {
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={body}
-          onChange={setValueBody}
+          onChange={handleChange}
         />
       </div>
 
@@ -85,11 +94,13 @@ export const NewCommentForm = ({ postId, add }) => {
       >
         Add a comment
       </button>
+
+      {error && <p className="NewCommentForm__error">{error}</p>}
     </form>
   );
 };
 
 NewCommentForm.propTypes = {
   postId: PropTypes.number.isRequired,
-  add: PropTypes.func.isRequired,
+  updateComments: PropTypes.func.isRequired,
 };

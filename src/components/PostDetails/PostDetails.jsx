@@ -1,82 +1,79 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { NewCommentForm } from '../NewCommentForm';
-import './PostDetails.scss';
-import { Loader } from '../Loader';
+
 import { getPostDetails } from '../../api/posts';
-import { getPostComments, addComment, removeComment } from '../../api/comments';
-import { CommentsDetails } from '../CommentsDetails';
+import { getPostComments } from '../../api/comments';
+import { NewCommentForm } from '../NewCommentForm';
+import { PostComments } from '../PostComments/PostComments';
 
-export const PostDetails = ({ postId }) => {
+import './PostDetails.scss';
+
+export const PostDetails = ({ selectedPostId }) => {
+  const [details, setDetails] = useState({});
   const [comments, setComments] = useState([]);
-  const [post, setPost] = useState(null);
-
-  const add = async(newComment) => {
-    await addComment(newComment);
-
-    setComments([...comments, newComment]);
-  };
-
-  const remove = async(removedCommentId) => {
-    await removeComment(removedCommentId);
-    const filteredComments = comments.filter(
-      comment => removedCommentId !== comment.id,
-    );
-
-    setComments(filteredComments);
-  };
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const getDetails = async() => {
-      const postFromServer = await getPostDetails(postId);
+    loadDetails();
+    updateComments();
+  }, [selectedPostId]);
 
-      setPost(postFromServer);
-    };
+  const loadDetails = async() => {
+    const postDetails = await getPostDetails(selectedPostId);
 
-    const getComments = async() => {
-      const commentsFromServer = await getPostComments(postId);
+    setDetails(postDetails);
+    setIsVisible(false);
+  };
 
-      setComments(commentsFromServer);
-    };
+  const updateComments = async() => {
+    const postComments = await getPostComments(selectedPostId);
 
-    getDetails();
-    getComments();
-  }, [postId]);
+    setComments(postComments);
+  };
 
   return (
-    <>
-      {!post ? (
-        <Loader />
-      ) : (
-        <div className="PostDetails">
-          <h2>Post details:</h2>
+    <div className="PostDetails">
+      <h2>Post details:</h2>
 
-          <section className="PostDetails__post">
-            <p>{post.body}</p>
-          </section>
+      <section className="PostDetails__post">
+        <p>{details.body}</p>
+      </section>
 
-          {!!comments.length && (
-            <CommentsDetails
-              commentsLength={comments.length}
+      <section className="PostDetails__comments">
+        {comments.length ? (
+          <button
+            type="button"
+            className="button"
+            onClick={() => setIsVisible(!isVisible)}
+          >
+            {isVisible ? 'Hide comments' : 'Show comments'}
+          </button>
+        ) : (
+          <h3>No Comments</h3>
+        )}
+
+        {isVisible
+          && (
+            <PostComments
               comments={comments}
-              remove={remove}
+              updateComments={updateComments}
             />
-          )}
+          )
+        }
+      </section>
 
-          <section>
-            <div className="PostDetails__form-wrapper">
-              <NewCommentForm
-                postId={postId}
-                add={add}
-              />
-            </div>
-          </section>
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            postId={selectedPostId}
+            updateComments={updateComments}
+          />
         </div>
-      )}
-    </>
+      </section>
+    </div>
   );
 };
 
 PostDetails.propTypes = {
-  postId: PropTypes.number.isRequired,
+  selectedPostId: PropTypes.number.isRequired,
 };

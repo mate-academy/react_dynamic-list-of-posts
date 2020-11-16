@@ -11,11 +11,7 @@ export const getUserPosts = async(userId) => {
 };
 
 export const getPostDetails = async(postId) => {
-  const post = await request(`/posts/${postId}`, { method: 'GET' });
+  const details = await request(`/posts/${postId}`);
 
-  if (!postId) {
-    return null;
-  }
-
-  return post;
+  return details;
 };
