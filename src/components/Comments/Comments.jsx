@@ -12,7 +12,7 @@ export const Comments = (
   <>
     <li
       className="PostDetails__list-item"
-      key={commentId}
+      // key={commentId}
     >
       <button
         className="button"

@@ -5,7 +5,7 @@ export const getPostComments = async(postId) => {
   const postComments = await response.json();
 
   const filteredPostComments = postComments.data.filter(postComment => (
-    postComment.postId === Number(postId)));
+    postComment.postId === postId));
 
   return filteredPostComments;
 };
@@ -13,9 +13,6 @@ export const getPostComments = async(postId) => {
 export const postCommentToServer = async(comment) => {
   const response = await fetch(`${BASE_URL}/comments`, {
     method: 'POST',
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
-    },
     body: JSON.stringify(comment),
   });
 

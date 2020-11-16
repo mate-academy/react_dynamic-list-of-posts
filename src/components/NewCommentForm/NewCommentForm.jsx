@@ -31,7 +31,7 @@ export const NewCommentForm = ({ onAdd, postId }) => {
       return;
     }
 
-    onAdd(prevComments => [...prevComments, addedComment]);
+    onAdd(prevComments => [...prevComments, newComment]);
 
     setName('');
     setEmail('');
@@ -75,7 +75,6 @@ export const NewCommentForm = ({ onAdd, postId }) => {
       <button
         type="submit"
         className="NewCommentForm__submit-button button"
-        onClick={postCommentToServer}
       >
         Add a comment
       </button>

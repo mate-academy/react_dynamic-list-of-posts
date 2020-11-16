@@ -39,17 +39,17 @@ export const PostDetails = ({ selectedPostId }) => {
     setHiddenComments(currentHidenComments => !currentHidenComments);
   }, []);
 
-  const deleteComment = useCallback(async(commentId) => {
-    const response = await deleteCommentFromServer(commentId);
+  const deleteComment = useCallback(async(commentIdToDelete) => {
+    const response = await deleteCommentFromServer(commentIdToDelete);
 
     if (response === 'Error') {
-      setCommentErrorId(commentId);
+      setCommentErrorId(commentIdToDelete);
 
       return;
     }
 
     const filteredComments = comments.filter(comment => (
-      comment.id !== commentId
+      comment.id !== commentIdToDelete
     ));
 
     setComments(filteredComments);
