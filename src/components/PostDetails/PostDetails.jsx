@@ -4,9 +4,10 @@ import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { getPostDetails } from '../../api/posts';
 import { getPostComments, deleteComment } from '../../api/comments';
+import { PostComment } from '../PostComment';
 
 export const PostDetails = memo(({ selectedPostId }) => {
-  const [postDetails, setDatails] = useState({});
+  const [postDetails, setDetails] = useState({});
   const [postComments, setPostComments] = useState([]);
   const [hideStatus, setHideStatus] = useState(true);
   const [validation, setValidation] = useState(false);
@@ -21,13 +22,13 @@ export const PostDetails = memo(({ selectedPostId }) => {
     );
 
     setValidation(false);
-    setDatails(details);
+    setDetails(details);
     setPostComments(comments);
-  }, []);
+  });
 
   const handleHide = useCallback(() => {
     setHideStatus(!hideStatus);
-  }, []);
+  });
 
   const handleDelete = useCallback(async(commentId) => {
     await deleteComment(commentId);
@@ -60,16 +61,11 @@ export const PostDetails = memo(({ selectedPostId }) => {
         {hideStatus && (
           <ul className="PostDetails__list">
             {postComments.map(comment => (
-              <li key={comment.id} className="PostDetails__list-item">
-                <button
-                  type="button"
-                  className="PostDetails__remove-button button"
-                  onClick={() => handleDelete(comment.id)}
-                >
-                  X
-                </button>
-                <p>{comment.body}</p>
-              </li>
+              <PostComment
+                key={comment.id}
+                comment={comment}
+                handleDelete={handleDelete}
+              />
             ))}
 
           </ul>

@@ -5,24 +5,24 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
 const App = () => {
-  const [userSelectId, setUserSelectId] = useState(0);
+  const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(null);
-  const [isVisiblePost, setStatusPost] = useState(false);
+  const [isPostVisible, setIsPostVisible] = useState(false);
 
   const handleSelect = useCallback((event) => {
-    setUserSelectId(Number(event.target.value));
+    setSelectedUserId(Number(event.target.value));
   }, []);
 
   const showPost = useCallback((post) => {
     if (post.id === selectedPostId) {
-      setStatusPost(false);
+      setIsPostVisible(false);
       setSelectedPostId(null);
 
       return;
     }
 
     setSelectedPostId(post.id);
-    setStatusPost(true);
+    setIsPostVisible(true);
   }, [selectedPostId]);
 
   return (
@@ -33,7 +33,7 @@ const App = () => {
 
           <select
             onChange={handleSelect}
-            value={userSelectId}
+            value={selectedUserId}
             className="App__user-selector"
           >
             <option value={0}>All users</option>
@@ -53,14 +53,14 @@ const App = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            userSelectId={userSelectId}
+            selectedUserId={selectedUserId}
             selectedPostId={selectedPostId}
-            isVisiblePost={isVisiblePost}
+            isPostVisible={isPostVisible}
             showPost={showPost}
           />
         </div>
 
-        {isVisiblePost && (
+        {isPostVisible && (
           <div className="App__content">
             <PostDetails selectedPostId={selectedPostId} />
           </div>

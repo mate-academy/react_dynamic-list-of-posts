@@ -1,6 +1,9 @@
 import React, { useState, useCallback, memo } from 'react';
 import PropTypes from 'prop-types';
 import { addComment } from '../../api/comments';
+import { InputNameForm } from '../InputNameForm';
+import { InputEmailForm } from '../InputEmailForm';
+import { InputCommentForm } from '../InputCommentForm';
 import './NewCommentForm.scss';
 
 export const NewCommentForm = memo(({
@@ -53,37 +56,9 @@ export const NewCommentForm = memo(({
 
   return (
     <form className="NewCommentForm">
-      <div className="form-field">
-        <input
-          onChange={handleName}
-          value={name}
-          type="text"
-          name="name"
-          placeholder="Your name"
-          className="NewCommentForm__input"
-        />
-      </div>
-
-      <div className="form-field">
-        <input
-          onChange={handleEmail}
-          value={email}
-          type="text"
-          name="email"
-          placeholder="Your email"
-          className="NewCommentForm__input"
-        />
-      </div>
-
-      <div className="form-field">
-        <textarea
-          onChange={handleComment}
-          value={comment}
-          name="body"
-          placeholder="Type comment here"
-          className="NewCommentForm__input"
-        />
-      </div>
+      <InputNameForm handleName={handleName} name={name} />
+      <InputEmailForm handleEmail={handleEmail} email={email} />
+      <InputCommentForm handleComment={handleComment} comment={comment} />
 
       {validation && (
         <p className="NewCommentForm__error">

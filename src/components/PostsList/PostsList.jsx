@@ -2,11 +2,12 @@ import React, { useEffect, useState, memo } from 'react';
 import PropTypes from 'prop-types';
 import './PostsList.scss';
 import { getUserPosts } from '../../api/posts';
+import { Post } from '../Post';
 
 export const PostsList = memo(({
-  userSelectId,
+  selectedUserId,
   selectedPostId,
-  isVisiblePost,
+  isPostVisible,
   showPost,
 }) => {
   const [visiblePosts, setVisiblePosts] = useState([]);
@@ -25,21 +26,21 @@ export const PostsList = memo(({
     async function fetchData() {
       const response = await getUserPosts();
 
-      if (userSelectId === 0) {
+      if (selectedUserId === 0) {
         setVisiblePosts(response);
 
         return;
       }
 
       const posts = response.filter(({ userId }) => (
-        userId === userSelectId
+        userId === selectedUserId
       ));
 
       setVisiblePosts(posts);
     }
 
     fetchData();
-  }, [userSelectId]);
+  }, [selectedUserId]);
 
   return (
     <div className="PostsList">
@@ -47,27 +48,13 @@ export const PostsList = memo(({
 
       <ul className="PostsList__list">
         {visiblePosts.map(post => (
-          <li
-            className="PostsList__item"
+          <Post
             key={post.id}
-          >
-            <div>
-              <b>
-                [User #
-                {post.userId}
-                ]:
-                {' '}
-              </b>
-              {post.title}
-            </div>
-            <button
-              type="button"
-              className="PostsList__button button"
-              onClick={() => showPost(post)}
-            >
-              {selectedPostId === post.id && isVisiblePost ? 'Close' : 'Open'}
-            </button>
-          </li>
+            post={post}
+            selectedPostId={selectedPostId}
+            isPostVisible={isPostVisible}
+            showPost={showPost}
+          />
         ))}
       </ul>
     </div>
@@ -76,7 +63,7 @@ export const PostsList = memo(({
 
 PostsList.propTypes = {
   showPost: PropTypes.func.isRequired,
-  isVisiblePost: PropTypes.bool.isRequired,
+  isPostVisible: PropTypes.bool.isRequired,
   selectedPostId: PropTypes.number.isRequired,
   userSelectId: PropTypes.number.isRequired,
 }.isRequired;
