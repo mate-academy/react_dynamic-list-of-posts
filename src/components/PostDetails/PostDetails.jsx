@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
+import { CommentsList } from '../CommentsList';
 import { getPostDetails } from '../../api/posts'
+import cn from 'classnames'
 import './PostDetails.scss';
 import { getPostComments } from '../../api/comments';
 
 export const PostDetails = ({ selectedPostId }) => {
   const [postDetails, setPostDetails] = useState({});
-  const [comments, setComments] = useState();
+  const [comments, setComments] = useState([]);
+  const [isCommentsShown, toggleCommentsVisibility] = useState(false);
 
   useEffect(() => {
     loadPostDetails();
@@ -34,34 +37,32 @@ export const PostDetails = ({ selectedPostId }) => {
       </section>
 
       <section className="PostDetails__comments">
-        <button type="button" className="button">Hide 2 comments</button>
-
-        <ul className="PostDetails__list">
-          <li className="PostDetails__list-item">
+        {comments.length
+          ? (
             <button
               type="button"
-              className="PostDetails__remove-button button"
+              className={cn({
+                button: true,
+                'PostDetails__remove-button': isCommentsShown,
+              })}
+              onClick={() => toggleCommentsVisibility(!isCommentsShown)}
             >
-              X
+              {`${isCommentsShown
+                ? 'Hide'
+                : 'Show'} ${comments.length} comments`}
             </button>
-            <p>My first comment</p>
-          </li>
+          )
+          : (<p>No comments here yet</p>)
+        }
 
-          <li className="PostDetails__list-item">
-            <button
-              type="button"
-              className="PostDetails__remove-button button"
-            >
-              X
-            </button>
-            <p>sad sds dfsadf asdf asdf</p>
-          </li>
-        </ul>
+        {isCommentsShown && (
+          <CommentsList comments={comments} updateComments={loadComments} />
+        )}
       </section>
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm />
+        <NewCommentForm postId={selectedPostId} updateComments={loadComments} />
         </div>
       </section>
     </div>
