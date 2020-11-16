@@ -1,27 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-export const Post = ({ post, handlePostId, selectedPostId }) => {
+export const Post = ({ post, handlePostId, isOpen }) => {
   const {
     userId,
     title,
     id,
   } = post;
 
-  const [isOpen, setIsOpen] = useState(false);
-
   const handleOpen = (event) => {
     const { value } = event.target;
 
-    setIsOpen(!isOpen);
     handlePostId(value, isOpen);
   };
-
-  useEffect(() => {
-    // if (isOpen) {
-    //   setIsOpen(false);
-    // }
-  }, [selectedPostId]);
 
   return (
     <li className="PostsList__item">
@@ -56,5 +47,5 @@ Post.propTypes = {
     id: PropTypes.number.isRequired,
   }).isRequired,
   handlePostId: PropTypes.func.isRequired,
-  selectedPostId: PropTypes.string.isRequired,
+  isOpen: PropTypes.bool.isRequired,
 };

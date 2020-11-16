@@ -37,7 +37,7 @@ export const PostsList = ({ selUser, handlePostId, selectedPostId }) => {
             post={post}
             key={post.id}
             handlePostId={handlePostId}
-            selectedPostId={selectedPostId}
+            isOpen={+selectedPostId === post.id }
           />
         ))}
       </ul>
