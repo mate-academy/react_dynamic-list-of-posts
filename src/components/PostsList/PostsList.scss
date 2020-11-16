@@ -1,14 +1,14 @@
 .PostsList {
   width: 100%;
 
-  &__user-button {
+  &__button {
     cursor: pointer;
     padding: 5px 10px;
     border-radius: 5px;
     font-weight: bold;
 
     &:hover {
-      background-color: lightblue;
+      background-color: #140947;
     }
   }
 
