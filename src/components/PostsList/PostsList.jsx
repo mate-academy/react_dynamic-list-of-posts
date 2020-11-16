@@ -49,7 +49,7 @@ export function PostsList({ selectedUser, setSelectedPostId, selectedPostId }) {
                   className="PostsList__button button"
                   onClick={() => buttonStatus(post.id)}
                 >
-                  {selectedPostId === post.Id ? 'Open' : 'Close'}
+                  {selectedPostId !== post.id ? 'Open' : 'Close'}
                 </button>
               </li>
             ))}

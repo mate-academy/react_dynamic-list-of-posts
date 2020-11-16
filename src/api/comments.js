@@ -14,7 +14,7 @@ export const postCommentToServer = async(comment) => {
   const response = await fetch(`${BASE_URL}/comments`, {
     method: 'POST',
     headers: {
-      'Content-type': 'application/json; charset-UTF-8',
+      'Content-type': 'application/json; charset=UTF-8',
     },
     body: JSON.stringify(comment),
   });
@@ -26,4 +26,17 @@ export const postCommentToServer = async(comment) => {
   const postComent = response.json();
 
   return postComent.data;
+};
+
+export const deleteCommentFromServer = async(commentId) => {
+  const response = await fetch(`${BASE_URL}/comments/${commentId}`,
+    { method: 'DELETE' });
+
+  if (!response.ok) {
+    return 'Error';
+  }
+
+  const result = await response.json();
+
+  return result.data;
 };

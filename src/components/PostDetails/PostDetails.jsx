@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { getPostComments } from '../../api/comments';
+import { getPostComments, deleteCommentFromServer } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
@@ -40,7 +40,7 @@ export const PostDetails = ({ selectedPostId }) => {
   }, []);
 
   const deleteComment = useCallback(async(commentId) => {
-    const response = await deleteComment(commentId);
+    const response = await deleteCommentFromServer(commentId);
 
     if (response === 'Error') {
       setCommentErrorId(commentId);
@@ -88,7 +88,7 @@ export const PostDetails = ({ selectedPostId }) => {
                         {comments.map(comment => (
                           <Comments
                             key={comment.id}
-                            commentId={comment.Id}
+                            commentId={comment.id}
                             commentErrorId={commentErrorId}
                             deleteComment={deleteComment}
                             commentBody={comment.body}
@@ -103,8 +103,8 @@ export const PostDetails = ({ selectedPostId }) => {
             <section>
               <div className="PostDetails__form-wrapper">
                 <NewCommentForm
-                  setOpenComments={setComments}
-                  openPostId={post.id}
+                  onAdd={setComments}
+                  postId={post.id}
                 />
               </div>
             </section>
