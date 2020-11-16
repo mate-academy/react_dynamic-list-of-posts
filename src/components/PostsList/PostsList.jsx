@@ -4,7 +4,7 @@ import './PostsList.scss';
 import PropTypes from 'prop-types';
 import { getUserPosts } from '../../api/post'; // getUserPosts
 
-export const PostsList = ({ userId }) => {
+export const PostsList = ({ userId, openDetails, selectedPostId }) => {
   const [posts, setPost] = useState([]);
 
   useEffect(() => {
@@ -34,13 +34,17 @@ export const PostsList = ({ userId }) => {
               <button
                 type="button"
                 className="PostsList__button button"
+                onClick={() => openDetails(post.id)}
               >
-                Open
+                {
+                  selectedPostId === post.id
+                    ? 'Close'
+                    : 'Open'
+                }
               </button>
             </li>
           ))
         }
-        {/* add button close */}
       </ul>
     </div>
   );
@@ -48,4 +52,6 @@ export const PostsList = ({ userId }) => {
 
 PostsList.propTypes = {
   userId: PropTypes.number.isRequired,
+  openDetails: PropTypes.func.isRequired,
+  selectedPostId: PropTypes.number.isRequired,
 };

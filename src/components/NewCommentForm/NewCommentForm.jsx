@@ -1,7 +1,14 @@
-import React from 'react';
+import React from 'react'; // { useState, useEffect }
 import './NewCommentForm.scss';
+// import { getPostComments } from '../../api/comment';
 
 export const NewCommentForm = () => (
+// const [comments, setComments] = useState([]);
+
+  // useEffect(() => {
+
+  // }, []);
+
   <form className="NewCommentForm">
     <div className="form-field">
       <input

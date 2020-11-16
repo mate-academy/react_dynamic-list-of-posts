@@ -8,23 +8,30 @@ import { usersDataFromServer } from './api/post';
 const App = () => {
   const [users, setUsers] = useState([]);
   const [userId, setUserId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState(0);
 
   useEffect(() => {
     usersDataFromServer()
       .then((user) => {
         setUsers(user.slice(0, 10));
-        // console.log(user);
       });
   }, []);
-
-  // console.log(`Post  -  ` + postId);
 
   const selectUserId = ({ target }) => {
     setUserId(+target.value);
   };
 
-  // console.log(userId);
+  const openDetails = (postId) => {
+    if (postId === selectedPostId) {
+      setSelectedPostId(0);
 
+      return;
+    }
+
+    setSelectedPostId(postId);
+  };
+
+  // console.log(selectedPostId);
   return (
     <div className="App">
       <header className="App__header">
@@ -48,11 +55,19 @@ const App = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList userId={userId} />
+          <PostsList
+            userId={userId}
+            openDetails={openDetails}
+            selectedPostId={selectedPostId}
+          />
         </div>
 
         <div className="App__content">
-          <PostDetails />
+          {
+            selectedPostId === 0
+              ? <h4>Choose post to see details</h4>
+              : <PostDetails postId={selectedPostId} />
+          }
         </div>
       </main>
     </div>

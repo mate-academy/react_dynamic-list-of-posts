@@ -1,6 +1,6 @@
 const BASE_URL = `https://mate-api.herokuapp.com`;
 
-const request = url => fetch(`${BASE_URL}${url}`)
+export const request = url => fetch(`${BASE_URL}${url}`)
   .then(res => res.json())
   .then(res => res.data)
   .catch(error => error);
@@ -17,3 +17,4 @@ export const getUserPosts = async(userId) => {
 
 export const usersPosts = () => request('/posts');
 export const usersDataFromServer = () => request(`/users`);
+export const getPostDetails = postId => request(`/posts/${postId}`);
