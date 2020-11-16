@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
-export const Post = ({ post, selectedPostId, isPostVisible, showPost }) => (
+export const Post = memo(({
+  post,
+  selectedPostId,
+  isPostVisible,
+  showPost,
+}) => (
   <li
     className="PostsList__item"
     key={post.id}
@@ -20,7 +25,7 @@ export const Post = ({ post, selectedPostId, isPostVisible, showPost }) => (
       {selectedPostId === post.id && isPostVisible ? 'Close' : 'Open'}
     </button>
   </li>
-);
+));
 
 Post.propTypes = {
   selectedPostId: PropTypes.number.isRequired,

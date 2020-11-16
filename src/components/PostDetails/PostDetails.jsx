@@ -16,7 +16,7 @@ export const PostDetails = memo(({ selectedPostId }) => {
     loadData();
   }, [selectedPostId]);
 
-  const loadData = useCallback(async() => {
+  const loadData = async() => {
     const [details, comments] = await Promise.all(
       [getPostDetails(selectedPostId), getPostComments(selectedPostId)],
     );
@@ -24,11 +24,11 @@ export const PostDetails = memo(({ selectedPostId }) => {
     setValidation(false);
     setDetails(details);
     setPostComments(comments);
-  });
+  };
 
   const handleHide = useCallback(() => {
     setHideStatus(!hideStatus);
-  });
+  }, [hideStatus]);
 
   const handleDelete = useCallback(async(commentId) => {
     await deleteComment(commentId);

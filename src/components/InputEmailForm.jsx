@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
-export const InputEmailForm = ({ handleEmail, email }) => (
+export const InputEmailForm = memo(({ handleEmail, email }) => (
   <div className="form-field">
     <input
       onChange={handleEmail}
@@ -12,7 +12,7 @@ export const InputEmailForm = ({ handleEmail, email }) => (
       className="NewCommentForm__input"
     />
   </div>
-);
+));
 
 InputEmailForm.propTypes = {
   handleEmail: PropTypes.func.isRequired,

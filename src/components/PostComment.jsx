@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
-export const PostComment = ({ comment, handleDelete }) => (
+export const PostComment = memo(({ comment, handleDelete }) => (
   <li className="PostDetails__list-item">
     <button
       type="button"
@@ -12,7 +12,7 @@ export const PostComment = ({ comment, handleDelete }) => (
     </button>
     <p>{comment.body}</p>
   </li>
-);
+));
 
 PostComment.propTypes = {
   handleDelete: PropTypes.func.isRequired,

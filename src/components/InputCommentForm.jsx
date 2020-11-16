@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 
-export const InputCommentForm = ({ handleComment, comment }) => (
+export const InputCommentForm = memo(({ handleComment, comment }) => (
   <div className="form-field">
     <textarea
       onChange={handleComment}
@@ -11,7 +11,7 @@ export const InputCommentForm = ({ handleComment, comment }) => (
       className="NewCommentForm__input"
     />
   </div>
-);
+));
 
 InputCommentForm.propTypes = {
   handleComment: PropTypes.func.isRequired,
