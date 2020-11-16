@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import { getPostDetails } from '../../api/posts'
 import './PostDetails.scss';
-import { post } from '../../api/api';
+import { getPostComments } from '../../api/comments';
 
 export const PostDetails = ({ selectedPostId }) => {
   const [postDetails, setPostDetails] = useState({});
@@ -10,7 +10,7 @@ export const PostDetails = ({ selectedPostId }) => {
 
   useEffect(() => {
     loadPostDetails();
-
+    loadComments();
   }, [selectedPostId])
 
   const loadPostDetails = async() => {
@@ -19,7 +19,12 @@ export const PostDetails = ({ selectedPostId }) => {
     setPostDetails(postDetailsFromServer);
   };
 
-  console.log(postDetails);
+  const loadComments = async() => {
+    const commentsFromServer = await getPostComments(selectedPostId);
+
+    setComments(commentsFromServer);
+  };
+
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>

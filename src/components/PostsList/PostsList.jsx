@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getUserPosts } from '../../api/posts';
-import cn from 'classnames';
+import { Post } from '../Post';
 import './PostsList.scss';
 
 export const PostsList = ({ selectedUserId, selectPostId, selectedPostId }) => {
@@ -22,21 +22,12 @@ export const PostsList = ({ selectedUserId, selectPostId, selectedPostId }) => {
 
       <ul className="PostsList__list">
         {posts.map( post => (
-          <li key={post.id} className="PostsList__item">
-            <div>
-              <b>[User #{post.userId}]: </b>
-              {post.title}
-            </div>
-            <button
-              onClick={()=>selectPostId(post.id)}
-              type="button"
-              className={cn('PostsList__button button', {
-                'button--is-active': post.id === selectedPostId,
-              })}
-            >
-              {post.id === selectedPostId ? 'Close' : 'Open'}
-            </button>
-          </li>
+          <Post
+            key={post.id}
+            {...post}
+            selectedPostId={selectedPostId}
+            selectPostId={selectPostId}
+          />
         ))}
       </ul>
     </div>
