@@ -1,41 +1,61 @@
-import React from 'react';
-import './App.scss';
-import './styles/general.scss';
+import React, { useState, useCallback } from 'react';
+
+import { UserSelect } from './components/UserSelect';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
-const App = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+import './App.scss';
+import './styles/general.scss';
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+const App = () => {
+  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState(0);
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+  const selectUser = useCallback((event) => {
+    setSelectedUserId(+event.target.value);
+  }, []);
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+  const selectPost = (postId) => {
+    if (postId === selectedPostId) {
+      setSelectedPostId(0);
+
+      return;
+    }
+
+    setSelectedPostId(postId);
+  };
+
+  return (
+    <div className="App">
+      <header className="App__header">
+        <UserSelect
+          selectUser={selectUser}
+          selectedUserId={selectedUserId}
+        />
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            selectedUserId={selectedUserId}
+            selectPost={selectPost}
+            selectedPostId={selectedPostId}
+          />
+        </div>
+
+        <div className="App__content">
+          {selectedPostId ? (
+            <PostDetails
+              selectedPostId={selectedPostId}
+            />
+          ) : (
+            <h4>Open a post to see details</h4>
+          )}
+
+        </div>
+      </main>
+    </div>
+  );
+};
 
 export default App;
