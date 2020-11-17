@@ -14,7 +14,7 @@ export const NewCommentForm = ({ selectedPostId, setComments }) => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if ((userName, email, body)) {
+    if (userName && email && body) {
       setDetailsLoader(true);
       post('comments', {
         postId: selectedPostId,
