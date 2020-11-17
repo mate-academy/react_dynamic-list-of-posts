@@ -24,7 +24,11 @@ export const CommentsList = ({ postComments, deleteComment }) => {
 
             <ul className="PostDetails__list">
               {postComments.map(comment => (
-                <Comment comment={comment} onDelete={deleteComment} />
+                <Comment
+                  comment={comment}
+                  onDelete={deleteComment}
+                  key={comment.id}
+                />
               ))}
             </ul>
           </div>
