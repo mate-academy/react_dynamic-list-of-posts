@@ -1,46 +1,72 @@
-import React from 'react'; // { useState, useEffect }
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
-// import { getPostComments } from '../../api/comment';
 
-export const NewCommentForm = () => (
-// const [comments, setComments] = useState([]);
+export const NewCommentForm = ({ addComment }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [comment, setComment] = useState('');
 
-  // useEffect(() => {
+  function onSubmit(event) {
+    event.preventDefault();
 
-  // }, []);
+    const newComment = {
+      name,
+      email,
+      body: comment,
+    };
 
-  <form className="NewCommentForm">
-    <div className="form-field">
-      <input
-        type="text"
-        name="name"
-        placeholder="Your name"
-        className="NewCommentForm__input"
-      />
-    </div>
+    addComment(newComment);
 
-    <div className="form-field">
-      <input
-        type="text"
-        name="email"
-        placeholder="Your email"
-        className="NewCommentForm__input"
-      />
-    </div>
+    setName('');
+    setEmail('');
+    setComment('');
+  }
 
-    <div className="form-field">
-      <textarea
-        name="body"
-        placeholder="Type comment here"
-        className="NewCommentForm__input"
-      />
-    </div>
+  return (
+    <form className="NewCommentForm" onSubmit={onSubmit}>
+      <div className="form-field">
+        <input
+          type="text"
+          name="name"
+          placeholder="Your name"
+          className="NewCommentForm__input"
+          value={name}
+          onChange={({ target }) => setName(target.value)}
+        />
+      </div>
 
-    <button
-      type="submit"
-      className="NewCommentForm__submit-button button"
-    >
-      Add a comment
-    </button>
-  </form>
-);
+      <div className="form-field">
+        <input
+          type="text"
+          name="email"
+          placeholder="Your email"
+          className="NewCommentForm__input"
+          value={email}
+          onChange={({ target }) => setEmail(target.value)}
+        />
+      </div>
+
+      <div className="form-field">
+        <textarea
+          name="body"
+          placeholder="Type comment here"
+          className="NewCommentForm__input"
+          value={comment}
+          onChange={({ target }) => setComment(target.value)}
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="NewCommentForm__submit-button button"
+      >
+        Add a comment
+      </button>
+    </form>
+  );
+};
+
+NewCommentForm.propTypes = {
+  addComment: PropTypes.func.isRequired,
+};

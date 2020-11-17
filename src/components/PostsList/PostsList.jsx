@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-// import React from 'react'
 import './PostsList.scss';
 import PropTypes from 'prop-types';
 import { getUserPosts } from '../../api/post'; // getUserPosts
@@ -23,13 +22,8 @@ export const PostsList = ({ userId, openDetails, selectedPostId }) => {
           posts.map(post => (
             <li className="PostsList__item">
               <div>
-                <b>
-                  [User #
-                  {post.userId}
-                  ]:
-                  {' '}
-                </b>
-                {post.title}
+                <b>{`User # ${post.userId}`}</b>
+                <p>{post.title}</p>
               </div>
               <button
                 type="button"

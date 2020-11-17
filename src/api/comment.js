@@ -1,5 +1,7 @@
 import { request } from './post';
 
+const BASE_URL = `https://mate-api.herokuapp.com`;
+
 export const getPostComments = async(postId) => {
   const comments = await request('/comments');
 
@@ -11,9 +13,17 @@ export const getPostComments = async(postId) => {
 };
 
 export const deleteComment = async(commentId) => {
-  const respones = await request(`comments/${commentId}`, {
+  await fetch(`${BASE_URL}/comments/${commentId}`, {
     method: 'DELETE',
   });
+};
 
-  return respones;
+export const addComment = async(comment) => {
+  await fetch(`${BASE_URL}/comments`, {
+    method: 'POST',
+    body: JSON.stringify(comment),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 };

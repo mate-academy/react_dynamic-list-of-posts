@@ -1,12 +1,12 @@
 import React from 'react';
 
-export const Comments = ({ comments, handleDelete }) => (
+export const Comments = ({ comments, deleteComment }) => (
   comments.map(comment => (
     <li key={comment.id} className="PostDetails__list-item">
       <button
         type="button"
         className="PostDetails__remove-button button"
-        onClick={() => handleDelete(comment.id)}
+        onClick={() => deleteComment(comment.id)}
       >
         X
       </button>

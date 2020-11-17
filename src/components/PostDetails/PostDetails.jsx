@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { getPostDetails } from '../../api/post';
-import { getPostComments, deleteComment } from '../../api/comment';
+import { getPostComments, deleteComment, addComment } from '../../api/comment';
 import { Comments } from '../Comments/Comments';
 
 export const PostDetails = ({ postId }) => {
@@ -25,15 +25,18 @@ export const PostDetails = ({ postId }) => {
       });
   }, [postId]);
 
-  const updateComments = async() => {
-    const commentsFromserver = await getPostComments(postId);
-
-    setComments(commentsFromserver);
-  };
-
   const handleDelete = async(commentId) => {
     await deleteComment(commentId);
-    updateComments();
+    setComments(await getPostComments(postId));
+  };
+
+  const handleSubmit = async(comment) => {
+    const newComment = {
+      ...comment, postId,
+    };
+
+    await addComment(newComment);
+    setComments(await getPostComments(postId));
   };
 
   return (
@@ -67,7 +70,7 @@ export const PostDetails = ({ postId }) => {
                       : (
                         <Comments
                           comments={comments}
-                          handleDelete={handleDelete}
+                          deleteComment={handleDelete}
                         />
                       )
                   }
@@ -80,7 +83,7 @@ export const PostDetails = ({ postId }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm comments={getPostComments} />
+          <NewCommentForm addComment={handleSubmit} />
         </div>
       </section>
     </div>

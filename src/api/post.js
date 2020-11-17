@@ -1,4 +1,4 @@
-const BASE_URL = `https://mate-api.herokuapp.com`;
+import { BASE_URL } from './api';
 
 export const request = url => fetch(`${BASE_URL}${url}`)
   .then(res => res.json())

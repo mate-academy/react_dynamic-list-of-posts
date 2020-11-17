@@ -31,7 +31,6 @@ const App = () => {
     setSelectedPostId(postId);
   };
 
-  // console.log(selectedPostId);
   return (
     <div className="App">
       <header className="App__header">
