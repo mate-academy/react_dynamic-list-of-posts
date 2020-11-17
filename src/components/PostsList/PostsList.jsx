@@ -60,13 +60,7 @@ export function PostsList({ selectedUser, setSelectedPostId, selectedPostId }) {
 }
 
 PostsList.propTypes = {
-  posts: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      body: PropTypes.string.isRequired,
-      userId: PropTypes.number.isRequired,
-    }).isRequired,
-  ).isRequired,
-  selectedPostId: PropTypes.number.isRequired,
+  selectedUser: PropTypes.number.isRequired,
   setSelectedPostId: PropTypes.func.isRequired,
-}.isRequired;
+  selectedPostId: PropTypes.number.isRequired,
+};

@@ -31,7 +31,7 @@ export const NewCommentForm = ({ onAdd, postId }) => {
       return;
     }
 
-    onAdd(prevComments => [...prevComments, newComment]);
+    onAdd(prevComments => [...prevComments, addedComment]);
 
     setName('');
     setEmail('');

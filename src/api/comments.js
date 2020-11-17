@@ -1,7 +1,7 @@
 import { BASE_URL } from './api';
 
 export const getPostComments = async(postId) => {
-  const response = await fetch(`${BASE_URL}/comments/`);
+  const response = await fetch(`${BASE_URL}/comments`);
   const postComments = await response.json();
 
   const filteredPostComments = postComments.data.filter(postComment => (
@@ -10,19 +10,19 @@ export const getPostComments = async(postId) => {
   return filteredPostComments;
 };
 
-export const postCommentToServer = async(comment) => {
-  const response = await fetch(`${BASE_URL}/comments`, {
+export const postCommentToServer = async(newComment) => {
+  const response = await fetch(`${BASE_URL}/comments/`, {
     method: 'POST',
-    body: JSON.stringify(comment),
+    body: JSON.stringify(newComment),
   });
 
   if (!response.ok) {
     return 'Error';
   }
 
-  const postComent = response.json();
+  const postedComment = await response.json();
 
-  return postComent.data;
+  return postedComment.data;
 };
 
 export const deleteCommentFromServer = async(commentId) => {
