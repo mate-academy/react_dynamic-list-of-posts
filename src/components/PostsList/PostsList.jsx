@@ -4,28 +4,18 @@ import { Post } from './post';
 import { getUserPosts } from '../../api/posts';
 import './PostsList.scss';
 
-export const PostsList = ({ selUser, handlePostId, selectedPostId }) => {
+export const PostsList = ({ selectedUser, handlePostId, selectedPostId }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
-      const response = await getUserPosts();
+      const response = await getUserPosts(selectedUser);
 
       setPosts(response);
     }
 
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    async function fetchData() {
-      const response = await getUserPosts(selUser);
-
-      setPosts(response);
-    }
-
-    fetchData();
-  }, [selUser]);
+  }, [selectedUser]);
 
   return (
     <div className="PostsList">
@@ -46,7 +36,7 @@ export const PostsList = ({ selUser, handlePostId, selectedPostId }) => {
 };
 
 PostsList.propTypes = {
-  selUser: PropTypes.string.isRequired,
+  selectedUser: PropTypes.string.isRequired,
   handlePostId: PropTypes.func.isRequired,
   selectedPostId: PropTypes.string.isRequired,
 };

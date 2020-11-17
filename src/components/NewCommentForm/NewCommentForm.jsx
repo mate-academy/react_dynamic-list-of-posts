@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { postComment } from '../../api/comments';
+import { Input } from './input';
+import { TextArea } from './textArea';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ postId, handleAdd }) => {
+export const NewCommentForm = ({ postId, addComent }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
@@ -24,7 +26,7 @@ export const NewCommentForm = ({ postId, handleAdd }) => {
 
     const response = await postComment(comment);
 
-    handleAdd(response.data);
+    addComent(response.data);
 
     setName('');
     setEmail('');
@@ -37,34 +39,27 @@ export const NewCommentForm = ({ postId, handleAdd }) => {
       onSubmit={handleSubmit}
     >
       <div className="form-field">
-        <input
-          type="text"
+        <Input
           name="name"
-          placeholder="Your name"
-          className="NewCommentForm__input"
           value={name}
-          onChange={event => setName(event.target.value)}
+          setState={setName}
+
         />
       </div>
 
       <div className="form-field">
-        <input
-          type="text"
+        <Input
           name="email"
-          placeholder="Your email"
-          className="NewCommentForm__input"
           value={email}
-          onChange={event => setEmail(event.target.value)}
+          setState={setEmail}
         />
       </div>
 
       <div className="form-field">
-        <textarea
+        <TextArea
           name="body"
-          placeholder="Type comment here"
-          className="NewCommentForm__input"
           value={body}
-          onChange={event => setBody(event.target.value)}
+          setState={setBody}
         />
       </div>
 
@@ -80,5 +75,5 @@ export const NewCommentForm = ({ postId, handleAdd }) => {
 
 NewCommentForm.propTypes = {
   postId: PropTypes.string.isRequired,
-  handleAdd: PropTypes.func.isRequired,
+  addComent: PropTypes.func.isRequired,
 };

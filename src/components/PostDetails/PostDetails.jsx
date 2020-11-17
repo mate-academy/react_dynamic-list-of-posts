@@ -11,7 +11,7 @@ export const PostDetails = ({ selectedPostId }) => {
   const [postComments, setPostComments] = useState([]);
   const [isVisible, setIsVisible] = useState(true);
 
-  const handleAdd = (comment) => {
+  const addComent = (comment) => {
     const changedComments = [...postComments, comment];
 
     setPostComments(changedComments);
@@ -55,11 +55,7 @@ export const PostDetails = ({ selectedPostId }) => {
           className="button"
           onClick={handleVisible}
         >
-          {isVisible ? 'Hide' : 'Show'}
-          {' '}
-          {postComments.length}
-          {' '}
-          comments
+          {`${isVisible ? 'Hide' : 'Show'} ${postComments.length} comments`}
         </button>
 
         {isVisible && (
@@ -80,7 +76,7 @@ export const PostDetails = ({ selectedPostId }) => {
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             postId={selectedPostId}
-            handleAdd={handleAdd}
+            addComent={addComent}
           />
         </div>
       </section>

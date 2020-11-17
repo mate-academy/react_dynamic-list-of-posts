@@ -3,31 +3,23 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { request } from './api/api';
+import { fetchData } from './api/users';
 
 export const USERS_URL = '/users';
 
 const App = () => {
   const [users, setUsers] = useState([]);
-  const [selUser, setSelUser] = useState('0');
+  const [selectedUser, setSelectedUser] = useState('0');
   const [selectedPostId, setSelectedPostId] = useState('');
 
   useEffect(() => {
-    async function fetchData() {
-      const response = await request(USERS_URL);
-      const preparedUsers = response.data
-        .filter(user => user.name);
-
-      setUsers(preparedUsers);
-    }
-
-    fetchData();
+    fetchData(setUsers);
   }, []);
 
   const userSelect = (event) => {
     const { value } = event.target;
 
-    setSelUser(value);
+    setSelectedUser(value);
   };
 
   const handlePostId = (id, isOpen) => {
@@ -42,7 +34,7 @@ const App = () => {
 
           <select
             className="App__user-selector"
-            value={selUser}
+            value={selectedUser}
             onChange={userSelect}
           >
             <option value="0">All users</option>
@@ -62,7 +54,7 @@ const App = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            selUser={selUser}
+            selectedUser={selectedUser}
             handlePostId={handlePostId}
             selectedPostId={selectedPostId}
           />

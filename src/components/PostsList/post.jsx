@@ -18,11 +18,7 @@ export const Post = ({ post, handlePostId, isOpen }) => {
     <li className="PostsList__item">
       <div>
         <b>
-          [User: #
-          {userId}
-          {' '}
-          ]:
-          {' '}
+          {`[User: # ${userId} ]:`}
         </b>
         <strong>
           {title}
