@@ -1,37 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { NewCommentForm } from '../NewCommentForm';
-import './PostDetails.scss';
+
 import { getPostDetails } from '../../api/posts';
-import { getPostComments, deleteComment } from '../../api/comments';
+import { getPostComments } from '../../api/comments';
+import { NewCommentForm } from '../NewCommentForm';
+import { PostComments } from '../PostComments';
+import './PostDetails.scss';
 
 export const PostDetails = ({ selectedPostId }) => {
-  const [postDetails, setDetails] = useState({});
-  const [postComments, setPostComments] = useState([]);
+  const [post, setPost] = useState({});
+  const [comments, setComments] = useState([]);
   const [hideStatus, setHideStatus] = useState(false);
 
   useEffect(() => {
-    loadData();
-    // eslint-disable-next-line
-  }, []);
+    loadDetails();
+    updateComments();
+  }, [selectedPostId]);
 
-  const loadData = async() => {
-    const [details, comments] = await Promise.all(
-      [getPostDetails(selectedPostId), getPostComments(selectedPostId)],
-    );
+  const loadDetails = async() => {
+    const postDetails = await getPostDetails(selectedPostId);
 
-    setDetails(details);
-    setPostComments(comments);
+    setPost(postDetails);
+    setHideStatus(false);
   };
 
-  const handleHide = () => {
-    setHideStatus(!hideStatus);
-  };
+  const updateComments = async() => {
+    const postComments = await getPostComments(selectedPostId);
 
-  const handleDelete = async(commentId) => {
-    await deleteComment(commentId);
-
-    loadData();
+    setComments(postComments);
   };
 
   return (
@@ -39,47 +35,41 @@ export const PostDetails = ({ selectedPostId }) => {
       <h2>Post details:</h2>
 
       <section className="PostDetails__post">
-        <p>{postDetails.body}</p>
+        <p>{post.body}</p>
       </section>
 
       <section className="PostDetails__comments">
-        <button
-          type="button"
-          className="button"
-          onClick={handleHide}
-        >
-          {hideStatus
-            ? `Hide ${postComments.length} comments`
-            : `Show comments`
-          }
-        </button>
-
-        {hideStatus && (
-          <ul className="PostDetails__list">
-            {postComments.map(comment => (
-              <li
-                key={comment.id}
-                className="PostDetails__list-item"
-              >
-                <button
-                  type="button"
-                  className="PostDetails__remove-button button"
-                  onClick={() => handleDelete(comment.id)}
-                >
-                  X
-                </button>
-                <p>
-                  {comment.body}
-                </p>
-              </li>
-            ))}
-          </ul>
+        {comments.length ? (
+          <button
+            type="button"
+            className="button"
+            onClick={() => setHideStatus(!hideStatus)}
+          >
+            {hideStatus
+              ? `Hide ${comments.length} comments`
+              : 'Show comments'
+            }
+          </button>
+        ) : (
+          <h3>No comments</h3>
         )}
+
+        {hideStatus
+          && (
+            <PostComments
+              comments={comments}
+              updateComments={updateComments}
+            />
+          )
+        }
       </section>
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm />
+          <NewCommentForm
+            postId={selectedPostId}
+            updateComments={updateComments}
+          />
         </div>
       </section>
     </div>
@@ -88,4 +78,4 @@ export const PostDetails = ({ selectedPostId }) => {
 
 PostDetails.propTypes = {
   selectedPostId: PropTypes.number.isRequired,
-}.isRequired;
+};

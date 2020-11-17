@@ -1,16 +1,21 @@
-import { COMMENTS_URL } from './api';
+import { request, post, remove } from './api';
 
 export const getPostComments = async(postId) => {
-  const response = await fetch(COMMENTS_URL);
-  const comments = await response.json();
+  const comments = await request('/comments');
 
-  return comments.data.filter(comment => comment.postId === postId);
+  const postComments = comments.filter(comment => comment.postId === postId);
+
+  return postComments;
 };
 
-export const deleteComment = async(commentId) => {
-  const response = await fetch(`${COMMENTS_URL}${commentId}`, {
-    method: 'DELETE',
-  });
+export const addComment = async(postId, name, email, body) => post(
+  '/comments',
+  {
+    postId,
+    name,
+    email,
+    body,
+  },
+);
 
-  return response;
-};
+export const removeComment = commentId => remove(`/comments/${commentId}`);
