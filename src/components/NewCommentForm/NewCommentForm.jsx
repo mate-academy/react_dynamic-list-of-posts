@@ -1,39 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
+import { CommentInput } from './CommentInput';
+import { CommentTextarea } from './CommentTextarea';
 
-export const NewCommentForm = () => (
-  <form className="NewCommentForm">
-    <div className="form-field">
-      <input
-        type="text"
+export const NewCommentForm = ({ onSubmit }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [comment, setComment] = useState('');
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    const newComment = {
+      name,
+      email,
+      body: comment,
+    };
+
+    onSubmit(newComment);
+
+    setName('');
+    setEmail('');
+    setComment('');
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="NewCommentForm"
+    >
+      <CommentInput
         name="name"
+        value={name}
+        onChange={setName}
         placeholder="Your name"
-        className="NewCommentForm__input"
       />
-    </div>
 
-    <div className="form-field">
-      <input
-        type="text"
+      <CommentInput
         name="email"
+        value={email}
+        onChange={setEmail}
         placeholder="Your email"
-        className="NewCommentForm__input"
       />
-    </div>
 
-    <div className="form-field">
-      <textarea
+      <CommentTextarea
         name="body"
         placeholder="Type comment here"
-        className="NewCommentForm__input"
+        value={comment}
+        onChange={setComment}
       />
-    </div>
 
-    <button
-      type="submit"
-      className="NewCommentForm__submit-button button"
-    >
-      Add a comment
-    </button>
-  </form>
-);
+      <button
+        type="submit"
+        className="NewCommentForm__submit-button button"
+      >
+        Add a comment
+      </button>
+    </form>
+  );
+};
+
+NewCommentForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};

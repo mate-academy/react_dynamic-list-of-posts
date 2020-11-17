@@ -1,37 +1,43 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './PostsList.scss';
+import { Post } from './Post';
+import { postShapes } from '../shapes/postShapes';
 
-export const PostsList = () => (
+export const PostsList = ({
+  posts,
+  selectedPost,
+  openPost,
+  closePost,
+  setSelectedPost,
+}) => (
   <div className="PostsList">
     <h2>Posts:</h2>
 
     <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
-
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
+      {posts.map(post => (
+        <Post
+          post={post}
+          selectedPost={selectedPost}
+          openPost={openPost}
+          closePost={closePost}
+          setSelectedPost={setSelectedPost}
+          key={post.id}
+        />
+      ))}
     </ul>
   </div>
 );
+
+PostsList.defaultProps = {
+  posts: [],
+  selectedPost: null,
+};
+
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf(PropTypes.shape(postShapes)),
+  selectedPost: PropTypes.number,
+  openPost: PropTypes.func.isRequired,
+  closePost: PropTypes.func.isRequired,
+  setSelectedPost: PropTypes.func.isRequired,
+};
