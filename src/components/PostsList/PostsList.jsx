@@ -1,37 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { getUserPosts } from '../../api/posts';
+import { Loader } from '../Loader';
 import './PostsList.scss';
+import { Post } from '../Post/Post';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({ selectedUserId, choosePost, selectedPostId }) => {
+  const [posts, setPosts] = useState([]);
+  const [isLoading, toggleLoading] = useState(true);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  useEffect(() => {
+    loadUsers();
+  }, [selectedUserId]);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  const loadUsers = async() => {
+    const postsFromServer = await getUserPosts(selectedUserId);
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+    setPosts(postsFromServer);
+    toggleLoading(false);
+  };
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      {isLoading
+        ? <Loader />
+        : (
+          <ul>
+            {posts.map(post => (
+              <Post
+                post={post}
+                choosePost={choosePost}
+                selectedPostId={selectedPostId}
+              />
+            ))}
+          </ul>
+        )}
+    </div>
+  );
+};
+
+PostsList.propTypes = {
+  selectedUserId: PropTypes.number.isRequired,
+  choosePost: PropTypes.func.isRequired,
+  selectedPostId: PropTypes.number.isRequired,
+};
