@@ -26,6 +26,20 @@ export const PostDetails = ({ selectedPostId }) => {
     fetchData();
   }, [selectedPostId]);
 
+  const handleDeleteComment = async(commentId) => {
+    await deleteComment(commentId);
+    setPostComments(await getPostComments(selectedPostId));
+  };
+
+  const handleAddComment = async(comment) => {
+    const newComment = {
+      ...comment, postId: selectedPostId,
+    };
+
+    await addComment(newComment);
+    setPostComments(await getPostComments(selectedPostId));
+  };
+
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
@@ -36,23 +50,12 @@ export const PostDetails = ({ selectedPostId }) => {
 
       <CommentsList
         postComments={postComments}
-        deleteComment={async(commentId) => {
-          await deleteComment(commentId);
-          setPostComments(await getPostComments(selectedPostId));
-        }}
+        deleteComment={handleDeleteComment}
       />
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm onSubmit={async(comment) => {
-            const newComment = {
-              ...comment, postId: selectedPostId,
-            };
-
-            await addComment(newComment);
-            setPostComments(await getPostComments(selectedPostId));
-          }}
-          />
+          <NewCommentForm onSubmit={handleAddComment} />
         </div>
       </section>
     </div>

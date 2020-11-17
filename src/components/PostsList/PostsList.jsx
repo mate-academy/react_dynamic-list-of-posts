@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './PostsList.scss';
+import { Post } from './Post';
+import { postShapes } from '../shapes/postShapes';
 
 export const PostsList = ({
   posts,
@@ -14,41 +16,14 @@ export const PostsList = ({
 
     <ul className="PostsList__list">
       {posts.map(post => (
-        <li key={post.id} className="PostsList__item">
-          <div>
-            <b>
-              [User #
-              {post.userId}
-              ]:
-              {' '}
-            </b>
-            {post.title}
-          </div>
-
-          {selectedPost === post.id
-            ? (
-              <button
-                type="button"
-                className="PostsList__button button"
-                onClick={() => {
-                  closePost(setSelectedPost);
-                }}
-              >
-                Close
-              </button>
-            )
-            : (
-              <button
-                type="button"
-                className="PostsList__button button"
-                onClick={() => {
-                  openPost(setSelectedPost, post.id);
-                }}
-              >
-                Open
-              </button>
-            )}
-        </li>
+        <Post
+          post={post}
+          selectedPost={selectedPost}
+          openPost={openPost}
+          closePost={closePost}
+          setSelectedPost={setSelectedPost}
+          key={post.id}
+        />
       ))}
     </ul>
   </div>
@@ -60,11 +35,7 @@ PostsList.defaultProps = {
 };
 
 PostsList.propTypes = {
-  posts: PropTypes.arrayOf(PropTypes.shape({
-    title: PropTypes.string.isRequired,
-    userId: PropTypes.number.isRequired,
-    id: PropTypes.number.isRequired,
-  })),
+  posts: PropTypes.arrayOf(PropTypes.shape(postShapes)),
   selectedPost: PropTypes.number,
   openPost: PropTypes.func.isRequired,
   closePost: PropTypes.func.isRequired,

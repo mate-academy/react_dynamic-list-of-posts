@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
+import { CommentInput } from './CommentInput';
+import { CommentTextarea } from './CommentTextarea';
 
 export const NewCommentForm = ({ onSubmit }) => {
   const [name, setName] = useState('');
@@ -28,40 +30,26 @@ export const NewCommentForm = ({ onSubmit }) => {
       onSubmit={handleSubmit}
       className="NewCommentForm"
     >
-      <div className="form-field">
-        <input
-          type="text"
-          name="name"
-          value={name}
-          onChange={event => setName(event.target.value)}
-          placeholder="Your name"
-          className="NewCommentForm__input"
-          required
-        />
-      </div>
+      <CommentInput
+        name="name"
+        value={name}
+        onChange={setName}
+        placeholder="Your name"
+      />
 
-      <div className="form-field">
-        <input
-          type="text"
-          name="email"
-          value={email}
-          onChange={event => setEmail(event.target.value)}
-          placeholder="Your email"
-          className="NewCommentForm__input"
-          required
-        />
-      </div>
+      <CommentInput
+        name="email"
+        value={email}
+        onChange={setEmail}
+        placeholder="Your email"
+      />
 
-      <div className="form-field">
-        <textarea
-          name="body"
-          placeholder="Type comment here"
-          value={comment}
-          onChange={event => setComment(event.target.value)}
-          className="NewCommentForm__input"
-          required
-        />
-      </div>
+      <CommentTextarea
+        name="body"
+        placeholder="Type comment here"
+        value={comment}
+        onChange={setComment}
+      />
 
       <button
         type="submit"

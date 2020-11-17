@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -26,6 +26,11 @@ const App = () => {
     fetchData();
   }, [selectedUserId]);
 
+  const filterByUser = useCallback(
+    event => setSelectedUserId(+event.target.value),
+    [],
+  );
+
   return (
     <div className="App">
       <header className="App__header">
@@ -33,7 +38,7 @@ const App = () => {
           Select a user: &nbsp;
 
           <select
-            onChange={event => setSelectedUserId(+event.target.value)}
+            onChange={filterByUser}
             className="App__user-selector"
           >
             <option value="0">All users</option>
@@ -63,12 +68,11 @@ const App = () => {
         </div>
 
         {selectedPost
-          ? (
+          && (
             <div className="App__content">
               <PostDetails selectedPostId={selectedPost} />
             </div>
           )
-          : <></>
         }
       </main>
     </div>
