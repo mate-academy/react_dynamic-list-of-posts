@@ -16,7 +16,7 @@ const Post = ({ userId, title, isActive, onPostSelect }) => (
       className="PostsList__button button"
       onClick={onPostSelect}
     >
-      Close
+      {isActive ? 'Close' : 'Open'}
     </button>
   </li>
 );
