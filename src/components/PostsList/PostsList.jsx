@@ -1,37 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { Post } from './post';
+import { fetchDataPosts } from '../../api/posts';
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({ selectedUser, handlePostId, selectedPostId }) => {
+  const [posts, setPosts] = useState([]);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  useEffect(() => {
+    fetchDataPosts(selectedUser, setPosts);
+  }, [selectedUser]);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      <ul className="PostsList__list">
+        {posts.map(post => (
+          <Post
+            post={post}
+            key={post.id}
+            handlePostId={handlePostId}
+            isOpen={+selectedPostId === post.id }
+          />
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+PostsList.propTypes = {
+  selectedUser: PropTypes.string.isRequired,
+  handlePostId: PropTypes.func.isRequired,
+  selectedPostId: PropTypes.string.isRequired,
+};
