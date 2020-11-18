@@ -1,20 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Post } from './post';
-import { getUserPosts } from '../../api/posts';
+import { fetchDataPosts } from '../../api/posts';
 import './PostsList.scss';
 
 export const PostsList = ({ selectedUser, handlePostId, selectedPostId }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    async function fetchData() {
-      const response = await getUserPosts(selectedUser);
-
-      setPosts(response);
-    }
-
-    fetchData();
+    fetchDataPosts(selectedUser, setPosts);
   }, [selectedUser]);
 
   return (

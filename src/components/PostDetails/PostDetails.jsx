@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
-import { getPostDetails } from '../../api/posts';
-import { getPostComments, deleteComment } from '../../api/comments';
+import { fetchPostDetails } from '../../api/posts';
+import { deleteComment } from '../../api/comments';
 import { Comment } from './comment';
 import './PostDetails.scss';
 
@@ -30,15 +30,7 @@ export const PostDetails = ({ selectedPostId }) => {
   };
 
   useEffect(() => {
-    async function fetchData() {
-      const post = await getPostDetails(selectedPostId);
-      const comments = await getPostComments(selectedPostId);
-
-      setPostDetails(post);
-      setPostComments(comments);
-    }
-
-    fetchData();
+    fetchPostDetails(selectedPostId, setPostDetails, setPostComments);
   }, [selectedPostId]);
 
   return (
