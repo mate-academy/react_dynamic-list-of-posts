@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import { Comment } from '../Comment';
 import { removeComment } from '../../api/comments';
 
 export const PostComments = ({ comments, updateComments }) => {
@@ -16,17 +16,10 @@ export const PostComments = ({ comments, updateComments }) => {
           key={comment.id}
           className="PostDetails__list-item"
         >
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-            onClick={() => handleClick(comment.id)}
-          >
-            X
-          </button>
-
-          <p>
-            {comment.body}
-          </p>
+          <Comment
+            {...comment}
+            onClick={handleClick}
+          />
         </li>
       ))}
     </ul>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { addComment } from '../../api/comments';
+import { Input } from '../Input';
+import { Textarea } from '../Textarea';
 import './NewCommentForm.scss';
 
 export const NewCommentForm = ({ postId, updateComments }) => {
@@ -39,32 +41,25 @@ export const NewCommentForm = ({ postId, updateComments }) => {
       onSubmit={handleSubmit}
     >
       <div className="form-field">
-        <input
-          type="text"
+        <Input
           name="name"
-          placeholder="Your name"
-          className="NewCommentForm__input"
           value={name}
+          placeholder="Your name"
           onChange={event => setName(event.target.value)}
         />
       </div>
 
       <div className="form-field">
-        <input
-          type="text"
+        <Input
           name="email"
-          placeholder="Your email"
-          className="NewCommentForm__input"
           value={email}
+          placeholder="Your email"
           onChange={event => setEmail(event.target.value)}
         />
       </div>
 
       <div className="form-field">
-        <textarea
-          name="body"
-          placeholder="Type comment here"
-          className="NewCommentForm__input"
+        <Textarea
           value={body}
           onChange={event => setBody(event.target.value)}
         />

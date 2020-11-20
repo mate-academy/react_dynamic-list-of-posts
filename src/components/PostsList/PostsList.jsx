@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { Post } from '../Post';
 import './PostsList.scss';
 
 import { Loader } from '../Loader';
@@ -35,21 +36,11 @@ export const PostsList = ({ selectedUserId, selectedPostId, selectPost }) => {
                 key={post.id}
                 className="PostsList__item"
               >
-                <div>
-                  <b>{`[User #${post.userId}]:`}</b>
-                  {post.title}
-                </div>
-
-                <button
-                  type="button"
-                  className="PostsList__button button"
-                  onClick={() => selectPost(post.id)}
-                >
-                  {selectedPostId === post.id
-                    ? 'Close'
-                    : 'Open'
-                  }
-                </button>
+                <Post
+                  {...post}
+                  selectedPostId={selectedPostId}
+                  handleClick={selectPost}
+                />
               </li>
             ))}
           </ul>
@@ -60,6 +51,6 @@ export const PostsList = ({ selectedUserId, selectedPostId, selectPost }) => {
 
 PostsList.propTypes = {
   selectedUserId: PropTypes.number.isRequired,
-  selectedPostId: PropTypes.number.isRequired,
   selectPost: PropTypes.func.isRequired,
+  selectedPostId: PropTypes.number.isRequired,
 };
