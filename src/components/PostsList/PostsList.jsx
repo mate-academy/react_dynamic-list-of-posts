@@ -1,37 +1,50 @@
 import React from 'react';
+import propTypes from 'prop-types';
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({ posts, selectedPostId, setSelectedPostId }) => {
+  const handleClick = (id) => {
+    selectedPostId === id
+      ? setSelectedPostId(0)
+      : setSelectedPostId(id);
+  };
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+      <ul className="PostsList__list">
+        {posts.map(post => (
+          <li key={post.id} className="PostsList__item">
+            <div>
+              <b>
+                {`[User #${post.userId}]: `}
+              </b>
+              {post.title}
+            </div>
+            <button
+              type="button"
+              className="PostsList__button button"
+              onClick={() => handleClick(post.id)}
+            >
+              {selectedPostId === post.id
+                ? 'Close'
+                : 'Open'
+              }
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+PostsList.propTypes = {
+  posts: propTypes.arrayOf(propTypes.shape({
+    id: propTypes.number.isRequired,
+    userId: propTypes.number.isRequired,
+    title: propTypes.string.isRequired,
+  })).isRequired,
+  selectedPostId: propTypes.func.isRequired,
+  setSelectedPostId: propTypes.func.isRequired,
+};
