@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
 function App() {
-  const [seletedUser, setSeletedUser] = useState(0);
-  const [selectedPostId, setPostId] = useState('');
+  const [seletedUserId, setSeletedUserId] = useState(0);
+  const [selectedPostId, setPostId] = useState(0);
+
+  const selectUser = useCallback(event => (
+    setSeletedUserId(event.target.value)
+  ), []);
 
   return (
     <div className="App">
@@ -16,7 +20,7 @@ function App() {
 
           <select
             className="App__user-selector"
-            onChange={event => setSeletedUser(event.target.value)}
+            onChange={selectUser}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
@@ -36,13 +40,13 @@ function App() {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            seletedUser={Number(seletedUser)}
+            seletedUserId={Number(seletedUserId)}
             setPostId={setPostId}
             selectedPostId={Number(selectedPostId)}
           />
         </div>
 
-        {selectedPostId
+        {!!selectedPostId
         && (
           <div className="App__content">
             <PostDetails selectedPostId={Number(selectedPostId)} />

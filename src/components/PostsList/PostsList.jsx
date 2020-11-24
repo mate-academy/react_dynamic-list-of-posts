@@ -4,20 +4,20 @@ import './PostsList.scss';
 import { Loader } from '../Loader/Loader';
 import { getUserPosts } from '../../api/posts';
 
-export function PostsList({ seletedUser, setPostId, selectedPostId }) {
+export function PostsList({ seletedUserId, setPostId, selectedPostId }) {
   const [posts, setPosts] = useState([]);
   const [loader, setLoader] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
-      const requestedPosts = await getUserPosts(seletedUser);
+      const requestedPosts = await getUserPosts(seletedUserId);
 
       setPosts(requestedPosts);
     }
 
     fetchData();
     setLoader(false);
-  }, [seletedUser]);
+  }, [seletedUserId]);
 
   const setButtonStatus = useCallback((postId) => {
     setPostId(current => (
@@ -59,7 +59,7 @@ export function PostsList({ seletedUser, setPostId, selectedPostId }) {
 }
 
 PostsList.propTypes = {
-  seletedUser: PropTypes.number.isRequired,
+  seletedUserId: PropTypes.number.isRequired,
   setPostId: PropTypes.func.isRequired,
   selectedPostId: PropTypes.number.isRequired,
 };
