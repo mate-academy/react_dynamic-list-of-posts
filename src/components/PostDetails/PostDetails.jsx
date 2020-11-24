@@ -19,7 +19,7 @@ export const PostDetails = () => (
             type="button"
             className="PostDetails__remove-button button"
           >
-            X
+            XX
           </button>
           <p>My first comment</p>
         </li>
