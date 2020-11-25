@@ -5,14 +5,17 @@ export async function getPostComments(postId) {
   const postComments = await response.json();
 
   const filteredComments = postComments.data.filter(comment => (
-    comment.postId === postId));
+    comment.postId === postId
+  ));
 
   return filteredComments;
 }
 
 export async function deleteCommentFromServer(commentId) {
-  const response = await fetch(`${BASE_URL}/comments/${commentId}`,
-    { method: 'DELETE' });
+  const response = await fetch(
+    `${BASE_URL}/comments/${commentId}`,
+    { method: 'DELETE' },
+  );
 
   if (!response.ok) {
     return 'Error';
