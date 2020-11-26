@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import data from './api/users.json';
 
 function App() {
-  const [seletedUser, setSeletedUser] = useState(0);
-  const [selectedPostId, setPostId] = useState('');
+  const [seletedUserId, setSeletedUserId] = useState(0);
+  const [selectedPostId, setPostId] = useState(0);
+
+  const selectUser = useCallback(event => (
+    setSeletedUserId(event.target.value)
+  ), []);
 
   return (
     <div className="App">
@@ -16,19 +21,12 @@ function App() {
 
           <select
             className="App__user-selector"
-            onChange={event => setSeletedUser(event.target.value)}
+            onChange={selectUser}
           >
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {data.users.map(user => (
+              <option key={user.id} value={user.id}>{user.name}</option>
+            ))}
           </select>
         </label>
       </header>
@@ -36,18 +34,18 @@ function App() {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            seletedUser={Number(seletedUser)}
+            seletedUserId={Number(seletedUserId)}
             setPostId={setPostId}
             selectedPostId={Number(selectedPostId)}
           />
         </div>
 
-        {selectedPostId
-        && (
-          <div className="App__content">
-            <PostDetails selectedPostId={Number(selectedPostId)} />
-          </div>
-        )}
+        {!!selectedPostId
+          && (
+            <div className="App__content">
+              <PostDetails selectedPostId={Number(selectedPostId)} />
+            </div>
+          )}
 
       </main>
     </div>

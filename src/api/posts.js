@@ -9,7 +9,8 @@ export async function getUserPosts(userId) {
   }
 
   const filteredPosts = userPosts.data.filter(post => (
-    post.userId === Number(userId)));
+    post.userId === Number(userId)
+  ));
 
   return filteredPosts;
 }

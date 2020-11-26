@@ -1,14 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export const Comment = (
-  {
-    commentId,
-    commentBody,
-    removeComment,
-    commentErrorId,
-  },
-) => (
+export const Comment = ({
+  commentId,
+  commentBody,
+  removeComment,
+  commentErrorId,
+}) => (
   <>
     <li className="PostDetails__list-item" key={commentId}>
       <button

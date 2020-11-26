@@ -9,6 +9,24 @@ export function NewCommentForm({ onAdd, postId }) {
   const [body, setBody] = useState('');
   const [addCommentError, setAddCommentError] = useState('');
 
+  const addName = useCallback((event) => {
+    setName(event.target.value);
+  }, []);
+
+  const addEmail = useCallback((event) => {
+    setEmail(event.target.value);
+  }, []);
+
+  const addBody = useCallback((event) => {
+    setBody(event.target.value);
+  }, []);
+
+  const resetFormFields = useCallback(() => {
+    setName('');
+    setEmail('');
+    setBody('');
+  }, []);
+
   const addComment = useCallback(async(event) => {
     event.preventDefault();
 
@@ -32,10 +50,8 @@ export function NewCommentForm({ onAdd, postId }) {
 
     onAdd(prevComments => [...prevComments, addedComment]);
 
-    setName('');
-    setEmail('');
-    setBody('');
-  }, [body, email, name, onAdd, postId]);
+    resetFormFields();
+  }, [body, email, name, onAdd, postId, resetFormFields]);
 
   return (
     <form className="NewCommentForm" onSubmit={addComment}>
@@ -46,7 +62,7 @@ export function NewCommentForm({ onAdd, postId }) {
           placeholder="Your name"
           className="NewCommentForm__input"
           value={name}
-          onChange={event => setName(event.target.value)}
+          onChange={addName}
         />
       </div>
 
@@ -57,7 +73,7 @@ export function NewCommentForm({ onAdd, postId }) {
           placeholder="Your email"
           className="NewCommentForm__input"
           value={email}
-          onChange={event => setEmail(event.target.value)}
+          onChange={addEmail}
         />
       </div>
 
@@ -67,7 +83,7 @@ export function NewCommentForm({ onAdd, postId }) {
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={body}
-          onChange={event => setBody(event.target.value)}
+          onChange={addBody}
         />
       </div>
 
