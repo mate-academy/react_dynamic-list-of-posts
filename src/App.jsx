@@ -25,7 +25,7 @@ function App() {
           >
             <option value="0">All users</option>
             {data.users.map(user => (
-              <option value={user.id}>{user.name}</option>
+              <option key={user.id} value={user.id}>{user.name}</option>
             ))}
           </select>
         </label>
