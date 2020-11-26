@@ -38,6 +38,11 @@ ul {
 }
 
 .App {
+  &__PostDetails {
+    position: sticky;
+    top: 20px;
+  }
+
   &__header {
     position: sticky;
     padding: 10px;
@@ -67,6 +72,7 @@ ul {
 
   &__content {
     @extend %stretch-panel;
+    position: relative;
 
     flex-basis: 30%;
     border-color: green;
