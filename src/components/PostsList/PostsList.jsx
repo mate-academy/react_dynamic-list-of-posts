@@ -7,7 +7,7 @@ export const PostsList = ({ userId, setPostId, postId, setLoader }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    getUserPosts(userId).then(res => setPosts(res));
+    getUserPosts(userId).then(setPosts);
   }, [userId]);
 
   return (

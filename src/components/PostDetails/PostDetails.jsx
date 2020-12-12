@@ -13,8 +13,8 @@ export const PostDetails = ({ postId, loader }) => {
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    getPostDetails(postId).then(res => setDetails(res));
-    getPostComments(postId).then(res => setComments(res));
+    getPostDetails(postId).then(setDetails);
+    getPostComments(postId).then(setComments);
   }, [postId]);
 
   return loader ? <Loader /> : (

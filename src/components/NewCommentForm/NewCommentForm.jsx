@@ -8,15 +8,23 @@ export const NewCommentForm = ({ postId, setComments }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (body) {
-      addComment(postId, name, email, body);
+      const option = {
+        postId,
+        name,
+        email,
+        body,
+      };
+
+      addComment(option);
       getPostComments(postId);
       setName('');
       setEmail('');
       setBody('');
-      getPostComments(postId).then(res => setComments(res));
+      getPostComments(postId).then(setComments);
     }
   };
 
