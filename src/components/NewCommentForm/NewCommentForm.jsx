@@ -4,35 +4,39 @@ import classNames from 'classnames';
 import { PropTypes } from 'prop-types';
 import { addComment, getPostComments } from '../../api/comments';
 
+const postNew = {
+  name: '',
+  email: '',
+  body: '',
+};
+
 export const NewCommentForm = ({ postId, setComments }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [post, setPost] = useState(postNew);
+  const { name, email, body } = post;
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (body) {
-      const option = {
-        postId,
-        name,
-        email,
-        body,
-      };
-
-      addComment(option);
+      addComment({
+        ...post, postId,
+      });
       getPostComments(postId);
-      setName('');
-      setEmail('');
-      setBody('');
+      setPost(postNew);
       getPostComments(postId).then(setComments);
     }
   };
 
+  const handleChange = (e) => {
+    const { value, name: item } = e.target;
+
+    setPost({
+      ...post,
+      [item]: value.trimStart(),
+    });
+  };
+
   return (
-    <form
-      className="NewCommentForm"
-      onSubmit={handleSubmit}
-    >
+    <form className="NewCommentForm" onSubmit={handleSubmit}>
       <div className="form-field">
         <input
           type="text"
@@ -40,7 +44,7 @@ export const NewCommentForm = ({ postId, setComments }) => {
           placeholder="Your name"
           className="NewCommentForm__input"
           value={name}
-          onChange={e => setName(e.target.value)}
+          onChange={e => handleChange(e)}
         />
       </div>
 
@@ -51,7 +55,7 @@ export const NewCommentForm = ({ postId, setComments }) => {
           placeholder="Your email"
           className="NewCommentForm__input"
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={e => handleChange(e)}
         />
       </div>
 
@@ -61,7 +65,7 @@ export const NewCommentForm = ({ postId, setComments }) => {
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={body}
-          onChange={e => setBody(e.target.value)}
+          onChange={e => handleChange(e)}
         />
       </div>
 

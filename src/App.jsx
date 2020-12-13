@@ -34,7 +34,6 @@ export const App = () => {
           </select>
         </label>
       </header>
-
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
@@ -42,9 +41,9 @@ export const App = () => {
             setPostId={setPostId}
             postId={postId}
             setLoader={setLoader}
+            loader={loader}
           />
         </div>
-
         <div className="App__content">
           {postId && <PostDetails postId={postId} loader={loader} />}
         </div>
