@@ -41,7 +41,6 @@ export const App = () => {
             setPostId={setPostId}
             postId={postId}
             setLoader={setLoader}
-            loader={loader}
           />
         </div>
         <div className="App__content">
