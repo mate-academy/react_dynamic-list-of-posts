@@ -1,37 +1,43 @@
 import React from 'react';
 import './PostsList.scss';
 
-export const PostsList = () => (
+import { PostsListTypes } from './PostsListTypes';
+
+export const PostsList = ({ postsList, selectedPostId, setSelectedPostId }) => (
   <div className="PostsList">
     <h2>Posts:</h2>
 
     <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
-
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
+      {postsList.map(post => (
+        <li key={post.id} className="PostsList__item">
+          <div>
+            <b>{`[User #${post.userId}]: `}</b>
+            {post.title}
+          </div>
+          {selectedPostId === post.id
+            ? (
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => setSelectedPostId(0)}
+              >
+                Close
+              </button>
+            )
+            : (
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => setSelectedPostId(post.id)}
+              >
+                Open
+              </button>
+            )
+          }
+        </li>
+      ))}
     </ul>
   </div>
 );
+
+PostsList.propTypes = PostsListTypes;
