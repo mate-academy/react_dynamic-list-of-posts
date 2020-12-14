@@ -16,4 +16,9 @@
   &__submit-button {
     margin-top: 10px;
   }
+
+  &__textarea {
+    @extend .NewCommentForm__input;
+    resize: 'none';
+  }
 }
