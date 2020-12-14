@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
@@ -9,27 +10,32 @@ import { getUserPosts } from './api/posts';
 
 const App = () => {
   const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    setIsLoading(false);
+    setIsLoading(true);
     getUserPosts()
       .then((userPosts) => {
         setPosts(userPosts);
-        setIsLoading(true);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setError('Error: an error occurred on the server');
+        setIsLoading(false);
       });
   }, []);
 
   const [selectedPostId, setSelectedPostId] = useState(0);
 
   const handleSelectUser = (value) => {
-    setIsLoading(false);
-    getUserPosts(value === '0'
+    setIsLoading(true);
+    getUserPosts(value === 0
       ? '' : value)
       .then((userPosts) => {
         setPosts(userPosts);
         setSelectedPostId(0);
-        setIsLoading(true);
+        setIsLoading(false);
       });
   };
 
@@ -41,7 +47,7 @@ const App = () => {
 
           <select
             className="App__user-selector"
-            onChange={event => handleSelectUser(event.target.value)}
+            onChange={event => handleSelectUser(Number(event.target.value))}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
@@ -59,18 +65,26 @@ const App = () => {
       </header>
 
       <main className="App__main">
-        {isLoading ? (
-          <div className="App__sidebar">
-            <PostsList
-              postsList={posts}
-              selectedPostId={selectedPostId}
-              setSelectedPostId={setSelectedPostId}
-            />
-          </div>
-        )
+        {error !== ''
+          ? (
+            <p>{error}</p>
+          )
           : (
-            <Loader />
-          )}
+            isLoading
+              ? (
+                <Loader />
+              )
+              : (
+                <div className="App__sidebar">
+                  <PostsList
+                    postsList={posts}
+                    selectedPostId={selectedPostId}
+                    setSelectedPostId={setSelectedPostId}
+                  />
+                </div>
+              )
+          )
+        }
 
         {selectedPostId !== 0 && (
           <div className="App__content">

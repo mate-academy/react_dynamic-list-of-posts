@@ -8,7 +8,7 @@ export const getUserPosts = (
   userId = '',
 ) => {
   const url = userId === ''
-    ? `/posts/${userId}`
+    ? `/posts`
     : `/posts/?userId=${userId}`;
 
   return request(url);

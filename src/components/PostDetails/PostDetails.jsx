@@ -9,16 +9,16 @@ import { Loader } from '../Loader';
 
 export const PostDetails = React.memo(({ postId }) => {
   const [postDetails, setPostDetails] = useState({});
-  const [loadingDetails, setLoadingDetails] = useState(true);
+  const [loadingDetails, setLoadingDetails] = useState(false);
   const [comments, setComments] = useState([]);
   const [hideComments, setHideComments] = useState(false);
 
   useEffect(() => {
-    setLoadingDetails(false);
+    setLoadingDetails(true);
     getPostDetails(postId)
       .then((result) => {
         setPostDetails(result);
-        setLoadingDetails(true);
+        setLoadingDetails(false);
       });
   }, [postId]);
 
@@ -33,7 +33,7 @@ export const PostDetails = React.memo(({ postId }) => {
     <div className="PostDetails">
       <h2>Post details:</h2>
 
-      {loadingDetails
+      {!loadingDetails
         ? (
           <>
             <section className="PostDetails__post">
