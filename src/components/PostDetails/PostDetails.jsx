@@ -42,9 +42,9 @@ export const PostDetails = ({ postId, loader }) => {
               <button
                 type="button"
                 className="PostDetails__remove-button button"
-                onClick={() => {
-                  deleteComment(comment.id);
-                  setComments(comments.filter(com => com.id !== comment.id));
+                onClick={async() => {
+                  await deleteComment(comment.id);
+                  getPostComments(postId).then(setComments);
                 }}
               >
                 X

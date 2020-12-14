@@ -18,7 +18,7 @@ export const App = () => {
           <select
             className="App__user-selector"
             value={value}
-            onChange={e => setValue(e.target.value)}
+            onChange={({ target }) => setValue(target.value)}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>

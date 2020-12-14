@@ -1,8 +1,13 @@
 import { request } from './api';
 
-export const getUserPosts = userId => request('posts')
-  .then(result => result
-    .filter(res => (+userId ? res.userId === +userId : res)));
+export const getUserPosts = async(userId) => {
+  const result = await request('posts');
 
-export const getPostDetails = postId => (
-  request(`posts/${postId}`));
+  return result.filter(res => (+userId ? res.userId === +userId : res));
+};
+
+export const getPostDetails = async(postId) => {
+  const result = await request(`posts/${postId}`);
+
+  return result;
+};

@@ -14,15 +14,16 @@ export const NewCommentForm = ({ postId, setComments }) => {
   const [post, setPost] = useState(postNew);
   const { name, email, body } = post;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    if (body) {
-      addComment({
+    if (name && email && body) {
+      await addComment({
         ...post, postId,
       });
-      getPostComments(postId);
+      const res = await getPostComments(postId);
+
+      setComments(res);
       setPost(postNew);
-      getPostComments(postId).then(setComments);
     }
   };
 
@@ -44,7 +45,7 @@ export const NewCommentForm = ({ postId, setComments }) => {
           placeholder="Your name"
           className="NewCommentForm__input"
           value={name}
-          onChange={e => handleChange(e)}
+          onChange={handleChange}
         />
       </div>
 
@@ -55,7 +56,7 @@ export const NewCommentForm = ({ postId, setComments }) => {
           placeholder="Your email"
           className="NewCommentForm__input"
           value={email}
-          onChange={e => handleChange(e)}
+          onChange={handleChange}
         />
       </div>
 
@@ -65,14 +66,14 @@ export const NewCommentForm = ({ postId, setComments }) => {
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={body}
-          onChange={e => handleChange(e)}
+          onChange={handleChange}
         />
       </div>
 
       <button
         type="submit"
         className={classNames('NewCommentForm__submit-button button', {
-          visible: body,
+          visible: name && email && body,
         })}
       >
         Add a comment
