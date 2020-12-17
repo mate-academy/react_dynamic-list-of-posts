@@ -7,7 +7,6 @@ import { PostDetails } from './components/PostDetails';
 export const App = () => {
   const [value, setValue] = useState('');
   const [postId, setPostId] = useState(null);
-  const [loader, setLoader] = useState(false);
 
   return (
     <div className="App">
@@ -40,11 +39,10 @@ export const App = () => {
             userId={value}
             setPostId={setPostId}
             postId={postId}
-            setLoader={setLoader}
           />
         </div>
         <div className="App__content">
-          {postId && <PostDetails postId={postId} loader={loader} />}
+          {postId && <PostDetails postId={postId} />}
         </div>
       </main>
     </div>

@@ -7,8 +7,8 @@ import { getPostDetails } from '../../api/posts';
 import { getPostComments, deleteComment } from '../../api/comments';
 import { Loader } from '../Loader';
 
-export const PostDetails = ({ postId, loader }) => {
-  const [details, setDetails] = useState({});
+export const PostDetails = ({ postId }) => {
+  const [details, setDetails] = useState(null);
   const [comments, setComments] = useState(null);
   const [hidden, setHidden] = useState(false);
 
@@ -17,7 +17,7 @@ export const PostDetails = ({ postId, loader }) => {
     getPostComments(postId).then(setComments);
   }, [postId]);
 
-  return loader ? <Loader /> : (
+  return !comments || !details ? <Loader /> : (
     <div className="PostDetails">
       <h2>Post details:</h2>
       <h3>{details.title}</h3>
@@ -66,5 +66,4 @@ export const PostDetails = ({ postId, loader }) => {
 
 PostDetails.propTypes = {
   postId: PropTypes.number.isRequired,
-  loader: PropTypes.bool.isRequired,
 };

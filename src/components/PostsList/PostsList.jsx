@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import './PostsList.scss';
 import { PropTypes } from 'prop-types';
 import { getUserPosts } from '../../api/posts';
+import { Loader } from '../Loader';
 
-export const PostsList = ({ userId, setPostId, postId, setLoader }) => {
-  const [posts, setPosts] = useState([]);
+export const PostsList = ({ userId, setPostId, postId }) => {
+  const [posts, setPosts] = useState(null);
 
   useEffect(() => {
     getUserPosts(userId).then(setPosts);
   }, [userId]);
 
-  return (
+  return !posts ? <Loader /> : (
     <div className="PostsList">
 
       <h2>{`Posts: ${posts.length}`}</h2>
@@ -25,11 +26,7 @@ export const PostsList = ({ userId, setPostId, postId, setLoader }) => {
               <button
                 type="button"
                 className="PostsList__button button"
-                onClick={() => {
-                  setLoader(true);
-                  setPostId(post.id);
-                  setTimeout(() => setLoader(false), 1000);
-                }}
+                onClick={() => setPostId(post.id)}
               >
                 Open
               </button>
@@ -53,7 +50,6 @@ PostsList.propTypes = {
   userId: PropTypes.string.isRequired,
   postId: PropTypes.number,
   setPostId: PropTypes.func.isRequired,
-  setLoader: PropTypes.func.isRequired,
 };
 
 PostsList.defaultProps = {
