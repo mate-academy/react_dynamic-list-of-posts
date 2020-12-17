@@ -6,6 +6,7 @@
     padding: 5px 10px;
     border-radius: 5px;
     font-weight: bold;
+    background: #4d457b;
 
     &:hover {
       background-color: lightblue;
@@ -30,5 +31,11 @@
 
   &__button {
     margin-left: 10px;
+    background: #4d457b;
+    
+  }
+
+  button {
+    outline: none;
   }
 }
