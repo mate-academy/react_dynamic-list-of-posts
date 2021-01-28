@@ -13,6 +13,13 @@
     color: #4d457b;
   }
 
+  &__error {
+    font-family: inherit;
+    font-size: 0.9rem;
+    padding: 10px 5px;
+    color: darkred;
+  }
+
   &__submit-button {
     margin-top: 10px;
   }
