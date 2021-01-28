@@ -67,7 +67,7 @@ export const PostDetails = ({
               </p>
             </section>
 
-            {!commentsLoadingFailed && (
+            {commentsLoadingFailed && (
               <div>Failed to load comments</div>
             )}
 
