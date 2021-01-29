@@ -20,12 +20,7 @@ export const PostDetails = ({ post }) => {
   };
 
   const removeComment = (commentId) => {
-    const i = comments.findIndex(comment => comment.id === commentId);
-    const newComments = [...comments];
-
-    newComments.splice(i, 1);
-
-    setComments(newComments);
+    setComments(prev => prev.filter(comment => comment.id !== commentId));
   };
 
   const postComments = comments.filter(comment => comment.postId === post.id);
