@@ -58,7 +58,7 @@ export const PostDetails = ({ postId }) => {
                 : `Show ${comments.length} comments`
               }
             </button>
-            {commentsShown ? (
+            {commentsShown && (
               <ul className="PostDetails__list">
                 {comments.map(comment => (
                   <li key={comment.id} className="PostDetails__list-item">
@@ -73,7 +73,7 @@ export const PostDetails = ({ postId }) => {
                   </li>
                 ))}
               </ul>
-            ) : ''}
+            )}
           </section>
 
           <section>
