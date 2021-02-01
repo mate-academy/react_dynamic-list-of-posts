@@ -15,11 +15,9 @@ const App = () => {
   };
 
   const handlePostSelection = (postId) => {
-    if (!postId) {
+    if (!postId || (selectedPostId === postId && showPostDetails)) {
       setShowPostDetails(false);
-    } else if (selectedPostId === postId && showPostDetails) {
-      setShowPostDetails(false);
-    } else {
+    }  else {
       setSelectedPostId(postId);
       setShowPostDetails(true);
     }

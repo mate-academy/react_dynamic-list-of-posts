@@ -31,7 +31,6 @@ export const PostDetails = ({ postId }) => {
       .then (() => {
         getComments(postId)
         .then((postCommentsFromServer) => {
-          console.log(postCommentsFromServer);
           setPostComments(postCommentsFromServer);
         });
       })
