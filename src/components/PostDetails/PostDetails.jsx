@@ -10,9 +10,26 @@ export const PostDetails = ({ post }) => {
 
   useEffect(() => {
     getPostComments(post.id)
-      .then(commentsFomServer => (!commentsFomServer
-        ? setComments([])
-        : setComments(commentsFomServer)));
+      .then((commentsFomServer) => {
+        if (!commentsFomServer) {
+          setComments([]);
+
+          return;
+        }
+
+        const newComments = commentsFomServer.filter((comment) => {
+          if (!comment.body) {
+            return;
+          }
+          // eslint-disable-next-line
+          return comment;
+        });
+
+        setComments(newComments);
+
+        // eslint-disable-next-line
+        return comments;
+      });
   }, [post.id]);
 
   const addComment = (comment) => {
