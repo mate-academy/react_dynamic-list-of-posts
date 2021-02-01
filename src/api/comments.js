@@ -9,3 +9,25 @@ export const getPostComments = async(postId) => {
 
   return result;
 };
+
+const post = (url, data) => fetch(`${BASE_URL}${url}`, {
+  method: 'POST',
+  body: JSON.stringify(data),
+})
+  .then(response => response.json())
+  .then(result => result.data);
+
+// eslint-disable-next-line
+export const addPostComment = ({ id, postId, name, email, body }) => post('/comments', {
+  postId,
+  name,
+  email,
+  body,
+});
+
+// eslint-disable-next-line
+export const deletePostComment = postId => fetch(`${BASE_URL}/comments/${postId}`, {
+  method: 'DELETE',
+})
+  .then(response => response.json())
+  .then(result => result.data);

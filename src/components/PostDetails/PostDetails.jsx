@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { getPostDetails } from '../../api/posts';
-import { getPostComments } from '../../api/comments';
+import * as api from '../../api/comments';
 
 export const PostDetails = ({ postId }) => {
   const [details, setDetails] = useState({});
@@ -12,21 +12,21 @@ export const PostDetails = ({ postId }) => {
 
   useEffect(() => {
     getPostDetails(postId).then(setDetails);
-    getPostComments(postId).then(setComments);
+    api.getPostComments(postId).then(setComments);
   }, [postId]);
 
   const deleteComment = (commentId) => {
-    const commentsFilter = comments.filter(comment => comment.id !== commentId);
-
-    setComments(commentsFilter);
+    api.deletePostComment(commentId)
+      .then(() => api.getPostComments(postId))
+      .then(setComments);
   };
 
   const addComment = ({ name, email, body }) => {
-    const id = Math.random();
-
-    setComments([...comments, {
-      id, postId, name, email, body,
-    }]);
+    api.addPostComment({
+      postId, name, email, body,
+    })
+      .then(() => api.getPostComments(postId))
+      .then(setComments);
   };
 
   return (
