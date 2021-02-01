@@ -84,7 +84,7 @@ export const PostDetails = ({ post }) => {
                     {comment.body}
                     <br />
                     <span>
-                      by:
+                      by:&nbsp;
                       <b>{comment.name}</b>
                     </span>
                   </p>
