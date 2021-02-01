@@ -79,7 +79,15 @@ export const PostDetails = ({ post }) => {
                   >
                     X
                   </button>
-                  <p>{comment.body}</p>
+                  <br />
+                  <p>
+                    {comment.body}
+                    <br />
+                    <span>
+                      by:
+                      <b>{comment.name}</b>
+                    </span>
+                  </p>
                 </li>
               ))}
             </ul>
