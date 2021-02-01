@@ -15,7 +15,17 @@ export const PostDetails = ({ post }) => {
   const loadComments = (postId) => {
     getComments(postId)
       .then((commentsFromServer) => {
-        setComments(commentsFromServer);
+        const newComments = commentsFromServer.filter((comment) => {
+          if (!comment.body.trim()) {
+            return;
+          }
+
+          comment.body.trim();
+          // eslint-disable-next-line
+          return comment;
+        });
+
+        setComments(newComments);
       });
   };
 
