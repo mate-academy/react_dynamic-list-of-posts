@@ -17,17 +17,22 @@ const post = (url, data) => fetch(`${BASE_URL}${url}`, {
   .then(response => response.json())
   .then(result => result.data);
 
-// eslint-disable-next-line
-export const addPostComment = ({ id, postId, name, email, body }) => post('/comments', {
+export const addPostComment = ({
+  postId,
+  name,
+  email,
+  body,
+}) => post('/comments', {
   postId,
   name,
   email,
   body,
 });
 
-// eslint-disable-next-line
-export const deletePostComment = postId => fetch(`${BASE_URL}/comments/${postId}`, {
-  method: 'DELETE',
-})
+export const deletePostComment = postId => fetch(
+  `${BASE_URL}/comments/${postId}`, {
+    method: 'DELETE',
+  },
+)
   .then(response => response.json())
   .then(result => result.data);

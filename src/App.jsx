@@ -19,7 +19,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    if (userId === 0) {
+    if (!userId) {
       getAllPosts().then(setPosts);
     } else {
       getUserPosts(userId).then(setPosts);

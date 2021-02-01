@@ -6,14 +6,19 @@ export const NewCommentForm = ({ addComment }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
+  const [errorEmptyStr, setErrorEmptyStr] = useState(false);
 
   const createComment = () => {
-    addComment({
-      name, email, body,
-    });
-    setName('');
-    setEmail('');
-    setBody('');
+    if (name.trim() && email.trim() && body.trim()) {
+      addComment({
+        name, email, body,
+      });
+      setName('');
+      setEmail('');
+      setBody('');
+    } else {
+      setErrorEmptyStr(true);
+    }
   };
 
   return (
@@ -25,13 +30,20 @@ export const NewCommentForm = ({ addComment }) => {
       }}
     >
       <div className="form-field">
+        {errorEmptyStr && (
+          <p className="NewCommentForm__error">You try to add ampty string</p>
+        )}
         <input
           type="text"
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
           value={name}
-          onChange={event => setName(event.target.value)}
+          onChange={(event) => {
+            setErrorEmptyStr(false);
+            setName(event.target.value);
+          }}
+          required
         />
       </div>
 
@@ -42,7 +54,11 @@ export const NewCommentForm = ({ addComment }) => {
           placeholder="Your email"
           className="NewCommentForm__input"
           value={email}
-          onChange={event => setEmail(event.target.value)}
+          onChange={(event) => {
+            setErrorEmptyStr(false);
+            setEmail(event.target.value);
+          }}
+          required
 
         />
       </div>
@@ -53,7 +69,11 @@ export const NewCommentForm = ({ addComment }) => {
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={body}
-          onChange={event => setBody(event.target.value)}
+          onChange={(event) => {
+            setErrorEmptyStr(false);
+            setBody(event.target.value);
+          }}
+          required
 
         />
       </div>
