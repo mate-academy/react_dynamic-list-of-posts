@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
-import { getPostComments } from '../../api/comments';
+import { deleteComment, getComments, postComment } from '../../api/comments';
 import { TypePost } from '../../types';
 
 export const PostDetails = ({ post }) => {
@@ -9,38 +9,29 @@ export const PostDetails = ({ post }) => {
   const [isVisisble, setVisibility] = useState(true);
 
   useEffect(() => {
-    getPostComments(post.id)
-      .then((commentsFomServer) => {
-        if (!commentsFomServer) {
-          setComments([]);
-
-          return;
-        }
-
-        const newComments = commentsFomServer.filter((comment) => {
-          if (!comment.body) {
-            return;
-          }
-          // eslint-disable-next-line
-          return comment;
-        });
-
-        setComments(newComments);
-
-        // eslint-disable-next-line
-        return comments;
-      });
+    loadComments(post.id);
   }, [post.id]);
 
-  const addComment = (comment) => {
-    setComments(prev => [...prev, comment]);
+  const loadComments = (postId) => {
+    getComments(postId)
+      .then((commentsFromServer) => {
+        setComments(commentsFromServer);
+      });
   };
 
-  const removeComment = (commentId) => {
-    setComments(prev => prev.filter(comment => comment.id !== commentId));
+  const addPostComment = (comment, postId) => {
+    postComment(comment, postId)
+      .then(() => {
+        loadComments(postId);
+      });
   };
 
-  const postComments = comments.filter(comment => comment.postId === post.id);
+  const deletePostComment = (commentId, postId) => {
+    deleteComment(commentId)
+      .then(() => {
+        loadComments(postId);
+      });
+  };
 
   return (
     <div className="PostDetails">
@@ -51,8 +42,8 @@ export const PostDetails = ({ post }) => {
       </section>
 
       <section className="PostDetails__comments">
-        {postComments.length === 0 && 'There is no comment to display'}
-        {(postComments.length > 0 && isVisisble === true) && (
+        {comments.length === 0 && 'There is no comment to display'}
+        {(comments.length > 0 && isVisisble === true) && (
           <>
             <button
               type="button"
@@ -63,18 +54,18 @@ export const PostDetails = ({ post }) => {
             >
               Hide
               {' '}
-              {postComments.length}
+              {comments.length}
               {' '}
               comments
             </button>
             <ul className="PostDetails__list">
 
-              {postComments.map(comment => (
+              {comments.map(comment => (
                 <li key={comment.id} className="PostDetails__list-item">
                   <button
                     type="button"
                     className="PostDetails__remove-button button"
-                    onClick={() => removeComment(comment.id, post.id)}
+                    onClick={() => deletePostComment(comment.id, post.id)}
                   >
                     X
                   </button>
@@ -84,7 +75,7 @@ export const PostDetails = ({ post }) => {
             </ul>
           </>
         )}
-        {(postComments.length > 0 && isVisisble === false) && (
+        {(comments.length > 0 && isVisisble === false) && (
           <button
             type="button"
             className="button"
@@ -94,7 +85,7 @@ export const PostDetails = ({ post }) => {
           >
             Show
             {' '}
-            {postComments.length}
+            {comments.length}
             {' '}
             comments
           </button>
@@ -103,7 +94,7 @@ export const PostDetails = ({ post }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm postId={post.id} addComment={addComment} />
+          <NewCommentForm postId={post.id} addComment={addPostComment} />
         </div>
       </section>
     </div>
