@@ -27,14 +27,25 @@ export const PostDetails = ({ postId }) => {
   }, [postId]);
 
   const deleteComment = (commentId) => {
-    setPostComments(current => current
-      .filter(comment => comment.id !== commentId));
-    delCommentFromServer(commentId);
+    delCommentFromServer(commentId)
+      .then (() => {
+        getComments(postId)
+        .then((postCommentsFromServer) => {
+          console.log(postCommentsFromServer);
+          setPostComments(postCommentsFromServer);
+        });
+      })
   };
 
   const addComment = (newComment) => {
-    setPostComments(current => [...current, newComment]);
-    pushCommentToServer(newComment);
+    pushCommentToServer(newComment)
+      .then (() => {
+        getComments(postId)
+        .then((postCommentsFromServer) => {
+          setPostComments(postCommentsFromServer);
+        });
+      })
+
   };
 
   return (

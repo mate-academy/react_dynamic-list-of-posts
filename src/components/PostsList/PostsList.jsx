@@ -60,7 +60,7 @@ export const PostsList = ({
 
 PostsList.propTypes = {
   userId: PropTypes.number.isRequired,
-  showPost: PropTypes.bool.isRequired,
+  showPost: PropTypes.func.isRequired,
   selectedPostId: PropTypes.number.isRequired,
   showPostDetails: PropTypes.bool.isRequired,
 };
