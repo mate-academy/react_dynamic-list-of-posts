@@ -13,7 +13,7 @@ export const PostDetails = ({ post }) => {
       .then(commentsFomServer => (!commentsFomServer
         ? setComments([])
         : setComments(commentsFomServer)));
-  }, []);
+  }, [post.id]);
 
   const addComment = (comment) => {
     setComments(prev => [...prev, comment]);
