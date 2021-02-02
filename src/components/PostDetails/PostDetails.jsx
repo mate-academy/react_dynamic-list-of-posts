@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { NewCommentForm } from '../NewCommentForm';
@@ -13,13 +13,13 @@ export const PostDetails = ({
 }) => {
   const [postComments, setPostComments] = useState([]);
 
-  function loadPostComments() {
+  const loadPostComments = useCallback(() => {
     getPostComments().then((allComments) => {
       setPostComments(
         allComments.filter(com => com.postId === selectedPost.id),
       );
     });
-  }
+  }, [selectedPost]);
 
   useEffect(() => {
     loadPostComments();

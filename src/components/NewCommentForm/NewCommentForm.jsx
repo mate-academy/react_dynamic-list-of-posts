@@ -39,6 +39,7 @@ export const NewCommentForm = ({
           type="text"
           name="name"
           value={name}
+          required
           placeholder="Your name"
           className="NewCommentForm__input"
           onChange={event => setName(event.target.value)}
@@ -50,6 +51,7 @@ export const NewCommentForm = ({
           type="text"
           name="email"
           value={email}
+          required
           placeholder="Your email"
           className="NewCommentForm__input"
           onChange={event => setEmail(event.target.value)}
@@ -60,6 +62,7 @@ export const NewCommentForm = ({
         <textarea
           name="body"
           value={body}
+          required
           placeholder="Type comment here"
           className="NewCommentForm__input"
           onChange={event => setBody(event.target.value)}
