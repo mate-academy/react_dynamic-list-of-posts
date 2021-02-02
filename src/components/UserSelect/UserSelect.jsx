@@ -27,7 +27,7 @@ export const UserSelect = () => {
         value={chosenUser}
         onChange={changeHandler}
       >
-        <option key="0" value="0">All users</option>
+        <option value="0">All users</option>
         {users.map(({ name, userId }) => (
           <option
             key={userId}
