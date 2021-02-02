@@ -1,37 +1,47 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './PostsList.scss';
 
-export const PostsList = () => (
+export const PostsList = ({ posts, getPostId, selectedPostId }) => (
   <div className="PostsList">
     <h2>Posts:</h2>
 
     <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+      {posts.map(post => (
+        <li key={post.id} className="PostsList__item">
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+          <div>
+            <b>
+              [User #
+              {post.userId}
+              ]:
+              {' '}
+            </b>
+            {post.title}
+          </div>
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
+          <button
+            type="button"
+            className="PostsList__button button"
+            onClick={() => getPostId(post.id)}
+          >
+            {selectedPostId === post.id ? 'Close' : 'Open' }
+          </button>
+
+        </li>
+      ))}
     </ul>
   </div>
 );
+
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      userId: PropTypes.number,
+      title: PropTypes.string,
+    }).isRequired,
+  ).isRequired,
+  getPostId: PropTypes.func.isRequired,
+  selectedPostId: PropTypes.number.isRequired,
+};
