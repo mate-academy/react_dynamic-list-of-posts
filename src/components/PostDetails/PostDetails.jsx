@@ -127,6 +127,11 @@ export const PostDetails = ({
 
 PostDetails.propTypes = {
   postLoadingFailed: PropTypes.bool.isRequired,
-  id: PropTypes.number.isRequired,
-  body: PropTypes.string.isRequired,
+  id: PropTypes.number,
+  body: PropTypes.string,
+};
+
+PostDetails.defaultProps = {
+  id: 0,
+  body: '',
 };

@@ -13,7 +13,7 @@ export const NewCommentForm = ({ postId, onCommentSubmit }) => {
   }, [name, email, body]);
 
   const addComment = () => {
-    if (!body) {
+    if (!body.trim()) {
       setIsErrorNoteVisible(true);
 
       return;
@@ -25,6 +25,10 @@ export const NewCommentForm = ({ postId, onCommentSubmit }) => {
       email,
       body,
     };
+
+    setName('');
+    setEmail('');
+    setBody('');
 
     onCommentSubmit(newComment);
   };
