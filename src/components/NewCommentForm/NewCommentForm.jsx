@@ -42,6 +42,8 @@ export const NewCommentForm = ({ postComment }) => {
       setName('');
       setEmail('');
       setBody('');
+    } else {
+      setSpacesStatus(true);
     }
   };
 
