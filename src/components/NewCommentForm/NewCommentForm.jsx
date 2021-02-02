@@ -1,39 +1,102 @@
-import React from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
+import classnames from 'classnames';
 
-export const NewCommentForm = () => (
-  <form className="NewCommentForm">
-    <div className="form-field">
-      <input
-        type="text"
-        name="name"
-        placeholder="Your name"
-        className="NewCommentForm__input"
-      />
-    </div>
+export const NewCommentForm = ({ addComment }) => {
+  const [inputName, setInputName] = useState('');
+  const [inputMail, setInputMail] = useState('');
+  const [inputComment, setInputComment] = useState('');
+  const [submit, setSubmit] = useState(false);
 
-    <div className="form-field">
-      <input
-        type="text"
-        name="email"
-        placeholder="Your email"
-        className="NewCommentForm__input"
-      />
-    </div>
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setSubmit(true);
 
-    <div className="form-field">
-      <textarea
-        name="body"
-        placeholder="Type comment here"
-        className="NewCommentForm__input"
-      />
-    </div>
+    if (
+      inputName.trim()
+      && inputMail.trim()
+      && inputComment.trim()
+    ) {
+      addComment({
+        name: inputName,
+        email: inputMail,
+        body: inputComment,
+      });
 
-    <button
-      type="submit"
-      className="NewCommentForm__submit-button button"
+      setInputName('');
+      setInputMail('');
+      setInputComment('');
+      setSubmit(false);
+    }
+  };
+
+  return (
+    <form
+      className="NewCommentForm"
+      onSubmit={handleSubmit}
     >
-      Add a comment
-    </button>
-  </form>
-);
+      <div className="form-field">
+        <input
+          type="text"
+          name="name"
+          value={inputName}
+          placeholder="Your name"
+          className={classnames({
+            NewCommentForm__input: true,
+            'NewCommentForm__input-error': !inputName && submit,
+          })}
+          onChange={(event) => {
+            setInputName(event.target.value);
+          }}
+        />
+      </div>
+
+      <div className="form-field">
+        <input
+          type="text"
+          name="email"
+          value={inputMail}
+          placeholder="Your email"
+          className={classnames({
+            NewCommentForm__input: true,
+            'NewCommentForm__input-error': !inputMail && submit,
+          })}
+          onChange={(event) => {
+            setInputMail(event.target.value);
+          }}
+        />
+      </div>
+
+      <div className="form-field">
+        <textarea
+          name="body"
+          placeholder="Type comment here"
+          className={classnames({
+            NewCommentForm__input: true,
+            'NewCommentForm__input-error': !inputComment && submit,
+          })}
+          value={inputComment}
+          onChange={(event) => {
+            setInputComment(event.target.value);
+          }}
+        />
+      </div>
+
+      <button
+        type="submit"
+        className={classnames({
+          'NewCommentForm__submit-button': true,
+          button: true,
+          'NewCommentForm__submit-button-active': inputComment,
+        })}
+      >
+        Add a comment
+      </button>
+    </form>
+  );
+};
+
+NewCommentForm.propTypes = {
+  addComment: PropTypes.func.isRequired,
+};
