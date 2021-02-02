@@ -1,45 +1,91 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
+import * as api from '../../api/comments';
 import './PostDetails.scss';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({ post }) => {
+  const [comments, setComments] = useState([]);
+  const [isVisble, setIsVisble] = useState(false);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  useEffect(() => {
+    api.getPostComments(post.id)
+      .then(setComments);
+  }, [post.id]);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const commentDelete = async(commentId) => {
+    await api.deleteComment(commentId);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+    updateComments();
+  };
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  const updateComments = async() => {
+    const commentsFromServer = await api.getPostComments(post.id);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+    setComments(commentsFromServer);
+  };
+
+  const addCommment = async(commentId) => {
+    await api.addComment(commentId);
+
+    updateComments();
+  };
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <p>{post.body}</p>
+      </section>
+
+      <section className="PostDetails__comments">
+        <button
+          type="button"
+          className="button"
+          onClick={() => setIsVisble(!isVisble)}
+        >
+          {isVisble ? 'Hide comments' : 'Show comments'}
+        </button>
+
+        {isVisble && (
+          <ul className="PostDetails__list">
+            {comments.map(comment => (
+              <li
+                className="PostDetails__list-item"
+                key={comment.id}
+              >
+                <button
+                  type="button"
+                  className="PostDetails__remove-button button"
+                  onClick={() => commentDelete(comment.id)}
+                >
+                  X
+                </button>
+                <p>{comment.body}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+
+      </section>
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            onAdd={addCommment}
+            postId={post.id}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};
+
+PostDetails.propTypes = {
+  post: PropTypes.shape({
+    userId: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
+    body: PropTypes.string.isRequired,
+  }).isRequired,
+};

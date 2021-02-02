@@ -1,37 +1,54 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import './PostsList.scss';
+import { getUserPosts } from '../../api/posts';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({ userId, getSelectedPostId, postId }) => {
+  const [posts, setPosts] = useState([]);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  useEffect(() => {
+    getUserPosts(userId)
+      .then(setPosts);
+  }, [userId]);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      <ul className="PostsList__list">
+        {posts.map(post => (
+          <li
+            key={post.id}
+            className="PostsList__item"
+          >
+            <div>
+              <b>
+                User:
+                {post.userId}
+              </b>
+              <br />
+              {post.body}
+            </div>
+            <button
+              type="button"
+              className="PostsList__button button"
+              onClick={() => {
+                postId === post.id
+                  ? getSelectedPostId(0)
+                  : getSelectedPostId(post.id);
+              }}
+            >
+              {postId !== post.id ? 'Open' : 'Close'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+PostsList.propTypes = {
+  userId: PropTypes.digit,
+  getSelectedPostId: PropTypes.func,
+  postId: PropTypes.digit,
+}.isRequired;
