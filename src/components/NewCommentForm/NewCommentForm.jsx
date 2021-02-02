@@ -6,6 +6,7 @@ export const NewCommentForm = ({ postComment }) => {
   const [nameQuery, setName] = useState('');
   const [emailQuery, setEmail] = useState('');
   const [bodyQuery, setBody] = useState('');
+  const [hasOnlySpaces, setSpacesStatus] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -23,14 +24,27 @@ export const NewCommentForm = ({ postComment }) => {
       default:
         break;
     }
+
+    if (hasOnlySpaces) {
+      setSpacesStatus(false);
+    }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (nameQuery && emailQuery && bodyQuery) {
+    if (
+      nameQuery.trim()
+      && emailQuery.trim()
+      && bodyQuery.trim()) {
       postComment([nameQuery, emailQuery, bodyQuery]);
+
+      setName('');
+      setEmail('');
+      setBody('');
     }
+
+    setSpacesStatus(true);
   };
 
   return (
@@ -46,6 +60,7 @@ export const NewCommentForm = ({ postComment }) => {
           className="NewCommentForm__input"
           value={nameQuery}
           onChange={handleChange}
+          required
         />
       </div>
 
@@ -57,6 +72,7 @@ export const NewCommentForm = ({ postComment }) => {
           className="NewCommentForm__input"
           value={emailQuery}
           onChange={handleChange}
+          required
         />
       </div>
 
@@ -67,8 +83,16 @@ export const NewCommentForm = ({ postComment }) => {
           className="NewCommentForm__input"
           value={bodyQuery}
           onChange={handleChange}
+          required
         />
       </div>
+      {hasOnlySpaces
+        && (
+          <div className="NewCommentForm__has-spaces">
+            The fields cannot contain only spaces
+          </div>
+        )
+      }
 
       <button
         type="submit"

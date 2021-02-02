@@ -25,35 +25,22 @@ export const PostDetails = React.memo(({ selectedPostId }) => {
   };
 
   const deleteComment = async(commentId) => {
-    try {
-      const comment = await deleteCommentFromServer(commentId);
+    await deleteCommentFromServer(commentId);
 
-      loadComments(selectedPostId);
-      // eslint-disable-next-line no-console
-      console.log(`Comment ${comment.id} was deleted`);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.warn(`Something went wrond - ${error}`);
-    }
+    loadComments(selectedPostId);
   };
 
   const postComment = async(data) => {
     const [nameQuery, emailQuery, bodyQuery] = data;
 
-    try {
-      const comment = await postCommentToServer({
-        postId: selectedPostId,
-        name: nameQuery,
-        email: emailQuery,
-        body: bodyQuery,
-      });
+    await postCommentToServer({
+      postId: selectedPostId,
+      name: nameQuery,
+      email: emailQuery,
+      body: bodyQuery,
+    });
 
-      loadComments(selectedPostId);
-      // eslint-disable-next-line no-console
-      console.log(`Post ${comment.id} was added`);
-    } catch (error) {
-      throw new Error(error);
-    }
+    loadComments(selectedPostId);
   };
 
   useEffect(() => {
@@ -61,7 +48,7 @@ export const PostDetails = React.memo(({ selectedPostId }) => {
     loadComments(selectedPostId);
   }, [selectedPostId]);
 
-  if (!currentPost) {
+  if (!currentPost || !comments) {
     return (
       <Loader />
     );

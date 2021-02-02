@@ -8,19 +8,19 @@ import './App.scss';
 import './styles/general.scss';
 
 const App = () => {
-  const [selectedUser, selectUser] = useState(0);
+  const [selectedUserId, selectUser] = useState(0);
   const [selectedPostId, setPostId] = useState(0);
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    const loadPosts = async() => {
-      const postsFromServer = await getUserPosts(selectedUser);
+    loadPosts(selectedUserId);
+  }, [selectedUserId]);
 
-      setPosts(postsFromServer);
-    };
+  const loadPosts = async(userId) => {
+    const postsFromServer = await getUserPosts(userId);
 
-    loadPosts();
-  }, [selectedUser]);
+    setPosts(postsFromServer);
+  };
 
   const handleChange = (event) => {
     selectUser(+event.target.value);
@@ -34,7 +34,7 @@ const App = () => {
 
           <select
             className="App__user-selector"
-            value={selectedUser}
+            value={selectedUserId}
             onChange={handleChange}
           >
             <option value="0">All users</option>
@@ -56,7 +56,7 @@ const App = () => {
         <div className="App__sidebar">
           <PostsList
             posts={posts}
-            userId={selectedUser}
+            userId={selectedUserId}
             setPostId={setPostId}
             selectedPostId={selectedPostId}
           />
