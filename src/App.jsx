@@ -51,7 +51,7 @@ const App = () => {
         </div>
 
         <div className="App__content">
-          {selectedPost.id
+          {(selectedPost.id > -1)
             && (
               <PostDetails
                 selectedPost={selectedPost}
