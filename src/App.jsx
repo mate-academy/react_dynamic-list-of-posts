@@ -12,13 +12,11 @@ const App = () => {
 
   useEffect(() => {
     getUsers()
-    // eslint-disable-next-line
-      .then((users) => {
+      .then((usersFromServer) => {
         // eslint-disable-next-line
-        users = users
-          .filter(({ id }) => id <= 10);
+        const usersOnPage = usersFromServer.filter(({ id }) => id <= 10);
 
-        setUsers(users.map(({ name, id }) => ({
+        setUsers(usersOnPage.map(({ name, id }) => ({
           name, id,
         })));
       });
@@ -41,7 +39,7 @@ const App = () => {
               setUserId(+e.currentTarget.value);
             }}
           >
-            <option key="0" value="0">All users</option>
+            <option value="0">All users</option>
             {users.map(({ name, id }) => (
               <option
                 key={id}

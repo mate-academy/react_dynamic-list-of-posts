@@ -1,6 +1,6 @@
 export const BASE_URL = 'https://mate-api.herokuapp.com';
 // eslint-disable-next-line
-export const request = async(url, options) => fetch(`${BASE_URL}${url}`, options)
+export const request = (url, options) => fetch(`${BASE_URL}${url}`, options)
   .then((response) => {
     if (!response.ok) {
       throw Error;

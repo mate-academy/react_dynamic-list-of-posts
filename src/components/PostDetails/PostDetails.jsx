@@ -19,8 +19,6 @@ export const PostDetails = ({ post }) => {
           if (!comment.body.trim()) {
             return;
           }
-
-          comment.body.trim();
           // eslint-disable-next-line
           return comment;
         });
@@ -53,7 +51,7 @@ export const PostDetails = ({ post }) => {
 
       <section className="PostDetails__comments">
         {comments.length === 0 && 'There is no comment to display'}
-        {(comments.length > 0 && isVisisble === true) && (
+        {(comments.length > 0 && isVisisble) && (
           <>
             <button
               type="button"

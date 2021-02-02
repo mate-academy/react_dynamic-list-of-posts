@@ -26,9 +26,7 @@ export const NewCommentForm = ({ postId, addComment }) => {
   return (
     <form
       className="NewCommentForm"
-      onSubmit={(e) => {
-        submitHandler(e);
-      }}
+      onSubmit={submitHandler}
     >
       <div className="form-field">
         <input
@@ -38,7 +36,7 @@ export const NewCommentForm = ({ postId, addComment }) => {
           value={name}
           placeholder="Your name"
           className="NewCommentForm__input"
-          onChange={e => setName(e.currentTarget.value)}
+          onChange={e => setName(e.target.value)}
         />
       </div>
 
@@ -50,7 +48,7 @@ export const NewCommentForm = ({ postId, addComment }) => {
           value={email}
           placeholder="Your email"
           className="NewCommentForm__input"
-          onChange={e => setEmail(e.currentTarget.value)}
+          onChange={e => setEmail(e.target.value)}
         />
       </div>
 
@@ -61,7 +59,7 @@ export const NewCommentForm = ({ postId, addComment }) => {
           value={body}
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          onChange={e => setBody(e.currentTarget.value)}
+          onChange={e => setBody(e.target.value)}
         />
       </div>
 

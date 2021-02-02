@@ -7,9 +7,8 @@ export const UserSelect = () => {
 
   useEffect(() => {
     getUsers()
-    // eslint-disable-next-line
-      .then((users) => {
-        setUsers(users.data.map(({ name, id }) => ({
+      .then((usersFromServer) => {
+        setUsers(usersFromServer.data.map(({ name, id }) => ({
           name, userId: id,
         })));
       });
