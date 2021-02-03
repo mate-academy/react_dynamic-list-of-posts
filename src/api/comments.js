@@ -10,12 +10,12 @@ const post = (url, data) => fetch(`${BASE_URL}${url}`, {
   .then(result => result.data);
 
 export const addPostComment = ({
-  postId,
+  selectedPostId,
   name,
   email,
   body,
 }) => post('/comments', {
-  postId,
+  postId: selectedPostId,
   name,
   email,
   body,

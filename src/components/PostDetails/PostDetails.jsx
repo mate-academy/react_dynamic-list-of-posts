@@ -8,7 +8,7 @@ import './PostDetails.scss';
 export const PostDetails = ({ selectedPostId }) => {
   const [details, setDetails] = useState({});
   const [showComments, setShowComments] = useState(true);
-  const [comments, setComments] = useState({});
+  const [comments, setComments] = useState([]);
 
   useEffect(() => {
     getPostDetails(selectedPostId).then(setDetails);
