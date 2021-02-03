@@ -14,27 +14,27 @@ const App = () => {
   const [post, setPost] = useState(0);
   const [IsRenderPost, setIsRenderPost] = useState(false);
   const [comments, setComments] = useState([]);
-  const [loaderComments, setLoaderComments] = useState(false);
   const [loaderPosts, setLoaderPosts] = useState(false);
   const [value, setValue] = useState(0);
 
   useEffect(() => {
     loadUsers();
+    selectPost();
   }, []);
 
   useEffect(() => {
     loadPosts();
   }, [value]);
 
-  useEffect(() => {
-    selectPost();
-  }, []);
-
   const deleteComment = async(commentId) => {
     await removeComment(commentId);
   };
 
   const createComment = async(name, email, bodyOfComment, id) => {
+    if (!name || !email || !bodyOfComment) {
+      return;
+    }
+
     const newComment = {
       name,
       email,
@@ -46,14 +46,11 @@ const App = () => {
   };
 
   const loadComments = async(postId) => {
-    setLoaderComments(true);
     const commentsFromServer = await getComments();
 
     setComments([...commentsFromServer.data].filter(
       comment => comment.postId === postId,
     ));
-
-    setLoaderComments(false);
   };
 
   const loadUsers = async() => {
@@ -71,7 +68,7 @@ const App = () => {
       ? postsFromServer.data
       : [...postsFromServer.data]
         .filter(
-          post => post.userId === value,
+          postsItem => postsItem.userId === value,
         ));
   };
 
@@ -123,7 +120,6 @@ const App = () => {
               post={post}
               comments={comments}
               onLoadComments={loadComments}
-              loader={loaderComments}
               onDeleteComment={deleteComment}
               onAddComment={createComment}
             />

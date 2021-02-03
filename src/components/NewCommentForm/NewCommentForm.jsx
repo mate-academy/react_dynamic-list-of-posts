@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ postId, createComment}) => {
+export const NewCommentForm = ({ postId, createComment }) => {
   const [nameOfAuthor, setName] = useState('');
   const [emailOfAuthor, setEmail] = useState('');
   const [bodyOfComment, setBodyOfComment] = useState('');
@@ -75,4 +76,9 @@ export const NewCommentForm = ({ postId, createComment}) => {
       </button>
     </form>
   );
+};
+
+NewCommentForm.propTypes = {
+  postId: PropTypes.number.isRequired,
+  createComment: PropTypes.func.isRequired,
 };

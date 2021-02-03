@@ -1,30 +1,27 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
-import { Loader } from '../Loader';
 import { Comment } from '../Comment';
 import './PostDetails.scss';
 
 export const PostDetails = ({
   post,
   comments,
-  loader,
   onDeleteComment,
   onLoadComments,
   onAddComment,
 }) => {
   const [isHideComments, setIsHideComments] = useState(false);
-  const { body } = post;
+  const { body, id } = post;
 
   useEffect(() => {
     setIsHideComments(false);
-  }, [post.id]);
+  }, [id]);
 
-  useEffect(() => {
-    updateComments();
-  });
+  useEffect(() => updateComments());
 
   const updateComments = () => {
-    onLoadComments(post.id);
+    onLoadComments(id);
   };
 
   return (
@@ -46,7 +43,6 @@ export const PostDetails = ({
           {`${isHideComments ? 'Show' : 'Hide'} ${comments.length} comments`}
         </button>
 
-        {/*{loader && <Loader />}*/}
         {!isHideComments && (
           <ul className="PostDetails__list">
             {comments.map(comment => (
@@ -64,9 +60,20 @@ export const PostDetails = ({
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm postId={post.id} createComment={onAddComment} />
+          <NewCommentForm postId={id} createComment={onAddComment} />
         </div>
       </section>
     </div>
   );
+};
+
+PostDetails.propTypes = {
+  post: PropTypes.shape({
+    body: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+  }).isRequired,
+  comments: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onDeleteComment: PropTypes.func.isRequired,
+  onLoadComments: PropTypes.func.isRequired,
+  onAddComment: PropTypes.func.isRequired,
 };
