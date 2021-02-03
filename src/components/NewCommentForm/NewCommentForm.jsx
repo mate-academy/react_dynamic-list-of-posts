@@ -21,8 +21,12 @@ export const NewCommentForm = ({ postID, parsing }) => {
       onSubmit={async(e) => {
         e.preventDefault();
         formCleaner();
-        // eslint-disable-next-line max-len
-        await createComment(postID, commentText, email, name); // (id, postID, body, email, name)
+        await createComment({
+          postId: postID,
+          body: commentText,
+          email,
+          name,
+        }); // (id, postID, body, email, name)
         await parsing();
       }}
     >

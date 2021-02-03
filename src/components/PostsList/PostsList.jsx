@@ -1,16 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-import { getUserPosts, getPostDetails } from '../../api/posts';
+import { getPostDetails } from '../../api/posts';
 import { Loader } from '../Loader/Loader';
 import './PostsList.scss';
 
-export const PostsList = ({ userID, setPostID, postID, posts, setPosts }) => {
-  useEffect(() => {
-    getUserPosts(userID).then(result => setPosts(result));
-  }, [userID, postID, setPosts]);
+export const PostsList = ({ setPostID, postID, posts }) => (
 
-  return !posts.length
+  !posts.length
     ? <Loader />
     : (
       <div className="PostsList">
@@ -45,14 +42,11 @@ export const PostsList = ({ userID, setPostID, postID, posts, setPosts }) => {
           </li>
         ))}
       </div>
-    );
-};
+    )
+);
 
 PostsList.propTypes = {
-  userID: PropTypes.number.isRequired,
   setPostID: PropTypes.func.isRequired,
-  setPosts: PropTypes.func.isRequired,
-  // postID: PropTypes.func, // ??? почему это функция???
   postID: PropTypes.number,
   posts: PropTypes.arrayOf(PropTypes.object),
 };

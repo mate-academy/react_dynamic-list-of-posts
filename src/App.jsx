@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getUserPosts } from './api/posts';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -10,6 +11,10 @@ const App = () => {
   const [posts, setPosts] = useState([]);
   const [comments, setComments] = useState([]);
   const postComments = comments.length;
+
+  useEffect(() => {
+    getUserPosts(userID).then(result => setPosts(result));
+  }, [userID, postID, setPosts]);
 
   return (
     <div className="App">
@@ -42,11 +47,11 @@ const App = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            postID={postID}
             setPostID={setPostID}
-            userID={userID}
+            postID={postID}
             posts={posts}
-            setPosts={setPosts}
+            // userID={userID}
+            // setPosts={setPosts}
           />
         </div>
 
