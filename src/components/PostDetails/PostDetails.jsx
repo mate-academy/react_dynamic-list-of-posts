@@ -20,8 +20,10 @@ export const PostDetails = ({ selectedPostId }) => {
   const fetchPostComments = () => {
     getPostComments(selectedPostId)
       .then(commentsFromServer => setPostComments(
-        commentsFromServer.filter(comment => comment.body && comment.name),
+        commentsFromServer,
       ));
+
+    getPostComments(selectedPostId);
   };
 
   const deleteSelectedComment = (commentId) => {
@@ -78,7 +80,10 @@ export const PostDetails = ({ selectedPostId }) => {
                     >
                       X
                     </button>
-                    <p>{comment.body}</p>
+                    <p>
+                      {comment.body
+                        ? comment.body : deleteSelectedComment(comment.id)}
+                    </p>
                     <hr />
                     <b className="comment__name">{comment.name}</b>
                   </li>

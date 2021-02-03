@@ -16,3 +16,18 @@ export const addComment = comment => fetch(`${BASE_URL}/comments`, {
   },
   body: JSON.stringify(comment),
 });
+
+export const addTodo = () => (
+  fetch('https://mate-api.herokuapp.com/goods', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8',
+    },
+    body: JSON.stringify(
+      {
+        name: 'Potato',
+        color: 'red',
+      },
+    ),
+  })
+);
