@@ -10,19 +10,22 @@ export const NewCommentForm = ({ addComment }) => {
 
   const handleName = (event) => {
     setName(event.target.value.trim());
+    setIsNotValid(false);
   };
 
   const handleEmail = (event) => {
     setEmail(event.target.value.trim());
+    setIsNotValid(false);
   };
 
   const handleBody = (event) => {
     setBody(event.target.value.trim());
+    setIsNotValid(false);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!name && !email && !body) {
+    if (!name || !email || !body) {
       setIsNotValid(true);
       return;
     }
