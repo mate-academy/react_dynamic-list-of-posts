@@ -23,11 +23,16 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    loadComments();
+  }, []);
+
+  useEffect(() => {
     loadPosts();
   }, [value]);
 
   const deleteComment = async(commentId) => {
     await removeComment(commentId);
+    await loadComments(post.id);
   };
 
   const createComment = async(name, email, bodyOfComment, id) => {
@@ -43,6 +48,7 @@ const App = () => {
     };
 
     await addComment(newComment);
+    await loadComments(id);
   };
 
   const loadComments = async(postId) => {

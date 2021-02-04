@@ -18,7 +18,7 @@ export const PostDetails = ({
     setIsHideComments(false);
   }, [id]);
 
-  useEffect(() => updateComments());
+  useEffect(() => updateComments(), []);
 
   const updateComments = () => {
     onLoadComments(id);

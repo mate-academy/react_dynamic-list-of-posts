@@ -14,7 +14,6 @@ export const Comment = ({ comment, onDeleteComment }) => (
       X
     </button>
     <p>{comment.body}</p>
-
   </>
 );
 
