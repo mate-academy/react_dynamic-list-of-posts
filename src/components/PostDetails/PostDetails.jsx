@@ -22,15 +22,12 @@ export const PostDetails = ({ selectedPostId }) => {
       .then(commentsFromServer => setPostComments(
         commentsFromServer,
       ));
-
-    getPostComments(selectedPostId);
   };
 
-  const deleteSelectedComment = (commentId) => {
-    removeComment(commentId);
+  const deleteSelectedComment = async (commentId) => {
+    await removeComment(commentId);
 
-    setPostComments(comments => comments
-      .filter(comment => comment.id !== commentId));
+    fetchPostComments()
   };
 
   const addNewComment = async(commentObj) => {
