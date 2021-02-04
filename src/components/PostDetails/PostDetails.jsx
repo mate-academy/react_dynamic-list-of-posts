@@ -18,9 +18,9 @@ export const PostDetails = ({ postId }) => {
       .then(setComments);
   }, [postId]);
 
-  const addComment = ({ name, email, body }) => {
+  const addComment = (name, email, commentText) => {
     addPostComment({
-      postId, name, email, body,
+      postId, name, email, body:commentText,
     })
       .then(() => getPostComments(postId))
       .then(setComments);

@@ -12,7 +12,6 @@ export const NewCommentForm = ({ addComment }) => {
     setName('');
     setEmail('');
     setCommentText('');
-    setError(false);
   };
 
   const creatComment = () => {
