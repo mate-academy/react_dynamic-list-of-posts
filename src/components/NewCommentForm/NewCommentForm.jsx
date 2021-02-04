@@ -6,24 +6,33 @@ export const NewCommentForm = ({ addComment }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
+  const [isNotValid, setIsNotValid] = useState(false);
 
   const handleName = (event) => {
-    setName(event.target.value);
+    setName(event.target.value.trim());
   };
 
   const handleEmail = (event) => {
-    setEmail(event.target.value);
+    setEmail(event.target.value.trim());
   };
 
   const handleBody = (event) => {
-    setBody(event.target.value);
+    setBody(event.target.value.trim());
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!name && !email && !body) {
+      setIsNotValid(true);
+      return;
+    }
     addComment({
       name, email, body,
     });
+
+    setName('');
+    setEmail('');
+    setBody('');
   };
 
   return (
@@ -69,6 +78,8 @@ export const NewCommentForm = ({ addComment }) => {
       >
         Add a comment
       </button>
+
+      {isNotValid && <div>Not valid input</div>}
     </form>
   );
 };
