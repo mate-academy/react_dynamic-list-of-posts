@@ -15,6 +15,33 @@ export const NewCommentForm = ({ addComment }) => {
     setError(false);
   };
 
+  const nameHandleClick = (event) => {
+    const { value } = event.target;
+
+    setName(value);
+    if (value.length > 0) {
+      setError(false);
+    }
+  };
+
+  const emailHandleClick = (event) => {
+    const { value } = event.target;
+
+    setEmail(value);
+    if (value.length > 0) {
+      setError(false);
+    }
+  };
+
+  const bodyHandleClick = (event) => {
+    const { value } = event.target;
+
+    setBody(value);
+    if (value.length > 0) {
+      setError(false);
+    }
+  };
+
   return (
     <form
       className="NewCommentForm"
@@ -41,7 +68,7 @@ export const NewCommentForm = ({ addComment }) => {
           placeholder="Your name"
           className="NewCommentForm__input"
           value={name}
-          onChange={event => setName(event.target.value)}
+          onChange={nameHandleClick}
         />
       </div>
 
@@ -52,7 +79,7 @@ export const NewCommentForm = ({ addComment }) => {
           placeholder="Your email"
           className="NewCommentForm__input"
           value={email}
-          onChange={event => setEmail(event.target.value)}
+          onChange={emailHandleClick}
         />
       </div>
 
@@ -62,7 +89,7 @@ export const NewCommentForm = ({ addComment }) => {
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={body}
-          onChange={event => setBody(event.target.value)}
+          onChange={bodyHandleClick}
         />
       </div>
 
