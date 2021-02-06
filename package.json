@@ -10,6 +10,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-hanger": "^2.3.2",
     "react-scripts": "3.4.3"
   },
   "devDependencies": {
@@ -26,7 +27,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint-js": "eslint --ext .jsx,.js ./src/ --fix",
+    "lint-js": "eslint --ext .jsx,.js src --fix",
     "lint-css": "stylelint src/**/*.css src/**/*.scss --fix",
     "lint": "npm run lint-js && npm run lint-css",
     "predeploy": "npm run build",

@@ -1,45 +1,101 @@
-import React from 'react';
+/* eslint-disable */
+import React, { useState, useEffect } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import { Loader } from '../Loader/Loader';
+import { getComments, deletePostComment, addPostComment } from '../../api/api';
+import { usePrevious } from 'react-hanger';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({ post }) => {
+  const [commentsList, setCommentsList] = useState([]);
+  const [showComments, setShowComments] = useState(true);
+  const prevPostId = usePrevious(post.id);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  const loadData = () => {
+    getComments(post.id)
+      .then(comments => { setCommentsList(comments) });
+  }
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  useEffect(() => {
+    loadData();
+    console.log('123')
+  }, [post.id]);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  useEffect(() => {
+    if (prevPostId !== post.id) {
+      loadData();
+    }
+    console.log(`${post.id} --- update`);
+  })
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  const getNewComment = (newComment) => {
+    addPostComment(newComment, post.id)
+    loadData();
+  };
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+  const hide = () => {
+    setShowComments(false);
+  };
+
+  const show = () => {
+    setShowComments(true);
+  };
+
+  return (
+    <>
+      {!post ? (
+        <Loader />
+      ) : (
+        <div className="PostDetails">
+          <h2>Post details:</h2>
+
+          <section className="PostDetails__post">
+            <p>{post.title}</p>
+          </section>
+
+          <section className="PostDetails__comments">
+            {showComments ? (
+              <button
+                onClick={hide}
+                type="button" className="button">Hide {commentsList.length} comments
+              </button>
+            ) : (
+              <button
+                onClick={show}
+                type="button" className="button">Show {commentsList.length} comments
+              </button>
+            )}
+            {showComments ? (
+              <ul className="PostDetails__list">
+                {commentsList.map(com => (
+                  <li className="PostDetails__list-item" key={com.id}>
+                    <button
+                      onClick={() => {
+                        deletePostComment(com.id)
+                          .then(loadData)
+                      }}
+                      type="button"
+                      className="PostDetails__remove-button button"
+                    >
+                      X
+                    </button>
+                      <p>{com.body}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : ''}
+          </section>
+
+          <section>
+            <div className="PostDetails__form-wrapper">
+              <NewCommentForm
+                getNewComment={getNewComment}
+                loadData={loadData}
+              />
+            </div>
+          </section>
+        </div>
+      )}
+    </>
+  );
+};
