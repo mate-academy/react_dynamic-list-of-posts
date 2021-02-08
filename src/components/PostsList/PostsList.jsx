@@ -1,37 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({ posts, onSelect }) => {
+  const [selectedPost, setSelectedPost] = useState(0);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  const showDetails = (postId) => {
+    if (selectedPost === postId) {
+      onSelect(0);
+      setSelectedPost(0);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+      return;
+    }
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+    setSelectedPost(postId);
+    onSelect(postId);
+  };
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul className="PostsList__list">
+        {posts.map((post) => {
+          const { userId, title, id } = post;
+
+          return (
+            <li key={id} className="PostsList__item">
+              <div>
+                <b>{`[User #${userId}]: `}</b>
+                {title}
+              </div>
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => showDetails(id)}
+              >
+                { id === selectedPost ? 'Close' : 'Open' }
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onSelect: PropTypes.func.isRequired,
+};
