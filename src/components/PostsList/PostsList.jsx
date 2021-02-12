@@ -3,15 +3,6 @@ import './PostsList.scss';
 // import { PostItem } from './PostItem/PostItem';
 
 export const PostsList = ({ posts, selectPost, selectedPostId }) => {
-  // console.log(props.posts);
-
-  const open = () => {
-    // console.log('open');
-  };
-  const close = () => {
-    // console.log('close');
-  };
-
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
@@ -27,7 +18,6 @@ export const PostsList = ({ posts, selectPost, selectedPostId }) => {
               <button
                 onClick={() => {
                   selectPost(0);
-                  close();
                 }}
                 type="button"
                 className="PostsList__button button"
@@ -39,7 +29,6 @@ export const PostsList = ({ posts, selectPost, selectedPostId }) => {
               <button
                 onClick={() => {
                   selectPost(post.id);
-                  open();
                 }}
                 type="button"
                 className="PostsList__button button"

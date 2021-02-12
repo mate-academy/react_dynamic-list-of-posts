@@ -6,7 +6,7 @@ export const request = url => fetch(`${BASE_URL}${url}`)
   .then(result => result.data);
 
 export const getPosts = () => request('/posts');
-export const getUser = () => request('/users');
+export const getUsers = () => request('/users');
 
 export const getComments = postId => request('/comments')
   .then(response => response.filter(comment => (

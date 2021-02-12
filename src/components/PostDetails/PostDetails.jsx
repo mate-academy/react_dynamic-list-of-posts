@@ -11,26 +11,24 @@ export const PostDetails = ({ post }) => {
   const [showComments, setShowComments] = useState(true);
   const prevPostId = usePrevious(post.id);
 
-  const loadData = () => {
+  const loadComments = () => {
     getComments(post.id)
       .then(comments => { setCommentsList(comments) });
   }
 
   useEffect(() => {
-    loadData();
-    console.log('123')
+    loadComments();
   }, [post.id]);
 
   useEffect(() => {
     if (prevPostId !== post.id) {
-      loadData();
+      loadComments();
     }
-    console.log(`${post.id} --- update`);
   })
 
   const getNewComment = (newComment) => {
     addPostComment(newComment, post.id)
-    loadData();
+    loadComments();
   };
 
   const hide = () => {
@@ -72,7 +70,7 @@ export const PostDetails = ({ post }) => {
                     <button
                       onClick={() => {
                         deletePostComment(com.id)
-                          .then(loadData)
+                          .then(loadComments)
                       }}
                       type="button"
                       className="PostDetails__remove-button button"
@@ -90,7 +88,7 @@ export const PostDetails = ({ post }) => {
             <div className="PostDetails__form-wrapper">
               <NewCommentForm
                 getNewComment={getNewComment}
-                loadData={loadData}
+                loadData={loadComments}
               />
             </div>
           </section>
