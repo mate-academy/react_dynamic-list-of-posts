@@ -1,45 +1,79 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
+import { Loader } from '../Loader';
+import { PostComments } from '../PostComments';
+import { getPostDetails } from '../../api/posts';
+import { getComments } from '../../api/comments';
 import './PostDetails.scss';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({ postId }) => {
+  const [post, setPost] = useState({});
+  const [comments, setComments] = useState([]);
+  const [isCommentsHide, setIsCommentsHide] = useState(false);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  useEffect(() => {
+    async function fetchServer() {
+      const [commentsFromServer, postFromServer] = await Promise.all([
+        getComments(postId), getPostDetails(postId),
+      ]);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+      setComments(commentsFromServer);
+      setPost(postFromServer);
+    }
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
+    fetchServer();
+  }, [postId]);
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        {post.body ? <p>{post.body}</p> : <Loader />}
+      </section>
+
+      {comments.length > 0 ? (
+        <section className="PostDetails__comments">
           <button
             type="button"
-            className="PostDetails__remove-button button"
+            className="button"
+            onClick={() => {
+              setIsCommentsHide(!isCommentsHide);
+            }}
           >
-            X
+            {`${isCommentsHide ? 'Show' : 'Hide'} ${comments.length} comments`}
           </button>
-          <p>My first comment</p>
-        </li>
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+          <ul className="PostDetails__list">
+            {!isCommentsHide && (
+            <PostComments
+              comments={comments}
+              postId={postId}
+              setComments={setComments}
+            />
+            )}
+          </ul>
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+        </section>
+      ) : (<p>No comments yet</p>)}
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            postId={postId}
+            setComments={setComments}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};
+
+PostDetails.propTypes = {
+  postId: PropTypes.number,
+};
+
+PostDetails.defaultProps = {
+  postId: undefined,
+};
