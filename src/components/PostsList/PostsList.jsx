@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { getUserPosts } from '../../api/posts';
 import { Loader } from '../Loader';
@@ -7,15 +7,15 @@ import './PostsList.scss';
 export const PostsList = ({ userId, setSelectedPostId, selectedPostId }) => {
   const [posts, setPosts] = useState([]);
 
-  useEffect(() => {
-    async function fetchPosts() {
-      const postsFromServer = await getUserPosts(userId);
+  const fetchPosts = useCallback(async() => {
+    const postsFromServer = await getUserPosts(userId);
 
-      setPosts(postsFromServer);
-    }
-
-    fetchPosts();
+    setPosts(postsFromServer);
   }, [userId]);
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
   const handleClick = (postId) => {
     setSelectedPostId(postId === selectedPostId ? undefined : postId);
@@ -54,6 +54,6 @@ PostsList.propTypes = {
 };
 
 PostsList.defaultProps = {
-  selectedPostId: undefined,
-  userId: undefined,
+  selectedPostId: null,
+  userId: 0,
 };

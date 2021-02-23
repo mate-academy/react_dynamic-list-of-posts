@@ -6,8 +6,8 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelect } from './components/UserSelect';
 
 const App = () => {
-  const [userId, setUserId] = useState(undefined);
-  const [selectedPostId, setSelectedPostId] = useState(undefined);
+  const [userId, setUserId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState(null);
 
   return (
     <div className="App">

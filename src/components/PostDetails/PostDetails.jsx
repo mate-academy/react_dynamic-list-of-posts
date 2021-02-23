@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import { Loader } from '../Loader';
@@ -12,18 +12,18 @@ export const PostDetails = ({ postId }) => {
   const [comments, setComments] = useState([]);
   const [isCommentsHide, setIsCommentsHide] = useState(false);
 
-  useEffect(() => {
-    async function fetchServer() {
-      const [commentsFromServer, postFromServer] = await Promise.all([
-        getComments(postId), getPostDetails(postId),
-      ]);
+  const fetchCommentsAndPosts = useCallback(async() => {
+    const [commentsFromServer, postFromServer] = await Promise.all([
+      getComments(postId), getPostDetails(postId),
+    ]);
 
-      setComments(commentsFromServer);
-      setPost(postFromServer);
-    }
-
-    fetchServer();
+    setComments(commentsFromServer);
+    setPost(postFromServer);
   }, [postId]);
+
+  useEffect(() => {
+    fetchCommentsAndPosts();
+  }, [fetchCommentsAndPosts]);
 
   return (
     <div className="PostDetails">
@@ -75,5 +75,5 @@ PostDetails.propTypes = {
 };
 
 PostDetails.defaultProps = {
-  postId: undefined,
+  postId: null,
 };

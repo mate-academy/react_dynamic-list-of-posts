@@ -3,8 +3,7 @@
 import { BASE_URL, request } from './api';
 
 export const getComments = (postId) => {
-  const commentsFromServer = request('/comments')
-    .then(comments => comments.filter(comment => comment.postId === postId));
+  const commentsFromServer = request(`/comments?postId=${postId}`);
 
   return commentsFromServer;
 };
@@ -15,11 +14,11 @@ export const createComment = (postId, data) => (
     headers: { 'Context-type': 'application/json; charset=UTF-8' },
     body: JSON.stringify({
       postId,
-      name: data.name,
-      email: data.email,
-      body: data.body,
+      name: data.name.trim(),
+      email: data.email.trim(),
+      body: data.body.trim(),
     }),
-  }).then(response => response.json())
+  })
 );
 
 export const deleteComment = postId => (

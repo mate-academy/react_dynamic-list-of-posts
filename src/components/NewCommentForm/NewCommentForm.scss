@@ -16,4 +16,22 @@
   &__submit-button {
     margin-top: 10px;
   }
+
+  textarea {
+    resize: vertical;
+  }
+}
+
+.alarm {
+  border: solid red;
+  border-radius: 5px;
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  padding: 5px 10px;
+}
+
+.formRed {
+  border: solid red;
+  border-radius: 5px;
 }

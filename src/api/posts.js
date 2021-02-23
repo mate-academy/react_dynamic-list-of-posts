@@ -3,14 +3,13 @@
 import { request } from './api';
 
 export const getUserPosts = (userId) => {
-  const postsFromServer = request('/posts')
-    .then((posts) => {
-      if (+userId > 0) {
-        return posts.filter(post => post.userId === +userId);
-      }
+  let postsFromServer;
 
-      return posts;
-    });
+  if (!userId) {
+    postsFromServer = request('/posts');
+  } else {
+    postsFromServer = request(`/posts?userId=${userId}`);
+  }
 
   return postsFromServer;
 };
