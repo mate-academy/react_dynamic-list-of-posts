@@ -52,6 +52,7 @@ export const NewCommentForm = ({ postId, postComment }) => {
 
       <div className="form-field">
         <input
+          required
           type="text"
           name="email"
           value={commentFields.email}
@@ -63,6 +64,7 @@ export const NewCommentForm = ({ postId, postComment }) => {
 
       <div className="form-field">
         <textarea
+          required
           name="body"
           placeholder="Type comment here"
           value={commentFields.body}
