@@ -5,8 +5,30 @@ import './styles/general.scss';
 
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-// eslint-disable-next-line max-len
-import { getPosts, getUserPosts, getPostDetails, getPostComments, deletComment, createPost } from './api/post';
+import { getPosts, getUserPosts, getPostDetails,
+  getPostComments, deletComment,
+  createPost } from './api/post';
+
+const loadPosts = async(setPosts) => {
+  const postsFromServer = await getPosts();
+
+  setPosts(postsFromServer);
+};
+
+const loadPostsbyUser = async(setPosts, id) => {
+  const postsFromServer = await getUserPosts(id);
+
+  setPosts(postsFromServer);
+};
+
+const loadPostByID = async(setPostdetails, setComments, id) => {
+  const commentsFromServer = getPostComments(id);
+  const postDetailsFromServer = await getPostDetails(id);
+  const commentsArray = await commentsFromServer;
+
+  setPostdetails(postDetailsFromServer);
+  setComments(commentsArray);
+};
 
 const App = () => {
   const [posts, setPosts] = useState([]);
@@ -17,47 +39,20 @@ const App = () => {
   const [selectedPostId, setSelectedPostId] = useState(0);
 
   useEffect(() => {
-    const loadPosts = async() => {
-      const postsFromServer = await getPosts();
-
-      setPosts(postsFromServer);
-    };
-
-    loadPosts();
+    loadPosts(setPosts);
   }, []);
 
   useEffect(() => {
     if (userId !== 0) {
-      const loadPostsbyUser = async() => {
-        const postsFromServer = await getUserPosts(userId);
-
-        setPosts(postsFromServer);
-      };
-
-      loadPostsbyUser();
+      loadPostsbyUser(setPosts, userId);
     } else {
-      const loadPosts = async() => {
-        const postsFromServer = await getPosts();
-
-        setPosts(postsFromServer);
-      };
-
-      loadPosts();
+      loadPosts(setPosts);
     }
   }, [userId]);
 
   useEffect(() => {
     if (selectedPostId !== 0) {
-      const loadPostByID = async() => {
-        const commentsFromServer = getPostComments(selectedPostId);
-        const postDetailsFromServer = await getPostDetails(selectedPostId);
-        const commentsArray = await commentsFromServer;
-
-        setPostdetails(postDetailsFromServer);
-        setComments(commentsArray);
-      };
-
-      loadPostByID();
+      loadPostByID(setPostdetails, setComments, selectedPostId);
     }
   }, [selectedPostId]);
 

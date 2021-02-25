@@ -3,22 +3,50 @@ import './NewCommentForm.scss';
 import PropTypes from 'prop-types';
 
 export const NewCommentForm = ({ postId, postComment }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setNewComment] = useState('');
+  const [commentFields, setCommentFields] = useState({
+    body: '',
+    name: '',
+    email: '',
+  });
+
+  const resetForm = () => {
+    setCommentFields({
+      body: '',
+      name: '',
+      email: '',
+    });
+  };
+
+  const setForm = (event) => {
+    const { name, value } = event.target;
+
+    setCommentFields(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
   return (
-    <form className="NewCommentForm">
+    <form
+      className="NewCommentForm"
+      onSubmit={(event) => {
+        event.preventDefault();
+        postComment({
+          ...commentFields, postId,
+        });
+
+        resetForm();
+      }}
+    >
       <div className="form-field">
         <input
+          required
           type="text"
           name="name"
-          value={name}
+          value={commentFields.name}
           placeholder="Your name"
           className="NewCommentForm__input"
-          onChange={({ target }) => {
-            setName(target.value);
-          }}
+          onChange={setForm}
         />
       </div>
 
@@ -26,12 +54,10 @@ export const NewCommentForm = ({ postId, postComment }) => {
         <input
           type="text"
           name="email"
-          value={email}
+          value={commentFields.email}
           placeholder="Your email"
           className="NewCommentForm__input"
-          onChange={({ target }) => {
-            setEmail(target.value);
-          }}
+          onChange={setForm}
         />
       </div>
 
@@ -39,32 +65,15 @@ export const NewCommentForm = ({ postId, postComment }) => {
         <textarea
           name="body"
           placeholder="Type comment here"
-          value={body}
+          value={commentFields.body}
           className="NewCommentForm__input"
-          onChange={({ target }) => {
-            setNewComment(target.value);
-          }}
+          onChange={setForm}
         />
       </div>
 
       <button
         type="submit"
         className="NewCommentForm__submit-button button"
-        onClick={(event) => {
-          event.preventDefault();
-          const newComment = {
-            postId,
-            name,
-            email,
-            body,
-          };
-
-          postComment(newComment);
-
-          setNewComment('');
-          setEmail('');
-          setName('');
-        }}
       >
         Add a comment
       </button>

@@ -16,8 +16,9 @@ export const getPosts = () => request('/posts ');
 export const getPostDetails = postId => request(`/posts/${postId}`);
 export const getPostComments = postId => request(`/comments?postId=${postId}`);
 export const deletComment = commentID => remove(`/comments/${commentID}`);
-// eslint-disable-next-line max-len
-export const createPost = ({ postId, name, email, body }) => fetch(`${BASE_URL}/comments`, {
+export const createPost = ({
+  postId, name, email, body,
+}) => fetch(`${BASE_URL}/comments`, {
   method: 'POST',
   headers: {
     'Content-type': 'application/json; charset=utf-8',

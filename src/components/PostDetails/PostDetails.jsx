@@ -5,7 +5,7 @@ import './PostDetails.scss';
 
 export const PostDetails = ({ postDetails,
   comments, removeComment, postComment }) => {
-  const [hideComment, setHideComemnt] = useState(false);
+  const [isCommentsVisible, setIsCommentsVisible] = useState(false);
 
   return (
     <div className="PostDetails">
@@ -22,16 +22,16 @@ export const PostDetails = ({ postDetails,
           type="button"
           className="button"
           onClick={() => {
-            setHideComemnt(current => !current);
+            setIsCommentsVisible(current => !current);
           }}
 
         >
-          { hideComment
+          { isCommentsVisible
             ? `Show ${comments.length} comments`
             : `Hide ${comments.length} comments` }
         </button>
 
-        {!hideComment && (
+        {!isCommentsVisible && (
         <ul className="PostDetails__list">
           {comments.map(comment => (
             <li
@@ -58,6 +58,7 @@ export const PostDetails = ({ postDetails,
         <div className="PostDetails__form-wrapper">
           {postDetails.id && (
           <NewCommentForm
+            isrequired
             postId={postDetails.id}
             postComment={postComment}
           />
