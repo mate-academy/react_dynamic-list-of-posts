@@ -42,8 +42,8 @@ export const PostDetails = ({ postId }) => {
     setShowComments(prev => (!prev));
   };
 
-  const removeComment = (commentId) => {
-    removePostComments(commentId);
+  const removeComment = async(commentId) => {
+    await removePostComments(commentId);
     loadPostComments();
   };
 
