@@ -25,7 +25,7 @@ export const PostsList = ({ posts, postId, setPostId }) => {
                 <b>
                   {`[User #${post.userId}]: `}
                 </b>
-                {['this is post id --> to delete', `${post.id}  `, post.title]}
+                {post.title}
               </div>
               <button
                 type="button"
