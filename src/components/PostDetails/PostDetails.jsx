@@ -1,45 +1,70 @@
-import React from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = (
+  { postDetails, comments, deleteComment, onAdd, postId },
+) => {
+  const [isVisible, setVisible] = useState(true);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  const toggleVisible = () => {
+    setVisible(!isVisible);
+  };
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
+      <section className="PostDetails__post">
+        <p>{postDetails.title}</p>
+      </section>
+
+      <section className="PostDetails__comments">
+        {comments.length > 0 && (
           <button
             type="button"
-            className="PostDetails__remove-button button"
+            className="button"
+            onClick={toggleVisible}
           >
-            X
+            {`${isVisible ? 'Hide' : 'Show'} ${comments.length} comments`}
           </button>
-          <p>My first comment</p>
-        </li>
+        )}
+        {isVisible && (
+          <ul className="PostDetails__list">
+            {comments.map(comment => (
+              <li key={comment.id} className="PostDetails__list-item">
+                <button
+                  type="button"
+                  className="PostDetails__remove-button button"
+                  onClick={() => {
+                    deleteComment(comment.id);
+                  }}
+                >
+                  X
+                </button>
+                <p>{comment.body}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm onAdd={onAdd} postId={postId} />
+        </div>
+      </section>
+    </div>
+  );
+};
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+PostDetails.propTypes = {
+  postDetails: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+  }).isRequired,
+  comments: PropTypes.arrayOf(PropTypes.object).isRequired,
+  deleteComment: PropTypes.func.isRequired,
+  onAdd: PropTypes.func.isRequired,
+  postId: PropTypes.number.isRequired,
+};
