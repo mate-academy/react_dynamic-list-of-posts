@@ -4,18 +4,10 @@ import './NewCommentForm.scss';
 
 export const NewCommentForm = ({ postId, newComment }) => {
   const [inputs, setInputs] = useState({
-    text: '',
+    body: '',
     name: '',
     email: '',
   });
-
-  function resetForm() {
-    setInputs({
-      text: '',
-      name: '',
-      email: '',
-    });
-  }
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -28,12 +20,17 @@ export const NewCommentForm = ({ postId, newComment }) => {
 
   function handleSumbit(event) {
     event.preventDefault();
+
     newComment({
       ...inputs,
       postId,
     });
 
-    resetForm();
+    setInputs({
+      body: '',
+      name: '',
+      email: '',
+    });
   }
 
   return (
@@ -63,7 +60,7 @@ export const NewCommentForm = ({ postId, newComment }) => {
 
       <div className="form-field">
         <textarea
-          name="text"
+          name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
           onChange={handleChange}
