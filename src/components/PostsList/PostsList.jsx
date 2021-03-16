@@ -1,37 +1,58 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({ posts, postId, setPostId }) => {
+  const clickHandler = (id) => {
+    if (postId === id) {
+      setPostId(0);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+      return;
+    }
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+    setPostId(id);
+  };
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul className="PostsList__list">
+        {
+          posts.map(post => (
+            <li className="PostsList__item" key={post.id}>
+              <div>
+                <b>
+                  {`[User #${post.userId}]: `}
+                </b>
+                {post.title}
+              </div>
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => {
+                  clickHandler(post.id);
+                }}
+              >
+                {postId === post.id
+                  ? 'Close'
+                  : 'Open'
+                }
+              </button>
+            </li>
+          ))}
+      </ul>
+    </div>
+  );
+};
+
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number,
+    PostId: PropTypes.number,
+    title: PropTypes.string,
+    userId: PropTypes.number,
+  })).isRequired,
+  postId: PropTypes.number.isRequired,
+  setPostId: PropTypes.func.isRequired,
+};
