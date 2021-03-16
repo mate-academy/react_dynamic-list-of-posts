@@ -1,39 +1,86 @@
-import React from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = () => (
-  <form className="NewCommentForm">
-    <div className="form-field">
-      <input
-        type="text"
-        name="name"
-        placeholder="Your name"
-        className="NewCommentForm__input"
-      />
-    </div>
+export const NewCommentForm = ({ postId, newComment }) => {
+  const [inputs, setInputs] = useState({
+    text: '',
+    name: '',
+    email: '',
+  });
 
-    <div className="form-field">
-      <input
-        type="text"
-        name="email"
-        placeholder="Your email"
-        className="NewCommentForm__input"
-      />
-    </div>
+  function resetForm() {
+    setInputs({
+      text: '',
+      name: '',
+      email: '',
+    });
+  }
 
-    <div className="form-field">
-      <textarea
-        name="body"
-        placeholder="Type comment here"
-        className="NewCommentForm__input"
-      />
-    </div>
+  function handleChange(event) {
+    const { name, value } = event.target;
 
-    <button
-      type="submit"
-      className="NewCommentForm__submit-button button"
+    setInputs(current => ({
+      ...current,
+      [name]: value,
+    }));
+  }
+
+  function handleSumbit(event) {
+    event.preventDefault();
+    newComment({
+      ...inputs,
+      postId,
+    });
+
+    resetForm();
+  }
+
+  return (
+    <form
+      className="NewCommentForm"
+      onSubmit={handleSumbit}
     >
-      Add a comment
-    </button>
-  </form>
-);
+      <div className="form-field">
+        <input
+          type="text"
+          name="name"
+          placeholder="Your name"
+          className="NewCommentForm__input"
+          onChange={handleChange}
+        />
+      </div>
+
+      <div className="form-field">
+        <input
+          type="text"
+          name="email"
+          placeholder="Your email"
+          className="NewCommentForm__input"
+          onChange={handleChange}
+        />
+      </div>
+
+      <div className="form-field">
+        <textarea
+          name="text"
+          placeholder="Type comment here"
+          className="NewCommentForm__input"
+          onChange={handleChange}
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="NewCommentForm__submit-button button"
+      >
+        Add a comment
+      </button>
+    </form>
+  );
+};
+
+NewCommentForm.propTypes = {
+  postId: PropTypes.number.isRequired,
+  newComment: PropTypes.func.isRequired,
+};
