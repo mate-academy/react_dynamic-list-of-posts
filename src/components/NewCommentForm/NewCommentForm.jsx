@@ -9,6 +9,14 @@ export const NewCommentForm = ({ postId, newComment }) => {
     email: '',
   });
 
+  function resetForm() {
+    setInputs({
+      body: '',
+      name: '',
+      email: '',
+    });
+  }
+
   function handleChange(event) {
     const { name, value } = event.target;
 
@@ -20,17 +28,12 @@ export const NewCommentForm = ({ postId, newComment }) => {
 
   function handleSumbit(event) {
     event.preventDefault();
-
     newComment({
       ...inputs,
       postId,
     });
 
-    setInputs({
-      body: '',
-      name: '',
-      email: '',
-    });
+    resetForm();
   }
 
   return (
@@ -40,6 +43,7 @@ export const NewCommentForm = ({ postId, newComment }) => {
     >
       <div className="form-field">
         <input
+          required
           type="text"
           name="name"
           placeholder="Your name"
@@ -50,6 +54,7 @@ export const NewCommentForm = ({ postId, newComment }) => {
 
       <div className="form-field">
         <input
+          required
           type="text"
           name="email"
           placeholder="Your email"
@@ -60,6 +65,7 @@ export const NewCommentForm = ({ postId, newComment }) => {
 
       <div className="form-field">
         <textarea
+          required
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
@@ -70,6 +76,7 @@ export const NewCommentForm = ({ postId, newComment }) => {
       <button
         type="submit"
         className="NewCommentForm__submit-button button"
+        required
       >
         Add a comment
       </button>

@@ -18,17 +18,17 @@ export async function deletePostComments(url) {
   return result.data;
 }
 
-export async function createPost(name, postId, body, email) {
+export async function createPost(item) {
   const response = await fetch(BASE_URL, {
     method: 'POST',
     headers: {
       'Content-type': 'application/json; charset=utf-8',
     },
     body: JSON.stringify({
-      postId,
-      name,
-      email,
-      body,
+      postId: item.postId,
+      name: item.name,
+      email: item.email,
+      body: item.body,
     }),
   });
 

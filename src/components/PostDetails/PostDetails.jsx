@@ -59,7 +59,7 @@ export const PostDetails = ({ selectedPostId }) => {
   }
 
   async function newComment(item) {
-    await createPost(item);
+    await createPost({ ...item });
     const postCommentsData = await getPostComments(selectedPostId);
 
     const filteredPostComments = postCommentsData.filter(comment => (
@@ -113,7 +113,6 @@ export const PostDetails = ({ selectedPostId }) => {
       <section>
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
-            isRequired
             postId={postDetails.id}
             newComment={newComment}
           />
