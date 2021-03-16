@@ -3,25 +3,40 @@ import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
 
 export const NewCommentForm = ({ addComment }) => {
-  const [commentName, setCommentName] = useState('');
-  const [commentEmail, setCommentEmail] = useState('');
-  const [commentBody, setCommentBody] = useState('');
-  const [validate, setValidate] = useState(true);
+  const [comment, setComment] = useState({
+    name: '',
+    body: '',
+    email: '',
+  });
+  const [isFormValid, setIsFormValid] = useState(true);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!commentName.trim() || !commentEmail.trim() || !commentBody.trim()) {
-      setValidate(false);
+    if (Object.values(comment).some(item => !item.trim())) {
+      setIsFormValid(false);
 
       return;
     }
 
-    addComment(commentName, commentEmail, commentBody);
-    setCommentName('');
-    setCommentEmail('');
-    setCommentBody('');
-    setValidate(true);
+    addComment(comment.name, comment.email, comment.body);
+    resetCommentForm();
+    setIsFormValid(true);
+  };
+
+  const handleChange = ({ target }) => {
+    setComment(prev => ({
+      ...prev,
+      [target.name]: target.value,
+    }));
+  };
+
+  const resetCommentForm = () => {
+    setComment({
+      name: '',
+      body: '',
+      email: '',
+    });
   };
 
   return (
@@ -33,12 +48,10 @@ export const NewCommentForm = ({ addComment }) => {
         <input
           type="text"
           name="name"
-          value={commentName}
+          value={comment.name}
           placeholder="Your name"
           className="NewCommentForm__input"
-          onChange={(e) => {
-            setCommentName(e.target.value);
-          }}
+          onChange={handleChange}
         />
       </div>
 
@@ -46,28 +59,24 @@ export const NewCommentForm = ({ addComment }) => {
         <input
           type="text"
           name="email"
-          value={commentEmail}
+          value={comment.email}
           placeholder="Your email"
           className="NewCommentForm__input"
-          onChange={(e) => {
-            setCommentEmail(e.target.value);
-          }}
+          onChange={handleChange}
         />
       </div>
 
       <div className="form-field">
         <textarea
           name="body"
-          value={commentBody}
+          value={comment.body}
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          onChange={(e) => {
-            setCommentBody(e.target.value);
-          }}
+          onChange={handleChange}
         />
       </div>
 
-      {!validate && (
+      {!isFormValid && (
         <p className="NewCommentForm__error">
           Form should not have empty fields.
         </p>

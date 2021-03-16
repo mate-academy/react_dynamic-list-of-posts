@@ -8,26 +8,26 @@ import { Loader } from './components/Loader';
 
 const App = () => {
   const [posts, setPosts] = useState([]);
-  const [userSelected, setUser] = useState(0);
+  const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!userSelected) {
+    if (!selectedUserId) {
       loadAllPosts();
 
       return;
     }
 
-    loadUserPosts(userSelected);
-  }, [userSelected]);
+    loadUserPosts(selectedUserId);
+  }, [selectedUserId]);
 
   const loadAllPosts = async() => {
     setLoading(true);
     const loadedPosts = await getAllPosts();
 
-    setLoading(false);
     setPosts(loadedPosts);
+    setLoading(false);
   };
 
   const loadUserPosts = async(userId) => {
@@ -41,7 +41,7 @@ const App = () => {
   const handleChange = (e) => {
     const { value } = e.target;
 
-    setUser(+value);
+    setSelectedUserId(+value);
   };
 
   return (
@@ -52,7 +52,7 @@ const App = () => {
 
           <select
             className="App__user-selector"
-            value={userSelected}
+            value={selectedUserId}
             onChange={handleChange}
           >
             <option value="0">All users</option>
