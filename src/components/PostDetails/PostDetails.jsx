@@ -38,7 +38,10 @@ export function PostDetails({ post, comments, commentsUpdate }) {
                   className="PostDetails__remove-button button"
                   onClick={() => {
                     deleteComment(comment.id);
-                    commentsUpdate(commentss => commentss);
+                    commentsUpdate(
+                      commentss => commentss
+                        .filter(curComment => curComment.id !== comment.id),
+                    );
                   }}
                 >
                   X
@@ -60,6 +63,7 @@ export function PostDetails({ post, comments, commentsUpdate }) {
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             postId={post.id}
+            commentsUpdate={commentsUpdate}
           />
         </div>
       </section>

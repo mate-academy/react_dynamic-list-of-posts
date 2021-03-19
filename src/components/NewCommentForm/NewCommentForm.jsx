@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { writeComment } from '../../helpers';
+import { writeComment, getComents } from '../../helpers';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ postId }) => {
+export const NewCommentForm = ({ postId, commentsUpdate }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
@@ -22,6 +22,14 @@ export const NewCommentForm = ({ postId }) => {
     writeComment(newMessage);
   };
 
+  const newComments = async() => {
+    const commentsAfterAdding = await getComents();
+    const filteredComments = commentsAfterAdding
+      .filter(comment => comment.postId === postId);
+
+    commentsUpdate(filteredComments);
+  };
+
   return (
     <form
       className="NewCommentForm"
@@ -29,6 +37,7 @@ export const NewCommentForm = ({ postId }) => {
         (event) => {
           event.preventDefault();
           sendForm();
+          newComments();
         }
       }
     >
