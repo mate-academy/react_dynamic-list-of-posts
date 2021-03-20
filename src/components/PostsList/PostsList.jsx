@@ -1,37 +1,68 @@
-import React from 'react';
+import PropTypes from 'prop-types';
+
+import React, { useEffect, useState } from 'react';
+import { Loader } from '../Loader';
+import { Post } from '../Post';
+import { getUserPosts } from '../../api/posts';
+
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({
+  selectedUser,
+  onChangeUserId,
+  selectedPostId,
+  onResetUserId,
+}) => {
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  useEffect(() => {
+    setIsLoading(true);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+    (async() => {
+      const data = await getUserPosts();
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      if (selectedUser) {
+        setUsers(data.filter(post => selectedUser === post.userId));
+        setIsLoading(false);
+
+        return;
+      }
+
+      setUsers(data);
+      setIsLoading(false);
+    })();
+  }, [selectedUser]);
+
+  if (isLoading) {
+    return (
+      <Loader />
+    );
+  }
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+      <ul className="PostsList__list">
+        {users.length && users.map(user => (
+          <Post
+            key={user.id}
+            id={user.id}
+            title={user.title}
+            userId={user.userId}
+            onChangeUserId={onChangeUserId}
+            selectedPostId={selectedPostId}
+            onResetUserId={onResetUserId}
+          />
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+PostsList.propTypes = {
+  selectedPostId: PropTypes.number.isRequired,
+  selectedUser: PropTypes.number.isRequired,
+  onChangeUserId: PropTypes.func.isRequired,
+  onResetUserId: PropTypes.func.isRequired,
+};
