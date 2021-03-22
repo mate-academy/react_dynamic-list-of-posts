@@ -8,15 +8,17 @@ const App = () => {
   const [userId, setUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
-  const handlePosts = (event) => {
-    const { value } = event.target;
+  const handlePosts = useCallback(
+    (event) => {
+      const { value } = event.target;
 
-    setUserId(value);
-  };
+      setUserId(value);
+    }, [],
+  );
 
   const handleSelectedPost = useCallback((id) => {
     setSelectedPostId(id);
-  }, [selectedPostId]);
+  }, []);
 
   return (
     <div className="App">

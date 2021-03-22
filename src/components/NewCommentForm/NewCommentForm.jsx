@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
 
@@ -9,32 +9,38 @@ export const NewCommentForm = ({ postId, newComment }) => {
     email: '',
   });
 
-  function resetForm() {
-    setInputs({
-      body: '',
-      name: '',
-      email: '',
-    });
-  }
+  const resetForm = useCallback(
+    () => {
+      setInputs({
+        body: '',
+        name: '',
+        email: '',
+      });
+    }, [],
+  );
 
-  function handleChange(event) {
-    const { name, value } = event.target;
+  const handleChange = useCallback(
+    (event) => {
+      const { name, value } = event.target;
 
-    setInputs(current => ({
-      ...current,
-      [name]: value,
-    }));
-  }
+      setInputs(currentInputsValues => ({
+        ...currentInputsValues,
+        [name]: value,
+      }));
+    }, [],
+  );
 
-  function handleSumbit(event) {
-    event.preventDefault();
-    newComment({
-      ...inputs,
-      postId,
-    });
+  const handleSumbit = useCallback(
+    (event) => {
+      event.preventDefault();
+      newComment({
+        ...inputs,
+        postId,
+      });
 
-    resetForm();
-  }
+      resetForm();
+    }, [inputs, postId, resetForm, newComment],
+  );
 
   return (
     <form

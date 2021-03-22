@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
@@ -23,7 +23,7 @@ export const PostDetails = ({ selectedPostId }) => {
     }
 
     fetchData();
-  }, [commentId]);
+  }, [selectedPostId]);
 
   useEffect(() => {
     async function fetchData() {
@@ -52,26 +52,28 @@ export const PostDetails = ({ selectedPostId }) => {
     }
 
     deletePost();
-  }, [commentId]);
+  }, [selectedPostId, commentId]);
 
   function handleIsCommentVisible() {
     setIsCommentVisible(current => !current);
   }
 
-  async function newComment(item) {
-    await createPost({ ...item });
-    const postCommentsData = await getPostComments(selectedPostId);
+  const newComment = useCallback(
+    async(item) => {
+      await createPost({ ...item });
+      const postCommentsData = await getPostComments(selectedPostId);
 
-    const filteredPostComments = postCommentsData.filter(comment => (
-      comment.postId === selectedPostId
-    ));
+      const filteredPostComments = postCommentsData.filter(comment => (
+        comment.postId === selectedPostId
+      ));
 
-    setPostComments(filteredPostComments);
-  }
+      setPostComments(filteredPostComments);
+    }, [selectedPostId],
+  );
 
   useEffect(() => {
     newComment();
-  }, []);
+  }, [newComment]);
 
   return (
     <div className="PostDetails">
