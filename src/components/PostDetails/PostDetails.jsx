@@ -19,28 +19,21 @@ export const PostDetails = ({ selectedPostId }) => {
     async function fetchData() {
       const postsDetailsData = await getPostDetails(selectedPostId);
 
-      setPostDetails(postsDetailsData);
-    }
-
-    fetchData();
-  }, [selectedPostId]);
-
-  useEffect(() => {
-    async function fetchData() {
       const postCommentsData = await getPostComments(selectedPostId);
 
       const filteredPostComments = postCommentsData.filter(comment => (
         comment.postId === selectedPostId
       ));
 
+      setPostDetails(postsDetailsData);
       setPostComments(filteredPostComments);
     }
 
     fetchData();
   }, [selectedPostId]);
 
-  useEffect(() => {
-    async function deletePost() {
+  const deletePost = useCallback(
+    async() => {
       await deletePostComments(commentId);
       const postCommentsData = await getPostComments(selectedPostId);
 
@@ -49,16 +42,19 @@ export const PostDetails = ({ selectedPostId }) => {
       ));
 
       setPostComments(filteredPostComments);
-    }
+    },
+    [selectedPostId, commentId],
+  );
 
+  useEffect(() => {
     deletePost();
-  }, [selectedPostId, commentId]);
+  }, [deletePost]);
 
   function handleIsCommentVisible() {
     setIsCommentVisible(current => !current);
   }
 
-  const newComment = useCallback(
+  const addNewComment = useCallback(
     async(item) => {
       await createPost({ ...item });
       const postCommentsData = await getPostComments(selectedPostId);
@@ -72,8 +68,8 @@ export const PostDetails = ({ selectedPostId }) => {
   );
 
   useEffect(() => {
-    newComment();
-  }, [newComment]);
+    addNewComment();
+  }, [addNewComment]);
 
   return (
     <div className="PostDetails">
@@ -116,7 +112,7 @@ export const PostDetails = ({ selectedPostId }) => {
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             postId={postDetails.id}
-            newComment={newComment}
+            newComment={addNewComment}
           />
         </div>
       </section>
