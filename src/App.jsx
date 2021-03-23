@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import './App.scss';
 import './styles/general.scss';
@@ -13,12 +13,12 @@ const App = () => {
   const [comments, setComments] = useState([]);
   const [choosenPost, setchoosenPost] = useState(null);
 
-  useEffect(async() => {
-    const postsAll = await getPosts();
-
-    setAllPosts(postsAll);
-    setPosts(postsAll);
-    setAllPosts(postsAll);
+  useEffect(() => {
+    getPosts().then((allPosts) => {
+      setAllPosts(allPosts);
+      setPosts(allPosts);
+      setAllPosts(allPosts);
+    });
   }, []);
 
   useEffect(() => {
@@ -29,6 +29,12 @@ const App = () => {
     }
   }, [chosenId]);
 
+  const selectHandler = (event) => {
+    setNewId(event.target.value);
+  };
+
+  const commentsUpdate = useCallback(setComments, []);
+
   return (
     <div className="App">
       <header className="App__header">
@@ -37,10 +43,7 @@ const App = () => {
 
           <select
             className="App__user-selector"
-            onChange={(event) => {
-              setNewId(event.target.value);
-            }
-            }
+            onChange={selectHandler}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
@@ -71,7 +74,7 @@ const App = () => {
           <PostDetails
             post={choosenPost}
             comments={comments}
-            commentsUpdate={setComments}
+            commentsUpdate={commentsUpdate}
           />
           )}
         </div>

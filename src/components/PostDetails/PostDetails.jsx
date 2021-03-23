@@ -7,6 +7,18 @@ import './PostDetails.scss';
 export function PostDetails({ post, comments, commentsUpdate }) {
   const [isCommentShow, setCommentShow] = useState(false);
 
+  const clickChangeButton = () => {
+    setCommentShow(isShown => !isShown);
+  };
+
+  const clickDeleteItemButton = (id) => {
+    deleteComment(id);
+    commentsUpdate(
+      commentss => commentss
+        .filter(curComment => curComment.id !== id),
+    );
+  };
+
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
@@ -20,9 +32,7 @@ export function PostDetails({ post, comments, commentsUpdate }) {
         <button
           type="button"
           className="button"
-          onClick={() => {
-            setCommentShow(isShown => !isShown);
-          }}
+          onClick={clickChangeButton}
         >
           {`${!isCommentShow ? 'Show' : 'Hide'} ${comments.length} comments`}
         </button>
@@ -37,11 +47,7 @@ export function PostDetails({ post, comments, commentsUpdate }) {
                   type="button"
                   className="PostDetails__remove-button button"
                   onClick={() => {
-                    deleteComment(comment.id);
-                    commentsUpdate(
-                      commentss => commentss
-                        .filter(curComment => curComment.id !== comment.id),
-                    );
+                    clickDeleteItemButton(comment.id);
                   }}
                 >
                   X

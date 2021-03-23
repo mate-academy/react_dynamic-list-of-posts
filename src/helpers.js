@@ -8,8 +8,8 @@ export const getPostsById = id => (
   fetch(`${baseUrl}/posts/${id}`)
     .then(resolve => resolve.json()).then(result => result.data));
 
-export const getComents = () => (
-  fetch(`${baseUrl}/comments`)
+export const getComentsById = postId => (
+  fetch(`${baseUrl}/comments?postId=${postId}`)
     .then(resolve => resolve.json())
     .then(result => result.data));
 

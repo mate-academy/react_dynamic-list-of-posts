@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { writeComment, getComents } from '../../helpers';
+import { writeComment, getComentsById } from '../../helpers';
 import './NewCommentForm.scss';
 
 export const NewCommentForm = ({ postId, commentsUpdate }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
+
+  const newComments = async() => {
+    const filteredComments = await getComentsById(postId);
+
+    commentsUpdate(filteredComments);
+  };
 
   const sendForm = () => {
     const newMessage = {
@@ -20,26 +26,30 @@ export const NewCommentForm = ({ postId, commentsUpdate }) => {
     setEmail('');
     setBody('');
     writeComment(newMessage);
+    newComments();
   };
 
-  const newComments = async() => {
-    const commentsAfterAdding = await getComents();
-    const filteredComments = commentsAfterAdding
-      .filter(comment => comment.postId === postId);
+  const submitHandler = (event) => {
+    event.preventDefault();
+    sendForm();
+  };
 
-    commentsUpdate(filteredComments);
+  const changeNameHandler = (event) => {
+    setName(event.target.value);
+  };
+
+  const changeEmailHandler = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const changeCommentHandler = (event) => {
+    setBody(event.target.value);
   };
 
   return (
     <form
       className="NewCommentForm"
-      onSubmit={
-        (event) => {
-          event.preventDefault();
-          sendForm();
-          newComments();
-        }
-      }
+      onSubmit={submitHandler}
     >
       <div className="form-field">
         <input
@@ -49,9 +59,7 @@ export const NewCommentForm = ({ postId, commentsUpdate }) => {
           placeholder="Your name"
           className="NewCommentForm__input"
           value={name}
-          onChange={(event) => {
-            setName(event.target.value);
-          }}
+          onChange={changeNameHandler}
         />
       </div>
 
@@ -63,9 +71,7 @@ export const NewCommentForm = ({ postId, commentsUpdate }) => {
           placeholder="Your email"
           className="NewCommentForm__input"
           value={email}
-          onChange={(event) => {
-            setEmail(event.target.value);
-          }}
+          onChange={changeEmailHandler}
         />
       </div>
 
@@ -76,9 +82,7 @@ export const NewCommentForm = ({ postId, commentsUpdate }) => {
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={body}
-          onChange={(event) => {
-            setBody(event.target.value);
-          }}
+          onChange={changeCommentHandler}
         />
       </div>
 
