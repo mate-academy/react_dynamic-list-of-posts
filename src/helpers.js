@@ -19,7 +19,7 @@ export const deleteComment = (id) => {
   });
 };
 
-export const writeComment = (bodyData) => {
+export const postComment = (bodyData) => {
   fetch(`${baseUrl}/comments`, {
     method: 'POST',
     headers: {

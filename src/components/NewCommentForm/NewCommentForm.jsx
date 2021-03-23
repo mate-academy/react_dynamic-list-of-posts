@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { writeComment, getComentsById } from '../../helpers';
+import { postComment, getComentsById } from '../../helpers';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ postId, commentsUpdate }) => {
+export const NewCommentForm = ({ postId, updateComments }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
 
-  const newComments = async() => {
+  const getNewComments = async() => {
     const filteredComments = await getComentsById(postId);
 
-    commentsUpdate(filteredComments);
+    updateComments(filteredComments);
   };
 
   const sendForm = () => {
@@ -25,8 +25,8 @@ export const NewCommentForm = ({ postId, commentsUpdate }) => {
     setName('');
     setEmail('');
     setBody('');
-    writeComment(newMessage);
-    newComments();
+    postComment(newMessage);
+    getNewComments();
   };
 
   const submitHandler = (event) => {
@@ -98,5 +98,5 @@ export const NewCommentForm = ({ postId, commentsUpdate }) => {
 
 NewCommentForm.propTypes = {
   postId: PropTypes.number.isRequired,
-  commentsUpdate: PropTypes.func.isRequired,
+  updateComments: PropTypes.func.isRequired,
 };

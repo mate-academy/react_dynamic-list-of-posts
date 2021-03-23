@@ -3,23 +3,24 @@ import PropTypes from 'prop-types';
 import { getPostsById, getComentsById } from '../../helpers';
 import './PostsList.scss';
 
-export const PostsList = ({ posts, setComments, setchoosenPost }) => {
+export const PostsList = ({ posts, setComments, setChoosenPost }) => {
   const [choosenPostId, setChoosenId] = useState('');
 
   const openPostHandler = async(id) => {
-    let comments = await getComentsById(id);
+    const comments = await getComentsById(id);
     const choosenPost = await getPostsById(id);
 
-    comments = comments
+    const filteredComments = comments
       .filter(comment => comment.postId === id);
-    setComments(comments);
 
-    setchoosenPost(choosenPost);
+    setComments(filteredComments);
+
+    setChoosenPost(choosenPost);
     setChoosenId(id);
   };
 
   const closePostHandler = () => {
-    setchoosenPost(null);
+    setChoosenPost(null);
     setChoosenId('');
   };
 
@@ -75,5 +76,5 @@ PostsList.propTypes = {
     }).isRequired,
   ).isRequired,
   setComments: PropTypes.func.isRequired,
-  setchoosenPost: PropTypes.func.isRequired,
+  setChoosenPost: PropTypes.func.isRequired,
 };

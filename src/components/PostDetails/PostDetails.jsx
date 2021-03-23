@@ -4,7 +4,7 @@ import { NewCommentForm } from '../NewCommentForm';
 import { deleteComment } from '../../helpers';
 import './PostDetails.scss';
 
-export function PostDetails({ post, comments, commentsUpdate }) {
+export function PostDetails({ post, comments, updateComments }) {
   const [isCommentShow, setCommentShow] = useState(false);
 
   const clickChangeButton = () => {
@@ -13,7 +13,7 @@ export function PostDetails({ post, comments, commentsUpdate }) {
 
   const clickDeleteItemButton = (id) => {
     deleteComment(id);
-    commentsUpdate(
+    updateComments(
       commentss => commentss
         .filter(curComment => curComment.id !== id),
     );
@@ -69,7 +69,7 @@ export function PostDetails({ post, comments, commentsUpdate }) {
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             postId={post.id}
-            commentsUpdate={commentsUpdate}
+            updateComments={updateComments}
           />
         </div>
       </section>
@@ -87,7 +87,7 @@ PostDetails.propTypes = {
   comments: PropTypes.arrayOf(
     PropTypes.object.isRequired,
   ),
-  commentsUpdate: PropTypes.func.isRequired,
+  updateComments: PropTypes.func.isRequired,
 };
 
 PostDetails.defaultProps = {

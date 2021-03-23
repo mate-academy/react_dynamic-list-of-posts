@@ -11,7 +11,7 @@ const App = () => {
   const [posts, setPosts] = useState([]);
   const [chosenId, setNewId] = useState('0');
   const [comments, setComments] = useState([]);
-  const [choosenPost, setchoosenPost] = useState(null);
+  const [choosenPost, setChoosenPost] = useState(null);
 
   useEffect(() => {
     getPosts().then((allPosts) => {
@@ -33,7 +33,7 @@ const App = () => {
     setNewId(event.target.value);
   };
 
-  const commentsUpdate = useCallback(setComments, []);
+  const updateComments = useCallback(setComments, []);
 
   return (
     <div className="App">
@@ -65,7 +65,7 @@ const App = () => {
           <PostsList
             posts={posts}
             setComments={setComments}
-            setchoosenPost={setchoosenPost}
+            setChoosenPost={setChoosenPost}
           />
         </div>
 
@@ -74,7 +74,7 @@ const App = () => {
           <PostDetails
             post={choosenPost}
             comments={comments}
-            commentsUpdate={commentsUpdate}
+            updateComments={updateComments}
           />
           )}
         </div>
