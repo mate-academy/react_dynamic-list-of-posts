@@ -7,14 +7,25 @@ export const PostsList = ({ userId, setPostId, setPostOpen }) => {
   const [posts, setPosts] = useState([]);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
-  const fun = async() => {
+  const getPosts = async() => {
     const response = await getUserPosts(userId);
 
     setPosts(response);
   };
 
+  const handleCloseButton = () => {
+    setPostOpen(false);
+    setSelectedPostId('');
+  };
+
+  const handleOpenButton = (id) => {
+    setPostOpen(true);
+    setSelectedPostId(id);
+    setPostId(id);
+  };
+
   useEffect(() => {
-    fun();
+    getPosts();
   }, [userId]);
 
   return (
@@ -38,11 +49,7 @@ export const PostsList = ({ userId, setPostId, setPostOpen }) => {
                 <button
                   type="button"
                   className="PostsList__button button"
-                  onClick={() => {
-                    setPostOpen(true);
-                    setSelectedPostId(post.id);
-                    setPostId(post.id);
-                  }}
+                  onClick={() => handleOpenButton(post.id)}
                 >
                   Open
                 </button>
@@ -51,13 +58,9 @@ export const PostsList = ({ userId, setPostId, setPostOpen }) => {
                 <button
                   type="button"
                   className="PostsList__button button"
-                  onClick={() => {
-                    setPostOpen(false);
-                    setSelectedPostId('');
-                  }}
+                  onClick={handleCloseButton}
                 >
                   Close
-                  {/* {isPostOpen ? 'Close' : 'Open'} */}
                 </button>
               )
           }

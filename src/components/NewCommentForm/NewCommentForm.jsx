@@ -8,19 +8,31 @@ export const NewCommentForm = ({ postId }) => {
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const newComment = {
+      postId,
+      name: newName,
+      email,
+      body,
+    };
+
+    createComment(newComment);
+    setName('');
+    setEmail('');
+    setBody('');
+  };
+
+  const handleChange = (event, callback) => {
+    callback(event.target.value);
+  };
+
   return (
     <form
       className="NewCommentForm"
-      onSubmit={() => {
-        const newComment = {
-          postId,
-          name: newName,
-          email,
-          body,
-        };
-
-        createComment(newComment);
-      }}
+      onSubmit={handleSubmit}
+      method="POST"
     >
       <div className="form-field">
         <input
@@ -29,7 +41,7 @@ export const NewCommentForm = ({ postId }) => {
           placeholder="Your name"
           className="NewCommentForm__input"
           value={newName}
-          onChange={event => setName(event.target.value)}
+          onChange={event => handleChange(event, setName)}
         />
       </div>
 
@@ -40,7 +52,7 @@ export const NewCommentForm = ({ postId }) => {
           placeholder="Your email"
           className="NewCommentForm__input"
           value={email}
-          onChange={event => setEmail(event.target.value)}
+          onChange={event => handleChange(event, setEmail)}
         />
       </div>
 
@@ -50,7 +62,7 @@ export const NewCommentForm = ({ postId }) => {
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={body}
-          onChange={event => setBody(event.target.value)}
+          onChange={event => handleChange(event, setBody)}
         />
       </div>
 

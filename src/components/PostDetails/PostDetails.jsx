@@ -10,25 +10,29 @@ export const PostDetails = ({ postId }) => {
   const [comments, setComments] = useState([]);
   const [isVisible, setVisibility] = useState(true);
 
-  const fun = async() => {
+  const getPosts = async() => {
     const response = await getPostDetails(postId);
 
     setPost(response);
   };
 
   useEffect(() => {
-    fun();
+    getPosts();
   }, [postId]);
 
-  const funComm = async() => {
+  const getComments = async() => {
     const response = await getPostComments(postId);
 
     setComments(response);
   };
 
   useEffect(() => {
-    funComm();
+    getComments();
   }, [postId, comments]);
+
+  const handleClick = () => {
+    setVisibility(!isVisible);
+  };
 
   return (
     <div className="PostDetails">
@@ -42,7 +46,7 @@ export const PostDetails = ({ postId }) => {
         <button
           type="button"
           className="button"
-          onClick={() => setVisibility(!isVisible)}
+          onClick={handleClick}
         >
           {`${isVisible ? 'Hide' : 'Show'} ${comments.length} comments`}
         </button>
