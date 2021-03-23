@@ -13,7 +13,6 @@ export const PostDetails = ({ selectedPostId }) => {
   const [postDetails, setPostDetails] = useState({});
   const [postComments, setPostComments] = useState([]);
   const [isCommentVisible, setIsCommentVisible] = useState(false);
-  const [commentId, setCommentId] = useState(0);
 
   useEffect(() => {
     async function fetchData() {
@@ -33,8 +32,8 @@ export const PostDetails = ({ selectedPostId }) => {
   }, [selectedPostId]);
 
   const deletePost = useCallback(
-    async() => {
-      await deletePostComments(commentId);
+    async(id) => {
+      await deletePostComments(id);
       const postCommentsData = await getPostComments(selectedPostId);
 
       const filteredPostComments = postCommentsData.filter(comment => (
@@ -43,12 +42,8 @@ export const PostDetails = ({ selectedPostId }) => {
 
       setPostComments(filteredPostComments);
     },
-    [selectedPostId, commentId],
+    [selectedPostId],
   );
-
-  useEffect(() => {
-    deletePost();
-  }, [deletePost]);
 
   function handleIsCommentVisible() {
     setIsCommentVisible(current => !current);
@@ -66,10 +61,6 @@ export const PostDetails = ({ selectedPostId }) => {
       setPostComments(filteredPostComments);
     }, [selectedPostId],
   );
-
-  useEffect(() => {
-    addNewComment();
-  }, [addNewComment]);
 
   return (
     <div className="PostDetails">
@@ -97,7 +88,7 @@ export const PostDetails = ({ selectedPostId }) => {
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
-                  onClick={() => setCommentId(postComment.id)}
+                  onClick={() => deletePost(postComment.id)}
                 >
                   X
                 </button>
@@ -112,7 +103,7 @@ export const PostDetails = ({ selectedPostId }) => {
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             postId={postDetails.id}
-            newComment={addNewComment}
+            addNewComment={addNewComment}
           />
         </div>
       </section>

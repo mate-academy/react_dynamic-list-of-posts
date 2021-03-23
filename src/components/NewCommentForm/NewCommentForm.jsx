@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ postId, newComment }) => {
+export const NewCommentForm = ({ postId, addNewComment }) => {
   const [inputs, setInputs] = useState({
     body: '',
     name: '',
@@ -33,13 +33,13 @@ export const NewCommentForm = ({ postId, newComment }) => {
   const handleSumbit = useCallback(
     (event) => {
       event.preventDefault();
-      newComment({
+      addNewComment({
         ...inputs,
         postId,
       });
 
       resetForm();
-    }, [inputs, postId, resetForm, newComment],
+    }, [inputs, postId, resetForm, addNewComment],
   );
 
   return (
@@ -92,5 +92,5 @@ export const NewCommentForm = ({ postId, newComment }) => {
 
 NewCommentForm.propTypes = {
   postId: PropTypes.number.isRequired,
-  newComment: PropTypes.func.isRequired,
+  addNewComment: PropTypes.func.isRequired,
 };
