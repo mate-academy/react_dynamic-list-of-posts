@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import { Comment } from '../Comment';
@@ -15,35 +15,29 @@ export function PostDetails({
   const [isVisible, setIsVisible] = useState(true);
   const [postDetail, setPostDetail] = useState(null);
   const [postComment, setPostComment] = useState(null);
-  const setVisibility = () => setIsVisible(!isVisible);
 
-  const refreshComment = () => setPostComment(prev => [...prev]);
+  const setVisibility = useCallback(() => setIsVisible(!isVisible), []);
+  const updateComments = useCallback(setPostComment, []);
 
   useEffect(() => {
     setIsLoading(true);
     async function fetchData() {
-      const detailsData = await getPostDetails(selectedPostId);
+      const [detailsData, commentsData] = await Promise.all([
+        getPostDetails(selectedPostId),
+        getPostComments(selectedPostId),
+      ]);
 
       setPostDetail(detailsData);
+      setPostComment(commentsData);
       setIsLoading(false);
     }
 
     fetchData();
   }, [selectedPostId]);
 
-  useEffect(() => {
-    async function fetchData() {
-      const commentsData = await getPostComments(selectedPostId);
-
-      setPostComment(commentsData);
-    }
-
-    fetchData();
-  }, [selectedPostId, postComment]);
-
   return (
     <div className="PostDetails">
-      {(isLoading && selectedPostId) && <Loader />}
+      {(isLoading && !!selectedPostId) && <Loader />}
       {
         (postDetail && (
         <>
@@ -59,11 +53,7 @@ export function PostDetails({
               className="button"
               onClick={setVisibility}
             >
-              Hide
-              {' '}
-              {postComment && postComment.length}
-              {' '}
-              comments
+              {`Hide ${postComment && postComment.length} comments`}
             </button>
 
             <ul
@@ -74,7 +64,8 @@ export function PostDetails({
                 <Comment
                   key={comment.id}
                   comment={comment}
-                  onRefreshComment={refreshComment}
+                  selectedPostId={selectedPostId}
+                  onUpdateComments={updateComments}
                 />
               ))}
             </ul>
@@ -84,7 +75,8 @@ export function PostDetails({
             <div className="PostDetails__form-wrapper">
               <NewCommentForm
                 postId={selectedPostId}
-                onRefreshComment={refreshComment}
+                onUpdateComments={updateComments}
+                selectedPostId={selectedPostId}
               />
             </div>
           </section>
@@ -97,5 +89,4 @@ export function PostDetails({
 
 PostDetails.propTypes = {
   selectedPostId: PropTypes.number.isRequired,
-
 };

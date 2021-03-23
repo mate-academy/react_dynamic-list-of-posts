@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { Select } from './components/Select';
@@ -8,11 +8,13 @@ import './styles/general.scss';
 
 export const App = () => {
   const [selectedUser, setSelectedUser] = useState(0);
-  const [selectedPostId, setSelectedPostId] = useState(null);
+  const [selectedPostId, setSelectedPostId] = useState(0);
 
-  const selectUser = event => setSelectedUser(+event.target.value);
-  const selectUserId = id => setSelectedPostId(id);
-  const resetUserId = () => setSelectedPostId(null);
+  const selectUser = useCallback(
+    event => setSelectedUser(+event.target.value), [],
+  );
+  const selectUserId = useCallback(id => setSelectedPostId(id), []);
+  const resetUserId = useCallback(() => setSelectedPostId(0), []);
 
   return (
     <div className="App">

@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { deleteComment } from '../../api/comments';
+import { deleteComment, getPostComments } from '../../api/comments';
 
-export function Comment({ comment, onRefreshComment }) {
-  const onDeleteComment = () => {
-    deleteComment(comment.id);
-    onRefreshComment();
-  };
+export function Comment({ comment, onUpdateComments, selectedPostId }) {
+  const onDeleteComment = useCallback(async() => {
+    await deleteComment(comment.id);
+    await getPostComments(selectedPostId)
+      .then(onUpdateComments);
+  }, []);
 
   return (
     <li
@@ -25,7 +26,8 @@ export function Comment({ comment, onRefreshComment }) {
 }
 
 Comment.propTypes = {
-  onRefreshComment: PropTypes.func.isRequired,
+  onUpdateComments: PropTypes.func.isRequired,
+  selectedPostId: PropTypes.number.isRequired,
   comment: PropTypes.shape({
     id: PropTypes.number.isRequired,
     body: PropTypes.string.isRequired,

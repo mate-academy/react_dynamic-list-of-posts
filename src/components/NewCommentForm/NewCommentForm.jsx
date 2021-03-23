@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import './NewCommentForm.scss';
 import PropTypes from 'prop-types';
-import { addComment } from '../../api/comments';
+import { addComment, getPostComments } from '../../api/comments';
 
-export function NewCommentForm({ postId, onRefreshComment }) {
+export function NewCommentForm({
+  postId,
+  onUpdateComments,
+  selectedPostId,
+}) {
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
 
-  const setValue = (event) => {
+  const setValue = useCallback((event) => {
     const { value, name } = event.target;
 
     switch (name) {
@@ -23,16 +27,18 @@ export function NewCommentForm({ postId, onRefreshComment }) {
       default:
         setBody(value);
     }
-  };
+  }, []);
 
-  const onSubmit = (event) => {
+  const onSubmit = useCallback(async(event) => {
     event.preventDefault();
-    addComment(firstName, email, body, postId);
+    await addComment(firstName, email, body, postId);
+    await getPostComments(selectedPostId)
+      .then(onUpdateComments);
+
     setFirstName('');
     setEmail('');
     setBody('');
-    onRefreshComment();
-  };
+  });
 
   return (
     <form
@@ -83,5 +89,6 @@ export function NewCommentForm({ postId, onRefreshComment }) {
 
 NewCommentForm.propTypes = {
   postId: PropTypes.number.isRequired,
-  onRefreshComment: PropTypes.func.isRequired,
+  selectedPostId: PropTypes.number.isRequired,
+  onUpdateComments: PropTypes.func.isRequired,
 };

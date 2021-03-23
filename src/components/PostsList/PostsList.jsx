@@ -1,10 +1,9 @@
-import PropTypes from 'prop-types';
-
 import React, { useEffect, useState } from 'react';
 import { Loader } from '../Loader';
 import { Post } from '../Post';
 import { getUserPosts } from '../../api/posts';
 
+import PropTypes from 'prop-types';
 import './PostsList.scss';
 
 export const PostsList = ({

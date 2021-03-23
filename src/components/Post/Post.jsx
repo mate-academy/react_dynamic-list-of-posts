@@ -8,7 +8,6 @@ export function Post({
   selectedPostId,
   onResetUserId,
   id,
-
 }) {
   return (
     <li className="PostsList__item">
