@@ -1,37 +1,51 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getUserPosts } from '../../api/api';
 import './PostsList.scss';
+import { Loader } from '../Loader/Loader';
+import { Post } from '../Post/Post';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({ selectedUser, selectedUSerId, selectedPost, resetUSer }) => {
+  const [users, setUsers] = useState([]);
+  const [isPrepered, setISPrepered] = useState(false);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  useEffect(() => {
+    setISPrepered(true);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+    (async() => {
+      const data = await getUserPosts();
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      if (selectedUser) {
+        setUsers(data.filter(post => selectedUser === post.id));
+
+        setISPrepered(false);
+
+        return;
+      }
+
+      setUsers(data);
+      setISPrepered(false);
+    })();
+  });
+
+  return !isPrepered
+    ? (<Loader />)
+    : (
+      <div className="PostsList">
+        <h2>Posts:</h2>
+
+        <ul className="PostsList__list">
+          {users.map(user => (
+            <Post
+              key={user.id}
+              id={user.id}
+              title={user.title}
+              userId={user.userId}
+              selectedUSerId={selectedUSerId}
+              selectedPost={selectedPost}
+              resetUSer={resetUSer}
+            />
+          ))}
+        </ul>
+      </div>
+    );
+};
