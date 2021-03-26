@@ -1,37 +1,64 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+
 import './PostsList.scss';
+import { getUserPosts } from '../../api/posts';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({
+  select,
+  setSelectedPostId,
+  selectedPostId,
+}) => {
+  const [posts, setPosts] = useState(null);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  useEffect(() => {
+    getUserPosts()
+      .then(result => setPosts(result));
+  }, []);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      <ul className="PostsList__list">
+        {posts && posts.filter(post => (
+          select === '0' ? post : +post.userId === +select
+        )).map(post => (
+          <li key={post.id} className="PostsList__item">
+            <div>
+              <b>{`[User: #${post.userId}] `}</b>
+              {post.title}
+            </div>
+            {selectedPostId === post.id ? (
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => setSelectedPostId(0)}
+              >
+                Close
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => setSelectedPostId(post.id)}
+              >
+                Open
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+PostsList.propTypes = {
+  select: PropTypes.string.isRequired,
+  setSelectedPostId: PropTypes.func.isRequired,
+  selectedPostId: PropTypes.number,
+};
+
+PostsList.defaultProps = {
+  selectedPostId: '',
+};
