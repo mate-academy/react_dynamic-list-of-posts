@@ -1,37 +1,69 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { getUserPosts } from '../../api/api';
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({
+  userId,
+  selectedPostId,
+  changeSelectedPostId,
+}) => {
+  const [posts, setPosts] = useState(null);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  useEffect(() => {
+    getUserPosts(userId).then(userPosts => setPosts(userPosts));
+  }, [userId]);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      {posts ? (
+        <ul className="PostsList__list">
+          {posts && posts.map(post => (
+            <li key={post.id} className="PostsList__item">
+              <div>
+                <b>{`[User #${post.userId}]`}</b>
+                <br />
+                {post.title}
+              </div>
+
+              {selectedPostId === post.id
+                ? (
+                  <button
+                    type="button"
+                    className="PostsList__button button"
+                    onClick={() => changeSelectedPostId(0)}
+                  >
+                    Close
+                  </button>
+                )
+                : (
+                  <button
+                    type="button"
+                    className="PostsList__button button"
+                    onClick={() => changeSelectedPostId(post.id)}
+                  >
+                    Open
+                  </button>
+                )
+              }
+
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <React.Fragment>
+          Loading...
+        </React.Fragment>
+      )}
+
+    </div>
+  );
+};
+
+PostsList.propTypes = {
+  userId: PropTypes.number.isRequired,
+  selectedPostId: PropTypes.number.isRequired,
+  changeSelectedPostId: PropTypes.func.isRequired,
+};
