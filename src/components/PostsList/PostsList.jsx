@@ -1,30 +1,38 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { getUserPosts } from '../../api/api';
 import './PostsList.scss';
 import { Loader } from '../Loader/Loader';
 import { Post } from '../Post/Post';
 
-export const PostsList = ({ selectedUser, selectedUSerId, selectedPost, resetUSer }) => {
+export const PostsList = ({
+  selectedUser,
+  selectedUserId,
+  selectedPost,
+  resetUser,
+}) => {
   const [users, setUsers] = useState([]);
-  const [isPrepered, setISPrepered] = useState(false);
+  const [isPrepered, setIsPrepered] = useState(false);
 
   useEffect(() => {
-    setISPrepered(true);
+    setIsPrepered(true);
 
-    (async() => {
+    const postUser = async() => {
       const data = await getUserPosts();
 
       if (selectedUser) {
         setUsers(data.filter(post => selectedUser === post.id));
 
-        setISPrepered(false);
+        setIsPrepered(false);
 
         return;
       }
 
       setUsers(data);
-      setISPrepered(false);
-    })();
+      setIsPrepered(false);
+    };
+
+    postUser();
   });
 
   return !isPrepered
@@ -40,12 +48,19 @@ export const PostsList = ({ selectedUser, selectedUSerId, selectedPost, resetUSe
               id={user.id}
               title={user.title}
               userId={user.userId}
-              selectedUSerId={selectedUSerId}
+              selectedUserId={selectedUserId}
               selectedPost={selectedPost}
-              resetUSer={resetUSer}
+              resetUser={resetUser}
             />
           ))}
         </ul>
       </div>
     );
+};
+
+PostsList.propTypes = {
+  selectedUser: PropTypes.number.isRequired,
+  selectedUserId: PropTypes.number.isRequired,
+  selectedPost: PropTypes.number.isRequired,
+  resetUser: PropTypes.func.isRequired,
 };

@@ -13,11 +13,11 @@ const App = () => {
     setSelectedUser(+event.target.value);
   }, []);
 
-  const selectedUSerId = (id) => {
+  const selectedUserId = (id) => {
     setSelectedPost(id);
   };
 
-  const resetUSer = () => {
+  const resetUser = () => {
     setSelectedPost(0);
   };
 
@@ -34,9 +34,9 @@ const App = () => {
         <div className="App__sidebar">
           <PostsList
             selectedUser={selectedUser}
-            selectedUSerId={selectedUSerId}
+            selectedUserId={selectedUserId}
             selectedPost={selectedPost}
-            resetUSer={resetUSer}
+            resetUser={resetUser}
           />
         </div>
 

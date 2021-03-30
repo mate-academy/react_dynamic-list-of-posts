@@ -1,6 +1,14 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-export const Post = ({ title, userId, selectedUSerId, id, selectedPost, resetUSer }) => {
+export function Post({
+  title,
+  userId,
+  selectedUserId,
+  id,
+  selectedPost,
+  resetUser,
+}) {
   return (
     <li>
       <div>
@@ -11,7 +19,7 @@ export const Post = ({ title, userId, selectedUSerId, id, selectedPost, resetUSe
         hidden={id === selectedPost}
         type="button"
         className="PostsList__button button hidden"
-        onClick={() => selectedUSerId(id)}
+        onClick={() => selectedUserId(id)}
       >
         Open
       </button>
@@ -19,10 +27,19 @@ export const Post = ({ title, userId, selectedUSerId, id, selectedPost, resetUSe
         type="button"
         className="PostsList__button button"
         hidden={id !== selectedPost}
-        onClick={resetUSer}
+        onClick={resetUser}
       >
         Close
       </button>
     </li>
   );
+}
+
+Post.propTypes = {
+  title: PropTypes.string.isRequired,
+  userId: PropTypes.number.isRequired,
+  selectedUserId: PropTypes.func.isRequired,
+  id: PropTypes.number.isRequired,
+  selectedPost: PropTypes.number.isRequired,
+  resetUser: PropTypes.func.isRequired,
 };
