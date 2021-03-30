@@ -1,45 +1,44 @@
-import React from 'react';
-import { NewCommentForm } from '../NewCommentForm';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { getDateilPosts, getComments } from '../../api/api';
 import './PostDetails.scss';
+import { Loader } from '../Loader/Loader';
+import { Details } from '../Details/Details';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({ selectedPost }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [details, setDetails] = useState(null);
+  const [comment, setComment] = useState(null);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  useEffect(() => {
+    setIsLoading(true);
+    (async() => {
+      const [detailsData, commentData] = await Promise.all([
+        getDateilPosts(selectedPost),
+        getComments(selectedPost),
+      ]);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+      setDetails(detailsData);
+      setComment(commentData);
+      setIsLoading(false);
+    })();
+  }, [selectedPost]);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  return (
+    <div className="PostDetails">
+      {(isLoading && selectedPost) && <Loader />}
+      {details && (
+        <Details
+          selectedPost={selectedPost}
+          details={details}
+          comment={comment}
+          setComment={setComment}
+        />
+      )}
+    </div>
+  );
+};
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
-
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+PostDetails.propTypes = {
+  selectedPost: PropTypes.number.isRequired,
+};
