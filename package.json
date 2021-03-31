@@ -1,16 +1,17 @@
 {
-  "name": "react_dynamic-list-of-posts",
+  "name": "inquire_test_task",
   "homepage": ".",
-  "version": "0.1.0",
   "keywords": [],
-  "author": "Mate Academy",
-  "license": "GPL-3.0",
   "dependencies": {
     "node-sass": "^4.14.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.3"
+    "react-redux": "^7.2.3",
+    "react-scripts": "3.4.3",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@mate-academy/eslint-config-react": "*",

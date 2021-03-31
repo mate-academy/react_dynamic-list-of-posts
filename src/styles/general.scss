@@ -13,4 +13,8 @@
   &:hover {
     background-color: #4d457b;
   }
+
+  &:disabled {
+    background-color: #b8b3d2;
+  }
 }

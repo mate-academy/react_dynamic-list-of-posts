@@ -1,37 +1,56 @@
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { deletePost } from '../../api/api';
+import { statePosts, setPostId, getPosts } from '../../store';
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = () => {
+  const dispatch = useDispatch();
+  const posts = useSelector(statePosts);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  const handleClick = (postId) => {
+    dispatch(setPostId(postId));
+  };
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  const handleDelete = async(postId) => {
+    await deletePost(postId);
+    dispatch(getPosts());
+  };
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+      <div>
+        <ul className="PostsList__list">
+          {posts.map(post => (
+            <li className="PostsList__item" key={post.id}>
+              <div>
+                <b>{`[Post #${post.id}]: `}</b>
+                {post.title}
+              </div>
+              <div>
+
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  onClick={() => handleClick(post.id)}
+                >
+                  Show Details
+                </button>
+
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  onClick={() => handleDelete(post.id)}
+                >
+                  Delete Post
+                </button>
+              </div>
+
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
