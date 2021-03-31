@@ -1,59 +1,56 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { getUserPosts } from '../../api/posts';
-import { Loader } from '../Loader';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { deletePost } from '../../api/api';
+import { statePosts, setPostId, getPosts } from '../../store';
 import './PostsList.scss';
 
-export const PostsList = ({ userId, setSelectedPostId, selectedPostId }) => {
-  const [posts, setPosts] = useState([]);
-
-  const fetchPosts = useCallback(async() => {
-    const postsFromServer = await getUserPosts(userId);
-
-    setPosts(postsFromServer);
-  }, [userId]);
-
-  useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
+export const PostsList = () => {
+  const dispatch = useDispatch();
+  const posts = useSelector(statePosts);
 
   const handleClick = (postId) => {
-    setSelectedPostId(postId === selectedPostId ? undefined : postId);
+    dispatch(setPostId(postId));
+  };
+
+  const handleDelete = async(postId) => {
+    await deletePost(postId);
+    dispatch(getPosts());
   };
 
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
-      {posts.length ? (
+      <div>
         <ul className="PostsList__list">
           {posts.map(post => (
             <li className="PostsList__item" key={post.id}>
               <div>
-                <b>{`[User #${post.userId}]: `}</b>
+                <b>{`[Post #${post.id}]: `}</b>
                 {post.title}
               </div>
-              <button
-                type="button"
-                className="PostsList__button button"
-                onClick={() => handleClick(post.id)}
-              >
-                {`${selectedPostId === post.id ? 'Close' : 'Open'}`}
-              </button>
+              <div>
+
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  onClick={() => handleClick(post.id)}
+                >
+                  Show Details
+                </button>
+
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  onClick={() => handleDelete(post.id)}
+                >
+                  Delete Post
+                </button>
+              </div>
+
             </li>
           ))}
         </ul>
-      ) : <Loader />}
+      </div>
     </div>
   );
-};
-
-PostsList.propTypes = {
-  userId: PropTypes.number,
-  selectedPostId: PropTypes.number,
-  setSelectedPostId: PropTypes.func.isRequired,
-};
-
-PostsList.defaultProps = {
-  selectedPostId: null,
-  userId: 0,
 };

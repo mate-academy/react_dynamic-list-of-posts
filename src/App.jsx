@@ -1,39 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import './App.scss';
 import './styles/general.scss';
+import { useSelector, useDispatch } from 'react-redux';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { UserSelect } from './components/UserSelect';
+import { NewPost } from './components/NewPost';
+import { getPosts, selectedPostId } from './store';
 
 const App = () => {
-  const [userId, setUserId] = useState(0);
-  const [selectedPostId, setSelectedPostId] = useState(null);
+  const dispatch = useDispatch();
+  const selectedPost = useSelector(selectedPostId);
+
+  function fetchPosts() {
+    dispatch(getPosts());
+  }
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   return (
     <div className="App">
-      <header className="App__header">
-        <UserSelect
-          userId={userId}
-          setUserId={setUserId}
-        />
+      <header className="App__header App__form-wrapper">
+        <NewPost />
       </header>
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList
-            userId={userId}
-            selectedPostId={selectedPostId}
-            setSelectedPostId={setSelectedPostId}
-          />
+          <PostsList />
         </div>
 
+        {!!selectedPost && (
         <div className="App__content">
-          {selectedPostId && (
           <PostDetails
-            postId={selectedPostId}
+            postId={selectedPost}
+            fetchPosts={fetchPosts}
           />
-          )}
         </div>
+        )}
+
       </main>
     </div>
   );

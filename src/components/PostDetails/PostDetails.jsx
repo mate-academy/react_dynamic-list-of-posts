@@ -1,79 +1,101 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { NewCommentForm } from '../NewCommentForm';
+import { useSelector, useDispatch } from 'react-redux';
 import { Loader } from '../Loader';
-import { PostComments } from '../PostComments';
-import { getPostDetails } from '../../api/posts';
-import { getComments } from '../../api/comments';
+import { requestPostsById, updatePost } from '../../api/api';
 import './PostDetails.scss';
+import { selectedPostId, getPosts } from '../../store';
+import { NewCommentForm } from '../NewCommentForm';
 
-export const PostDetails = ({ postId }) => {
+export const PostDetails = () => {
+  const dispatch = useDispatch();
+  const selectedPost = useSelector(selectedPostId);
   const [post, setPost] = useState({});
-  const [comments, setComments] = useState([]);
-  const [isCommentsHide, setIsCommentsHide] = useState(false);
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const [isPostEditing, setIsPostEditing] = useState(false);
 
-  const fetchCommentsAndPosts = useCallback(async() => {
-    const [commentsFromServer, postFromServer] = await Promise.all([
-      getComments(postId), getPostDetails(postId),
-    ]);
+  const loadPostDetails = useCallback(async() => {
+    const postFromServer = await requestPostsById(selectedPost);
 
-    setComments(commentsFromServer);
     setPost(postFromServer);
-  }, [postId]);
+    setPostTitle(postFromServer.title);
+    setPostBody(postFromServer.body);
+  }, [selectedPost]);
 
   useEffect(() => {
-    fetchCommentsAndPosts();
-  }, [fetchCommentsAndPosts]);
+    loadPostDetails();
+  }, [loadPostDetails]);
+
+  const handleSubmit = async(event) => {
+    event.preventDefault();
+
+    if (postTitle.trim() && postBody.trim()) {
+      await updatePost(selectedPost, postTitle, postBody);
+      setIsPostEditing(false);
+      dispatch(getPosts());
+      loadPostDetails();
+    } else {
+      setIsPostEditing(false);
+    }
+  };
 
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
-
-      <section className="PostDetails__post">
-        {post.body ? <p>{post.body}</p> : <Loader />}
-      </section>
-
-      {comments.length > 0 ? (
-        <section className="PostDetails__comments">
-          <button
-            type="button"
-            className="button"
-            onClick={() => {
-              setIsCommentsHide(!isCommentsHide);
-            }}
+      {!isPostEditing
+        ? (
+          <section className="PostDetails__post">
+            <h3><em>{post.title}</em></h3>
+            {post.body ? <p>{post.body}</p> : <Loader />}
+            <button
+              type="button"
+              className="button"
+              onClick={() => setIsPostEditing(true)}
+            >
+              Edit post
+            </button>
+          </section>
+        )
+        : (
+          <form
+            className="NewCommentForm"
+            onSubmit={event => handleSubmit(event)}
           >
-            {`${isCommentsHide ? 'Show' : 'Hide'} ${comments.length} comments`}
-          </button>
 
-          <ul className="PostDetails__list">
-            {!isCommentsHide && (
-            <PostComments
-              comments={comments}
-              postId={postId}
-              setComments={setComments}
-            />
-            )}
-          </ul>
+            <div className="form-field">
+              <input
+                name="title"
+                placeholder="Type titlr here"
+                className="NewCommentForm__input"
+                value={postTitle}
+                onChange={event => setPostTitle(event.target.value)}
+              />
+            </div>
 
-        </section>
-      ) : (<p>No comments yet</p>)}
+            <div className="form-field">
+              <textarea
+                name="body"
+                placeholder="Type post here"
+                className="NewCommentForm__input"
+                value={postBody}
+                onChange={event => setPostBody(event.target.value)}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="NewCommentForm__submit-button button"
+            >
+              Update post
+            </button>
+          </form>
+        )}
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            postId={postId}
-            setComments={setComments}
-          />
+          <NewCommentForm />
         </div>
       </section>
     </div>
   );
-};
-
-PostDetails.propTypes = {
-  postId: PropTypes.number,
-};
-
-PostDetails.defaultProps = {
-  postId: null,
 };
