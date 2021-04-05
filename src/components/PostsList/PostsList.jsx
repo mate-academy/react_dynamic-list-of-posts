@@ -15,9 +15,6 @@ export const PostsList = ({ selectedPostId, setSelectedPostId }) => {
     getPosts();
   }, []);
 
-  // eslint-disable-next-line no-console
-  console.log(posts);
-
   return (
     <div className="PostsList">
       <h2>Posts:</h2>

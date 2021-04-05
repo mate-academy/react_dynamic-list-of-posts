@@ -9,14 +9,17 @@ export const getPostComments = async() => {
   return filterData;
 };
 
-export const pushPostComments = async(newComment) => {
-  fetch(`${BASE_URL}/comments`, {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
-    },
-    body: JSON.stringify({
-      ...newComment,
-    }),
-  });
-};
+export const pushPostComments = newComment => fetch(`${BASE_URL}/comments`, {
+  method: 'POST',
+  headers: {
+    'Content-type': 'application/json; charset=UTF-8',
+  },
+  body: JSON.stringify({
+    ...newComment,
+  }),
+});
+
+export const deletePostComments
+= postId => fetch(`${BASE_URL}/comments/${postId}`, {
+  method: 'DELETE',
+});

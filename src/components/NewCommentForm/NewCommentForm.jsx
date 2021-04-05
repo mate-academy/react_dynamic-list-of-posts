@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { pushPostComments } from '../../api/comments';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ selectedPostId }) => {
+export const NewCommentForm = ({ selectedPostId, grabUpdatedInfo }) => {
   const [newName, setName] = useState({});
   const [email, setEmail] = useState({});
   const [body, setBody] = useState({});
@@ -34,7 +34,7 @@ export const NewCommentForm = ({ selectedPostId }) => {
       ...body,
     };
 
-    pushPostComments(newComment);
+    grabUpdatedInfo(newComment);
 
     return newComment;
   };

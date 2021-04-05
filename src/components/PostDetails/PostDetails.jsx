@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getPostDetails } from '../../api/posts';
-import { getPostComments } from '../../api/comments';
+import { getPostComments, pushPostComments, deletePostComments } from '../../api/comments';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
@@ -21,6 +21,11 @@ export const PostDetails = ({ selectedPostId }) => {
       .filter(item => (item.postId === selectedPostId));
 
     setComments(filterData);
+  };
+
+  const grabUpdatedInfo = (newComment) => {
+    pushPostComments(newComment)
+      .then(getComments);
   };
 
   useEffect(() => {
@@ -74,6 +79,10 @@ export const PostDetails = ({ selectedPostId }) => {
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
+                  onClick={() => {
+                    deletePostComments(comment.id)
+                      .then(getComments);
+                  }}
                 >
                   X
                 </button>
@@ -88,6 +97,7 @@ export const PostDetails = ({ selectedPostId }) => {
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             selectedPostId={selectedPostId}
+            grabUpdatedInfo={grabUpdatedInfo}
           />
         </div>
       </section>
