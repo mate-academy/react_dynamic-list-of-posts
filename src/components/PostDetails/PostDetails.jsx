@@ -1,45 +1,96 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { getPostDetails } from '../../api/posts';
+import { getPostComments } from '../../api/comments';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({ selectedPostId }) => {
+  const [postsDetails, setDetails] = useState([]);
+  const [comments, setComments] = useState([]);
+  const [toggleButton, setToggleButton] = useState(false);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  const getDetails = async() => {
+    const response = await getPostDetails(selectedPostId);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+    setDetails(response.data);
+  };
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
+  const getComments = async() => {
+    const response = await getPostComments();
+    const filterData = response
+      .filter(item => (item.postId === selectedPostId));
+
+    setComments(filterData);
+  };
+
+  useEffect(() => {
+    getDetails();
+  }, [selectedPostId]);
+
+  useEffect(() => {
+    getComments();
+  }, [selectedPostId]);
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <p>
+          {postsDetails.title}
+        </p>
+        <h3>Body</h3>
+        <p>
+          {postsDetails.body}
+        </p>
+      </section>
+
+      <section className="PostDetails__comments">
+        {toggleButton ? (
           <button
             type="button"
-            className="PostDetails__remove-button button"
+            className="button"
+            onClick={() => setToggleButton(false)}
           >
-            X
+            {`Hide ${comments.length} comments`}
           </button>
-          <p>My first comment</p>
-        </li>
-
-        <li className="PostDetails__list-item">
+        ) : (
           <button
             type="button"
-            className="PostDetails__remove-button button"
+            className="button"
+            onClick={() => setToggleButton(true)}
           >
-            X
+            {`Show ${comments.length} comments`}
           </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+        )}
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+        {toggleButton && (
+          <ul className="PostDetails__list">
+            {comments.map(comment => (
+              <li
+                className="PostDetails__list-item"
+                key={comment.id}
+              >
+                <button
+                  type="button"
+                  className="PostDetails__remove-button button"
+                >
+                  X
+                </button>
+                <p>{comment.body}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            selectedPostId={selectedPostId}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};

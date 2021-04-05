@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { getUserPosts } from '../../api/posts';
 import './PostsList.scss';
 
-export const PostsList = ({ setPostDetails }) => {
+export const PostsList = ({ selectedPostId, setSelectedPostId }) => {
   const [posts, setPosts] = useState([]);
-  const [selectedPostId, setSelectedPostId] = useState(0);
 
   const getPosts = async() => {
     const response = await getUserPosts();
@@ -43,7 +42,6 @@ export const PostsList = ({ setPostDetails }) => {
                 type="button"
                 className="PostsList__button button"
                 onClick={() => {
-                  setPostDetails(false);
                   setSelectedPostId(null);
                 }}
               >
@@ -54,7 +52,6 @@ export const PostsList = ({ setPostDetails }) => {
                 type="button"
                 className="PostsList__button button"
                 onClick={() => {
-                  setPostDetails(true);
                   setSelectedPostId(post.id);
                 }}
               >

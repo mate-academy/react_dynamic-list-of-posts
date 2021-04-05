@@ -5,7 +5,7 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
 const App = () => {
-  const [hasPostDetails, setPostDetails] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState(0);
 
   return (
     <div className="App">
@@ -32,13 +32,16 @@ const App = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            setPostDetails={setPostDetails}
+            selectedPostId={selectedPostId}
+            setSelectedPostId={setSelectedPostId}
           />
         </div>
 
         <div className="App__content">
-          {hasPostDetails && (
-            <PostDetails />
+          {!!selectedPostId && (
+            <PostDetails
+              selectedPostId={selectedPostId}
+            />
           )}
         </div>
       </main>
