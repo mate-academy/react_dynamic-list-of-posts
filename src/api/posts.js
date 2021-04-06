@@ -44,7 +44,7 @@ export const getPostComments = postId => request(`comments`)
 
 /* eslint-disable */
 export const deleteComment = (commentId) => {
-/* eslint-enable */
+  /* eslint-enable */
   return fetch(`${BASE_URL}/comments/${commentId}`, { method: 'DELETE' })
     .catch((error) => {
       throw new Error(error);
