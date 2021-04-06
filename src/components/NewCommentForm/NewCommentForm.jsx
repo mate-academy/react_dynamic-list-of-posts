@@ -3,20 +3,20 @@ import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
 
 export const NewCommentForm = ({ selectedPostId, grabUpdatedInfo }) => {
-  const [newName, setName] = useState({});
-  const [email, setEmail] = useState({});
-  const [body, setBody] = useState({});
+  const [newName, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [body, setBody] = useState('');
 
   const handleChange = (event) => {
     const { name, value } = event.target;
 
     switch (name) {
       case 'name':
-        return setName({ [name]: value });
+        return setName(value);
       case 'email':
-        return setEmail({ [name]: value });
+        return setEmail(value);
       case 'body':
-        return setBody({ [name]: value });
+        return setBody(value);
 
       default: {
         return null;
@@ -29,22 +29,28 @@ export const NewCommentForm = ({ selectedPostId, grabUpdatedInfo }) => {
 
     const newComment = {
       postId: selectedPostId,
-      ...newName,
-      ...email,
-      ...body,
+      name: newName,
+      email,
+      body,
     };
 
     grabUpdatedInfo(newComment);
-
-    return newComment;
+    setName('');
+    setEmail('');
+    setBody('');
   };
 
   return (
-    <form onSubmit={onSumbit} className="NewCommentForm">
+    <form
+      onSubmit={onSumbit}
+      className="NewCommentForm"
+      method="POST"
+    >
       <div className="form-field">
         <input
           type="text"
           name="name"
+          value={newName}
           placeholder="Your name"
           className="NewCommentForm__input"
           onChange={handleChange}
@@ -55,6 +61,7 @@ export const NewCommentForm = ({ selectedPostId, grabUpdatedInfo }) => {
         <input
           type="text"
           name="email"
+          value={email}
           placeholder="Your email"
           className="NewCommentForm__input"
           onChange={handleChange}
@@ -64,6 +71,7 @@ export const NewCommentForm = ({ selectedPostId, grabUpdatedInfo }) => {
       <div className="form-field">
         <textarea
           name="body"
+          value={body}
           placeholder="Type comment here"
           className="NewCommentForm__input"
           onChange={handleChange}
@@ -81,6 +89,10 @@ export const NewCommentForm = ({ selectedPostId, grabUpdatedInfo }) => {
 };
 
 NewCommentForm.propTypes = {
-  selectedPostId: PropTypes.number.isRequired,
+  selectedPostId: PropTypes.number,
   grabUpdatedInfo: PropTypes.func.isRequired,
+};
+
+NewCommentForm.defaultProps = {
+  selectedPostId: 0,
 };
