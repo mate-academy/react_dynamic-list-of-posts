@@ -1,19 +1,31 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { getUserPosts } from '../../api/posts';
 import './PostsList.scss';
 
-export const PostsList = ({ selectedPostId, setSelectedPostId }) => {
+export const PostsList = ({
+  selectedPostId,
+  setSelectedPostId,
+  selectedUserId,
+}) => {
   const [posts, setPosts] = useState([]);
 
   const getPosts = async() => {
     const response = await getUserPosts();
 
-    setPosts(response.data);
+    if (selectedUserId === 0) {
+      setPosts(response);
+    } else {
+      const filerPosts = response
+        .filter(post => post.userId === selectedUserId);
+
+      setPosts(filerPosts);
+    }
   };
 
   useEffect(() => {
     getPosts();
-  }, []);
+  }, [selectedUserId]);
 
   return (
     <div className="PostsList">
@@ -60,4 +72,10 @@ export const PostsList = ({ selectedPostId, setSelectedPostId }) => {
       </ul>
     </div>
   );
+};
+
+PostsList.propTypes = {
+  selectedPostId: PropTypes.number.isRequired,
+  setSelectedPostId: PropTypes.func.isRequired,
+  selectedUserId: PropTypes.number.isRequired,
 };

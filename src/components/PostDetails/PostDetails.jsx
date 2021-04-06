@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+
 import { getPostDetails } from '../../api/posts';
-import { getPostComments, pushPostComments, deletePostComments } from '../../api/comments';
+import { getPostComments,
+  pushPostComments, deletePostComments } from '../../api/comments';
+
 import { NewCommentForm } from '../NewCommentForm';
+import { Loader } from '../Loader/Loader';
 import './PostDetails.scss';
 
 export const PostDetails = ({ selectedPostId }) => {
@@ -9,10 +14,9 @@ export const PostDetails = ({ selectedPostId }) => {
   const [comments, setComments] = useState([]);
   const [toggleButton, setToggleButton] = useState(false);
 
-  const getDetails = async() => {
-    const response = await getPostDetails(selectedPostId);
-
-    setDetails(response.data);
+  const grabUpdatedInfo = (newComment) => {
+    pushPostComments(newComment)
+      .then(getComments);
   };
 
   const getComments = async() => {
@@ -23,13 +27,15 @@ export const PostDetails = ({ selectedPostId }) => {
     setComments(filterData);
   };
 
-  const grabUpdatedInfo = (newComment) => {
-    pushPostComments(newComment)
-      .then(getComments);
-  };
-
   useEffect(() => {
+    const getDetails = async() => {
+      const response = await getPostDetails(selectedPostId);
+
+      setDetails(response.data);
+    };
+
     getDetails();
+    setComments([]);
   }, [selectedPostId]);
 
   useEffect(() => {
@@ -40,58 +46,69 @@ export const PostDetails = ({ selectedPostId }) => {
     <div className="PostDetails">
       <h2>Post details:</h2>
 
-      <section className="PostDetails__post">
-        <p>
-          {postsDetails.title}
-        </p>
-        <h3>Body</h3>
-        <p>
-          {postsDetails.body}
-        </p>
-      </section>
+      {postsDetails.length < 1 ? (
+        <Loader />
+      ) : (
+        <>
+          <section className="PostDetails__post">
+            <p>
+              {postsDetails.title}
+            </p>
+            <h3>Body</h3>
+            <p>
+              {postsDetails.body}
+            </p>
+          </section>
 
-      <section className="PostDetails__comments">
-        {toggleButton ? (
-          <button
-            type="button"
-            className="button"
-            onClick={() => setToggleButton(false)}
-          >
-            {`Hide ${comments.length} comments`}
-          </button>
-        ) : (
-          <button
-            type="button"
-            className="button"
-            onClick={() => setToggleButton(true)}
-          >
-            {`Show ${comments.length} comments`}
-          </button>
-        )}
-
-        {toggleButton && (
-          <ul className="PostDetails__list">
-            {comments.map(comment => (
-              <li
-                className="PostDetails__list-item"
-                key={comment.id}
-              >
-                <button
-                  type="button"
-                  className="PostDetails__remove-button button"
-                  onClick={() => {
-                    deletePostComments(comment.id)
-                      .then(getComments);
-                  }}
-                >
-                  X
-                </button>
-                <p>{comment.body}</p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+          <section className="PostDetails__comments">
+            {comments.length < 1 ? (
+              <Loader />
+            ) : (
+              <>
+                {toggleButton ? (
+                  <button
+                    type="button"
+                    className="button"
+                    onClick={() => setToggleButton(false)}
+                  >
+                    {`Hide ${comments.length} comments`}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="button"
+                    onClick={() => setToggleButton(true)}
+                  >
+                    {`Show ${comments.length} comments`}
+                  </button>
+                )}
+              </>
+            )}
+            {toggleButton && (
+              <ul className="PostDetails__list">
+                {comments.map(comment => (
+                  <li
+                    className="PostDetails__list-item"
+                    key={comment.id}
+                  >
+                    <button
+                      type="button"
+                      className="PostDetails__remove-button button"
+                      onClick={() => {
+                        deletePostComments(comment.id)
+                          .then(getComments);
+                      }}
+                    >
+                      X
+                    </button>
+                    <p>{comment.body}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </>
+      )}
 
       <section>
         <div className="PostDetails__form-wrapper">
@@ -103,4 +120,8 @@ export const PostDetails = ({ selectedPostId }) => {
       </section>
     </div>
   );
+};
+
+PostDetails.propTypes = {
+  selectedPostId: PropTypes.number.isRequired,
 };

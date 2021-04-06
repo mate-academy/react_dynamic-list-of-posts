@@ -6,6 +6,7 @@ import { PostDetails } from './components/PostDetails';
 
 const App = () => {
   const [selectedPostId, setSelectedPostId] = useState(0);
+  const [selectedUserId, setSelectedUserId] = useState(0);
 
   return (
     <div className="App">
@@ -13,7 +14,12 @@ const App = () => {
         <label>
           Select a user: &nbsp;
 
-          <select className="App__user-selector">
+          <select
+            className="App__user-selector"
+            onChange={(event) => {
+              setSelectedUserId(+event.target.value);
+            }}
+          >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
             <option value="2">Ervin Howell</option>
@@ -34,6 +40,7 @@ const App = () => {
           <PostsList
             selectedPostId={selectedPostId}
             setSelectedPostId={setSelectedPostId}
+            selectedUserId={selectedUserId}
           />
         </div>
 
