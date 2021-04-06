@@ -1,37 +1,74 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import './PostsList.scss';
+import { getUserPosts } from '../../api/posts';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({ selectUserId, selectedPostId }) => {
+  const [posts, setPosts] = useState([]);
+  const [postId, setPostId] = useState(0);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  const showPostDetails = (selectPostId) => {
+    selectedPostId(true, selectPostId);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+    setPostId(selectPostId);
+  };
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+  const hidePostDetails = () => {
+    selectedPostId(false, 0);
+
+    setPostId(0);
+  };
+
+  useEffect(() => {
+    getUserPosts(selectUserId)
+      .then(setPosts);
+  }, [selectUserId]);
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul className="PostsList__list">
+        {posts.map(post => (
+          <li
+            key={post.id}
+            className="PostsList__item"
+          >
+            <div>
+              <b>
+                { `[User #${post.userId}]:` }
+              </b>
+              {post.title}
+            </div>
+
+            {(postId !== post.id)
+              ? (
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  onClick={event => showPostDetails(post.id)}
+                >
+                  Open
+                </button>
+              )
+              : (
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  onClick={hidePostDetails}
+                >
+                  Close
+                </button>
+              )
+            }
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+PostsList.propTypes = {
+  selectUserId: PropTypes.number.isRequired,
+  selectedPostId: PropTypes.func.isRequired,
+};
