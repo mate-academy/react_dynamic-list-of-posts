@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './PostsList.scss';
 import PropTypes from 'prop-types';
-import { Loader } from '../Loader';
 import { getUserPosts } from '../../api/posts';
 
 export const PostsList = ({ setSelectedPostId, selectedPostId, userId }) => {
@@ -17,7 +16,6 @@ export const PostsList = ({ setSelectedPostId, selectedPostId, userId }) => {
       <h2>Posts:</h2>
 
       <ul className="PostsList__list">
-        {userPosts.length === 0 && <Loader />}
         {userPosts.map(post => (
           <li className="PostsList__item" key={post.id}>
             <div>

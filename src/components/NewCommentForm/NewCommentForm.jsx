@@ -20,6 +20,12 @@ export const NewCommentForm = ({ postId, addComment }) => {
     setBodyContent(event.target.value);
   };
 
+  const clearForm = () => {
+    setNameContent('');
+    setEmailContent('');
+    setBodyContent('');
+  };
+
   const handleAddComment = (event) => {
     event.preventDefault();
 
@@ -34,6 +40,7 @@ export const NewCommentForm = ({ postId, addComment }) => {
       .then(result => result.data);
 
     addComment(createdComment);
+    clearForm();
   };
 
   return (
