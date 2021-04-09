@@ -1,23 +1,18 @@
 import { BASE_URL } from './api';
 
-export const getUserPosts = (userId) => {
-  const fetchedData = fetch(`${BASE_URL}/posts/`)
-    .then(response => response.json())
-    .then((result) => {
-      if (userId !== 0) {
-        return result.data.filter(post => post.userId === +userId);
-      }
+export const getUserPosts = async(userId) => {
+  const fetchedData = +userId === 0
+    ? await fetch(`${BASE_URL}/posts/`)
+    : await fetch(`${BASE_URL}/posts?userId=${userId}`);
 
-      return result.data;
-    });
+  const posts = await fetchedData.json();
 
-  return fetchedData;
+  return posts.data;
 };
 
-export const getPostDetails = (postId) => {
-  const fetchedData = fetch(`${BASE_URL}/posts/${postId}`)
-    .then(response => response.json())
-    .then(result => result.data);
+export const getPostDetails = async(postId) => {
+  const fetchedData = await fetch(`${BASE_URL}/posts/${postId}`);
+  const posts = await fetchedData.json();
 
-  return fetchedData;
+  return posts.data;
 };

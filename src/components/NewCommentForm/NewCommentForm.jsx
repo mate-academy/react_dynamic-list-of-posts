@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import './NewCommentForm.scss';
+import PropTypes from 'prop-types';
 import { addNewComment } from '../../api/comments';
 
-export const NewCommentForm = ({ postId }) => {
+export const NewCommentForm = ({ postId, addComment }) => {
   const [nameContent, setNameContent] = useState('');
   const [emailContent, setEmailContent] = useState('');
   const [bodyContent, setBodyContent] = useState('');
@@ -31,6 +32,8 @@ export const NewCommentForm = ({ postId }) => {
 
     addNewComment(createdComment)
       .then(result => result.data);
+
+    addComment(createdComment);
   };
 
   return (
@@ -75,4 +78,9 @@ export const NewCommentForm = ({ postId }) => {
       </button>
     </form>
   );
+};
+
+NewCommentForm.propTypes = {
+  postId: PropTypes.number.isRequired,
+  addComment: PropTypes.func.isRequired,
 };
