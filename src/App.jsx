@@ -23,14 +23,14 @@ const App = () => {
   }, [posts]);
 
   useEffect(() => {
-    async function fetchData() {
+    const fetchData = async() => {
       const fetchComment = await getComments(selectedPost);
 
       setComments(fetchComment);
-    }
+    };
 
     fetchData();
-  }, []);
+  }, [comments]);
 
   const updateComments = useCallback(setComments, []);
 

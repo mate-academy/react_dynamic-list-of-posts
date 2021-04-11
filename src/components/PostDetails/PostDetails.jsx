@@ -29,7 +29,7 @@ export const PostDetails = React.memo(
           <p>{postTitle}</p>
         </section>
 
-        {comments
+        {comments.length > 0
           ? (
             <>
               <section className="PostDetails__comments">
@@ -52,7 +52,7 @@ export const PostDetails = React.memo(
                   {`${comments.length} comments`}
                 </button>
 
-                {showComment && (
+                {comments && (
                   <ul className="PostDetails__list">
                     {comments.map(comment => (
                       <li
@@ -68,7 +68,7 @@ export const PostDetails = React.memo(
                         >
                           X
                         </button>
-                        <p>{comment.name}</p>
+                        <p>{comment.body}</p>
                       </li>
                     ))}
                   </ul>
