@@ -1,37 +1,53 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = React.memo(
+  ({ posts, onSelectPostDetail, selectedPost, onSelectPostTitle }) => (
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+      <ul className="PostsList__list">
+        {posts.map(post => (
+          <li
+            key={post.id}
+            className="PostsList__item"
+          >
+            <div>
+              <b>{`[User #${post.userId}] :`}</b>
+              {post.title}
+            </div>
+            <button
+              type="button"
+              className="PostsList__button button"
+              onClick={(event) => {
+                if (event.target.textContent === 'Close') {
+                  onSelectPostDetail(null);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+                  return;
+                }
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
+                onSelectPostDetail(post.id);
+                onSelectPostTitle(post.title);
+              }}
+            >
+              {selectedPost === post.id ? 'Close' : 'Open'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ),
 );
+
+PostsList.propTypes = PropTypes.shape({
+  posts: PropTypes.arrayOf({
+    id: PropTypes.number.isRequired,
+    userId: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+  }).isRequired,
+  onSelectPostDetail: PropTypes.func.isRequired,
+  onSelectPostTitle: PropTypes.func.isRequired,
+  selectedPost: PropTypes.number.isRequired,
+}).isRequired;

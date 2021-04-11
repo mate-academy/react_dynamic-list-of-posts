@@ -1,45 +1,105 @@
-import React from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
+import { Loader } from '../Loader';
 import './PostDetails.scss';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+import { removeComment } from '../../api/post';
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails = React.memo(
+  ({
+    selectedPost,
+    comments,
+    updateComments,
+    postTitle,
+  }) => {
+    const [showComment, isShow] = useState(false);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+    const deleteComment = (id) => {
+      removeComment(id);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+      updateComments(comments.filter(comment => comment.id !== id));
+    };
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+    return (
+      <div className="PostDetails">
+        <h2>Post details:</h2>
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
+        <section className="PostDetails__post">
+          <p>{postTitle}</p>
+        </section>
+
+        {comments.length > 0
+          ? (
+            <>
+              <section className="PostDetails__comments">
+                <button
+                  type="button"
+                  className="button"
+                  onClick={(event) => {
+                    if (event.target.textContent.includes('Hide')) {
+                      isShow(false);
+
+                      return;
+                    }
+
+                    isShow(true);
+                  }}
+                >
+                  {showComment ? 'Hide'
+                    : 'Show'}
+                  {' '}
+                  {`${comments.length} comments`}
+                </button>
+
+                {showComment && (
+                  <ul className="PostDetails__list">
+                    {comments.map(comment => (
+                      <li
+                        className="PostDetails__list-item"
+                        key={comment.id}
+                      >
+                        <button
+                          type="button"
+                          className="PostDetails__remove-button button"
+                          onClick={() => {
+                            deleteComment(comment.id);
+                          }}
+                        >
+                          X
+                        </button>
+                        <p>{comment.body}</p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+
+              <section>
+                <div className="PostDetails__form-wrapper">
+                  <NewCommentForm
+                    postId={selectedPost}
+                    updateComments={updateComments}
+                  />
+                </div>
+              </section>
+            </>
+          )
+          : <Loader />
+        }
       </div>
-    </section>
-  </div>
+    );
+  },
 );
+
+PostDetails.propTypes = PropTypes.shape({
+  selectedPost: PropTypes.number.isRequired,
+  comments: PropTypes.arrayOf({
+    id: PropTypes.number.isRequired,
+    postId: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+  }).isRequired,
+  updateComments: PropTypes.func.isRequired,
+  postTitle: PropTypes.string.isRequired,
+}).isRequired;
