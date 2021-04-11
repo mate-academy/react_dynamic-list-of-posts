@@ -52,7 +52,7 @@ export const PostDetails = React.memo(
                   {`${comments.length} comments`}
                 </button>
 
-                {comments && (
+                {showComment && (
                   <ul className="PostDetails__list">
                     {comments.map(comment => (
                       <li

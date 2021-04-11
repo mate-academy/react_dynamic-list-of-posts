@@ -6,7 +6,7 @@ import './NewCommentForm.scss';
 export const NewCommentForm = ({ postId, updateComments }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [comment, setComment] = useState('');
+  const [body, setBody] = useState('');
 
   const getNewComments = async(idOfPost) => {
     const newComments = await getComments(idOfPost);
@@ -19,12 +19,12 @@ export const NewCommentForm = ({ postId, updateComments }) => {
       postId,
       name,
       email,
-      comment,
+      body,
     });
 
     setName('');
     setEmail('');
-    setComment('');
+    setBody('');
 
     getNewComments(postId);
   };
@@ -38,7 +38,7 @@ export const NewCommentForm = ({ postId, updateComments }) => {
   };
 
   const handleCommentsInput = (event) => {
-    setComment(event.target.value);
+    setBody(event.target.value);
   };
 
   return (
@@ -77,7 +77,7 @@ export const NewCommentForm = ({ postId, updateComments }) => {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={comment}
+          value={body}
           onChange={handleCommentsInput}
         />
       </div>
