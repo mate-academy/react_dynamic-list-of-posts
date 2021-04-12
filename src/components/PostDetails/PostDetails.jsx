@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
@@ -20,13 +20,13 @@ export const PostDetails = ({ userId, post }) => {
       });
   }, [userId]);
 
-  const loadComments = (newComment) => {
+  const loadComments = useCallback((newComment) => {
     addPostComment({
       userId, ...newComment,
     })
       .then(() => getPostComments(userId))
       .then(setComments);
-  };
+  }, [userId]);
 
   const deleteComment = (postId) => {
     deletePostComment(postId)
