@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './NewCommentForm.scss';
 import { addComment, getPostComments } from '../../api/api';
+import { Comment } from '../../types';
+
+type FormEventType = React.FormEvent<HTMLFormElement>;
+type FormFieldType = React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
 
 interface Props {
   postId: number,
-  onSetComments: () => void,
+  onSetComments: (comments: Comment[]) => void,
 }
 
 export const NewCommentForm:React.FC<Props> = ({ postId, onSetComments }) => {
@@ -26,7 +30,7 @@ export const NewCommentForm:React.FC<Props> = ({ postId, onSetComments }) => {
     })
   }, [postId]);
 
-  const onAddComment = async (event: React.FormEvent<HTMLFormElement>) => {
+  const onAddComment = async (event: FormEventType) => {
     event.preventDefault();
 
     const newComment = {
@@ -44,7 +48,7 @@ export const NewCommentForm:React.FC<Props> = ({ postId, onSetComments }) => {
     getPostComments(postId).then(onSetComments)
   }
 
-  const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleCommentChange = (event: FormFieldType) => {
     const { name, value } = event.target;
 
     setComment({...comment, [name]: value});

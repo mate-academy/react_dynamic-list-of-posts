@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -6,35 +6,47 @@ import { PostDetails } from './components/PostDetails';
 import { loadPosts } from './api/api';
 import { Post } from './types';
 
-const App = () => {
-  const [posts, setPosts] = useState([]);
-  const [userId, setUserId] = useState(0);
-  const [selectedPostId, setSelectedPostId] = useState(0);
+type SelectEventType = React.ChangeEvent<HTMLSelectElement>;
 
-  console.log(posts);
+const App = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [userId, setUserId] = useState(0);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  const onSelectPost = useCallback((post: Post) => {
+    setSelectedPost(post);
+  }, []);
+
   
   useEffect(() => {
     loadPosts()
-      .then(response => setPosts(response.data));
-  }, [])
+      .then(response => setPosts(response));
+  }, []);
+
+  const filterPosts = useCallback(async (id) => {
+    const loadedPosts = await loadPosts();
+
+    const filteredPosts = loadedPosts.filter((post: Post) => post.userId === id);
+
+    setPosts(filteredPosts);
+  }, []);
 
   useEffect(() => {
     switch (userId) {
       case 0:
       loadPosts()
-        .then(response => setPosts(response.data));
+        .then(response => setPosts(response));
         return;
       default:
-      loadPosts()
-        .then(posts => setPosts(posts.data.filter(( post: Post ) => post.userId === userId)));
+        filterPosts(userId);
     }
 
-    setSelectedPostId(0);
+    setSelectedPost(null);
   }, [userId]);
 
-  const handleUserSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setUserId(+event.target.value)
-  }
+  const handleUserSelect = useCallback((event: SelectEventType) => {
+    setUserId(+event.target.value);
+  }, []);
 
   return (
     <div className="App">
@@ -60,19 +72,19 @@ const App = () => {
       </header>
       <main className="App__main">
         <div className="App__sidebar">
-          {posts.length && 
-          <PostsList
-            onCommentSelect={setSelectedPostId}
-            selectedPostId={selectedPostId}
-            posts={posts}
-          />}
+          {posts.length !== 0 && (
+            <PostsList
+              onPostSelect={onSelectPost}
+              selectedPost={selectedPost}
+              posts={posts}
+            />
+          )}
         </div>
 
         <div className="App__content">
-          {selectedPostId && (
+          {selectedPost && (
             <PostDetails
-              selectedPostId={selectedPostId}
-              posts={posts}
+              selectedPost={selectedPost}
             />
           )}
         </div>

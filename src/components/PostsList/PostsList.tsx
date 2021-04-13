@@ -1,15 +1,14 @@
 import React from 'react';
 import './PostsList.scss';
 import { Post } from '../../types';
-import { number } from 'prop-types';
 
 interface Props {
-  posts: Array<Post>,
-  onCommentSelect: (id: number) => void,
-  selectedPostId: number,
+  posts: Post[],
+  onPostSelect: (post: Post) => void,
+  selectedPost: Post | null,
 }
 
-export const PostsList: React.FC<Props> = ({ posts, onCommentSelect, selectedPostId }) => {
+export const PostsList: React.FC<Props> = ({ posts, onPostSelect, selectedPost }) => {
   if (!posts.length) {
     return <h2>No posts</h2>
   }
@@ -26,11 +25,11 @@ export const PostsList: React.FC<Props> = ({ posts, onCommentSelect, selectedPos
               {post.title}
             </div>
             <button
-              onClick={() => onCommentSelect(post.id)}
+              onClick={() => onPostSelect(post)}
               type="button"
               className="PostsList__button button"
             >
-              {post.id === selectedPostId ? `Close` : `Open`}
+              {selectedPost && post.id === selectedPost.id ? `Close` : `Open`}
             </button>
           </li>
         ))}

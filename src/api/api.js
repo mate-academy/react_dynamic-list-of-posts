@@ -1,9 +1,9 @@
-// export const BASE_URL = 'https://jsonplaceholder.typicode.com';
 export const BASE_URL = 'https://mate-api.herokuapp.com';
 
 export function loadPosts() {
   return fetch(`${BASE_URL}/posts`)
     .then(response => response.json())
+    .then(response => response.data)
 }
 
 export function getUserPosts(userId) {

@@ -3,35 +3,30 @@ import { NewCommentForm } from '../NewCommentForm';
 import { Loader } from '../Loader/Loader';
 import './PostDetails.scss';
 import { removeComment, getPostComments } from '../../api/api';
-import { Post } from '../../types';
+import { Post, Comment } from '../../types';
 
-// interface Props {
-//   selectedPostId: number,
-//   posts: Array<Post>,
-// }
+interface Props {
+  selectedPost: Post,
+}
 
-// export const PostDetails: React.FC<Props> = ({ selectedPostId, posts }) => {
-  export const PostDetails = ({ selectedPostId, posts }) => {
-  const [comments, setComments] = useState([]);
+export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
+  const [comments, setComments] = useState<Comment[]>([]);
   const [buttonIsActive, setButtonIsActive] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const post = posts.find(post => post.id === selectedPostId);
+  const reloadComments = async () => {
+    setIsLoading(true);
 
-  console.log(post.id);
-  console.log('post');
+    const result = await getPostComments(selectedPost.id);
+
+    setComments(result);
+
+    setIsLoading(false);
+  };
 
   useEffect(() => {
-    (async function anyNameFunction() {
-      setIsLoading(true);
-
-      const result = await getPostComments(selectedPostId);
-
-      setComments(result);
-
-      setIsLoading(false);
-    })();
-  }, [selectedPostId]);
+    reloadComments()
+  }, [selectedPost]);
 
   const handleButton = () => {
     if (buttonIsActive) {
@@ -41,9 +36,9 @@ import { Post } from '../../types';
     }
   }
 
-  const deleteComment = async (id) => {
+  const deleteComment = async (id: number) => {
     await removeComment(id);
-    getPostComments(selectedPostId)
+    getPostComments(selectedPost.id)
       .then(setComments);
   }
 
@@ -56,7 +51,7 @@ import { Post } from '../../types';
     <h2>Post details:</h2>
 
     <section className="PostDetails__post">
-      <p>{post.title}</p>
+      <p>{selectedPost.title}</p>
     </section>
 
     <section className="PostDetails__comments">
@@ -69,7 +64,7 @@ import { Post } from '../../types';
       </button>
 
       <ul className="PostDetails__list">
-        {comments.length > 0 && !buttonIsActive && comments.map(comment => (
+        {comments.length > 0 && !buttonIsActive && comments.map((comment) => (
           <li className="PostDetails__list-item" key={comment.id}>
             <button
               type="button"
@@ -87,7 +82,7 @@ import { Post } from '../../types';
     <section>
       <div className="PostDetails__form-wrapper">
         <NewCommentForm
-          postId={post.id}
+          postId={selectedPost.id}
           onSetComments={setComments}
         />
       </div>
