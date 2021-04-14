@@ -6,7 +6,7 @@ import { PostDetails } from './components/PostDetails';
 import { loadPosts } from './api/api';
 import { Post } from './types';
 
-type SelectEventType = React.ChangeEvent<HTMLSelectElement>;
+type SelectEvent = React.ChangeEvent<HTMLSelectElement>;
 
 const App = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -17,7 +17,6 @@ const App = () => {
     setSelectedPost(post);
   }, []);
 
-  
   useEffect(() => {
     loadPosts()
       .then(response => setPosts(response));
@@ -32,19 +31,18 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    switch (userId) {
-      case 0:
+    if (userId === 0) {
       loadPosts()
         .then(response => setPosts(response));
-        return;
-      default:
-        filterPosts(userId);
+      return;
     }
+
+    filterPosts(userId);
 
     setSelectedPost(null);
   }, [userId]);
 
-  const handleUserSelect = useCallback((event: SelectEventType) => {
+  const handleUserSelect = useCallback((event: SelectEvent) => {
     setUserId(+event.target.value);
   }, []);
 

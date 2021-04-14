@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './NewCommentForm.scss';
 import { addComment, getPostComments } from '../../api/api';
 import { Comment } from '../../types';
 
-type FormEventType = React.FormEvent<HTMLFormElement>;
-type FormFieldType = React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
+type FormEvent = React.FormEvent<HTMLFormElement>;
+type FormField = React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
 
 interface Props {
   postId: number,
@@ -12,12 +12,16 @@ interface Props {
 }
 
 export const NewCommentForm:React.FC<Props> = ({ postId, onSetComments }) => {
+  const generateId = useCallback(() => {
+    return Number(Date.now().toString().slice(-5));
+  }, []);
+
   const [comment, setComment] = useState({
     'name': '',
     'email': '',
     'body': '',
     postId,
-    id: 0
+    id: generateId(),
   });
 
   useEffect(() => {
@@ -26,33 +30,33 @@ export const NewCommentForm:React.FC<Props> = ({ postId, onSetComments }) => {
       'email': '',
       'body': '',
       postId,
-      id: Number(Date.now().toString().slice(-5))
+      id: generateId(),
     })
   }, [postId]);
 
-  const onAddComment = async (event: FormEventType) => {
+  const onAddComment = useCallback( async (event: FormEvent) => {
     event.preventDefault();
 
     const newComment = {
       ...comment,
-      id: Number(Date.now().toString().slice(-5)),
+      id:  Number(Date.now().toString().slice(-5))
     }
+    
+    const commentValues = Object.values(newComment);
 
-    const formValues = Object.values(newComment);
-
-    if (formValues.some(value => value === '')) {
+    if (commentValues.some(value => value === '')) {
       return;
     }
 
     await addComment(newComment);
     getPostComments(postId).then(onSetComments)
-  }
+  }, [comment]);
 
-  const handleCommentChange = (event: FormFieldType) => {
+  const handleCommentChange = (event: FormField) => {
     const { name, value } = event.target;
 
     setComment({...comment, [name]: value});
-  }
+  };
 
   return (
     <form
