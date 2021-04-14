@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
 import { addCommentToServer } from '../../api/comments';
 
+const { uuid } = require('uuidv4');
+
 export const NewCommentForm = ({ postId, addCommentLocal }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -15,6 +17,7 @@ export const NewCommentForm = ({ postId, addCommentLocal }) => {
       name,
       email,
       body,
+      id: uuid(),
     };
 
     await addCommentToServer(prepearedComment);
