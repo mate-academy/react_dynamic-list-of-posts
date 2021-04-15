@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import './PostsList.scss';
 import classNames from 'classnames/bind';
 
-export const PostsList = ({ posts, userId, fetchPostId }) => {
+export const PostsList = ({ posts, fetchPostId }) => {
   const [postId, setPostId] = useState('');
 
-  const onOpenHandler = (postID, userID) => {
+  const onOpenHandler = (postID) => {
     setPostId(postID);
     fetchPostId(postID);
   };
@@ -51,7 +51,6 @@ export const PostsList = ({ posts, userId, fetchPostId }) => {
 
 PostsList.propTypes = {
   fetchPostId: PropTypes.func.isRequired,
-  userId: PropTypes.number.isRequired,
   posts: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequired,
     title: PropTypes.string || null.isRequired,

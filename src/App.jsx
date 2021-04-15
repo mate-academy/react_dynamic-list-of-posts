@@ -15,17 +15,19 @@ const App = () => {
 
   useEffect(() => {
     setIsLoad(true);
+    getAllUsers('/users')
+      .then(response => setUsers(response.data.filter(user => user.id <= 11)))
+      .catch(err => err);
+  }, []);
+
+  useEffect(() => {
     getUsersPosts('/posts')
       .then((response) => {
         setPosts(response.data);
         setIsLoad(false);
       })
       .catch(err => err);
-
-    getAllUsers('/users')
-      .then(response => setUsers(response.data.filter(user => user.id <= 11)))
-      .catch(err => err);
-  }, [+selectedUser === 0]);
+  }, []);
 
   const onSelectUser = useCallback((e) => {
     const userId = e.target.value;
@@ -34,7 +36,9 @@ const App = () => {
     setIsLoad(true);
     getUsersPosts('/posts')
       .then((response) => {
-        setPosts(response.data.filter(post => post.userId === +userId));
+        +userId
+          ? setPosts(response.data.filter(post => post.userId === +userId))
+          : setPosts(response.data);
         setIsLoad(false);
       })
       .catch(err => err);
