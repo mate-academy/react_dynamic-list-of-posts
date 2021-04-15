@@ -1,41 +1,83 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.scss';
 import './styles/general.scss';
+import classNames from 'classnames';
+import { getUsers } from './api/users';
+
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
-const App = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+const App = () => {
+  const [users, setUsers] = useState(null);
+  const [selectedUserId, setSelectedUserId] = useState('');
+  const [selectedPostId, setSelectedPostId] = useState(null);
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+  useEffect(() => {
+    getUsers()
+      .then(setUsers);
+  }, []);
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+  const onChangeHandler = (event) => {
+    setSelectedUserId(event.target.value);
+    setSelectedPostId(null);
+  };
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+  const setPostIdHandler = (postId) => {
+    setSelectedPostId(postId);
+  };
+
+  const unsetPostIdHandler = () => {
+    setSelectedPostId(null);
+  };
+
+  return (
+    <div className="App">
+      <header className="App__header">
+        <label>
+          Select a user: &nbsp;
+
+          <div
+            className={classNames(
+              'select',
+              { 'is-loading': users === null },
+            )}
+          >
+            <select
+              value={selectedUserId}
+              onChange={onChangeHandler}
+            >
+              <option value="0">All users</option>
+
+              {users && users.map(user => (
+                <option
+                  value={user.id}
+                  key={user.id}
+                >
+                  {user.name}
+                </option>
+              ))
+              }
+            </select>
+          </div>
+        </label>
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            userId={Number(selectedUserId)}
+            onOpen={setPostIdHandler}
+            onClose={unsetPostIdHandler}
+            selectedId={selectedPostId}
+          />
+        </div>
+
+        <div className="App__content">
+          {selectedPostId && <PostDetails postId={selectedPostId} />}
+        </div>
+      </main>
+    </div>
+  );
+};
 
 export default App;
