@@ -18,7 +18,6 @@ export const PostDetails = ({ postId }) => {
 
   const handleClick = () => {
     setVisible(!isVisible);
-    console.log(comments);
   };
 
   const getComments = async() => {
