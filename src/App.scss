@@ -29,6 +29,11 @@ ul {
   padding: 0;
 }
 
+label {
+  display: flex;
+  align-items: center;
+}
+
 %stretch-panel {
   flex-grow: 1;
   margin: 10px;
