@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './PostsList.scss';
 import PropTypes from 'prop-types';
-import { getPosts, getUserPosts, createComment } from '../../api/posts';
-
-//createComment();
+import { getPosts, getUserPosts } from '../../api/posts';
 
 export const PostsList = ({
   userId,

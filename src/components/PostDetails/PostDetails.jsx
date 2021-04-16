@@ -5,15 +5,10 @@ import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import {
   getPostDetails,
-  getComments, deleteComment,
+  getComments,
+  deleteComment,
+  saveComment,
 } from '../../api/posts';
-
-// createComment({
-//   postId: 256,
-//   name: 'Hello mate',
-//   email: '@.gmail.com',
-//   body: 'New comment2',
-// });
 
 export const PostDetails = ({ postId }) => {
   const [post, setPost] = useState({});
@@ -37,6 +32,14 @@ export const PostDetails = ({ postId }) => {
 
     setComments(previous => previous
       .filter(comment => comment.id !== commentId));
+  };
+
+  const addNewComment = (data) => {
+    saveComment({
+      ...data,
+      postId,
+    })
+      .then(newComment => setComments(previous => [...previous, newComment]));
   };
 
   return (
@@ -76,7 +79,7 @@ export const PostDetails = ({ postId }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm />
+          <NewCommentForm saveComment={addNewComment} />
         </div>
       </section>
     </div>

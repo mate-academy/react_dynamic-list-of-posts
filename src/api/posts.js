@@ -16,15 +16,6 @@ export const getComments = async(postId) => {
   return comments.filter(comment => comment.postId === postId);
 };
 
-export const createComment = comment => save('/comments', comment);
+export const saveComment = comment => save('/comments', comment);
 
 export const deleteComment = commentId => remove(`/comments/${commentId}`);
-
-// export const createComment = () => (
-//   post('/comments', {
-//     postId: 256,
-//     name: 'Hello mate',
-//     email: '@.gmail.com',
-//     body: 'New comment2',
-//   })
-// );
