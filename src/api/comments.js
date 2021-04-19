@@ -7,3 +7,11 @@ export function getPostComments(postId) {
       comments => comments.data.filter(comment => comment.postId === postId),
     );
 }
+
+export function addComment(comment) {
+  return fetch(`${BASE_URL}/comments/`, {
+    method: 'POST',
+    body: JSON.stringify(comment),
+  })
+    .then(result => result.json());
+}

@@ -7,10 +7,17 @@ import { PostDetails } from './components/PostDetails';
 const App = () => {
   const [postId, setPostId] = useState(0);
   const [isSelectedPost, setIsSelectedPost] = useState(false);
+  const [userId, setUserId] = useState(0);
 
   const selectedPostId = (isPostIdSelected, selectedPostId) => {
     setIsSelectedPost(isPostIdSelected);
     setPostId(selectedPostId);
+  };
+
+  const handleUserSelect = (event) => {
+    const { value } = event.target;
+
+    setUserId(value);
   };
 
   return (
@@ -19,7 +26,11 @@ const App = () => {
         <label>
           Select a user: &nbsp;
 
-          <select className="App__user-selector">
+          <select
+            className="App__user-selector"
+            value={userId}
+            onChange={(event) => handleUserSelect(event)}
+          >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
             <option value="2">Ervin Howell</option>
@@ -37,15 +48,22 @@ const App = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList />
+          <PostsList
+            userId={userId}
+            selectedPostId={selectedPostId}
+          />
         </div>
 
-        <div className="App__content">
-          <PostDetails />
-        </div>
+        {isSelectedPost && (
+          <div className="App__content">
+            <PostDetails
+              postId={postId}
+            />
+          </div>
+        )}
       </main>
     </div>
-  )
-}
+  );
+};
 
 export default App;

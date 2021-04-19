@@ -8,7 +8,7 @@ export const PostsList = ({ userId, selectedPostId }) => {
 
   useEffect(() => {
     getUserPosts(userId)
-      .then(setPosts);
+      .then(result => setPosts(result));
   }, [userId]);
 
   const openPostDetails = (id) => {
