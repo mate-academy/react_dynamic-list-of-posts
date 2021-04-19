@@ -1,37 +1,66 @@
 import React from 'react';
 import './PostsList.scss';
+import PropTypes from 'prop-types';
 
-export const PostsList = () => (
+export const PostsList = ({ posts, selectPost, selectedPost }) => (
   <div className="PostsList">
     <h2>Posts:</h2>
 
     <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
-
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
+      {posts
+        .map(post => (
+          <li
+            key={post.id}
+            className="PostsList__item"
+          >
+            <div>
+              <b>{`[User #${post.userId}]: `}</b>
+              {post.title}
+            </div>
+            {selectedPost !== post.id
+              ? (
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  onClick={() => selectPost(post.id)}
+                >
+                  Open
+                </button>
+              )
+              : (
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  onClick={() => selectPost()}
+                >
+                  Close
+                </button>
+              )
+            }
+          </li>
+        ))}
     </ul>
   </div>
 );
+
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      userId: PropTypes.number,
+      title: PropTypes.string,
+    }),
+  ),
+  selectPost: PropTypes.func.isRequired,
+  selectedPost: PropTypes.number,
+};
+
+PostsList.defaultProps = {
+  posts: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: '',
+      userId: null,
+    }),
+  ),
+  selectedPost: 0,
+};
