@@ -6,17 +6,17 @@ import { PostDetails } from './components/PostDetails';
 import { getUserPosts } from './api/posts';
 
 const App = () => {
-  const [usedId, setSelectedUsedId] = useState(0);
+  const [userId, setSelectedUsedId] = useState(0);
   const [posts, setPosts] = useState([]);
-  const [selectedPost, setSelectedPost] = useState();
+  const [selectedPost, setSelectedPost] = useState(0);
   const selectUser = (event) => {
     setSelectedUsedId(event.target.value);
     getUserPosts(event.target.value, setPosts);
   };
 
   useEffect(() => {
-    getUserPosts(usedId, setPosts);
-  }, []);
+    getUserPosts(userId, setPosts);
+  }, [userId]);
 
   return (
     <div className="App">
@@ -25,7 +25,7 @@ const App = () => {
           Select a user: &nbsp;
 
           <select
-            value={usedId}
+            value={userId}
             onChange={selectUser}
             className="App__user-selector"
           >

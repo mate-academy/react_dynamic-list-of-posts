@@ -31,7 +31,7 @@ export const PostsList = ({ posts, selectPost, selectedPost }) => (
                 <button
                   type="button"
                   className="PostsList__button button"
-                  onClick={() => selectPost()}
+                  onClick={() => selectPost(0)}
                 >
                   Close
                 </button>
@@ -47,10 +47,19 @@ PostsList.propTypes = {
   posts: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number.isRequired,
-      userId: PropTypes.number.isRequired,
-      title: PropTypes.string.isRequired,
+      userId: PropTypes.number,
+      title: PropTypes.string,
     }),
   ).isRequired,
   selectPost: PropTypes.func.isRequired,
   selectedPost: PropTypes.number.isRequired,
 };
+
+PostsList.defaultProps = {
+  posts: PropTypes.arrayOf(
+    PropTypes.shape({
+      title: '',
+      userId: null,
+    })
+  )
+}
