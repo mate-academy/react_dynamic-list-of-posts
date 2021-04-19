@@ -9,3 +9,10 @@ export const getUserPosts = async(userId) => {
 
   return posts.data;
 };
+
+export const getPostDetails = async(postId) => {
+  const response = await fetch(`${BASE_URL}/posts/${postId}`);
+  const posts = await response.json();
+
+  return posts.data;
+};
