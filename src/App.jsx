@@ -8,7 +8,7 @@ import { getUserPosts } from './api/posts';
 const App = () => {
   const [userId, setSelectedUsedId] = useState(0);
   const [posts, setPosts] = useState([]);
-  const [selectedPost, setSelectedPost] = useState(0);
+  const [selectedPost, setSelectedPost] = useState();
   const selectUser = (event) => {
     setSelectedUsedId(event.target.value);
     getUserPosts(event.target.value, setPosts);
