@@ -1,37 +1,48 @@
 import React from 'react';
 import './PostsList.scss';
 
-export const PostsList = () => (
+export const PostsList = ({
+  posts,
+  handleSelectedPost,
+  selectedPostId
+}) => (
   <div className="PostsList">
     <h2>Posts:</h2>
 
     <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
+      {posts && posts.map(post => (
+        <li
+          key={post.id}
+          className="PostsList__item"
         >
-          Close
-        </button>
-      </li>
-
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
+          <div>
+            <b>
+              {`[User: #${post.userId}]`}
+            </b>
+            {post.title}
+          </div>
+          {selectedPostId === post.id
+            ? (
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => handleSelectedPost(0)}
+              >
+                Close
+              </button>
+            )
+            : (
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => handleSelectedPost(post.id)}
+              >
+                Open
+              </button>
+            )
+          }
+        </li>
+      ))}
     </ul>
   </div>
 );
