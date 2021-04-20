@@ -1,5 +1,7 @@
 import React from 'react';
 import { NewCommentForm } from '../NewCommentForm';
+import { getPostDetails } from '../../api/posts';
+
 import './PostDetails.scss';
 
 export const PostDetails = () => (

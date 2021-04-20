@@ -4,11 +4,12 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getUsers } from './api/users';
-// import { getUserPosts } from './api/posts';
 
 export const App = () => {
   const [users, setUsers] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState('');
+  const [postId, setPostId] = useState(1);
+  const [isPostOpen, setPostOpen] = useState(true);
 
   useEffect(() => {
     getUsers().then(setUsers);
@@ -47,12 +48,19 @@ export const App = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            selectedUserId={selectedUserId}
+            selectedUserId={Number(selectedUserId)}
+            setPostId={setPostId}
+            isPostOpen={isPostOpen}
+            setPostOpen={setPostOpen}
           />
         </div>
 
         <div className="App__content">
-          <PostDetails />
+          {isPostOpen && (
+            <PostDetails
+              postId={postId}
+            />
+          )}
         </div>
       </main>
     </div>
