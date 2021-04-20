@@ -21,13 +21,13 @@ export const PostsList = ({
   }, [selectedUserId]);
 
   const handleOpenButton = (id) => {
-    setPostOpen(false);
+    setPostOpen(true);
     setSelectedPostId(id);
     setPostId(id);
   };
 
   const handleCloseButton = () => {
-    setPostOpen(true);
+    setPostOpen(false);
     setSelectedPostId('');
   };
 

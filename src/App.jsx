@@ -9,7 +9,7 @@ export const App = () => {
   const [users, setUsers] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState('');
   const [postId, setPostId] = useState('');
-  const [isPostOpen, setPostOpen] = useState(true);
+  const [isPostOpen, setPostOpen] = useState(false);
 
   useEffect(() => {
     getUsers().then(setUsers);
