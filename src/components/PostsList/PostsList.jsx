@@ -21,13 +21,13 @@ export const PostsList = ({
   }, [selectedUserId]);
 
   const handleOpenButton = (id) => {
-    setPostOpen(true);
+    setPostOpen(false);
     setSelectedPostId(id);
     setPostId(id);
   };
 
   const handleCloseButton = () => {
-    setPostOpen(false);
+    setPostOpen(true);
   };
 
   return (
@@ -45,11 +45,11 @@ export const PostsList = ({
               </b>
               {title || 'No title'}
             </div>
-            {selectedPostId === id ? (
+            {id !== selectedUserId ? (
               <button
                 type="button"
                 className="PostsList__button button"
-                onClick={handleOpenButton(id)}
+                onClick={() => handleOpenButton(id)}
               >
                 Open
               </button>
