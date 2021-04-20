@@ -24,7 +24,7 @@ export const NewCommentForm = () => (
     <div className="form-field">
       <textarea
         name="body"
-        placeholder="Type comment here"
+        placeholder="Type comments here"
         className="NewCommentForm__input"
       />
     </div>
