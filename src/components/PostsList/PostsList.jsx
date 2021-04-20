@@ -10,7 +10,7 @@ export const PostsList = ({
   setPostOpen,
 }) => {
   const [posts, setPosts] = useState([]);
-  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState('');
 
   useEffect(() => {
     if (!selectedUserId) {
@@ -28,6 +28,7 @@ export const PostsList = ({
 
   const handleCloseButton = () => {
     setPostOpen(true);
+    setSelectedPostId('');
   };
 
   return (
@@ -45,7 +46,7 @@ export const PostsList = ({
               </b>
               {title || 'No title'}
             </div>
-            {id !== selectedUserId ? (
+            {selectedPostId !== id ? (
               <button
                 type="button"
                 className="PostsList__button button"
