@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './NewCommentForm.scss';
+import PropTypes from 'prop-types';
 import { addComment } from '../../api/comments';
 
 export const NewCommentForm = ({ postId }) => {
@@ -73,4 +74,8 @@ export const NewCommentForm = ({ postId }) => {
       </button>
     </form>
   );
-}
+};
+
+NewCommentForm.propTypes = {
+  postId: PropTypes.number.isRequired,
+};

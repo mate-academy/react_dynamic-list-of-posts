@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import './PostsList.scss';
 import { getUserPosts } from '../../api/posts';
 
@@ -65,4 +66,9 @@ export const PostsList = ({ userId, selectedPostId }) => {
       </ul>
     </div>
   );
-}
+};
+
+PostsList.propTypes = {
+  userId: PropTypes.number.isRequired,
+  selectedPostId: PropTypes.func.isRequired,
+};

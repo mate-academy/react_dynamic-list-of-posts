@@ -15,3 +15,13 @@ export function addComment(comment) {
   })
     .then(result => result.json());
 }
+
+export const deleteComment = async(commentId) => {
+  const response = await fetch(
+    `${BASE_URL}/comments/${commentId}`, {
+      method: 'DELETE',
+    },
+  );
+
+  return response;
+};

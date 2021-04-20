@@ -9,9 +9,9 @@ const App = () => {
   const [isSelectedPost, setIsSelectedPost] = useState(false);
   const [userId, setUserId] = useState(0);
 
-  const selectedPostId = (isPostIdSelected, selectedPostId) => {
+  const selectedPostId = (isPostIdSelected, selectedId) => {
     setIsSelectedPost(isPostIdSelected);
-    setPostId(selectedPostId);
+    setPostId(selectedId);
   };
 
   const handleUserSelect = (event) => {
@@ -29,7 +29,7 @@ const App = () => {
           <select
             className="App__user-selector"
             value={userId}
-            onChange={(event) => handleUserSelect(event)}
+            onChange={event => handleUserSelect(event)}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
