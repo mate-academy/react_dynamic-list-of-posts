@@ -15,9 +15,9 @@ export const PostsList = ({
   useEffect(() => {
     if (!selectedUserId) {
       getPosts().then(setPosts);
+    } else {
+      getUserPosts(selectedUserId).then(setPosts);
     }
-
-    getUserPosts(selectedUserId).then(setPostId);
   }, [selectedUserId]);
 
   const handleOpenButton = (id) => {

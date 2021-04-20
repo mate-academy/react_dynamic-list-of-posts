@@ -8,7 +8,7 @@ import { getUsers } from './api/users';
 export const App = () => {
   const [users, setUsers] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState('');
-  const [postId, setPostId] = useState(1);
+  const [postId, setPostId] = useState('');
   const [isPostOpen, setPostOpen] = useState(true);
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export const App = () => {
         <div className="App__content">
           {isPostOpen && (
             <PostDetails
-              postId={postId}
+              postId={Number(postId)}
             />
           )}
         </div>
