@@ -1,45 +1,117 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import {
+  addComment,
+  deleteComment,
+  getPostComments,
+  getPostDetails,
+} from '../../api/services';
+import { Loader } from '../Loader';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({ postId }) => {
+  const [postDetails, setPostDetails] = useState(null);
+  const [comments, setComments] = useState(null);
+  const [showComments, setShowComments] = useState(true);
+  const [isLoad, setIsLoad] = useState(false);
+  const [isUpdateComments, setUpdateComments] = useState(false);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  useEffect(() => {
+    setIsLoad(true);
+    getPostDetails(postId)
+      .then((response) => {
+        setPostDetails(response.data);
+        setIsLoad(false);
+      });
+  }, [postId]);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  useEffect(() => {
+    getPostComments(postId)
+      .then(response => setComments(response));
+  }, [isUpdateComments, postId]);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  const onHideComments = () => {
+    setShowComments(prev => !prev);
+  };
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  const onUpdateComments = () => {
+    setUpdateComments(!isUpdateComments);
+  };
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+  const onDeleteComment = (id) => {
+    deleteComment(id)
+      .then(onUpdateComments);
+  };
+
+  const onAddComment = (data, setLoad) => {
+    setLoad(true);
+    addComment(data)
+      .then((response) => {
+        setLoad(false);
+        onUpdateComments();
+      });
+  };
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      {!isLoad && comments && postDetails
+        ? (
+          <>
+            <section className="PostDetails__post">
+              <p>{postDetails.title}</p>
+            </section>
+
+            <section className="PostDetails__comments">
+              <button
+                type="button"
+                className="button"
+                onClick={onHideComments}
+              >
+                Hide
+                {' '}
+                {comments.length}
+                {' '}
+                {' '}
+                comments
+              </button>
+
+              <ul className="PostDetails__list">
+                {showComments && comments.map(comment => (
+                  <li key={comment.id} className="PostDetails__list-item">
+                    <button
+                      type="button"
+                      className="PostDetails__remove-button button"
+                      onClick={() => onDeleteComment(comment.id)}
+                    >
+                      X
+                    </button>
+                    <p>{comment.body}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </>
+        )
+        : <Loader />
+      }
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            onAddComment={onAddComment}
+            postId={postId}
+            onUpdateComments={onUpdateComments}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};
+
+PostDetails.propTypes = {
+  postId: PropTypes.number.isRequired,
+};

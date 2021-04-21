@@ -1,37 +1,59 @@
-import React from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import './PostsList.scss';
+import classNames from 'classnames/bind';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({ posts, fetchPostId }) => {
+  const [postId, setPostId] = useState('');
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  const onOpenHandler = (postID) => {
+    setPostId(postID);
+    fetchPostId(postID);
+  };
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  return (
+    <div className="PostsList">
+      <h2>
+        Posts:
+        {' '}
+        {posts.length}
+      </h2>
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      <ul className="PostsList">
+        {posts.map(post => (
+          <li key={post.id} className="PostsList__item">
+            <div>
+              <b>
+                [User #
+                {post.userId}
+                ]:
+                {' '}
+              </b>
+              {post.title}
+            </div>
+            <button
+              type="button"
+              className={classNames(
+                'PostsList__button',
+                'button',
+                { Active: post.id === postId },
+              )}
+              onClick={() => onOpenHandler(post.id === postId ? 0 : post.id)}
+            >
+              {post.id !== postId ? 'Open' : 'Close'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+PostsList.propTypes = {
+  fetchPostId: PropTypes.func.isRequired,
+  posts: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string || null.isRequired,
+    userId: PropTypes.number.isRequired,
+  })).isRequired,
+};

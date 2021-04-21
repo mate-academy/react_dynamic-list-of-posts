@@ -16,4 +16,11 @@
   &__submit-button {
     margin-top: 10px;
   }
+
+  &__input:required {
+    box-shadow: none;
+  }
+  &__input:invalid {
+    box-shadow: none;
+  }
 }
