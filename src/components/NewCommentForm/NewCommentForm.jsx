@@ -33,6 +33,7 @@ export const NewCommentForm = ({ postId }) => {
     <form
       className="NewCommentForm"
       onSubmit={formSubmit}
+      method="POST"
     >
       <div className="form-field">
         <input

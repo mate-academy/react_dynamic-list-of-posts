@@ -20,6 +20,10 @@ export const PostDetails = ({ postId }) => {
       .then(result => setComments(result));
   }, [postId, comments]);
 
+  const handleButton = () => {
+    setIsCommentVisible(!isCommentVisible);
+  };
+
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
@@ -32,7 +36,7 @@ export const PostDetails = ({ postId }) => {
         <button
           type="button"
           className="button"
-          onClick={() => setIsCommentVisible(false)}
+          onClick={handleButton}
         >
           {isCommentVisible
             ? `Hide ${comments.length} comments`
