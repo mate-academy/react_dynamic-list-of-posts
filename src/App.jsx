@@ -16,7 +16,10 @@ const App = () => {
   useEffect(() => {
     setIsLoad(true);
     getAllUsers('/users')
-      .then(response => setUsers(response.data.filter(user => user.id <= 11)))
+      .then((response) => {
+        setUsers(response.data.filter(user => user.id <= 11));
+        setIsLoad(false);
+      })
       .catch(err => err);
   }, []);
 
@@ -42,7 +45,7 @@ const App = () => {
         setIsLoad(false);
       })
       .catch(err => err);
-  }, [selectedUser]);
+  }, []);
 
   return (
     <div className="App">

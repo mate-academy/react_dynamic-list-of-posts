@@ -16,7 +16,7 @@ export const PostDetails = ({ postId }) => {
   const [comments, setComments] = useState(null);
   const [showComments, setShowComments] = useState(true);
   const [isLoad, setIsLoad] = useState(false);
-  const [isUpdateComments, setUpdateComments] = useState(null);
+  const [isUpdateComments, setUpdateComments] = useState(false);
 
   useEffect(() => {
     setIsLoad(true);
@@ -33,7 +33,7 @@ export const PostDetails = ({ postId }) => {
   }, [isUpdateComments, postId]);
 
   const onHideComments = () => {
-    setShowComments(!showComments);
+    setShowComments(prev => !prev);
   };
 
   const onUpdateComments = () => {

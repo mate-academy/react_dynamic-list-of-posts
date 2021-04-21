@@ -21,6 +21,12 @@ export const NewCommentForm = ({ postId, onAddComment }) => {
     setBody(e.target.value);
   };
 
+  const resetForm = () => {
+    setName('');
+    setEmail('');
+    setBody('');
+  };
+
   const submitComment = (e) => {
     e.preventDefault();
     const data = {
@@ -31,9 +37,7 @@ export const NewCommentForm = ({ postId, onAddComment }) => {
     };
 
     onAddComment(data, setLoad);
-    setName('');
-    setEmail('');
-    setBody('');
+    resetForm();
   };
 
   return (
