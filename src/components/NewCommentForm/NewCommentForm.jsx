@@ -4,27 +4,33 @@ import PropTypes from 'prop-types';
 
 export const NewCommentForm = React.memo(
   ({ loadComments }) => {
-    const [newComment, setNewComment] = useState({
-      name: '', email: '', body: '',
-    });
+    const [newName, setNewName] = useState('');
+    const [newEmail, setNewEmail] = useState('');
+    const [newBody, setNewBody] = useState('');
 
     const handleChange = ({ target }) => {
       const { name, value } = target;
 
-      setNewComment({
-        ...newComment,
-        [name]: value,
-      });
+      // eslint-disable-next-line default-case
+      switch (name) {
+        case 'name':
+          setNewName(value);
+          break;
+        case 'email':
+          setNewEmail(value);
+          break;
+        case 'body':
+          setNewBody(value);
+          break;
+      }
     };
 
     const handleSubmit = (event) => {
       event.preventDefault();
-      loadComments(newComment);
-      setNewComment({
-        name: '',
-        email: '',
-        body: '',
-      });
+      loadComments(newName, newEmail, newBody);
+      setNewName('');
+      setNewEmail('');
+      setNewBody('');
     };
 
     return (
@@ -38,7 +44,7 @@ export const NewCommentForm = React.memo(
             name="name"
             placeholder="Your name"
             className="NewCommentForm__input"
-            value={newComment.name}
+            value={newName}
             onChange={handleChange}
             required
           />
@@ -50,7 +56,7 @@ export const NewCommentForm = React.memo(
             name="email"
             placeholder="Your email"
             className="NewCommentForm__input"
-            value={newComment.email}
+            value={newEmail}
             onChange={handleChange}
             required
           />
@@ -61,7 +67,7 @@ export const NewCommentForm = React.memo(
             name="body"
             placeholder="Type comment here"
             className="NewCommentForm__input"
-            value={newComment.body}
+            value={newBody}
             onChange={handleChange}
             required
           />

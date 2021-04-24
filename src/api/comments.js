@@ -11,14 +11,14 @@ const post = (url, data) => fetch(`${BASE_URL}${url}`, {
 
 export const addPostComment = ({
   userId,
-  name,
-  email,
-  body,
+  newName,
+  newEmail,
+  newBody,
 }) => post('/comments', {
   postId: userId,
-  name,
-  email,
-  body,
+  name: newName,
+  email: newEmail,
+  body: newBody,
 });
 
 export const deletePostComment = postId => fetch(

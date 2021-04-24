@@ -20,9 +20,12 @@ export const PostDetails = ({ userId, post }) => {
       });
   }, [userId]);
 
-  const loadComments = useCallback((newComment) => {
+  const loadComments = useCallback((newName, newEmail, newBody) => {
     addPostComment({
-      userId, ...newComment,
+      userId,
+      newName,
+      newEmail,
+      newBody,
     })
       .then(() => getPostComments(userId))
       .then(setComments);
@@ -34,56 +37,56 @@ export const PostDetails = ({ userId, post }) => {
       .then(setComments);
   };
 
+  if (!post) {
+    return (
+      <Loader />
+    );
+  }
+
   return (
     <div className="PostDetails">
-      {!post ? (
-        <Loader />
-      ) : (
-        <>
-          <h2>Post details:</h2>
+      <h2>Post details:</h2>
 
-          <section className="PostDetails__post">
-            <p>{post.title}</p>
-          </section>
+      <section className="PostDetails__post">
+        <p>{post.title}</p>
+      </section>
 
-          <section className="PostDetails__comments">
-            <button
-              type="button"
-              className="button PostDetails__button"
-              onClick={() => {
-                setVisible(!visible);
-              }}
-            >
-              {`Hide ${comments.length} comments`}
-            </button>
-            {visible && (
-            <ul className="PostDetails__list">
-              {comments && comments.map(comment => (
-                <li key={comment.id} className="PostDetails__list-item">
-                  <button
-                    onClick={() => {
-                      deleteComment(comment.id);
-                    }}
-                    type="button"
-                    className="PostDetails__remove-button button"
-                  >
-                    X
-                  </button>
-                  <p>{comment.body}</p>
-                </li>
-              ))}
-            </ul>
-            )}
-          </section>
-          <section>
-            <div className="PostDetails__form-wrapper">
-              <NewCommentForm
-                loadComments={loadComments}
-              />
-            </div>
-          </section>
-        </>
-      )}
+      <section className="PostDetails__comments">
+        <button
+          type="button"
+          className="button PostDetails__button"
+          onClick={() => {
+            setVisible(!visible);
+          }}
+        >
+          {`Hide ${comments.length} comments`}
+        </button>
+        {visible && (
+        <ul className="PostDetails__list">
+          {comments && comments.map(comment => (
+            <li key={comment.id} className="PostDetails__list-item">
+              <button
+                onClick={() => {
+                  deleteComment(comment.id);
+                }}
+                type="button"
+                className="PostDetails__remove-button button"
+              >
+                X
+              </button>
+              <p>{comment.body}</p>
+            </li>
+          ))}
+        </ul>
+        )}
+      </section>
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            loadComments={loadComments}
+          />
+        </div>
+      </section>
     </div>
   );
 };

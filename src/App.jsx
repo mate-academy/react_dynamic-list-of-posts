@@ -3,13 +3,14 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { Header } from './components/Header/Header';
 import { getUsers } from './api/api';
 import { getAllPosts } from './api/posts';
 
 export const App = () => {
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState([]);
-  const [userSelect, setUserSelect] = useState('0');
+  const [userSelect, setUserSelect] = useState(0);
   const [posts, setPosts] = useState([]);
   const [filterPosts, setFilterPosts] = useState(posts);
   const [userId, setUserId] = useState(0);
@@ -34,7 +35,7 @@ export const App = () => {
     setUser(person);
   }, []);
 
-  const filterByPosts = (number) => {
+  const filterByPosts = useCallback((number) => {
     if (number === '0') {
       setFilterPosts(posts.map(post => post));
 
@@ -42,36 +43,16 @@ export const App = () => {
     }
 
     setFilterPosts(posts.filter(post => +post.userId === +number));
-  };
+  }, [filterPosts]);
 
   return (
     <div className="App">
-      <header className="App__header">
-        <label>
-          Select a user: &nbsp;
-
-          <select
-            className="App__user-selector"
-            name="user"
-            value={userSelect}
-            onChange={({ target }) => {
-              setUserSelect(target.value);
-              filterByPosts(target.value);
-            }}
-          >
-            <option value="0">All users</option>
-            {users.map(person => (
-              <option
-                key={person.id}
-                value={person.id}
-              >
-                {person.name}
-              </option>
-            ))}
-
-          </select>
-        </label>
-      </header>
+      <Header
+        filterByPosts={filterByPosts}
+        setUserSelect={setUserSelect}
+        userSelect={userSelect}
+        users={users}
+      />
 
       <main className="App__main">
         <div className="App__sidebar">
@@ -82,12 +63,12 @@ export const App = () => {
           />
         </div>
         {userId !== 0 && (
-        <div className="App__content">
-          <PostDetails
-            userId={userId}
-            post={user}
-          />
-        </div>
+          <div className="App__content">
+            <PostDetails
+              userId={userId}
+              post={user}
+            />
+          </div>
         )}
       </main>
     </div>

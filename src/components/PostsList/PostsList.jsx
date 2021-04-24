@@ -40,7 +40,7 @@ PostsList.propTypes = {
   filterPosts: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequired,
     title: PropTypes.string || null.isRequired,
-    userId: PropTypes.number.isRequired,
+    userId: PropTypes.number || null.isRequired,
   })).isRequired,
   selectUserId: PropTypes.func.isRequired,
   userId: PropTypes.number.isRequired,
