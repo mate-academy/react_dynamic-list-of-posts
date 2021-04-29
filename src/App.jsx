@@ -50,7 +50,6 @@ export const App = () => {
           <PostsList
             selectedUserId={Number(selectedUserId)}
             setPostId={setPostId}
-            isPostOpen={isPostOpen}
             setPostOpen={setPostOpen}
           />
         </div>

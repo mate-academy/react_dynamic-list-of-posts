@@ -6,7 +6,6 @@ import './PostsList.scss';
 export const PostsList = ({
   selectedUserId,
   setPostId,
-  isPostOpen,
   setPostOpen,
 }) => {
   const [posts, setPosts] = useState([]);
@@ -73,6 +72,5 @@ export const PostsList = ({
 PostsList.propTypes = {
   selectedUserId: PropTypes.number.isRequired,
   setPostId: PropTypes.func.isRequired,
-  isPostOpen: PropTypes.bool.isRequired,
   setPostOpen: PropTypes.func.isRequired,
 };
