@@ -57,7 +57,7 @@ export const PostsList = ({
             ) : (
               <button
                 type="button"
-                className="PostsList__button button"
+                className="PostsList__button button button--active"
                 onClick={handleCloseButton}
               >
                 Close
