@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import { getPostDetails } from '../../api/posts';
-import { getPostComments } from '../../api/comments';
+import {
+  getPostComments,
+  removeCommentFromServer,
+  addCommentToServer,
+} from '../../api/comments';
 
 import './PostDetails.scss';
 
@@ -24,6 +28,23 @@ export const PostDetails = ({ postId }) => {
     } else {
       setVisibleComment(true);
     }
+  };
+
+  const handleRemoveComment = (commentId) => {
+    removeCommentFromServer(commentId);
+
+    setComments(previousComments => (
+      previousComments.filter(({ id }) => id !== commentId)
+    ));
+  };
+
+  const addNewComment = (comment) => {
+    addCommentToServer(comment);
+
+    setComments(previousComments => [
+      ...previousComments,
+      comment,
+    ]);
   };
 
   return (
@@ -53,6 +74,7 @@ export const PostDetails = ({ postId }) => {
               <button
                 type="button"
                 className="PostDetails__remove-button button"
+                onClick={() => handleRemoveComment(id)}
               >
                 X
               </button>
@@ -64,7 +86,9 @@ export const PostDetails = ({ postId }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm />
+          <NewCommentForm
+            addNewComment={addNewComment}
+          />
         </div>
       </section>
     </div>
