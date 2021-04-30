@@ -1,5 +1,5 @@
 export const BASE_URL = 'https://mate-api.herokuapp.com';
 
-export const request = url => fetch(`${BASE_URL}${url}`)
+export const request = (url, options) => fetch(`${BASE_URL}${url}`, options)
   .then(response => response.json())
   .then(result => result.data);

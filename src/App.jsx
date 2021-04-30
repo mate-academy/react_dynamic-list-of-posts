@@ -10,11 +10,15 @@ const App = () => {
   const [posts, setPosts] = useState([]);
   const [userPosts, setUserPosts] = useState([]);
   const [userId, setUserId] = useState(0);
-  const [selectedPostId, setSelectedPostId] = useState('');
+  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [isPostSelected, setIsPostSelected] = useState(false);
+  const [selectedPost, setSelectedPost] = useState(null);
 
   useEffect(() => {
     getPosts()
       .then((postsFromServer) => {
+        console.log(postsFromServer);
+
         setPosts(postsFromServer);
         setUserPosts(postsFromServer);
       });
@@ -27,6 +31,7 @@ const App = () => {
         userId={userId}
         setUserId={setUserId}
         setUserPosts={setUserPosts}
+        setIsPostSelected={setIsPostSelected}
       />
 
       <main className="App__main">
@@ -35,12 +40,21 @@ const App = () => {
             selectedPostId={selectedPostId}
             setSelectedPostId={setSelectedPostId}
             userPosts={userPosts}
+            isPostSelected={isPostSelected}
+            setIsPostSelected={setIsPostSelected}
+            setSelectedPost={setSelectedPost}
+            selectedPost={selectedPost}
           />
         </div>
 
-        <div className="App__content">
-          <PostDetails />
-        </div>
+        {selectedPost && isPostSelected && (
+          <div className="App__content">
+            <PostDetails 
+              selectedPostId={selectedPostId}
+              selectedPost={selectedPost}
+            />
+          </div>
+        )}
       </main>
     </div>
   );

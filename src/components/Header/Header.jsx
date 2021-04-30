@@ -2,16 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { getUserPosts } from '../../api/posts';
 
-export const Header = ({ posts, userId, setUserId, setUserPosts }) => {
+export const Header = ({ posts, userId, setUserId, setUserPosts, setIsPostSelected }) => {
   const handleSelect = (e) => {
     if (e.target.value === '0') {
-      return setUserPosts(posts);
+      setUserId(0);
+      setUserPosts(posts);
+      setIsPostSelected(false)
+    } else {
+      setUserId(+e.target.value);
+      setIsPostSelected(false)
+      getUserPosts(e.target.value)
+        .then(userPosts => setUserPosts(userPosts));
     }
-
-    setUserId(+e.target.value);
-
-    return getUserPosts(e.target.value)
-      .then(userPosts => setUserPosts(userPosts));
   };
 
   return (
@@ -44,10 +46,10 @@ export const Header = ({ posts, userId, setUserId, setUserPosts }) => {
 Header.propTypes = {
   posts: PropTypes.arrayOf(
     PropTypes.shape({
-      userId: PropTypes.number.isRequired,
+      userId: PropTypes.number,
       id: PropTypes.number.isRequired,
       title: PropTypes.string,
-      body: PropTypes.string.isRequired,
+      body: PropTypes.string,
     }),
   ).isRequired,
   userId: PropTypes.number.isRequired,
