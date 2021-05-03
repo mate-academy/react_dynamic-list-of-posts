@@ -1,37 +1,85 @@
-import React from 'react';
+/* eslint-disable no-param-reassign */
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+import { getUserPosts } from '../../api/posts';
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList = ({ selector, setDetailsVisible, setPostId }) => {
+  const [posts, setPosts] = useState([]);
+  const [value, setValue] = useState(0);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  useEffect(() => {
+    if (selector === 'All users' || selector === '') {
+      getUserPosts()
+        .then(result => result.filter(post => post.userId !== null))
+        .then(result => result.filter(post => post.title !== null))
+        .then(result => setPosts(result.map(post => ({
+          ...post,
+          open: false,
+        }))));
+    } else {
+      getUserPosts()
+        .then(result => result.filter(post => post.userId === +selector))
+        .then(result => result.filter(post => post.userId !== null))
+        .then(result => result.filter(post => post.title !== null))
+        .then(result => setPosts(result));
+    }
+  }, [selector]);
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+  const closeAll = () => {
+    posts.forEach(post => (post.open = false));
+    setValue(value + 1);
+  };
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+      <ul className="PostsList__list">
+        {posts.map(post => (
+          <li className="PostsList__item" key={post.id}>
+            <div>
+              <b>
+                User #
+                {post.userId}
+                :
+              </b>
+              {post.title}
+            </div>
+            <button
+              type="button"
+              className="PostsList__button button"
+              hidden={post.open}
+              onClick={() => {
+                closeAll();
+                post.open = !post.open;
+                setPostId(post.id);
+                setDetailsVisible(false);
+              }}
+            >
+              Open
+            </button>
+            <button
+              type="button"
+              hidden={!post.open}
+              className="PostsList__button button active"
+              onClick={() => {
+                closeAll();
+                setDetailsVisible(true);
+                setPostId(0);
+              }}
+            >
+              Close
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+PostsList.propTypes = {
+  selector: PropTypes.string.isRequired,
+  setDetailsVisible: PropTypes.func.isRequired,
+  setPostId: PropTypes.func.isRequired,
+};
