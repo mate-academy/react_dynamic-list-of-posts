@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { PostType } from '../../Types';
 import { NewCommentForm } from '../NewCommentForm';
 import { getPostComments, removeComment } from '../../api/comments';
 import './PostDetails.scss';
 
 export const PostDetails = ({ selectedPostId, selectedPost }) => {
+  const [isCommentShown, setIsCommentShown] = useState(true);
+  const [removedComment, setRemovedComment] = useState(null);
+  const [newComment, setNewComment] = useState(null);
   const [comments, setComments] = useState([]);
-  const [isCommentShown, setIsCommentShown] = useState(true)
+
+  const handleRemove = (commentId) => {
+    removeComment(commentId, { method: 'DELETE' })
+      .then(comment => setRemovedComment(comment));
+  };
 
   useEffect(() => {
     getPostComments(selectedPostId)
-      .then(commentsFromServer => setComments(commentsFromServer))
-
-    console.log('hi');
-  }, [selectedPostId])
+      .then(commentsFromServer => setComments(commentsFromServer));
+  }, [selectedPostId, removedComment, newComment]);
 
   return (
     <div className="PostDetails">
@@ -41,10 +48,7 @@ export const PostDetails = ({ selectedPostId, selectedPost }) => {
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
-                  onClick={() => {
-                    removeComment(comment.id, { method: 'DELETE' })
-                      .then(result => console.log(result))
-                  }}
+                  onClick={() => handleRemove(comment.id)}
                 >
                   X
                 </button>
@@ -58,10 +62,16 @@ export const PostDetails = ({ selectedPostId, selectedPost }) => {
       <section>
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
+            setNewComment={setNewComment}
             selectedPostId={selectedPostId}
           />
         </div>
       </section>
     </div>
-  )
+  );
+};
+
+PostDetails.propTypes = {
+  selectedPostId: PropTypes.number.isRequired,
+  selectedPost: PropTypes.shape(PostType).isRequired,
 };

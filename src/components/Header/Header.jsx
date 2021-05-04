@@ -1,19 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { PostType } from '../../Types';
 import { getUserPosts } from '../../api/posts';
 
-export const Header = ({ posts, userId, setUserId, setUserPosts, setIsPostSelected }) => {
+export const Header = ({
+  posts,
+  userId,
+  setUserId,
+  setUserPosts,
+  setIsPostSelected,
+  setSelectedPost,
+  setSelectedPostId,
+}) => {
   const handleSelect = (e) => {
     if (e.target.value === '0') {
       setUserId(0);
       setUserPosts(posts);
-      setIsPostSelected(false)
+      setIsPostSelected(false);
     } else {
       setUserId(+e.target.value);
-      setIsPostSelected(false)
+      setIsPostSelected(false);
       getUserPosts(e.target.value)
         .then(userPosts => setUserPosts(userPosts));
     }
+
+    setSelectedPost(null);
+    setSelectedPostId(0);
   };
 
   return (
@@ -45,14 +57,12 @@ export const Header = ({ posts, userId, setUserId, setUserPosts, setIsPostSelect
 
 Header.propTypes = {
   posts: PropTypes.arrayOf(
-    PropTypes.shape({
-      userId: PropTypes.number,
-      id: PropTypes.number.isRequired,
-      title: PropTypes.string,
-      body: PropTypes.string,
-    }),
+    PropTypes.shape(PostType),
   ).isRequired,
   userId: PropTypes.number.isRequired,
   setUserId: PropTypes.func.isRequired,
   setUserPosts: PropTypes.func.isRequired,
+  setIsPostSelected: PropTypes.func.isRequired,
+  setSelectedPost: PropTypes.func.isRequired,
+  setSelectedPostId: PropTypes.func.isRequired,
 };

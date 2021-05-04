@@ -5,6 +5,7 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getPosts } from './api/posts';
 import { Header } from './components/Header';
+import { Loader } from './components/Loader/Loader';
 
 const App = () => {
   const [posts, setPosts] = useState([]);
@@ -17,8 +18,6 @@ const App = () => {
   useEffect(() => {
     getPosts()
       .then((postsFromServer) => {
-        console.log(postsFromServer);
-
         setPosts(postsFromServer);
         setUserPosts(postsFromServer);
       });
@@ -32,27 +31,38 @@ const App = () => {
         setUserId={setUserId}
         setUserPosts={setUserPosts}
         setIsPostSelected={setIsPostSelected}
+        setSelectedPost={setSelectedPost}
+        setSelectedPostId={setSelectedPostId}
       />
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList
-            selectedPostId={selectedPostId}
-            setSelectedPostId={setSelectedPostId}
-            userPosts={userPosts}
-            isPostSelected={isPostSelected}
-            setIsPostSelected={setIsPostSelected}
-            setSelectedPost={setSelectedPost}
-            selectedPost={selectedPost}
-          />
+          {posts.length > 0
+            ? (
+              <PostsList
+                selectedPostId={selectedPostId}
+                setSelectedPostId={setSelectedPostId}
+                userPosts={userPosts}
+                isPostSelected={isPostSelected}
+                setIsPostSelected={setIsPostSelected}
+                setSelectedPost={setSelectedPost}
+                selectedPost={selectedPost}
+              />
+            ) : <Loader />
+          }
         </div>
 
         {selectedPost && isPostSelected && (
           <div className="App__content">
-            <PostDetails 
-              selectedPostId={selectedPostId}
-              selectedPost={selectedPost}
-            />
+            {selectedPostId === 0
+              ? <Loader />
+              : (
+                <PostDetails
+                  selectedPostId={selectedPostId}
+                  selectedPost={selectedPost}
+                />
+              )
+            }
           </div>
         )}
       </main>
