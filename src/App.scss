@@ -27,6 +27,7 @@ p {
 
 ul {
   padding: 0;
+  margin-top: 0;
 }
 
 %stretch-panel {
@@ -70,5 +71,29 @@ ul {
 
     flex-basis: 30%;
     border-color: green;
+  }
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.timer {
+  text-align: left;
+  padding: 20px;
+
+  &__tabloid {
+    width: 300px;
+    font-size: 72px;
+  }
+
+  @media screen and (max-width: 320px) {
+    &__tabloid {
+      width: 240px;
+      font-size: 58px;
+    }
   }
 }
