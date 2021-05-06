@@ -8,6 +8,7 @@ import { getUsers } from './api/users';
 const App = () => {
   const [users, setUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState('');
+  const [postId, setPostId] = useState(null);
 
   useEffect(() => {
     getUsers()
@@ -48,11 +49,16 @@ const App = () => {
         <div className="App__sidebar">
           <PostsList
             selectedUserId={+selectedUserId}
+            setPostId={setPostId}
           />
         </div>
 
         <div className="App__content">
-          <PostDetails />
+          {postId && (
+            <PostDetails
+              postId={postId}
+            />
+          )}
         </div>
       </main>
     </div>

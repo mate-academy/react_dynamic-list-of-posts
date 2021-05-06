@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import './PostsList.scss';
 import { getUserPosts, getAllPosts } from '../../api/posts';
 
-export const PostsList = ({ selectedUserId }) => {
+export const PostsList = ({ selectedUserId, setPostId }) => {
   const [posts, setPosts] = useState([]);
   const [selectedPostId, setSelectedPostId] = useState('');
 
@@ -19,10 +19,12 @@ export const PostsList = ({ selectedUserId }) => {
 
   const handleOpenButton = (id) => {
     setSelectedPostId(id);
+    setPostId(id);
   };
 
   const handleCloseButton = (id) => {
     setSelectedPostId('');
+    setPostId(null);
   };
 
   return (
@@ -67,4 +69,5 @@ export const PostsList = ({ selectedUserId }) => {
 
 PostsList.propTypes = {
   selectedUserId: PropTypes.number.isRequired,
+  setPostId: PropTypes.func.isRequired,
 };

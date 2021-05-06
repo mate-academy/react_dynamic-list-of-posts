@@ -10,3 +10,7 @@ export function getUserPosts(userId) {
       post => (post.userId === userId),
     ));
 }
+
+export function getPostDetails(postId) {
+  return request(`${BASE_URL}/posts/${postId}`);
+}
