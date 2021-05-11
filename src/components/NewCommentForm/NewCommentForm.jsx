@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ addNewComment }) => {
+export const NewCommentForm = React.memo(({ addNewComment }) => {
   const [newComment, setNewComment] = useState({
     name: '',
     email: '',
@@ -79,7 +79,7 @@ export const NewCommentForm = ({ addNewComment }) => {
       </button>
     </form>
   );
-};
+});
 
 NewCommentForm.propTypes = {
   addNewComment: PropTypes.func.isRequired,

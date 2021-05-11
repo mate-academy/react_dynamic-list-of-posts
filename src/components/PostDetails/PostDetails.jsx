@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import { getPostDetails } from '../../api/posts';
@@ -20,16 +20,6 @@ export const PostDetails = ({ postId }) => {
     getPostComments(postId).then(setComments);
   }, [postId]);
 
-  const handleCloseButton = (clickEvent) => {
-    const textButton = clickEvent.target.textContent;
-
-    if (textButton !== 'Show comments') {
-      setVisibleComment(false);
-    } else {
-      setVisibleComment(true);
-    }
-  };
-
   const handleRemoveComment = (commentId) => {
     removeCommentFromServer(commentId);
 
@@ -38,14 +28,14 @@ export const PostDetails = ({ postId }) => {
     ));
   };
 
-  const addNewComment = (comment) => {
+  const addNewComment = useCallback((comment) => {
     addCommentToServer(comment);
 
     setComments(previousComments => [
       ...previousComments,
       comment,
     ]);
-  };
+  }, [comments]);
 
   return (
     <div className="PostDetails">
@@ -56,17 +46,27 @@ export const PostDetails = ({ postId }) => {
       </section>
 
       <section className="PostDetails__comments">
-        <button
-          type="button"
-          className="button"
-          onClick={handleCloseButton}
-        >
-          {isVisibleComment ? (
-            `Hide ${comments ? comments.length : ''} comments`
-          ) : (
-            'Show comments'
-          )}
-        </button>
+        {isVisibleComment ? (
+          <button
+            type="button"
+            className="button"
+            onClick={() => setVisibleComment(false)}
+          >
+            Hide
+            {' '}
+            {comments ? comments.length : ''}
+            {' '}
+            comments
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="button"
+            onClick={() => setVisibleComment(true)}
+          >
+            Show comments
+          </button>
+        )}
 
         <ul className="PostDetails__list">
           {isVisibleComment && comments && comments.map(({ id, body }) => (
