@@ -1,45 +1,105 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import {
+  getPostDetails, getPostComments, deleteComment, createComment,
+} from '../../api/posts';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = React.memo(({ selectedPostId }) => {
+  const [postDetails, setPostDetails] = useState(null);
+  const [postComments, setPostComments] = useState(null);
+  const [commentsVisible, setCommentsVisible] = useState(true);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  useEffect(() => {
+    Promise.all([
+      getPostDetails(selectedPostId),
+      getPostComments(selectedPostId),
+    ])
+      .then(([details, comments]) => {
+        setPostDetails(details);
+        setPostComments(comments);
+        setCommentsVisible(true);
+      })
+      // eslint-disable-next-line no-console
+      .catch(error => console.warn(error));
+  }, [selectedPostId]);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  function handleDeleteComment(id) {
+    deleteComment(id)
+      .then(() => getPostComments(selectedPostId))
+      .then(setPostComments);
+  }
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  function handleCreateComment(data) {
+    createComment(data)
+      .then(() => getPostComments(selectedPostId))
+      .then(setPostComments);
+  }
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  return (
+    <>
+      {postDetails !== null && (
+        <div className="PostDetails">
+          <h2>Post details:</h2>
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+          <section className="PostDetails__post">
+            <p>{postDetails.body}</p>
+          </section>
+
+          {postComments !== null && (
+            <section className="PostDetails__comments">
+              {postComments.length > 0 && (
+                <button
+                  type="button"
+                  className="button"
+                  onClick={() => setCommentsVisible(!commentsVisible)}
+                >
+                  {`${commentsVisible ? 'Hide' : 'Show'} `}
+                  {`${postComments.length} comments`}
+                </button>
+              )}
+
+              {commentsVisible && (
+                <ul className="PostDetails__list">
+                  {postComments.map(comment => (
+                    <li
+                      key={comment.id}
+                      className="PostDetails__list-item"
+                    >
+                      <button
+                        type="button"
+                        className="PostDetails__remove-button button"
+                        onClick={() => handleDeleteComment(comment.id)}
+                      >
+                        X
+                      </button>
+                      <p>{comment.body}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          )}
+
+          <section>
+            <div className="PostDetails__form-wrapper">
+              <NewCommentForm
+                selectedPostId={selectedPostId}
+                onAddComment={handleCreateComment}
+              />
+            </div>
+          </section>
+        </div>
+      )}
+    </>
+  );
+});
+
+PostDetails.propTypes = {
+  selectedPostId: PropTypes.number,
+};
+
+PostDetails.defaultProps = {
+  selectedPostId: 0,
+};
