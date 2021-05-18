@@ -6,27 +6,31 @@ import './PostsList.scss';
 export const PostsList = ({
   userId,
   setPostId,
+  setPostOpen,
 }) => {
   const [posts, setPosts] = useState([]);
-  // const [selectedPostId, setSelectedPostId] = useState('');
-
-  // useEffect(() => {
-  //   console.log(userId);
-  //   getUserPosts(userId)
-  //     .then(posts => setPosts(posts));
-  // })
+  const [selectedPostId, setSelectedPostId] = useState('');
 
   useEffect(() => {
     if (!userId) {
-      // console.log(false);
       getPosts()
         .then(setPosts);
     } else {
-      // console.log(true);
       getUserPosts(userId)
         .then(setPosts);
     }
   }, [userId]);
+
+  const openPost = (id) => {
+    setSelectedPostId(id);
+    setPostId(id);
+    setPostOpen(id);
+  };
+
+  const closePost = () => {
+    setSelectedPostId('');
+    setPostOpen(false);
+  };
 
   return (
     <div className="PostsList">
@@ -44,28 +48,26 @@ export const PostsList = ({
               </b>
               {post.body}
             </div>
-            <button
-              type="button"
-              className="PostsList__button button"
-            >
-              Close
-            </button>
+
+            {selectedPostId !== post.id ? (
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => openPost(post.id)}
+              >
+                Open
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="PostsList__button button button--active"
+                onClick={() => closePost()}
+              >
+                Close
+              </button>
+            )}
           </li>
         ))}
-
-        {/* <li className="PostsList__item">
-          <div>
-            <b>[User #2]: </b>
-            et ea vero quia laudantium autem
-          </div>
-
-          <button
-            type="button"
-            className="PostsList__button button"
-          >
-            Open
-          </button>
-        </li> */}
       </ul>
     </div>
   );
@@ -74,4 +76,5 @@ export const PostsList = ({
 PostsList.propTypes = {
   userId: PropTypes.number.isRequired,
   setPostId: PropTypes.func.isRequired,
+  setPostOpen: PropTypes.func.isRequired,
 };
