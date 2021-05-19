@@ -38,7 +38,6 @@ export const PostDetails = ({ postId }) => {
     const newComment = {
       ...comment,
       id: newCommentId,
-      postId,
     };
 
     addPostComment(newComment);
@@ -46,7 +45,7 @@ export const PostDetails = ({ postId }) => {
       ...prev,
       newComment,
     ]);
-  }, [postId, comments]);
+  }, [comments]);
 
   return (
     <div className="PostDetails">
@@ -91,7 +90,10 @@ export const PostDetails = ({ postId }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm addNewComment={addNewComment} />
+          <NewCommentForm
+            postID={postId}
+            addNewComment={addNewComment}
+          />
         </div>
       </section>
     </div>

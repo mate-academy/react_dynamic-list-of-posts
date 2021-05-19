@@ -1,31 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './NewCommentForm.scss';
 import { useForm } from 'react-hook-form';
 import PropTypes from 'prop-types';
 
 export const NewCommentForm = React.memo(({
+  postID,
   addNewComment,
 }) => {
-  const [newComment, setNewComment] = useState({
+  const initialValues = {
     name: '',
     email: '',
     body: '',
-  });
+    postId: postID,
+  };
+
+  const [newComment, setNewComment] = useState(initialValues);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+    reset,
+  } = useForm({ initialValues });
+
+  useEffect(() => {
+    reset({ errors: false });
+  }, [postID]);
 
   const onSubmit = () => {
     addNewComment(newComment);
-
-    setNewComment({
-      name: '',
-      email: '',
-      body: '',
-    });
+    setNewComment(initialValues);
   };
 
   const handleChangeInput = (e) => {
@@ -65,7 +69,7 @@ export const NewCommentForm = React.memo(({
           placeholder="Your email"
           className="NewCommentForm__input"
           value={newComment.email}
-          {...register('email', { required: true },  { pattern: /\S+@\S+/ })}
+          {...register('email', { required: true }, { pattern: /\S+@\S+/ })}
           onChange={handleChangeInput}
         />
         {errors.email
@@ -98,5 +102,6 @@ export const NewCommentForm = React.memo(({
 });
 
 NewCommentForm.propTypes = {
+  postID: PropTypes.number.isRequired,
   addNewComment: PropTypes.func.isRequired,
 };
