@@ -32,6 +32,10 @@ export const PostDetails = React.memo(({ selectedPostId }) => {
   }
 
   function handleCreateComment(data) {
+    if (Object.values(data).some(entry => entry.length === 0)) {
+
+    }
+
     createComment(data)
       .then(() => getPostComments(selectedPostId))
       .then(setPostComments);

@@ -3,16 +3,20 @@ import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
 
 export const NewCommentForm = ({ selectedPostId, onAddComment }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [comment, setComment] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    setName('');
-    setEmail('');
-    setBody('');
+    setComment({
+      name: '',
+      email: '',
+      body: '',
+    });
   }
 
   return (
@@ -25,10 +29,14 @@ export const NewCommentForm = ({ selectedPostId, onAddComment }) => {
         <input
           type="text"
           name="name"
-          value={name}
-          onChange={e => setName(e.target.value)}
+          value={comment.name}
+          onChange={e => setComment({
+            ...comment,
+            name: e.target.value,
+          })}
           placeholder="Your name"
           className="NewCommentForm__input"
+          required
         />
       </div>
 
@@ -36,20 +44,28 @@ export const NewCommentForm = ({ selectedPostId, onAddComment }) => {
         <input
           type="text"
           name="email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
+          value={comment.email}
+          onChange={e => setComment({
+            ...comment,
+            email: e.target.value,
+          })}
           placeholder="Your email"
           className="NewCommentForm__input"
+          required
         />
       </div>
 
       <div className="form-field">
         <textarea
           name="body"
-          value={body}
-          onChange={e => setBody(e.target.value)}
+          value={comment.body}
+          onChange={e => setComment({
+            ...comment,
+            body: e.target.value,
+          })}
           placeholder="Type comment here"
           className="NewCommentForm__input"
+          required
         />
       </div>
 
@@ -58,9 +74,7 @@ export const NewCommentForm = ({ selectedPostId, onAddComment }) => {
         className="NewCommentForm__submit-button button"
         onClick={() => onAddComment({
           postId: selectedPostId,
-          name,
-          email,
-          body,
+          ...comment,
         })}
       >
         Add a comment
