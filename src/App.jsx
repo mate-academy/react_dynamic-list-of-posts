@@ -9,7 +9,6 @@ const App = () => {
   const [users, setUsers] = useState(null);
   const [selectedUserId, setUserId] = useState('');
   const [postId, setPostId] = useState('');
-  const [postOpened, setPostOpen] = useState(false);
 
   useEffect(() => {
     getUsers()
@@ -54,13 +53,13 @@ const App = () => {
         <div className="App__sidebar">
           <PostsList
             userId={+selectedUserId}
+            postId={Number(postId)}
             setPostId={setPostId}
-            setPostOpen={setPostOpen}
           />
         </div>
 
         <div className="App__content">
-          {postOpened && (
+          {typeof postId === 'number' && (
             <PostDetails postId={Number(postId)} />
           )}
         </div>

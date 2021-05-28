@@ -32,12 +32,10 @@ export const PostDetails = ({ postId }) => {
   };
 
   const addNewComment = useCallback((comment) => {
-    const newCommentId = Math.max(
-      ...comments.map(item => Number(item.id)),
-    ) + 1;
+    const date = Date.now().toString();
     const newComment = {
       ...comment,
-      id: newCommentId,
+      id: Number(date.substr(date.length - 5)),
     };
 
     addPostComment(newComment);
@@ -60,7 +58,7 @@ export const PostDetails = ({ postId }) => {
           <button
             type="button"
             className="button"
-            onClick={() => toggleDisplayComment()}
+            onClick={toggleDisplayComment}
           >
             {commentHidden ? 'Show' : 'Hide'}
             {' '}

@@ -5,11 +5,10 @@ import './PostsList.scss';
 
 export const PostsList = ({
   userId,
+  postId,
   setPostId,
-  setPostOpen,
 }) => {
   const [posts, setPosts] = useState([]);
-  const [selectedPostId, setSelectedPostId] = useState('');
 
   useEffect(() => {
     if (!userId) {
@@ -22,14 +21,11 @@ export const PostsList = ({
   }, [userId]);
 
   const openPost = (id) => {
-    setSelectedPostId(id);
     setPostId(id);
-    setPostOpen(id);
   };
 
   const closePost = () => {
-    setSelectedPostId('');
-    setPostOpen(false);
+    setPostId('');
   };
 
   return (
@@ -49,7 +45,7 @@ export const PostsList = ({
               {post.body}
             </div>
 
-            {selectedPostId !== post.id ? (
+            {postId !== post.id ? (
               <button
                 type="button"
                 className="PostsList__button button"
@@ -61,7 +57,7 @@ export const PostsList = ({
               <button
                 type="button"
                 className="PostsList__button button button--active"
-                onClick={() => closePost()}
+                onClick={closePost}
               >
                 Close
               </button>
@@ -75,6 +71,6 @@ export const PostsList = ({
 
 PostsList.propTypes = {
   userId: PropTypes.number.isRequired,
+  postId: PropTypes.number.isRequired,
   setPostId: PropTypes.func.isRequired,
-  setPostOpen: PropTypes.func.isRequired,
 };

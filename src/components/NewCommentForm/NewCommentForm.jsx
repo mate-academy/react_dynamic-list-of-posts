@@ -25,6 +25,7 @@ export const NewCommentForm = React.memo(({
 
   useEffect(() => {
     reset({ errors: false });
+    setNewComment(initialValues);
   }, [postID]);
 
   const onSubmit = () => {
@@ -54,11 +55,11 @@ export const NewCommentForm = React.memo(({
           placeholder="Your name"
           className="NewCommentForm__input"
           value={newComment.name}
-          {...register('name', { required: true })}
+          {...register('name', { required: 'Name is required.' })}
           onChange={handleChangeInput}
         />
         {errors.name
-          && <p className="NewCommentForm__error">Name is required.</p>
+          && <p className="NewCommentForm__error">{errors.name.message}</p>
         }
       </div>
 
@@ -69,11 +70,17 @@ export const NewCommentForm = React.memo(({
           placeholder="Your email"
           className="NewCommentForm__input"
           value={newComment.email}
-          {...register('email', { required: true }, { pattern: /\S+@\S+/ })}
+          {...register('email', {
+            required: 'Email is required.',
+            pattern: {
+              value: /\S+@\S+\.\S+/,
+              message: 'Entered email does not match email format.',
+            },
+          })}
           onChange={handleChangeInput}
         />
         {errors.email
-          && <p className="NewCommentForm__error">Email is required and must be valid.</p>
+          && <p className="NewCommentForm__error">{errors.email.message}</p>
         }
       </div>
 
@@ -83,11 +90,21 @@ export const NewCommentForm = React.memo(({
           placeholder="Type comments here"
           className="NewCommentForm__input"
           value={newComment.body}
-          {...register('body', { required: true })}
+          {...register('body', {
+            required: 'Message text is required.',
+            minLength: {
+              value: 5,
+              message: 'Minimal length of message text is 5.',
+            },
+            pattern: {
+              value: /^$|.*\S+.*/,
+              message: 'Message should\'t be made up of whitespaces.',
+            },
+          })}
           onChange={handleChangeInput}
         />
         {errors.body
-          && <p className="NewCommentForm__error">Comment body text is required.</p>
+          && <p className="NewCommentForm__error">{errors.body.message}</p>
         }
       </div>
 
