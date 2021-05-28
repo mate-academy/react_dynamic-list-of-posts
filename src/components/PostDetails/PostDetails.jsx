@@ -1,45 +1,103 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
+import { getPostDetails } from '../../api/posts';
+import { getPostComments, removePostComment, addPostComment } from '../../api/comments';
 import './PostDetails.scss';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({ postId }) => {
+  const [post, setPost] = useState([]);
+  const [comments, setComments] = useState(null);
+  const [commentHidden, setCommentHidden] = useState(false);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  useEffect(() => {
+    getPostDetails(postId)
+      .then(setPost);
+    getPostComments(postId)
+      .then(setComments);
+  }, [postId]);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const toggleDisplayComment = () => {
+    setCommentHidden(!commentHidden);
+  };
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
+  const removeCommentHandler = (commentId) => {
+    removePostComment(commentId);
+
+    setComments(prev => (
+      prev.filter(comment => (
+        comment.id !== commentId
+      ))
+    ));
+  };
+
+  const addNewComment = useCallback((comment) => {
+    const date = Date.now().toString();
+    const newComment = {
+      ...comment,
+      id: Number(date.substr(date.length - 5)),
+    };
+
+    addPostComment(newComment);
+    setComments(prev => [
+      ...prev,
+      newComment,
+    ]);
+  }, [comments]);
+
+  return (
+    <div className="PostDetails">
+      <h2>{post.title}</h2>
+
+      <section className="PostDetails__post">
+        <p>{post.body}</p>
+      </section>
+
+      {comments && (
+        <section className="PostDetails__comments">
           <button
             type="button"
-            className="PostDetails__remove-button button"
+            className="button"
+            onClick={toggleDisplayComment}
           >
-            X
+            {commentHidden ? 'Show' : 'Hide'}
+            {' '}
+            {comments.length}
+            {' '}
+            comments
           </button>
-          <p>My first comment</p>
-        </li>
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+          {!commentHidden && (
+            <ul className="PostDetails__list">
+              {comments.map(comment => (
+                <li className="PostDetails__list-item" key={comment.id}>
+                  <button
+                    type="button"
+                    className="PostDetails__remove-button button"
+                    onClick={() => removeCommentHandler(comment.id)}
+                  >
+                    &#10006;
+                  </button>
+                  <p>{comment.body}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            postID={postId}
+            addNewComment={addNewComment}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};
+
+PostDetails.propTypes = {
+  postId: PropTypes.number.isRequired,
+};

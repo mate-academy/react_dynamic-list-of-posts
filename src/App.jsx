@@ -1,41 +1,71 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { getUsers } from './api/users';
 
-const App = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+const App = () => {
+  const [users, setUsers] = useState(null);
+  const [selectedUserId, setUserId] = useState('');
+  const [postId, setPostId] = useState('');
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+  useEffect(() => {
+    getUsers()
+      .then(data => setUsers(data));
+  }, []);
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+  const handleChange = (e) => {
+    const { value } = e.target;
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+    setUserId(value);
+  };
+
+  return (
+    <div className="App">
+      <header className="App__header">
+        {users ? (
+          <label>
+            Select a user: &nbsp;
+
+            <select
+              name="user"
+              className="App__user-selector"
+              value={selectedUserId}
+              onChange={handleChange}
+            >
+              <option value="">
+                Choose a user
+              </option>
+              {users.map(user => (
+                <option value={user.id} key={user.id}>
+                  {user.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : (
+          <div className="App__loading-message">Loading data...</div>
+        )}
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            userId={+selectedUserId}
+            postId={Number(postId)}
+            setPostId={setPostId}
+          />
+        </div>
+
+        <div className="App__content">
+          {typeof postId === 'number' && (
+            <PostDetails postId={Number(postId)} />
+          )}
+        </div>
+      </main>
+    </div>
+  );
+};
 
 export default App;

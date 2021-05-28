@@ -10,7 +10,8 @@
   font-size: inherit;
   min-width: 100px;
 
-  &:hover {
+  &:hover,
+  &--active {
     background-color: #4d457b;
   }
 }
