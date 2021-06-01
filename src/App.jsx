@@ -9,8 +9,8 @@ import { removeComment, getPostComments } from './api/comments';
 
 const App = () => {
   const [posts, setPosts] = useState([]);
-  const [selectUser, setUser] = useState(0);
-  const [selectPost, setPost] = useState(0);
+  const [selectedUser, setSelectedUser] = useState(0);
+  const [selectedPost, setSelectedPost] = useState(0);
   const [details, setDetails] = useState(false);
   const [comments, setComents] = useState([]);
 
@@ -20,18 +20,18 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    getPostDetails(selectPost)
+    getPostDetails(selectedPost)
       .then(setDetails);
-  }, [selectPost]);
+  }, [selectedPost]);
 
   useEffect(() => {
-    getPostComments(selectPost)
+    getPostComments(selectedPost)
       .then(setComents);
-  }, [selectPost]);
+  }, [selectedPost]);
 
   const remove = (id) => {
     removeComment(id)
-      .then(() => getPostComments(selectPost))
+      .then(() => getPostComments(selectedPost))
       .then(setComents);
   };
 
@@ -43,8 +43,8 @@ const App = () => {
 
           <select
             className="App__user-selector"
-            value={selectUser}
-            onChange={e => setUser(+e.target.value)}
+            value={selectedUser}
+            onChange={e => setSelectedUser(+e.target.value)}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
@@ -65,17 +65,17 @@ const App = () => {
         <div className="App__sidebar">
           <PostsList
             posts={posts}
-            selectPost={selectPost}
-            setPost={setPost}
-            selectUser={selectUser}
+            selectPost={selectedPost}
+            setSelectedPost={setSelectedPost}
+            selectedUser={selectedUser}
           />
         </div>
 
         <div className="App__content">
-          {(selectPost > 0 && details) && (
+          {(selectedPost > 0 && details) && (
           <PostDetails
             details={details}
-            postId={selectPost}
+            postId={selectedPost}
             remove={remove}
             comments={comments}
             setComents={setComents}

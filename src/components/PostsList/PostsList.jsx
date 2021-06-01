@@ -2,13 +2,16 @@ import React from 'react';
 import './PostsList.scss';
 import PropTypes from 'prop-types';
 
-export const PostsList = ({ posts, setPost, selectPost, selectUser }) => {
+export const PostsList = ({ posts,
+  setSelectedPost,
+  selectPost,
+  selectedUser }) => {
   const filterPosts = posts.filter((post) => {
-    if (!(+selectUser)) {
+    if (!(+selectedUser)) {
       return post;
     }
 
-    return post.userId === selectUser;
+    return post.userId === selectedUser;
   });
 
   return (
@@ -29,7 +32,7 @@ export const PostsList = ({ posts, setPost, selectPost, selectUser }) => {
                 <button
                   type="button"
                   className="PostsList__button button"
-                  onClick={() => setPost(0)}
+                  onClick={() => setSelectedPost(0)}
                 >
                   Close
                 </button>
@@ -37,7 +40,7 @@ export const PostsList = ({ posts, setPost, selectPost, selectUser }) => {
                 <button
                   type="button"
                   className="PostsList__button button"
-                  onClick={() => setPost(+post.id)}
+                  onClick={() => setSelectedPost(+post.id)}
                 >
                   Open
                 </button>
@@ -51,7 +54,7 @@ export const PostsList = ({ posts, setPost, selectPost, selectUser }) => {
 
 PostsList.propTypes = {
   posts: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
-  setPost: PropTypes.func.isRequired,
+  setSelectedPost: PropTypes.func.isRequired,
   selectPost: PropTypes.number.isRequired,
-  selectUser: PropTypes.number.isRequired,
+  selectedUser: PropTypes.number.isRequired,
 };
