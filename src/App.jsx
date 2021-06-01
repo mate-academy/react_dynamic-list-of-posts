@@ -11,7 +11,7 @@ const App = () => {
   const [posts, setPosts] = useState([]);
   const [selectUser, setUser] = useState(0);
   const [selectPost, setPost] = useState(0);
-  const [details, setDet] = useState(false);
+  const [details, setDetails] = useState(false);
   const [comments, setComents] = useState([]);
 
   useEffect(() => {
@@ -21,13 +21,19 @@ const App = () => {
 
   useEffect(() => {
     getPostDetails(selectPost)
-      .then(setDet);
+      .then(setDetails);
   }, [selectPost]);
 
   useEffect(() => {
     getPostComments(selectPost)
       .then(setComents);
   }, [selectPost]);
+
+  const remove = (id) => {
+    removeComment(id)
+      .then(() => getPostComments(selectPost))
+      .then(setComents);
+  };
 
   return (
     <div className="App">
@@ -68,9 +74,11 @@ const App = () => {
         <div className="App__content">
           {(selectPost > 0 && details) && (
           <PostDetails
+            details={details}
             postId={selectPost}
-            remove={removeComment}
+            remove={remove}
             comments={comments}
+            setComents={setComents}
           />
           )}
         </div>

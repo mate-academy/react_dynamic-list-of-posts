@@ -1,24 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
-import { getPostDetails } from '../../api/posts';
 import { getPostComments, addComment } from '../../api/comments';
 
-export const PostDetails = ({ postId, remove }) => {
-  const [details, setDetails] = useState({});
-  const [comments, setComents] = useState([]);
+export const PostDetails = ({ postId,
+  remove,
+  comments,
+  details,
+  setComents }) => {
   const [hide, setHide] = useState(false);
 
-  useEffect(() => {
-    getPostDetails(postId)
-      .then(postDetails => setDetails(postDetails));
-  }, [postId]);
-
-  useEffect(() => {
-    getPostComments(postId)
+  const addCommentToList = (comment) => {
+    addComment(comment)
+      .then(() => getPostComments(postId))
       .then(setComents);
-  });
+  };
 
   return (
     <div className="PostDetails">
@@ -63,7 +60,7 @@ export const PostDetails = ({ postId, remove }) => {
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             postId={postId}
-            addComment={addComment}
+            addComment={addCommentToList}
           />
         </div>
       </section>
@@ -72,6 +69,11 @@ export const PostDetails = ({ postId, remove }) => {
 };
 
 PostDetails.propTypes = {
+  comments: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
   postId: PropTypes.number.isRequired,
   remove: PropTypes.func.isRequired,
+  setComents: PropTypes.func.isRequired,
+  details: PropTypes.shape({
+    body: PropTypes.string.isRequired,
+  }).isRequired,
 };
