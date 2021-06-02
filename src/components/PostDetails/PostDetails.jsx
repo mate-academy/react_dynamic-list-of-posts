@@ -15,8 +15,7 @@ export const PostDetails = ({ post }) => {
     addNewComment({
       postId: post,
       ...comment,
-    });
-    setUpdateCounter(updateCounter + 1);
+    }).then(() => setUpdateCounter(updateCounter + 1));
   };
 
   const onDelete = (id) => {
