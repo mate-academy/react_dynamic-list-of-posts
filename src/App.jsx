@@ -7,7 +7,7 @@ import { getUsers } from './api/posts';
 
 const App = () => {
   const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(Infinity);
+  const [selectedUser, setSelectedUser] = useState(0);
   const [selectedPost, setSelectedPost] = useState(0);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const App = () => {
             onChange={e => setSelectedUser(+e.target.value)}
           >
             <option
-              value={Infinity}
+              value={0}
             >
               All Users
             </option>

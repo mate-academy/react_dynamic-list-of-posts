@@ -3,20 +3,20 @@ import PropTypes from 'prop-types';
 import './NewCommentForm.scss';
 
 export const NewCommentForm = ({ onAddComment }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [comment, setComment] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
   const [valid, setValid] = useState(true);
   const handleForm = () => {
-    if (name && email && body) {
-      onAddComment({
-        name,
-        email,
-        body,
+    if (Object.values(comment).every(field => field)) {
+      onAddComment(comment);
+      setComment({
+        name: '',
+        email: '',
+        body: '',
       });
-      setName('');
-      setEmail('');
-      setBody('');
     } else {
       setValid(false);
     }
@@ -30,9 +30,12 @@ export const NewCommentForm = ({ onAddComment }) => {
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={name}
+          value={comment.name}
           onChange={(e) => {
-            setName(e.target.value);
+            setComment({
+              ...comment,
+              name: e.target.value,
+            });
             setValid(true);
           }}
         />
@@ -44,9 +47,12 @@ export const NewCommentForm = ({ onAddComment }) => {
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={email}
+          value={comment.email}
           onChange={(e) => {
-            setEmail(e.target.value);
+            setComment({
+              ...comment,
+              email: e.target.value,
+            });
             setValid(true);
           }}
         />
@@ -57,9 +63,12 @@ export const NewCommentForm = ({ onAddComment }) => {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={body}
+          value={comment.body}
           onChange={(e) => {
-            setBody(e.target.value);
+            setComment({
+              ...comment,
+              body: e.target.value,
+            });
             setValid(true);
           }}
         />

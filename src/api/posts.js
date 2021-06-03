@@ -15,9 +15,9 @@ export const getPost = id => request(`/posts/${id}`);
 export const getUsers = () => request('/users');
 export const getUserPosts = id => request('/posts')
   .then(posts => posts
-    .filter(post => (+post.userId === id || id === Infinity)));
+    .filter(post => (+post.userId === id || !id)));
 
-export const getCommentsPost = id => request('/comments')
+export const getCommentsByPost = id => request('/comments')
   .then(comments => comments
     .filter(comment => (+comment.postId === id)));
 

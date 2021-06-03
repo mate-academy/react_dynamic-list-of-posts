@@ -2,33 +2,30 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
-import { getPost, getCommentsPost,
+import { getPost, getCommentsByPost,
   addNewComment, deleteComment } from '../../api/posts';
 
 export const PostDetails = ({ post }) => {
   const [currentPost, setCurrentPost] = useState({});
   const [comments, setComments] = useState([]);
-  const [updateCounter, setUpdateCounter] = useState(0);
   const [hiddenComments, setHiddenComments] = useState(false);
 
   const addComment = (comment) => {
     addNewComment({
       postId: post,
       ...comment,
-    }).then(() => setUpdateCounter(updateCounter + 1));
+    }).then(() => getCommentsByPost(post).then(setComments));
   };
 
-  const onDelete = (id) => {
-    deleteComment(id).then(() => setUpdateCounter(updateCounter - 1));
+  const onDelete = async(id) => {
+    await deleteComment(id);
+    getCommentsByPost(post).then(setComments);
   };
 
   useEffect(() => {
     getPost(post).then(setCurrentPost);
-    getCommentsPost(post).then(setComments);
+    getCommentsByPost(post).then(setComments);
   }, [post]);
-  useEffect(() => {
-    getCommentsPost(post).then(setComments);
-  }, [updateCounter]);
 
   return (
     <div className="PostDetails">
@@ -39,15 +36,17 @@ export const PostDetails = ({ post }) => {
       </section>
 
       <section className="PostDetails__comments">
-        <button
-          type="button"
-          className="button"
-          onClick={() => setHiddenComments(!hiddenComments)}
-        >
-          Hide&nbsp;
-          {comments.length}
-          &nbsp;comments
-        </button>
+        {comments.length !== 0 && (
+          <button
+            type="button"
+            className="button"
+            onClick={() => setHiddenComments(!hiddenComments)}
+          >
+            Hide&nbsp;
+            {comments.length}
+            &nbsp;comments
+          </button>
+        )}
 
         {!hiddenComments && (
         <ul className="PostDetails__list">
