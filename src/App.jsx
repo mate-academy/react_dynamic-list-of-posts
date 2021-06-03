@@ -14,7 +14,7 @@ const App = () => {
     getUsers().then(setUsers);
   }, []);
 
-  const onSelectedPost = id => (id === selectedPost
+  const handlePostSelection = id => (id === selectedPost
     ? setSelectedPost(0)
     : setSelectedPost(id));
 
@@ -48,7 +48,7 @@ const App = () => {
         <div className="App__sidebar">
           <PostsList
             selectedUser={selectedUser}
-            setSelectedPost={onSelectedPost}
+            setSelectedPost={handlePostSelection}
             selectedPost={selectedPost}
           />
         </div>
