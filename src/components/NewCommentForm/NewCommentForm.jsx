@@ -33,6 +33,7 @@ export const NewCommentForm = ({ onAdd }) => {
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
+          required
           value={newCommentName}
           onChange={(event) => {
             changeInputValue(event.target.value, setNewCommentName);
@@ -42,10 +43,11 @@ export const NewCommentForm = ({ onAdd }) => {
 
       <div className="form-field">
         <input
-          type="text"
+          type="email"
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
+          required
           value={newCommentEmail}
           onChange={(event) => {
             changeInputValue(event.target.value, setNewCommentEmail);
@@ -58,6 +60,7 @@ export const NewCommentForm = ({ onAdd }) => {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
+          required
           value={newCommentBody}
           onChange={(event) => {
             changeInputValue(event.target.value, setNewCommentBody);

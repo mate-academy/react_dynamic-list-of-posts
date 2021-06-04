@@ -4,12 +4,11 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getPosts, getUserPosts } from './api/posts';
-import data from './api/users.json';
+import users from './api/users.json';
 
 let initialPosts;
 
 const App = () => {
-  const users = data;
   const [posts, setPosts] = useState([]);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
