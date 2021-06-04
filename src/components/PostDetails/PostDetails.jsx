@@ -1,45 +1,82 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import { getPostComments, deleteComment } from '../../api/comments';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({ title, selectedPostId }) => {
+  const [hidden, setHide] = useState(false);
+  const [comments, setComments] = useState([]);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  useEffect(() => {
+    getPostComments()
+      .then(commentsFromServer => setComments(commentsFromServer.data));
+  }, []);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const prepearedComments = comments
+    .filter(comment => comment.postId === selectedPostId);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
+  const removeComment = (id) => {
+    deleteComment(id)
+      .then(getPostComments)
+      .then(commentsFromServer => setComments(commentsFromServer.data));
+  };
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <p>{title}</p>
+      </section>
+
+      <section className="PostDetails__comments">
+        {prepearedComments.length !== 0 && (
           <button
             type="button"
-            className="PostDetails__remove-button button"
+            className="button"
+            onClick={() => (hidden ? setHide(false) : setHide(true))}
           >
-            X
+            {hidden ? (
+              `Show ${prepearedComments.length} comments`
+            ) : (
+              `Hide ${prepearedComments.length} comments`
+            )}
           </button>
-          <p>My first comment</p>
-        </li>
+        )}
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+        {!hidden && (
+          <ul className="PostDetails__list">
+            {prepearedComments.map(comment => (
+              <li key={comment.id} className="PostDetails__list-item">
+                <button
+                  type="button"
+                  className="PostDetails__remove-button button"
+                  onClick={() => removeComment(comment.id)}
+                >
+                  X
+                </button>
+                <p>{comment.body}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm postId={selectedPostId} setComments={setComments} />
+        </div>
+      </section>
+    </div>
+  );
+};
+
+PostDetails.propTypes = {
+  title: PropTypes.string,
+  selectedPostId: PropTypes.number.isRequired,
+};
+
+PostDetails.defaultProps = {
+  title: '',
+};
