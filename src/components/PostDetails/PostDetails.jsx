@@ -61,18 +61,22 @@ export const PostDetails = ({ selectedPostId }) => {
           {comments ? (
             <>
               <section className="PostDetails__comments">
-                <button
-                  type="button"
-                  className="button"
-                  onClick={() => {
-                    setCommentsHiding(currentStatus => !currentStatus);
-                  }}
-                >
-                  {commentsHiding
-                    ? `Show ${comments.length} comments`
-                    : `Hide ${comments.length} comments`
-                  }
-                </button>
+                {comments.length === 0
+                  ? 'There are not comments yet'
+                  : (
+                    <button
+                      type="button"
+                      className="button"
+                      onClick={() => {
+                        setCommentsHiding(currentStatus => !currentStatus);
+                      }}
+                    >
+                      {commentsHiding
+                        ? `Show ${comments.length} comments`
+                        : `Hide ${comments.length} comments`
+                      }
+                    </button>
+                  )}
 
                 {!commentsHiding && (
                   <ul className="PostDetails__list">
