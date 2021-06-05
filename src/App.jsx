@@ -20,11 +20,11 @@ const App = () => {
   }, []);
 
   const selectUserPosts = ({ target }) => {
-    getUserPostsWithQuery(target.value)
-      .then(postsFromServer => setPosts(postsFromServer.data));
-
     if (target.value === '0') {
       getUserPosts()
+        .then(postsFromServer => setPosts(postsFromServer.data));
+    } else {
+      getUserPostsWithQuery(target.value)
         .then(postsFromServer => setPosts(postsFromServer.data));
     }
   };
