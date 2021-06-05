@@ -3,7 +3,7 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getUserPosts } from './api/posts';
+import { getUserPosts, getUserPostsWithQuery } from './api/posts';
 import { getAllUsers } from './api/users';
 
 const App = () => {
@@ -20,9 +20,8 @@ const App = () => {
   }, []);
 
   const selectUserPosts = ({ target }) => {
-    getUserPosts()
-      .then(postsFromServer => setPosts(postsFromServer.data
-        .filter(message => message.userId === +target.value)));
+    getUserPostsWithQuery(target.value)
+      .then(postsFromServer => setPosts(postsFromServer.data));
 
     if (target.value === '0') {
       getUserPosts()

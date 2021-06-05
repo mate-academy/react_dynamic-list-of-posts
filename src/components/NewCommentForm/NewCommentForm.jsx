@@ -75,6 +75,7 @@ export const NewCommentForm = ({ postId, setComments }) => {
       </div>
 
       <button
+        disabled={Object.values(comment).some(prop => prop === '')}
         type="submit"
         className="NewCommentForm__submit-button button"
       >
