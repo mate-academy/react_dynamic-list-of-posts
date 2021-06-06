@@ -1,37 +1,48 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+import { Post } from '../Post/Post';
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+import { getUserPosts, getAllPosts } from '../../api/posts';
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+export const PostsList = ({ selectedUserId, setPostId }) => {
+  const [posts, setPosts] = useState([]);
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+  useEffect(() => {
+    if (Number(selectedUserId)) {
+      getUserPosts(selectedUserId)
+        .then((response) => {
+          setPosts(response);
+        });
+    } else {
+      (
+        getAllPosts()
+          .then((response) => {
+            setPosts(response);
+          })
+      );
+    }
+  }, [selectedUserId]);
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul className="PostsList__list">
+        {posts.map(post => (
+          <li key={post.id} className="PostsList__item">
+            <Post post={post} setPostId={setPostId} />
+          </li>
+        ))}
+      </ul>
+
+    </div>
+  );
+};
+
+PostsList.propTypes = {
+  selectedUserId: PropTypes.string.isRequired,
+  setPostId: PropTypes.func.isRequired,
+};

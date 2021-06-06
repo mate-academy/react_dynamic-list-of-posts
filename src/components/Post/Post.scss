@@ -1,0 +1,19 @@
+.Post {
+  width: 100%;
+
+  &__user-button {
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+
+    &:hover {
+      background-color: lightblue;
+    }
+  }
+
+
+  &__button {
+    margin-left: 10px;
+  }
+}
