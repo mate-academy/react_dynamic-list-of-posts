@@ -7,22 +7,8 @@ export const NewCommentForm = ({ postId, onAdd }) => {
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
 
-  const inputHandler = (event) => {
-    // eslint-disable-next-line no-shadow
-    const { name, value } = event.target;
-
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
-      case 'email':
-        setEmail(value);
-        break;
-      case 'body':
-        setBody(value);
-        break;
-      default:
-    }
+  const inputHandler = (event, callback) => {
+    callback(event.target.value);
   };
 
   const submitHandler = (event) => {
@@ -49,32 +35,29 @@ export const NewCommentForm = ({ postId, onAdd }) => {
       <div className="form-field">
         <input
           type="text"
-          name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
           value={name}
-          onChange={inputHandler}
+          onChange={event => inputHandler(event, setName)}
         />
       </div>
 
       <div className="form-field">
         <input
           type="text"
-          name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
           value={email}
-          onChange={inputHandler}
+          onChange={event => inputHandler(event, setEmail)}
         />
       </div>
 
       <div className="form-field">
         <textarea
-          name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={body}
-          onChange={inputHandler}
+          onChange={event => inputHandler(event, setBody)}
         />
       </div>
 

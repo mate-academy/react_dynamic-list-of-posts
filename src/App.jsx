@@ -8,10 +8,10 @@ import { getUsers } from './api/users';
 const App = () => {
   const [selectedUser, setSelectedUser] = useState(0);
   const [users, setUsers] = useState([]);
-  const [selectedPostId, setSelectedPostId] = useState(null);
+  const [selectedPostId, setSelectedPostId] = useState(0);
 
   useEffect(() => {
-    getUsers().then(data => setUsers(data));
+    getUsers().then(setUsers);
   }, []);
 
   const selectedUserHandler = (event) => {
@@ -38,8 +38,8 @@ const App = () => {
         <div className="App__sidebar">
           <PostsList
             selectedUser={selectedUser}
-            onChangePost={setSelectedPostId}
-            selectedPost={selectedPostId}
+            onPostChange={setSelectedPostId}
+            selectedPostId={selectedPostId}
           />
         </div>
 

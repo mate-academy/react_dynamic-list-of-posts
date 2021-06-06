@@ -4,22 +4,22 @@ import './PostsList.scss';
 import classNames from 'classnames';
 import { getPosts, getUserPosts } from '../../api/posts';
 
-export const PostsList = ({ selectedUser, onChangePost, selectedPost }) => {
+export const PostsList = ({ selectedUser, onPostChange, selectedPostId }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    if (selectedUser === 0) {
-      getPosts().then(data => setPosts(data));
+    if (selectedUser) {
+      getUserPosts(selectedUser).then(setPosts);
     } else {
-      getUserPosts(selectedUser).then(data => setPosts(data));
+      getPosts().then(setPosts);
     }
   }, [selectedUser]);
 
   const postHandler = (postId) => {
-    if (postId === selectedPost) {
-      onChangePost(null);
+    if (postId === selectedPostId) {
+      onPostChange(null);
     } else {
-      onChangePost(postId);
+      onPostChange(postId);
     }
   };
 
@@ -28,7 +28,9 @@ export const PostsList = ({ selectedUser, onChangePost, selectedPost }) => {
       <h2>Posts:</h2>
 
       <ul className="PostsList__list">
-        {posts.length ? (
+        {!posts.length ? (
+          <p>User have not post</p>
+        ) : (
           posts.map(({ id, userId, title, body }) => (
             <li key={id} className="PostsList__item">
               <div>
@@ -44,16 +46,14 @@ export const PostsList = ({ selectedUser, onChangePost, selectedPost }) => {
                 type="button"
                 className={classNames(
                   'PostsList__button button',
-                  { active: id === selectedPost },
+                  { active: id === selectedPostId },
                 )}
                 onClick={() => postHandler(id)}
               >
-                {selectedPost === id ? 'Close' : 'Open'}
+                {selectedPostId === id ? 'Close' : 'Open'}
               </button>
             </li>
           ))
-        ) : (
-          <p>User have not post</p>
         )
         }
       </ul>
@@ -63,6 +63,6 @@ export const PostsList = ({ selectedUser, onChangePost, selectedPost }) => {
 
 PostsList.propTypes = {
   selectedUser: PropTypes.number.isRequired,
-  onChangePost: PropTypes.func.isRequired,
-  selectedPost: PropTypes.number.isRequired,
+  onPostChange: PropTypes.func.isRequired,
+  selectedPostId: PropTypes.number.isRequired,
 };

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 // eslint-disable-next-line max-len
-import { addComment, getPostComments, removeComments } from '../../api/comments';
+import { addComment, getPostComments, removeComment } from '../../api/comments';
 import { getPost } from '../../api/posts';
 
 export const PostDetails = ({ postId }) => {
@@ -18,32 +18,30 @@ export const PostDetails = ({ postId }) => {
       return;
     }
 
-    loadPostAndComments(postId);
+    Promise.all([getPost(postId), getPostComments(postId)])
+      .then(([loadedPost, loadedComments]) => {
+        setPost(loadedPost);
+        setComments(loadedComments);
+      });
   }, [postId]);
 
-  const loadPostAndComments = async(id) => {
-    const [postServer, commentsServer] = await Promise.all(
-      [getPost(id), getPostComments(id)],
-    );
-
-    setPost(postServer);
-    setComments(commentsServer);
-  };
-
-  const removeHandler = async(commentId) => {
-    await removeComments(commentId);
-    setComments(com => com.filter(({ id }) => commentId !== id));
+  const removeCommentHandler = async(commentId) => {
+    removeComment(commentId)
+      .then(() => getPostComments(postId))
+      .then(setComments);
   };
 
   const addNewComment = (newComment) => {
     addComment(newComment)
-      .then(addedCom => setComments(com => [...com, addedCom]));
+      .then(addedCom => setComments(prevCom => [...prevCom, addedCom]));
   };
 
   return (
     <div className="PostDetails">
 
-      {post ? (
+      {!post ? (
+        <h2>Select a post</h2>
+      ) : (
         <>
           <h2>Post details:</h2>
           <section className="PostDetails__post">
@@ -69,7 +67,7 @@ export const PostDetails = ({ postId }) => {
                   <button
                     type="button"
                     className="PostDetails__remove-button button"
-                    onClick={() => removeHandler(id)}
+                    onClick={() => removeCommentHandler(id)}
                   >
                     X
                   </button>
@@ -88,8 +86,6 @@ export const PostDetails = ({ postId }) => {
             </div>
           </section>
         </>
-      ) : (
-        <h2>Select a post</h2>
       )}
 
     </div>

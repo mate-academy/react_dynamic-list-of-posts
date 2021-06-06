@@ -1,12 +1,9 @@
-import { request } from './api';
+import { post, request } from './api';
 
 export const getPostComments = postId => request(`/comments?postId=${postId}`);
 
-export const removeComments = commentId => request(`/comments/${commentId}`, {
+export const removeComment = commentId => request(`/comments/${commentId}`, {
   method: 'DELETE',
 });
 
-export const addComment = body => request(`/comments`, {
-  method: 'POST',
-  body: JSON.stringify(body),
-});
+export const addComment = body => post(`/comments`, body);
