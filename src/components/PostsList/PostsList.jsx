@@ -12,10 +12,7 @@ export const PostsList = ({ posts, postSelect, selectedPostId }) => (
         <li key={post.id} className="PostsList__item">
           <div>
             <b>
-              [User #
-              {post.userId}
-              ]:
-              {' '}
+              {`[User #${post.userId}]: `}
             </b>
             {post.title}
           </div>

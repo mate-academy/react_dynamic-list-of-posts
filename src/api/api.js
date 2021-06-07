@@ -6,6 +6,10 @@ export function request(url) {
     .then(result => result.data);
 }
 
+export function getUsers() {
+  return request('/users');
+}
+
 export const post = (url, body) => fetch(`${BASE_URL}${url}`, {
   method: 'POST',
   headers: {

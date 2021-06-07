@@ -8,18 +8,6 @@ export const NewCommentForm = ({ onAddComment }) => {
   const [newComment, setNewComment] = useState('');
 
   const handleSubmit = () => {
-    if (!newName) {
-      return;
-    }
-
-    if (!newEmail) {
-      return;
-    }
-
-    if (!newComment) {
-      return;
-    }
-
     onAddComment(newName, newEmail, newComment);
     setNewName('');
     setNewEmail('');
@@ -39,24 +27,26 @@ export const NewCommentForm = ({ onAddComment }) => {
           type="text"
           name="name"
           value={newName}
-          onChange={(event) => {
-            setNewName(event.target.value);
+          onChange={({ target }) => {
+            setNewName(target.value);
           }}
           placeholder="Your name"
           className="NewCommentForm__input"
+          required
         />
       </div>
 
       <div className="form-field">
         <input
-          type="text"
+          type="email"
           name="email"
           value={newEmail}
-          onChange={(event) => {
-            setNewEmail(event.target.value);
+          onChange={({ target }) => {
+            setNewEmail(target.value);
           }}
           placeholder="Your email"
           className="NewCommentForm__input"
+          required
         />
       </div>
 
@@ -64,11 +54,12 @@ export const NewCommentForm = ({ onAddComment }) => {
         <textarea
           name="body"
           value={newComment}
-          onChange={(event) => {
-            setNewComment(event.target.value);
+          onChange={({ target }) => {
+            setNewComment(target.value);
           }}
           placeholder="Type comment here"
           className="NewCommentForm__input"
+          required
         />
       </div>
 
