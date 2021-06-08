@@ -17,7 +17,7 @@ export const PostDetails = ({ selectedPostId }) => {
       .then(com => setComments(com.data));
   }, [selectedPostId]);
 
-  const addNewCom = (comment) => {
+  const addNewComment = (comment) => {
     addComment(comment)
       .then((result) => {
         setComments(currentComment => [...currentComment, result]);
@@ -85,7 +85,7 @@ export const PostDetails = ({ selectedPostId }) => {
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             selectedPost={selectedPost}
-            addNewCom={addNewCom}
+            addNewComment={addNewComment}
           />
         </div>
       </section>

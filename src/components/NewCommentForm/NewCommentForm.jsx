@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ selectedPost, addNewCom }) => {
-  const [newCom, setCom] = useState('');
+export const NewCommentForm = ({ selectedPost, addNewComment }) => {
+  const [Comment, setComment] = useState('');
   const [name, setName] = useState('');
   const [email, setMail] = useState('');
 
-  const addCom = {
+  const newComment = {
     postId: selectedPost.id,
     name,
     email,
-    body: newCom,
+    body: Comment,
   };
 
   return (
@@ -19,9 +19,9 @@ export const NewCommentForm = ({ selectedPost, addNewCom }) => {
       onSubmit={(event) => {
         event.preventDefault();
 
-        addNewCom(addCom);
+        addNewComment(newComment);
 
-        setCom('');
+        setComment('');
         setName('');
         setMail('');
       }}
@@ -58,9 +58,9 @@ export const NewCommentForm = ({ selectedPost, addNewCom }) => {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={newCom}
+          value={Comment}
           onChange={(event) => {
-            setCom(event.target.value);
+            setComment(event.target.value);
           }}
         />
       </div>
