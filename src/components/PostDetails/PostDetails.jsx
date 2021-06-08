@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import {
-  getPost,
-  getPostComments,
-  addComment,
-  deleteComment,
-} from '../../api/posts';
+import { getPost } from '../../api/posts';
+import { getPostComments, addComment, deleteComment } from '../../api/comments';
 
 import { NewCommentForm } from '../NewCommentForm';
 
@@ -14,7 +10,7 @@ import './PostDetails.scss';
 
 export const PostDetails = ({ postId }) => {
   const [post, setPost] = useState(null);
-  const [comments, setComments] = useState(null);
+  const [comments, setComments] = useState([]);
   const [commentsVisible, setCommentsVisible] = useState(true);
 
   const loadComments = () => {
@@ -48,7 +44,7 @@ export const PostDetails = ({ postId }) => {
             <section className="PostDetails__post">
               <p>{post.body}</p>
             </section>
-            {comments && (
+            {!!comments.length && (
               <section className="PostDetails__comments">
                 <button
                   type="button"

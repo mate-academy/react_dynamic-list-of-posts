@@ -52,7 +52,7 @@ const App = () => {
         </div>
 
         <div className="App__content">
-          {(selectedPostId === 0)
+          {!selectedPostId
             ? 'No post selected'
             : (
               <PostDetails postId={selectedPostId} />

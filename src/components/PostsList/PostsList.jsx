@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import './PostsList.scss';
 
 export const PostsList = ({ posts, selectedPostId, onSelect }) => (
@@ -17,7 +18,7 @@ export const PostsList = ({ posts, selectedPostId, onSelect }) => (
               {post.userId}
               ]:
             </b>
-            sunt aut facere repellat provident occaecati excepturi optio
+            {post.title}
           </div>
           {(selectedPostId === post.id)
             ? (
@@ -45,3 +46,9 @@ export const PostsList = ({ posts, selectedPostId, onSelect }) => (
     </ul>
   </div>
 );
+
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf({}).isRequired,
+  selectedPostId: PropTypes.number.isRequired,
+  onSelect: PropTypes.func.isRequired,
+};

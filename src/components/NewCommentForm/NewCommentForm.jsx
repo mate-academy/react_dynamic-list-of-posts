@@ -55,6 +55,7 @@ export const NewCommentForm = ({ postId, setComments }) => {
           className="NewCommentForm__input"
           value={body}
           onChange={event => setBody(event.target.value)}
+          required
         />
       </div>
 
