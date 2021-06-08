@@ -36,6 +36,14 @@ export const PostDetails = ({ postId }) => {
     loadComments();
   }, [postId]);
 
+  const handleHideComments = (event) => {
+    const button = event.target;
+    const commentsList = event.target.nextElementSibling;
+
+    commentsList.hidden = !commentsList.hidden;
+    button.innerText = 'Show comments';
+  };
+
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
@@ -46,7 +54,13 @@ export const PostDetails = ({ postId }) => {
 
       {comments.length > 0 && (
         <section className="PostDetails__comments">
-          <button type="button" className="button">Hide 2 comments</button>
+          <button
+            type="button"
+            className="button"
+            onClick={event => handleHideComments(event)}
+          >
+            Hide comments
+          </button>
 
           <ul className="PostDetails__list">
             {comments.map(comment => (

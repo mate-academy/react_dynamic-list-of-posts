@@ -30,8 +30,11 @@ const App = () => {
     }
   }, [selectedUser]);
 
-  const selectPost = (postId) => {
-    setSelectedPostId(postId);
+  const selectPost = (target, postId) => {
+    if (target.textContent.includes('Close')
+      && selectedPostId !== postId) {
+      setSelectedPostId(postId);
+    }
   };
 
   return (
@@ -66,6 +69,7 @@ const App = () => {
         <div className="App__sidebar">
           <PostsList
             posts={filteredPosts}
+            selectedPostId={selectedPostId}
             selectPost={selectPost}
           />
         </div>

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './PostsList.scss';
 
-export const PostsList = ({ posts, selectPost }) => (
+export const PostsList = ({ posts, selectedPostId, selectPost }) => (
   <div className="PostsList">
     <h2>Posts:</h2>
 
@@ -20,9 +20,9 @@ export const PostsList = ({ posts, selectPost }) => (
           <button
             type="button"
             className="PostsList__button button"
-            onClick={() => selectPost(post.id)}
+            onClick={({ target }) => selectPost(target, post.id)}
           >
-            Open
+            {post.id === selectedPostId ? 'Open' : 'Close'}
           </button>
         </li>
       ))}
@@ -40,7 +40,7 @@ PostsList.propTypes = {
     createdAt: PropTypes.string,
     updatedAt: PropTypes.string,
   })),
-
+  selectedPostId: PropTypes.number.isRequired,
   selectPost: PropTypes.func.isRequired,
 };
 
