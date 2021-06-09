@@ -5,7 +5,7 @@ import { addPostComment } from '../../api/comments';
 
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ postId, loadData }) => {
+export const NewCommentForm = ({ postId, loadPostComments }) => {
   const [nameInput, setNameInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
   const [bodyInput, setBodyInput] = useState('');
@@ -13,26 +13,24 @@ export const NewCommentForm = ({ postId, loadData }) => {
   return (
     <form
       className="NewCommentForm"
-      onSubmit={(event) => {
+      onSubmit={async(event) => {
         event.preventDefault();
 
-        if (!nameInput) {
+        const isEmptyFields = !nameInput || !emailInput || !bodyInput;
+
+        if (isEmptyFields) {
           return;
         }
 
-        if (!emailInput) {
-          return;
-        }
-
-        if (!bodyInput) {
-          return;
-        }
-
-        addPostComment(postId, {
+        await addPostComment(postId, {
           nameInput, emailInput, bodyInput,
         });
 
-        loadData();
+        await loadPostComments();
+
+        setNameInput('');
+        setEmailInput('');
+        setBodyInput('');
       }}
     >
       <div className="form-field">
@@ -79,5 +77,5 @@ export const NewCommentForm = ({ postId, loadData }) => {
 
 NewCommentForm.propTypes = {
   postId: PropTypes.number.isRequired,
-  loadData: PropTypes.func.isRequired,
+  loadPostComments: PropTypes.func.isRequired,
 };

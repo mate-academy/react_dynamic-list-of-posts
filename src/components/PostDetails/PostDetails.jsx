@@ -5,6 +5,8 @@ import { getPostDetails } from '../../api/posts';
 import { getPostComments, removePostComment } from '../../api/comments';
 
 import { NewCommentForm } from '../NewCommentForm';
+import { Loader } from '../Loader';
+
 import './PostDetails.scss';
 
 export const PostDetails = ({ selectedPostId }) => {
@@ -13,35 +15,32 @@ export const PostDetails = ({ selectedPostId }) => {
   const [commentsVisibility, setCommentsVisibility] = useState(false);
 
   useEffect(() => {
-    loadData();
-  }, []);
-
-  useEffect(() => {
-    loadData();
-  }, [selectedPostId]);
-
-  const loadData = () => {
+    setComments(null);
     setPost(null);
 
-    getPostDetails(selectedPostId)
-      .then((result) => {
-        setComments(null);
-        setPost(result.data);
+    loadPostDetails();
+    loadPostComments();
+  }, [selectedPostId]);
 
-        return result.data;
-      })
+  const loadPostDetails = () => {
+    getPostDetails(selectedPostId)
       .then((postFromServer) => {
-        getPostComments()
-          .then((commentsFromServer) => {
-            setComments(commentsFromServer.data
-              .filter(comment => postFromServer.id === comment.postId));
-          });
+        setPost(postFromServer.data);
+      });
+  };
+
+  const loadPostComments = () => {
+    setComments(null);
+    getPostComments()
+      .then((commentsFromServer) => {
+        setComments(commentsFromServer.data
+          .filter(comment => comment.postId === selectedPostId));
       });
   };
 
   return (
     !post ? (
-      <span>Loading...</span>
+      <Loader />
     ) : (
       <div className="PostDetails">
         <h2>Post details:</h2>
@@ -57,7 +56,7 @@ export const PostDetails = ({ selectedPostId }) => {
               className="button"
               onClick={() => setCommentsVisibility(false)}
             >
-              {`Show ${comments && comments.length} comments`}
+              {`Show ${comments ? comments.length : ''} comments`}
             </button>
           ) : (
             <button
@@ -65,13 +64,13 @@ export const PostDetails = ({ selectedPostId }) => {
               className="button"
               onClick={() => setCommentsVisibility(true)}
             >
-              {`Hide ${comments && comments.length} comments`}
+              {`Hide ${comments ? comments.length : ''} comments`}
             </button>
           )}
 
           <ul className="PostDetails__list">
             {!comments ? (
-              <span>Loading...</span>
+              <Loader />
             ) : (
               commentsVisibility
               || comments
@@ -80,9 +79,9 @@ export const PostDetails = ({ selectedPostId }) => {
                     <button
                       type="button"
                       className="PostDetails__remove-button button"
-                      onClick={() => {
-                        removePostComment(comment.id);
-                        loadData();
+                      onClick={async() => {
+                        await removePostComment(comment.id);
+                        await loadPostComments();
                       }}
                     >
                       X
@@ -97,7 +96,8 @@ export const PostDetails = ({ selectedPostId }) => {
           <div className="PostDetails__form-wrapper">
             <NewCommentForm
               postId={selectedPostId}
-              loadData={loadData}
+              setComments={setComments}
+              loadPostComments={loadPostComments}
             />
           </div>
         </section>

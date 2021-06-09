@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import './App.scss';
 import './styles/general.scss';
+
+import { getUsers } from './api/users';
 
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
@@ -9,6 +11,12 @@ import { PostDetails } from './components/PostDetails';
 const App = () => {
   const [selectedUser, setUser] = useState('');
   const [selectedPostId, setPostId] = useState(null);
+  const [users, setUsers] = useState('');
+
+  useEffect(() => {
+    getUsers()
+      .then(usersFromServer => setUsers(usersFromServer.data));
+  }, []);
 
   return (
     <div className="App">
@@ -21,16 +29,14 @@ const App = () => {
             onChange={event => setUser(event.target.value)}
           >
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {!users || users.map(user => (
+              <option
+                value={user.id}
+                key={user.id}
+              >
+                {user.name}
+              </option>
+            ))}
           </select>
         </label>
       </header>
