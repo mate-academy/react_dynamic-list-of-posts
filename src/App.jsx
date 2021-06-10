@@ -33,10 +33,10 @@ const App = () => {
 
   const onSelectedPostId = (postId) => {
     if (postId === selectedPostId) {
-      return setSelectedPostId(0);
+      setSelectedPostId(0);
+    } else {
+      setSelectedPostId(postId);
     }
-
-    setSelectedPostId(postId)
   };  
 
   return (    
@@ -51,7 +51,9 @@ const App = () => {
           >
             <option value="0">All users</option>
             {users.map(user => (
-              <option key={user.id} value={user.id}>{user.name}</option>
+              <option key={user.id} value={user.id}>
+                {user.name}
+              </option>
             ))}
           </select>
         </label>

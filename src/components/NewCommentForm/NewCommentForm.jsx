@@ -10,7 +10,7 @@ export const NewCommentForm = ({ postId, updateComents }) => {
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
 
-  const newComment = async () => {
+  const addNewComment = async () => {
     await createPostComment( postId, name, email, body );
     updateComents();
     clearForm();
@@ -27,7 +27,7 @@ export const NewCommentForm = ({ postId, updateComents }) => {
       className="NewCommentForm"
       onSubmit={(event) => {
         event.preventDefault();
-        newComment()
+        addNewComment()
       }}
     >
       <div className="form-field">

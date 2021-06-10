@@ -22,10 +22,8 @@ export const PostDetails = ({ selectedPostId }) => {
   }, [selectedPostId]);
 
   const updateComents = (selectedPostId) => {
-    getPostComments()
-      .then(result => setComments(
-        result.filter(({ postId }) => postId === selectedPostId)
-      ))
+    getPostComments(`?postId=${selectedPostId}`)
+      .then(result => setComments(result))
   };
 
   return (
@@ -50,8 +48,8 @@ export const PostDetails = ({ selectedPostId }) => {
                 }}
               >
                 {showComments
-                  ? `Show ${comments.length} comments`
-                  : `Hide ${comments.length} comments`
+                  ? `Hide ${comments.length} comments`
+                  : `Show ${comments.length} comments`
                 }
               </button>
             )}
