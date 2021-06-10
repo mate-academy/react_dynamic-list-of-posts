@@ -5,27 +5,35 @@ import PropTypes from 'prop-types';
 import { } from '../../api/posts';
 
 export const NewCommentForm = ({ onCommentAdd }) => {
-  const [userName, setUserName] = useState();
-  const [userEmail, setUserEmail] = useState();
-  const [commentText, setCommentText] = useState();
+  const [userData, setUserData] = useState({
+    name: '',
+    email: '',
+    text: '',
+  });
 
   return (
     <form
       onSubmit={(event) => {
         event.preventDefault();
-        onCommentAdd({
-          userName, userEmail, commentText,
-        });
-        setCommentText('');
+        onCommentAdd(userData);
+        setUserData(({
+          name: '',
+          email: '',
+          text: '',
+        }));
       }}
       className="NewCommentForm"
     >
       <div className="form-field">
         <input
           required
+          value={userData.name}
           onChange={
             (event) => {
-              setUserName(event.target.value);
+              setUserData({
+                ...userData,
+                name: event.target.value,
+              });
             }
           }
           type="text"
@@ -38,9 +46,13 @@ export const NewCommentForm = ({ onCommentAdd }) => {
       <div className="form-field">
         <input
           required
+          value={userData.email}
           onChange={
             (event) => {
-              setUserEmail(event.target.value);
+              setUserData({
+                ...userData,
+                email: event.target.value,
+              });
             }
           }
           type="text"
@@ -53,10 +65,13 @@ export const NewCommentForm = ({ onCommentAdd }) => {
       <div className="form-field">
         <textarea
           required
-          value={commentText}
+          value={userData.text}
           onChange={
             (event) => {
-              setCommentText(event.target.value);
+              setUserData({
+                ...userData,
+                text: event.target.value,
+              });
             }
           }
           name="body"

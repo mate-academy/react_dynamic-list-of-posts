@@ -1,12 +1,11 @@
 import { BASE_URL } from './api';
 
-export const getUserPosts = async(userId) => {
+export const getUserPosts = async(userId = 0) => {
   let result;
 
-  await fetch(`${BASE_URL}/posts${
-    userId !== 0
-      ? `?userId=${userId}`
-      : ''}`)
+  await fetch(
+    `${BASE_URL}/posts${userId ? `?userId=${userId}` : ''}`,
+  )
     .then(response => response.json())
     .then((response) => {
       result = [...response.data];

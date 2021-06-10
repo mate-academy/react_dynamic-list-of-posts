@@ -9,13 +9,11 @@ const App = () => {
   const [selectedPosts, selectPostsId] = useState([]);
   const [selectedPostId, selectPostId] = useState(0);
 
-  useEffect(() => {
-    async function fetchData() {
-      selectPostsId(await getUserPosts(0));
-    }
+  const fetchData = async() => {
+    selectPostsId(await getUserPosts());
+  };
 
-    fetchData();
-  }, []);
+  useEffect(fetchData, []);
 
   return (
     <div className="App">

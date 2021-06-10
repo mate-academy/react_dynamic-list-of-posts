@@ -14,25 +14,23 @@ export const PostDetails = ({ postId }) => {
   const [comments, setComments] = useState([]);
   const [visibility, setVisibility] = useState(true);
 
-  useEffect(() => {
-    async function fetchData() {
-      setPost(await getPostDetails(postId));
-      setComments(await getPostComments(postId));
-    }
+  const fetchData = async() => {
+    setPost(await getPostDetails(postId));
+    setComments(await getPostComments(postId));
+  };
 
-    fetchData();
-  }, [postId]);
+  useEffect(fetchData, [postId]);
 
   const onCommentAdd = async({
-    userName,
-    userEmail,
-    commentText,
+    name,
+    email,
+    text,
   }) => {
     await addComment({
       postId,
-      name: userName,
-      email: userEmail,
-      body: commentText,
+      name,
+      email,
+      body: text,
     });
     setComments(await getPostComments(postId));
   };
