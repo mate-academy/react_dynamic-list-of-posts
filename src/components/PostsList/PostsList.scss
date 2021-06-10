@@ -30,5 +30,10 @@
 
   &__button {
     margin-left: 10px;
+
+    &--active {
+      border-radius: 50%;
+      background-color: rgb(22, 31, 73);
+    }
   }
 }
