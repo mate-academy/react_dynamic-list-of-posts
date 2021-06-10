@@ -40,7 +40,9 @@ export const PostDetails = ({ selectedPostId }) => {
 
   return (
     !post ? (
-      <Loader />
+      <div className="NoPosts">
+        <h1>NO POSTS</h1>
+      </div>
     ) : (
       <div className="PostDetails">
         <h2>Post details:</h2>
