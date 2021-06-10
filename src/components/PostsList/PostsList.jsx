@@ -20,9 +20,9 @@ export const PostsList = ({ posts, selectedPostId, selectPost }) => (
           <button
             type="button"
             className="PostsList__button button"
-            onClick={({ target }) => selectPost(target, post.id)}
+            onClick={({ target }) => selectPost(post.id)}
           >
-            {post.id === selectedPostId ? 'Open' : 'Close'}
+            {post.id === selectedPostId ? 'Close' : 'Open'}
           </button>
         </li>
       ))}

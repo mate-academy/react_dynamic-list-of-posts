@@ -4,10 +4,12 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getPosts, getUserPosts } from './api/posts';
+import { getUsers } from './api/users';
 
 const App = () => {
   const [filteredPosts, setFilteredPosts] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(0);
+  const [users, setUsers] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
   const loadAllPosts = () => {
@@ -17,22 +19,28 @@ const App = () => {
       });
   };
 
+  const loadUsers = () => {
+    getUsers()
+      .then(usersArr => usersArr.filter(user => user.id && user.name))
+      .then(setUsers);
+  };
+
   useEffect(() => {
     loadAllPosts();
+    loadUsers();
   }, []);
 
   useEffect(() => {
-    if (selectedUser > 0) {
-      getUserPosts(selectedUser)
+    if (selectedUserId) {
+      getUserPosts(selectedUserId)
         .then(setFilteredPosts);
     } else {
       loadAllPosts();
     }
-  }, [selectedUser]);
+  }, [selectedUserId]);
 
-  const selectPost = (target, postId) => {
-    if (target.textContent.includes('Close')
-      && selectedPostId !== postId) {
+  const selectPost = (postId) => {
+    if (selectedPostId !== postId) {
       setSelectedPostId(postId);
     }
   };
@@ -45,22 +53,15 @@ const App = () => {
 
           <select
             className="App__user-selector"
-            value={selectedUser}
+            value={selectedUserId}
             onChange={(event) => {
-              setSelectedUser(+event.target.value);
+              setSelectedUserId(+event.target.value);
             }}
           >
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {users.map(user => (
+              <option key={user.id} value={user.id}>{user.name}</option>
+            ))}
           </select>
         </label>
       </header>

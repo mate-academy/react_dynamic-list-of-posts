@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
-import { getPostDetails,
+import {
+  getPostDetails,
   getPostComments,
   removeCommentById,
-  createComment } from '../../api/posts';
+  createComment,
+} from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
 export const PostDetails = ({ postId }) => {
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
+  const [isVisibleComments, setVisibleComments] = useState(true);
 
   const loadPosts = async() => {
     setPost(await getPostDetails(postId));
@@ -26,8 +29,12 @@ export const PostDetails = ({ postId }) => {
   };
 
   const addComment = async({ name, email, body }) => {
-    // eslint-disable-next-line
-    await createComment({postId, name, email, body});
+    await createComment({
+      postId,
+      name,
+      email,
+      body,
+    });
     loadComments();
   };
 
@@ -36,12 +43,8 @@ export const PostDetails = ({ postId }) => {
     loadComments();
   }, [postId]);
 
-  const handleHideComments = (event) => {
-    const button = event.target;
-    const commentsList = event.target.nextElementSibling;
-
-    commentsList.hidden = !commentsList.hidden;
-    button.innerText = 'Show comments';
+  const handleHideComments = () => {
+    setVisibleComments(!isVisibleComments);
   };
 
   return (
@@ -57,28 +60,30 @@ export const PostDetails = ({ postId }) => {
           <button
             type="button"
             className="button"
-            onClick={event => handleHideComments(event)}
+            onClick={() => handleHideComments()}
           >
-            Hide comments
+            {isVisibleComments ? 'Hide comments' : 'Show comments'}
           </button>
 
-          <ul className="PostDetails__list">
-            {comments.map(comment => (
-              <li
-                key={uuidv4()}
-                className="PostDetails__list-item"
-              >
-                <button
-                  type="button"
-                  className="PostDetails__remove-button button"
-                  onClick={() => removeComment(comment.id)}
+          {isVisibleComments && (
+            <ul className="PostDetails__list">
+              {comments.map(comment => (
+                <li
+                  key={uuidv4()}
+                  className="PostDetails__list-item"
                 >
-                  X
-                </button>
-                <p>{comment.body}</p>
-              </li>
-            ))}
-          </ul>
+                  <button
+                    type="button"
+                    className="PostDetails__remove-button button"
+                    onClick={() => removeComment(comment.id)}
+                  >
+                    X
+                  </button>
+                  <p>{comment.body}</p>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
       )}
 

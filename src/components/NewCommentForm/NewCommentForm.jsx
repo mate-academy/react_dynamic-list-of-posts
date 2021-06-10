@@ -14,6 +14,9 @@ export const NewCommentForm = ({ addComment }) => {
       email,
       body,
     });
+    setName('');
+    setEmail('');
+    setBody('');
   };
 
   return (
