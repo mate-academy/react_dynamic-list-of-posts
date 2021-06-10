@@ -10,7 +10,7 @@ import { PostDetails } from './components/PostDetails';
 
 const App = () => {
   const [selectedUser, setUser] = useState('');
-  const [selectedPostId, setPostId] = useState({});
+  const [selectedPostId, setPostId] = useState(null);
   const [users, setUsers] = useState('');
 
   useEffect(() => {

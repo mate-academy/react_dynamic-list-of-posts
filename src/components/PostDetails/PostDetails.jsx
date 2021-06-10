@@ -11,7 +11,7 @@ import './PostDetails.scss';
 
 export const PostDetails = ({ selectedPostId }) => {
   const [post, setPost] = useState(null);
-  const [comments, setComments] = useState({});
+  const [comments, setComments] = useState(null);
   const [commentsVisibility, setCommentsVisibility] = useState(false);
 
   useEffect(() => {
