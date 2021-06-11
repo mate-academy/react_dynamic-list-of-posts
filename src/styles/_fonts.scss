@@ -1,0 +1,16 @@
+@font-face {
+  font-family: "Avenir", sans-serif;
+  src: url("../fonts/Avenir/Avenir-Medium.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "SamsungSharpSans", sans-serif;
+  src: url("../fonts/Samsung-Sharp-Sans/SamsungSharpSans-Medium.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+html {
+  font-family: "Avenir", sans-serif;
+}

@@ -1,0 +1,25 @@
+.section-2 {
+
+  &__container {
+    padding: 0 20px;
+  }
+
+  &__visin {
+    margin-bottom: 60px;
+
+    font-style: 18px;
+    line-height: 27px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #344f10;
+  }
+
+  &__none {
+    display: none;
+
+    font-size: 16px;
+    line-height: 24px;
+
+    color: $Text-gray;
+  }
+}

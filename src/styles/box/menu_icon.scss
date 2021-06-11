@@ -1,0 +1,54 @@
+.menu {
+  position: relative;
+  z-index: 2;
+
+  // &__container {
+
+  // }
+
+  &__checkbox {
+    display: none;
+
+    &:checked + .menu__label :first-child {
+      transform: rotate(-45deg) translate(-1px, 6px);
+    }
+
+    &:checked + .menu__label :last-child {
+      transform: rotate(45deg) translate(-2px, -8px);
+    }
+
+    &:checked + .menu__label :nth-child(2) {
+      opacity: 0;
+    }
+
+    &:checked + .menu__label :nth-child(n) {
+      background-color: #e4dfd3;
+    }
+  }
+
+  &__label {
+    display: block;
+
+    height: 13px;
+    width: 20px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  &__bar1,
+  &__bar2,
+  &__bar3 {
+    width: 20px;
+    height: 1px;
+    margin-bottom: 5px;
+
+    background-color: #344f10;
+
+    transition: 0.4s;
+  }
+
+  &__bar3 {
+    margin: 0;
+  }
+
+}

@@ -1,0 +1,43 @@
+@import "./shop-menu.scss";
+@import "./shop-products.scss";
+@import "./arrow.scss";
+
+.section-4 {
+ 
+  // &__container {
+  // }
+
+  &__title {
+    margin-bottom: 12px;
+
+    text-align: center;
+    font-size: 24px;
+    line-height: 36px;
+    letter-spacing: 5%;
+    text-transform: uppercase;
+    color: #344f10;
+  }
+
+  &__button {
+    margin: 32px 20px 60px;
+
+    width: 280px;
+    height: 60px;
+
+    background-color: $Text-gray;
+
+    font-size: 16px;
+    line-height: 21px;
+    text-transform: uppercase;
+    letter-spacing: 15%;
+    color: #f2f2f2;
+
+    transition: color 0.5s, background 0.5s, border 0.5s;
+
+    &:hover {
+      background-color: #e5e5e5;
+      color: $Text-gray;
+      border: 1px solid #333;
+    }
+  }
+}

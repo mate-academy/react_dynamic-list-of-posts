@@ -1,0 +1,27 @@
+.arrow {
+
+  &__container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 20px;
+    gap: 32px;
+  }
+
+  &__left {
+    width: 28px;
+    height: 28px;
+
+    background-image: url("../images/icons/left.png");
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  &__right {
+    width: 28px;
+    height: 28px;
+
+    background-image: url("../images/icons/right.png");
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}

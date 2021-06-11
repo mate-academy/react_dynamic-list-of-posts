@@ -1,0 +1,10 @@
+@import "./ingredients.scss";
+
+.section-6 {
+  position: relative;
+
+  &__container {
+    padding: 0 20px;
+    overflow: hidden;
+  }
+}
