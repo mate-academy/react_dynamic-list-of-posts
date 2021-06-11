@@ -1,37 +1,45 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import './PostsList.scss';
 
-export const PostsList = () => (
+export const PostsList = ({ posts, activePost, getActivePost }) => (
   <div className="PostsList">
     <h2>Posts:</h2>
 
     <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+      {posts.map(post => (
+        <li className="PostsList__item" key={post.id}>
+          <div>
+            <b>{`[User #${post.userId}]: `}</b>
+            {post.title}
+          </div>
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
+          {activePost === post.id ? (
+            <button
+              type="button"
+              className="PostsList__button button button__select"
+              onClick={() => getActivePost(0)}
+            >
+              Close
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="PostsList__button button"
+              onClick={() => getActivePost(post.id)}
+            >
+              Open
+            </button>
+          )}
+        </li>
+      ))}
     </ul>
   </div>
 );
+
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf(PropTypes.shape).isRequired,
+  activePost: PropTypes.number.isRequired,
+  getActivePost: PropTypes.func.isRequired,
+};
