@@ -12,11 +12,10 @@ export const NewCommentForm = ({ postId, setComments }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (name && email && body) {
-      addComment(postId, name, email, body)
-        .then(() => getPostComments(postId)
-          .then(setComments));
-    }
+
+    addComment(postId, name, email, body)
+      .then(() => getPostComments(postId)
+        .then(setComments));
 
     setName('');
     setEmail('');
@@ -33,6 +32,7 @@ export const NewCommentForm = ({ postId, setComments }) => {
           onChange={event => setName(event.target.value.trim())}
           placeholder="Your name"
           className="NewCommentForm__input"
+          required
         />
       </div>
 
@@ -44,6 +44,7 @@ export const NewCommentForm = ({ postId, setComments }) => {
           onChange={event => setEmail(event.target.value.trim())}
           placeholder="Your email"
           className="NewCommentForm__input"
+          required
         />
       </div>
 

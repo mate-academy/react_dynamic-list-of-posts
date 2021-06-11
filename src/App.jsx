@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
-
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 

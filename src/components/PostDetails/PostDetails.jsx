@@ -11,7 +11,7 @@ import { getPostDetails } from '../../api/posts';
 export const PostDetails = ({ postId }) => {
   const [comments, setComments] = useState([]);
   const [postTitle, setPostTitle] = useState('');
-  const [postDetails, setPostDetails] = useState('');
+  const [postDetails, setPostDetails] = useState(0);
   const [commentsHidden, setCommentsHidden] = useState(false);
 
   useEffect(() => {
