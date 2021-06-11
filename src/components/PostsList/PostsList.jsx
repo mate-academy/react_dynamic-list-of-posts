@@ -9,10 +9,13 @@ import { getPosts, getUserPosts } from '../../api/posts';
 export const PostsList = ({ selectedUser, postEdited, selectedPost }) => {
   const [posts, setPosts] = useState([]);
 
-  useEffect(() => (
-    selectedUser ? getUserPosts(selectedUser).then(setPosts)
-      : getPosts().then(setPosts)
-  ), [selectedUser]);
+  useEffect(() => {
+    if (selectedUser) {
+      getUserPosts(selectedUser).then(setPosts);
+    } else {
+      getPosts().then(setPosts);
+    }
+  }, [selectedUser]);
 
   const postHandler = (postId) => {
     if (postId === selectedPost) {

@@ -13,6 +13,12 @@ export const PostDetails = ({ postId }) => {
   const [isVisible, setVisible] = useState(true);
 
   useEffect(() => {
+    if (!postId) {
+      setPost(null);
+
+      return;
+    }
+
     Promise.all([getPost(postId), getComments(postId)])
       .then(([loadedPost, loadedComments]) => {
         setPost(loadedPost);
@@ -20,13 +26,12 @@ export const PostDetails = ({ postId }) => {
       });
   }, [postId]);
 
-  const addNewComment = async(newComment) => {
+  const addNewComment = (newComment) => {
     addComment(newComment)
-      .then(addedComment => setComments(prevComments => (
-        [...prevComments, addedComment])));
+      .then(addedCom => setComments(prevCom => [...prevCom, addedCom]));
   };
 
-  const deleteCommentHandler = (commentId) => {
+  const deleteCommentHandler = async(commentId) => {
     deleteComment(commentId)
       .then(() => getComments(postId))
       .then(setComments);
