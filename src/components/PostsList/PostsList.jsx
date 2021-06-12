@@ -1,37 +1,57 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { TypePost } from '../../types';
+
 import './PostsList.scss';
 
-export const PostsList = () => (
+export const PostsList = ({ posts, setId, selectedPostId }) => (
   <div className="PostsList">
     <h2>Posts:</h2>
 
     <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+      {posts !== null && (
+        posts.map(({ id, title, userId }) => (
+          <li className="PostsList__item" key={id}>
+            <div>
+              <b>
+                [
+                {`User #${userId}`}
+                ]:
+                {' '}
+              </b>
+              {title}
+            </div>
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
+            {selectedPostId === id ? (
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => setId(0)}
+              >
+                Close
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => setId(id)}
+              >
+                Open
+              </button>
+            )}
+          </li>
+        ))
+      )}
     </ul>
   </div>
 );
+
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf(TypePost),
+  setId: PropTypes.func.isRequired,
+  selectedPostId: PropTypes.number.isRequired,
+};
+
+PostsList.defaultProps = {
+  posts: [],
+};
