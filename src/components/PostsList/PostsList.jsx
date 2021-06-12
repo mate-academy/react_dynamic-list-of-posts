@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { TypePost } from '../../types';
 
 import './PostsList.scss';
+import '../pressed-button.scss';
 
 export const PostsList = ({ posts, setId, selectedPostId }) => (
   <div className="PostsList">
@@ -25,7 +26,7 @@ export const PostsList = ({ posts, setId, selectedPostId }) => (
             {selectedPostId === id ? (
               <button
                 type="button"
-                className="PostsList__button button"
+                className="PostsList__button button pressed-button"
                 onClick={() => setId(0)}
               >
                 Close

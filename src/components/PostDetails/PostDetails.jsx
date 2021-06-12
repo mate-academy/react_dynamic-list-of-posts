@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { NewCommentForm } from '../NewCommentForm';
 import { getPostDetails } from '../../api/posts';
-import { getPostComments } from '../../api/comments';
+import { getPostComments, removeComment } from '../../api/comments';
 
 import './PostDetails.scss';
 
@@ -22,6 +22,13 @@ export const PostDetails = ({ postId }) => {
 
   const changeCommentsVisibility = () => {
     setCommentsVisibility(!commentsVisibility);
+  };
+
+  const handleClick = async(event) => {
+    await removeComment(event.target.value);
+
+    getPostComments(postId)
+      .then(result => setComments(result));
   };
 
   return (
@@ -54,7 +61,9 @@ export const PostDetails = ({ postId }) => {
                 <li className="PostDetails__list-item" key={comment.id}>
                   <button
                     type="button"
+                    value={comment.id}
                     className="PostDetails__remove-button button"
+                    onClick={handleClick}
                   >
                     X
                   </button>
