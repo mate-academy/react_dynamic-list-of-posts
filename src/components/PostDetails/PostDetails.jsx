@@ -1,45 +1,117 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
 import { NewCommentForm } from '../NewCommentForm';
+import { Loader } from '../Loader';
+
+import { getPost } from '../../api/posts';
+import { getPostComments, removeComment, addComment } from '../../api/comments';
+
 import './PostDetails.scss';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({ selectedPostId, isLoading, setIsLoading }) => {
+  const [post, setPost] = useState(null);
+  const [postComments, setPostComments] = useState([]);
+  const [commentsVisible, setCommentsVisible] = useState(true);
+  
+  useEffect(() => {
+    setPost(null);
+    Promise.all([getPost(selectedPostId), getPostComments(selectedPostId)])
+      .then(([post, comments]) => {
+        setPost(post);
+        setPostComments(comments);
+        setCommentsVisible(true);
+        setIsLoading(false);
+      })
+  }, [selectedPostId, setIsLoading]);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  const setCommentsVisibility = () => {
+    setCommentsVisible(value => !value);
+  };
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const deleteComment = (commentId) => {
+    removeComment(commentId)
+      .then(() => getPostComments(selectedPostId))
+      .then(setPostComments);
+  };
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  const addNewComment = (name, email, body) => {
+    const newComment = {
+      name,
+      email,
+      body,
+      postId: selectedPostId,
+    };
+    
+    addComment(newComment)
+      .then(() => getPostComments(selectedPostId))
+      .then(setPostComments);
+  };
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  const onLoading = () => {
+    return isLoading
+     ? <Loader />
+     : (
+      <p>
+        Pick a post to see the details
+      </p>
+    )
+  }
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      {post ? (
+        <>
+          <section className="PostDetails__post">
+            <p>
+              {post.title}
+            </p>
+          </section>
+    
+          <section className="PostDetails__comments">
+            <button
+              type="button"
+              className="button"
+              onClick={setCommentsVisibility}
+            >
+              {commentsVisible
+                ? `Hide ${postComments.length} comment(s)`
+                : `Show ${postComments.length} comment(s)`
+              }
+            </button>
+
+            <ul className="PostDetails__list">
+              {commentsVisible && postComments.map(comment => (
+                <li
+                  className="PostDetails__list-item"
+                  key={comment.id}
+                >
+                  <button
+                    type="button"
+                    title="click to delete"
+                    className="PostDetails__remove-button button"
+                    onClick={() => deleteComment(comment.id)}
+                  >
+                    X
+                  </button>
+                  <p>
+                    {comment.body}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
+    
+          <section>
+            <div className="PostDetails__form-wrapper">
+              <NewCommentForm
+                addNewComment={addNewComment}
+              />
+            </div>
+          </section>
+        </>
+      ) : onLoading()}
+    </div>
+  );
+}

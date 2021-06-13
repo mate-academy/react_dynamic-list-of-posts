@@ -1,37 +1,70 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
+import { getAllPosts } from '../../api/posts';
+import { getUserPosts } from '../../api/posts';
+
+import { Loader } from '../Loader';
+
+import classNames from 'classnames';
+
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({ selectedUserId, selectedPostId, setSelectedPostId, setIsLoading }) => {
+  const [posts, setPosts] = useState([]);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  useEffect(() => {
+    if (selectedUserId) {
+      getUserPosts(selectedUserId).then(setPosts);
+    } else {
+      getAllPosts().then(setPosts);
+    }
+  }, [selectedUserId])
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  const onPostClicked = (postId) => {
+    if (postId === selectedPostId) {
+      return setSelectedPostId(0);
+    }
+    
+    setSelectedPostId(postId);
+    setIsLoading(true);
+  };
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+      {posts.length ? (
+        <ul className="PostsList__list">
+        {posts.map(post => (
+          <li
+            key={post.id}
+            className="PostsList__item"
+          >
+            <div>
+              <b>[User #{post.userId}]: </b>
+              {post.title}
+            </div>
+            <button
+              type="button"
+              onClick={() => onPostClicked(post.id)}
+              className={classNames({
+                'PostsList__button': true,
+                button: true,
+                'button--active': post.id === selectedPostId
+              })}
+            >
+              {post.id === selectedPostId
+                ? 'Close'
+                : 'Open'
+              }
+            </button>
+          </li>
+        ))}
+      </ul>
+      ) : (
+        <p>
+          User has no posts yet
+        </p>
+      )}
+    </div>
+  );
+};
