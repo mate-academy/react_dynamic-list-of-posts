@@ -9,7 +9,7 @@ import classNames from 'classnames';
 
 import './PostsList.scss';
 
-export const PostsList = ({ selectedUserId, selectedPostId,setSelectedPostId, setIsLoading }) => {
+export const PostsList = ({ selectedUserId, selectedPostId, setSelectedPostId, setIsLoading }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -28,16 +28,6 @@ export const PostsList = ({ selectedUserId, selectedPostId,setSelectedPostId, se
     setSelectedPostId(postId);
     setIsLoading(true);
   };
-
-  // const onLoading = () => {
-  //   return isLoading
-  //    ? <Loader />
-  //    : (
-  //     <p>
-  //       Pick a post to see the details
-  //     </p>
-  //   )
-  // };
 
   return (
     <div className="PostsList">
