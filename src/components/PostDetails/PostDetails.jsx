@@ -36,8 +36,6 @@ export const PostDetails = ({ postId }) => {
       <h2>Post details:</h2>
 
       <section className="PostDetails__post">
-        {/* eslint-disable-next-line no-console */}
-        {console.log(33333, post, 999)}
         <p>{post.title}</p>
       </section>
 
@@ -77,7 +75,7 @@ export const PostDetails = ({ postId }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm />
+          <NewCommentForm postId={postId} setComments={setComments} />
         </div>
       </section>
     </div>

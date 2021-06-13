@@ -1,4 +1,4 @@
-import { request, remove } from './api';
+import { request, remove, add } from './api';
 
 export const getPostComments = (postId) => {
   if (!postId || typeof (postId) !== 'number') {
@@ -10,3 +10,5 @@ export const getPostComments = (postId) => {
 };
 
 export const removeComment = commentId => remove(`/comments/${commentId}`);
+
+export const addComment = options => add('/comments', options);
