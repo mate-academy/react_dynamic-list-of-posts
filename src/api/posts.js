@@ -1,11 +1,13 @@
 import { request } from './api';
 
-export const getUserPosts = (posts, userId) => {
+export const getUserPosts = (userId, setPosts) => {
   if (!userId) {
-    return posts;
+    request(`/posts`)
+      .then(result => setPosts(result));
+  } else {
+    request(`/posts?userId=${userId}`)
+      .then(result => setPosts(result));
   }
-
-  return posts.filter(post => post.userId === userId);
 };
 
 export const getPostDetails = (postId) => {

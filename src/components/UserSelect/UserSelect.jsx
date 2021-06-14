@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export const UserSelect = ({ setSelectedUserId, getPosts }) => {
+export const UserSelect = ({ setSelectedUserId }) => {
   const handleChange = (event) => {
-    getPosts();
     setSelectedUserId(event.target.value);
   };
 
@@ -33,5 +32,4 @@ export const UserSelect = ({ setSelectedUserId, getPosts }) => {
 
 UserSelect.propTypes = {
   setSelectedUserId: PropTypes.func.isRequired,
-  getPosts: PropTypes.func.isRequired,
 };

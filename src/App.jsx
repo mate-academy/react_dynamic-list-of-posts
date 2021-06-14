@@ -7,7 +7,6 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelect } from './components/UserSelect/UserSelect';
 
-import { request } from './api/api';
 import { getUserPosts } from './api/posts';
 
 const App = () => {
@@ -15,28 +14,22 @@ const App = () => {
   const [selectedPostId, setSelectedPostId] = useState(0);
   const [selectedUserId, setSelectedUserId] = useState(0);
 
-  const getPosts = () => {
-    request('/posts')
-      .then(result => setPosts(result));
-  };
-
   useEffect(() => {
-    getPosts();
-  }, []);
+    getUserPosts(+selectedUserId, setPosts);
+  }, [selectedUserId]);
 
   return (
     <div className="App">
       <header className="App__header">
         <UserSelect
           setSelectedUserId={setSelectedUserId}
-          getPosts={getPosts}
         />
       </header>
 
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            posts={getUserPosts(posts, +selectedUserId)}
+            posts={posts}
             setId={setSelectedPostId}
             selectedPostId={selectedPostId}
           />
