@@ -13,10 +13,6 @@ export const NewCommentForm = ({ postId, setComments }) => {
   const handleSubmit = async(event) => {
     event.preventDefault();
 
-    setName('');
-    setEmail('');
-    setBody('');
-
     const options = {
       method: 'POST',
       body: JSON.stringify({
@@ -31,8 +27,12 @@ export const NewCommentForm = ({ postId, setComments }) => {
     };
 
     await addComment(options);
-    getPostComments(postId)
+    await getPostComments(postId)
       .then(result => setComments(result));
+
+    setName('');
+    setEmail('');
+    setBody('');
   };
 
   const setData = (event) => {
@@ -50,9 +50,6 @@ export const NewCommentForm = ({ postId, setComments }) => {
 
       case 'body':
         setBody(fieldValue);
-        break;
-
-      case '':
         break;
 
       default: throw new Error(

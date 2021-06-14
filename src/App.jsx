@@ -15,9 +15,13 @@ const App = () => {
   const [selectedPostId, setSelectedPostId] = useState(0);
   const [selectedUserId, setSelectedUserId] = useState(0);
 
-  useEffect(() => {
+  const getPosts = () => {
     request('/posts')
       .then(result => setPosts(result));
+  };
+
+  useEffect(() => {
+    getPosts();
   }, []);
 
   return (
@@ -25,7 +29,7 @@ const App = () => {
       <header className="App__header">
         <UserSelect
           setSelectedUserId={setSelectedUserId}
-          selectedPostId={selectedPostId}
+          getPosts={getPosts}
         />
       </header>
 
