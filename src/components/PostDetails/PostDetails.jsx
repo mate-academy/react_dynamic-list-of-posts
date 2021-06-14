@@ -31,12 +31,19 @@ export const PostDetails = ({ postId }) => {
       .then(result => setComments(result));
   };
 
+  const printCommentDetails = (date, userName) => {
+    const time = new Date(date).toLocaleTimeString();
+    const dateString = new Date(date).toLocaleDateString();
+
+    return `${dateString} at ${time} | ${userName} says: `;
+  };
+
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
 
       <section className="PostDetails__post">
-        <p>{post.title}</p>
+        <p>{post.body}</p>
       </section>
 
       <section className="PostDetails__comments">
@@ -55,19 +62,30 @@ export const PostDetails = ({ postId }) => {
             </button>
 
             <ul className="PostDetails__list">
-              {comments.map(comment => commentsVisibility && (
-                <li className="PostDetails__list-item" key={comment.id}>
-                  <button
-                    type="button"
-                    value={comment.id}
-                    className="PostDetails__remove-button button"
-                    onClick={handleClick}
-                  >
-                    X
-                  </button>
-                  <p>{comment.body}</p>
-                </li>
-              ))}
+              {comments.map(
+                ({ id, body, createdAt, name }) => commentsVisibility && (
+                  <li className="PostDetails__list-item" key={id}>
+                    <div className="PostDetails__comment-description">
+                      <button
+                        type="button"
+                        value={id}
+                        className="PostDetails__remove-button button"
+                        onClick={handleClick}
+                      >
+                        X
+                      </button>
+
+                      <pre>
+                        {printCommentDetails(createdAt, name)}
+                      </pre>
+                    </div>
+
+                    <p>
+                      {`${body}`}
+                    </p>
+                  </li>
+                ),
+              )}
             </ul>
           </>
         )}
