@@ -32,6 +32,12 @@
     display: flex;
   }
 
+  &__no-comments {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+  }
+
   &__remove-button {
     min-width: 20px;
     color: inherit;

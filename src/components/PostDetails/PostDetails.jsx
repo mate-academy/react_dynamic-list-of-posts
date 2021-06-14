@@ -47,7 +47,7 @@ export const PostDetails = ({ postId }) => {
       </section>
 
       <section className="PostDetails__comments">
-        {comments.length > 0 && (
+        {comments.length > 0 ? (
           <>
             <button
               type="button"
@@ -88,6 +88,10 @@ export const PostDetails = ({ postId }) => {
               )}
             </ul>
           </>
+        ) : (
+          <div className="PostDetails__no-comments">
+            There are no comments yet
+          </div>
         )}
       </section>
 
