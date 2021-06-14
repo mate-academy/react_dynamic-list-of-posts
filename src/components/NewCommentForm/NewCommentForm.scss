@@ -11,6 +11,10 @@
     font-size: 0.9rem;
     padding: 10px 5px;
     color: #4d457b;
+
+    &--textarea {
+      resize: none;
+    }
   }
 
   &__submit-button {

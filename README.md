@@ -1,6 +1,6 @@
 # React dynamic list of Posts
 - Replace `<your_account>` with your Github username in the
-  [DEMO LINK](https://<your_account>.github.io/react_dynamic-list-of-posts/)
+  [DEMO LINK](https://senkiv-oleh.github.io/react_dynamic-list-of-posts/)
 - Follow the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline)
 
 ## Task
@@ -20,6 +20,7 @@ Implement the app to manage post comments.
 1. Create `getPostComments(postId)` method in `/src/api/comments.js`, load comments from `/comments` and filter them using a given `postId`
 1. Add a button to `show`/`hide` comments.
 1. Add an `X` button near each comment to delete it on the server.
+
 1. Add a form to add a new comment to the current post
 1. Comments should be immediately updated after adding or removing.
  
