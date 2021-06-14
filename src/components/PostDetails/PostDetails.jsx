@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { getData, post, remove } from '../../api/api';
+import { post, remove } from '../../api/api';
+import { getComments } from '../../api/comments';
+import { getPostDetails } from '../../api/posts';
 
 import { NewCommentForm } from '../NewCommentForm';
 
@@ -13,36 +15,25 @@ export const PostDetails = ({ selectedPostId }) => {
   const [isVisibleComments, setVisibleComments] = useState(true);
   const [comments, setComments] = useState([]);
 
-  const addComment = (name, email, body) => {
-    post('/comments', {
-      name, email, body, postId: selectedPostId,
-    }).then((newComment) => {
-      setComments(listOfComments => [newComment, ...listOfComments]);
-    });
-  };
-
-  const removeComment = async(commentId) => {
-    await remove(`/comments/${commentId}`);
-    const commentsSever = await getData(`/comments?postId=${selectedPostId}`);
-
-    setComments(commentsSever);
-  };
-
-  const getPostDetails = async(selectedPost) => {
-    const postFromServer = await getData(`/posts/${selectedPost}`);
-    const commentsSever = await getData(`/comments?postId=${selectedPost}`);
-
-    setPostDetails(postFromServer);
-    setComments(commentsSever);
-  };
-
   useEffect(() => {
     if (selectedPostId) {
-      getPostDetails(selectedPostId);
+      getPostDetails(selectedPostId).then(setPostDetails);
+      getComments(selectedPostId).then(setComments);
     } else {
       setPostDetails(0);
     }
   }, [selectedPostId]);
+
+  const addComment = (name, email, body) => post('/comments', {
+    name, email, body, postId: selectedPostId,
+  }).then((newComment) => {
+    setComments(listOfComments => [newComment, ...listOfComments]);
+  });
+
+  const removeComment = async(commentId) => {
+    await remove(`/comments/${commentId}`);
+    getComments(selectedPostId).then(setComments);
+  };
 
   return (
     <>
@@ -55,15 +46,21 @@ export const PostDetails = ({ selectedPostId }) => {
               <p>{postDetails.body}</p>
             </section>
             <section className="PostDetails__comments">
-              <button
-                type="button"
-                className="button"
-                onClick={() => setVisibleComments(!isVisibleComments)}
-              >
-                {isVisibleComments
-                  ? `Hide ${comments.length} comments`
-                  : 'Open comments'}
-              </button>
+              {comments.length > 0
+                ? (
+                  <button
+                    type="button"
+                    className="button"
+                    onClick={() => setVisibleComments(!isVisibleComments)}
+                  >
+                    {isVisibleComments && comments.length > 0
+                      ? `Hide ${comments.length} comments`
+                      : 'Open comments'}
+                  </button>
+                ) : (
+                  'No comments'
+                )}
+
               {isVisibleComments && (
                 <ul className="PostDetails__list">
                   {comments.map(comment => (

@@ -5,21 +5,15 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
-import { getData } from './api/api';
+import { getUsers } from './api/users';
 
 const App = () => {
   const [users, setUsers] = useState([]);
   const [selectedUserId, setUser] = useState(0);
   const [postId, setPostId] = useState(0);
 
-  const getUsers = async() => {
-    const usersFromServer = await getData('/users');
-
-    setUsers(usersFromServer);
-  };
-
   useEffect(() => {
-    getUsers();
+    getUsers().then(setUsers);
   }, []);
 
   return (

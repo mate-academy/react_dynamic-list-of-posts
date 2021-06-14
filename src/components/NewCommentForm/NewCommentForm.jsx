@@ -11,8 +11,6 @@ export const NewCommentForm = ({ onAddComment }) => {
 
   return (
     <form
-      action="https://mate-api.herokuapp.com/posts"
-      method="POST"
       className="NewCommentForm"
       onSubmit={(event) => {
         event.preventDefault();
@@ -36,7 +34,7 @@ export const NewCommentForm = ({ onAddComment }) => {
 
       <div className="form-field">
         <input
-          type="text"
+          type="email"
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"

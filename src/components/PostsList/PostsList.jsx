@@ -4,24 +4,22 @@ import PropTypes from 'prop-types';
 
 import './PostsList.scss';
 
-import { getData } from '../../api/api';
+import { getUserPosts, getPosts } from '../../api/posts';
 
 export const PostsList = ({ selectedPostId, onSetPostId, selectedUserId }) => {
   const [posts, setPosts] = useState([]);
 
-  const getUserPosts = async(userId) => {
-    const userPost = await getData(`/posts?userId=${userId}`);
+  useEffect(() => {
+    if (selectedUserId) {
+      getUserPosts(selectedUserId)
+        .then(setPosts);
+    } else {
+      getPosts()
+        .then(setPosts);
+    }
+  }, [selectedUserId]);
 
-    setPosts(userPost);
-  };
-
-  const getPosts = async() => {
-    const postsFromServer = await getData('/posts');
-
-    setPosts(postsFromServer);
-  };
-
-  const selecUserPost = (idPost) => {
+  const selectUserPost = (idPost) => {
     if (!idPost) {
       onSetPostId(0);
     }
@@ -29,26 +27,16 @@ export const PostsList = ({ selectedPostId, onSetPostId, selectedUserId }) => {
     onSetPostId(idPost);
   };
 
-  useEffect(() => {
-    if (selectedUserId) {
-      getUserPosts(selectedUserId);
-    } else {
-      getPosts();
-    }
-  }, [selectedUserId]);
-
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
 
       <ul className="PostsList__list">
         {posts.map(post => (
-          <li className="PostsList__item">
+          <li className="PostsList__item" key={post.id}>
             <div>
               <b>
-                [User #
-                {post.userId}
-                ]:
+                {`[User #${post.userId}]:`}
               </b>
               {post.title}
             </div>
@@ -56,7 +44,7 @@ export const PostsList = ({ selectedPostId, onSetPostId, selectedUserId }) => {
               <button
                 type="button"
                 className="PostsList__button button"
-                onClick={() => selecUserPost(post.id)}
+                onClick={() => selectUserPost(post.id)}
               >
                 Open
               </button>
@@ -64,7 +52,7 @@ export const PostsList = ({ selectedPostId, onSetPostId, selectedUserId }) => {
               <button
                 type="button"
                 className="PostsList__button PostsList__button--selected button"
-                onClick={() => selecUserPost(0)}
+                onClick={() => selectUserPost(0)}
               >
                 Close
               </button>
