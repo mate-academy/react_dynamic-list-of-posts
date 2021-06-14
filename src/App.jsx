@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import './App.scss';
 import './styles/general.scss';
+import { getUsers } from './api/api';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getPosts, getUserPosts } from './api/posts';
-import users from './api/users.json';
 
 let resievedPosts;
 
 const App = () => {
   const [posts, setPosts] = useState([]);
+  const [users, setUsers] = useState([]);
   const [selectedId, setSelectedId] = useState(0);
 
   useEffect(() => {
+    getUsers()
+      .then(result => setUsers(result));
     getPosts()
-      .then((result) => {
-        resievedPosts = result;
-        setPosts(resievedPosts);
-      });
+      .then(result => setPosts(result));
   }, []);
 
   const sortPostsByUser = (id) => {
