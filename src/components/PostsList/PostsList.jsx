@@ -5,7 +5,7 @@ import { TypePost } from '../../types';
 import './PostsList.scss';
 import '../pressed-button.scss';
 
-export const PostsList = ({ posts, setId, selectedPostId }) => (
+export const PostsList = ({ posts, setId, selectedPostId, setLoading }) => (
   <div className="PostsList">
     <h2>Posts:</h2>
 
@@ -35,7 +35,10 @@ export const PostsList = ({ posts, setId, selectedPostId }) => (
               <button
                 type="button"
                 className="PostsList__button button"
-                onClick={() => setId(id)}
+                onClick={() => {
+                  setId(id);
+                  setLoading(true);
+                }}
               >
                 Open
               </button>
@@ -51,6 +54,7 @@ PostsList.propTypes = {
   posts: PropTypes.arrayOf(TypePost),
   setId: PropTypes.func.isRequired,
   selectedPostId: PropTypes.number.isRequired,
+  setLoading: PropTypes.func.isRequired,
 };
 
 PostsList.defaultProps = {

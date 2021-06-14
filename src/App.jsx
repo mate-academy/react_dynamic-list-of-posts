@@ -13,6 +13,7 @@ const App = () => {
   const [posts, setPosts] = useState([]);
   const [selectedPostId, setSelectedPostId] = useState(0);
   const [selectedUserId, setSelectedUserId] = useState(0);
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     getUserPosts(+selectedUserId, setPosts);
@@ -32,6 +33,7 @@ const App = () => {
             posts={posts}
             setId={setSelectedPostId}
             selectedPostId={selectedPostId}
+            setLoading={setLoading}
           />
         </div>
 
@@ -39,6 +41,8 @@ const App = () => {
           {selectedPostId !== 0 && (
             <PostDetails
               postId={selectedPostId}
+              isLoading={isLoading}
+              setLoading={setLoading}
             />
           )}
         </div>

@@ -5,8 +5,10 @@ export const getPostComments = (postId) => {
     return 0;
   }
 
-  return request('/comments')
+  const result = request('/comments')
     .then(comments => comments.filter(comment => comment.postId === postId));
+
+  return result;
 };
 
 export const removeComment = commentId => remove(`/comments/${commentId}`);

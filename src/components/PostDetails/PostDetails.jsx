@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import { getPostDetails } from '../../api/posts';
 import { getPostComments, removeComment } from '../../api/comments';
+import { Loader } from '../Loader';
 
 import './PostDetails.scss';
 
-export const PostDetails = ({ postId }) => {
+export const PostDetails = ({ postId, isLoading, setLoading }) => {
   const [post, setPost] = useState({});
   const [comments, setComments] = useState([]);
   const [commentsVisibility, setCommentsVisibility] = useState(true);
@@ -17,7 +18,10 @@ export const PostDetails = ({ postId }) => {
       .then(result => setPost(result));
 
     getPostComments(postId)
-      .then(result => setComments(result));
+      .then((result) => {
+        setComments(result);
+        setLoading(false);
+      });
   }, [postId]);
 
   const changeCommentsVisibility = () => {
@@ -46,24 +50,25 @@ export const PostDetails = ({ postId }) => {
         <p>{post.body}</p>
       </section>
 
-      <section className="PostDetails__comments">
-        {comments.length > 0 ? (
-          <>
-            <button
-              type="button"
-              className="button"
-              onClick={changeCommentsVisibility}
-            >
-              {commentsVisibility
+      {!isLoading ? (
+        <section className="PostDetails__comments">
+          {comments.length > 0 ? (
+            <>
+              <button
+                type="button"
+                className="button"
+                onClick={changeCommentsVisibility}
+              >
+                {commentsVisibility
                 /* eslint-disable-next-line max-len */
-                ? `Hide ${comments.length} comment${comments.length === 1 ? '' : 's'}`
+                  ? `Hide ${comments.length} comment${comments.length === 1 ? '' : 's'}`
                 /* eslint-disable-next-line max-len */
-                : `Show ${comments.length} comment${comments.length === 1 ? '' : 's'}`}
-            </button>
+                  : `Show ${comments.length} comment${comments.length === 1 ? '' : 's'}`}
+              </button>
 
-            <ul className="PostDetails__list">
-              {comments.map(
-                ({ id, body, createdAt, name }) => commentsVisibility && (
+              <ul className="PostDetails__list">
+                {comments.map(
+                  ({ id, body, createdAt, name }) => commentsVisibility && (
                   <li className="PostDetails__list-item" key={id}>
                     <div className="PostDetails__comment-description">
                       <button
@@ -84,16 +89,17 @@ export const PostDetails = ({ postId }) => {
                       {`${body}`}
                     </p>
                   </li>
-                ),
-              )}
-            </ul>
-          </>
-        ) : (
-          <div className="PostDetails__no-comments">
-            There are no comments yet
-          </div>
-        )}
-      </section>
+                  ),
+                )}
+              </ul>
+            </>
+          ) : (
+            <div className="PostDetails__no-comments">
+              There are no comments yet
+            </div>
+          )}
+        </section>
+      ) : <Loader />}
 
       <section>
         <div className="PostDetails__form-wrapper">
@@ -106,4 +112,6 @@ export const PostDetails = ({ postId }) => {
 
 PostDetails.propTypes = {
   postId: PropTypes.number.isRequired,
+  setLoading: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
 };
