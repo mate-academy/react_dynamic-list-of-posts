@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
+import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
-import PropTypes from 'prop-types';
 
 import { getPostDetails } from '../../api/posts';
 import {
@@ -30,13 +30,13 @@ export const PostDetails = ({ selectedPostId }) => {
     loadComments();
   }, [selectedPostId]);
 
-  const deleteComment = (id) => {
-    removeComment(id);
+  const deleteComment = async(id) => {
+    await removeComment(id);
     loadComments();
   };
 
-  const addComment = (body) => {
-    creatComment(body);
+  const addComment = async(body) => {
+    await creatComment(body);
     loadComments();
   };
 
