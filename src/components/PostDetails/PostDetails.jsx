@@ -90,7 +90,7 @@ export const PostDetails = ({ selectedPostId }) => {
                       >
                         X
                       </button>
-                      <p>{comment.name}</p>
+                      <p>{comment.body}</p>
                     </li>
                   ))}
                 </ul>
