@@ -29,11 +29,9 @@ const App = () => {
   };
 
   const onSelectPost = (selectedPostId) => {
-    setPostId(selectedPostId);
-  };
-
-  const onUnselectPost = () => {
-    setPostId(0);
+    selectedPostId
+    ? setPostId(selectedPostId)
+    : setPostId(0);
   };
 
   return (
@@ -61,12 +59,10 @@ const App = () => {
             posts={posts}
             postId={postId}
             onSelectPost={onSelectPost}
-            onUnselectPost={onUnselectPost}
           />
         </div>
 
         <div className="App__content">
-          {/* {!!postId && <PostDetails postId={postId}/>} */}
           <PostDetails postId={postId} />
         </div>
       </main>

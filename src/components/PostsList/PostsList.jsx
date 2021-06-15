@@ -7,7 +7,6 @@ export const PostsList = ({
   posts,
   postId,
   onSelectPost,
-  onUnselectPost,
 }) => (
   <div className="PostsList">
     <h2>Posts:</h2>
@@ -29,7 +28,7 @@ export const PostsList = ({
             <button
               type="button"
               className="PostsList__button button"
-              onClick={onUnselectPost}
+              onClick={() => onSelectPost(0)}
             >
               Closse
             </button>
@@ -53,5 +52,4 @@ PostsList.propTypes = {
   posts: PropTypes.arrayOf(PropTypes.shape).isRequired,
   postId: PropTypes.number.isRequired,
   onSelectPost: PropTypes.func.isRequired,
-  onUnselectPost: PropTypes.func.isRequired,
 };

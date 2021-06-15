@@ -31,8 +31,8 @@ export const NewCommentForm = ({ postId, setComments }) => {
     });
   };
 
-  const addNewComment = () => {
-    addComment(comment);
+  const addNewComment = async() => {
+    await addComment(comment);
     getPostComments(postId).then(setComments);
   };
 
