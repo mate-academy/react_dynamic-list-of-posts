@@ -10,39 +10,45 @@ export const PostsList = ({ postsList, detailsToggler, currentActivePost }) => (
 
       <ul className="PostsList__list">
         {
-            postsList.map(post => (
-              <li
-                key={uuid()}
-                className="PostsList__item"
+          postsList.map(post => (
+            <li
+              key={uuid()}
+              className="PostsList__item"
+            >
+              <div>
+                <b>
+                  [User #
+                  {post.userId}
+                  ]:
+                  {' '}
+                </b>
+                {post.body}
+              </div>
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={event => detailsToggler(event, post.id)}
               >
-                <div>
-                  <b>
-                    [User #
-                    {post.userId}
-                    ]:
-                    {' '}
-                  </b>
-                  {post.body}
-                </div>
-                <button
-                  type="button"
-                  className="PostsList__button button"
-                  onClick={event => detailsToggler(event, post.id)}
-                >
-                  {currentActivePost === post.id ? 'Close' : 'Open' }
-                </button>
-              </li>
-            ))
-          }
+                {currentActivePost === post.id ? 'Close' : 'Open'}
+              </button>
+            </li>
+          ))
+        }
       </ul>
     </div>
   </>
 );
 
 PostsList.propTypes = {
-  postsList: PropTypes.arrayOf({
-    userId: PropTypes.number.isRequired,
-  }).isRequired,
+  postsList: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+    }),
+  ).isRequired,
   detailsToggler: PropTypes.func.isRequired,
-  currentActivePost: PropTypes.string.isRequired,
+  currentActivePost: PropTypes.number,
+};
+
+PostsList.defaultProps = {
+  currentActivePost: null,
 };
