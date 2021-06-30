@@ -1,37 +1,54 @@
 import React from 'react';
+import uuid from 'react-uuid';
+import PropTypes from 'prop-types';
 import './PostsList.scss';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({ postsList, detailsToggler, currentActivePost }) => (
+  <>
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
-
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
+      <ul className="PostsList__list">
+        {
+          postsList.map(post => (
+            <li
+              key={uuid()}
+              className="PostsList__item"
+            >
+              <div>
+                <b>
+                  [User #
+                  {post.userId}
+                  ]:
+                  {' '}
+                </b>
+                {post.body}
+              </div>
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={event => detailsToggler(event, post.id)}
+              >
+                {currentActivePost === post.id ? 'Close' : 'Open'}
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </>
 );
+
+PostsList.propTypes = {
+  postsList: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+    }),
+  ).isRequired,
+  detailsToggler: PropTypes.func.isRequired,
+  currentActivePost: PropTypes.number,
+};
+
+PostsList.defaultProps = {
+  currentActivePost: null,
+};
