@@ -48,7 +48,7 @@ export const PostDetails = ({ postId }) => {
 
     getPostComments(postId)
       .then(comments => setPostComments(comments));
-  }, []);
+  }, [postId]);
 
   return (
     <div className="PostDetails">

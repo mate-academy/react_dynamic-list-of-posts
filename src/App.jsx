@@ -17,9 +17,7 @@ const App = () => {
   const [selectedPostId, setselectedPostId] = useState(null);
   const [postsList, setPostsList] = useState(userPosts);
 
-  const detailsToggler = (event, id) => {
-    setselectedPostId(id);
-  };
+  const detailsToggler = (event, id) => setselectedPostId(id);
 
   useEffect(() => {
     getUserPosts(userId)
