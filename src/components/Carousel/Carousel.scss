@@ -1,0 +1,146 @@
+ul, li {
+  box-sizing: border-box;
+  list-style: none;
+  margin: 0;
+  height: 0;
+}
+
+$width: 240px;
+$height: 300px;
+
+
+.btn {
+  position: absolute;
+  background-size: 65px;
+  background-position: center;
+  background-repeat: no-repeat;
+  bottom: 50%;
+  height: 40px;
+  width: 40px;
+}
+
+.prev-btn {
+  left: 2%;
+  background-image: url('https://image.flaticon.com/icons/png/512/130/130885.png');
+  transform: rotate(180deg);
+}
+
+.next-btn {
+  right: 2%;
+  background-image: url('https://image.flaticon.com/icons/png/512/130/130885.png');
+}
+
+.author-image {
+  width: 100%;
+  transition: 1s;
+}
+
+.name {
+
+  margin: 5% 5px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.box {
+  margin: auto;
+  position: relative;
+  width: 1000px;
+  height: 400px;
+}
+
+.autorsList {
+  // margin: auto;
+  // position: relative;
+  // width: 1000px;
+  // height: 400px;
+  // z-index: -1;
+}
+
+.card {
+  position: absolute;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 0 15px rgb(0, 0, 0);
+  transition: .5s;
+  opacity: 1;
+  width: $width;
+  height: $height;
+
+  // &:hover {
+  //   width: $width + 10px;
+  //   height: $height + 10px;
+  //   z-index: 4;
+  // }
+}
+
+.start-card {
+  width: calc(#{$width} - #{$width * 0.2});
+  height: calc(#{$height} - #{$height * 0.2});
+  top: 0px;
+  left: 15%;
+  z-index: -1;
+  opacity: 0;
+}
+
+.first {
+  width: calc(#{$width} - #{$width * 0.2});
+  height: calc(#{$height} - #{$height * 0.2});
+  top: 20px;
+  left: 10%;
+  z-index: 0;
+
+}
+
+.second {
+  width: calc(#{$width} - #{$width * 0.15});
+  height: calc(#{$height} - #{$height * 0.15});
+  top: 70px;
+  left: 22%;
+  z-index: 1;
+}
+
+.third {
+  top: 100px;
+  left: calc(50% - #{$height * 0.4});
+  z-index: 2;
+}
+
+.fourth {
+  width: calc(#{$width} - #{$width * 0.15});
+  height: calc(#{$height} - #{$height * 0.15});
+  top: 70px;
+  left: 58%;
+  z-index: 1;
+
+}
+
+.fifth {
+  width: calc(#{$width} - #{$width * 0.2});
+  height: calc(#{$height} - #{$height * 0.2});
+  top: 20px;
+  left: 71%;
+  z-index: 0;
+}
+
+.last-card {
+  width: calc(#{$width} - #{$width * 0.2});
+  height: calc(#{$height} - #{$height * 0.2});
+  top: 0px;
+  left: 67%;
+  z-index: -1;
+  opacity: 0;
+}
+
+.hidden {
+  top: 0px;
+  left: 67%;
+  z-index: -1;
+  opacity: 0;
+}
+

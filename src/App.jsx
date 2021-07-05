@@ -1,41 +1,48 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import usersImage from './usersImages.json';
+import usersList from './api/users.json';
 import './App.scss';
-import './styles/general.scss';
+import { Carousel } from './components/Carousel';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
-const App = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+const App = () => {
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+  const [users, setUsers] = useState(null)
+  const [chosenAuthor, setAuthor] = useState(null)
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+  useEffect(() => {
+    const newObject = usersList.map(user => {
+      const { id, name, email, address } = user;
+      const image = usersImage.find(obj => obj[user.id])[id];
+      return {
+        id,
+        name,
+        email,
+        address,
+        image
+      };
+    })
+
+    setUsers(newObject)
+  }, [])
+
+
+  return (users &&
+    <div className="App">
+      <header className="App__header">
+        {console.log(chosenAuthor)}
+      </header>
+
+      <main className="App__main">
+        <Carousel
+          users={users}
+          callBack={setAuthor}
+        />
+      </main>
+    </div>
+  )
+};
 
 export default App;
