@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './PostsList.scss';
 import PropTypes from 'prop-types';
 import { getUserPosts } from '../../api/posts';
@@ -7,8 +7,8 @@ export const PostsList = (props) => {
   const [posts, setUserPost] = useState([]);
   const [isOpen, isOpenChange] = useState([false, 0]);
 
-  const handleChange = useMemo(() => {
-    getUserPosts()
+  const handleChange = useCallback(() => {
+    return getUserPosts()
       .then((userPosts) => {
         if (userPosts && !+props.userId) {
           setUserPost(userPosts);
