@@ -43,6 +43,7 @@ export const PostDetails = ({ selectedPostId }) => {
 
       <section className="PostDetails__comments">
         <button
+          hidden={!comments.length}
           type="button"
           className="button"
           onClick={() => isCommentsShowToggle(!isCommentsShow)}

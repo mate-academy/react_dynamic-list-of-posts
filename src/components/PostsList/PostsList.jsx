@@ -1,23 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './PostsList.scss';
 import PropTypes from 'prop-types';
 import { getUserPosts } from '../../api/posts';
 
 export const PostsList = (props) => {
-  const [posts, setUserPost] = useState('');
-  const [isOpen, isOpenChange] = useState(false);
+  const [posts, setUserPost] = useState([]);
+  const [isOpen, isOpenChange] = useState([false, 0]);
 
-  const handleChange = (id) => {
-    getUserPosts(id).then((userPosts) => {
-      if (userPosts) {
-        setUserPost(userPosts);
-      }
-    });
-  };
+  const handleChange = useMemo(() => {
+    getUserPosts()
+      .then((userPosts) => {
+        if (userPosts && !+props.userId) {
+          setUserPost(userPosts);
+        } else if (userPosts) {
+          setUserPost(userPosts.filter(post => post.userId === +props.userId));
+        }
+      });
+  }, [props.userId]);
 
   useEffect(() => {
-    handleChange(props.userId);
-  }, [props.userId]);
+    handleChange();
+  }, [props.userId, handleChange]);
 
   return (
     <div className="PostsList">

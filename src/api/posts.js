@@ -1,11 +1,11 @@
 import { BASE_URL } from './api';
 
 export function getUserPosts(userId) {
-  if (parseInt(userId, 10)) {
-    return fetch(`${BASE_URL}/posts?userId=${userId}`)
-      .then(post => post.json())
-      .then(res => res.data);
-  }
+  // if (parseInt(userId, 10)) {
+  //   return fetch(`${BASE_URL}/posts?userId=${userId}`)
+  //     .then(post => post.json())
+  //     .then(res => res.data);
+  // }
 
   return fetch(`${BASE_URL}/posts`)
     .then(post => post.json())

@@ -19,6 +19,8 @@ export const NewCommentForm = (props) => {
       onSubmit={(event) => {
         props.handleSubmit(event, newComment);
         setComment('');
+        setEmail('');
+        setName('');
       }}
     >
       <div className="form-field">

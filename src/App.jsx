@@ -6,15 +6,17 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
 const App = () => {
-  const [selectedUserId, userSelect] = useState('');
-  const [selectedPostId, selectPostId] = useState('');
+  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState('');
 
   const handleOpen = (postId) => {
     if (postId) {
-      selectPostId(postId);
-    } else {
-      selectPostId('');
+      setSelectedPostId(postId);
+
+      return;
     }
+
+    setSelectedPostId('');
   };
 
   return (
@@ -25,7 +27,7 @@ const App = () => {
           <select
             className="App__user-selector"
             value={selectedUserId}
-            onChange={event => userSelect(event.target.value)}
+            onChange={event => setSelectedUserId(event.target.value)}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
