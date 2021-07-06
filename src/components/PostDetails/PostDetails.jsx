@@ -1,45 +1,77 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import { getPostComments, remove } from '../../api/comments';
 
-export const PostDetails = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+export const PostDetails = ({ postId, body }) => {
+  const [postComments, setPostComments] = useState('');
+  const [isHide, setIsHide] = useState(false);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  useEffect(() => {
+    getPostComments(postId)
+      .then(result => setPostComments(result));
+  });
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const toggleComments = () => {
+    setIsHide(current => !current);
+  };
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
+  const removeComment = (commentId) => {
+    remove(commentId);
+  };
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <p>{body}</p>
+      </section>
+
+      {(postComments.length !== 0) ? (
+        <section className="PostDetails__comments">
           <button
             type="button"
-            className="PostDetails__remove-button button"
+            className="button"
+            onClick={toggleComments}
           >
-            X
+            {`${isHide ? 'Show' : 'Hide'} ${postComments.length} comments`}
           </button>
-          <p>My first comment</p>
-        </li>
+          {(!isHide) && (
+            <ul className="PostDetails__list">
+              {postComments.map(comment => (
+                <li
+                  key={comment.id}
+                  className="PostDetails__list-item"
+                >
+                  <button
+                    type="button"
+                    className="PostDetails__remove-button button"
+                    onClick={() => removeComment(comment.id)}
+                  >
+                    X
+                  </button>
+                  <p>{comment.body}</p>
+                </li>
+              ))}
+            </ul>
+          )}
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+        </section>
+      ) : (<div>No comments</div>)}
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm id={postId} />
+        </div>
+      </section>
+    </div>
+  );
+};
+
+PostDetails.propTypes = {
+  postId: PropTypes.number.isRequired,
+  body: PropTypes.string.isRequired,
+};
