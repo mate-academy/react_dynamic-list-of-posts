@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
-import './App.scss';
-import './styles/general.scss';
+import React, { useState, useEffect } from "react";
+import "./App.scss";
+import "./styles/general.scss";
 
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
+import { PostsList } from "./components/PostsList";
+import { PostDetails } from "./components/PostDetails";
+import { getUsers } from "./api/posts";
 
 const App = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);
-  const [selectedPostId, setSelectedPostId] = useState('');
+  const [selectedPostId, setSelectedPostId] = useState("");
+  const [users, setUsers] = useState([]);
 
   const handleOpen = (postId) => {
     if (postId) {
@@ -16,8 +18,12 @@ const App = () => {
       return;
     }
 
-    setSelectedPostId('');
+    setSelectedPostId("");
   };
+
+  useEffect(() => {
+    getUsers().then((usersFromServer) => setUsers(usersFromServer));
+  });
 
   return (
     <div className="App">
@@ -27,19 +33,16 @@ const App = () => {
           <select
             className="App__user-selector"
             value={selectedUserId}
-            onChange={event => setSelectedUserId(event.target.value)}
+            onChange={(event) => setSelectedUserId(event.target.value)}
           >
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {users.map((user) => {
+              return (
+                <option value={user.id} key={user.id}>
+                  {user.name}
+                </option>
+              );
+            })}
           </select>
         </label>
       </header>

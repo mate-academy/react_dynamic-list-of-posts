@@ -5,8 +5,8 @@ import { getUserPosts } from '../../api/posts';
 
 export const PostsList = (props) => {
   const [posts, setUserPost] = useState([]);
-  const [isOpen, isOpenChange] = useState([false, 0]);
-
+  const [isOpen, isOpenChange] = useState(false);
+  const [openPostId, setOpenPostId] = useState('');
   const handleChange = useCallback(() => {
     return getUserPosts()
       .then((userPosts) => {
@@ -42,13 +42,14 @@ export const PostsList = (props) => {
               </b>
               {post.title}
             </div>
-            {isOpen[0] && isOpen[1] === post.id ? (
+            {isOpen && openPostId === post.id ? (
               <button
                 type="button"
                 className="PostsList__button button"
                 onClick={() => {
                   props.handleOpen(0);
-                  isOpenChange([false, post.id]);
+                  isOpenChange(false);
+                  setOpenPostId(post.id);
                 }}
               >
                 close
@@ -59,7 +60,8 @@ export const PostsList = (props) => {
                 className="PostsList__button button"
                 onClick={() => {
                   props.handleOpen(post.id);
-                  isOpenChange([true, post.id]);
+                  isOpenChange(true);
+                  setOpenPostId(post.id);
                 }}
               >
                 Open

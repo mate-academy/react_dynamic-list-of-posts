@@ -13,14 +13,18 @@ export const NewCommentForm = (props) => {
     body: comment,
   };
 
+  const SubmitAndClearForm = (event) => {
+    props.handleSubmit(event, newComment);
+    setComment('');
+    setEmail('');
+    setName('');
+  };
+
   return (
     <form
       className="NewCommentForm"
       onSubmit={(event) => {
-        props.handleSubmit(event, newComment);
-        setComment('');
-        setEmail('');
-        setName('');
+        SubmitAndClearForm(event);
       }}
     >
       <div className="form-field">
