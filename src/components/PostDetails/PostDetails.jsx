@@ -12,7 +12,7 @@ export const PostDetails = ({ postId, body }) => {
   useEffect(() => {
     getPostComments(postId)
       .then(result => setPostComments(result));
-  });
+  }, [postId, postComments]);
 
   const toggleComments = () => {
     setIsHide(current => !current);

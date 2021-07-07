@@ -30,7 +30,7 @@ export const NewCommentForm = ({ id }) => {
         return setBody(value);
 
       default:
-        return 0;
+        return name;
     }
   };
 
@@ -38,22 +38,20 @@ export const NewCommentForm = ({ id }) => {
     event.preventDefault();
 
     if (!nameInput || !email || !body) {
-      return setWarning('Some field empty');
+      setWarning('Some field empty');
+    } else {
+      const newComment = {
+        postId: id,
+        name: nameInput,
+        email,
+        body,
+      };
+
+      create(newComment);
+      setName('');
+      setEmail('');
+      setBody('');
     }
-
-    const newComment = {
-      postId: id,
-      name: nameInput,
-      email,
-      body,
-    };
-
-    create(newComment);
-
-    setName('');
-    setEmail('');
-
-    return setBody('');
   };
 
   return (
@@ -99,7 +97,7 @@ export const NewCommentForm = ({ id }) => {
       >
         Add a comment
       </button>
-      <div style={{ color: 'red' }}>{warning}</div>
+      <div className="warning-message">{warning}</div>
     </form>
   );
 };
