@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import './NewCommentForm.scss';
-import { create } from '../../api/comments';
 
-export const NewCommentForm = ({ id }) => {
+export const NewCommentForm = ({ id, onAdd }) => {
   const [nameInput, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
@@ -47,7 +46,7 @@ export const NewCommentForm = ({ id }) => {
         body,
       };
 
-      create(newComment);
+      onAdd(newComment);
       setName('');
       setEmail('');
       setBody('');
@@ -104,4 +103,5 @@ export const NewCommentForm = ({ id }) => {
 
 NewCommentForm.propTypes = {
   id: PropTypes.number.isRequired,
+  onAdd: PropTypes.func.isRequired,
 };

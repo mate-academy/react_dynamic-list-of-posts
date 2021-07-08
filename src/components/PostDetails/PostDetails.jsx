@@ -3,23 +3,35 @@ import PropTypes from 'prop-types';
 
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
-import { getPostComments, remove } from '../../api/comments';
+import { create, getPostComments, remove } from '../../api/comments';
 
 export const PostDetails = ({ postId, body }) => {
   const [postComments, setPostComments] = useState('');
   const [isHide, setIsHide] = useState(false);
 
-  useEffect(() => {
-    getPostComments(postId)
+  const loadPostComment = (id) => {
+    getPostComments(id)
       .then(result => setPostComments(result));
-  }, [postId, postComments]);
+  };
+
+  useEffect(() => {
+    loadPostComment(postId);
+  }, [postId]);
 
   const toggleComments = () => {
     setIsHide(current => !current);
   };
 
+  const addComment = (item) => {
+    create(item);
+
+    setTimeout(() => loadPostComment(postId), 100);
+  };
+
   const removeComment = (commentId) => {
     remove(commentId);
+
+    setTimeout(() => loadPostComment(postId), 100);
   };
 
   return (
@@ -64,7 +76,7 @@ export const PostDetails = ({ postId, body }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm id={postId} />
+          <NewCommentForm id={postId} onAdd={addComment} />
         </div>
       </section>
     </div>
