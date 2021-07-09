@@ -18,12 +18,12 @@ const App = () => {
       return;
     }
 
-    setSelectedPostId("");
+    setSelectedPostId('');
   };
 
   useEffect(() => {
-    getUsers().then((usersFromServer) => setUsers(usersFromServer));
-  });
+    getUsers().then(usersFromServer => setUsers(usersFromServer));
+  }, []);
 
   return (
     <div className="App">
