@@ -4,6 +4,8 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getPostDetails, getPosts } from './api/posts';
+import { Loader } from './components/Loader';
+
 import users from './api/users.json';
 
 export const App = () => {
@@ -62,13 +64,15 @@ export const App = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          {(posts.length !== 0) && (
+          {(posts.length !== 0) ? (
             <PostsList
               posts={visiblePosts}
               selectPostId={selectPostId}
               postId={postDetails.id}
               onClose={closeDetails}
             />
+          ) : (
+            <Loader />
           )}
         </div>
 

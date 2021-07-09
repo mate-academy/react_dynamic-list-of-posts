@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { NewCommentForm } from '../NewCommentForm';
-import './PostDetails.scss';
 import { create, getPostComments, remove } from '../../api/comments';
+import { Loader } from '../Loader';
+
+import './PostDetails.scss';
 
 export const PostDetails = ({ postId, body }) => {
   const [postComments, setPostComments] = useState('');
@@ -33,6 +35,10 @@ export const PostDetails = ({ postId, body }) => {
 
     setTimeout(() => loadPostComment(postId), 100);
   };
+
+  if (!postComments) {
+    return <Loader />;
+  }
 
   return (
     <div className="PostDetails">
