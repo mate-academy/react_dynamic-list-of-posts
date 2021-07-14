@@ -1,0 +1,36 @@
+
+.post {
+  width: 500px;
+  display: flex;
+  text-align: center;
+  transition: .5s;
+
+  &__image {
+    width: 250px;
+    height: 150px;
+    object-fit: cover;
+    border: 1px solid rgb(255, 255, 255);
+    border-radius: 5px;
+  }
+
+  &__info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  &__title {
+    padding-top: 20px;
+    flex-grow: 1;
+  }
+}
+
+.button {
+  &--details {
+    height: 45px;
+    margin:  0 20px;
+
+  }
+}
+

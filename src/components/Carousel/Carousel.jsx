@@ -1,174 +1,117 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import './Carousel.scss';
 
-const classesList = [
-  'start-card',
+const classes = [
   'first',
   'second',
   'third',
   'fourth',
   'fifth',
-  'last-card'
-]
+  'end',
+  'hidden',
+  'hidden',
+  'hidden',
+  'start',
+];
+
+const handleClick = (choise, setClasses) => {
+  if (['first', 'second'].includes(choise)) {
+    if (choise === 'second') {
+      setClasses(prevClasses => (
+        [...prevClasses.slice(1), prevClasses[0]]
+      ));
+    } else {
+      setClasses(prevClasses => (
+        [...prevClasses.slice(1), prevClasses[0]]
+      ));
+      setClasses(prevClasses => (
+        [...prevClasses.slice(1), prevClasses[0]]
+      ));
+    }
+
+    return;
+  }
+
+  if (choise === 'fourth') {
+    setClasses(prevClasses => (
+      [...prevClasses.slice(-1), ...prevClasses.slice(0, -1)]
+    ));
+  } else {
+    setClasses(prevClasses => (
+      [...prevClasses.slice(-1), ...prevClasses.slice(0, -1)]
+    ));
+    setClasses(prevClasses => (
+      [...prevClasses.slice(-1), ...prevClasses.slice(0, -1)]
+    ));
+  }
+};
 
 export const Carousel = ({ users, callBack }) => {
+  const [classesList, setClasses] = useState(classes);
+  const [currentUser, setCurrentUser] = useState({});
 
-  const [cardsCoords, setCardCoords] = useState(classesList);
-  const [authorsList, setAuthors] = useState(users)
-  const [authorId, setAuthorId] = useState(null)
+  useEffect(() => {
+    if (Object.keys(currentUser).length) {
+      callBack('currentUser', currentUser);
+    }
+  }, [currentUser]);
 
   return (
-
     <div className="box">
-      <a
-        className="btn prev-btn"
+      <button
+        type="button"
+        className="btn btn__prev"
         onClick={() => {
-          // setCardCoords(coords => {
-          //   const lastList = coords.pop()
-          //   coords.unshift(lastList)
-          //   return [...coords]
-          // })
-
-          setAuthors(() => {
-            const firstAuth = authorsList.shift()
-            return [...authorsList, firstAuth]
-          })
+          setClasses([...classesList.slice(-1), ...classesList.slice(0, -1)]);
         }}
       />
 
-      <a
-        className="btn next-btn"
+      <button
+        type="button"
+        className="btn btn__next"
         onClick={() => {
-          const firstList = cardsCoords.shift()
-          cardsCoords.push(firstList)
-          setCardCoords([...cardsCoords])
-
-          setAuthors(auth => {
-            const lastAuth = auth.pop()
-
-            return [lastAuth, ...auth]
-          })
+          setClasses([...classesList.slice(1), classesList[0]]);
         }}
       />
-      <ul className="autorsList">
 
-        {
-          authorsList.slice(0, 7).map((auth, index) => {
-            return <li
-            className={"card " + cardsCoords[index]}
+      <ul>
+        {users.map((user, index) => (
+          <div
+            key={user.id}
+            className={`wrapper wrapper__${classesList[index]}`}
           >
-            <img
-              className="author-image"
-              src={auth.image}
-              alt="author-image"
-            />
-            <span className="name">
-              {auth.name}
-            </span>
-          </li>
-  
+            <li
+              role="menuitem"
+              aria-hidden
+              className={classNames(
+                `card card__${classesList[index]}`,
+                { card__active: currentUser.id === user.id },
+              )}
+              onClick={() => {
+                if (classesList[index] !== 'third') {
+                  handleClick(classesList[index], setClasses);
+                }
 
-          })
-
-        }
-
-{/* 
-
-        <li
-          className={"card " + cardsCoords[0].class}
-        >
-          <img
-            className="author-image"
-            src={authorsList[cardsCoords[0].index].image}
-            alt="author-image"
-          />
-          <span className="name">
-            {authorsList[cardsCoords[0].index].name}
-          </span>
-        </li>
-
-
-
-        <li
-          className={"card " + cardsCoords[1].class}
-        >
-          <img
-            className="author-image"
-            src={authorsList[cardsCoords[1].index].image}
-            alt="author-image"
-          />
-          <span className="name">
-            {authorsList[cardsCoords[1].index].name}
-          </span>
-        </li>
-
-        <li
-          className={"card " + cardsCoords[2].class}
-        >
-          <img
-            className="author-image"
-            src={authorsList[cardsCoords[2].index].image}
-            alt="author-image"
-          />
-          <span className="name">
-            {authorsList[cardsCoords[2].index].name}
-          </span>
-        </li>
-
-        <li
-          className={"card " + cardsCoords[3].class}
-        >
-          <img
-            className="author-image"
-            src={authorsList[cardsCoords[3].index].image}
-            alt="author-image"
-          />
-          <span className="name">
-            {authorsList[cardsCoords[3].index].name}
-          </span>
-        </li>
-
-
-        <li
-          className={"card " + cardsCoords[4].class}
-        >
-          <img
-            className="author-image"
-            src={authorsList[cardsCoords[4].index].image}
-            alt="author-image"
-          />
-          <span className="name">
-            {authorsList[cardsCoords[4].index].name}
-          </span>
-        </li>
-
-        <li
-          className={"card " + cardsCoords[5].class}
-        >
-          <img
-            className="author-image"
-            src={authorsList[cardsCoords[5].index].image}
-            alt="author-image"
-          />
-          <span className="name">
-            {authorsList[cardsCoords[5].index].name}
-          </span>
-        </li>
-
-        <li
-          className={"card " + cardsCoords[6].class}
-        >
-          <img
-            className="author-image"
-            src={`${authorsList[cardsCoords[6].index].image}`}
-            alt="author-image"
-          />
-          <span className="name">
-            {`${authorsList[cardsCoords[6].index].name}`}
-          </span>
-        </li>
-       */}
+                setCurrentUser(user);
+              }}
+            >
+              <img className="author-image" src={user.image} alt="author" />
+              <span className="name">
+                {user.name}
+              </span>
+            </li>
+          </div>
+        ))}
       </ul>
     </div>
-  )
-}
+  );
+};
+
+Carousel.propTypes = {
+  users: PropTypes.arrayOf(
+    PropTypes.object.isRequired,
+  ).isRequired,
+  callBack: PropTypes.func.isRequired,
+};

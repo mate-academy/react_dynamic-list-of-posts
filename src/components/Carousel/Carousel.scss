@@ -1,146 +1,202 @@
-ul, li {
+li {
   box-sizing: border-box;
   list-style: none;
   margin: 0;
-  height: 0;
 }
 
-$width: 240px;
-$height: 300px;
+$wrapper-height: 270px;
+$wrapper-width: 220px;
 
+$card-height: 250px;
+$card-width: 200px;
+
+$second-line: 10px;
+$third-line: 20px;
+
+$hidden: 0;
 
 .btn {
   position: absolute;
   background-size: 65px;
   background-position: center;
   background-repeat: no-repeat;
-  bottom: 50%;
+  top: 120px;
   height: 40px;
   width: 40px;
-}
 
-.prev-btn {
-  left: 2%;
-  background-image: url('https://image.flaticon.com/icons/png/512/130/130885.png');
-  transform: rotate(180deg);
-}
 
-.next-btn {
-  right: 2%;
-  background-image: url('https://image.flaticon.com/icons/png/512/130/130885.png');
+  &__prev {
+    left: -8%;
+    background-image: url('https://image.flaticon.com/icons/png/512/130/130885.png');
+    transform: rotate(180deg);
+  }
+
+  &__next {
+    right: -8%;
+    background-image: url('https://image.flaticon.com/icons/png/512/130/130885.png');
+  }
 }
 
 .author-image {
   width: 100%;
-  transition: 1s;
+  border-radius: 50%;
 }
 
 .name {
-
-  margin: 5% 5px;
-  font-size: 18px;
-  font-weight: 700;
+  text-align: center;
+  padding: 10px;
 }
 
 .box {
-  margin: auto;
+  margin:  -50px auto 0;
   position: relative;
-  width: 1000px;
-  height: 400px;
+  width: 800px;
+  height: 300px;
 }
 
-.autorsList {
-  // margin: auto;
-  // position: relative;
-  // width: 1000px;
-  // height: 400px;
-  // z-index: -1;
+.wrapper {
+  position: absolute;
+  display: flex;
+  width: $wrapper-width;
+  height: $wrapper-height;
+  transition: .5s;
+  z-index: -5;
+  padding: 5px;
+
+  &__hidden {
+    opacity: 0;
+    top: 0;
+    left: 40%;
+    z-index: -1;
+  }
+
+  &__start {
+    height: 240px;
+
+    opacity: 0;
+    top: 0;
+    left: 2%;
+    z-index: -1;
+  }
+
+  &__end {
+    height: 240px;
+    opacity: 0;
+    top: 0;
+    left: 70%;
+    z-index: -1;
+  }
+
+  &__first {
+    width: $wrapper-width * .8;
+    height: $wrapper-height * .8;
+    top: $third-line;
+    left: 0%;
+    z-index: 1;
+
+  }
+
+  &__second {
+    width: $wrapper-width * .9;
+    height: $wrapper-height * .9;
+    top: $second-line;
+    left: 16%;
+    z-index: 2;
+  }
+
+  &__third {
+    top: 0;
+    left: calc(50% - #{$wrapper-width * 0.5});
+    z-index: 3;
+  }
+
+  &__fourth {
+    width: $wrapper-width * .9;
+    height: $wrapper-height * .9;
+    top: $second-line;
+    left: 58%;
+    z-index: 2;
+  }
+
+  &__fifth {
+    width: $wrapper-width * .8;
+    height: $wrapper-height * .8;
+    top: $third-line;
+    left: 77%;
+    z-index: 1;
+  }
+
 }
 
 .card {
-  position: absolute;
-  cursor: pointer;
+  margin: auto;
+  width: $card-width;
+  height: $card-height;
+  padding: 5px;
   display: flex;
+  color: white;
   flex-direction: column;
   align-items: center;
-  overflow: hidden;
+  border: 1px solid rgb(245, 245, 245);
   border-radius: 10px;
-  background-color: #fff;
+  cursor: pointer;
+  background-color: rgb(192, 192, 192);
   box-shadow: 0 0 15px rgb(0, 0, 0);
   transition: .5s;
-  opacity: 1;
-  width: $width;
-  height: $height;
-
-  // &:hover {
-  //   width: $width + 10px;
-  //   height: $height + 10px;
-  //   z-index: 4;
-  // }
-}
-
-.start-card {
-  width: calc(#{$width} - #{$width * 0.2});
-  height: calc(#{$height} - #{$height * 0.2});
-  top: 0px;
-  left: 15%;
-  z-index: -1;
-  opacity: 0;
-}
-
-.first {
-  width: calc(#{$width} - #{$width * 0.2});
-  height: calc(#{$height} - #{$height * 0.2});
-  top: 20px;
-  left: 10%;
-  z-index: 0;
-
-}
-
-.second {
-  width: calc(#{$width} - #{$width * 0.15});
-  height: calc(#{$height} - #{$height * 0.15});
-  top: 70px;
-  left: 22%;
-  z-index: 1;
-}
-
-.third {
-  top: 100px;
-  left: calc(50% - #{$height * 0.4});
-  z-index: 2;
-}
-
-.fourth {
-  width: calc(#{$width} - #{$width * 0.15});
-  height: calc(#{$height} - #{$height * 0.15});
-  top: 70px;
-  left: 58%;
   z-index: 1;
 
-}
+  &__active {
+    // border: 2px solid rgb(255, 0, 0);
+  }  
 
-.fifth {
-  width: calc(#{$width} - #{$width * 0.2});
-  height: calc(#{$height} - #{$height * 0.2});
-  top: 20px;
-  left: 71%;
-  z-index: 0;
-}
+  &__start {
+    width: $card-width * .8;
+    height: 240px;
+  }
 
-.last-card {
-  width: calc(#{$width} - #{$width * 0.2});
-  height: calc(#{$height} - #{$height * 0.2});
-  top: 0px;
-  left: 67%;
-  z-index: -1;
-  opacity: 0;
-}
+  &__end {
+    width: $card-width * .8;
+    height: 240px;
+  }
 
-.hidden {
-  top: 0px;
-  left: 67%;
-  z-index: -1;
-  opacity: 0;
-}
+  &__hidden {}
 
+  &__first {
+    width: $card-width * .8;
+    height: $card-height * .8;
+    background-color: rgb(153, 153, 153);
+    box-shadow: 2px 10px 25px #000;
+  }
+
+  &__second {
+    width: $card-width * .9;
+    height: $card-height * .9;
+    background-color: rgb(177, 177, 177);
+
+    box-shadow: -2px 10px 15px #000;
+  }
+
+  &__third {
+    box-shadow: 0 10px 25px #000;
+  }
+
+  &__fourth {
+    width: $card-width * .9;
+    height: $card-height * .9;
+    background-color: rgb(177, 177, 177);
+    box-shadow: 2px 10px 15px #000;
+  }
+
+  &__fifth {
+    width: $card-width * .8;
+    height: $card-height * .8;
+    background-color: rgb(153, 153, 153);
+    box-shadow: -2px 10px 25px #000;
+  }
+
+  &:hover {
+    width: 100%;
+    height: 100%;
+    z-index: 4;
+  }
+}
