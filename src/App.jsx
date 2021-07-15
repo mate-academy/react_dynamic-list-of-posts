@@ -1,41 +1,174 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import classNames from 'classnames';
+import { getPosts } from './api/posts';
+import postsImages from './posts_images.json';
+import usersImage from './usersImages.json';
+import usersFromApi from './api/users.json';
 import './App.scss';
-import './styles/general.scss';
+import { Carousel } from './components/Carousel';
 import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
+import { Paginator } from './components/Paginator';
+import { Popup } from './components/Popup';
 
-const App = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+const App = () => {
+  const [state, setState] = useState({
+    users: [],
+    posts: [],
+    total: 0,
+    perPage: 6,
+    currentPage: 1,
+    currentUser: null,
+    isActive: true,
+  });
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+  const [postsForDisplay, setPostsForDisplay] = useState([]);
+  const [postDetails, setPostDetails] = useState({});
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+  const { users, posts, currentPage, perPage, currentUser, isActive } = state;
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+  const handleSetState = (name, value) => {
+    if (name === 'currentUser') {
+      setState(prevState => ({
+        ...prevState, currentPage: 1, isActive: false,
+      }));
+    }
+
+    if (name === 'isActive') {
+      setState(prevState => ({
+        ...prevState,
+        currentPage: 1,
+      }));
+    }
+
+    setState(prevState => ({
+      ...prevState,
+      [name]: Number.isInteger(value) ? +value : value,
+    }));
+  };
+
+  useEffect(() => {
+    const usersList = usersFromApi.map((user) => {
+      const image = usersImage.find(obj => obj[user.id])[user.id];
+
+      return {
+        ...user, image,
+      };
+    });
+
+    getPosts()
+      .then(postsList => setState(prevState => ({
+        ...prevState, users: usersList, posts: postsList, total: posts.length,
+      })));
+  }, []);
+
+  useEffect(() => {
+    if (isActive) {
+      setPostsForDisplay(posts);
+
+      return;
+    }
+
+    setPostsForDisplay(posts.filter(post => post.userId === currentUser.id));
+  }, [posts, isActive, currentUser]);
+
+  const startIndex = currentPage * perPage - perPage;
+  const stopIndex = currentPage * perPage;
+
+  return (!!postsForDisplay.length
+    && (
+    <div className="App">
+      <header className="App__header" />
+
+      <main className="App__main">
+        <Carousel
+          users={users}
+          callBack={handleSetState}
+        />
+
+        {
+          postsForDisplay.length
+          && (
+          <>
+            <div className="posts-container">
+              <div className="buttons-container">
+                <button
+                  type="button"
+                  className={classNames(
+                    'button-posts',
+                    { 'button-posts__active': isActive },
+                  )}
+                  disabled={isActive}
+                  onClick={() => {
+                    handleSetState('isActive', true);
+                  }}
+                >
+                  ALL POSTS
+                </button>
+                {currentUser
+                  && (
+                  <button
+                    type="button"
+                    className={classNames(
+                      'button-posts',
+                      'button-posts__user',
+                      { 'button-posts__active': !isActive },
+                    )}
+                    disabled={!isActive}
+                    onClick={() => {
+                      handleSetState('isActive', false);
+                    }}
+                  >
+                    {`Posts of: ${currentUser.name}`}
+                  </button>
+                  )
+                }
+              </div>
+
+              <PostsList
+                startIndex={startIndex}
+                stopIndex={stopIndex}
+                images={postsImages}
+                users={users}
+                posts={postsForDisplay.slice(startIndex, stopIndex)}
+                callBack={setPostDetails}
+              />
+            </div>
+            {
+              !!Object.keys(postDetails).length
+              && (
+              <div
+                role="link"
+                styling="link"
+                aria-hidden
+                className="popup"
+                onClick={(event) => {
+                  if (event.target === event.currentTarget) {
+                    setPostDetails({});
+                  }
+                }}
+              >
+                <Popup
+                  {...postDetails}
+                  callBack={setPostDetails}
+                />
+              </div>
+              )
+            }
+
+            <Paginator
+              total={postsForDisplay.length}
+              perPage={6}
+              currentPage={currentPage}
+              handleChange={handleSetState}
+            />
+          </>
+          )
+        }
+
+      </main>
+    </div>
+    )
+  );
+};
 
 export default App;

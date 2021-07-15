@@ -1,37 +1,33 @@
 import React from 'react';
 import './PostsList.scss';
+import PropTypes from 'prop-types';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+import { PostCard } from '../PostCard';
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList = React.memo(({ posts, users, callBack }) => (
+  <ul className="posts">
+    {
+        posts.map(post => (
+          <React.Fragment key={post.id}>
+            <PostCard
+              users={users}
+              callBack={callBack}
+              post={post}
+            />
+          </React.Fragment>
+        ))
+      }
+  </ul>
+));
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+    }).isRequired,
+  ).isRequired,
+  users: PropTypes.arrayOf(
+    PropTypes.object.isRequired,
+  ).isRequired,
+  callBack: PropTypes.func.isRequired,
+};
