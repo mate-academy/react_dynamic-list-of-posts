@@ -7,15 +7,18 @@ import './PostDetails.scss';
 
 export const PostDetails = ({ selectedPostId }) => {
   const [postDetails, setPostDetails] = useState([]);
-  const [postComments, setpostComments] = useState([]);
+  const [postComments, setPostComments] = useState([]);
   const [commentsAreVisible, setCommentsAreVisible] = useState(true);
 
   useEffect(() => {
-    getPostDetails(selectedPostId)
-      .then(details => setPostDetails(details.data));
-    getPostComments(selectedPostId)
-      .then(comments => setpostComments(comments));
-  }, [selectedPostId, postComments]);
+    getPostDetails(selectedPostId).then(setPostDetails);
+    getPostComments(selectedPostId).then(setPostComments);
+  }, [selectedPostId]);
+
+  const onDelete = async(id) => {
+    await deleteComment(id);
+    getPostComments(selectedPostId).then(setPostComments);
+  };
 
   return (
     <div className="PostDetails">
@@ -47,7 +50,7 @@ export const PostDetails = ({ selectedPostId }) => {
                     <button
                       type="button"
                       className="PostDetails__remove-button button"
-                      onClick={() => deleteComment(comment.id)}
+                      onClick={() => onDelete(comment.id)}
                     >
                       X
                     </button>
@@ -63,7 +66,10 @@ export const PostDetails = ({ selectedPostId }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm selectedPostId={selectedPostId} />
+          <NewCommentForm
+            selectedPostId={selectedPostId}
+            setPostComments={setPostComments}
+          />
         </div>
       </section>
     </div>

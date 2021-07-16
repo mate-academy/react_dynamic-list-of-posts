@@ -12,7 +12,7 @@ export const PostsList = ({
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    getPosts(selectedUserId).then(movies => setPosts(movies));
+    getPosts(selectedUserId).then(setPosts);
   }, [selectedUserId]);
 
   const openPost = (postId) => {

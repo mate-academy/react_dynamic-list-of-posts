@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -11,47 +11,49 @@ const App = () => {
   const [selectedPostId, setSelectedPostId] = useState(0);
 
   useEffect(() => {
-    getUsers().then(user => setUsers(user.data));
+    getUsers().then(setUsers);
   }, []);
 
-  return(
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+  return (
+    <div className="App">
+      <header className="App__header">
+        <label>
+          Select a user: &nbsp;
 
-        <select
-          className="App__user-selector"
-          onChange={e => setSelectedUser(+e.target.value)}>
-          <option value='0'>All users</option>
-          {users.length > 0 
-          && users.map(user => (
-            <option
-              key={user.id}
-              value={user.id}
-            >
-              {user.name}
-            </option>
-          ))}
-        </select>
-      </label>
-    </header>
+          <select
+            className="App__user-selector"
+            onChange={e => setSelectedUser(+e.target.value)}
+          >
+            <option value="0">All users</option>
+            {users.length > 0
+            && users.map(user => (
+              <option
+                key={user.id}
+                value={user.id}
+              >
+                {user.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </header>
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList
-          selectedUserId={selectedUserId}
-          setSelectedPostId={setSelectedPostId}
-          selectedPostId={selectedPostId}
-        />
-      </div>
-      {selectedPostId !== 0 && (
-        <div className="App__content">
-          <PostDetails selectedPostId={selectedPostId} />
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            selectedUserId={selectedUserId}
+            setSelectedPostId={setSelectedPostId}
+            selectedPostId={selectedPostId}
+          />
         </div>
-      )}
-    </main>
-  </div>
-)};
+        {selectedPostId !== 0 && (
+          <div className="App__content">
+            <PostDetails selectedPostId={selectedPostId} />
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
 
 export default App;

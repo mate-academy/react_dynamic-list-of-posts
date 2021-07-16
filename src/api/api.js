@@ -13,12 +13,14 @@ export const getPosts = (selectedUserId) => {
 
 export const getUsers = () => {
   return fetch(`${BASE_URL}/users`)
-    .then(response => response.json());
+    .then(response => response.json())
+    .then(user => user.data);
 };
 
 export const getPostDetails = (postId) => {
   return fetch(`${BASE_URL}/posts/${postId}`)
-    .then(response => response.json());
+    .then(response => response.json())
+    .then(details => details.data);
 };
 
 export const getPostComments = (postId) => {

@@ -1,18 +1,42 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { addNewComment } from '../../api/api';
+import { addNewComment, getPostComments } from '../../api/api';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ selectedPostId }) => {
+export const NewCommentForm = ({ selectedPostId, setPostComments }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
-  const [inputsAreValid, setInputsAreValid] = useState(true);
+  const [errors, setErrors] = useState({
+    name: false,
+    email: false,
+    body: false,
+  });
 
-  const addComment = () => {
-    if (!name || !email || !body) {
-      setInputsAreValid(false);
+  const validateCommentInputs = (field, input) => {
+    if (!input) {
+      setErrors({ [field]: true });
 
+      return false;
+    }
+
+    setErrors({ [field]: false });
+
+    return true;
+  };
+
+  const setDefaultValues = () => {
+    setName('');
+    setEmail('');
+    setBody('');
+  };
+
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+
+    if (!validateCommentInputs('name', name)
+    || !validateCommentInputs('email', email)
+    || !validateCommentInputs('body', body)) {
       return;
     }
 
@@ -25,19 +49,8 @@ export const NewCommentForm = ({ selectedPostId }) => {
       id: Math.floor(Math.random() * 99999) + 22222, // id from 22222 to 99999
     };
 
-    setInputsAreValid(true);
-    addNewComment(newComment);
-  };
-
-  const setDefaultValues = () => {
-    setName('');
-    setEmail('');
-    setBody('');
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    addComment();
+    await addNewComment(newComment);
+    getPostComments(selectedPostId).then(setPostComments);
     setDefaultValues();
   };
 
@@ -56,6 +69,7 @@ export const NewCommentForm = ({ selectedPostId }) => {
           onChange={e => setName(e.target.value)}
         />
       </div>
+      {errors.name && <h3>Please, enter your name</h3>}
 
       <div className="form-field">
         <input
@@ -67,6 +81,7 @@ export const NewCommentForm = ({ selectedPostId }) => {
           onChange={e => setEmail(e.target.value)}
         />
       </div>
+      {errors.email && <h3>Please, enter your email</h3>}
 
       <div className="form-field">
         <textarea
@@ -77,6 +92,7 @@ export const NewCommentForm = ({ selectedPostId }) => {
           onChange={e => setBody(e.target.value)}
         />
       </div>
+      {errors.body && <h3>Please, enter your comment</h3>}
 
       <button
         type="submit"
@@ -84,11 +100,11 @@ export const NewCommentForm = ({ selectedPostId }) => {
       >
         Add a comment
       </button>
-      {!inputsAreValid && <h3>Empty fields are not allowed!</h3>}
     </form>
   );
 };
 
 NewCommentForm.propTypes = {
   selectedPostId: PropTypes.number.isRequired,
+  setPostComments: PropTypes.func.isRequired,
 };
