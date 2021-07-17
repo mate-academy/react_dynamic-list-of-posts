@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 
 import { PostCard } from '../PostCard';
 
-export const PostsList = React.memo(({ posts, users, callBack }) => (
+export const PostsList = React.memo(({ posts, users, onSubmit }) => (
   <ul className="posts">
     {
         posts.map(post => (
           <React.Fragment key={post.id}>
             <PostCard
               users={users}
-              callBack={callBack}
+              onSubmit={onSubmit}
               post={post}
             />
           </React.Fragment>
@@ -29,5 +29,5 @@ PostsList.propTypes = {
   users: PropTypes.arrayOf(
     PropTypes.object.isRequired,
   ).isRequired,
-  callBack: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };

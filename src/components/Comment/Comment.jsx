@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './Comment.scss';
 
-export const Comment = ({ body, email, createdAt, name, id, callBack }) => (
+export const Comment = ({ body, email, createdAt, name, id, onSubmit }) => (
   < >
     <div className="comment__logo-block">
       <img
@@ -24,7 +24,7 @@ export const Comment = ({ body, email, createdAt, name, id, callBack }) => (
     <button
       type="button"
       className="button button__delete"
-      onClick={() => callBack(id)}
+      onClick={() => onSubmit(id)}
     >
       Delete
     </button>
@@ -37,5 +37,5 @@ Comment.propTypes = {
   body: PropTypes.string.isRequired,
   email: PropTypes.string.isRequired,
   createdAt: PropTypes.string.isRequired,
-  callBack: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };

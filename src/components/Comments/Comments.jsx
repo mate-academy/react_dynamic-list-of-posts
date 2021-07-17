@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Comment } from '../Comment';
 import './Comments.scss';
 
-export const Comments = ({ comments, callBack }) => (
+export const Comments = ({ comments, onSubmit }) => (
   <div className="comments">
 
     <ul className="comments__list">
@@ -12,7 +12,7 @@ export const Comments = ({ comments, callBack }) => (
           <li className="comment" key={comment.id}>
             <Comment
               {...comment}
-              callBack={callBack}
+              onSubmit={onSubmit}
             />
           </li>
         ))
@@ -26,5 +26,5 @@ Comments.propTypes = {
   comments: PropTypes.arrayOf(
     PropTypes.object.isRequired,
   ).isRequired,
-  callBack: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };

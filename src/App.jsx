@@ -130,7 +130,7 @@ const App = () => {
                 images={postsImages}
                 users={users}
                 posts={postsForDisplay.slice(startIndex, stopIndex)}
-                callBack={setPostDetails}
+                onSubmit={setPostDetails}
               />
             </div>
             {
@@ -149,7 +149,7 @@ const App = () => {
               >
                 <Popup
                   {...postDetails}
-                  callBack={setPostDetails}
+                  onSubmit={setPostDetails}
                 />
               </div>
               )

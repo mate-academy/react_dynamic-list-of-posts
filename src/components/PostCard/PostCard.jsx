@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './PostCard.scss';
 
-export const PostCard = ({ users, post, callBack }) => (
+export const PostCard = ({ users, post, onSubmit }) => (
 
   <li className="post">
     <div className="post__image-container">
@@ -21,7 +21,7 @@ export const PostCard = ({ users, post, callBack }) => (
         onClick={() => {
           const postAuthor = users.find(user => user.id === post.userId);
 
-          callBack({
+          onSubmit({
             post, postAuthor,
           });
         }}
@@ -42,5 +42,5 @@ PostCard.propTypes = {
     image: PropTypes.string.isRequired,
     userId: PropTypes.number.isRequired,
   }).isRequired,
-  callBack: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };

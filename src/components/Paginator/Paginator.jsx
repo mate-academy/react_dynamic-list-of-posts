@@ -43,7 +43,12 @@ export const Paginator = ({ total, perPage, currentPage, handleChange }) => {
       <button
         type="button"
         name="currentPage"
-        className="button button__paginator button__paginator--prev"
+        className={classNames(
+          'button',
+          'button__paginator',
+          'button__paginator--prev',
+          { 'button--is-active': currentPage === 1 },
+        )}
         value={currentPage - 1}
         disabled={currentPage === 1}
         onClick={(event) => {
@@ -87,7 +92,12 @@ export const Paginator = ({ total, perPage, currentPage, handleChange }) => {
       <button
         type="button"
         name="currentPage"
-        className="button button__paginator button__paginator--next"
+        className={classNames(
+          'button',
+          'button__paginator',
+          'button__paginator--next',
+          { 'button--is-active': currentPage === pagesCount },
+        )}
         value={currentPage + 1}
         disabled={currentPage === pagesCount}
         onClick={(event) => {

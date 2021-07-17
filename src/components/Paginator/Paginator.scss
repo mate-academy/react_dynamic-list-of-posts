@@ -25,5 +25,6 @@ button {
 
   &--is-active {
     background-color: rgb(159, 159, 159);
+    cursor: not-allowed;
   }
 }

@@ -11,53 +11,59 @@ const isEmail = (email) => {
   return regEmail.test(email);
 };
 
-export const NewCommentForm = ({ postId, callBack }) => {
+export const NewCommentForm = ({ postId, onSubmit }) => {
   const [state, setState] = useState({
     body: '',
     name: '',
     email: '',
-    error: false,
+    errors: {
+      body: false,
+      name: false,
+      email: false,
+    },
   });
 
   const handleSubmit = () => {
-    if (!isEmail(email)) {
-      setState(prevState => ({
-        ...prevState, error: true,
-      }));
-
-      return;
-    }
-
-    const result = {
+    onSubmit({
       postId, body, name, email,
-    };
+    });
 
-    callBack(result);
     setState({
       body: '',
       name: '',
       email: '',
-      error: false,
+      errors: {
+        body: false,
+        name: false,
+        email: false,
+      },
     });
   };
 
-  const handleSetState = (event) => {
+  const handleChange = (event) => {
     const { name, value } = event.target;
 
     if (!state[name] && !value.trim()) {
       return;
     }
 
-    setState({
-      ...state, error: false, [name]: value,
-    });
+    state.errors[name] = false;
+    setState(currentState => ({
+      ...currentState, [name]: value,
+    }));
   };
 
-  const { body, name, email, error } = state;
+  const handleErrors = (event) => {
+    const { name } = event.target;
+
+    state.errors[name] = true;
+    setState({ ...state });
+  };
+
+  const { body, name, email, errors } = state;
 
   return (
     <div className="feedback__inputs">
-
       <div className="feedback__text-fields">
         <TextField
           variant="outlined"
@@ -67,8 +73,11 @@ export const NewCommentForm = ({ postId, callBack }) => {
           rows={5}
           rowsmax={8}
           name="body"
+          error={!!errors.body}
+          helperText={!!errors.body && 'Comment should be more then 10 words'}
           value={body}
-          onChange={handleSetState}
+          onChange={handleChange}
+          onBlur={event => body.length < 5 && handleErrors(event)}
         />
 
         <div className="text-fields__wrapper">
@@ -77,21 +86,25 @@ export const NewCommentForm = ({ postId, callBack }) => {
             label="Name:"
             name="name"
             value={name}
-            style={{
-              width: 250, color: 'white',
-            }}
-            onChange={handleSetState}
+            error={!!errors.name}
+            helperText={!!errors.name && 'Name shold be more then 3 letters'}
+            style={{ width: 250 }}
+            onChange={handleChange}
+            onBlur={event => name.length < 3 && handleErrors(event)}
+
           />
           <TextField
             type="email"
             variant="outlined"
             label="Email:"
             name="email"
-            error={error}
-            helperText={error && 'email is not valid'}
+            error={!!errors.email}
+            helperText={!!errors.email && 'email is not valid'}
             value={email}
             style={{ width: 250 }}
-            onChange={handleSetState}
+            onChange={handleChange}
+            onBlur={event => !isEmail(email) && handleErrors(event)}
+
           />
         </div>
       </div>
@@ -99,17 +112,19 @@ export const NewCommentForm = ({ postId, callBack }) => {
       <button
         type="button"
         className="button button__comments"
+        disabled={
+          Object.values(errors).some(value => value)
+          || Object.values(state).some(value => !value)
+        }
         onClick={handleSubmit}
       >
         PUBLIC
       </button>
-
     </div>
-
   );
 };
 
 NewCommentForm.propTypes = {
   postId: PropTypes.number.isRequired,
-  callBack: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };

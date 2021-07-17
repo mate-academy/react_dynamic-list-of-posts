@@ -23,7 +23,7 @@ const setButtonTitle = (commentsLength, isOpen) => {
 export const Popup = ({
   post,
   postAuthor,
-  callBack,
+  onSubmit,
 }) => {
   const {
     name,
@@ -72,7 +72,7 @@ export const Popup = ({
         <button
           className="button button__close"
           type="button"
-          onClick={() => callBack({})}
+          onClick={() => onSubmit({})}
         >
           X
         </button>
@@ -123,7 +123,7 @@ export const Popup = ({
             && (
               <Comments
                 comments={comments}
-                callBack={setIdCommentRemove}
+                onSubmit={setIdCommentRemove}
               />
             )
           }
@@ -131,7 +131,7 @@ export const Popup = ({
           <div className="feedback">
             <NewCommentForm
               postId={postId}
-              callBack={setNewComment}
+              onSubmit={setNewComment}
             />
 
             <button
@@ -154,14 +154,12 @@ export const Popup = ({
 };
 
 Popup.propTypes = {
-  post: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      title: PropTypes.string.isRequired,
-      body: PropTypes.string.isRequired,
-      image: PropTypes.string.isRequired,
-    }).isRequired,
-  ).isRequired,
+  post: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+  }).isRequired,
   postAuthor: PropTypes.shape({
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
@@ -174,5 +172,5 @@ Popup.propTypes = {
       zipcode: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
-  callBack: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };
