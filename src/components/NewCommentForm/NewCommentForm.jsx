@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { uuid } from 'uuidv4';
 import PropTypes from 'prop-types';
 import { addNewComment, getPostComments } from '../../api/api';
 import './NewCommentForm.scss';
@@ -47,7 +46,6 @@ export const NewCommentForm = ({ selectedPostId, setPostComments }) => {
       body,
       postId: selectedPostId,
       createdAt: new Date(),
-      id: uuid(),
     };
 
     await addNewComment(newComment);
