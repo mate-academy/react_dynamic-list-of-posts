@@ -43,7 +43,7 @@ const App = () => {
         <div className="App__sidebar">
           <PostsList
             userId={userId}
-            selectedPostId={selectedPostId}
+            selectedPostId={`${selectedPostId}`}
             setPostId={setPostId}
           />
         </div>

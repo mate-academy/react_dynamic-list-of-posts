@@ -1,14 +1,18 @@
 import React from 'react';
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 import { addNewComment } from '../../api/coments';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ postId, loadComments }) => {
+export const NewCommentForm = ({ postId, loadComments, setLoadComments }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');
+  const [error, setError] = useState('');
 
   const handleChange = ({ target }) => {
+    setError('');
+
     switch (target.name) {
       case 'name':
         setName(target.value);
@@ -31,8 +35,10 @@ export const NewCommentForm = ({ postId, loadComments }) => {
     e.preventDefault();
 
     if (!name.trim() || !email.trim() || !comment.trim()) {
-      return console.log('err.');
+      return setError('no valid data');
     }
+
+    setLoadComments(true);
 
     const commentBody = {
       postId,
@@ -43,7 +49,8 @@ export const NewCommentForm = ({ postId, loadComments }) => {
 
     resetForm();
     await addNewComment(commentBody);
-    loadComments();
+    await loadComments();
+    setLoadComments(false);
   };
 
   return (
@@ -51,6 +58,7 @@ export const NewCommentForm = ({ postId, loadComments }) => {
       className="NewCommentForm"
       onSubmit={newComment}
     >
+      {error && <p className="NewCommentForm__error">{error}</p>}
       <div className="form-field">
         <input
           type="text"
@@ -94,4 +102,10 @@ export const NewCommentForm = ({ postId, loadComments }) => {
       </button>
     </form>
   );
+};
+
+NewCommentForm.propTypes = {
+  postId: PropTypes.number.isRequired,
+  loadComments: PropTypes.func.isRequired,
+  setLoadComments: PropTypes.func.isRequired,
 };

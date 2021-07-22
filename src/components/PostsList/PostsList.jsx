@@ -1,18 +1,32 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { getPostsUser } from '../../api/posts';
+import { Loader } from '../Loader';
 import './PostsList.scss';
 
 export const PostsList = ({ userId, selectedPostId, setPostId }) => {
   const [posts, setPosts] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getPostsUser(userId)
-      .then((response) => {
-        setPosts(response);
-      });
+    setLoading(true);
+    const loadData = async() => {
+      await getPostsUser(userId)
+        .then((response) => {
+          setPosts(response);
+        });
+
+      setLoading(false);
+    };
+
+    loadData();
   }, [userId]);
+
+  if (loading) {
+    return <Loader />
+  }
 
   return (
     <div className="PostsList">
@@ -40,21 +54,13 @@ export const PostsList = ({ userId, selectedPostId, setPostId }) => {
             </button>
           </li>
         ))}
-
-        {/* <li className="PostsList__item">
-          <div>
-            <b>[User #2]: </b>
-            et ea vero quia laudantium autem
-          </div>
-
-          <button
-            type="button"
-            className="PostsList__button button"
-          >
-            Open
-          </button>
-        </li> */}
       </ul>
     </div>
   );
+};
+
+PostsList.propTypes = {
+  userId: PropTypes.string.isRequired,
+  selectedPostId: PropTypes.string.isRequired,
+  setPostId: PropTypes.func.isRequired,
 };
