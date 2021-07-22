@@ -43,14 +43,14 @@ export const PostsList = ({ userId, selectedPostId, setPostId }) => {
               type="button"
               className="PostsList__button button"
               onClick={() => {
-                if (selectedPostId === post.id) {
+                if (+selectedPostId === +post.id) {
                   return setPostId(0);
                 }
 
                 setPostId(post.id);
               }}
             >
-              {selectedPostId === post.id ? 'close' : 'open'}
+              {+selectedPostId === +post.id ? 'close' : 'open'}
             </button>
           </li>
         ))}
