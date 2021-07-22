@@ -118,7 +118,7 @@ export const NewCommentForm = ({ postId, onSubmit }) => {
         }
         onClick={handleSubmit}
       >
-        PUBLIC
+        Post
       </button>
     </div>
   );

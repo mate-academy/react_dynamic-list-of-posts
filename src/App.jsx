@@ -5,6 +5,7 @@ import postsImages from './posts_images.json';
 import usersImage from './usersImages.json';
 import usersFromApi from './api/users.json';
 import './App.scss';
+import { Loader } from './components/Loader';
 import { Carousel } from './components/Carousel';
 import { PostsList } from './components/PostsList';
 import { Paginator } from './components/Paginator';
@@ -55,9 +56,13 @@ const App = () => {
       };
     });
 
+    setState(prevState => ({
+      ...prevState, users: usersList,
+    }));
+
     getPosts()
       .then(postsList => setState(prevState => ({
-        ...prevState, users: usersList, posts: postsList, total: posts.length,
+        ...prevState, posts: postsList, total: posts.length,
       })));
   }, []);
 
@@ -74,8 +79,7 @@ const App = () => {
   const startIndex = currentPage * perPage - perPage;
   const stopIndex = currentPage * perPage;
 
-  return (!!postsForDisplay.length
-    && (
+  return (
     <div className="App">
       <header className="App__header" />
 
@@ -84,90 +88,91 @@ const App = () => {
           users={users}
           callBack={handleSetState}
         />
-
-        {
-          postsForDisplay.length
-          && (
-          <>
-            <div className="posts-container">
-              <div className="buttons-container">
-                <button
-                  type="button"
-                  className={classNames(
-                    'button-posts',
-                    { 'button-posts__active': isActive },
-                  )}
-                  disabled={isActive}
-                  onClick={() => {
-                    handleSetState('isActive', true);
-                  }}
-                >
-                  ALL POSTS
-                </button>
-                {currentUser
-                  && (
-                  <button
-                    type="button"
-                    className={classNames(
-                      'button-posts',
-                      'button-posts__user',
-                      { 'button-posts__active': !isActive },
-                    )}
-                    disabled={!isActive}
-                    onClick={() => {
-                      handleSetState('isActive', false);
-                    }}
-                  >
-                    {`Posts of: ${currentUser.name}`}
-                  </button>
-                  )
-                }
-              </div>
-
-              <PostsList
-                startIndex={startIndex}
-                stopIndex={stopIndex}
-                images={postsImages}
-                users={users}
-                posts={postsForDisplay.slice(startIndex, stopIndex)}
-                onSubmit={setPostDetails}
-              />
-            </div>
-            {
-              !!Object.keys(postDetails).length
-              && (
-              <div
-                role="link"
-                styling="link"
-                aria-hidden
-                className="popup"
-                onClick={(event) => {
-                  if (event.target === event.currentTarget) {
-                    setPostDetails({});
-                  }
+        <>
+          <div className="posts-container">
+            <div className="buttons-container">
+              <button
+                type="button"
+                className={classNames(
+                  'button-posts',
+                  { 'button-posts__active': isActive },
+                )}
+                disabled={isActive}
+                onClick={() => {
+                  handleSetState('isActive', true);
                 }}
               >
-                <Popup
-                  {...postDetails}
-                  onSubmit={setPostDetails}
-                />
-              </div>
+                ALL POSTS
+              </button>
+              {
+                  currentUser
+                  && (
+                    <button
+                      type="button"
+                      className={classNames(
+                        'button-posts',
+                        'button-posts__user',
+                        { 'button-posts__active': !isActive },
+                      )}
+                      disabled={!isActive}
+                      onClick={() => {
+                        handleSetState('isActive', false);
+                      }}
+                    >
+                      {`Posts of: ${currentUser.name}`}
+                    </button>
+                  )
+                }
+            </div>
+            {
+                !postsForDisplay.length
+                  ? <Loader />
+                  : (
+                    <PostsList
+                      images={postsImages}
+                      users={users}
+                      posts={postsForDisplay.slice(startIndex, stopIndex)}
+                      onClickReadMore={setPostDetails}
+                    />
+                  )
+              }
+
+          </div>
+          {
+              !!Object.keys(postDetails).length
+              && (
+                <div
+                  role="link"
+                  styling="link"
+                  aria-hidden
+                  className="popup"
+                  onClick={(event) => {
+                    if (event.target === event.currentTarget) {
+                      setPostDetails({});
+                    }
+                  }}
+                >
+                  <Popup
+                    {...postDetails}
+                    onSubmit={setPostDetails}
+                  />
+                </div>
               )
             }
-
-            <Paginator
-              total={postsForDisplay.length}
-              perPage={6}
-              currentPage={currentPage}
-              handleChange={handleSetState}
-            />
-          </>
-          )
-        }
-
+          {
+              !!postsForDisplay.length
+              && (
+              <Paginator
+                total={postsForDisplay.length}
+                perPage={6}
+                currentPage={currentPage}
+                handleChange={handleSetState}
+              />
+              )
+            }
+        </>
       </main>
     </div>
-    )
   );
 };
 

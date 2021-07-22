@@ -2,12 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './PostCard.scss';
 
-export const PostCard = ({ users, post, onSubmit }) => (
+export const PostCard = ({ users, post, onClickReadMore }) => (
 
   <li className="post">
     <div className="post__image-container">
       <img className="post__image" src={post.image} alt="" />
-
     </div>
     <div className="post__info">
       <div className="post__title">
@@ -21,7 +20,7 @@ export const PostCard = ({ users, post, onSubmit }) => (
         onClick={() => {
           const postAuthor = users.find(user => user.id === post.userId);
 
-          onSubmit({
+          onClickReadMore({
             post, postAuthor,
           });
         }}
@@ -42,5 +41,5 @@ PostCard.propTypes = {
     image: PropTypes.string.isRequired,
     userId: PropTypes.number.isRequired,
   }).isRequired,
-  onSubmit: PropTypes.func.isRequired,
+  onClickReadMore: PropTypes.func.isRequired,
 };

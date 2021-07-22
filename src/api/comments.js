@@ -1,25 +1,22 @@
 import { BASE_URL } from './api';
 
-const request = (url, method) => fetch(`${BASE_URL}${url}`, method)
-  .then(response => response.json())
-  .then(json => json.data);
+const request = (url, method) => fetch(`${BASE_URL}${url}`, method);
 
-export const getPostComments = postId => request(`/comments?postId=${postId}`);
+export const getPostComments = async(postId) => {
+  const response = await request(`/comments?postId=${postId}`);
+  const json = await response.json();
 
-export const removeComment = (id) => {
-  request(`/comments/${id}`, { method: 'DELETE' });
+  return json.data;
 };
 
-export const addNewComment = (newComment) => {
-  if (!newComment) {
-    return;
-  }
+export const removeComment = id => (
+  request(`/comments/${id}`, { method: 'DELETE' })
+);
 
-  request('/comments/', {
-    method: 'POST',
-    headers: {
-      'Content-type': 'aplication/json; charset=utf-8',
-    },
-    body: JSON.stringify(newComment),
-  });
-};
+export const addNewComment = newComment => request('/comments', {
+  method: 'POST',
+  headers: {
+    'Content-type': 'aplication/json; charset=utf-8',
+  },
+  body: JSON.stringify(newComment),
+});

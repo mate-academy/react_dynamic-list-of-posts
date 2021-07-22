@@ -7,9 +7,7 @@ import {
 } from '../../api/comments';
 
 import { Comments } from '../Comments';
-
 import { NewCommentForm } from '../NewCommentForm';
-
 import './Popup.scss';
 
 const setButtonTitle = (commentsLength, isOpen) => {
@@ -41,29 +39,36 @@ export const Popup = ({
   } = post;
 
   const [comments, setComents] = useState([]);
-
   const [idCommentRemove, setIdCommentRemove] = useState(null);
   const [newComment, setNewComment] = useState(null);
-
   const [commentsVisibility, setCommentsVisibility] = useState(false);
 
   useEffect(() => {
     if (!idCommentRemove) {
-      getPostComments(postId).then(setComents);
+      getPostComments(postId)
+        .then(res => setComents(res));
 
       return;
     }
 
-    removeComment(idCommentRemove);
-    getPostComments(postId).then(setComents);
-    setIdCommentRemove(null);
+    removeComment(idCommentRemove)
+      .then(() => {
+        getPostComments(postId);
+        setIdCommentRemove(null);
+      });
   }, [idCommentRemove]);
 
   useEffect(() => {
-    addNewComment(newComment);
-    getPostComments(postId).then(setComents);
+    if (!newComment) {
+      return;
+    }
 
-    setNewComment(null);
+    addNewComment(newComment)
+      .then(() => getPostComments(postId))
+      .then((response) => {
+        setComents(response);
+        setNewComment(null);
+      });
   }, [newComment]);
 
   return (
@@ -119,7 +124,7 @@ export const Popup = ({
             &bdquo;
           </div>
 
-          {commentsVisibility
+          {(!!comments.length && commentsVisibility)
             && (
               <Comments
                 comments={comments}
