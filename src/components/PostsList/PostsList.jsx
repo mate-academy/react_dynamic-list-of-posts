@@ -1,37 +1,58 @@
-import React from 'react';
+/* eslint-disable arrow-body-style */
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import './PostsList.scss';
+import { getPosts } from '../../api/api';
 
-export const PostsList = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList = ({
+  selectedUserId,
+  setSelectedPostId,
+  selectedPostId,
+}) => {
+  const [posts, setPosts] = useState([]);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  useEffect(() => {
+    getPosts(selectedUserId).then(setPosts);
+  }, [selectedUserId]);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  const openPost = (postId) => {
+    return selectedPostId === postId
+      ? setSelectedPostId(0)
+      : setSelectedPostId(postId);
+  };
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul className="PostsList__list">
+        {posts.length > 0
+          && posts.map(post => (
+            <li className="PostsList__item" key={post.id}>
+              <div>
+                <b>
+                  [User #
+                  {post.userId}
+                  ]:
+                </b>
+                {post.title}
+              </div>
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => openPost(post.id)}
+              >
+                {selectedPostId === post.id ? 'Close' : 'Open'}
+              </button>
+            </li>
+          ))}
+      </ul>
+    </div>
+  );
+};
+
+PostsList.propTypes = {
+  selectedUserId: PropTypes.number.isRequired,
+  setSelectedPostId: PropTypes.func.isRequired,
+  selectedPostId: PropTypes.number.isRequired,
+};
