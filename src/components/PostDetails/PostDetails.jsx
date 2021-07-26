@@ -12,9 +12,10 @@ export const PostDetails = ({ selectedPostId }) => {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingComments, setLoadingComments] = useState(false);
-  const showComments = () => {
-    getPostComments(selectedPostId)
-      .then(commentsFromServer => setComments(commentsFromServer));
+  const showComments = async() => {
+    const commentsFromServer = await getPostComments(selectedPostId);
+
+    await setComments(commentsFromServer);
   };
 
   useEffect(() => {
@@ -27,7 +28,6 @@ export const PostDetails = ({ selectedPostId }) => {
         });
 
       await showComments();
-
       setLoading(false);
     };
 

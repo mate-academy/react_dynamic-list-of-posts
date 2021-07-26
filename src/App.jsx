@@ -3,6 +3,7 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { Loader } from './components/Loader';
 
 import { getUserPosts } from './api/posts';
 
@@ -10,12 +11,19 @@ const App = () => {
   const [posts, setPosts] = useState([]);
   const [selectedUser, setSelectedUser] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getUserPosts(selectedUser)
-      .then((postsFromServer) => {
-        setPosts(postsFromServer);
-      });
+    setLoading(true);
+
+    const loadPosts = async() => {
+      const postsFromServer = await getUserPosts(selectedUser);
+
+      setPosts(postsFromServer);
+      setLoading(false);
+    };
+
+    loadPosts();
   }, [selectedUser]);
 
   return (
@@ -48,11 +56,15 @@ const App = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList
-            posts={posts}
-            setSelectedPostId={setSelectedPostId}
-            selectedPostId={selectedPostId}
-          />
+          {loading
+            ? <Loader />
+            : (
+              <PostsList
+                posts={posts}
+                setSelectedPostId={setSelectedPostId}
+                selectedPostId={selectedPostId}
+              />
+            )}
         </div>
 
         <div className="App__content">
