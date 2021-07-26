@@ -4,68 +4,86 @@ import { addNewComment, getPostComments } from '../../api/api';
 import './NewCommentForm.scss';
 
 export const NewCommentForm = ({ selectedPostId, setPostComments }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [comment, setComment] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
   const [errors, setErrors] = useState({
     name: false,
     email: false,
     body: false,
   });
 
-  const validateCommentInputs = (field, input) => {
-    if (!input) {
-      setErrors({ [field]: true });
+  const validateCommentInputs = () => {
+    if (comment.name === '') {
+      setErrors({ name: true });
 
       return false;
     }
 
-    setErrors({ [field]: false });
+    setErrors({ name: false });
+
+    if (comment.email === '') {
+      setErrors({ email: true });
+
+      return false;
+    }
+
+    setErrors({ email: false });
+
+    if (comment.body === '') {
+      setErrors({ body: true });
+
+      return false;
+    }
+
+    setErrors({ body: false });
 
     return true;
   };
 
-  const setDefaultValues = () => {
-    setName('');
-    setEmail('');
-    setBody('');
-  };
+  const handleSubmit = async(event) => {
+    event.preventDefault();
 
-  const handleSubmit = async(e) => {
-    e.preventDefault();
-
-    if (!validateCommentInputs('name', name)
-    || !validateCommentInputs('email', email)
-    || !validateCommentInputs('body', body)) {
+    if (!validateCommentInputs()) {
       return;
     }
 
     const newComment = {
-      name,
-      email,
-      body,
+      ...comment,
       postId: selectedPostId,
-      createdAt: new Date(),
     };
 
     await addNewComment(newComment);
-    getPostComments(selectedPostId).then(setPostComments);
-    setDefaultValues();
+    await getPostComments(selectedPostId).then(setPostComments);
+    setComment({
+      name: '',
+      email: '',
+      body: '',
+    });
+  };
+
+  const handleChange = (event) => {
+    setComment({
+      ...comment,
+      [event.target.name]: event.target.value,
+    });
   };
 
   return (
     <form
       className="NewCommentForm"
-      onSubmit={e => handleSubmit(e)}
+      onSubmit={handleSubmit}
     >
       <div className="form-field">
         <input
           type="text"
           name="name"
           placeholder="Your name"
-          value={name}
+          value={comment.name}
           className="NewCommentForm__input"
-          onChange={e => setName(e.target.value)}
+          onChange={handleChange}
         />
       </div>
       {errors.name && <h3>Please, enter your name</h3>}
@@ -75,9 +93,9 @@ export const NewCommentForm = ({ selectedPostId, setPostComments }) => {
           type="text"
           name="email"
           placeholder="Your email"
-          value={email}
+          value={comment.email}
           className="NewCommentForm__input"
-          onChange={e => setEmail(e.target.value)}
+          onChange={handleChange}
         />
       </div>
       {errors.email && <h3>Please, enter your email</h3>}
@@ -86,9 +104,9 @@ export const NewCommentForm = ({ selectedPostId, setPostComments }) => {
         <textarea
           name="body"
           placeholder="Type comment here"
-          value={body}
+          value={comment.body}
           className="NewCommentForm__input"
-          onChange={e => setBody(e.target.value)}
+          onChange={handleChange}
         />
       </div>
       {errors.body && <h3>Please, enter your comment</h3>}

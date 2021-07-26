@@ -8,7 +8,7 @@ import './PostDetails.scss';
 export const PostDetails = ({ selectedPostId }) => {
   const [postDetails, setPostDetails] = useState([]);
   const [postComments, setPostComments] = useState([]);
-  const [commentsAreVisible, setCommentsAreVisible] = useState(true);
+  const [areCommentsVisible, setAreCommentsVisible] = useState(true);
 
   useEffect(() => {
     getPostDetails(selectedPostId).then(setPostDetails);
@@ -35,15 +35,15 @@ export const PostDetails = ({ selectedPostId }) => {
             <button
               type="button"
               className="button"
-              onClick={() => setCommentsAreVisible(!commentsAreVisible)}
+              onClick={() => setAreCommentsVisible(!areCommentsVisible)}
             >
-              {commentsAreVisible ? 'Hide' : 'Show'}
+              {areCommentsVisible ? 'Hide' : 'Show'}
               {` ${postComments.length} ${postComments.length > 1
                 ? 'comments'
                 : 'comment'}`}
             </button>
 
-            {commentsAreVisible && (
+            {areCommentsVisible && (
               <ul className="PostDetails__list">
                 {postComments.map(comment => (
                   <li className="PostDetails__list-item" key={comment.id}>

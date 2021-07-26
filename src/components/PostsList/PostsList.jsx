@@ -27,25 +27,25 @@ export const PostsList = ({
 
       <ul className="PostsList__list">
         {posts.length > 0
-        && posts.map(post => (
-          <li className="PostsList__item" key={post.id}>
-            <div>
-              <b>
-                [User #
-                {post.userId}
-                ]:
-              </b>
-              {post.title}
-            </div>
-            <button
-              type="button"
-              className="PostsList__button button"
-              onClick={() => openPost(post.id)}
-            >
-              {selectedPostId === post.id ? 'Close' : 'Open'}
-            </button>
-          </li>
-        ))}
+          && posts.map(post => (
+            <li className="PostsList__item" key={post.id}>
+              <div>
+                <b>
+                  [User #
+                  {post.userId}
+                  ]:
+                </b>
+                {post.title}
+              </div>
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => openPost(post.id)}
+              >
+                {selectedPostId === post.id ? 'Close' : 'Open'}
+              </button>
+            </li>
+          ))}
       </ul>
     </div>
   );
