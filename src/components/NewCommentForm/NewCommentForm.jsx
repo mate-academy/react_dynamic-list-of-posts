@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { addComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = ({ postId, loadComments, clearComments }) => {
+export const NewCommentForm = ({ postId, loadComments, showLoader }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
@@ -19,7 +19,7 @@ export const NewCommentForm = ({ postId, loadComments, clearComments }) => {
     }
 
     await addComment(newComment);
-      clearComments(null);
+      showLoader(true);
       loadComments();
       clearForm();
     }

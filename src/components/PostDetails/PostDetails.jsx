@@ -6,25 +6,29 @@ import { postType } from '../../types';
 import './PostDetails.scss';
 
 export const PostDetails = ({ post }) => {
-  const [comments, setComments] = useState(null);
+  const [comments, setComments] = useState([]);
   const [isCommentsVisible, setCommentVisibilitty] = useState(true);
+  const [showLoader, setShowLoader] = useState(true);
+
   const changeCommentsVisibility = () => {
     setCommentVisibilitty(prevState => !prevState)
   }
 
   const getComments = () => {
-    (async() => setComments(await getPostComments(post.id)))()
+    (async() => setComments(await getPostComments(post.id)))();
+    setShowLoader(false)
   }
 
   const deleteComment = async(id) => {
-    setComments(null);
+    setShowLoader(true);
     await removeComment(id);
     getComments();
   }
 
   useEffect(() => {
-    setComments(null);
-    (async() => setComments(await getPostComments(post.id)))()
+    setShowLoader(true);
+    (async() => setComments(await getPostComments(post.id)))();
+    setShowLoader(false);
   },[post])
 
   return (
@@ -35,7 +39,7 @@ export const PostDetails = ({ post }) => {
         <p>{post.body}</p>
       </section>
   
-      {!comments
+      {showLoader
         ? <Loader />
         : <section className="PostDetails__comments">
           {
@@ -78,7 +82,7 @@ export const PostDetails = ({ post }) => {
           <NewCommentForm
             postId={post.id}
             loadComments={getComments}
-            clearComments={setComments}
+            showLoader={setShowLoader}
           />
         </div>
       </section>
