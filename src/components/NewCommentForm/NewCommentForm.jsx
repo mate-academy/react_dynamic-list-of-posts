@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { addComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
@@ -76,4 +77,10 @@ export const NewCommentForm = ({ postId, loadComments, clearComments }) => {
       </button>
     </form>
   );
+}
+
+NewCommentForm.propTypes = {
+  postId: PropTypes.number.isRequired,
+  loadComments: PropTypes.func.isRequired,
+  clearComments: PropTypes.func.isRequired,
 }
