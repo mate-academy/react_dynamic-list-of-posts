@@ -1,5 +1,6 @@
 import React,{ useState } from 'react';
 import PropTypes from 'prop-types';
+import { postType } from '../../types'
 import { getPostDetails } from '../../api/posts';
 import './PostsList.scss';
 
@@ -46,10 +47,6 @@ export const PostsList = ({ posts, changePost }) => {
 }
 
 PostsList.propTypes = {
-  posts: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    userId: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-  })).isRequired,
+  posts: postType,
   changePost: PropTypes.func.isRequired,
 }

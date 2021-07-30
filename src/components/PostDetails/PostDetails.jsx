@@ -1,8 +1,8 @@
 import React, { useState, useEffect }from 'react';
-import PropTypes from 'prop-types';
 import { NewCommentForm } from '../NewCommentForm';
 import { Loader } from '../Loader';
 import { getPostComments, removeComment } from '../../api/comments';
+import { postType } from '../../types';
 import './PostDetails.scss';
 
 export const PostDetails = ({ post }) => {
@@ -87,9 +87,5 @@ export const PostDetails = ({ post }) => {
 }
 
 PostDetails.propTypes = {
-  post: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    userId: PropTypes.number.isRequired,
-    title: PropTypes.string.isRequired,
-  }).isRequired,
+  post: postType,
 }
