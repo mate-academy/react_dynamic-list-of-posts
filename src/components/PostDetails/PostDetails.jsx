@@ -1,57 +1,103 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { Loader } from '../Loader/Loader';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
-import { getUserPosts } from '../../api/posts';
+import { getUserPosts, removeComments } from '../../api/posts';
 
 export const PostDetails = ({ selectedPostId }) => {
   const [posts, setPosts] = useState({});
+  const [deleteOrAddWait, setDeleteOrAddWait] = useState(0);
+  const [waitForComments, setWaitForComments] = useState(false);
+  const [waitForPost, setWaitForPost] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [showComments, setShowComments] = useState(true);
 
-  if (selectedPostId !== 0) {
-    getUserPosts(selectedPostId, '/posts/').then(post => setPosts(post));
-  }
+  useEffect(() => {
+    if (selectedPostId !== 0) {
+      setWaitForPost(true);
+      setWaitForComments(true);
+      getUserPosts(selectedPostId, '/posts/')
+        .then(post => setPosts(post));
+    }
+  }, [selectedPostId]);
 
   useEffect(() => {
     (getUserPosts('', '/comments/'))
-      .then(post => console.log(post.filter(x => x.postId === selectedPostId)));
-  }, [selectedPostId]);
+      .then((post) => {
+        setComments(post.filter(x => x.postId === selectedPostId));
+      });
+  }, [comments]);
+
+  useEffect(() => {
+    (getUserPosts('', '/comments/'))
+      .then((post) => {
+        setComments(post.filter(x => x.postId === selectedPostId));
+        setWaitForComments(false);
+        setWaitForPost(false);
+      });
+  }, [selectedPostId, deleteOrAddWait]);
 
   return (
     <div className="PostDetails">
-      {selectedPostId !== 0 && (
+      {(selectedPostId !== 0) && (
         <>
           <h2>Post details:</h2>
-          <section className="PostDetails__post">
-            <p>{posts.body}</p>
-          </section>
-          <section className="PostDetails__comments">
-            <button type="button" className="button">Hide 2 comments</button>
-            <ul className="PostDetails__list">
-              <li className="PostDetails__list-item">
-                <button
-                  type="button"
-                  className="PostDetails__remove-button button"
-                >
-                  X
-                </button>
-                <p>My first comment</p>
-              </li>
-              <li className="PostDetails__list-item">
-                <button
-                  type="button"
-                  className="PostDetails__remove-button button"
-                >
-                  X
-                </button>
-                <p>sad sds dfsadf asdf asdf</p>
-              </li>
-            </ul>
-          </section>
-          <section>
-            <div className="PostDetails__form-wrapper">
-              <NewCommentForm />
-            </div>
-          </section>
+          {
+            waitForPost
+              ? (<Loader />)
+              : (
+                <>
+                  <section className="PostDetails__post">
+                    <p>{posts.body}</p>
+                  </section>
+                  <section className="PostDetails__comments">
+                    {
+                      !waitForComments && (
+                        <button
+                          onClick={() => setShowComments(prev => !prev)}
+                          type="button"
+                          className="button"
+                        >
+                          {showComments && comments.length ? 'Hide' : 'Show'}
+                          {` ${comments.length} `}
+                          comments
+                        </button>
+                      )}
+                    <ul className="PostDetails__list">
+                      {!waitForComments ? comments.map(comment => (showComments
+                        && (
+                        <li
+                          key={comment.id}
+                          className="PostDetails__list-item"
+                        >
+                          <button
+                            type="button"
+                            className="PostDetails__remove-button button"
+                            onClick={() => {
+                              removeComments(comment.id);
+                              setDeleteOrAddWait(prev => prev + 1);
+                              setWaitForComments(true);
+                            }}
+                          >
+                            X
+                          </button>
+                          <p>{comment.body}</p>
+                        </li>
+                        ))) : <Loader />}
+                    </ul>
+                  </section>
+                  <section>
+                    <div className="PostDetails__form-wrapper">
+                      <NewCommentForm
+                        setDeleteOrAddWait={setDeleteOrAddWait}
+                        setWaitForComments={setWaitForComments}
+                        selectedPostId={selectedPostId}
+                      />
+                    </div>
+                  </section>
+                </>
+              )}
         </>
       )}
     </div>

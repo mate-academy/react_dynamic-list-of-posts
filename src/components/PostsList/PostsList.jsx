@@ -2,54 +2,54 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './PostsList.scss';
 import { getUserPosts } from '../../api/posts';
+import { Loader } from '../Loader/Loader';
 
-export const PostsList = ({ changeUser }) => {
+export const PostsList = ({ changeUser, choosenUser, filterListByUser }) => {
   const [posts, setPosts] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [openOrClosePost, setOpenOrClosePost] = useState(false);
 
   useEffect(() => {
-    // getUserPosts('1', '/users/').then(a => console.log(a));
-    // getUserPosts('', '/posts/').then(a => console.log(a));
+    getUserPosts('', '/posts/').then(post => setPosts([...post]));
   }, []);
-
-  getUserPosts('', '/posts/').then(a => setPosts([...a]));
 
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
       <ul className="PostsList__list">
-        {posts.map(user => (
-          <li
-            key={user.id}
-            className="PostsList__item"
-          >
-            <div>
-              <b>
-                [User #
-                {user.userId}
-                ]:&nbsp;
-              </b>
-              {user.body}
-            </div>
-            <button
-              onClick={() => {
-                if (open === user.id) {
-                  changeUser(0);
-
-                  return setOpen(0);
-                }
-
-                changeUser(user.id);
-
-                return setOpen(user.id);
-              }}
-              type="button"
-              className="PostsList__button button"
+        {posts.length ? (
+          filterListByUser(choosenUser, posts).map(user => (
+            <li
+              key={user.id}
+              className="PostsList__item"
             >
-              {user.id === open ? 'Clear' : 'Open'}
-            </button>
-          </li>
-        ))}
+              <div>
+                <b>
+                  [User #
+                  {user.userId}
+                  ]:&nbsp;
+                </b>
+                {user.body}
+              </div>
+              <button
+                onClick={() => {
+                  if (openOrClosePost === user.id) {
+                    changeUser(0);
+
+                    return setOpenOrClosePost(0);
+                  }
+
+                  changeUser(user.id);
+
+                  return setOpenOrClosePost(user.id);
+                }}
+                type="button"
+                className="PostsList__button button"
+              >
+                {user.id === openOrClosePost ? 'Clear' : 'Open'}
+              </button>
+            </li>
+          ))
+        ) : (<Loader />)}
       </ul>
     </div>
   );
@@ -57,4 +57,6 @@ export const PostsList = ({ changeUser }) => {
 
 PostsList.propTypes = {
   changeUser: PropTypes.func.isRequired,
+  choosenUser: PropTypes.string.isRequired,
+  filterListByUser: PropTypes.func.isRequired,
 };
