@@ -10,6 +10,10 @@ const App = () => {
   const [posts, setPosts] = useState([]);
   const [selectedUserId, onUserSelect] = useState(0);
   const [isPostsListLoading, changePostListLoadingStatus] = useState(false);
+  const [
+    arePostDetailsLoading,
+    changePostDetailsLoadingStatus,
+  ] = useState(false);
   const [selectedPostId, onPostIdSelect] = useState(null);
 
   useEffect(() => {
@@ -60,13 +64,22 @@ const App = () => {
                   posts={posts}
                   selectedPostId={selectedPostId}
                   onPostIdSelect={onPostIdSelect}
+                  changePostDetailsLoadingStatus={
+                    changePostDetailsLoadingStatus
+                  }
                 />
               )
           }
         </div>
 
         <div className="App__content">
-          {selectedPostId && <PostDetails selectedPostId={selectedPostId} />}
+          {selectedPostId && (
+            <PostDetails
+              arePostDetailsLoading={arePostDetailsLoading}
+              changePostDetailsLoadingStatus={changePostDetailsLoadingStatus}
+              selectedPostId={selectedPostId}
+            />
+          )}
         </div>
       </main>
     </div>

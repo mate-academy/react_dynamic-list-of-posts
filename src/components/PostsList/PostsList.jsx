@@ -2,7 +2,12 @@ import React from 'react';
 import './PostsList.scss';
 import PropTypes, { shape } from 'prop-types';
 
-export const PostsList = ({ posts, selectedPostId, onPostIdSelect }) => (
+export const PostsList = ({
+  posts,
+  selectedPostId,
+  onPostIdSelect,
+  changePostDetailsLoadingStatus,
+}) => (
   <div className="PostsList">
     <h2>Posts:</h2>
 
@@ -16,9 +21,12 @@ export const PostsList = ({ posts, selectedPostId, onPostIdSelect }) => (
           <button
             type="button"
             className="PostsList__button button"
-            onClick={() => onPostIdSelect(
-              post.id === selectedPostId ? null : post.id,
-            )}
+            onClick={() => {
+              changePostDetailsLoadingStatus(true);
+              onPostIdSelect(
+                post.id === selectedPostId ? null : post.id,
+              );
+            }}
           >
             {post.id === selectedPostId ? 'Close' : 'Open'}
           </button>
@@ -39,4 +47,5 @@ PostsList.propTypes = {
   ).isRequired,
   selectedPostId: PropTypes.number.isRequired,
   onPostIdSelect: PropTypes.func.isRequired,
+  changePostDetailsLoadingStatus: PropTypes.func.isRequired,
 };

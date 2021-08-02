@@ -6,7 +6,11 @@ import { Loader } from '../Loader';
 import { getPostComments, removeComment } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
 
-export const PostDetails = ({ selectedPostId }) => {
+export const PostDetails = ({
+  selectedPostId,
+  arePostDetailsLoading,
+  changePostDetailsLoadingStatus,
+}) => {
   const [postDetails, setPostDetails] = useState({});
   const [comments, setComments] = useState([]);
   const [isLoading, changeLoadingStatus] = useState(false);
@@ -20,70 +24,75 @@ export const PostDetails = ({ selectedPostId }) => {
       setPostDetails(recievedPostDetails);
       setComments(recievedComments);
       changeLoadingStatus(false);
+      changePostDetailsLoadingStatus(false);
     };
 
     preparePostDetails();
   }, [selectedPostId, isLoading]);
 
-  return (
-    <div className="PostDetails">
-      <h2>Post details:</h2>
+  return arePostDetailsLoading
+    ? <Loader />
+    : (
+      <div className="PostDetails">
+        <h2>Post details:</h2>
 
-      <section className="PostDetails__post">
-        <p>{postDetails.body}</p>
-      </section>
+        <section className="PostDetails__post">
+          <p>{postDetails.body}</p>
+        </section>
 
-      {
-      isLoading
-        ? <Loader />
-        : (
-          <section className="PostDetails__comments">
-            <button
-              type="button"
-              className="button"
-              onClick={() => switchCommentsVisibility(!areCommentsVisible)}
-            >
-              {
-              `${areCommentsVisible ? 'Hide' : 'Show'} ${comments.length}
-              ${comments.length > 1 ? 'comments' : 'comment'}`
-              }
-            </button>
+        {
+        isLoading
+          ? <Loader />
+          : (
+            <section className="PostDetails__comments">
+              <button
+                type="button"
+                className="button"
+                onClick={() => switchCommentsVisibility(!areCommentsVisible)}
+              >
+                {
+                `${areCommentsVisible ? 'Hide' : 'Show'} ${comments.length}
+                ${comments.length > 1 ? 'comments' : 'comment'}`
+                }
+              </button>
 
-            {areCommentsVisible && (
-              <ul className="PostDetails__list">
-                {comments.map(comment => (
-                  <li key={comment.id} className="PostDetails__list-item">
-                    <button
-                      type="button"
-                      className="PostDetails__remove-button button"
-                      onClick={() => {
-                        removeComment(comment.id);
-                        changeLoadingStatus(true);
-                      }}
-                    >
-                      X
-                    </button>
-                    <p>{comment.body}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        )
-      }
+              {areCommentsVisible && (
+                <ul className="PostDetails__list">
+                  {comments.map(comment => (
+                    <li key={comment.id} className="PostDetails__list-item">
+                      <button
+                        type="button"
+                        className="PostDetails__remove-button button"
+                        onClick={() => {
+                          removeComment(comment.id);
+                          changeLoadingStatus(true);
+                        }}
+                      >
+                        X
+                      </button>
+                      <p>{comment.body}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          )
+        }
 
-      <section>
-        <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            changeLoadingStatus={changeLoadingStatus}
-            selectedPostId={selectedPostId}
-          />
-        </div>
-      </section>
-    </div>
-  );
+        <section>
+          <div className="PostDetails__form-wrapper">
+            <NewCommentForm
+              changeLoadingStatus={changeLoadingStatus}
+              selectedPostId={selectedPostId}
+            />
+          </div>
+        </section>
+      </div>
+    );
 };
 
 PostDetails.propTypes = {
   selectedPostId: PropTypes.number.isRequired,
+  arePostDetailsLoading: PropTypes.bool.isRequired,
+  changePostDetailsLoadingStatus: PropTypes.func.isRequired,
 };
