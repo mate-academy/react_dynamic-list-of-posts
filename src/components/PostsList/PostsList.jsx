@@ -1,37 +1,51 @@
 import React from 'react';
 import './PostsList.scss';
+import PropTypes, { shape } from 'prop-types';
 
-export const PostsList = () => (
+export const PostsList = ({
+  posts,
+  selectedPostId,
+  onPostIdSelect,
+  changePostDetailsLoadingStatus,
+}) => (
   <div className="PostsList">
     <h2>Posts:</h2>
 
     <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
-
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
+      {posts && posts.map(post => (
+        <li key={post.id} className="PostsList__item">
+          <div>
+            <b>{`[User #${post.userId}]: `}</b>
+            {post.title}
+          </div>
+          <button
+            type="button"
+            className="PostsList__button button"
+            onClick={() => {
+              changePostDetailsLoadingStatus(true);
+              onPostIdSelect(
+                post.id === selectedPostId ? null : post.id,
+              );
+            }}
+          >
+            {post.id === selectedPostId ? 'Close' : 'Open'}
+          </button>
+        </li>
+      ))}
     </ul>
   </div>
 );
+
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf(
+    shape({
+      id: PropTypes.number.isRequired,
+      userId: PropTypes.number.isRequired,
+      title: PropTypes.string.isRequired,
+      body: PropTypes.string.isRequired,
+    }).isRequired,
+  ).isRequired,
+  selectedPostId: PropTypes.number.isRequired,
+  onPostIdSelect: PropTypes.func.isRequired,
+  changePostDetailsLoadingStatus: PropTypes.func.isRequired,
+};
