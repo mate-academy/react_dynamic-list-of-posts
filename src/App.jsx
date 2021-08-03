@@ -8,7 +8,7 @@ import { getUserPosts } from './api/posts';
 
 const App = () => {
   const [posts, setPosts] = useState([]);
-  const [selectedUserId, onUserSelect] = useState(0);
+  const [selectedUserId, setSelectedUserId] = useState(0);
   const [isPostsListLoading, changePostListLoadingStatus] = useState(false);
   const [
     arePostDetailsLoading,
@@ -19,9 +19,9 @@ const App = () => {
   useEffect(() => {
     const preparePosts = async() => {
       changePostListLoadingStatus(true);
-      const recievedPosts = await getUserPosts(selectedUserId);
+      const receivedPosts = await getUserPosts(selectedUserId);
 
-      setPosts(recievedPosts);
+      setPosts(receivedPosts);
       changePostListLoadingStatus(false);
     };
 
@@ -37,7 +37,7 @@ const App = () => {
           <select
             className="App__user-selector"
             value={selectedUserId}
-            onChange={event => onUserSelect(+event.target.value)}
+            onChange={event => setSelectedUserId(Number(event.target.value))}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
