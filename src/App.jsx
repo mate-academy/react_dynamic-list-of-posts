@@ -2,19 +2,27 @@ import React, { useState, useEffect } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { getUserPosts } from './api/posts';
+import { Loader } from './components/Loader';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
 const App = () => {
   const [userId, setUserId] = useState(0);
   const [posts, setPosts] = useState([]);
+  const [selectedPostId, setSelectedPostID] = useState(0);
 
   const handleChange = (event) => {
-    setUserId(event.target.value);
+    setUserId(Number(event.target.value));
   };
 
   useEffect(() => {
-    (async() => setPosts(await getUserPosts(userId)))();
+    const updatePosts = async() => {
+      const postsToShow = await getUserPosts(userId);
+
+      setPosts(postsToShow);
+    };
+
+    updatePosts();
   }, [userId]);
 
   return (
@@ -45,12 +53,24 @@ const App = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList posts={posts} />
-        </div>
+          {posts.length === 0 ? <Loader />
+            : (
+              <PostsList
+                posts={posts}
+                selectedPostId={selectedPostId}
+                selectPost={setSelectedPostID}
+              />
+            )
+        }
 
-        {/* <div className="App__content">
-          <PostDetails />
-        </div> */}
+        </div>
+        {selectedPostId === 0 ? <></>
+          : (
+            <div className="App__content">
+              <PostDetails selectedPostId={selectedPostId} />
+            </div>
+          )
+      }
       </main>
     </div>
   );

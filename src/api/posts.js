@@ -9,5 +9,15 @@ export const getUserPosts = async(userId) => {
     return unfilteredPosts;
   }
 
-  return unfilteredPosts.filter(post => post.userId === userId);
+  const filteredPosts = unfilteredPosts.filter(post => post.userId === userId);
+
+  return filteredPosts;
+};
+
+export const getPostDetails = async(postId) => {
+  const response = await fetch(`${BASE_URL}/posts/${postId}`);
+  const detailsFromServer = await response.json();
+  const details = await detailsFromServer.data;
+
+  return details;
 };
