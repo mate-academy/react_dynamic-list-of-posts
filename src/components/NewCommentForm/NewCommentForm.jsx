@@ -20,7 +20,14 @@ export const NewCommentForm = ({ postId, setComments }) => {
 
     addCommentToServer(newComment)
       .then(() => getPostComments(postId))
-      .then(result => setComments(result));
+      .then(result => setComments(result))
+      .then(() => clearForm());
+  };
+
+  const clearForm = () => {
+    setName('');
+    setEmail('');
+    setBody('');
   };
 
   return (
