@@ -11,3 +11,15 @@ export const getPostComments = async(postId) => {
 
   return comments;
 };
+
+export const deletePostComment = async(commentId) => {
+  await fetch(`${BASE_URL}/comments/${commentId}`,
+    { method: 'DELETE' });
+};
+
+export const addPostComment = async(newPostComment) => {
+  await fetch(`${BASE_URL}/comments`, {
+    method: 'POST',
+    body: JSON.stringify(newPostComment),
+  });
+};
