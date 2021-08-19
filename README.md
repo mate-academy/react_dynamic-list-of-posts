@@ -17,8 +17,8 @@ Implement the app to manage post comments.
 1. Each post has an `Open` button that sets a `selectedPostId` in the `App`.
 1. After opening the details the `Open` button becomes `Close` and will close the details onclick.
 1. `PostDetails` component should be shown only after selecting a post.
-1. Create `getPostDetails(postId)` method in `/src/api/posts.js` and load post details from `/posts/:postId`
-1. Create `getPostComments(postId)` method in `/src/api/comments.js`, load comments from `/comments` and filter them using a given `postId`
+1. Create `getPostDetails(postId)` method in `/src/api/posts.ts` and load post details from `/posts/:postId`
+1. Create `getPostComments(postId)` method in `/src/api/comments.ts`, load comments from `/comments` and filter them using a given `postId`
 1. Add a button to `show`/`hide` comments.
 1. Add an `X` button near each comment to delete it on the server.
 1. Add a form to add a new comment to the current post
