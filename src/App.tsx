@@ -4,7 +4,7 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
-const App = () => (
+const App: React.FC = () => (
   <div className="App">
     <header className="App__header">
       <label>

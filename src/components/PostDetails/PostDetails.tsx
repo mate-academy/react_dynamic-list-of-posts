@@ -2,7 +2,7 @@ import React from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails = () => (
+export const PostDetails: React.FC = () => (
   <div className="PostDetails">
     <h2>Post details:</h2>
 
