@@ -1,7 +1,7 @@
 import React from 'react';
 import './PostsList.scss';
 
-export const PostsList = () => (
+export const PostsList: React.FC = () => (
   <div className="PostsList">
     <h2>Posts:</h2>
 

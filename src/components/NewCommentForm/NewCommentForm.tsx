@@ -1,7 +1,7 @@
 import React from 'react';
 import './NewCommentForm.scss';
 
-export const NewCommentForm = () => (
+export const NewCommentForm: React.FC = () => (
   <form className="NewCommentForm">
     <div className="form-field">
       <input
