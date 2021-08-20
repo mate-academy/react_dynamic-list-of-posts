@@ -62,10 +62,10 @@ const App = () => {
         </div>
 
         <div className="App__content">
-          <PostDetails
-            post={selectedPost}
-          />
-        </div>
+            <PostDetails
+              post={selectedPost}
+            />
+          </div>
       </main>
     </div>
   );

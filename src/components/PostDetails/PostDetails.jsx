@@ -11,7 +11,7 @@ export const PostDetails = ({ post }) => {
   useEffect(() => {
     if (post) {
       getPostComments(post.id)
-        .then(commentsFromServer => setComments(commentsFromServer));
+        .then(commentsFromServer => setComments(commentsFromServer))
     }
   }, [post]);
 
@@ -41,7 +41,7 @@ export const PostDetails = ({ post }) => {
     setComments([newComment, ...comments]);
   };
 
-  return post ? (
+  return post && (
     <div className="PostDetails">
       <h2>Post details:</h2>
 
@@ -97,7 +97,6 @@ export const PostDetails = ({ post }) => {
       </section>
     </div>
   )
-    : (<></>);
 };
 
 PostDetails.propTypes = {
