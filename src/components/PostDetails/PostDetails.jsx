@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { PostType } from '../../types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
-import { getPostComments } from '../../api/comments';
+import {
+  deleteCommentFromServer,
+  getPostComments,
+  postNewComment,
+} from '../../api/comments';
 
 export const PostDetails = ({ post }) => {
   const [comments, setComments] = useState([]);
@@ -11,16 +15,14 @@ export const PostDetails = ({ post }) => {
   useEffect(() => {
     if (post) {
       getPostComments(post.id)
-        .then(commentsFromServer => setComments(commentsFromServer))
+        .then(commentsFromServer => setComments(commentsFromServer));
     }
   }, [post]);
 
   const deleteComment = (commentId) => {
-    const preparedComments = comments.filter(comment => (
-      comment.id !== commentId
-    ));
-
-    setComments(preparedComments);
+    deleteCommentFromServer(commentId)
+      .then(() => getPostComments(post.id))
+      .then(commentsFromServer => setComments(commentsFromServer));
   };
 
   const addComment = (
@@ -29,16 +31,15 @@ export const PostDetails = ({ post }) => {
     comment,
   ) => {
     const newComment = {
-      id: comments.length + 1,
       postId: post.id,
       name,
       email,
       body: comment,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
     };
 
-    setComments([newComment, ...comments]);
+    postNewComment(newComment)
+      .then(() => getPostComments(post.id))
+      .then(commentsFromServer => setComments(commentsFromServer));
   };
 
   return post && (
@@ -96,7 +97,11 @@ export const PostDetails = ({ post }) => {
         </div>
       </section>
     </div>
-  )
+  );
+};
+
+PostDetails.defaultProps = {
+  post: {},
 };
 
 PostDetails.propTypes = {
