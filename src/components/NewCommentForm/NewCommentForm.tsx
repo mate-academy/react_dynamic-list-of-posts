@@ -31,6 +31,12 @@ export const NewCommentForm: React.FC<Props> = (props) => {
     }
   };
 
+  const reset = () => {
+    setName('');
+    setEmail('');
+    setBody('');
+  };
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const newComment = {
@@ -41,6 +47,7 @@ export const NewCommentForm: React.FC<Props> = (props) => {
     };
 
     onAdd(newComment);
+    reset();
   };
 
   return (
