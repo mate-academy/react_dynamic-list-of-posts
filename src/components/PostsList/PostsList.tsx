@@ -4,10 +4,15 @@ import './PostsList.scss';
 
 interface Props {
   selectedUserID: number;
+  changePostId: (postId: number) => void;
+  // postChoose: (isChoosed: boolean) => void;
+  selectedPostId: number;
 }
 
 export const PostsList: React.FC<Props> = (props) => {
-  const { selectedUserID } = props;
+  const {
+    selectedUserID, changePostId, selectedPostId,
+  } = props;
   const [userID, setUserID] = useState(selectedUserID);
   const [posts, setPosts] = useState([] as Post[]);
 
@@ -17,12 +22,11 @@ export const PostsList: React.FC<Props> = (props) => {
     if (userID === 0) {
       getAllPosts()
         .then(response => setPosts(response));
-
-      return;
+    } else {
+      getUserPosts(selectedUserID)
+        .then(response => setPosts(response));
     }
 
-    getUserPosts(selectedUserID)
-      .then(response => setPosts(response));
     // eslint-disable-next-line no-console
     console.log('refresh post list');
   }, [selectedUserID]);
@@ -44,8 +48,17 @@ export const PostsList: React.FC<Props> = (props) => {
             <button
               type="button"
               className="PostsList__button button"
+              onClick={(event) => {
+                event.preventDefault();
+                if (post.id === selectedPostId) {
+                  changePostId(0);
+                }
+
+                changePostId(post.id);
+                // postChoose();
+              }}
             >
-              Close
+              {selectedPostId === post.id ? 'Close' : 'Open'}
             </button>
           </li>
         ))}

@@ -8,15 +8,26 @@ import { getUsers } from './api/api';
 const App: React.FC = () => {
   const [users, setUsers] = useState([] as User[]);
   const [selectedUserID, setSelectedUserID] = useState(0);
+  const [selectedPostID, setSelectedPostID] = useState(0);
+  // const [isPostChoosed, setIsPostChoosed] = useState(false);
 
   const handleUserChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedUserID(+event.target.value);
+  };
+
+  const changePostId = (postId: number) => {
+    setSelectedPostID(postId);
   };
 
   useEffect(() => {
     getUsers()
       .then(response => setUsers(response));
   }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log(selectedPostID);
+  }, [selectedPostID]);
 
   return (
     <div className="App">
@@ -43,12 +54,20 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList selectedUserID={selectedUserID} />
+          <PostsList
+            selectedUserID={selectedUserID}
+            changePostId={changePostId}
+            // postChoose={postChoose}
+            selectedPostId={selectedPostID}
+          />
         </div>
 
-        <div className="App__content">
-          <PostDetails />
-        </div>
+        {selectedPostID !== 0 && (
+          <div className="App__content">
+            <PostDetails selectedPostId={selectedPostID} />
+          </div>
+        )}
+
       </main>
     </div>
   );
