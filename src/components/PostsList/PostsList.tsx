@@ -1,32 +1,19 @@
 import classNames from 'classnames';
-import React, { useEffect, useState } from 'react';
-import { getAllPosts, getUserPosts } from '../../api/posts';
 import './PostsList.scss';
 
 interface Props {
-  selectedUserID: number;
+  // selectedUserID: number;
   changePostId: (postId: number) => void;
   selectedPostId: number;
+  posts: Post[];
 }
 
 export const PostsList: React.FC<Props> = (props) => {
   const {
-    selectedUserID, changePostId, selectedPostId,
+    changePostId,
+    selectedPostId,
+    posts,
   } = props;
-  const [userID, setUserID] = useState(selectedUserID);
-  const [posts, setPosts] = useState([] as Post[]);
-
-  useEffect(() => {
-    setUserID(selectedUserID);
-
-    if (userID === 0) {
-      getAllPosts()
-        .then(response => setPosts(response));
-    } else {
-      getUserPosts(selectedUserID)
-        .then(response => setPosts(response));
-    }
-  }, [selectedUserID]);
 
   return (
     <div className="PostsList">

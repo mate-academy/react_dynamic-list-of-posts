@@ -3,12 +3,16 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getUsers } from './api/api';
+import { getUsers } from './api/users';
+import { getAllPosts, getUserPosts } from './api/posts';
+import { Loader } from './components/Loader';
 
 const App: React.FC = () => {
   const [users, setUsers] = useState([] as User[]);
+  const [posts, setPosts] = useState([] as Post[]);
   const [selectedUserID, setSelectedUserID] = useState(0);
   const [selectedPostID, setSelectedPostID] = useState(0);
+  // const [loading, setLoading] = useState(false);
 
   const handleUserChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedUserID(+event.target.value);
@@ -22,6 +26,22 @@ const App: React.FC = () => {
     getUsers()
       .then(response => setUsers(response));
   }, []);
+
+  useEffect(() => {
+    // setLoading(true);
+
+    if (selectedUserID === 0) {
+      setPosts([] as Post[]);
+      getAllPosts()
+        .then(response => setPosts(response));
+    } else {
+      setPosts([] as Post[]);
+      getUserPosts(selectedUserID)
+        .then(response => setPosts(response));
+    }
+
+    // setLoading(true);
+  }, [selectedUserID]);
 
   return (
     <div className="App">
@@ -48,11 +68,15 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList
-            selectedUserID={selectedUserID}
-            changePostId={changePostId}
-            selectedPostId={selectedPostID}
-          />
+          {posts.length !== 0 ? (
+            <PostsList
+              changePostId={changePostId}
+              selectedPostId={selectedPostID}
+              posts={posts}
+            />
+          )
+            : <Loader />}
+
         </div>
 
         {selectedPostID !== 0 && (
