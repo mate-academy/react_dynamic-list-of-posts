@@ -9,7 +9,6 @@ const App: React.FC = () => {
   const [users, setUsers] = useState([] as User[]);
   const [selectedUserID, setSelectedUserID] = useState(0);
   const [selectedPostID, setSelectedPostID] = useState(0);
-  // const [isPostChoosed, setIsPostChoosed] = useState(false);
 
   const handleUserChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedUserID(+event.target.value);
@@ -23,11 +22,6 @@ const App: React.FC = () => {
     getUsers()
       .then(response => setUsers(response));
   }, []);
-
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log(selectedPostID);
-  }, [selectedPostID]);
 
   return (
     <div className="App">
@@ -57,7 +51,6 @@ const App: React.FC = () => {
           <PostsList
             selectedUserID={selectedUserID}
             changePostId={changePostId}
-            // postChoose={postChoose}
             selectedPostId={selectedPostID}
           />
         </div>

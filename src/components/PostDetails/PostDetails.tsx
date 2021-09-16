@@ -12,6 +12,7 @@ export const PostDetails: React.FC<Props> = (props) => {
   const { selectedPostId } = props;
   const [post, setPost] = useState({} as Post | null);
   const [comments, setComments] = useState([] as Comment[]);
+  const [isCommentsVisible, setIsCommentVisible] = useState(true);
 
   useEffect(() => {
     getPostDetails(selectedPostId)
@@ -33,6 +34,10 @@ export const PostDetails: React.FC<Props> = (props) => {
       .then(commentsFromServer => setComments(commentsFromServer));
   };
 
+  const hideTriggerComments = () => {
+    setIsCommentVisible(!isCommentsVisible);
+  };
+
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
@@ -42,30 +47,36 @@ export const PostDetails: React.FC<Props> = (props) => {
       </section>
 
       <section className="PostDetails__comments">
-        <button type="button" className="button">
+        <button
+          type="button"
+          className="button mb-5"
+          onClick={() => hideTriggerComments()}
+        >
           {`Hide ${comments.length} comments`}
         </button>
 
-        <ul className="PostDetails__list">
-          {comments.map(comment => (
-            <li
-              className="PostDetails__list-item"
-              key={comment.id}
-            >
-              <button
-                type="button"
-                className="PostDetails__remove-button button"
-                onClick={(event) => {
-                  event.preventDefault();
-                  removeComment(comment.id);
-                }}
+        {isCommentsVisible && (
+          <ul className="PostDetails__list">
+            {comments.map(comment => (
+              <li
+                className="PostDetails__list-item"
+                key={comment.id}
               >
-                X
-              </button>
-              <p>{comment.body}</p>
-            </li>
-          ))}
-        </ul>
+                <button
+                  type="button"
+                  className="PostDetails__remove-button button"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    removeComment(comment.id);
+                  }}
+                >
+                  X
+                </button>
+                <p>{comment.body}</p>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <section>
