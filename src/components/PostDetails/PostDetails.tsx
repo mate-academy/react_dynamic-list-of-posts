@@ -78,9 +78,9 @@ export const PostDetails: React.FC<Props> = (props) => {
               )}
             </button>
 
-            {commentsDisplay && (
-              <ul className="PostDetails__list">
-                {comments.map(comment => (
+            <ul className="PostDetails__list">
+              {commentsDisplay
+                && comments.map(comment => (
                   <li
                     className="PostDetails__list-item"
                     key={comment.id}
@@ -97,8 +97,7 @@ export const PostDetails: React.FC<Props> = (props) => {
                     </p>
                   </li>
                 ))}
-              </ul>
-            )}
+            </ul>
           </section>
         </>
       )}
