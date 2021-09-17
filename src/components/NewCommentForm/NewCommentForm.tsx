@@ -68,7 +68,8 @@ export const NewCommentForm: React.FC<Props> = (props) => {
         type="submit"
         className="NewCommentForm__submit-button button"
         value={body}
-        onClick={() => {
+        onClick={(event) => {
+          event.preventDefault();
           addNewComment({
             name,
             email,

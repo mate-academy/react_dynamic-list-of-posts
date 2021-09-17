@@ -12,6 +12,7 @@ const App: React.FC = () => {
   const [posts, setPosts] = useState([] as Post[]);
   const [selectedUserID, setSelectedUserID] = useState(0);
   const [selectedPostID, setSelectedPostID] = useState(0);
+  const [loader, setLoader] = useState(false);
 
   const handleUserChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedUserID(+event.target.value);
@@ -27,14 +28,22 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    setLoader(false);
+
     if (selectedUserID === 0) {
       setPosts([] as Post[]);
       getAllPosts()
-        .then(response => setPosts(response));
+        .then(response => {
+          setPosts(response);
+          setLoader(true);
+        });
     } else {
       setPosts([] as Post[]);
       getUserPosts(selectedUserID)
-        .then(response => setPosts(response));
+        .then(response => {
+          setPosts(response);
+          setLoader(true);
+        });
     }
   }, [selectedUserID]);
 
@@ -63,12 +72,18 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          {posts.length !== 0 ? (
-            <PostsList
-              changePostId={changePostId}
-              selectedPostId={selectedPostID}
-              posts={posts}
-            />
+          {loader ? (
+            <>
+              {posts.length !== 0
+                ? (
+                  <PostsList
+                    changePostId={changePostId}
+                    selectedPostId={selectedPostID}
+                    posts={posts}
+                  />
+                )
+                : <h2>User don`t have any posts yet</h2>}
+            </>
           )
             : <Loader />}
 
