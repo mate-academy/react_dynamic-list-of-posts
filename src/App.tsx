@@ -1,41 +1,98 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { UserSelect } from './components/UserSelect/UserSelect';
+import { getUserPosts, getPostDetails } from './api/posts';
 
-const App: React.FC = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+const post = {
+  id: 0,
+  createdAt: '',
+  updatedAt: '',
+  userId: 0,
+  title: '',
+  body: '',
+};
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+const App: React.FC = () => {
+  const [posts, setPosts] = useState([]);
+  const [userSelect, setUserSelect] = useState('0');
+  const [selectedPostId, setSelectedPostId] = useState('');
+  const [postDetails, setPostDetails] = useState(post);
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+  const requestGetUserPosts = (url: string) => {
+    getUserPosts(url)
+      .then(newPosts => {
+        setPosts(newPosts);
+      });
+  };
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+  const requestGetPostDetails = (url: string) => {
+    getPostDetails(url)
+      .then(newPostsDetails => {
+        setPostDetails(newPostsDetails);
+      });
+  };
+
+  const handleSetUserSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    event.preventDefault();
+
+    setUserSelect(event.target.value);
+  };
+
+  const handleSetSelectedPostId = (event: React.ChangeEvent<HTMLSelectElement>, postId: string) => {
+    event.preventDefault();
+
+    setSelectedPostId(postId);
+  };
+
+  useEffect(() => {
+    requestGetUserPosts('');
+  }, []);
+
+  useEffect(() => {
+    if (userSelect === '0') {
+      requestGetUserPosts('');
+    } else {
+      requestGetUserPosts(`?userId=${userSelect}`);
+    }
+  }, [userSelect]);
+
+  useEffect(() => {
+    if (selectedPostId) {
+      requestGetPostDetails(`${selectedPostId}`);
+    } else {
+      setPostDetails(post);
+    }
+  }, [selectedPostId]);
+
+  return (
+    <div className="App">
+      <header className="App__header">
+        <UserSelect
+          userSelect={userSelect}
+          handleSetUserSelect={handleSetUserSelect}
+        />
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            posts={posts}
+            selectedPostId={selectedPostId}
+            handleSetSelectedPostId={handleSetSelectedPostId}
+          />
+        </div>
+
+        <div className="App__content">
+          {selectedPostId
+            ? <PostDetails postDetails={postDetails} />
+            : 'Post not selected'}
+        </div>
+      </main>
+    </div>
+  );
+};
 
 export default App;
