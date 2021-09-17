@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import './PostsList.scss';
 
 interface Props {
-  // selectedUserID: number;
   changePostId: (postId: number) => void;
   selectedPostId: number;
   posts: Post[];

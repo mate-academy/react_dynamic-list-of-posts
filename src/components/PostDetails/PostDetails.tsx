@@ -79,10 +79,7 @@ export const PostDetails: React.FC<Props> = (props) => {
                   <button
                     type="button"
                     className="PostDetails__remove-button button"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      removeComment(comment.id);
-                    }}
+                    onClick={() => removeComment(comment.id)}
                   >
                     X
                   </button>

@@ -12,7 +12,6 @@ const App: React.FC = () => {
   const [posts, setPosts] = useState([] as Post[]);
   const [selectedUserID, setSelectedUserID] = useState(0);
   const [selectedPostID, setSelectedPostID] = useState(0);
-  // const [loading, setLoading] = useState(false);
 
   const handleUserChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedUserID(+event.target.value);
@@ -28,8 +27,6 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // setLoading(true);
-
     if (selectedUserID === 0) {
       setPosts([] as Post[]);
       getAllPosts()
@@ -39,8 +36,6 @@ const App: React.FC = () => {
       getUserPosts(selectedUserID)
         .then(response => setPosts(response));
     }
-
-    // setLoading(true);
   }, [selectedUserID]);
 
   return (
