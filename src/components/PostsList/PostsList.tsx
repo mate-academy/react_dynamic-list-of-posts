@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAllPosts, getUserPosts } from '../../api/posts';
+import { Loader } from '../Loader';
 import './PostsList.scss';
 
 interface Props {
@@ -11,17 +12,25 @@ interface Props {
 export const PostsList: React.FC<Props> = (props) => {
   const { selectedUserId, selectPost, selectedPostId } = props;
   const [posts, setPosts] = useState<Post[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setIsLoading(true);
     if (selectedUserId === 0) {
       getAllPosts()
-        .then(postsFromServer => setPosts(postsFromServer));
+        .then(postsFromServer => {
+          setPosts(postsFromServer);
+          setIsLoading(false);
+        });
 
       return;
     }
 
     getUserPosts(selectedUserId)
-      .then(postsFromServer => setPosts(postsFromServer));
+      .then(postsFromServer => {
+        setPosts(postsFromServer);
+        setIsLoading(false);
+      });
   }, [selectedUserId]);
 
   const handleClick = (id: number) => (
@@ -29,6 +38,10 @@ export const PostsList: React.FC<Props> = (props) => {
       ? selectPost(0)
       : selectPost(id)
   );
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="PostsList">

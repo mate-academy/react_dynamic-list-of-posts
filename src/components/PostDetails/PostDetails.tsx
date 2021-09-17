@@ -5,6 +5,7 @@ import {
   getPostComments,
 } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
+import { Loader } from '../Loader';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
@@ -17,12 +18,20 @@ export const PostDetails: React.FC<Props> = (props) => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [isCommentsHidden, setIsCommentsHidden] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setIsLoading(true);
     getPostDetails(selectedPostId)
-      .then(post => setSelectedPost(post));
+      .then(post => {
+        setSelectedPost(post);
+        setIsLoading(false);
+      });
     getPostComments(selectedPostId)
-      .then(commentsFromServer => setComments(commentsFromServer));
+      .then(commentsFromServer => {
+        setComments(commentsFromServer);
+        setIsLoading(false);
+      });
   }, [selectedPostId]);
 
   const handleCommentsHide = () => {
@@ -40,6 +49,10 @@ export const PostDetails: React.FC<Props> = (props) => {
       .then(() => getPostComments(selectedPostId))
       .then(commentsFromServer => setComments(commentsFromServer));
   };
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <div className="PostDetails">
