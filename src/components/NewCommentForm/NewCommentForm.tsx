@@ -12,6 +12,12 @@ export const NewCommentForm: React.FC<Props> = (props) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
+  const reset = () => {
+    setBody('');
+    setName('');
+    setEmail('');
+  };
+
   const handleCommentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setBody(event.target.value);
   };
@@ -24,10 +30,15 @@ export const NewCommentForm: React.FC<Props> = (props) => {
     setEmail(event.target.value);
   };
 
-  const reset = () => {
-    setBody('');
-    setName('');
-    setEmail('');
+  const handleAddComment = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault();
+    addNewComment({
+      name,
+      email,
+      body,
+      postId,
+    });
+    reset();
   };
 
   return (
@@ -68,16 +79,7 @@ export const NewCommentForm: React.FC<Props> = (props) => {
         type="submit"
         className="NewCommentForm__submit-button button"
         value={body}
-        onClick={(event) => {
-          event.preventDefault();
-          addNewComment({
-            name,
-            email,
-            body,
-            postId,
-          });
-          reset();
-        }}
+        onClick={(event) => handleAddComment(event)}
       >
         Add a comment
       </button>

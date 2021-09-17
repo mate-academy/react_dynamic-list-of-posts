@@ -31,7 +31,6 @@ const App: React.FC = () => {
     setLoader(false);
 
     if (selectedUserID === 0) {
-      setPosts([] as Post[]);
       getAllPosts()
         .then(response => {
           setPosts(response);
