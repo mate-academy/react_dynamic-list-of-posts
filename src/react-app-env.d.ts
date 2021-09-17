@@ -18,3 +18,8 @@ interface Comment {
   createdAt?: string;
   updatedAt?: string;
 }
+
+interface User {
+  name: string;
+  id: number;
+}

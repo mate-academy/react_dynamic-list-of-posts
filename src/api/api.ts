@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://mate.academy/students-api';
+const BASE_URL = 'https://mate.academy/students-api';
 
 export const basicRequest = (url: string, option = {}) => {
   return fetch(`${BASE_URL}${url}`, option)
