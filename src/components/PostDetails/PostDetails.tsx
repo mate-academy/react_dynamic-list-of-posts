@@ -13,24 +13,19 @@ interface Props {
   selectedPostId: number;
 }
 
-export const PostDetails: React.FC<Props> = (props) => {
-  const { selectedPostId } = props;
+export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [isCommentsHidden, setIsCommentsHidden] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setIsLoading(true);
     getPostDetails(selectedPostId)
       .then(post => {
         setSelectedPost(post);
-        setIsLoading(false);
       });
     getPostComments(selectedPostId)
       .then(commentsFromServer => {
         setComments(commentsFromServer);
-        setIsLoading(false);
       });
   }, [selectedPostId]);
 
@@ -50,57 +45,57 @@ export const PostDetails: React.FC<Props> = (props) => {
       .then(commentsFromServer => setComments(commentsFromServer));
   };
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
   return (
-    <div className="PostDetails">
-      <h2>Post details:</h2>
+    selectedPost ? (
+      <div className="PostDetails">
+        <h2>Post details:</h2>
 
-      <section className="PostDetails__post">
-        <p>{selectedPost?.body}</p>
-      </section>
-
-      {comments.length > 0 && (
-        <section className="PostDetails__comments">
-          <button
-            type="button"
-            className="button"
-            onClick={handleCommentsHide}
-          >
-            {isCommentsHidden
-              ? `Show ${comments.length} ${comments.length === 1 ? 'comment' : 'comments'}`
-              : `Hide ${comments.length} ${comments.length === 1 ? 'comment' : 'comments'}`}
-          </button>
-
-          {!isCommentsHidden && (
-            <ul className="PostDetails__list">
-              {comments.map(comment => (
-                <li key={comment.id} className="PostDetails__list-item">
-                  <button
-                    type="button"
-                    className="PostDetails__remove-button button"
-                    onClick={() => removeComment(comment.id)}
-                  >
-                    X
-                  </button>
-                  <p>{comment.body}</p>
-                </li>
-              ))}
-            </ul>
-          )}
+        <section className="PostDetails__post">
+          <p>{selectedPost?.body}</p>
         </section>
-      )}
 
-      <section>
-        <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            selectedPostId={selectedPostId}
-            onAdd={addComment}
-          />
-        </div>
-      </section>
-    </div>
+        {comments.length > 0 && (
+          <section className="PostDetails__comments">
+            <button
+              type="button"
+              className="button"
+              onClick={handleCommentsHide}
+            >
+              {isCommentsHidden
+                ? `Show ${comments.length} ${comments.length === 1 ? 'comment' : 'comments'}`
+                : `Hide ${comments.length} ${comments.length === 1 ? 'comment' : 'comments'}`}
+            </button>
+
+            {!isCommentsHidden && (
+              <ul className="PostDetails__list">
+                {comments.map(comment => (
+                  <li key={comment.id} className="PostDetails__list-item">
+                    <button
+                      type="button"
+                      className="PostDetails__remove-button button"
+                      onClick={() => removeComment(comment.id)}
+                    >
+                      X
+                    </button>
+                    <p>{comment.body}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
+
+        <section>
+          <div className="PostDetails__form-wrapper">
+            <NewCommentForm
+              selectedPostId={selectedPostId}
+              onAdd={addComment}
+            />
+          </div>
+        </section>
+      </div>
+    ) : (
+      <Loader />
+    )
   );
 };

@@ -18,10 +18,10 @@ interface User {
   website: string;
   createdAt: string;
   updatedAt: string;
-  address: Adress;
+  address: Address;
 }
 
-interface Adress {
+interface Address {
   id: number;
   userId: number;
   street: string;

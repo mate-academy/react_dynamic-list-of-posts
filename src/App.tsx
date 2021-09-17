@@ -1,19 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getUsers } from './api/users';
+import { UserSelect } from './components/UserSelect';
 
 const App: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
   const [currentUserId, setCurrentUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
-
-  useEffect(() => {
-    getUsers()
-      .then(usersFromServer => setUsers(usersFromServer));
-  }, []);
 
   const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setCurrentUserId(+event.target.value);
@@ -22,24 +16,7 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <header className="App__header">
-        <label>
-          Select a user: &nbsp;
-
-          <select
-            className="App__user-selector"
-            onChange={handleSelect}
-          >
-            <option value={0}>All users</option>
-            {users.map(user => (
-              <option
-                key={user.id}
-                value={user.id}
-              >
-                {user.name}
-              </option>
-            ))}
-          </select>
-        </label>
+        <UserSelect onSelect={handleSelect} />
       </header>
 
       <main className="App__main">

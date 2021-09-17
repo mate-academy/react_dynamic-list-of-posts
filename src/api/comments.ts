@@ -1,11 +1,11 @@
 import { request } from './api';
 
 export const getPostComments = (postId: number): Promise<Comment[]> => {
-  return request(`/comments?postId=${+postId}`);
+  return request(`/comments?postId=${postId}`);
 };
 
 export const deleteCommentFromServer = (commentId: number) => {
-  return request(`/comments/${+commentId}`, {
+  return request(`/comments/${commentId}`, {
     method: 'DELETE',
   });
 };
