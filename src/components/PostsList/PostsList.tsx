@@ -13,10 +13,6 @@ export const PostsList: React.FC<Props> = (props) => {
   const [selectedPost, getSelectedPost] = useState(0);
 
   useEffect(() => {
-    getAllPosts().then((data) => getPostsOfUser(data));
-  }, []);
-
-  useEffect(() => {
     if (selectedUserId !== 0) {
       getUserPosts(selectedUserId).then((data) => getPostsOfUser(data));
     } else {
