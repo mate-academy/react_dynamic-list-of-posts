@@ -20,6 +20,8 @@ const App: React.FC = () => {
     event.preventDefault();
     getUserId(+event.target.value);
   };
+  /* eslint-disable-next-line */
+console.log(selectedUserId);
 
   useEffect(() => {
     getUsers().then(data => showUsers(data));
@@ -35,7 +37,7 @@ const App: React.FC = () => {
             className="App__user-selector"
             onChange={handleSelectOptions}
           >
-            <option value="1">All</option>
+            <option value={0}>All</option>
             {users.map(user => user && user.name !== '' && (
               <option
                 key={user && user.id}
