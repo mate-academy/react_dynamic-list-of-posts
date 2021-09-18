@@ -20,8 +20,6 @@ const App: React.FC = () => {
     event.preventDefault();
     getUserId(+event.target.value);
   };
-  /* eslint-disable-next-line */
-console.log(selectedUserId);
 
   useEffect(() => {
     getUsers().then(data => showUsers(data));
@@ -37,8 +35,14 @@ console.log(selectedUserId);
             className="App__user-selector"
             onChange={handleSelectOptions}
           >
-            {users.map(user => (
-              <option key={user && user.id} value={user && user.id}>{user && user.name}</option>
+            <option value="1">All</option>
+            {users.map(user => user && user.name !== '' && (
+              <option
+                key={user && user.id}
+                value={user && user.id}
+              >
+                {user && user.name}
+              </option>
             ))}
           </select>
         </label>

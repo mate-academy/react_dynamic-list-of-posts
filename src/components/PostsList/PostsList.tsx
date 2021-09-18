@@ -4,14 +4,12 @@ import './PostsList.scss';
 
 type Props = {
   selectedUserId: number;
-  // isVisibleDetails: boolean;
   handleVisibleDetail : (id: number) => void;
 };
 
 export const PostsList: React.FC<Props> = (props) => {
   const { selectedUserId, handleVisibleDetail } = props;
-  const [postData, getPostsOfUser] = useState<any>([]);
-  // const [isButtonClose, setButtonStatus] = useState(isVisibleDetails);
+  const [postData, getPostsOfUser] = useState<Post[]>([]);
   const [selectedPost, getSelectedPost] = useState(0);
 
   useEffect(() => {
@@ -26,7 +24,6 @@ export const PostsList: React.FC<Props> = (props) => {
 
   const handleOpenButton = (event: React.MouseEvent<HTMLButtonElement>, id: number) => {
     event.preventDefault();
-    // setButtonStatus(prevStatus => !prevStatus);
     if (!selectedPost) {
       getSelectedPost(id);
     } else {
@@ -34,8 +31,6 @@ export const PostsList: React.FC<Props> = (props) => {
     }
 
     handleVisibleDetail(id);
-    /* eslint-disable-next-line */
-    console.log(id);
   };
 
   return (
