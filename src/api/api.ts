@@ -1,1 +1,7 @@
-export const BASE_URL = 'https://mate-api.herokuapp.com';
+const BASE_URL = 'https://mate.academy/students-api';
+
+export const request = (url: string, options = {}) => (
+  fetch(`${BASE_URL}${url}`, options)
+    .then(response => (response.ok
+      ? response.json()
+      : Promise.reject(new Error('Some error message')))));
