@@ -29,17 +29,15 @@ export const PostDetails: React.FC<Props> = (props) => {
   }, [selectedPostId]);
 
   const addNewComment = async (newComment: Partial<Comment>) => {
-    await addComment(newComment as Comment);
+    const postCommentsFromAPI = await addComment(newComment);
 
-    const postCommentsFromAPI = await getPostComments(selectedPostId);
-
-    setComments(postCommentsFromAPI);
+    setComments((currentComments) => [...currentComments, postCommentsFromAPI]);
   };
 
   const deleteCommentFromAPI = async (commentId: number) => {
     await deleteComment(commentId);
 
-    setComments(comments.filter(comment => comment.id !== commentId));
+    setComments((currentComments) => currentComments.filter(comment => comment.id !== commentId));
   };
 
   const handleClick = () => {
@@ -69,7 +67,10 @@ export const PostDetails: React.FC<Props> = (props) => {
           {isCommentVisible && (
             <>
               {comments.map(comment => (
-                <li className="PostDetails__list-item">
+                <li
+                  className="PostDetails__list-item"
+                  key={comment.id}
+                >
                   <button
                     type="button"
                     className="PostDetails__remove-button button"

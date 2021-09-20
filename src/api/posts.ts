@@ -1,13 +1,13 @@
 import { requestOnAPI } from './api';
 
-export const getPosts = async () => {
+export const getPosts = () => {
   return requestOnAPI('/posts');
 };
 
-export const getUserPosts = async (userId: number) => {
+export const getUserPosts = (userId: number) => {
   return requestOnAPI(`/posts?userId=${userId}`);
 };
 
-export const getPostDetails = async (postId: number) => {
+export const getPostDetails = (postId: number) => {
   return requestOnAPI(`/posts/${postId}`);
 };

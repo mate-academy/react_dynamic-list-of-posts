@@ -1,5 +1,5 @@
 import { requestOnAPI } from './api';
 
-export const getUsers = async () => {
+export const getUsers = () => {
   return requestOnAPI('/users');
 };
