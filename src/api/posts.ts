@@ -1,7 +1,7 @@
-import { requeste } from './api';
+import { request } from './api';
 
-export const getAllPosts = () => requeste('/posts');
+export const getAllPosts = () => request('/posts');
 
-export const getUserPosts = (userId: number) => requeste(`/posts?userId=${userId}`);
+export const getUserPosts = (userId: number) => request(`/posts?userId=${userId}`);
 
-export const getPostDetails = (postId: number) => requeste(`/posts/${postId}`);
+export const getPostDetails = (postId: number) => request(`/posts/${postId}`);

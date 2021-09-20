@@ -1,3 +1,3 @@
-import { requeste } from './api';
+import { request } from './api';
 
-export const getUsers = () => requeste('/users');
+export const getUsers = () => request('/users');

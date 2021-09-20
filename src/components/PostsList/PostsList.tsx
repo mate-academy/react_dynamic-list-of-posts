@@ -52,7 +52,7 @@ export const PostsList: React.FC<Props> = (props) => {
               className="PostsList__button button"
               onClick={(event) => handleOpenButton(event, post.id)}
             >
-              {selectedPost !== post.id ? 'Open' : 'Close'}
+              {selectedPost === post.id ? 'Close' : 'Open'}
             </button>
           </li>
         ))}

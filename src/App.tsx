@@ -59,7 +59,7 @@ console.log(selectedUserId);
           />
         </div>
 
-        {isVisibleDetails && (
+        {detailedPostId && isVisibleDetails && (
           <div className="App__content">
             <PostDetails detailedPostId={detailedPostId} />
           </div>
