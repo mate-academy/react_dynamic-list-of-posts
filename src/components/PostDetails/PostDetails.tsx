@@ -1,6 +1,4 @@
-/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
-// import cn from 'classnames';
 import { NewCommentForm } from '../NewCommentForm';
 import { getPostDetails } from '../../api/post';
 import { getPostComments, handleMethodRequest } from '../../api/comments';
