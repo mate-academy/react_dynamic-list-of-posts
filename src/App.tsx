@@ -8,7 +8,7 @@ import { getUsers } from './api/users';
 const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [currentOptionId, setCurrentOptionId] = useState(0);
-  const [currentPost, setCurrentPost] = useState(0);
+  const [currentPostId, setCurrentPostId] = useState(0);
 
   useEffect(() => {
     (async () => {
@@ -19,7 +19,7 @@ const App: React.FC = () => {
   }, []);
 
   const fetchPost = (id: number) => {
-    setCurrentPost(currentPost === id ? 0 : id);
+    setCurrentPostId(currentPostId === id ? 0 : id);
   };
 
   return (
@@ -47,13 +47,13 @@ const App: React.FC = () => {
           <PostsList
             userId={currentOptionId}
             handlePostChange={fetchPost}
-            currentPost={currentPost}
+            currentPost={currentPostId}
           />
         </div>
 
-        {!!currentPost && (
+        {currentPostId && (
           <div className="App__content">
-            <PostDetails postId={currentPost} />
+            <PostDetails postId={currentPostId} />
           </div>
         )}
       </main>
