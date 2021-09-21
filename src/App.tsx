@@ -1,41 +1,92 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { getUserPosts, getUserPost } from './api/posts';
+import { getUsers } from './api/users';
 
-const App: React.FC = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+const App: React.FC = () => {
+  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [postsList, setPosts] = useState<Post[]>([]);
+  const [usersList, setUsers] = useState<User[]>([]);
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+  useEffect(() => {
+    const UserPost = async () => {
+      const posts = await getUserPosts('');
+      const users = await getUsers();
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+      setUsers(users);
+      setPosts(posts);
+    };
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+    UserPost();
+  }, []);
+
+  useEffect(() => {
+    const UserPost = async () => {
+      const post = await getUserPost(`/${selectedPostId}`);
+
+      setSelectedPost(post);
+      setSelectedPostId(0);
+    };
+
+    UserPost();
+  }, [selectedPostId]);
+
+  // eslint-disable-next-line no-console
+  console.log(selectedPost);
+
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+
+    const UserPost = async () => {
+      const posts = await getUserPosts(value !== '' ? `?userId=${value}` : '');
+
+      setPosts(posts);
+    };
+
+    UserPost();
+  };
+
+  return (
+    <div className="App">
+      <header className="App__header">
+        <label>
+          Select a user: &nbsp;
+
+          <select
+            className="App__user-selector"
+            onChange={handleChange}
+          >
+            <option value="">All users</option>
+            {usersList.map(user => (
+              <option value={user.id} key={user.id}>{user.name}</option>
+            ))}
+          </select>
+        </label>
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            postsList={postsList}
+            setSelectedPostId={setSelectedPostId}
+            setSelectedPost={setSelectedPost}
+            selectedPost={selectedPost}
+          />
+        </div>
+
+        {selectedPost
+          && (
+            <div className="App__content">
+              <PostDetails selectedPost={selectedPost} />
+            </div>
+          )}
+      </main>
+    </div>
+  );
+};
 
 export default App;
