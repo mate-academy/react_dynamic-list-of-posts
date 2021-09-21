@@ -2,10 +2,10 @@ const BASE_URL = 'https://mate.academy/students-api/';
 
 export const getComments = async (postId: number) => {
   try {
-    const comments = await fetch(`${BASE_URL}comments`);
-    const commentsJson: Comment[] = await comments.json();
+    const response = await fetch(`${BASE_URL}comments?postId=${postId}`);
+    const comments = await response.json();
 
-    return commentsJson.filter((comment: Comment) => comment.postId === postId);
+    return comments;
   } catch (error) {
     throw new Error(`Fetching comments: ${error}`);
   }

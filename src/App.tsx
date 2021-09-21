@@ -13,13 +13,19 @@ const App: React.FC = () => {
   const [users, setUsers] = useState([] as User[]);
 
   useEffect(() => {
-    getUsers()
-      .then(serverUsers => setUsers(serverUsers));
+    (async () => {
+      const usersFromApi = await getUsers();
+
+      setUsers(usersFromApi);
+    })();
   }, []);
 
   useEffect(() => {
-    getUserPosts(selectedUser)
-      .then(serverPosts => setPosts(serverPosts));
+    (async () => {
+      const postsFromApi = await getUserPosts(selectedUser);
+
+      setPosts(postsFromApi);
+    })();
   }, [selectedUser]);
 
   return (

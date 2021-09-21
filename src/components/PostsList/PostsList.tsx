@@ -10,7 +10,7 @@ type Props = {
 export const PostsList: React.FC<Props> = (props) => {
   const { posts, openPost, selectedPostId } = props;
 
-  const changeselectedPostId = (postId: number) => {
+  const changeSelectedPostId = (postId: number) => {
     const id = postId === selectedPostId ? 0 : postId;
 
     openPost(id);
@@ -24,16 +24,14 @@ export const PostsList: React.FC<Props> = (props) => {
           <li className="PostsList__item" key={post.id}>
             <div>
               <b>
-                [User #
-                {post.userId}
-                ]:
+                {`[User # ${post.userId}]:`}
               </b>
               {post.body}
             </div>
             <button
               type="button"
               className="PostsList__button button"
-              onClick={() => changeselectedPostId(post.id)}
+              onClick={() => changeSelectedPostId(post.id)}
             >
               {selectedPostId === post.id ? 'Close' : 'Open'}
             </button>
