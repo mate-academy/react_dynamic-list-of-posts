@@ -4,7 +4,7 @@ export const getPostComments = (postId: number) => request(`/comments?postId=${p
 
 export const deletePostComments = (commentId: number) => request(`/comments/${commentId}`, { method: 'DELETE' });
 
-export const commentPostComments = (comment: Comm) => request('/comments', {
+export const addPostComment = (comment: IComment) => request('/comments', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json;charset=utf-8',

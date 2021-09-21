@@ -9,7 +9,7 @@ interface Post {
   body: string,
 }
 
-interface Comm {
+interface IComment {
   postId: number,
   name: string,
   email: string,

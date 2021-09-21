@@ -4,9 +4,9 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelect } from './components/UserSelect/UserSelect';
-import { getUserPosts, getPostDetails } from './api/posts';
+import { getUserPosts, getPostDetails, getPosts } from './api/posts';
 
-const post = {
+const initialPost = {
   id: 0,
   createdAt: '',
   updatedAt: '',
@@ -18,8 +18,15 @@ const post = {
 const App: React.FC = () => {
   const [posts, setPosts] = useState([]);
   const [userSelect, setUserSelect] = useState('0');
-  const [selectedPostId, setSelectedPostId] = useState('');
-  const [postDetails, setPostDetails] = useState(post);
+  const [selectedPostId, setSelectedPostId] = useState<null | number>(null);
+  const [postDetails, setPostDetails] = useState(initialPost);
+
+  const requestGetPosts = () => {
+    getPosts()
+      .then(receivedFromServerPosts => {
+        setPosts(receivedFromServerPosts);
+      });
+  };
 
   const requestGetUserPosts = (url: string) => {
     getUserPosts(url)
@@ -41,21 +48,20 @@ const App: React.FC = () => {
     setUserSelect(event.target.value);
   };
 
-  const handleSetSelectedPostId = (event: React.ChangeEvent<HTMLSelectElement>, postId: string) => {
+  const handleSetSelectedPostId = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+    postId = null,
+  ) => {
     event.preventDefault();
 
     setSelectedPostId(postId);
   };
 
   useEffect(() => {
-    requestGetUserPosts('');
-  }, []);
-
-  useEffect(() => {
     if (userSelect === '0') {
-      requestGetUserPosts('');
+      requestGetPosts();
     } else {
-      requestGetUserPosts(`?userId=${userSelect}`);
+      requestGetUserPosts(userSelect);
     }
   }, [userSelect]);
 
@@ -63,7 +69,7 @@ const App: React.FC = () => {
     if (selectedPostId) {
       requestGetPostDetails(`${selectedPostId}`);
     } else {
-      setPostDetails(post);
+      setPostDetails(initialPost);
     }
   }, [selectedPostId]);
 

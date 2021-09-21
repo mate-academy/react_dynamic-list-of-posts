@@ -1,39 +1,53 @@
 import React, { useState, useEffect } from 'react';
-import { commentPostComments } from '../../api/comments';
+import { addPostComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
 interface Props {
   postId: number,
-  handlePostComments: any,
+  setComments: any,
 }
 
-export const NewCommentForm: React.FC<Props> = ({ postId, handlePostComments }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+const initialComment = {
+  name: '',
+  email: '',
+  body: '',
+};
+
+export const NewCommentForm: React.FC<Props> = ({
+  postId,
+  setComments,
+}) => {
+  const [comment, setComment] = useState(initialComment);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    commentPostComments({
+    addPostComment({
       postId,
-      name,
-      email,
-      body,
-    });
+      ...comment,
+    })
+      .then(res => {
+        setComments((prevState: any) => [
+          ...prevState,
+          res,
+        ]);
 
-    setTimeout(() => {
-      handlePostComments();
-      setName('');
-      setEmail('');
-      setBody('');
-    }, 100);
+        setComment(initialComment);
+      });
+  };
+
+  const changeFieldValue = ({ target }: React.ChangeEvent<HTMLInputElement>
+  | React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = target;
+
+    setComment(prevComment => ({
+      ...prevComment,
+      [name]: value,
+    }));
   };
 
   useEffect(() => {
-    setName('');
-    setEmail('');
-    setBody('');
+    setComment(initialComment);
   }, [postId]);
 
   return (
@@ -45,10 +59,10 @@ export const NewCommentForm: React.FC<Props> = ({ postId, handlePostComments }) 
         <input
           type="text"
           name="name"
-          value={name}
+          value={comment.name}
           placeholder="Your name"
           className="NewCommentForm__input"
-          onChange={({ target }) => setName(target.value)}
+          onChange={changeFieldValue}
         />
       </div>
 
@@ -56,20 +70,20 @@ export const NewCommentForm: React.FC<Props> = ({ postId, handlePostComments }) 
         <input
           type="text"
           name="email"
-          value={email}
+          value={comment.email}
           placeholder="Your email"
           className="NewCommentForm__input"
-          onChange={({ target }) => setEmail(target.value)}
+          onChange={changeFieldValue}
         />
       </div>
 
       <div className="form-field">
         <textarea
           name="body"
-          value={body}
+          value={comment.body}
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          onChange={({ target }) => setBody(target.value)}
+          onChange={changeFieldValue}
         />
       </div>
 

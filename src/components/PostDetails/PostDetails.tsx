@@ -8,10 +8,9 @@ interface Props {
 }
 
 export const PostDetails: React.FC<Props> = ({ postDetails }) => {
-  const postId = postDetails.id;
-  const postBody = postDetails.body;
+  const { id: postId, body: postBody } = postDetails;
 
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState<any[]>([]);
   const [show, setShow] = useState(true);
 
   const requestGetPostComments = (id: number) => {
@@ -26,15 +25,16 @@ export const PostDetails: React.FC<Props> = ({ postDetails }) => {
   }, [postId]);
 
   const handleSetShow = () => {
-    setShow(!show);
+    setShow(prev => !prev);
   };
 
   const handleDeletePostComments = (commentId: number) => {
-    deletePostComments(commentId);
-
-    setTimeout(() => {
-      requestGetPostComments(postId);
-    }, 100);
+    deletePostComments(commentId)
+      .then(() => {
+        setComments((prevComments: any[]) => {
+          return prevComments.filter((comment: any) => comment.id !== commentId);
+        });
+      });
   };
 
   return (
@@ -84,7 +84,7 @@ export const PostDetails: React.FC<Props> = ({ postDetails }) => {
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             postId={postId}
-            handlePostComments={() => requestGetPostComments(postId)}
+            setComments={setComments}
           />
         </div>
       </section>

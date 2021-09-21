@@ -3,7 +3,7 @@ import './PostsList.scss';
 
 interface Props {
   posts: Post[],
-  selectedPostId: string,
+  selectedPostId: number | null,
   handleSetSelectedPostId: any,
 }
 
@@ -29,12 +29,12 @@ export const PostsList: React.FC<Props> = ({
             </b>
             {title}
           </div>
-          {+selectedPostId === id
+          {selectedPostId === id
             ? (
               <button
                 type="button"
                 className="PostsList__button button active"
-                onClick={(event) => handleSetSelectedPostId(event, '')}
+                onClick={handleSetSelectedPostId}
               >
                 Close
               </button>
