@@ -1,45 +1,114 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
+import { getPostDetails } from '../../api/posts';
+import { getPostComments, deleteComment, addComment } from '../../api/comments';
+import { Loader } from '../Loader';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  selectedPostId: number;
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = (props) => {
+  const { selectedPostId } = props;
+  const [post, setPost] = useState<Post | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [loader, setLoader] = useState(true);
+  const [isHide, setIsHide] = useState(true);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  useEffect(() => {
+    setLoader(true);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+    (async () => {
+      const postFromServer = await getPostDetails(selectedPostId);
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+      setPost(postFromServer);
+      setLoader(false);
+    })();
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
+    (async () => {
+      const commentFromServer = await getPostComments(selectedPostId);
+
+      setComments(commentFromServer);
+      setLoader(false);
+    })();
+  }, [selectedPostId]);
+
+  const createComment = async (newComment: Partial<Comment>) => {
+    await addComment(newComment);
+
+    const newCommentsFromServer = await getPostComments(selectedPostId);
+
+    setComments(newCommentsFromServer);
+  };
+
+  const removeComment = async (commentId: number) => {
+    await deleteComment(commentId);
+
+    const newCommentsFromServer = await getPostComments(selectedPostId);
+
+    setComments(newCommentsFromServer);
+  };
+
+  const handleHide = () => {
+    setIsHide(!isHide);
+  };
+
+  return (
+    !loader ? (
+      <div className="PostDetails">
+        <h2>Post details:</h2>
+
+        <section className="PostDetails__post">
+          {post && post.title}
+        </section>
+
+        {comments.length > 0 && (
+          <section className="PostDetails__comments">
+            <button
+              type="button"
+              className="button"
+              onClick={handleHide}
+            >
+              {isHide
+                ? `Hide ${comments.length} comments`
+                : `Show ${comments.length} comments`}
+            </button>
+            {isHide && (
+              <ul className="PostDetails__list">
+                {comments.map(comment => (
+                  <li
+                    key={comment.id}
+                    className="PostDetails__list-item"
+                  >
+                    <button
+                      type="button"
+                      className="PostDetails__remove-button button"
+                      onClick={() => {
+                        removeComment(comment.id);
+                      }}
+                    >
+                      X
+                    </button>
+                    <p>{comment.body}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
+
+        <section>
+          <div className="PostDetails__form-wrapper">
+            <NewCommentForm
+              selectedPostId={selectedPostId}
+              onAdd={createComment}
+            />
+          </div>
+        </section>
       </div>
-    </section>
-  </div>
-);
+    ) : (
+      <Loader />
+    )
+  );
+};
