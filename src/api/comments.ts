@@ -1,4 +1,4 @@
-import { request } from './posts';
+import { request } from './api';
 
 export const getComments = (postId: number): Promise<Comment[]> => {
   return request(`/comments?postId=${postId}`);

@@ -1,15 +1,4 @@
-export const BASE_URL = 'https://mate.academy/students-api';
-
-export const request = (url: string, options = {}) => {
-  return fetch(`${BASE_URL}${url}`, options)
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`${response.statusText}`);
-      }
-
-      return response.json();
-    });
-};
+import { request } from './api';
 
 export const getAllPosts = (): Promise<Post[]> => {
   return request('/posts');
