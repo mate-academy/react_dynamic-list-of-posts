@@ -20,7 +20,8 @@ export const PostDetails: React.FC<Props> = (props) => {
   const [postDetails, setPostDetails] = useState<Post | null>(null);
   const [postComments, setPostComment] = useState<Comment[]>([]);
   const [showComment, setShowComment] = useState(false);
-  const [deletedCommentId, setDeletedCommentId] = useState<number>(0);
+  const [deletedCommentId, setDeletedCommentId] = useState(0);
+  const [commentsNumber, setCommentsNumber] = useState(0);
 
   const handleRequest = async () => {
     const responsePost = await getPostDetails(props.postId);
@@ -28,9 +29,10 @@ export const PostDetails: React.FC<Props> = (props) => {
 
     setPostDetails(responsePost);
     setPostComment(responseComment);
+    setCommentsNumber(responseComment.length);
   };
 
-  const addComment = (newComment: Comment) => {
+  const addComment = async (newComment: Comment) => {
     handleMethodRequest(newComment, 'POST');
     handleRequest();
   };
@@ -73,7 +75,7 @@ export const PostDetails: React.FC<Props> = (props) => {
               style={{ marginBottom: '10px' }}
               onClick={() => ShowCommentOnClick()}
             >
-              {`${showComment ? 'Hide' : 'Show'} ${postComments.length} comments`}
+              {`${showComment ? 'Hide' : 'Show'} ${commentsNumber} comments`}
             </button>
             {showComment && (
               <ul className="PostDetails__list">
