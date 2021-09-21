@@ -1,37 +1,60 @@
 import React from 'react';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+type Props = {
+  userPosts: Post[];
+  userPostDetail: (userId: number) => void;
+  selectedPostId: number | undefined;
+};
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = (props) => {
+  const { userPosts, selectedPostId, userPostDetail } = props;
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  return (
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+    <div className="PostsList">
+      <h2>Posts:</h2>
+      <ul className="PostsList__list">
+
+        {userPosts.map(post => {
+          const { userId, title, id } = post;
+
+          return (
+            <li className="PostsList__item" key={id}>
+              <div>
+                <b>
+                  [
+                  {`User #${userId}:`}
+                  ]
+                </b>
+                {' '}
+                {title}
+              </div>
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => userPostDetail(id)}
+              >
+                {selectedPostId === id ? 'Close' : 'Open'}
+              </button>
+            </li>
+          );
+        })}
+
+        <li className="PostsList__item">
+          <div>
+            <b>[User #2]: </b>
+            et ea vero quia laudantium autem
+          </div>
+
+          <button
+            type="button"
+            className="PostsList__button button"
+          >
+            Open
+          </button>
+        </li>
+      </ul>
+    </div>
+  );
+};
