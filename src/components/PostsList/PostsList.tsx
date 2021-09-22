@@ -79,7 +79,6 @@ export const PostsList: React.FC<Props> = (props) => {
             ))}
           </ul>
         )
-
           : <Loader />
       }
     </div>

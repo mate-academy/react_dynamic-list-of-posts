@@ -12,10 +12,11 @@ const App: React.FC = () => {
   const [postId, setPostId] = useState(0);
 
   useEffect(() => {
-    getUsers()
-      .then(response => {
-        setUsers(response);
-      });
+    (async () => {
+      const usersFromApi = await getUsers();
+
+      setUsers(usersFromApi);
+    })();
   }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
