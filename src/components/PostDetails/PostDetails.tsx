@@ -12,6 +12,8 @@ type Props = {
   selectedPostId: number;
 };
 
+// dfodfsf
+
 export const PostDetails: React.FC<Props> = (props) => {
   const { selectedPostId } = props;
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
