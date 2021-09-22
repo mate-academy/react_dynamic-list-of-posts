@@ -8,7 +8,7 @@ import { getUsers } from './api/api';
 const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUserId, setSelectedUserId] = useState(0);
-  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -22,7 +22,7 @@ const App: React.FC = () => {
     setSelectedUserId(+event.target.value);
   };
 
-  const handlePostListButton = (postId: number) => {
+  const handlePostListButton = (postId: number | null) => {
     setSelectedPostId(postId);
   };
 
@@ -52,12 +52,10 @@ const App: React.FC = () => {
           />
         </div>
 
-        {selectedPostId ? (
+        {selectedPostId && (
           <div className="App__content">
             <PostDetails selectedPostId={selectedPostId} />
           </div>
-        ) : (
-          null
         )}
       </main>
     </div>

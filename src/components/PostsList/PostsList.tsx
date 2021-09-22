@@ -1,12 +1,12 @@
 // import React from 'react';
 import React, { useState, useEffect } from 'react';
 import './PostsList.scss';
-import { getPosts, getUserPosts } from '../../api/api';
+import { getPosts, getUserPosts } from '../../api/posts';
 
 type Props = {
   selectedUserId: number;
-  selectedPostId: number;
-  handlePostListButton: (postId: number) => void;
+  selectedPostId: number | null;
+  handlePostListButton: (postId: number | null) => void;
 };
 
 export const PostsList: React.FC<Props> = (props) => {
@@ -26,7 +26,7 @@ export const PostsList: React.FC<Props> = (props) => {
       const postsFromApi = selectedUserId ? (
         await getUserPosts(selectedUserId)
       ) : (
-        await await getPosts()
+        await getPosts()
       );
 
       setPosts(postsFromApi);
@@ -58,7 +58,7 @@ export const PostsList: React.FC<Props> = (props) => {
               className="PostsList__button button"
               onClick={() => {
                 if (selectedPostId === post.id) {
-                  handlePostListButton(0);
+                  handlePostListButton(null);
                 } else {
                   handlePostListButton(post.id);
                 }

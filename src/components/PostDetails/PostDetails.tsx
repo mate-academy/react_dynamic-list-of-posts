@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { getPostDetails } from '../../api/posts';
 import {
-  getPostDetails,
   getPostComments,
   removeComment,
   addComment,
-} from '../../api/api';
+} from '../../api/comments';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
@@ -64,7 +64,9 @@ export const PostDetails: React.FC<Props> = (props) => {
               setIsCommentNotHidden(current => !current)
             )}
           >
-            {isCommentNotHidden ? 'Hide comments' : 'Show comments'}
+            {isCommentNotHidden
+              ? (`Hide ${comments.length > 1 ? comments.length : ''} ${comments.length > 1 ? 'comments' : 'the comment'}`)
+              : (`Show ${comments.length > 1 ? comments.length : ''} ${comments.length > 1 ? 'comments' : 'the comment'}`)}
           </button>
         ) : null}
 
