@@ -1,37 +1,74 @@
-import React from 'react';
+// import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './PostsList.scss';
+import { getPosts, getUserPosts } from '../../api/api';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+type Props = {
+  selectedUserId: number;
+  selectedPostId: number;
+  handlePostListButton: (postId: number) => void;
+};
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = (props) => {
+  const { selectedUserId, selectedPostId, handlePostListButton } = props;
+  const [posts, setPosts] = useState<Post[]>([]);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  useEffect(() => {
+    (async () => {
+      const postsFromApi = await getPosts();
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      setPosts(postsFromApi);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      const postsFromApi = selectedUserId ? (
+        await getUserPosts(selectedUserId)
+      ) : (
+        await await getPosts()
+      );
+
+      setPosts(postsFromApi);
+    })();
+  }, [selectedUserId]);
+
+  if (!posts.length) {
+    return (
+      <div className="PostsList">
+        <h2>Posts:</h2>
+        <div>The user has got no posts yet.</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+      <ul className="PostsList__list">
+        {posts.map(post => (
+          <li className="PostsList__item" key={post.id}>
+            <div>
+              <b>{`[User #${post.userId}]: `}</b>
+              {post.title}
+            </div>
+
+            <button
+              type="button"
+              className="PostsList__button button"
+              onClick={() => {
+                if (selectedPostId === post.id) {
+                  handlePostListButton(0);
+                } else {
+                  handlePostListButton(post.id);
+                }
+              }}
+            >
+              {selectedPostId === post.id ? 'Close' : 'Open'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
