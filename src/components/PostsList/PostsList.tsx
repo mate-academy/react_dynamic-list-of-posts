@@ -3,10 +3,11 @@ import './PostsList.scss';
 
 type Props = {
   posts: Post[];
+  onChangePostId: (postId: number) => void;
 };
 
 export const PostsList: React.FC<Props> = (props) => {
-  const { posts } = props;
+  const { posts, onChangePostId } = props;
 
   return (
     <div className="PostsList">
@@ -24,40 +25,12 @@ export const PostsList: React.FC<Props> = (props) => {
             <button
               type="button"
               className="PostsList__button button"
+              onClick={() => onChangePostId(post.id)}
             >
-              Close
+              Open
             </button>
           </li>
         ))}
-      </ul>
-
-      <ul className="PostsList__list">
-        <li className="PostsList__item">
-          <div>
-            <b>[User #1]: </b>
-            sunt aut facere repellat provident occaecati excepturi optio
-          </div>
-          <button
-            type="button"
-            className="PostsList__button button"
-          >
-            Close
-          </button>
-        </li>
-
-        <li className="PostsList__item">
-          <div>
-            <b>[User #2]: </b>
-            et ea vero quia laudantium autem
-          </div>
-
-          <button
-            type="button"
-            className="PostsList__button button"
-          >
-            Open
-          </button>
-        </li>
       </ul>
     </div>
   );
