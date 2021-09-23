@@ -3,12 +3,13 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getUserPosts } from './api/posts';
+import { getPostDetails, getUserPosts } from './api/posts';
 import { UserSelect } from './components/UserSelect/UserSelect';
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedUser, setSelectedUser] = useState(0);
+  const [selectedPost, setSelectedPost] = useState<Partial<Post>>({});
   const [selectedPostId, setSelectedPostId] = useState(0);
   const [isPostDetailsVisible, setIsPostDetailsVisible] = useState(false);
 
@@ -19,6 +20,14 @@ const App: React.FC = () => {
       setPosts(postsFromServer);
     })();
   }, [selectedUser]);
+
+  useEffect(() => {
+    (async () => {
+      const post = await getPostDetails(selectedPostId);
+
+      setSelectedPost(post);
+    })();
+  }, [selectedPostId]);
 
   const changePostUserId = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = event.target;
@@ -56,14 +65,16 @@ const App: React.FC = () => {
           <PostsList
             posts={posts}
             onChangePostId={changeSelectedPostId}
+            selectedPostId={selectedPostId}
           />
         </div>
-
-        <div className="App__content">
-          {isPostDetailsVisible && (
-            <PostDetails />
-          )}
-        </div>
+        {isPostDetailsVisible && (
+          <div className="App__content">
+            <PostDetails
+              post={selectedPost}
+            />
+          </div>
+        )}
       </main>
     </div>
   );

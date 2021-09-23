@@ -13,3 +13,9 @@ interface User {
   id: number;
   name: string;
 }
+
+interface Comment {
+  id: number;
+  postId: number | undefined;
+  body: string;
+}

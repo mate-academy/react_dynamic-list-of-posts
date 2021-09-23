@@ -5,7 +5,10 @@ export const getUserPosts = async (userId: number): Promise<Post[]> => {
     ? await fetch(`${BASE_URL}/posts?userId=${userId}`)
     : await fetch(`${BASE_URL}/posts`);
 
-  if (response.ok) {
+  if (response.ok
+    && response.headers
+      .get('content-type')
+      ?.includes('application/json')) {
     return response.json();
   }
 
@@ -15,7 +18,10 @@ export const getUserPosts = async (userId: number): Promise<Post[]> => {
 export const getPostDetails = async (postId: number): Promise<Post> => {
   const response = await fetch(`${BASE_URL}/posts/${postId}`);
 
-  if (response.ok) {
+  if (response.ok
+    && response.headers
+      .get('content-type')
+      ?.includes('application/json')) {
     return response.json();
   }
 

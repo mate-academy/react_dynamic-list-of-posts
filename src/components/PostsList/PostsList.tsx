@@ -1,13 +1,15 @@
+import classNames from 'classnames';
 import React from 'react';
 import './PostsList.scss';
 
 type Props = {
   posts: Post[];
   onChangePostId: (postId: number) => void;
+  selectedPostId: number;
 };
 
 export const PostsList: React.FC<Props> = (props) => {
-  const { posts, onChangePostId } = props;
+  const { posts, onChangePostId, selectedPostId } = props;
 
   return (
     <div className="PostsList">
@@ -24,10 +26,18 @@ export const PostsList: React.FC<Props> = (props) => {
             </div>
             <button
               type="button"
-              className="PostsList__button button"
+              className={classNames(
+                {
+                  PostsList__button: true,
+                  button: true,
+                  'button--active': selectedPostId === post.id,
+                },
+              )}
               onClick={() => onChangePostId(post.id)}
             >
-              Open
+              {selectedPostId === post.id
+                ? 'Close'
+                : 'Open'}
             </button>
           </li>
         ))}
