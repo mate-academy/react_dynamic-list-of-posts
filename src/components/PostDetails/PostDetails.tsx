@@ -21,8 +21,8 @@ export const PostDetails: React.FC<Props> = (props) => {
   useEffect(() => {
     (async () => {
       const [selectedPostFromApi, commentsFromApi] = await Promise.all([
-        await getPostDetails(selectedPostId),
-        await getPostComments(selectedPostId),
+        getPostDetails(selectedPostId),
+        getPostComments(selectedPostId),
       ]);
 
       setSelectedPost(selectedPostFromApi);
@@ -56,7 +56,7 @@ export const PostDetails: React.FC<Props> = (props) => {
       </section>
 
       <section className="PostDetails__comments">
-        {comments.length ? (
+        {comments.length && (
           <button
             type="button"
             className="button"
@@ -68,7 +68,7 @@ export const PostDetails: React.FC<Props> = (props) => {
               ? (`Hide ${comments.length > 1 ? comments.length : ''} ${comments.length > 1 ? 'comments' : 'the comment'}`)
               : (`Show ${comments.length > 1 ? comments.length : ''} ${comments.length > 1 ? 'comments' : 'the comment'}`)}
           </button>
-        ) : null}
+        )}
 
         {isCommentNotHidden && (
           <ul className="PostDetails__list">
