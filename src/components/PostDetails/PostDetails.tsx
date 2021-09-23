@@ -66,7 +66,7 @@ export const PostDetails: React.FC<Props> = (props) => {
           </button>
 
           <ul className="PostDetails__list">
-            {!isHiddenComments && (
+            {isHiddenComments || (
               comments.map(comment => (
                 <li
                   key={comment.id}
