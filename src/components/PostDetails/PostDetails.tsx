@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { getPostComments } from '../../api/comments';
+import { deleteCommentFromServer, getPostComments } from '../../api/comments';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
 type Props = {
   post: Partial<Post>;
+  selectedPostId: number;
 };
 
 export const PostDetails: React.FC<Props> = (props) => {
-  const { post } = props;
+  const { post, selectedPostId } = props;
   const [comments, setComments] = useState<Comment[]>([]);
   const [isVisibleComments, setIsVisibleComments] = useState(true);
+  const [forUpdateComments, setForUpdateComments] = useState(true);
 
   const changeCommentsVisibility = () => {
     setIsVisibleComments(!isVisibleComments);
@@ -22,7 +24,16 @@ export const PostDetails: React.FC<Props> = (props) => {
 
       setComments(selectedPostComments);
     })();
-  }, [post]);
+  }, [post, forUpdateComments]);
+
+  const updateComment = () => {
+    setForUpdateComments(!forUpdateComments);
+  };
+
+  const deleteComment = async (commentId: number) => {
+    await deleteCommentFromServer(commentId);
+    updateComment();
+  };
 
   return (
     <div className="PostDetails">
@@ -59,6 +70,7 @@ export const PostDetails: React.FC<Props> = (props) => {
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
+                  onClick={() => deleteComment(comment.id)}
                 >
                   X
                 </button>
@@ -71,7 +83,10 @@ export const PostDetails: React.FC<Props> = (props) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm />
+          <NewCommentForm
+            updateComment={updateComment}
+            selectedPostId={selectedPostId}
+          />
         </div>
       </section>
     </div>

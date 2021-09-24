@@ -22,13 +22,10 @@ export const addNewComment = async (comment: Partial<Comment>) => {
   return newCommentToServer.json();
 };
 
-const newComment: Partial<Comment> = {
-  id: 327493848934,
-  postId: 4,
-  email: 'email',
-  body: 'body',
-  name: 'name',
-};
+export const deleteCommentFromServer = async (commentId: number) => {
+  const deleted = await fetch(`${BASE_URL}/comments/${commentId}`, {
+    method: 'DELETE',
+  });
 
-//  eslint-disable-next-line no-console
-console.log(addNewComment(newComment));
+  return deleted;
+};

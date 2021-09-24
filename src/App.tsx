@@ -62,6 +62,7 @@ const App: React.FC = () => {
         {isPostDetailsVisible && (
           <div className="App__content">
             <PostDetails
+              selectedPostId={selectedPostId}
               post={selectedPost}
             />
           </div>
