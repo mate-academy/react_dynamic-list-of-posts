@@ -15,7 +15,7 @@ export const UserSelect: React.FC<Props> = (props) => {
 
       setUsers(usersFromServer);
     })();
-  }, [users]);
+  }, []);
 
   return (
     <label>

@@ -14,34 +14,26 @@ const App: React.FC = () => {
   const [isPostDetailsVisible, setIsPostDetailsVisible] = useState(false);
 
   useEffect(() => {
+    if (selectedPostId === 0) {
+      setIsPostDetailsVisible(false);
+    } else {
+      setIsPostDetailsVisible(true);
+    }
+
     (async () => {
       const postsFromServer = await getUserPosts(selectedUser);
-
-      setPosts(postsFromServer);
-    })();
-  }, [selectedUser]);
-
-  useEffect(() => {
-    (async () => {
       const post = await getPostDetails(selectedPostId);
 
+      setPosts(postsFromServer);
       setSelectedPost(post);
     })();
-  }, [selectedPostId]);
+  }, [selectedUser, selectedPostId]);
 
   const changePostUserId = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = event.target;
 
     setSelectedUser(+value);
   };
-
-  useEffect(() => {
-    if (selectedPostId === 0) {
-      setIsPostDetailsVisible(false);
-    } else {
-      setIsPostDetailsVisible(true);
-    }
-  }, [selectedPostId]);
 
   const changeSelectedPostId = (postId: number) => {
     if (postId === selectedPostId) {
@@ -53,7 +45,6 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <div>{selectedPostId}</div>
       <header className="App__header">
         <UserSelect
           onChange={changePostUserId}
