@@ -1,45 +1,98 @@
-import React from 'react';
+/* eslint-disable no-console */
+import React, { useEffect, useState } from 'react';
+import {
+  getPostsDetails,
+  getComments,
+  removeCommentById,
+  addComment,
+} from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+interface Props {
+  selectedPostId: number;
+}
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = (props) => {
+  const { selectedPostId } = props;
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isCommentVisible, setIsCommentVisible] = useState(false);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  useEffect(() => {
+    (async () => {
+      const postDetailsFromAPI = await getPostsDetails(selectedPostId);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+      setSelectedPost(postDetailsFromAPI);
+    })();
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+    (async () => {
+      const postCommentsFromAPI = await getComments(selectedPostId);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+      setComments(postCommentsFromAPI);
+    })();
+  }, [selectedPostId]);
+
+  const removeComment = async (id: number) => {
+    await removeCommentById(id);
+
+    setComments((currentComments) => currentComments.filter(comment => comment.id !== id));
+  };
+
+  const addNewComment = async (comment: Partial<Comment>) => {
+    const commentAPI = await addComment(comment);
+
+    setComments((curComments) => [...curComments, commentAPI]);
+  };
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <p>{selectedPost?.body}</p>
+      </section>
+
+      <section className="PostDetails__comments">
+        <button
+          type="button"
+          className="button"
+          onClick={() => {
+            setIsCommentVisible(prevState => !prevState);
+          }}
+        >
+          {isCommentVisible ? 'Hide' : 'Show'}
+        </button>
+
+        {isCommentVisible && (
+          <ul className="PostDetails__list">
+            {comments.map(comment => (
+              <li
+                className="PostDetails__list-item"
+                key={comment.id}
+              >
+                <button
+                  onClick={() => removeComment(comment.id)}
+                  type="button"
+                  className="PostDetails__remove-button button"
+                >
+                  X
+                </button>
+                <p>{comment.body}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            onAdd={addNewComment}
+            selectedPostId={selectedPostId}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};
