@@ -21,7 +21,7 @@ export const PostDetails: React.FC<Props> = (props) => {
 
       setPostDetails(getPostDetailsFromApi);
     })();
-  }, [postDetails]);
+  }, [selectedPostId]);
 
   useEffect(() => {
     (async () => {
@@ -29,7 +29,7 @@ export const PostDetails: React.FC<Props> = (props) => {
 
       setPostComments(getCommentsFromApi);
     })();
-  }, [postComments]);
+  }, [selectedPostId]);
 
   const addComment = async (newComment: Comment) => {
     await addCommentPost(newComment);
