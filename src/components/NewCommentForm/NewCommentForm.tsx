@@ -34,6 +34,7 @@ export const NewCommentForm: React.FC<Props> = (props) => {
     <form className="NewCommentForm" onSubmit={handleSubmitForm}>
       <div className="form-field">
         <input
+          required
           type="text"
           name="name"
           placeholder="Your name"
@@ -45,6 +46,7 @@ export const NewCommentForm: React.FC<Props> = (props) => {
 
       <div className="form-field">
         <input
+          required
           type="text"
           name="email"
           placeholder="Your email"
@@ -56,6 +58,7 @@ export const NewCommentForm: React.FC<Props> = (props) => {
 
       <div className="form-field">
         <textarea
+          required
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
