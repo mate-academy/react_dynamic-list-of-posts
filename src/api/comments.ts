@@ -3,11 +3,11 @@ export const getPostComments = (postId: number) => {
     .then(response => response.json());
 };
 
-export const deletePostComments = (commentId: number) => {
+export const deletePostComment = (commentId: number) => {
   return fetch(`https://mate.academy/students-api/comments/${commentId}`, { method: 'DELETE' });
 };
 
-export const addPostComments = (postId: number, name: string, email: string, body: string) => {
+export const addPostComment = (postId: number, name: string, email: string, body: string) => {
   return fetch('https://mate.academy/students-api/comments', {
     method: 'POST',
     headers: {

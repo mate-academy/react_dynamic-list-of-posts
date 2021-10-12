@@ -6,16 +6,20 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onCommentAdd }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [bodyMessage, SetBodyMessage] = useState('');
+  const [comment, setComment] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    onCommentAdd(name, email, bodyMessage);
-    setName('');
-    setEmail('');
-    SetBodyMessage('');
+    onCommentAdd(comment.name, comment.email, comment.body);
+    setComment({
+      name: '',
+      email: '',
+      body: '',
+    });
   };
 
   return (
@@ -27,8 +31,12 @@ export const NewCommentForm: React.FC<Props> = ({ onCommentAdd }) => {
         <input
           type="text"
           name="name"
-          value={name}
-          onChange={event => setName(event.target.value)}
+          value={comment.name}
+          onChange={event => setComment(prevComment => ({
+            name: event.target.value,
+            email: prevComment.email,
+            body: prevComment.body,
+          }))}
           placeholder="Your name"
           className="NewCommentForm__input"
         />
@@ -37,8 +45,12 @@ export const NewCommentForm: React.FC<Props> = ({ onCommentAdd }) => {
         <input
           type="text"
           name="email"
-          value={email}
-          onChange={event => setEmail(event.target.value)}
+          value={comment.email}
+          onChange={event => setComment(prevComment => ({
+            name: prevComment.name,
+            email: event.target.value,
+            body: prevComment.body,
+          }))}
           placeholder="Your email"
           className="NewCommentForm__input"
         />
@@ -46,8 +58,12 @@ export const NewCommentForm: React.FC<Props> = ({ onCommentAdd }) => {
       <div className="form-field">
         <textarea
           name="body"
-          value={bodyMessage}
-          onChange={event => SetBodyMessage(event.target.value)}
+          value={comment.body}
+          onChange={event => setComment(prevComment => ({
+            name: prevComment.name,
+            email: prevComment.email,
+            body: event.target.value,
+          }))}
           placeholder="Type comment here"
           className="NewCommentForm__input"
         />

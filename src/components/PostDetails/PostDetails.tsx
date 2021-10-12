@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { addPostComments, deletePostComments, getPostComments } from '../../api/comments';
+import { addPostComment, deletePostComment, getPostComments } from '../../api/comments';
 import { getPostDetails } from '../../api/post';
 import { Post, Comment } from '../../react-app-env';
 import { NewCommentForm } from '../NewCommentForm';
@@ -35,12 +35,12 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
   }, [postId]);
 
   const deleteComment = async (commentId: number) => {
-    await deletePostComments(commentId);
+    await deletePostComment(commentId);
     handlePostComments();
   };
 
   const addComment = async (name: string, email: string, body: string) => {
-    await addPostComments(postId, name, email, body);
+    await addPostComment(postId, name, email, body);
     handlePostComments();
   };
 
@@ -51,15 +51,17 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
         <p>{postDetail.body}</p>
       </section>
       <section className="PostDetails__comments">
-        <button
-          type="button"
-          className="button"
-          onClick={() => toggleVisibility(!isVisible)}
-        >
-          {isVisible ? 'Hide ' : 'Show '}
-          {postComments.length}
-          {' comments'}
-        </button>
+        {postComments.length > 0 && (
+          <button
+            type="button"
+            className="button"
+            onClick={() => toggleVisibility(!isVisible)}
+          >
+            {isVisible ? 'Hide ' : 'Show '}
+            {postComments.length}
+            {' comments'}
+          </button>
+        )}
         {isVisible
         && (
           <ul className="PostDetails__list">
