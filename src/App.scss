@@ -67,8 +67,14 @@ ul {
 
   &__content {
     @extend %stretch-panel;
-
     flex-basis: 30%;
     border-color: green;
+  }
+
+  &__post {
+    @extend %stretch-panel;
+    font-weight: bold;
+    text-align: center;
+    font-size: 32px;
   }
 }
