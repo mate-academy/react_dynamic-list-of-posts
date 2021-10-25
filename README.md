@@ -12,15 +12,15 @@ Implement the app to manage post comments.
 > Don't use class components. Use React Hooks instead.
 
 1. Create an `/src/api/posts.ts` and add a method `getUserPosts(userId)` there
-1. Load posts and show them using the `PostsList` on page load. (use `useEffect` as a `componentDidMount`)
-1. Implement the UserSelect to show only the posts of the selected user. (call `getUserPosts` each time when user changes)
-1. Each post has an `Open` button that sets a `selectedPostId` in the `App`.
-1. After opening the details the `Open` button becomes `Close` and will close the details onclick.
-1. `PostDetails` component should be shown only after selecting a post.
-1. Create `getPostDetails(postId)` method in `/src/api/posts.ts` and load post details from `/posts/:postId`
-1. Create `getPostComments(postId)` method in `/src/api/comments.ts`, load comments from `/comments` and filter them using a given `postId`
-1. Add a button to `show`/`hide` comments.
-1. Add an `X` button near each comment to delete it on the server.
-1. Add a form to add a new comment to the current post
-1. Comments should be immediately updated after adding or removing.
+2. Load `posts` and show them using the `PostsList` on page load. (use `useEffect` as a `componentDidMount`)
+3. Implement the `UserSelect` to show only the `posts` of the selected user. (call `getUserPosts` each time when user changes)
+4. Each `post` has an `Open` button that sets a `selectedPostId` in the `App`.
+5. After opening the details the `Open` button becomes `Close` and will close the details on click.
+6. `PostDetails` component should be shown only after selecting a `post`.
+7. Create `getPostDetails(postId)` method in `/src/api/posts.ts` and load post details from `/posts/:postId`
+8. Create `getPostComments(postId)` method in `/src/api/comments.ts`, load comments from `/comments` and filter them using a given `postId`
+9. Add a button to `show`/`hide` comments.
+10. Add an `X` button near each comment to delete it on the server.
+11. Add a form to add a new comment to the current post
+12. Comments should be immediately updated after adding or removing.
 
