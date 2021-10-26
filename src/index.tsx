@@ -1,4 +1,6 @@
 import ReactDOM from 'react-dom';
+import 'bulma';
+import '@fortawesome/fontawesome-free/css/all.css';
 
 import App from './App';
 
