@@ -8,13 +8,17 @@ const App: React.FC = () => {
   const [userId, addUserId] = useState('0');
   const [postId, addPostId] = useState<number | null>(null);
 
+  const changeUser = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    addUserId(event.target.value);
+  };
+
   return (
     <div className="App">
       <header className="App__header">
         <label htmlFor="userSelector">
           Select a user: &nbsp;
           <select
-            onChange={(event) => addUserId(event.target.value)}
+            onChange={(event) => changeUser(event)}
             value={userId}
             className="App__user-selector"
             id="userSelector"

@@ -19,6 +19,7 @@ export const PostsList: React.FC<Props> = ({
     getPosts().then(promise => {
       addPosts(promise);
     });
+    addPostId(null);
   }, [userId]);
 
   const checkPostSelected = (id: number) => {

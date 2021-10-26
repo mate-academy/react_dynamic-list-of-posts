@@ -3,7 +3,7 @@ import { sendCommentToServer } from '../../api/api';
 import './NewCommentForm.scss';
 
 type Props = {
-  postIdId: number,
+  postIdId: number | null,
 };
 
 export const NewCommentForm: React.FC<Props> = ({

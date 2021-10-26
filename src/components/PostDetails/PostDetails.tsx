@@ -8,7 +8,7 @@ import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
 type Props = {
-  postId: number,
+  postId: number | null,
 };
 
 export const PostDetails: React.FC<Props> = ({
