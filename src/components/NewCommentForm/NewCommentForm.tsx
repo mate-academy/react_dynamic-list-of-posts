@@ -11,8 +11,8 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addNewComment }) => {
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
 
-  const onSubmit: React.FormEventHandler = (e) => {
-    e.preventDefault();
+  const onSubmit: React.FormEventHandler = (event) => {
+    event.preventDefault();
 
     addNewComment({
       postId,
