@@ -8,8 +8,14 @@ import { PostDetails } from './components/PostDetails';
 import { getPosts, getPostById } from './api/post';
 
 const App: React.FC = () => {
+  const initialPost = {
+    id: 0,
+    title: '',
+    userId: 0,
+    body: '',
+  };
   const [posts, setPosts] = useState<Post[]>([]);
-  const [post, setPost] = useState<Post | null>(null);
+  const [post, setPost] = useState<Post>(initialPost);
 
   const loadPosts = (userId: number) => {
     getPosts(userId).then(loadedPosts => setPosts(loadedPosts));
@@ -19,7 +25,7 @@ const App: React.FC = () => {
     if (post?.id !== id) {
       getPostById(id).then(loadedPost => setPost(loadedPost));
     } else {
-      setPost(null);
+      setPost(initialPost);
     }
   };
 
@@ -58,12 +64,12 @@ const App: React.FC = () => {
           <PostsList
             posts={posts}
             loadPost={loadPost}
-            selectedPostId={post?.id}
+            selectedPostId={post.id}
           />
         </div>
 
         <div className="App__content">
-          {post && <PostDetails post={post} />}
+          {post.id ? <PostDetails post={post} /> : 'No selected post'}
         </div>
       </main>
     </div>

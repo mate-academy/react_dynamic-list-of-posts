@@ -4,7 +4,7 @@ import './PostsList.scss';
 type Props = {
   posts: Post[],
   loadPost: (id: number) => void,
-  selectedPostId?: number | null,
+  selectedPostId: number | null,
 };
 
 export const PostsList: React.FC<Props> = ({ posts, loadPost, selectedPostId = 0 }) => (
