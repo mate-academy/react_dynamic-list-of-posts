@@ -21,7 +21,6 @@ export const PostsList: React.FC<Props> = ({ userId, selectPost, selectedPost })
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
-      {userId}
       <ul className="PostsList__list">
         {posts.map(post => (
           <li className="PostsList__item" key={post.id}>
