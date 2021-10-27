@@ -11,7 +11,7 @@ export const request = (endpoint = '', options = {}) => (
     })
 );
 
-export const post = (url: string, data: Comment) => (
+export const post = (url: string, data: Partial<Comment>): Promise<Comment> => (
   request(url, {
     method: 'POST',
     headers: {

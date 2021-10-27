@@ -9,6 +9,6 @@ export const deleteComment = (commentId: number) => {
   remove(`/comments/${commentId}`);
 };
 
-export const addNewComment = (newComment: Comment) => {
-  post('/comments', newComment);
+export const addNewComment = (newComment: Partial<Comment>): Promise<Comment> => {
+  return post('/comments', newComment);
 };

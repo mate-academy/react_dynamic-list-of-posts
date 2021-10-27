@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { addNewComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
 interface Props {
   postId: number,
+  onAddNewComment: (newComment: Partial<Comment>) => void,
 }
 
-export const NewCommentForm: React.FC<Props> = ({ postId }) => {
+export const NewCommentForm: React.FC<Props> = ({ postId, onAddNewComment }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
@@ -27,7 +27,8 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
       body,
     };
 
-    addNewComment(newComment as Comment);
+    onAddNewComment(newComment);
+
     resetForm();
   };
 
@@ -46,6 +47,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
+          required
           value={name}
           onChange={(event) => setName(event.target.value)}
         />
@@ -57,6 +59,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
+          required
           value={email}
           onChange={(event) => setEmail(event.target.value)}
         />
@@ -67,6 +70,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
+          required
           value={body}
           onChange={(event) => setBody(event.target.value)}
         />

@@ -20,7 +20,10 @@ export const PostsList: React.FC<Props> = ({
         const { userId, title, id } = post;
 
         return (
-          <li className="PostsList__item">
+          <li
+            className="PostsList__item"
+            key={id}
+          >
             <div>
               <b>
                 [User&nbsp;
