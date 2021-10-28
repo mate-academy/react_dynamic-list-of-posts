@@ -14,7 +14,7 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   const [details, setDetails] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
-  const [visibility, setVisibility] = useState(true);
+  const [visibility, setVisibility] = useState<boolean>(true);
   const [loadingStatus, setLoadingStatus] = useState(true);
 
   useEffect(() => {
@@ -30,16 +30,16 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
 
   const deleteComment = (commentId: number) => {
     removeComment(commentId)
-      .then(() => {
-        getPostComments(selectedPostId).then(current => setComments(current));
+      .then(res => {
+        if (res) {
+          setComments(current => current.filter(comment => comment.id !== commentId));
+        }
       });
   };
 
   const addComment = (comment: Partial<Comment>) => {
     postComment(comment)
-      .then(() => {
-        getPostComments(selectedPostId).then(updatedComments => setComments(updatedComments));
-      });
+      .then(res => setComments([...comments, res]));
   };
 
   if (loadingStatus) {
