@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { getPosts } from '../../api/api';
+import { getPosts } from '../../api/posts';
 import './PostsList.scss';
 
 type Props = {
-  userId: string,
+  userId: number,
   getPostId: (value: number | null) => void,
 };
 
@@ -34,8 +34,8 @@ export const PostsList: React.FC<Props> = ({
   getPostId(postId);
 
   const postsToDisplay
-    = (userId !== '0')
-      ? posts.filter(post => post.userId === +userId)
+    = (userId !== 0)
+      ? posts.filter(post => post.userId === userId)
       : posts;
 
   return (

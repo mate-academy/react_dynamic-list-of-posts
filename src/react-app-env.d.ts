@@ -1,4 +1,9 @@
 /// <reference types="react-scripts" />
+interface User {
+  name: string;
+  id: number;
+}
+
 interface Post {
   body: string;
   createdAt: string;

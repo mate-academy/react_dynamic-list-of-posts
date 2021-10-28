@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
-  getPostDetails,
   getPostComments,
   deleteComment,
-} from '../../api/api';
+} from '../../api/comments';
+import {
+  getPostDetails,
+} from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 

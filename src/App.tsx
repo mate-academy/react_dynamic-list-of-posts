@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { getUsers } from './api/users';
 
 const App: React.FC = () => {
-  const [userId, addUserId] = useState('0');
+  const [userId, addUserId] = useState(0);
   const [postId, addPostId] = useState<number | null>(null);
+  const [users, addUsers] = useState<User[]>([]);
 
-  const changeUser = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    addUserId(event.target.value);
+  const changeUser = (id: string) => {
+    addUserId(+id);
   };
+
+  useEffect(() => {
+    getUsers()
+      .then(promise => addUsers(promise));
+  }, []);
 
   return (
     <div className="App">
@@ -18,22 +25,17 @@ const App: React.FC = () => {
         <label htmlFor="userSelector">
           Select a user: &nbsp;
           <select
-            onChange={(event) => changeUser(event)}
+            onChange={(event) => changeUser(event.target.value)}
             value={userId}
             className="App__user-selector"
             id="userSelector"
           >
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {
+              users?.map(user => (
+                <option value={`${user.id}`} key={user.id}>{user.name}</option>
+              ))
+            }
           </select>
         </label>
       </header>
