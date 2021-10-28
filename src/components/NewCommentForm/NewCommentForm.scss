@@ -16,4 +16,10 @@
   &__submit-button {
     margin-top: 10px;
   }
+
+  &__textarea {
+    box-sizing: border-box;
+    resize: none;
+    width: 185px;
+  }
 }
