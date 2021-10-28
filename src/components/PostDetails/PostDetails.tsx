@@ -16,7 +16,6 @@ export const PostDetails: React.FC<Props> = ({
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [buttonTogler, setTogler] = useState(true);
-  const [refresh, setRefresh] = useState('true');
 
   const loadComments = () => {
     getPostComments(postId)
@@ -25,9 +24,7 @@ export const PostDetails: React.FC<Props> = ({
 
   useEffect(() => {
     loadComments();
-
-    setRefresh('false');
-  }, [postId, refresh]);
+  }, [postId]);
 
   return (
     <div className="PostDetails">
@@ -47,7 +44,7 @@ export const PostDetails: React.FC<Props> = ({
               className="button"
               onClick={() => setTogler(prev => !prev)}
             >
-              {`Hide ${comments.length} comments`}
+              {`${buttonTogler ? 'Hide' : 'Show'} ${comments.length} comments`}
             </button>
           ) : (
             'There are no comments here, be the first'
@@ -63,11 +60,7 @@ export const PostDetails: React.FC<Props> = ({
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
-                  onClick={() => {
-                    deleteComment(comment.id);
-
-                    setRefresh('true');
-                  }}
+                  onClick={() => deleteComment(comment.id).then(loadComments)}
                 >
                   X
                 </button>
@@ -84,7 +77,7 @@ export const PostDetails: React.FC<Props> = ({
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             postId={postId}
-            setRefresh={setRefresh}
+            loadComments={loadComments}
           />
         </div>
       </section>

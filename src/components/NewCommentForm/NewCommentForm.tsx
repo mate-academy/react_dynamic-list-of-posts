@@ -4,10 +4,10 @@ import './NewCommentForm.scss';
 
 type Props = {
   postId: number;
-  setRefresh: (val: string) => void;
+  loadComments: () => void;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ postId, setRefresh }) => {
+export const NewCommentForm: React.FC<Props> = ({ postId, loadComments }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
@@ -21,9 +21,9 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setRefresh }) => {
   const handleSubmit: React.FormEventHandler = (event) => {
     event.preventDefault();
 
-    addComment(postId, name, email, body);
+    addComment(postId, name, email, body)
+      .then(loadComments);
     clearForm();
-    setRefresh('true');
   };
 
   return (
