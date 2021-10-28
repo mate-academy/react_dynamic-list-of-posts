@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { getPosts, getUserPosts } from '../../api/posts';
-// import classNames from 'classnames';
 import './PostsList.scss';
 
 type Props = {

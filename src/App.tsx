@@ -51,7 +51,11 @@ const App: React.FC = () => {
         </div>
 
         <div className="App__content">
-          <PostDetails selectedPostId={selectedPostId} />
+          {selectedPostId ? (
+            <PostDetails selectedPostId={selectedPostId} />
+          ) : (
+            <h2>Select post to see details</h2>
+          )}
         </div>
       </main>
     </div>
