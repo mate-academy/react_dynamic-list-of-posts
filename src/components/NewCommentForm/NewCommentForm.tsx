@@ -20,6 +20,7 @@ export const NewCommentForm: React.FC<Props> = ({ id, addComent }) => {
           type="text"
           name="name"
           value={name}
+          required
           placeholder="Your name"
           className="NewCommentForm__input"
           onChange={event => changeName(event.target.value)}
@@ -31,6 +32,7 @@ export const NewCommentForm: React.FC<Props> = ({ id, addComent }) => {
           type="text"
           name="email"
           value={email}
+          required
           placeholder="Your email"
           className="NewCommentForm__input"
           onChange={event => changeEmail(event.target.value)}
@@ -41,6 +43,7 @@ export const NewCommentForm: React.FC<Props> = ({ id, addComent }) => {
         <textarea
           name="body"
           value={comment}
+          required
           placeholder="Type comment here"
           className="NewCommentForm__input"
           onChange={event => changeComment(event.target.value)}
@@ -48,7 +51,7 @@ export const NewCommentForm: React.FC<Props> = ({ id, addComent }) => {
       </div>
 
       <button
-        type="button"
+        type="submit"
         className="NewCommentForm__submit-button button"
         onClick={() => {
           if (name !== '' && email !== '' && comment !== '') {

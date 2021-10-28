@@ -18,3 +18,8 @@ export async function getPostComments(postId: number): Promise<Comment[]> {
   return fetch(`https://mate.academy/students-api/comments?postId=${postId}`)
     .then(response => response.json());
 }
+
+export async function getUsers(): Promise<User[]> {
+  return fetch('https://mate.academy/students-api/users')
+    .then(response => response.json());
+}

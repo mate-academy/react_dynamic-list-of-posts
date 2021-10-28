@@ -14,3 +14,8 @@ interface Comment {
   email: string
   body: string
 }
+
+interface User {
+  id: number
+  name: string
+}
