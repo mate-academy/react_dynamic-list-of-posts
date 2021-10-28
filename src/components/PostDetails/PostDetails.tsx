@@ -1,45 +1,103 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getPostComments, removePostComment } from '../../api/comments';
+import { getPostDetails } from '../../api/postDetails';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  postId: number
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = ({ postId }) => {
+  const [isVisible, setIsVisible] = useState(true);
+  const [postDetails, setPostDetails] = useState<Post>();
+  const [postComments, setPostComments] = useState<PostComment[]>([]);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  useEffect(() => {
+    getPostDetails(postId)
+      .then(result => setPostDetails(result));
+  }, [postId]);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
+  useEffect(() => {
+    getPostComments(postId)
+      .then(result => setPostComments(result));
+  }, [postId]);
+
+  const handleToggler = () => {
+    setIsVisible(!isVisible);
+  };
+
+  const removeComment = (commentId: number) => (
+    removePostComment(commentId)
+      .then(() => {
+        setPostComments(postComments.filter(item => item.id !== commentId));
+      })
+  );
+
+  const onCreateComment = (comment: PostComment) => {
+    setPostComments([...postComments, comment]);
+  };
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        {postDetails && (
+          <p>{postDetails.body}</p>
+        )}
+      </section>
+
+      <section className="PostDetails__comments">
+        {postComments.length > 0 && (
           <button
             type="button"
-            className="PostDetails__remove-button button"
+            className="button"
+            onClick={handleToggler}
           >
-            X
+            {isVisible
+              ? `Hide ${postComments.length} comments`
+              : `Show ${postComments.length} comments`}
           </button>
-          <p>My first comment</p>
-        </li>
+        )}
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+        {isVisible && (
+          <ul className="PostDetails__list">
+            {postComments && (
+              postComments.map(item => (
+                <li
+                  key={item.id}
+                  className="PostDetails__list-item"
+                >
+                  <button
+                    type="button"
+                    className="PostDetails__remove-button button"
+                    onClick={() => {
+                      removeComment(item.id);
+                    }}
+                  >
+                    X
+                  </button>
+                  <p>
+                    {item.body}
+                  </p>
+                </li>
+              ))
+            )}
+          </ul>
+        )}
+      </section>
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+      <section>
+        <div className="PostDetails__form-wrapper">
+          {postId > 0 && (
+            <NewCommentForm
+              postId={postId}
+              onCreatedComment={onCreateComment}
+            />
+          )}
+        </div>
+      </section>
+    </div>
+  );
+};
