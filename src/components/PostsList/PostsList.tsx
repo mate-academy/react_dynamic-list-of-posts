@@ -1,37 +1,54 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './PostsList.scss';
+import { getUserPosts } from '../../api/posts';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+interface Props {
+  selectedUserId: number
+  onPostId: any
+  button: boolean
+  selectedPostId: number
+}
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = ({
+  selectedUserId, onPostId, selectedPostId, button,
+}) => {
+  const [posts, setPosts] = useState<Post[]>([]);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  useEffect(() => {
+    getUserPosts()
+      .then(result => setPosts(result));
+  }, []);
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+  useEffect(() => {
+    getUserPosts(selectedUserId)
+      .then(result => setPosts(result));
+  }, [selectedUserId]);
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul className="PostsList__list">
+        {posts.map(post => {
+          const { title, userId, id } = post;
+
+          return (
+            <li key={id} className="PostsList__item">
+              <div>
+                <b>{`[User #${userId}]: `}</b>
+                {title}
+              </div>
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => onPostId(id)}
+              >
+                {(selectedPostId === id && button) ? 'Close' : 'Open'}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
