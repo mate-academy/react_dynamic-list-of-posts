@@ -9,10 +9,10 @@ interface Post {
 
 interface Comment {
   id: string,
-  postId: number,
-  name: string,
-  email: string,
-  body: string,
+  postId: string;
+  name: string;
+  email: string;
+  body: string;
 }
 
 interface User {

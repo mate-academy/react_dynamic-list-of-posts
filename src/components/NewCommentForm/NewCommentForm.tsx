@@ -10,25 +10,30 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost, AddCommentAfterS
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [body, setBody] = useState<string>('');
+  const [isInputEmpty, setisInputEmpty] = useState(false);
 
   return (
     <form
       className="NewCommentForm"
       onSubmit={(event: React.ChangeEvent<HTMLFormElement>) => {
         event.preventDefault();
+        if (name && email && body && selectedPost) {
+          const newComment = {
+            postId: selectedPost,
+            name,
+            email,
+            body,
+          };
 
-        const newComment = {
-          selectedPost,
-          name,
-          email,
-          body,
-        };
+          AddCommentAfterSubmit(newComment);
 
-        AddCommentAfterSubmit(newComment);
-
-        setName('');
-        setEmail('');
-        setBody('');
+          setisInputEmpty(false);
+          setName('');
+          setEmail('');
+          setBody('');
+        } else {
+          setisInputEmpty(true);
+        }
       }}
     >
       <div className="form-field">
@@ -69,6 +74,7 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost, AddCommentAfterS
       >
         Add a comment
       </button>
+      {isInputEmpty && <span className="error-mesege">All fields must not be empty</span>}
     </form>
   );
 };

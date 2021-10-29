@@ -34,56 +34,62 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       });
   };
 
-  return (
+  return !selectedPost
+    ? (
+      <div className="PostDetails">
+        <h2> Please, select one of posts</h2>
+      </div>
+    )
+    : (
+      <div className="PostDetails">
+        <h2>Post details:</h2>
+        {post !== null && (
+          <section className="PostDetails__post">
+            <p>{post.body}</p>
+          </section>
+        )}
 
-    <div className="PostDetails">
-      <h2>Post details:</h2>
-      {post !== null && (
-        <section className="PostDetails__post">
-          <p>{post.body}</p>
+        <section className="PostDetails__comments">
+          {comments.length > 0 && (
+            <button
+              type="button"
+              className="button"
+              onClick={() => setVisibility(prev => !prev)}
+            >
+              {`${visibility ? 'Hide' : 'Show'} ${comments.length} comments`}
+            </button>
+          )}
+
+          {visibility && (
+            <ul className="PostDetails__list">
+              {comments.map(comment => (
+                <li className="PostDetails__list-item" key={comment.id}>
+                  <button
+                    type="button"
+                    className="PostDetails__remove-button button"
+                    onClick={() => {
+                      DeleteComment(comment.id);
+                      setComments(prev => prev
+                        .filter(prevComment => prevComment.id !== comment.id));
+                    }}
+                  >
+                    X
+                  </button>
+                  <p>{comment.body}</p>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
-      )}
 
-      <section className="PostDetails__comments">
-        {comments.length > 0 && (
-          <button
-            type="button"
-            className="button"
-            onClick={() => setVisibility(prev => !prev)}
-          >
-            {`${visibility ? 'Hide' : 'Show'} ${comments.length} comments`}
-          </button>
-        )}
-
-        {visibility && (
-          <ul className="PostDetails__list">
-            {comments.map(comment => (
-              <li className="PostDetails__list-item" key={comment.id}>
-                <button
-                  type="button"
-                  className="PostDetails__remove-button button"
-                  onClick={() => {
-                    DeleteComment(comment.id);
-                    setComments(prev => prev.filter(prevComment => prevComment.id !== comment.id));
-                  }}
-                >
-                  X
-                </button>
-                <p>{comment.body}</p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <section>
-        <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            selectedPost={selectedPost}
-            AddCommentAfterSubmit={AddCommentAfterSubmit}
-          />
-        </div>
-      </section>
-    </div>
-  );
+        <section>
+          <div className="PostDetails__form-wrapper">
+            <NewCommentForm
+              selectedPost={selectedPost}
+              AddCommentAfterSubmit={AddCommentAfterSubmit}
+            />
+          </div>
+        </section>
+      </div>
+    );
 };

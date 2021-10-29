@@ -59,7 +59,7 @@ export const PostsList: React.FC<Props> = ({ selectedUser, selectPost, selectedP
                             button: true,
                           })}
                           onClick={() => {
-                            selectPost(selectedPost === id ? '0' : `${id}`);
+                            selectPost(selectedPost === id ? '' : `${id}`);
                           }}
                         >
                           {selectedPost === `${id}`

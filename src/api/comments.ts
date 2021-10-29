@@ -6,16 +6,19 @@ export const getComments = async (postId: string) => {
   return post;
 };
 
-export const AddComment = async (comment: Partial<Comment>): Promise<Comment> => {
-  const newComment: Comment = await request('/comments', {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
+export const AddComment = async (comment: Partial<Comment>):Promise<Comment> => {
+  const data = await request(
+    '/comments',
+    {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+      body: JSON.stringify(comment),
     },
-    body: JSON.stringify(comment),
-  });
+  );
 
-  return newComment;
+  return data;
 };
 
 export const DeleteComment = async (commentId: string) => {
