@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getUsers } from '../../api/posts';
+import { getUsers } from '../../api/users';
 import { User } from '../../types/User';
 
 type Props = {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getPosts, getUserPosts } from '../../api/posts';
+import { getPosts } from '../../api/posts';
+import { getUserPosts } from '../../api/users';
 import { Post } from '../../types/Post';
 import './PostsList.scss';
 
@@ -44,7 +45,7 @@ export const PostsList: React.FC<Props> = ({
 
   useEffect(() => {
     loadUserPosts();
-  });
+  }, [selectedUserId]);
 
   return (
     <div className="PostsList">

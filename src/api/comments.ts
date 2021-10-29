@@ -15,5 +15,6 @@ export const createComment = (comment: CommentToPost) => {
       'Content-type': 'application/json; charset=UTF-8',
     },
     body: JSON.stringify(comment),
-  });
+  })
+    .then(response => response.json());
 };

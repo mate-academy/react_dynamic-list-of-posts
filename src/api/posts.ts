@@ -13,8 +13,4 @@ export const getData = (endPoint: string) => {
 
 export const getPosts = () => getData('/posts');
 
-export const getUsers = () => getData('/users');
-
-export const getUserPosts = (userId: number) => getData(`/posts?userId=${userId}`);
-
 export const getPostDetails = (postId: number) => getData(`/posts/${postId}`);

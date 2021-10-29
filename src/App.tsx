@@ -8,7 +8,7 @@ import { UserSelect } from './components/UserSelect';
 const App: React.FC = () => {
   const [userId, setUserId] = useState(0);
   const [postId, setPostId] = useState(0);
-  const [postDetailsAreShown, setDetailsAreShown] = useState(false);
+  const [postDetailsAreShown, setPostDetailsAreShown] = useState(false);
 
   return (
     <div className="App">
@@ -16,7 +16,7 @@ const App: React.FC = () => {
         <UserSelect
           selectedUserId={userId}
           setSelectedUserId={setUserId}
-          setDetailsAreShown={setDetailsAreShown}
+          setDetailsAreShown={setPostDetailsAreShown}
         />
       </header>
       <main className="App__main">
@@ -25,7 +25,7 @@ const App: React.FC = () => {
             selectedUserId={userId}
             selectedPostId={postId}
             setSelectedPostId={setPostId}
-            areDetailsShown={setDetailsAreShown}
+            areDetailsShown={setPostDetailsAreShown}
             postDetailsAreShown={postDetailsAreShown}
           />
         </div>

@@ -28,13 +28,26 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
       });
   };
 
+  const commentDeleteHandler = (commentId: number) => {
+    removeComment(`${commentId}`)
+      .then(response => {
+        if (response) {
+          setComments(comments.filter(comment => comment.id !== commentId));
+        }
+      });
+  };
+
+  const addComment = (comment: Comment) => {
+    setComments([...comments, comment]);
+  };
+
   useEffect(() => {
     loadDetails();
   }, [postId]);
 
   useEffect(() => {
     loadComments();
-  }, [comments]);
+  }, [postId]);
 
   return (
     <div className="PostDetails">
@@ -73,7 +86,9 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
-                  onClick={() => removeComment(`${comment.id}`)}
+                  onClick={() => (
+                    commentDeleteHandler(comment.id)
+                  )}
                 >
                   X
                 </button>
@@ -88,6 +103,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             postId={postId}
+            addComment={addComment}
           />
         </div>
       </section>
