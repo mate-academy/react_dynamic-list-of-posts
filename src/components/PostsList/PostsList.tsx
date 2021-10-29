@@ -14,7 +14,7 @@ type Props = {
 export const PostsList: React.FC<Props> = ({
   selectedUser,
   selectPost,
-  selectedPost
+  selectedPost,
 }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
