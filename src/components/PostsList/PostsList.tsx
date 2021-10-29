@@ -1,37 +1,50 @@
 import React from 'react';
+
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+import { Post } from '../../types/Post';
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+type Props = {
+  posts: Post[],
+  selectedPostId: number,
+  selectPost: (postId: number) => void,
+};
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+export const PostsList: React.FC<Props> = ({
+  posts,
+  selectedPostId,
+  selectPost,
+}) => {
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+      <ul className="PostsList__list">
+        {posts.map(post => (
+          <li className="PostsList__item" key={post.id}>
+            <div>
+              <b>
+                [User #
+                {post.userId}
+                ]:
+              </b>
+              {post.title}
+            </div>
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+            <button
+              type="button"
+              className="PostsList__button button"
+              value={post.id}
+              onClick={(event) => {
+                const postId = post.id === selectedPostId ? 0 : +event.currentTarget.value;
+
+                selectPost(postId);
+              }}
+            >
+              {post.id === selectedPostId ? 'Close' : 'Open'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
