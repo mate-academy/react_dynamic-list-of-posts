@@ -58,9 +58,9 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          {filteredPosts().length > 0 ?
-            <PostsList posts={filteredPosts()} postId={findPost} /> :
-              <div>No posts</div>}
+          {filteredPosts().length > 0
+            ? <PostsList posts={filteredPosts()} postId={findPost} />
+            : <div>No posts</div>}
         </div>
 
         <div className="App__content">
