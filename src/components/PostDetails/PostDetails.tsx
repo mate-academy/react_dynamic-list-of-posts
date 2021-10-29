@@ -41,7 +41,6 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       {post !== null && (
         <section className="PostDetails__post">
           <p>{post.body}</p>
-          <p>test</p>
         </section>
       )}
 
