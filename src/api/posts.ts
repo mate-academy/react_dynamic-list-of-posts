@@ -1,20 +1,15 @@
-export async function getUserPosts(userId = 0): Promise<Post[]> {
-  let postsURL = 'https://mate.academy/students-api/posts';
+import { request } from './api';
 
-  if (userId !== 0) {
-    postsURL += `?userId=${userId}`;
-  }
+const postRequest = (url: string) => {
+  return request(`/posts${url}`);
+};
 
-  return fetch(postsURL)
-    .then(response => response.json());
-}
+export const getUserPosts = (userId: number) => {
+  return postRequest(
+    userId === 0 ? ('') : (`?userId=${userId}`),
+  );
+};
 
-export async function getPostDetails(postId: number): Promise<Post> {
-  return fetch(`https://mate.academy/students-api/posts/${postId}`)
-    .then(response => response.json());
-}
-
-export async function getPostComments(postId: number): Promise<Comment[]> {
-  return fetch(`https://mate.academy/students-api/comments?postId=${postId}`)
-    .then(response => response.json());
-}
+export const getPostDetails = (postId: number) => {
+  return postRequest(`/${postId}`);
+};

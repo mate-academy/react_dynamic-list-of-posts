@@ -1,108 +1,84 @@
 import React, { useState, useEffect } from 'react';
-import { getPostDetails, getPostComments } from '../../api/posts';
-import { NewCommentForm } from '../NewCommentForm';
+
 import './PostDetails.scss';
 
-interface Props {
-  selectedPostId: number
-}
+import { addComment, deleteComment, getPostComments } from '../../api/comments';
+import { getPostDetails } from '../../api/posts';
 
-interface Comment {
-  id: number
-  postId: number,
-  name: string
-  email: string
-  body: string
-}
+import { NewCommentForm } from '../NewCommentForm';
+
+type Props = {
+  selectedPostId: number,
+};
 
 export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
-  const [post, setPost] = useState<Post | null>(null);
+  const [details, setDetails] = useState<Post>({} as Post);
   const [comments, setComments] = useState<Comment[]>([]);
-  const [visibleList, changeVisible] = useState(true);
+  const [commentsToggler, setCommentsToggler] = useState(true);
 
   useEffect(() => {
     getPostDetails(selectedPostId)
-      .then(result => {
-        setPost(result);
+      .then(detailsFromServer => {
+        setDetails(detailsFromServer);
       });
-
     getPostComments(selectedPostId)
-      .then(result => {
-        setComments(result);
-      });
+      .then(commentsFromServer => setComments([...commentsFromServer]));
   }, [selectedPostId]);
 
-  const removeComment = (idComment: string) => {
-    setComments(comments.filter(item => item.id !== +idComment));
+  const removeComment = (id: number) => {
+    deleteComment(id)
+      .then(() => getPostComments(selectedPostId))
+      .then(updateComments => setComments(updateComments));
   };
 
-  const addComment = (name: string, email: string, comment: string, id: number) => {
-    let maxPostId = 1;
-
-    if (comments.length > 0) {
-      maxPostId = Math.max.apply(null, [...comments].map(item => item.postId)) + 1;
-    }
-
-    const newObj: Comment = {
-      id,
-      postId: maxPostId,
-      name,
-      email,
-      body: comment,
-    };
-
-    setComments([...comments, newObj]);
+  const addNewComment = (newComment: Partial<Comment>) => {
+    addComment(newComment)
+      .then(() => getPostComments(selectedPostId))
+      .then(updateComments => setComments(updateComments));
   };
 
-  return post && (
+  return (
     <div className="PostDetails">
       <h2>Post details:</h2>
 
       <section className="PostDetails__post">
-        <p>{post.body}</p>
+        <p>{details.body}</p>
       </section>
 
       <section className="PostDetails__comments">
-        { comments.length > 0
-          ? (
-            <button
-              type="button"
-              className="button"
-              onClick={() => changeVisible(!visibleList)}
+        <button
+          type="button"
+          className="button"
+          onClick={() => setCommentsToggler(current => !current)}
+        >
+          {commentsToggler ? ('Hide comments') : ('Show comments') }
+        </button>
+
+        <ul className="PostDetails__list">
+          {commentsToggler && comments.map(comment => (
+            <li
+              className="PostDetails__list-item"
+              key={comment.id}
             >
-              {`${visibleList ? 'Hide' : 'Show'} ${comments.length} comments`}
-
-            </button>
-          ) : <h3>There is no comments</h3>}
-
-        {visibleList && (
-          <ul className="PostDetails__list">
-            {comments.map((comment: Comment) => {
-              const { body, postId, id } = comment;
-
-              return (
-                <li key={postId} className="PostDetails__list-item">
-                  <button
-                    type="button"
-                    className="PostDetails__remove-button button"
-                    value={id}
-                    onClick={(event) => {
-                      removeComment(event.currentTarget.value);
-                    }}
-                  >
-                    X
-                  </button>
-                  <p>{body}</p>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+              <button
+                type="button"
+                className="PostDetails__remove-button button"
+                onClick={() => removeComment(comment.id)}
+              >
+                X
+              </button>
+              <p>{comment.body}</p>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm id={post.id} addComent={addComment} />
+          <NewCommentForm
+            postId={selectedPostId}
+            addComment={addNewComment}
+          />
         </div>
       </section>
     </div>
