@@ -14,3 +14,8 @@ type PostComment = {
   email: string;
   body: string;
 };
+
+interface User {
+  id: number
+  name: string
+}

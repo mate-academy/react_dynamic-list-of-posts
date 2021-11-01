@@ -2,12 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-import {
-  getPostDetails,
-  getPostComments,
-  addComment,
-  deleteComment,
-} from '../../api/post';
+import { getPostDetails, getPostComments } from '../../api/post';
+import { addComment, deleteComment } from '../../api/comments';
 
 interface Props {
   postId: number,

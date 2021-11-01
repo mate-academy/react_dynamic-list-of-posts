@@ -34,22 +34,8 @@ export async function getPostComments(postId: number): Promise<PostComment[]> {
   return comments;
 }
 
-export const deleteComment = async (commentId: number) => {
-  const deletedPost = await request(`/comments/${commentId}`, {
-    method: 'DELETE',
-  });
+export async function getUsers(): Promise<User[]> {
+  const users = await request('/users');
 
-  return deletedPost;
-};
-
-export const addComment = async (comment: Partial<PostComment>): Promise<PostComment> => {
-  const newComment: PostComment = await request('/comments', {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
-    },
-    body: JSON.stringify(comment),
-  });
-
-  return newComment;
-};
+  return users;
+}
