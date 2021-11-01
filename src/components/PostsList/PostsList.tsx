@@ -24,15 +24,13 @@ export const PostsList: React.FC<Props> = ({
   const [posts, setPosts] = useState<Post[]>([]);
 
   const loadPosts = () => {
-    getPosts()
-      .then((postsFromServer: Post[]) => {
-        setPosts(postsFromServer);
-      });
-  };
-
-  const loadUserPosts = () => {
     if (selectedUserId) {
       getUserPosts(selectedUserId)
+        .then((postsFromServer: Post[]) => {
+          setPosts(postsFromServer);
+        });
+    } else {
+      getPosts()
         .then((postsFromServer: Post[]) => {
           setPosts(postsFromServer);
         });
@@ -41,10 +39,6 @@ export const PostsList: React.FC<Props> = ({
 
   useEffect(() => {
     loadPosts();
-  }, []);
-
-  useEffect(() => {
-    loadUserPosts();
   }, [selectedUserId]);
 
   return (

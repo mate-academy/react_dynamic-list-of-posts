@@ -38,7 +38,7 @@ export const UserSelect: React.FC<Props> = ({
           setDetailsAreShown(false);
         }}
       >
-        <option value="">Select user</option>
+        <option value="0">All users</option>
         {users.map((user: User) => (
           <option
             key={user.id}
