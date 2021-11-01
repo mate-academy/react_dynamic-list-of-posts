@@ -5,27 +5,21 @@ import './styles/general.scss';
 
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getPosts, getPostById } from './api/post';
+import { getPosts } from './api/post';
 
 const App: React.FC = () => {
-  const initialPost = {
-    id: 0,
-    title: '',
-    userId: 0,
-    body: '',
-  };
   const [posts, setPosts] = useState<Post[]>([]);
-  const [post, setPost] = useState<Post>(initialPost);
+  const [postId, setPostId] = useState(0);
 
   const loadPosts = (userId: number) => {
     getPosts(userId).then(loadedPosts => setPosts(loadedPosts));
   };
 
   const loadPost = (id: number) => {
-    if (post?.id !== id) {
-      getPostById(id).then(loadedPost => setPost(loadedPost));
+    if (postId !== id) {
+      setPostId(id);
     } else {
-      setPost(initialPost);
+      setPostId(0);
     }
   };
 
@@ -64,12 +58,12 @@ const App: React.FC = () => {
           <PostsList
             posts={posts}
             loadPost={loadPost}
-            selectedPostId={post.id}
+            selectedPostId={postId}
           />
         </div>
 
         <div className="App__content">
-          {post.id ? <PostDetails post={post} /> : 'No selected post'}
+          {postId ? <PostDetails postId={postId} /> : 'No selected post'}
         </div>
       </main>
     </div>
