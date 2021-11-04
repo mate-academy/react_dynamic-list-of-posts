@@ -1,45 +1,114 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import { getPostsDetails } from '../../api/posts';
+import Post from '../../types/postType';
+import { addComment, deleteComment, getPostComments } from '../../api/comments';
+import Comment from '../../types/commentType';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type PostDetailsProps = {
+  postID: number,
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<PostDetailsProps> = (props: PostDetailsProps) => {
+  const { postID } = props;
+  const [postToDisplay, setPost] = useState<Post>();
+  const [currentComments, setComments] = useState<Comment[]>([]);
+  const [isVisibleComment, setCommentVisibility] = useState(true);
+  const [isVisiblePost, setPostVisibility] = useState(false);
+  const addNewComment = (name: string, email: string, body: string) => {
+    const newComment: Comment = {
+      id: currentComments.length,
+      postId: postID,
+      name,
+      email,
+      body,
+      createdAt: String(new Date()),
+      updatedAt: String(new Date()),
+    };
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+    addComment(newComment);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
+    const newComArr = [...currentComments, newComment];
+
+    setComments(newComArr);
+  };
+
+  useEffect(() => {
+    if (postID !== 0) {
+      getPostsDetails(postID)
+        .then(post => setPost(post));
+      setCommentVisibility(true);
+      setPostVisibility(true);
+      getPostComments(postID)
+        .then(res => setComments(res));
+    } else {
+      setCommentVisibility(false);
+      setPostVisibility(false);
+    }
+  }, [postID]);
+
+  return postToDisplay && isVisiblePost
+    ? (
+      <div className="PostDetails">
+        <h2>Post details:</h2>
+
+        <section className="PostDetails__post">
+          <p>{isVisiblePost && postToDisplay?.body}</p>
+        </section>
+        <section className="PostDetails__comments">
           <button
             type="button"
-            className="PostDetails__remove-button button"
+            className="button"
+            onClick={() => setCommentVisibility(!isVisibleComment)}
           >
-            X
+            {isVisibleComment
+              ? 'Hide'
+              : 'Show'}
+            {' '}
+            {currentComments.length}
+            {' '}
+            comments
           </button>
-          <p>My first comment</p>
-        </li>
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+          <ul className="PostDetails__list">
+            {
+              isVisibleComment && currentComments.map(el => {
+                return (
+                  <li
+                    className="PostDetails__list-item"
+                    key={el.id}
+                  >
+                    <button
+                      type="button"
+                      className="PostDetails__remove-button button"
+                      onClick={() => {
+                        const newAr = currentComments.filter(com => com.id !== el.id);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
+                        setComments(newAr);
+                        deleteComment(el.id);
+                      }}
+                    >
+                      X
+                    </button>
+                    <p>{el.body}</p>
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </section>
+
+        <section>
+          <div className="PostDetails__form-wrapper">
+            <NewCommentForm addCommentFunc={addNewComment} />
+          </div>
+        </section>
       </div>
-    </section>
-  </div>
-);
+    )
+    : (
+      <div className="PostDetails">
+        <h2>Post details:</h2>
+      </div>
+    );
+};
