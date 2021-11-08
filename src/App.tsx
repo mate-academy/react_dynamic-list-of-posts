@@ -54,9 +54,7 @@ const App: React.FC = () => {
               selectCurrentPostID={handleCloseOpen}
             />
           )}
-          {!postDisplayed
-            ? 'Posts loading...'
-            : ''}
+          {!postDisplayed && 'Post loading...'}
         </div>
 
         <div className="App__content">

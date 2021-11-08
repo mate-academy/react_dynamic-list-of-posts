@@ -35,30 +35,28 @@ export const PostsList: React.FC<PostListProps> = (props: PostListProps) => {
 
       <ul className="PostsList__list">
         {postList.length > 0
-          ? postList.map(el => {
-            return (
-              <li
-                className="PostsList__item"
-                key={el.id}
+          ? postList.map(el => (
+            <li
+              className="PostsList__item"
+              key={el.id}
+            >
+              <div>
+                <b>
+                  [User #
+                  {el.userId}
+                  ]:
+                </b>
+                {el.body}
+              </div>
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => selectCurrentPostID(el.id)}
               >
-                <div>
-                  <b>
-                    [User #
-                    {el.userId}
-                    ]:
-                  </b>
-                  {el.body}
-                </div>
-                <button
-                  type="button"
-                  className="PostsList__button button"
-                  onClick={() => selectCurrentPostID(el.id)}
-                >
-                  {selectedPostID === el.id ? 'Close' : 'Open'}
-                </button>
-              </li>
-            );
-          })
+                {selectedPostID === el.id ? 'Close' : 'Open'}
+              </button>
+            </li>
+          ))
           : 'Loading posts'}
       </ul>
     </div>

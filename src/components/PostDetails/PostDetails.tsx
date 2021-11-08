@@ -56,7 +56,10 @@ export const PostDetails: React.FC<PostDetailsProps> = (props: PostDetailsProps)
         <section className="PostDetails__post">
           <p>{isVisiblePost && postToDisplay?.body}</p>
         </section>
-        <section className="PostDetails__comments">
+        <section
+          className="PostDetails__comments"
+          hidden={currentComments.length < 1}
+        >
           <button
             type="button"
             className="button"

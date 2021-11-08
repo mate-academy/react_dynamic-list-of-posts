@@ -7,16 +7,23 @@ type NewCommentFormProps = {
 
 export const NewCommentForm: React.FC<NewCommentFormProps> = (props) => {
   const { addCommentFunc } = props;
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [comment, setComment] = useState('');
+  const [formData, setForm] = useState({
+    name: '',
+    email: '',
+    comment: '',
+  });
 
   return (
     <form
       className="NewCommentForm"
       onSubmit={(event) => {
         event.preventDefault();
+        const { name, email, comment } = formData;
+
         addCommentFunc(name, email, comment);
+        const target = event.target as HTMLFormElement;
+
+        target.reset();
       }}
     >
       <div className="form-field">
@@ -25,7 +32,10 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = (props) => {
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          onChange={({ target }) => setName(target.value)}
+          onChange={({ target }) => setForm(prevState => ({
+            ...prevState,
+            name: target.value,
+          }))}
         />
       </div>
 
@@ -35,7 +45,10 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = (props) => {
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          onChange={({ target }) => setEmail(target.value)}
+          onChange={({ target }) => setForm(prevState => ({
+            ...prevState,
+            email: target.value,
+          }))}
         />
       </div>
 
@@ -44,7 +57,10 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = (props) => {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          onChange={({ target }) => setComment(target.value)}
+          onChange={({ target }) => setForm(prevState => ({
+            ...prevState,
+            comment: target.value,
+          }))}
         />
       </div>
 
