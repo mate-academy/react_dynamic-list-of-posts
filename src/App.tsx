@@ -4,16 +4,38 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getUsers } from './api/users';
+import { getPosts } from './api/posts';
 
 type User = {
   id: number;
   name: string;
 };
 
+type Post = {
+  id: number;
+  userId: number;
+  title: string;
+  selectedPostId: number;
+};
+
 const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState('');
   const [users, setUsers] = useState<User[]>([]);
   const [selectedPostId, setSelectedPostId] = useState(0);
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    getPosts()
+      .then((responce) => {
+        let res = responce;
+
+        if (selectedUserId !== '') {
+          res = res.filter((el: Post) => el.userId === +selectedUserId);
+        }
+
+        setPosts(res);
+      });
+  }, [selectedUserId]);
 
   useEffect(() => {
     getUsers()
@@ -52,9 +74,9 @@ const App: React.FC = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            selectedUserId={selectedUserId}
             setSelectedPostId={setSelectedPostId}
             selectedPostId={selectedPostId}
+            posts={posts}
           />
         </div>
 

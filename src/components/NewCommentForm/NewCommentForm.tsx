@@ -2,11 +2,6 @@ import React, { useState } from 'react';
 import { addComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
-// type Comment = {
-//   id: number;
-//   body: string;
-// };
-
 type Props = {
   selectedPostId: number;
   trigger: boolean;

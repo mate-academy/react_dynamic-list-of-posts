@@ -1,5 +1,3 @@
-import React, { useEffect, useState } from 'react';
-import { getPosts } from '../../api/posts';
 import './PostsList.scss';
 
 type Post = {
@@ -10,31 +8,16 @@ type Post = {
 };
 
 type Props = {
-  selectedUserId: string;
   setSelectedPostId: React.Dispatch<React.SetStateAction<number>>;
   selectedPostId: number;
+  posts: Post[],
 };
 
 export const PostsList: React.FC<Props> = ({
-  selectedUserId,
   setSelectedPostId,
   selectedPostId,
+  posts,
 }) => {
-  const [posts, setPosts] = useState<Post[]>([]);
-
-  useEffect(() => {
-    getPosts()
-      .then((responce) => {
-        let res = responce;
-
-        if (selectedUserId !== '') {
-          res = res.filter((el: Post) => el.userId === +selectedUserId);
-        }
-
-        setPosts(res);
-      });
-  }, [selectedUserId]);
-
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
