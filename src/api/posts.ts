@@ -16,23 +16,23 @@ export const request = (
     });
 };
 
-export const getUserPosts = (userId: number | string) => {
-  if (userId === 'all') {
+export const getUserPosts = (userId: number) => {
+  if (!userId) {
     return request('/posts');
   }
 
   return request('/posts', '', `?userId=${+userId}`);
 };
 
-export const getPostDetails = (postId: number | string) => {
+export const getPostDetails = (postId: number) => {
   return request('/posts', `/${postId}`);
 };
 
-export const getPostComments = (postId: number | string) => {
+export const getPostComments = (postId: number) => {
   return request('/comments', '', `?postId=${postId}`);
 };
 
-export const removeComment = (commentId: number | string) => {
+export const removeComment = (commentId: number) => {
   return request('/comments', '', `/${commentId}`, 'DELETE');
 };
 

@@ -8,18 +8,16 @@ import { getUserPosts } from './api/posts';
 import { UserSelect } from './components/UserSelect/UserSelect';
 
 const App: React.FC = () => {
-  const [user, setUser] = useState<number | string>('all');
+  const [user, setUser] = useState<number>(0);
   const [posts, setPosts] = useState([]);
-  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+  const [selectedPostId, setSelectedPostId] = useState<number>(0);
 
   useEffect(() => {
     getUserPosts(user)
-      .then(data => {
-        setPosts(data);
-      });
+      .then(setPosts);
   }, [user, selectedPostId]);
 
-  const selectUser = (id: number | string) => {
+  const selectUser = (id: number) => {
     setUser(id);
   };
 

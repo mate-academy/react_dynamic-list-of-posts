@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useState } from 'react';
 import { getPostComments, getPostDetails, removeComment } from '../../api/posts';
-import { Post } from '../../types/types';
+import { Post, PostComment } from '../../types/types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
@@ -17,15 +16,15 @@ export const PostDetails: React.FC<Props> = (props) => {
 
   useEffect(() => {
     getPostDetails(props.selectedPostId)
-      .then(result => setPostDetails(result));
+      .then(setPostDetails);
 
     getPostComments(props.selectedPostId)
-      .then(result => setPostComments(result));
+      .then(setPostComments);
   }, [props.selectedPostId, watchComment]);
 
   const updateComments = () => {
     getPostComments(props.selectedPostId)
-      .then(result => setPostComments(result));
+      .then(setPostComments);
 
     setWatchComment(!watchComment);
   };
@@ -53,10 +52,10 @@ export const PostDetails: React.FC<Props> = (props) => {
         <ul className="PostDetails__list">
 
           {toggleComments && (
-            postComments.map((comment: any) => (
+            postComments.map((comment: PostComment) => (
               <li key={comment.id} className="PostDetails__list-item">
                 <button
-                  id={comment.id}
+                  id={comment.id.toString()}
                   type="button"
                   className="PostDetails__remove-button button"
                   onClick={() => {

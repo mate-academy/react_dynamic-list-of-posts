@@ -9,25 +9,31 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ postId, updateComments }) => {
-  const [commentName, setName] = useState('');
-  const [commentEmail, setEmail] = useState('');
-  const [commentBody, setBody] = useState('');
+  const [comment, setComment] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
+
+  const { name, email, body } = comment;
 
   const resetState = () => {
-    setName('');
-    setEmail('');
-    setBody('');
+    setComment({
+      name: '',
+      email: '',
+      body: '',
+    });
   };
 
   const handleSubmit = () => {
-    const comment = {
+    const commentToSubmit = {
       postId,
-      name: commentName,
-      email: commentEmail,
-      body: commentBody,
+      name,
+      email,
+      body,
     };
 
-    submitComment(comment);
+    submitComment(commentToSubmit);
 
     resetState();
     updateComments();
@@ -37,23 +43,17 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComments }) => {
     event: React.ChangeEvent<HTMLInputElement>
     | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
-    const { name, value } = event.target;
+    const { name: evName, value } = event.target;
 
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
-      case 'email':
-        setEmail(value);
-        break;
-      default:
-        setBody(value);
-    }
+    setComment({
+      ...comment,
+      [evName]: value,
+    });
   };
 
-  const preventSubmit = commentEmail.length === 0
-    || commentName.length === 0
-    || commentBody.length === 0;
+  const allowSubmit = name.length > 0
+    && email.length > 0
+    && body.length > 0;
 
   return (
     <form
@@ -72,7 +72,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComments }) => {
           name="email"
           placeholder="* Your email"
           className="NewCommentForm__input"
-          value={commentEmail}
+          value={email}
           onChange={(event) => handleChange(event)}
         />
       </div>
@@ -84,7 +84,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComments }) => {
           name="name"
           placeholder="* Your name"
           className="NewCommentForm__input"
-          value={commentName}
+          value={name}
           onChange={(event) => handleChange(event)}
         />
       </div>
@@ -95,12 +95,12 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComments }) => {
           name="body"
           placeholder="* Comment body:"
           className="NewCommentForm__input"
-          value={commentBody}
+          value={body}
           onChange={(event) => handleChange(event)}
         />
       </div>
 
-      {!preventSubmit && (
+      {allowSubmit && (
         <button
           type="submit"
           className="NewCommentForm__submit-button button"

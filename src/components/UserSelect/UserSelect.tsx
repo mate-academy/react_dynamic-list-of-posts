@@ -2,7 +2,7 @@ import React from 'react';
 
 type Props = {
   userId: number | string,
-  selectUser: (userId: number | string) => void,
+  selectUser: (userId: number) => void,
 };
 
 export const UserSelect: React.FC<Props> = ({
@@ -16,10 +16,10 @@ export const UserSelect: React.FC<Props> = ({
       <select
         id="user-selector"
         className="App__user-selector"
-        onChange={(event) => selectUser(event.target.value)}
+        onChange={(event) => selectUser(+event.target.value)}
         value={userId}
       >
-        <option value="all">All users</option>
+        <option value="0">All users</option>
         <option value="1">Leanne Graham</option>
         <option value="2">Ervin Howell</option>
         <option value="3">Clementine Bauch</option>
