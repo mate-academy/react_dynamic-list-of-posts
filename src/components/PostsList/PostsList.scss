@@ -31,4 +31,7 @@
   &__button {
     margin-left: 10px;
   }
+  &__button.is-success {
+    background-color: cornflowerblue;
+  }
 }
