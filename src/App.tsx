@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getAllPosts, getUserPosts, getPostDetails } from './api/posts';
-// import { getPostComments } from './api/comments';
 import { BASE_URL } from './api/api';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+// import { getUser } from './api/user';
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
+  // const [users, setUsers] = useState<User[]>([] as User[]);
+  // let users: User[] = [];
   const [userId, setUserId] = useState(0);
   const [selectedPostId, setSeledtedPostId] = useState<number>(0);
   const [post, setPost] = useState<Post | null>(null);
@@ -25,8 +27,13 @@ const App: React.FC = () => {
         setPosts(userPosts);
       }
     }
+    // loadUsers();
 
     getPosts();
+
+    return () => {
+
+    };
   }, [userId, selectedPostId]);
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -35,13 +42,23 @@ const App: React.FC = () => {
     setUserId(Number(value));
   };
 
-  const handlePostSelect = async (value: number) => {
+  const handlePostSelect = useCallback(async (value) => {
     const selectedPost = await getPostDetails(value);
 
     setSeledtedPostId(value);
 
     setPost(selectedPost);
-  };
+  }, []);
+
+  // const loadUsers = useCallback(async() => {
+  //   const usersFromServer = await getUser();
+
+  //   const preparedUsers = usersFromServer.filter((user: User) => posts
+  //     .find(post => post.userId === user.id))
+
+  //   setUsers(preparedUsers)
+
+  // }, [])
 
   return (
     <div className="App">

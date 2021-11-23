@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getPostComments, deleteComment } from '../../api/comments';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
@@ -13,13 +13,13 @@ export const PostDetails: React.FC<Props> = ({ post, selectedPostId }) => {
   const [commentsFromServer, setCommentsFromServer] = useState<Comment[] | null>([]);
   const commentsState = commentsFromServer && !showComments ? 'Comments are hidden' : 'No Comments';
 
-  const loadingPostComments = async () => {
+  const loadingPostComments = useCallback(async () => {
     const comments = await getPostComments(selectedPostId);
 
     if (comments) {
       setCommentsFromServer(comments);
     }
-  };
+  }, [selectedPostId]);
 
   const handleDeleteButton = async (id: number) => {
     const deletedComment = await deleteComment(id);
@@ -31,6 +31,10 @@ export const PostDetails: React.FC<Props> = ({ post, selectedPostId }) => {
 
   useEffect(() => {
     loadingPostComments();
+
+    return () => {
+
+    };
   }, [selectedPostId]);
 
   return (

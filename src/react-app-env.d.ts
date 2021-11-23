@@ -20,3 +20,8 @@ interface CommentBody {
   email: string,
   body: string,
 }
+
+interface User {
+  name?: string,
+  id: number,
+}
