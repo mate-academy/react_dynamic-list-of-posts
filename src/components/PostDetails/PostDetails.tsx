@@ -1,45 +1,109 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { deleteComment, getCommentsByPostId } from '../../api/comments';
+import { getPostDetailsByPostId } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  postId: number,
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = React.memo(
+  ({ postId }) => {
+    const [post, setPost] = useState<Post | null>();
+    const [comments, setComments] = useState<Comment[] | null>(null);
+    const [isCommentsShown, setIsCommentsShown] = useState(true);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+    async function loadPostDetails() {
+      const postFromServer: Post = await getPostDetailsByPostId(postId);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+      setPost(postFromServer);
+    }
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+    const loadComments = async () => {
+      const commentsFromServer: Comment[] = await getCommentsByPostId(postId);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
+      setComments(commentsFromServer);
+    };
+
+    useEffect(() => {
+      loadPostDetails();
+      loadComments();
+    }, [postId]);
+
+    const handleShowCommentsButton = () => {
+      setIsCommentsShown(prevIsCommentsShown => !prevIsCommentsShown);
+    };
+
+    const handleDeletingCommentButton = async (commentId: number) => {
+      const deletedComment = await deleteComment(commentId);
+
+      if (deletedComment) {
+        loadComments();
+      }
+    };
+
+    return (
+      <div className="PostDetails">
+        {post ? (
+          <>
+            <h2>Post details:</h2>
+
+            <section className="PostDetails__post">
+              <p>
+                {post.title}
+              </p>
+            </section>
+
+            {comments?.length ? (
+              <>
+                <section className="PostDetails__comments">
+                  <button
+                    type="button"
+                    className="button"
+                    onClick={handleShowCommentsButton}
+                  >
+                    {isCommentsShown
+                      ? `Hide ${comments.length} comments`
+                      : `Show ${comments.length} comments`}
+                  </button>
+
+                  {isCommentsShown && (
+                    <ul className="PostDetails__list">
+                      {comments.map(comment => (
+                        <li
+                          className="PostDetails__list-item"
+                          key={comment.id}
+                        >
+                          <button
+                            type="button"
+                            className="PostDetails__remove-button button"
+                            onClick={() => handleDeletingCommentButton(comment.id)}
+                          >
+                            X
+                          </button>
+                          <p>{comment.name}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              </>
+            ) : (
+              <h3>No comments</h3>
+            )}
+
+            <section>
+              <div className="PostDetails__form-wrapper">
+                <NewCommentForm
+                  postId={postId}
+                  updateComments={loadComments}
+                />
+              </div>
+            </section>
+          </>
+        ) : (<h2>Post not found</h2>)}
       </div>
-    </section>
-  </div>
+    );
+  },
 );
