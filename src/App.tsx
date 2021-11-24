@@ -1,24 +1,26 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { getAllPosts, getUserPosts, getPostDetails } from './api/posts';
-import { BASE_URL } from './api/api';
+import { getUserPosts, getPostDetails } from './api/posts';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-// import { getUser } from './api/user';
+import { getData } from './api/data';
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  // const [users, setUsers] = useState<User[]>([] as User[]);
-  // let users: User[] = [];
+  const [users, setUsers] = useState<User[]>([]);
   const [userId, setUserId] = useState(0);
-  const [selectedPostId, setSeledtedPostId] = useState<number>(0);
+  const [selectedPostId, setSeledtedPostId] = useState(0);
   const [post, setPost] = useState<Post | null>(null);
 
   useEffect(() => {
     async function getPosts() {
       if (userId === 0) {
-        const postsFromServer = await getAllPosts(BASE_URL);
+        const [usersFromServer, postsFromServer] = await getData();
+        const preparedUsers = usersFromServer.filter((user: User) => postsFromServer
+          .find((postSearch: Post) => postSearch.userId === user.id));
+
+        setUsers(preparedUsers);
 
         setPosts(postsFromServer);
       } else {
@@ -27,13 +29,8 @@ const App: React.FC = () => {
         setPosts(userPosts);
       }
     }
-    // loadUsers();
 
     getPosts();
-
-    return () => {
-
-    };
   }, [userId, selectedPostId]);
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -50,16 +47,6 @@ const App: React.FC = () => {
     setPost(selectedPost);
   }, []);
 
-  // const loadUsers = useCallback(async() => {
-  //   const usersFromServer = await getUser();
-
-  //   const preparedUsers = usersFromServer.filter((user: User) => posts
-  //     .find(post => post.userId === user.id))
-
-  //   setUsers(preparedUsers)
-
-  // }, [])
-
   return (
     <div className="App">
       <header className="App__header">
@@ -72,16 +59,9 @@ const App: React.FC = () => {
             onChange={handleSelectChange}
           >
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {users.length > 0 && users.map(user => (
+              <option key={user.name} value={user.id}>{user.name}</option>
+            ))}
           </select>
         </label>
       </header>
