@@ -4,10 +4,11 @@ import './NewCommentForm.scss';
 
 type Props = {
   postId: number,
+  updateComments: () => Promise<void>;
 };
 
 export const NewCommentForm: React.FC<Props> = React.memo(
-  ({ postId }) => {
+  ({ postId, updateComments }) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [body, setBody] = useState('');
@@ -36,15 +37,19 @@ export const NewCommentForm: React.FC<Props> = React.memo(
       setBody('');
     };
 
-    const handleFormSubmit = (event: React.FormEvent) => {
+    const handleFormSubmit = async (event: React.FormEvent) => {
       event.preventDefault();
 
-      createComment({
+      const createdComment = await createComment({
         postId,
         name,
         email,
         body,
       });
+
+      if (createdComment) {
+        updateComments();
+      }
 
       clearForm();
     };

@@ -7,17 +7,24 @@ import { getAllPosts, getPostsByUserId } from './api/posts';
 import { getAllUsers } from './api/users';
 
 const App: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [userId, setUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
   useEffect(() => {
     const getPosts = async () => {
       if (userId === 0) {
-        const allPosts = await getAllPosts();
+        const [allPosts, usersFromServer] = await Promise.all([
+          getAllPosts(),
+          getAllUsers(),
+        ]);
+        const preparedUsers = usersFromServer.filter(
+          (user: User) => allPosts.find((post: Post) => post.userId === user.id),
+        );
 
         setPosts(allPosts);
+        setUsers(preparedUsers);
       } else {
         const userPosts = await getPostsByUserId(userId);
 
@@ -26,18 +33,7 @@ const App: React.FC = () => {
     };
 
     getPosts();
-
-    const getUsers = async () => {
-      const usersFromServer = await getAllUsers();
-      const preparedUsers = usersFromServer.filter(
-        (user: User) => posts.find(post => post.userId === user.id),
-      );
-
-      setUsers(preparedUsers);
-    };
-
-    getUsers();
-  }, [userId, users]);
+  }, [userId]);
 
   const changePostDetailVisability = useCallback(
     (postId: number) => {

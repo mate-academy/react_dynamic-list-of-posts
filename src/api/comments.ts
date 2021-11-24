@@ -30,4 +30,6 @@ export const createComment = async (commentBody: CommentBody) => {
   if (!response.ok) {
     throw new Error(`${response.status} - ${response.statusText}`);
   }
+
+  return response.json();
 };

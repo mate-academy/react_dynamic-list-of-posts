@@ -20,19 +20,27 @@ export const PostDetails: React.FC<Props> = React.memo(
       setPost(postFromServer);
     }
 
-    async function loadComments() {
+    const loadComments = async () => {
       const commentsFromServer: Comment[] = await getCommentsByPostId(postId);
 
       setComments(commentsFromServer);
-    }
+    };
 
     useEffect(() => {
       loadPostDetails();
       loadComments();
-    }, [postId, comments]);
+    }, [postId]);
 
     const handleShowCommentsButton = () => {
       setIsCommentsShown(prevIsCommentsShown => !prevIsCommentsShown);
+    };
+
+    const handleDeletingCommentButton = async (commentId: number) => {
+      const deletedComment = await deleteComment(commentId);
+
+      if (deletedComment) {
+        loadComments();
+      }
     };
 
     return (
@@ -70,7 +78,7 @@ export const PostDetails: React.FC<Props> = React.memo(
                           <button
                             type="button"
                             className="PostDetails__remove-button button"
-                            onClick={() => deleteComment(comment.id)}
+                            onClick={() => handleDeletingCommentButton(comment.id)}
                           >
                             X
                           </button>
@@ -87,7 +95,10 @@ export const PostDetails: React.FC<Props> = React.memo(
 
             <section>
               <div className="PostDetails__form-wrapper">
-                <NewCommentForm postId={postId} />
+                <NewCommentForm
+                  postId={postId}
+                  updateComments={loadComments}
+                />
               </div>
             </section>
           </>
