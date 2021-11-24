@@ -1,27 +1,13 @@
-import { BASE_URL } from './api';
-
-export const request = async (url: string) => {
-  try {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`${response.status} - ${response.statusText}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    throw new Error(`The problem is here ${error}`);
-  }
-};
+import { BASE_URL, request } from './api';
 
 export const getAllPosts = async () => {
   return request(`${BASE_URL}/posts`);
 };
 
-export const getUserPosts = async (userId: number) => {
+export const getPostsByUserId = async (userId: number): Promise<Post[]> => {
   return request(`${BASE_URL}/posts?userId=${userId}`);
 };
 
-export const getPostDetails = (postId: number) => {
+export const getPostDetailsByPostId = (postId: number): Promise<Post> => {
   return request(`${BASE_URL}/posts/${postId}`);
 };

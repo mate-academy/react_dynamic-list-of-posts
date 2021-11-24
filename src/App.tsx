@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getAllPosts, getUserPosts } from './api/posts';
+import { getAllPosts, getPostsByUserId } from './api/posts';
+import { getAllUsers } from './api/users';
 
 const App: React.FC = () => {
-  const [posts, setPosts] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [userId, setUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
@@ -17,18 +19,31 @@ const App: React.FC = () => {
 
         setPosts(allPosts);
       } else {
-        const userPosts = await getUserPosts(userId);
+        const userPosts = await getPostsByUserId(userId);
 
         setPosts(userPosts);
       }
     };
 
     getPosts();
-  }, [userId]);
 
-  const changePostDetailVisability = (postId: number) => {
-    setSelectedPostId(postId);
-  };
+    const getUsers = async () => {
+      const usersFromServer = await getAllUsers();
+      const preparedUsers = usersFromServer.filter(
+        (user: User) => posts.find(post => post.userId === user.id),
+      );
+
+      setUsers(preparedUsers);
+    };
+
+    getUsers();
+  }, [userId, users]);
+
+  const changePostDetailVisability = useCallback(
+    (postId: number) => {
+      setSelectedPostId(postId);
+    }, [],
+  );
 
   const handleUserChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setUserId(Number(event.target.value));
@@ -47,16 +62,12 @@ const App: React.FC = () => {
             onChange={handleUserChange}
           >
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+
+            {users.map(user => (
+              <option value={user.id}>
+                {user.name}
+              </option>
+            ))}
           </select>
         </label>
       </header>

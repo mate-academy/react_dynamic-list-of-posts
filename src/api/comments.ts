@@ -1,15 +1,12 @@
-import { BASE_URL } from './api';
-import { request } from './posts';
+import { BASE_URL, request } from './api';
 
-export const getPostComments = async (postId: number) => {
+export const getCommentsByPostId = async (postId: number): Promise<Comment[]> => {
   const commentsFromServer: Comment[] = await request(`${BASE_URL}/comments`);
 
-  const postComments = commentsFromServer.filter(comment => comment.postId === postId);
-
-  return postComments;
+  return commentsFromServer.filter(comment => comment.postId === postId);
 };
 
-export const deleteComment = async (commentId: number) => {
+export const deleteComment = async (commentId: number): Promise<Comment> => {
   const response = await fetch(`${BASE_URL}/comments/${commentId}`, {
     method: 'DELETE',
   });

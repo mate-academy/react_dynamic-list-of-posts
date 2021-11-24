@@ -6,90 +6,93 @@ type Props = {
   postId: number,
 };
 
-export const NewCommentForm: React.FC<Props> = ({ postId }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+export const NewCommentForm: React.FC<Props> = React.memo(
+  ({ postId }) => {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [body, setBody] = useState('');
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { value } = event.target;
+    const handleInputChange = (event:
+    React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { value } = event.target;
 
-    switch (event.target.name) {
-      case 'name':
-        setName(value);
-        break;
-      case 'email':
-        setEmail(value);
-        break;
-      case 'body':
-        setBody(value);
-        break;
-      default:
-    }
-  };
+      switch (event.target.name) {
+        case 'name':
+          setName(value);
+          break;
+        case 'email':
+          setEmail(value);
+          break;
+        case 'body':
+          setBody(value);
+          break;
+        default:
+      }
+    };
 
-  const clearForm = () => {
-    setName('');
-    setEmail('');
-    setBody('');
-  };
+    const clearForm = () => {
+      setName('');
+      setEmail('');
+      setBody('');
+    };
 
-  const handleFormSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+    const handleFormSubmit = (event: React.FormEvent) => {
+      event.preventDefault();
 
-    createComment({
-      postId,
-      name,
-      email,
-      body,
-    });
+      createComment({
+        postId,
+        name,
+        email,
+        body,
+      });
 
-    clearForm();
-  };
+      clearForm();
+    };
 
-  return (
-    <form
-      className="NewCommentForm"
-      onSubmit={handleFormSubmit}
-    >
-      <div className="form-field">
-        <input
-          type="text"
-          name="name"
-          value={name}
-          placeholder="Your name"
-          className="NewCommentForm__input"
-          onChange={handleInputChange}
-        />
-      </div>
-
-      <div className="form-field">
-        <input
-          type="text"
-          name="email"
-          value={email}
-          placeholder="Your email"
-          className="NewCommentForm__input"
-          onChange={handleInputChange}
-        />
-      </div>
-
-      <div className="form-field">
-        <textarea
-          name="body"
-          value={body}
-          placeholder="Type comment here"
-          className="NewCommentForm__input"
-          onChange={handleInputChange}
-        />
-      </div>
-
-      <button
-        type="submit"
-        className="NewCommentForm__submit-button button"
+    return (
+      <form
+        className="NewCommentForm"
+        onSubmit={handleFormSubmit}
       >
-        Add a comment
-      </button>
-    </form>
-  );
-};
+        <div className="form-field">
+          <input
+            type="text"
+            name="name"
+            value={name}
+            placeholder="Your name"
+            className="NewCommentForm__input"
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div className="form-field">
+          <input
+            type="text"
+            name="email"
+            value={email}
+            placeholder="Your email"
+            className="NewCommentForm__input"
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div className="form-field">
+          <textarea
+            name="body"
+            value={body}
+            placeholder="Type comment here"
+            className="NewCommentForm__input"
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="NewCommentForm__submit-button button"
+        >
+          Add a comment
+        </button>
+      </form>
+    );
+  },
+);
