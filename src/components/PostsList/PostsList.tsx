@@ -1,37 +1,41 @@
+/* eslint-disable no-console */
 import React from 'react';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
+interface Props {
+  posts: Post[],
+  selectedPostId: number,
+  onTogglePostDetails: (postId: number) => void,
+}
+
+export const PostsList: React.FC<Props> = ({ posts, selectedPostId, onTogglePostDetails }) => (
   <div className="PostsList">
     <h2>Posts:</h2>
+    {console.log('PostList', posts)}
 
     <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+      {posts.length && posts.map((post: Post) => {
+        const isSelectedPost = post.id === selectedPostId;
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+        return (
+          <li key={post.id} className="PostsList__item">
+            <div>
+              <b>{`[User #${post.userId}]: `}</b>
+              {post.title}
+            </div>
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
+            <button
+              type="button"
+              className="PostsList__button button"
+              onClick={() => (isSelectedPost
+                ? onTogglePostDetails(0)
+                : onTogglePostDetails(post.id))}
+            >
+              {isSelectedPost ? 'Close' : 'Open'}
+            </button>
+          </li>
+        );
+      })}
     </ul>
   </div>
 );
