@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-no-bind */
-/* eslint-disable @typescript-eslint/no-shadow */
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
@@ -18,10 +16,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   async function deleteComment(commentId: number) {
     await deleteCommentFromServer(commentId);
-    setChange((change) => !change);
+    setChange((presentChange) => !presentChange);
   }
 
-  async function addComment(name: string, email: string, body: string): Promise<void> {
+  const addComment = async (name: string, email: string, body: string): Promise<void> => {
     if (post) {
       const request = {
         postId: post.id,
@@ -30,13 +28,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         body,
       };
 
-      const a = await addCommentToServer(request);
-
-      // eslint-disable-next-line no-console
-      console.log(a);
-      setChange((change) => !change);
-    }
-  }
+      await addCommentToServer(request);
+      setChange((presentChange) => !presentChange);
+    };
+  };
 
   useEffect(() => {
     (async function loadinsComments() {
