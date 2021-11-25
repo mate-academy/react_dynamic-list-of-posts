@@ -1,45 +1,110 @@
-import React from 'react';
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable @typescript-eslint/no-shadow */
+import classNames from 'classnames';
+import { useEffect, useState } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import { getPostComments, deleteCommentFromServer, addCommentToServer } from '../../api/comments';
+import { Post, Comment } from '../../types/types';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  post: Post | null;
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = ({ post }) => {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [change, setChange] = useState(false);
+  const [isCommentsHiden, setIsCommentsHiden] = useState(false);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  async function deleteComment(commentId: number) {
+    await deleteCommentFromServer(commentId);
+    setChange((change) => !change);
+  }
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
+  async function addComment(name: string, email: string, body: string): Promise<void> {
+    if (post) {
+      const request = {
+        postId: post.id,
+        name,
+        email,
+        body,
+      };
+
+      const a = await addCommentToServer(request);
+
+      // eslint-disable-next-line no-console
+      console.log(a);
+      setChange((change) => !change);
+    }
+  }
+
+  useEffect(() => {
+    (async function loadinsComments() {
+      if (post) {
+        const tempComments = await getPostComments(post.id);
+
+        if (tempComments) {
+          setComments(tempComments);
+        }
+      }
+
+      // eslint-disable-next-line no-console
+      console.log(comments);
+    }());
+  }, [post, change]);
+
+  return post && (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <p>{post?.title}</p>
+      </section>
+
+      <section className="PostDetails__comments">
+        {!!comments.length && (
           <button
             type="button"
-            className="PostDetails__remove-button button"
+            className={classNames(
+              'button',
+              { 'button--active': isCommentsHiden },
+            )}
+            onClick={() => setIsCommentsHiden(condition => !condition)}
           >
-            X
+            {isCommentsHiden ? 'Show' : `Hide ${comments.length} comments`}
           </button>
-          <p>My first comment</p>
-        </li>
+        )}
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+        <ul
+          className={classNames(
+            'PostDetails__list',
+            { 'PostDetails__list--hidden': isCommentsHiden },
+          )}
+        >
+          {comments.map(comment => {
+            return (
+              <li className="PostDetails__list-item">
+                <button
+                  type="button"
+                  className="PostDetails__remove-button button"
+                  onClick={() => deleteComment(comment.id)}
+                >
+                  X
+                </button>
+                <p>{comment.body}</p>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            onAdd={addComment}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};
