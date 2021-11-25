@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 import './PostsList.scss';
 
@@ -12,7 +11,6 @@ export const PostsList: React.FC<Props> = React.memo(
   ({ posts, selectedPostId, onTogglePostDetails }) => (
     <div className="PostsList">
       <h2>Posts:</h2>
-      {console.log('PostList', posts)}
 
       <ul className="PostsList__list">
         {posts.length && posts.map((post: Post) => {
