@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-/* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';

@@ -16,7 +16,7 @@ interface Post {
   title: string,
 }
 
-interface Comment {
+interface CommentFormat {
   id: number,
   postId: number,
   name: string,

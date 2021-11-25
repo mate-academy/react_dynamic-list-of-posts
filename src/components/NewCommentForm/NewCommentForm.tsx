@@ -1,39 +1,99 @@
-import React from 'react';
+/* eslint-disable no-console */
+import React, { useState } from 'react';
+import { createComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
-export const NewCommentForm: React.FC = () => (
-  <form className="NewCommentForm">
-    <div className="form-field">
-      <input
-        type="text"
-        name="name"
-        placeholder="Your name"
-        className="NewCommentForm__input"
-      />
-    </div>
+interface Props {
+  postId: number,
+  updateComments: () => Promise<void>,
+}
 
-    <div className="form-field">
-      <input
-        type="text"
-        name="email"
-        placeholder="Your email"
-        className="NewCommentForm__input"
-      />
-    </div>
+export const NewCommentForm: React.FC<Props> = ({ postId, updateComments }) => {
+  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [comment, setComment] = useState('');
 
-    <div className="form-field">
-      <textarea
-        name="body"
-        placeholder="Type comment here"
-        className="NewCommentForm__input"
-      />
-    </div>
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
 
-    <button
-      type="submit"
-      className="NewCommentForm__submit-button button"
-    >
-      Add a comment
-    </button>
-  </form>
-);
+    switch (name) {
+      case 'userName':
+        setUserName(value);
+        break;
+      case 'userEmail':
+        setUserEmail(value);
+        break;
+      case 'comment':
+        setComment(value);
+        break;
+      default:
+        throw new Error(`Unknown input name: ${name}`);
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const createdComment = await createComment({
+      postId,
+      name: userName,
+      email: userEmail,
+      body: comment,
+    });
+
+    if (createdComment) {
+      updateComments();
+    }
+
+    setUserName('');
+    setUserEmail('');
+    setComment('');
+  };
+
+  console.log('User name:', userName);
+  console.log('User email:', userEmail);
+  console.log('Comment:', comment);
+
+  return (
+    <form className="NewCommentForm" onSubmit={handleSubmit}>
+      <div className="form-field">
+        <input
+          type="text"
+          name="userName"
+          placeholder="Your name"
+          className="NewCommentForm__input"
+          value={userName}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div className="form-field">
+        <input
+          type="text"
+          name="userEmail"
+          placeholder="Your email"
+          className="NewCommentForm__input"
+          value={userEmail}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <div className="form-field">
+        <textarea
+          name="comment"
+          placeholder="Type comment here"
+          className="NewCommentForm__input"
+          value={comment}
+          onChange={handleInputChange}
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="NewCommentForm__submit-button button"
+      >
+        Add a comment
+      </button>
+    </form>
+  );
+};

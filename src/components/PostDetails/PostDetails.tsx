@@ -10,7 +10,7 @@ interface Props {
 
 export const PostDetails: React.FC<Props> = ({ postId }) => {
   const [post, setPost] = useState<Post | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<CommentFormat[]>([]);
   const [isCommentsHidden, setIsCommentsHidden] = useState(false);
 
   async function loadPost() {
@@ -19,11 +19,11 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
     setPost(postFromServer);
   }
 
-  async function loadComments() {
+  const loadComments = async () => {
     const commentsFromServer = await getCommentsByPostId(postId);
 
     setComments(commentsFromServer);
-  }
+  };
 
   useEffect(() => {
     loadPost();
@@ -39,55 +39,65 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
   };
 
   return (
-
-    <div className="PostDetails">
-      <h2>Post details:</h2>
-
-      <section className="PostDetails__post">
-        <p>{post?.title}</p>
-      </section>
-
-      {comments.length
+    <>
+      {post
         ? (
-          <section className="PostDetails__comments">
-            <button
-              type="button"
-              className="button"
-              onClick={() => setIsCommentsHidden(currentValue => !currentValue)}
-            >
-              {isCommentsHidden
-                ? 'Show comments'
-                : 'Hide comments'}
-            </button>
+          <div className="PostDetails">
+            <h2>Post details:</h2>
 
-            <ul className="PostDetails__list">
-              {!isCommentsHidden && comments.map(comment => (
-                <li key={comment.id} className="PostDetails__list-item">
+            <section className="PostDetails__post">
+              <p>{post?.title}</p>
+            </section>
+
+            {comments.length
+              ? (
+                <section className="PostDetails__comments">
                   <button
                     type="button"
-                    className="PostDetails__remove-button button"
-                    onClick={() => handleDeleteCommentButton(comment.id)}
+                    className="button"
+                    onClick={() => setIsCommentsHidden(currentValue => !currentValue)}
                   >
-                    X
+                    {isCommentsHidden
+                      ? 'Show comments'
+                      : 'Hide comments'}
                   </button>
 
-                  <p>{comment.body}</p>
-                </li>
-              ))}
-            </ul>
-          </section>
+                  <ul className="PostDetails__list">
+                    {!isCommentsHidden && comments.map(comment => (
+                      <li key={comment.id} className="PostDetails__list-item">
+                        <button
+                          type="button"
+                          className="PostDetails__remove-button button"
+                          onClick={() => handleDeleteCommentButton(comment.id)}
+                        >
+                          X
+                        </button>
+
+                        <p>{comment.body}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )
+              : (
+                <h3>No comments yet</h3>
+              )}
+
+            <section>
+              <div className="PostDetails__form-wrapper">
+                <NewCommentForm
+                  postId={postId}
+                  updateComments={loadComments}
+                />
+              </div>
+            </section>
+          </div>
         )
         : (
           <div className="alert alert-danger" role="alert">
             <h2>Post not found</h2>
           </div>
         )}
-
-      <section>
-        <div className="PostDetails__form-wrapper">
-          <NewCommentForm />
-        </div>
-      </section>
-    </div>
+    </>
   );
 };
