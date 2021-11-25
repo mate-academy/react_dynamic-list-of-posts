@@ -30,7 +30,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
       await addCommentToServer(request);
       setChange((presentChange) => !presentChange);
-    };
+    }
   };
 
   useEffect(() => {
