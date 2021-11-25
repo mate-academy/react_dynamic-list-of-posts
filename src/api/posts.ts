@@ -1,13 +1,13 @@
 import { request } from './helpers';
 
-export async function getPostsByUserId(userId: number) {
-  const posts = await request(`?userId=${userId}`);
-
-  return posts;
+export function getPostsByUserId(userId: number): Promise<Post[]> {
+  return request(`/posts?userId=${userId}`);
 }
 
-export async function getAllPost() {
-  const posts = await request('/posts');
+export function getAllPost(): Promise<Post[]> {
+  return request('/posts');
+}
 
-  return posts;
+export function getPostById(postId: number): Promise<Post> {
+  return request(`/posts/${postId}`);
 }
