@@ -1,5 +1,4 @@
-/* eslint-disable no-console */
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -24,9 +23,6 @@ export const App: React.FC = () => {
         const usersWithPosts = allUsers.filter((user: User) => allPosts
           .find((post: Post) => post.userId === user.id));
 
-        console.log('UseEffect', usersWithPosts);
-        console.log('UseEffect', allPosts);
-
         setPosts(allPosts);
         setUsers(usersWithPosts);
       } else {
@@ -39,9 +35,9 @@ export const App: React.FC = () => {
     loadData();
   }, [selectedUserId]);
 
-  const togglePostDetails = (postId: number) => {
+  const togglePostDetails = useCallback((postId: number) => {
     setSelectedPostId(postId);
-  };
+  }, []);
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = event.target;
