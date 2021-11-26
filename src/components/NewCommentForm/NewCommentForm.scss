@@ -4,6 +4,10 @@
   align-items: center;
   padding: 20px;
 
+  & > .form-field {
+    margin-bottom: 10px;
+  }
+
   &__input {
     border: none;
     border-bottom: 1px solid #4d457b;
@@ -11,9 +15,19 @@
     font-size: 0.9rem;
     padding: 10px 5px;
     color: #4d457b;
+    width: 100%;
   }
 
   &__submit-button {
     margin-top: 10px;
+  }
+}
+
+.form-field {
+  width: 100%;
+
+  &__error {
+    color: red;
+    font-size: 12px;
   }
 }

@@ -13,4 +13,8 @@
   &:hover {
     background-color: #4d457b;
   }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
 }
