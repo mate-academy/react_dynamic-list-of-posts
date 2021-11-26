@@ -1,30 +1,35 @@
-import React, { useState } from 'react';
+/* eslint-disable no-console */
+import React, { useState, useEffect } from 'react';
 import './NewCommentForm.scss';
 
 interface Props {
-  postId: number,
+  id: number,
   addComment: (newComment:AddComment) => void
 }
 
-export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
+export const NewCommentForm: React.FC<Props> = ({ id, addComment }) => {
   const [newComment, setnewComment] = useState<AddComment>(
     {
-      postId,
+      postId: 0,
       name: '',
       email: '',
       body: '',
     },
   );
 
+  useEffect(() => {
+    setnewComment(state => ({ ...state, postId: id }));
+  }, [id]);
+
   function inputValue(event:HTMLInputElement | HTMLTextAreaElement) {
     setnewComment(state => ({ ...state, [event.name]: event.value }));
   }
 
-  function sendComment(event:React.ChangeEvent<HTMLFormElement>) {
+  async function sendComment(event:React.ChangeEvent<HTMLFormElement>) {
     event.preventDefault();
-    addComment(newComment);
+    await addComment(newComment);
     setnewComment({
-      postId,
+      postId: 0,
       name: '',
       email: '',
       body: '',
@@ -36,6 +41,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
       className="NewCommentForm"
       onSubmit={sendComment}
     >
+      {console.log(id)}
       <div className="form-field">
         <input
           required

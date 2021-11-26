@@ -87,7 +87,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             addComment={(newComment: AddComment) => {
               writeComment(newComment);
             }}
-            postId={post.id}
+            id={post.id}
           />
         </div>
       </section>
