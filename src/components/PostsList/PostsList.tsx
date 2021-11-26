@@ -1,37 +1,74 @@
-import React from 'react';
+import { Fragment } from 'react';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+interface Porps {
+  posts: Post[] | null,
+  postByUserId: number | null,
+  showPost: (id:number) => void,
+  activePost: number | undefined,
+}
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Porps> = ({
+  posts, postByUserId, showPost, activePost,
+}) => {
+  return (
+    (
+      <div className="PostsList">
+        <h2>Posts:</h2>
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+        <ul className="PostsList__list">
+          {posts?.map(({ id, title, userId }) => (
+            <Fragment key={id}>
+              {postByUserId === 0
+                ? (
+                  <li key={id} className="PostsList__item">
+                    <div>
+                      <b>
+                        [User #
+                        {userId}
+                        ]:
+                        {' '}
+                      </b>
+                      {title}
+                    </div>
+                    <button
+                      type="button"
+                      className={`PostsList__button button ${activePost === id && 'active_btn'}`}
+                      onClick={() => {
+                        showPost(id);
+                      }}
+                    >
+                      {activePost === id ? 'Close' : 'Open'}
+                    </button>
+                  </li>
+                )
+                : postByUserId === userId
+                && (
+                  <li key={id} className="PostsList__item">
+                    <div>
+                      <b>
+                        [User #
+                        {userId}
+                        ]:
+                        {' '}
+                      </b>
+                      {title}
+                    </div>
+                    <button
+                      type="button"
+                      className={`PostsList__button button ${activePost === id && 'active_btn'}`}
+                      onClick={() => {
+                        showPost(id);
+                      }}
+                    >
+                      {activePost === id ? 'Close' : 'Open'}
+                    </button>
+                  </li>
+                )}
+            </Fragment>
+          ))}
+        </ul>
+      </div>
+    )
+  );
+};
