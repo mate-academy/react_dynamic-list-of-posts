@@ -8,7 +8,7 @@ interface Props {
 }
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comment, setComment] = useState<Comment[] | []>([]);
+  const [comments, setComments] = useState<Comment[] | []>([]);
   const [showComments, setShowComments] = useState(false);
 
   async function removeComment(id:number) {
@@ -16,7 +16,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
     getPostComments(post.id)
       .then(com => {
-        setComment(com);
+        setComments(com);
       });
   }
 
@@ -25,7 +25,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
     getPostComments(post.id)
       .then(com => {
-        setComment(com);
+        setComments(com);
       });
   }
 
@@ -44,7 +44,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </section>
 
       <section className="PostDetails__comments">
-        {comment?.length !== 0 && (
+        {comments?.length > 0 && (
           <button
             type="button"
             className="button"
@@ -54,7 +54,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           >
             {showComments ? ' Hide' : 'Show'}
             {' '}
-            {comment.length}
+            {comments.length}
             {' '}
             comments
           </button>
@@ -63,7 +63,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         {showComments
             && (
               <ul className="PostDetails__list">
-                {comment?.map(({ body, id }) => (
+                {comments?.map(({ body, id }) => (
                   <li key={id} className="PostDetails__list-item">
                     <button
                       type="button"

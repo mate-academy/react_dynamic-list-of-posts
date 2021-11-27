@@ -8,11 +8,11 @@ import { getPosts, getUsers, getPostDetails } from './api/api';
 const App: React.FC = () => {
   const [allUsers, setAllUsers] = useState<User[] | null>(null);
   const [allPosts, setAllPosts] = useState<Post[] | null>(null);
-  const [postByUserId, setpostByuserId] = useState<number | null>(0);
+  const [postByUserId, setpostByuserId] = useState<number>(0);
   const [postDetail, setPostDetail] = useState<Post | null>(null);
 
   function showPostDetail(id:number) {
-    if (postDetail?.id !== undefined && postDetail?.id === id) {
+    if (postDetail?.id && postDetail?.id === id) {
       setPostDetail(null);
     } else {
       getPostDetails(id)
@@ -64,8 +64,7 @@ const App: React.FC = () => {
             }}
           />
         </div>
-
-        { postDetail !== null && (
+        { !!postDetail && (
           <div className="App__content">
             <PostDetails
               post={postDetail}
