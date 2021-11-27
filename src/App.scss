@@ -66,6 +66,7 @@ ul {
   }
 
   &__content {
+
     @extend %stretch-panel;
 
     flex-basis: 30%;
