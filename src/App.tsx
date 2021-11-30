@@ -7,7 +7,7 @@ import { PostDetails } from './components/PostDetails';
 const App: React.FC = () => (
   <div className="App">
     <header className="App__header">
-      <label>
+      <div>
         Select a user: &nbsp;
 
         <select className="App__user-selector">
@@ -23,7 +23,7 @@ const App: React.FC = () => (
           <option value="9">Glenna Reichert</option>
           <option value="10">Leanne Graham</option>
         </select>
-      </label>
+      </div>
     </header>
 
     <main className="App__main">
