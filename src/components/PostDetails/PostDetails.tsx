@@ -19,7 +19,7 @@ export const PostDetails: React.FC<Props> = ({ postDetails }) => {
     }
 
     loadComments();
-  }, [postDetails]);
+  }, [postDetails, comments]);
 
   const deleteComment = (commentId: number | undefined) => {
     return setComments(comments.filter(comment => comment.id !== commentId));
