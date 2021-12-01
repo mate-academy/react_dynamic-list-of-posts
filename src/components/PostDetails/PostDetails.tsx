@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
 import { getUserComments } from '../../api/api';
 import { NewCommentForm } from '../NewCommentForm';

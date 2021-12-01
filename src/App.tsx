@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect, useState } from 'react';
 import './App.scss';
@@ -26,8 +25,6 @@ const App: React.FC = () => {
 
       if (selectUser !== '0') {
         const newArr = newUser.filter(item => item.userId === Number(selectUser));
-
-        console.log(newArr);
 
         return setPosts(newArr);
       }
