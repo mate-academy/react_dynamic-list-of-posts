@@ -1,37 +1,51 @@
-import React from 'react';
+import { Post } from '../../types/Post';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+type Props = {
+  posts: Post[];
+  selectedPostId: Post['id'];
+  selectPost: (newSelectedPostId: Post['id']) => void;
+};
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = ({
+  posts,
+  selectedPostId,
+  selectPost,
+}) => {
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+      <ul className="PostsList__list">
+        {posts?.map(({ id, userId, title }) => (
+          <>
+            <div>
+              <li key={id} className="PostsList__item">
+                <b>{`[User #${userId}]: `}</b>
+                {title}
+              </li>
+            </div>
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+            {selectedPostId === id ? (
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => selectPost(0)}
+              >
+                Close
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => selectPost(id)}
+              >
+                Open
+              </button>
+            )}
+          </>
+        ))}
+      </ul>
+    </div>
+  );
+};
