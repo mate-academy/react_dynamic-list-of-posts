@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getUserComments } from '../../api/api';
+import { getUserComments, setCreateComment, setRemoveComment } from '../../api/api';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
@@ -21,20 +21,16 @@ export const PostDetails: React.FC<Props> = ({ postDetails }) => {
     loadComments();
   }, [postDetails, comments]);
 
-  const deleteComment = (commentId: number | undefined) => {
-    return setComments(comments.filter(comment => comment.id !== commentId));
-  };
-
-  const addComment = (name: string, email: string, body: string) => {
-    const newComment = {
-      id: comments.length,
+  const createComment = (name: string, email: string, body: string) => {
+    const addComment = {
+      id: comments.length + 1,
       postId: postDetails.id,
       name,
       email,
       body,
     };
 
-    setComments([...comments, newComment]);
+    return setCreateComment(addComment);
   };
 
   return (
@@ -65,19 +61,21 @@ export const PostDetails: React.FC<Props> = ({ postDetails }) => {
                 <ul className="PostDetails__list">
                   {comments.length !== 0 && (
                     <div>
-                      {comments.map(comment => (
+                      {comments.map(({ body, id }) => (
                         <li
-                          key={comment.id}
+                          key={id}
                           className="PostDetails__list-item"
                         >
                           <button
                             type="button"
                             className="PostDetails__remove-button button"
-                            onClick={() => deleteComment(comment.id)}
+                            onClick={() => {
+                              setRemoveComment(id);
+                            }}
                           >
                             X
                           </button>
-                          <p>{comment.body}</p>
+                          <p>{body}</p>
                         </li>
                       ))}
                     </div>
@@ -107,7 +105,9 @@ export const PostDetails: React.FC<Props> = ({ postDetails }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm addComment={addComment} />
+          <NewCommentForm
+            addComment={createComment}
+          />
         </div>
       </section>
     </div>
