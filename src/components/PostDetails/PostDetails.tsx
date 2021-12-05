@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { deleteComment } from '../../api/comments';
 import { Post, Comment } from '../../types/types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
@@ -21,6 +22,11 @@ export const PostDetails: React.FC<Props> = (props) => {
   const [showComments, setShowComments] = useState<boolean>(true);
 
   const isShowComments = showComments ? 'Hide' : 'Show';
+
+  const removeComment = (id: number) => {
+    deleteComment(id);
+    updateDetails();
+  };
 
   return (
     <div className="PostDetails">
@@ -49,6 +55,7 @@ export const PostDetails: React.FC<Props> = (props) => {
                   <button
                     type="button"
                     className="PostDetails__remove-button button"
+                    onClick={() => removeComment(comment.id)}
                   >
                     X
                   </button>

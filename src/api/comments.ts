@@ -36,3 +36,11 @@ export const createComment = async (
 
   return result;
 };
+
+export const deleteComment = async (id: number) => {
+  const response = await fetch(`${BASE_URL}/comments/${id}`, { method: 'DELETE' });
+
+  const result = await response.json();
+
+  return result;
+};

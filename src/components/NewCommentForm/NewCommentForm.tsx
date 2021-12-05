@@ -59,7 +59,7 @@ export const NewCommentForm: React.FC<Props> = (props) => {
         <textarea
           name="body"
           placeholder="Type comment here"
-          className="NewCommentForm__input"
+          className="NewCommentForm__input NewCommentForm__input--text-area"
           value={body}
           onChange={(event) => setBody(event.target.value)}
         />
