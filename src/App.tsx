@@ -1,41 +1,107 @@
-import React from 'react';
+import React, {
+  ChangeEvent,
+  useEffect,
+  useState,
+} from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { requestStudents } from './api/api';
+import { requestPosts, getPostDetails } from './api/posts';
+import { Comment, Post, User } from './types/types';
+import { getPostComments } from './api/comments';
 
-const App: React.FC = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedUser, setSelectedUser] = useState<string>('0');
+  const [selectedPostId, setSelectedPostId] = useState<number>(0);
+  const [postDetails, setPostDetails] = useState<Post | null>(null);
+  const [postComments, setComments] = useState<Comment[]>([]);
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+  const postsFilterBySelectedUser = () => {
+    if (selectedUser === '0') {
+      return posts;
+    }
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+    return posts.filter((post: Post) => post.userId.toString() === selectedUser);
+  };
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+  const updateData = async () => {
+    const usersFromServer = await requestStudents();
+    const postsFromServer = await requestPosts();
+
+    setUsers(usersFromServer);
+    setPosts(postsFromServer);
+  };
+
+  useEffect(() => {
+    updateData();
+  }, []);
+
+  const updateDetails = async () => {
+    const postDetailsFromServer = await getPostDetails(selectedPostId);
+    const postCommentsFromServer = await getPostComments(selectedPostId);
+
+    setPostDetails(postDetailsFromServer);
+    setComments(postCommentsFromServer);
+  };
+
+  useEffect(() => {
+    updateDetails();
+  }, [selectedPostId]);
+
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
+
+    setSelectedUser(value);
+  };
+
+  return (
+    <div className="App">
+      <header className="App__header">
+        <label htmlFor="select">
+          Select a user: &nbsp;
+
+          <select
+            id="select"
+            className="App__user-selector"
+            value={selectedUser}
+            onChange={handleChange}
+          >
+            <option value="0">All users</option>
+            {users.map(user => (
+              <option key={user.id} value={user.id}>{user.name}</option>
+            ))}
+          </select>
+        </label>
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            posts={postsFilterBySelectedUser()}
+            selectedPostId={selectedPostId}
+            setSelectedPostId={setSelectedPostId}
+          />
+        </div>
+
+        <div className="App__content">
+          {selectedPostId !== 0
+            ? (
+              <PostDetails
+                postDetails={postDetails}
+                comments={postComments}
+                selectedPostId={selectedPostId}
+                updateDetails={updateDetails}
+              />
+            )
+            : 'Open post to get info'}
+        </div>
+      </main>
+    </div>
+  );
+};
 
 export default App;
