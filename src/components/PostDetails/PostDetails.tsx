@@ -12,7 +12,7 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
-  const [postDetails, setPostDetails] = useState<Post>({} as Post);
+  const [postDetails, setPostDetails] = useState<Post | null>(null);
   const [postComments, setPostComments] = useState<Comment[] | []>([]);
   const [hideComments, setHideComments] = useState(false);
 
@@ -36,7 +36,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   };
 
   const addNewComment = (newComment: Partial<Comment>) => {
-    setCreateComment(newComment)
+    return setCreateComment(newComment)
       .then(() => {
         getPostComments(selectedPostId).then(updateComments => setPostComments(updateComments));
       });

@@ -7,7 +7,7 @@ import { User } from './types/User';
 import { getUsers } from './api/users';
 
 const App: React.FC = () => {
-  const [users, setUsers] = useState([] as User[]);
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedUserId, setUserId] = useState(0);
   const [selectedPostId, setPostId] = useState(0);
 
