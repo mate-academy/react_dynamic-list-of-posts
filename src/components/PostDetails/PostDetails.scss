@@ -51,3 +51,20 @@
     border-radius: 10px;
   }
 }
+
+.button--no_comments {
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  background-color: #b8b3d2;
+  border: 0;
+  color: white;
+  transition: background-color 0.12s;
+  font-size: inherit;
+  min-width: 100px;
+
+  &:hover {
+    cursor: default;
+    background-color: #b8b3d2;
+  }
+}
