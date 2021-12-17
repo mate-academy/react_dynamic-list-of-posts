@@ -17,3 +17,35 @@
     margin-top: 10px;
   }
 }
+
+.button--formError {
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  background-color: #b8b3d2;
+  border: 0;
+  color: white;
+  transition: background-color 0.12s;
+  font-size: inherit;
+  min-width: 100px;
+
+  &:hover {
+    cursor: default;
+    background-color: #b8b3d2;
+  }
+}
+
+.FormError {
+  padding-top: 15px;
+  font-size: 12px;
+  font-weight: bold;
+  color: red;
+  animation: pulse 0.5s ease-in-out infinite alternate-reverse;
+
+  @keyframes pulse {
+    to {
+      color: rgb(65, 49, 49);
+    }
+
+  }
+}
