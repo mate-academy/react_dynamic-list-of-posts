@@ -6,13 +6,16 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getUsers, getUserPosts } from './api/posts';
+import { Loader } from './components/Loader';
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[] | null>(null);
   const [selectedPostId, setSelectedPostId] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     async function fetchPosts() {
       try {
         const postsFromServer = await getUserPosts();
@@ -20,15 +23,17 @@ const App: React.FC = () => {
 
         setUsers(usersFromServer);
         setPosts(postsFromServer);
+        setIsLoading(false);
       } catch (error) {
         console.error(error);
+        setIsLoading(false);
       }
     }
 
     fetchPosts();
   }, []);
 
-  const filterPostsByUserid = async (e: { target: { value: string; }; }) => {
+  const filterPostsByUserid = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = +e.target.value;
 
     const filteredPosts = await getUserPosts(id);
@@ -39,8 +44,6 @@ const App: React.FC = () => {
   const handleSetPostId = (id:number) => {
     setSelectedPostId(id);
   };
-
-  // console.log(selectedPostId);
 
   return (
     <div className="App">
@@ -56,32 +59,26 @@ const App: React.FC = () => {
             {users && users.map(user => (
               <option key={user.id} value={user.id}>{user.name}</option>
             ))}
-            {/* <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option> */}
           </select>
         </label>
       </header>
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList
-            posts={posts}
-            handleSetPostId={handleSetPostId}
-            selectedPostId={selectedPostId}
-          />
+          {isLoading ? (<Loader />) : (
+            <PostsList
+              posts={posts}
+              handleSetPostId={handleSetPostId}
+              selectedPostId={selectedPostId}
+            />
+          )}
         </div>
 
-        <div className="App__content">
-          {selectedPostId !== 0 && <PostDetails id={selectedPostId} />}
-        </div>
+        {selectedPostId !== 0 && (
+          <div className="App__content">
+            <PostDetails id={selectedPostId} />
+          </div>
+        )}
       </main>
     </div>
   );

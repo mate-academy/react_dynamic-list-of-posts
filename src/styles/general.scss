@@ -10,7 +10,11 @@
   font-size: inherit;
   min-width: 100px;
 
-  &:hover {
+  &:disabled {
+    cursor: default;
+  }
+
+  &:enabled:hover {
     background-color: #4d457b;
   }
 }

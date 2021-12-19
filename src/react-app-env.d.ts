@@ -12,6 +12,12 @@ interface User {
   name: string,
 }
 
-interface Comment {
-  body: string,
-}
+// type Comment = {
+//   id: number,
+//   postId: number,
+//   name: string,
+//   email: string,
+//   body: string,
+//   createdAt?: Date,
+//   updatedAt?: Date,
+// };
