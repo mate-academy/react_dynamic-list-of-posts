@@ -1,5 +1,23 @@
+%stretch-panel {
+  flex-grow: 1;
+  margin: 10px;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: white;
+}
+
+.main {
+  display: flex;
+  justify-content: stretch;
+  align-content: stretch;
+}
+
 .PostsList {
-  width: 100%;
+  // width: 100%;
+  @extend %stretch-panel;
+
+  flex-basis: 60%;
+  border-color: blue;
 
   &__user-button {
     cursor: pointer;
@@ -30,5 +48,12 @@
 
   &__button {
     margin-left: 10px;
+  }
+
+  &__side {
+    @extend %stretch-panel;
+
+    flex-basis: 30%;
+    border-color: green;
   }
 }
