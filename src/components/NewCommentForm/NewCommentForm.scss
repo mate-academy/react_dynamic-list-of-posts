@@ -11,6 +11,11 @@
     font-size: 0.9rem;
     padding: 10px 5px;
     color: #4d457b;
+    resize: none;
+
+    &:focus {
+      outline: none;
+    }
   }
 
   &__submit-button {

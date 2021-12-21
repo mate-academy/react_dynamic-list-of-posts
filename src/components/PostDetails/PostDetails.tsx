@@ -1,45 +1,121 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getPostComments, deleteComment } from '../../api/comment';
+import { getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+import { Comment } from '../../types/Comment';
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+type Props = {
+  postId: number;
+};
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+export const PostDetails: React.FC<Props> = ({ postId }) => {
+  const initialComment: Comment[] = [];
+  const [details, setDetails] = useState(null);
+  const [comments, setComments] = useState(initialComment);
+  const [isVisible, setVisible] = useState(true);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  useEffect(() => {
+    const fetchPostDetails = async () => {
+      try {
+        const postDetails = await getPostDetails(postId);
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+        setDetails(postDetails);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('An error has occurred when fetching posts');
+      }
+    };
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
+    const fetchPostComments = async () => {
+      try {
+        const commentsFromServer = await getPostComments(postId);
+
+        setComments(commentsFromServer);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('An error has occurred when fetching post comments');
+      }
+    };
+
+    Promise.all([fetchPostDetails(), fetchPostComments()]);
+  }, [postId]);
+
+  const toggleVisibility = () => {
+    setVisible(current => !current);
+  };
+
+  const remove = (commentId: number) => {
+    deleteComment(commentId);
+    setComments(
+      currentComments => currentComments.filter(
+        comment => commentId !== comment.id,
+      ),
+    );
+  };
+
+  const addComment = (
+    event: React.FormEvent<HTMLFormElement>,
+    comment: Comment,
+  ) => {
+    event.preventDefault();
+
+    setComments(existComments => [...existComments, comment]);
+  };
+
+  if (details && postId !== 0) {
+    const { title } = details;
+
+    return (
+      <div className="PostDetails">
+        <h2>Post details:</h2>
+
+        <section className="PostDetails__post">
+          <p>{title}</p>
+        </section>
+
+        <section className="PostDetails__comments">
+          {comments.length ? (
+            <button
+              type="button"
+              className="button"
+              onClick={toggleVisibility}
+            >
+              {isVisible ? 'Hide' : 'Show'}
+            </button>
+          ) : (
+            <p>No comments...</p>
+          )}
+
+          {isVisible && (
+            <ul className="PostDetails__list">
+              {comments.length > 0 && comments.map(comment => (
+                <li className="PostDetails__list-item" key={comment.id}>
+                  <button
+                    type="button"
+                    className="PostDetails__remove-button button"
+                    onClick={() => remove(comment.id)}
+                  >
+                    X
+                  </button>
+                  <p>{comment.name}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section>
+          <div className="PostDetails__form-wrapper">
+            <NewCommentForm addComment={addComment} />
+          </div>
+        </section>
       </div>
-    </section>
-  </div>
-);
+    );
+  }
+
+  return (
+    <p>No user selected</p>
+  );
+};
