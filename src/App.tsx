@@ -3,15 +3,9 @@ import React, { useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
-// import { PostDetails } from './components/PostDetails';
-// import { getUserPosts } from './api/posts';
 
 const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState(0);
-  // const [selectedPostId, setSelectedPostId] = useState(0);
-  // const setUser = (usId:number) => {
-  //   setSelectedUser(usId);
-  // };
 
   return (
     <div className="App">

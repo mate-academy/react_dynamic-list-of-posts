@@ -3,42 +3,46 @@ import { getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { getPostComments } from '../../api/comments';
-import { remove } from '../../api/api';
+import { remove, add } from '../../api/api';
+import { Post } from '../types/Post';
+import { Comment } from '../types/Comment';
 
 type Props = {
   selectedId: number,
 };
 
-const post = {
-  id: 0,
-  userId: 0,
-  title: '',
-  body: '',
-  createdAt: '',
-  updatedAt: '',
-};
-
-const comment = {
-  id: 0,
-  postId: 0,
-  name: '',
-  email: '',
-  body: '',
-};
-
 export const PostDetails: React.FC<Props> = ({ selectedId }) => {
-  const [details, setDetails] = useState(post);
-  const [comments, setComments] = useState([comment]);
+  const [details, setDetails] = useState<Post | null>(null);
+  const [comments, setComments] = useState<Comment[] | []>([]);
   const [commentsIsvisible, setCommentsIsvisible] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const deletePost = (postId: number) => {
-    return remove(`/comments/${postId}`);
+  const deleteComment = (postId: number) => {
+    remove(`/comments/${postId}`);
+    setComments(comments.filter(el => el.id !== postId));
+  };
+
+  const addComment = (name:string, email:string, body:string) => {
+    const option = {
+      id: comments.length + 1,
+      postId: selectedId,
+      name,
+      email,
+      body,
+    };
+
+    add('/comments', option);
+    setComments([...comments, option]);
   };
 
   useEffect(() => {
     getPostDetails(selectedId)
       .then(data => {
         setDetails(data);
+        setErrorMessage('');
+      })
+      .catch(() => {
+        setErrorMessage('Ooops, something went wrong');
       });
   }, [selectedId]);
 
@@ -46,16 +50,22 @@ export const PostDetails: React.FC<Props> = ({ selectedId }) => {
     getPostComments(selectedId)
       .then(data => {
         setComments(data);
+        setErrorMessage('');
+      })
+      .catch(() => {
+        setErrorMessage('Ooops, something went wrong');
       });
   }, [selectedId]);
 
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
-
-      <section className="PostDetails__post">
-        <p>{details.body}</p>
-      </section>
+      {errorMessage}
+      {details && (
+        <section className="PostDetails__post">
+          <p>{details.body}</p>
+        </section>
+      )}
 
       <section className="PostDetails__comments">
         <button
@@ -63,7 +73,9 @@ export const PostDetails: React.FC<Props> = ({ selectedId }) => {
           className="button"
           onClick={() => setCommentsIsvisible(!commentsIsvisible)}
         >
-          {commentsIsvisible ? (`Hide ${comments.length} comments`) : (`Show ${comments.length} comments`)}
+          {commentsIsvisible
+            ? ('Hide') : ('Show')}
+          {` ${comments.length} comments`}
         </button>
 
         {commentsIsvisible && (
@@ -73,7 +85,7 @@ export const PostDetails: React.FC<Props> = ({ selectedId }) => {
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
-                  onClick={() => deletePost(el.id)}
+                  onClick={() => deleteComment(el.id)}
                 >
                   X
                 </button>
@@ -86,7 +98,7 @@ export const PostDetails: React.FC<Props> = ({ selectedId }) => {
       </section>
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm selectedId={selectedId} id={comments.length + 1} />
+          <NewCommentForm addComment={addComment} />
         </div>
       </section>
     </div>

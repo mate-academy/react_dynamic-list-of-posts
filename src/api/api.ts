@@ -1,16 +1,9 @@
+import { Comment } from '../components/types/Comment';
+import { Option } from '../components/types/Option';
+
 export const BASE_URL = 'https://mate.academy/students-api';
 
-type Comment = {
-  id: number,
-  postId: number,
-  name:string,
-  email: string
-  body: string,
-
-  createdAt?: string,
-  updatedAt?: string,
-};
-export const request = (url:string, options: { method: string, headers?: { 'Content-type': string }, body?:string }) => {
+export const request = (url:string, options: Option) => {
   return fetch(`${BASE_URL}${url}`, options)
     .then(response => {
       if (!response.ok) {
