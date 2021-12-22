@@ -3,23 +3,24 @@ import { Comment } from '../../types/Comment';
 import './NewCommentForm.scss';
 
 type Props = {
+  postId: number;
   addComment: (
     event: React.FormEvent<HTMLFormElement>,
     comment: Comment
   ) => void;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ addComment }) => {
+export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
 
   const newComment: Comment = {
-    id: 0,
+    id: Math.round(Math.random() * 1000),
     name,
     email,
     body,
-    postId: 0,
+    postId,
   };
 
   const clearForm = () => {

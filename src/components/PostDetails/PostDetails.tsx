@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getPostComments, deleteComment } from '../../api/comment';
+import { getPostComments, deleteComment, postComment } from '../../api/comment';
 import { getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
@@ -61,6 +61,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
   ) => {
     event.preventDefault();
 
+    postComment(comment);
     setComments(existComments => [...existComments, comment]);
   };
 
@@ -108,7 +109,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
 
         <section>
           <div className="PostDetails__form-wrapper">
-            <NewCommentForm addComment={addComment} />
+            <NewCommentForm postId={postId} addComment={addComment} />
           </div>
         </section>
       </div>
