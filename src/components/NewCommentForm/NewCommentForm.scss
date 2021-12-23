@@ -11,9 +11,23 @@
     font-size: 0.9rem;
     padding: 10px 5px;
     color: #4d457b;
+    resize: none;
+
+    &:focus {
+      outline: none;
+    }
   }
 
   &__submit-button {
     margin-top: 10px;
+  }
+
+  &--invalid {
+    padding: 5px 10px;
+    margin: 5px;
+
+    color: red;
+    border: 1px solid;
+    border-radius: 10px;
   }
 }

@@ -72,3 +72,18 @@ ul {
     border-color: green;
   }
 }
+
+.posts {
+  &--empty {
+    display: flex;
+    justify-content: center;
+
+    border: 1px solid;
+    border-radius: 10px;
+    color: red;
+
+    padding: 5px 10px;
+
+    width: fit-content;
+  }
+}
