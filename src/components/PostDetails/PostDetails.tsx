@@ -56,11 +56,8 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
   };
 
   const addComment = (
-    event: React.FormEvent<HTMLFormElement>,
     comment: Comment,
   ) => {
-    event.preventDefault();
-
     postComment(comment);
     setComments(existComments => [...existComments, comment]);
   };
@@ -91,16 +88,16 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
 
           {isVisible && (
             <ul className="PostDetails__list">
-              {comments.length > 0 && comments.map(comment => (
-                <li className="PostDetails__list-item" key={comment.id}>
+              {comments.length > 0 && comments.map(({ id, name }) => (
+                <li className="PostDetails__list-item" key={id}>
                   <button
                     type="button"
                     className="PostDetails__remove-button button"
-                    onClick={() => remove(comment.id)}
+                    onClick={() => remove(id)}
                   >
                     X
                   </button>
-                  <p>{comment.name}</p>
+                  <p>{name}</p>
                 </li>
               ))}
             </ul>

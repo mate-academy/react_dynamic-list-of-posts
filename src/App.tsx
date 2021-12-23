@@ -23,6 +23,7 @@ const App: React.FC = () => {
       setUserPosts(postsFromServer);
       setLoading(false);
     } catch (error) {
+      setLoading(false);
       // eslint-disable-next-line no-console
       console.log('Fetch userPosts: ', error);
     }
@@ -30,7 +31,6 @@ const App: React.FC = () => {
 
   const loadPostsByUser = async (userId: number) => {
     setLoading(true);
-    setUserPosts(initialPosts);
 
     try {
       const postsFromServer = await getUserPosts(userId);
@@ -38,6 +38,7 @@ const App: React.FC = () => {
       setUserPosts(postsFromServer);
       setLoading(false);
     } catch (error) {
+      setUserPosts(initialPosts);
       // eslint-disable-next-line no-console
       console.log('Error', error);
     }

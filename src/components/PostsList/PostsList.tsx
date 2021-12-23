@@ -8,40 +8,38 @@ type Props = {
   onSelect: (postId: number) => void;
 };
 
-export const PostsList: React.FC<Props> = ({ posts, selectedPostId, onSelect }) => {
-  return (
-    <div className="PostsList">
-      <h2>Posts:</h2>
+export const PostsList: React.FC<Props> = ({ posts, selectedPostId, onSelect }) => (
+  <div className="PostsList">
+    <h2>Posts:</h2>
 
-      <ul className="PostsList__list">
-        {posts.map(post => (
-          <li key={post.id} className="PostsList__item">
-            <div>
-              <b>{`[User #${post.userId}]: `}</b>
-              {post.title}
-            </div>
+    <ul className="PostsList__list">
+      {posts.map(({ id, title, userId }) => (
+        <li key={id} className="PostsList__item">
+          <div>
+            <b>{`[User #${userId}]: `}</b>
+            {title}
+          </div>
 
-            {selectedPostId === post.id ? (
-              <button
-                onClick={() => onSelect(0)}
-                type="button"
-                className="PostsList__button button"
-              >
-                Close
-              </button>
-            ) : (
-              <button
-                onClick={() => onSelect(post.id)}
-                type="button"
-                className="PostsList__button button"
-              >
-                Open
-              </button>
-            )}
-          </li>
-        ))}
-      </ul>
+          {selectedPostId === id ? (
+            <button
+              onClick={() => onSelect(0)}
+              type="button"
+              className="PostsList__button button"
+            >
+              Close
+            </button>
+          ) : (
+            <button
+              onClick={() => onSelect(id)}
+              type="button"
+              className="PostsList__button button"
+            >
+              Open
+            </button>
+          )}
+        </li>
+      ))}
+    </ul>
 
-    </div>
-  );
-};
+  </div>
+);

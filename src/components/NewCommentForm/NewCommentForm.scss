@@ -21,4 +21,13 @@
   &__submit-button {
     margin-top: 10px;
   }
+
+  &--invalid {
+    padding: 5px 10px;
+    margin: 5px;
+
+    color: red;
+    border: 1px solid;
+    border-radius: 10px;
+  }
 }

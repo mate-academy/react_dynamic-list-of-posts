@@ -4,16 +4,14 @@ import './NewCommentForm.scss';
 
 type Props = {
   postId: number;
-  addComment: (
-    event: React.FormEvent<HTMLFormElement>,
-    comment: Comment
-  ) => void;
+  addComment: (comment: Comment) => void;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
+  const [commentValidation, isValid] = useState(true);
 
   const newComment: Comment = {
     id: Math.round(Math.random() * 1000),
@@ -29,18 +27,55 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
     setBody('');
   };
 
+  const isCommentValid = ({ name: n, email: e, body: b }: Comment) => (
+    n.trim() && e.trim() && b.trim()
+  );
+
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (isCommentValid(newComment)) {
+      isValid(true);
+      clearForm();
+      addComment(newComment);
+    } else {
+      isValid(false);
+    }
+  };
+
+  const inputHandler = (
+    event: React.ChangeEvent<HTMLInputElement>
+    | React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    const { name: n } = event.target;
+    const { value } = event.target;
+
+    isValid(true);
+
+    switch (n) {
+      case 'name':
+        setName(value);
+        break;
+      case 'email':
+        setEmail(value);
+        break;
+      case 'body':
+        setBody(value);
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
     <form
-      onSubmit={(event) => {
-        clearForm();
-        addComment(event, newComment);
-      }}
+      onSubmit={onSubmit}
       className="NewCommentForm"
     >
       <div className="form-field">
         <input
           value={name}
-          onChange={(event) => setName(event.target.value)}
+          onChange={inputHandler}
           type="text"
           name="name"
           placeholder="Your name"
@@ -51,7 +86,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
       <div className="form-field">
         <input
           value={email}
-          onChange={(event) => setEmail(event.target.value)}
+          onChange={inputHandler}
           type="email"
           name="email"
           placeholder="Your email"
@@ -62,7 +97,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
       <div className="form-field">
         <textarea
           value={body}
-          onChange={(event) => setBody(event.target.value)}
+          onChange={inputHandler}
           rows={5}
           cols={23}
           name="body"
@@ -77,6 +112,9 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
       >
         Add a comment
       </button>
+      {!commentValidation && (
+        <p className="NewCommentForm--invalid">Comment is invalid</p>
+      )}
     </form>
   );
 };
