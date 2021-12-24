@@ -1,45 +1,106 @@
-import React from 'react';
-import { NewCommentForm } from '../NewCommentForm';
+import { FC, useEffect, useState } from 'react';
+
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+import { NewCommentForm } from '../NewCommentForm';
+import { getPostComments, postComment, removeComment } from '../../api/comments';
+import { getPostDetails } from '../../api/posts';
+import { Loader } from '../Loader';
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+type Props = {
+  postId: number,
+};
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+export const PostDetails: FC<Props> = ({ postId }) => {
+  const [details, setDetails] = useState<Post | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commentsVisibility, setCommentsVisibility] = useState<boolean>(true);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  useEffect(() => {
+    getPostDetails(postId)
+      .then(postDetails => {
+        setDetails(postDetails);
+        setIsLoaded(true);
+      });
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+    getPostComments(postId)
+      .then(postComments => setComments([...postComments]));
+  }, [postId]);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+  const onDelete = (commentId: number) => {
+    removeComment(commentId)
+      .then(response => {
+        if (response) {
+          setComments(prevComments => prevComments
+            .filter(prevComment => prevComment.id !== commentId));
+        }
+      });
+  };
+
+  const onAdd = (newComment: Partial<Comment>) => {
+    postComment(newComment)
+      .then(response => setComments([...comments, response]));
+  };
+
+  if (!isLoaded) {
+    return (<Loader />);
+  }
+
+  return (
+    <div className="PostDetails">
+      <h2>
+        {`Post details: ${comments.length}`}
+      </h2>
+
+      <section className="PostDetails__post">
+        <p>{details?.body}</p>
+      </section>
+
+      <section className="PostDetails__comments">
+        {comments.length ? (
+          <>
+            <button
+              type="button"
+              className="button"
+              onClick={() => (setCommentsVisibility(!commentsVisibility))}
+            >
+              {commentsVisibility
+                ? `Hide ${comments.length} comments`
+                : `Show ${comments.length} comments`}
+            </button>
+
+            <ul className="PostDetails__list">
+              {commentsVisibility && comments.map(comment => (
+                <li
+                  className="PostDetails__list-item"
+                  key={comment.id}
+                >
+                  <button
+                    type="button"
+                    className="PostDetails__remove-button button"
+                    onClick={() => onDelete(comment.id)}
+                  >
+                    x
+                  </button>
+                  <p>{comment.body}</p>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <h3>Comment section is empty</h3>
+        )}
+      </section>
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            postId={postId}
+            addComment={onAdd}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};
