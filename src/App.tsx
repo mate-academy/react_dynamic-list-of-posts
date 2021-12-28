@@ -1,41 +1,103 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { getAllPosts, getUserPosts } from './api/posts';
+import { getAllUsers } from './api/users';
+import { User } from './types/User';
+import { Post } from './types/Post';
 
-const App: React.FC = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+const App: React.FC = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState('0');
+  const [selectedPostId, setSelectedPostId] = useState(0);
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const usersFromServer = await getAllUsers();
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+        setUsers(usersFromServer);
+      } catch {
+        Promise.reject(new Error('error'));
+      }
+    };
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const postsFromServer = await getAllPosts();
+
+      setPosts(postsFromServer);
+    };
+
+    const fetchUserPosts = async () => {
+      const userPosts = await getUserPosts(selectedUserId);
+
+      setPosts(userPosts);
+    };
+
+    try {
+      (selectedUserId === '0' ? fetchPosts : fetchUserPosts)();
+    } catch {
+      Promise.reject(new Error('error'));
+    }
+  }, [selectedUserId]);
+
+  return (
+    <div className="App">
+      <header className="App__header">
+        <label htmlFor="userSelector">
+          Select a user: &nbsp;
+
+          <select
+            className="App__user-selector"
+            id="userSelector"
+            value={selectedUserId}
+            onChange={(event) => {
+              setSelectedUserId(event.target.value);
+              setSelectedPostId(0);
+            }}
+          >
+            <option value="0">All users</option>
+            {users.map(user => (
+              <option
+                value={user.id}
+                key={user.id}
+              >
+                {user.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            posts={posts}
+            selectedPostId={selectedPostId}
+            setSelectedPostId={setSelectedPostId}
+          />
+        </div>
+
+        <div className="App__content">
+          {selectedPostId ? (
+            <PostDetails
+              post={posts.filter(post => post.id === selectedPostId)[0]}
+              selectedPostId={selectedPostId}
+            />
+          ) : (
+            <></>
+          )}
+        </div>
+      </main>
+    </div>
+  );
+};
 
 export default App;
