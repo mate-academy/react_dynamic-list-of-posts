@@ -5,8 +5,22 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getPosts, getUserPosts } from './api/posts';
 
+const userList = [
+  'All users',
+  'Leanne Graham I',
+  'Ervin Howell',
+  'Clementine Bauch',
+  'Patricia Lebsack',
+  'Chelsey Dietrich',
+  'Mrs. Dennis Schulist',
+  'Kurtis Weissnat',
+  'Nicholas Runolfsdottir V',
+  'Glenna Reichert',
+  'Leanne Graham',
+];
+
 const App: React.FC = () => {
-  const [posts, setPosts] = useState([] as Post[]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [user, setUser] = useState(0);
   const [selectedPostId, setPostId] = useState(0);
 
@@ -56,17 +70,9 @@ const App: React.FC = () => {
             className="App__user-selector"
             onChange={handleUserSelect}
           >
-            <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {userList.map((userName, i) => (
+              <option key={userName} value={i}>{userName}</option>
+            ))}
           </select>
         </label>
       </header>

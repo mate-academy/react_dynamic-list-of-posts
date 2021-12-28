@@ -10,7 +10,7 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ postId }) => {
   const [postDetails, setPostDetails] = useState({} as Post);
-  const [comments, setComments] = useState([] as Comment[]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [showComments, setShowComments] = useState(true);
   const [loading, setLoading] = useState(true);
 
@@ -52,52 +52,54 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
     <div className="PostDetails">
       <h2>Post details:</h2>
 
-      {loading ? 'Loading post details...' : (
-        <>
-          <section className="PostDetails__post">
-            <p>{postDetails.body}</p>
-          </section>
+      {loading
+        ? 'Loading post details...'
+        : (
+          <>
+            <section className="PostDetails__post">
+              <p>{postDetails.body}</p>
+            </section>
 
-          <section className="PostDetails__comments">
-            <button
-              type="button"
-              className="button"
-              onClick={() => {
-                setShowComments(!showComments);
-              }}
-            >
-              {showComments ? 'Hide' : 'Show'}
-              {' '}
-              {comments.length}
-              {' '}
-              comments
-            </button>
+            <section className="PostDetails__comments">
+              <button
+                type="button"
+                className="button"
+                onClick={() => {
+                  setShowComments(!showComments);
+                }}
+              >
+                {showComments ? 'Hide' : 'Show'}
+                {' '}
+                {comments.length}
+                {' '}
+                comments
+              </button>
 
-            <ul className="PostDetails__list">
-              {showComments && comments.map(comment => (
-                <li key={comment.id} className="PostDetails__list-item">
-                  <button
-                    type="button"
-                    className="PostDetails__remove-button button"
-                    onClick={() => handleDeleteComment(comment.id)}
-                  >
-                    X
-                  </button>
-                  <p>{comment.body}</p>
-                </li>
-              ))}
-            </ul>
-          </section>
+              <ul className="PostDetails__list">
+                {showComments && comments.map(comment => (
+                  <li key={comment.id} className="PostDetails__list-item">
+                    <button
+                      type="button"
+                      className="PostDetails__remove-button button"
+                      onClick={() => handleDeleteComment(comment.id)}
+                    >
+                      X
+                    </button>
+                    <p>{comment.body}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
 
-          <section>
-            <div className="PostDetails__form-wrapper">
-              <NewCommentForm
-                handleAddComment={handleAddComment}
-              />
-            </div>
-          </section>
-        </>
-      )}
+            <section>
+              <div className="PostDetails__form-wrapper">
+                <NewCommentForm
+                  handleAddComment={handleAddComment}
+                />
+              </div>
+            </section>
+          </>
+        )}
     </div>
   );
 };
