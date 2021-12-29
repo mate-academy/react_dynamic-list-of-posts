@@ -1,20 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { getPostComments } from '../../api/comments';
+import { getPost } from '../../api/posts';
 import { Comment } from '../../types/Comment';
 import { Post } from '../../types/Post';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
 type Props = {
-  post: Post,
   selectedPostId: number,
 };
 
-export const PostDetails: React.FC<Props> = ({ post, selectedPostId }) => {
+export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   const [postComments, setPostComments] = useState<Comment[]>([]);
   const [showComments, setShowComments] = useState(true);
+  const [post, setPost] = useState<Post | null>(null);
 
   useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const postFromServer = await getPost(selectedPostId);
+
+        setPost(postFromServer);
+      } catch {
+        Promise.reject(new Error('error'));
+      }
+    };
+
     const fetchComments = async () => {
       try {
         const commentsFromServer = await getPostComments(selectedPostId);
@@ -26,6 +37,7 @@ export const PostDetails: React.FC<Props> = ({ post, selectedPostId }) => {
     };
 
     if (selectedPostId !== 0) {
+      fetchPost();
       fetchComments();
     }
   }, [selectedPostId]);
@@ -35,7 +47,7 @@ export const PostDetails: React.FC<Props> = ({ post, selectedPostId }) => {
       <h2>Post details:</h2>
 
       <section className="PostDetails__post">
-        <p>{post.body}</p>
+        <p>{post?.body}</p>
       </section>
 
       <section className="PostDetails__comments">

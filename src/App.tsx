@@ -11,7 +11,7 @@ import { Post } from './types/Post';
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [selectedUserId, setSelectedUserId] = useState('0');
+  const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const App: React.FC = () => {
     };
 
     try {
-      (selectedUserId === '0' ? fetchPosts : fetchUserPosts)();
+      (selectedUserId === 0 ? fetchPosts : fetchUserPosts)();
     } catch {
       Promise.reject(new Error('error'));
     }
@@ -59,7 +59,7 @@ const App: React.FC = () => {
             id="userSelector"
             value={selectedUserId}
             onChange={(event) => {
-              setSelectedUserId(event.target.value);
+              setSelectedUserId(+event.target.value);
               setSelectedPostId(0);
             }}
           >
@@ -88,7 +88,6 @@ const App: React.FC = () => {
         <div className="App__content">
           {selectedPostId ? (
             <PostDetails
-              post={posts.filter(post => post.id === selectedPostId)[0]}
               selectedPostId={selectedPostId}
             />
           ) : (
