@@ -1,18 +1,11 @@
 import React, { useState } from 'react';
-import { Comment } from '../../types/Comment';
 import './NewCommentForm.scss';
 
 type Props = {
-  selectedPostId: number,
-  postComments: Comment[],
-  setPostComments: (arg0: Comment[]) => void,
+  handleAddComment: (arg0: string, ar1: string, arg2: string) => void,
 };
 
-export const NewCommentForm: React.FC<Props> = ({
-  setPostComments,
-  postComments,
-  selectedPostId,
-}) => {
+export const NewCommentForm: React.FC<Props> = ({ handleAddComment }) => {
   const [newCommentName, setNewCommentName] = useState('');
   const [newCommentEmail, setNewCommentEmail] = useState('');
   const [newComment, setNewComment] = useState('');
@@ -22,13 +15,11 @@ export const NewCommentForm: React.FC<Props> = ({
       className="NewCommentForm"
       onSubmit={(event) => {
         event.preventDefault();
-        setPostComments([...postComments, {
-          id: Math.random(),
-          postId: selectedPostId,
-          name: newCommentName,
-          body: newComment,
-          email: newCommentEmail,
-        }]);
+        handleAddComment(
+          newCommentName,
+          newComment,
+          newCommentEmail,
+        );
         setNewCommentName('');
         setNewCommentEmail('');
         setNewComment('');

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getPostComments } from '../../api/comments';
+import { addPostComments, deletePostComments, getPostComments } from '../../api/comments';
 import { getPost } from '../../api/posts';
 import { Comment } from '../../types/Comment';
 import { Post } from '../../types/Post';
@@ -42,6 +42,22 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
     }
   }, [selectedPostId]);
 
+  const handleDeleteComment = async (commentId: number) => {
+    await deletePostComments(commentId);
+
+    const commentsFromServer = await getPostComments(selectedPostId);
+
+    setPostComments(commentsFromServer);
+  };
+
+  const handleAddComment = async (name:string, email:string, body:string) => {
+    await addPostComments(selectedPostId, name, email, body);
+
+    const commentsFromServer = await getPostComments(selectedPostId);
+
+    setPostComments(commentsFromServer);
+  };
+
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
@@ -77,7 +93,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
                   type="button"
                   className="PostDetails__remove-button button"
                   onClick={() => {
-                    setPostComments([...postComments].filter(c => c.id !== comment.id));
+                    handleDeleteComment(comment.id);
                   }}
                 >
                   X
@@ -91,11 +107,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            setPostComments={setPostComments}
-            postComments={postComments}
-            selectedPostId={selectedPostId}
-          />
+          <NewCommentForm handleAddComment={handleAddComment} />
         </div>
       </section>
     </div>
