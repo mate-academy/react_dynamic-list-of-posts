@@ -1,41 +1,48 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { getUsers } from './api/posts';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
+import { UserSelect } from './components/UserSelect/UserSelect';
 import { PostDetails } from './components/PostDetails';
 
-const App: React.FC = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [currentUserId, setCurrentUserId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState(0);
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+  useEffect(() => {
+    getUsers()
+      .then(gotUsers => setUsers(gotUsers));
+  }, []);
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+  return (
+    <div className="App">
+      <header className="App__header">
+        <UserSelect
+          users={users}
+          currentUserId={currentUserId}
+          selectUserId={setCurrentUserId}
+        />
+      </header>
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            selectedUserId={currentUserId}
+            selectedPostId={selectedPostId}
+            selectPost={setSelectedPostId}
+          />
+        </div>
+
+        {selectedPostId > 0 && (
+          <div className="App__content">
+            <PostDetails selectedPostId={selectedPostId} />
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
 
 export default App;
