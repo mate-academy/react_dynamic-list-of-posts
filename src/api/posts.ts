@@ -4,7 +4,7 @@ export const getUsers = (): Promise<User[]> => {
   return request('/users');
 };
 
-export const getUserPost = (userId: number): Promise<Post[]> => {
+export const getUserPost = (userId?: number): Promise<Post[]> => {
   if (!userId) {
     return request('/posts');
   }
