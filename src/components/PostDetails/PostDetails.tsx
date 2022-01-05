@@ -50,7 +50,7 @@ export const PostDetails: FC<Props> = ({ postId }) => {
   return (
     <div className="PostDetails">
       <h2>
-        {`Post details: ${comments.length}`}
+        Post details:
       </h2>
 
       <section className="PostDetails__post">
