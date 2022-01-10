@@ -1,14 +1,15 @@
-import { BASE_URL } from './api';
-
-const wait = (delay: number) => {
-  return new Promise(resolve => {
-    setTimeout(resolve, delay);
-  });
-};
+import { BASE_URL, getData } from './api';
 
 export const getUserPosts = async (userId: string) => {
-  await wait(750);
-  const response = await fetch(`${BASE_URL}/posts/${userId}`);
+  const userPostsUrl = userId
+    ? `${BASE_URL}/posts/?userId=${userId}`
+    : `${BASE_URL}/posts/`;
 
-  return response.json();
+  return getData(userPostsUrl);
+};
+
+export const getPostDetails = async (postId: number) => {
+  const postUrl = `${BASE_URL}/posts/${postId}`;
+
+  return getData(postUrl);
 };

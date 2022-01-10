@@ -1,11 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
+import { getUserPosts } from './api/posts';
+import { Loader } from './components/Loader/Loader';
+
 const App: React.FC = () => {
+  const [posts, setPosts] = useState([]);
+  const [isPostsLoading, setLoading] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState('0');
+  const [selectedPostId, setSelectedPostId] = useState<null | number>(null);
+
+  const fetchPosts = async (userId: string) => {
+    try {
+      const postsFromServer = await getUserPosts(userId);
+
+      setLoading(false);
+      setPosts(postsFromServer);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    setLoading(true);
+
+    if (selectedUserId === '0') {
+      fetchPosts('');
+    } else {
+      fetchPosts(selectedUserId);
+    }
+  }, [selectedUserId]);
 
   return (
     <div className="App">
@@ -36,12 +64,23 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList selectedUserId={selectedUserId} />
+          {isPostsLoading
+            ? <Loader />
+            : (
+              <PostsList
+                posts={posts}
+                selectedPostId={selectedPostId}
+                setSelectedPostId={setSelectedPostId}
+              />
+            )}
         </div>
 
-        <div className="App__content">
-          <PostDetails />
-        </div>
+        {selectedPostId && (
+          <div className="App__content">
+            <PostDetails selectedPostId={selectedPostId} />
+          </div>
+        )}
+
       </main>
     </div>
   );
