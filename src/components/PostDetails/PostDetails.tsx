@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import classNames from 'classnames';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
 import { Loader } from '../Loader/Loader';
+import { Error } from '../Error/Error';
 import { getPostDetails } from '../../api/posts';
 import { getPostComments, deleteComment, postComment } from '../../api/comments';
 import { Post, Comment } from '../../react-app-env';
@@ -16,49 +18,56 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isCommentsVisible, setCommentsVisible] = useState(true);
   const [isCommentLoading, setCommentLoading] = useState(false);
+  const [errorFetch, setErrorFetch] = useState<null | string>(null);
 
   const fetchPost = async () => {
+    setErrorFetch(null);
+
     try {
       const postFromServer = await getPostDetails(selectedPostId);
 
       setPost(postFromServer);
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
+      setErrorFetch(`${error}`);
     }
   };
 
   const fetchComments = async () => {
+    setErrorFetch(null);
+
     try {
       const commentsFromServer = await getPostComments(selectedPostId);
 
       setComments(commentsFromServer);
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
+      setErrorFetch(`${error}`);
     }
   };
 
   const deleteCommentFromServer = async (commentId: number) => {
     setCommentLoading(true);
-    deleteComment(commentId);
-    await fetchComments();
+    setErrorFetch(null);
+
+    try {
+      await Promise.all([deleteComment(commentId), fetchComments()]);
+    } catch (error) {
+      setErrorFetch(`${error}`);
+    }
+
     setCommentLoading(false);
   };
 
   const postCommentToServer = async (comment: Omit<Comment, 'id'>) => {
     try {
-      postComment(comment);
+      await postComment(comment);
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
+      setErrorFetch(`${error}`);
     }
   };
 
   useEffect(() => {
     setPost(null);
-    fetchComments();
-    fetchPost();
+    Promise.all([fetchComments(), fetchPost()]);
   }, [selectedPostId]);
 
   return (
@@ -68,6 +77,11 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
       <div className="PostDetails">
         <h2>Post details:</h2>
 
+        {errorFetch && (
+          <Error>
+            {errorFetch}
+          </Error>
+        )}
         <section className="PostDetails__post">
           <h3 className="PostDetails__title">{post.title}</h3>
           <p>{post.body}</p>
@@ -81,7 +95,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
           )}
           <button
             type="button"
-            className="button"
+            className={classNames('button', { 'button--invisible': comments.length === 0 })}
             onClick={() => setCommentsVisible(!isCommentsVisible)}
           >
             {isCommentsVisible ? 'Hide comments' : 'Show comments'}
@@ -111,8 +125,8 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
         <section>
           <div className="PostDetails__form-wrapper">
             <NewCommentForm
-              postComment={postCommentToServer}
               selectedPostId={selectedPostId}
+              postComment={postCommentToServer}
               updateComments={fetchComments}
               setCommentLoading={setCommentLoading}
             />

@@ -13,7 +13,7 @@ export const deleteComment = async (commentId: number) => {
   const response = await fetch(commentUrl, { method: 'DELETE' });
 
   if (!response.ok) {
-    return Promise.reject(new Error(`Status code - ${response.status}`));
+    return Promise.reject(new Error(`Can't delete comment. Status code - ${response.status}`));
   }
 
   return response.json();
@@ -31,7 +31,7 @@ export const postComment = async (comment: Omit<Comment, 'id'>) => {
   });
 
   if (!response.ok) {
-    return Promise.reject(new Error(`Status code - ${response.status}`));
+    return Promise.reject(new Error(`Can't post comment. Status code - ${response.status}`));
   }
 
   return response.json();

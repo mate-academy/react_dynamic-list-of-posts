@@ -5,15 +5,15 @@ import classNames from 'classnames';
 import { Comment } from '../../react-app-env';
 
 type Props = {
-  postComment: (comment: Omit<Comment, 'id'>) => void,
   selectedPostId: number,
+  postComment: (comment: Omit<Comment, 'id'>) => void,
   updateComments: () => void;
   setCommentLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const NewCommentForm: React.FC<Props> = ({
-  postComment,
+export const NewCommentForm: React.FC<Props> = React.memo(({
   selectedPostId,
+  postComment,
   updateComments,
   setCommentLoading,
 }) => {
@@ -22,13 +22,17 @@ export const NewCommentForm: React.FC<Props> = ({
   const [comment, setComment] = useState('');
   const [isFormValid, setFormValid] = useState(false);
 
-  useEffect(() => {
+  const changeFormValid = () => {
     if (name && email && comment) {
       setFormValid(true);
     } else {
       setFormValid(false);
     }
-  });
+  };
+
+  useEffect(() => {
+    changeFormValid();
+  }, [comment]);
 
   const submitHandler = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
@@ -45,8 +49,7 @@ export const NewCommentForm: React.FC<Props> = ({
     setEmail('');
     setComment('');
 
-    postComment(postCommentBody);
-    await updateComments();
+    await Promise.all([postComment(postCommentBody), updateComments()]);
     setCommentLoading(false);
   };
 
@@ -60,6 +63,7 @@ export const NewCommentForm: React.FC<Props> = ({
           className="NewCommentForm__input"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          onBlur={changeFormValid}
         />
       </div>
 
@@ -71,6 +75,7 @@ export const NewCommentForm: React.FC<Props> = ({
           className="NewCommentForm__input"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          onBlur={changeFormValid}
         />
       </div>
 
@@ -81,6 +86,7 @@ export const NewCommentForm: React.FC<Props> = ({
           className="NewCommentForm__input"
           value={comment}
           onChange={(e) => setComment(e.target.value)}
+          onBlur={changeFormValid}
         />
       </div>
 
@@ -98,4 +104,4 @@ export const NewCommentForm: React.FC<Props> = ({
       </button>
     </form>
   );
-};
+});

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -6,30 +7,33 @@ import { PostDetails } from './components/PostDetails';
 
 import { getUserPosts } from './api/posts';
 import { Loader } from './components/Loader/Loader';
+import { Error } from './components/Error/Error';
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState([]);
   const [isPostsLoading, setLoading] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState('0');
+  const [selectedUserId, setSelectedUserId] = useState<null | number>(null);
   const [selectedPostId, setSelectedPostId] = useState<null | number>(null);
+  const [errorFetch, setErrorFetch] = useState<null | string>(null);
 
-  const fetchPosts = async (userId: string) => {
+  const fetchPosts = async (userId: number | null = null) => {
     try {
       const postsFromServer = await getUserPosts(userId);
 
       setLoading(false);
       setPosts(postsFromServer);
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
+      setLoading(false);
+      setErrorFetch(`${error}`);
     }
   };
 
   useEffect(() => {
     setLoading(true);
+    setErrorFetch(null);
 
-    if (selectedUserId === '0') {
-      fetchPosts('');
+    if (!selectedUserId) {
+      fetchPosts();
     } else {
       fetchPosts(selectedUserId);
     }
@@ -44,8 +48,8 @@ const App: React.FC = () => {
           <select
             id="select"
             className="App__user-selector"
-            value={selectedUserId}
-            onChange={(e) => setSelectedUserId(e.target.value)}
+            value={selectedUserId ? `${selectedUserId}` : '0'}
+            onChange={(e) => setSelectedUserId(e.target.value ? +e.target.value : null)}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
@@ -64,15 +68,24 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
+          {errorFetch && (
+            ReactDOM.createPortal(
+              <Error>
+                {errorFetch}
+              </Error>,
+              document.body,
+            )
+          )}
+
           {isPostsLoading
             ? <Loader />
-            : (
+            : (Boolean(errorFetch) || (
               <PostsList
                 posts={posts}
                 selectedPostId={selectedPostId}
                 setSelectedPostId={setSelectedPostId}
               />
-            )}
+            ))}
         </div>
 
         {selectedPostId && (

@@ -1,6 +1,6 @@
 import { BASE_URL, getData } from './api';
 
-export const getUserPosts = async (userId: string) => {
+export const getUserPosts = async (userId: number | null = null) => {
   const userPostsUrl = userId
     ? `${BASE_URL}/posts/?userId=${userId}`
     : `${BASE_URL}/posts/`;

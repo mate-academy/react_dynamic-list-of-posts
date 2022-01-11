@@ -7,11 +7,11 @@ const wait = (delay: number) => {
 };
 
 export const getData = async (url: string) => {
-  await wait(750);
+  await wait(300);
   const response = await fetch(url);
 
   if (!response.ok) {
-    return Promise.reject(new Error(`Status code - ${response.status}`));
+    return Promise.reject(new Error(`Something went wrong. Status code - ${response.status}`));
   }
 
   return response.json();
