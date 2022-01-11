@@ -1,10 +1,28 @@
 .PostDetails {
+  position: relative;
+
   &__post {
-    padding: 10px 0 15px;
+    padding: 10px 0 25px;
+  }
+
+  &__title {
+    text-align: start;
+    font-size: 18px;
+
+    &::first-letter {
+      text-transform: capitalize;
+    }
   }
 
   &__comments {
     text-align: right;
+  }
+
+  &__loader {
+    position: absolute;
+    left: 15px;
+
+    transform: translateY(-20px);
   }
 
   &__list {
