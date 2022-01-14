@@ -4,11 +4,13 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getAllPosts, getUserPosts } from './api/posts';
+import { getAllUsers } from './api/users';
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState([]);
   const [userSelector, setUserSelector] = useState(0);
   const [selectedPostId, setselectedPostId] = useState(0);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     if (userSelector === 0) {
@@ -23,6 +25,13 @@ const App: React.FC = () => {
         });
     }
   }, [userSelector]);
+
+  useEffect(() => {
+    getAllUsers()
+      .then(responce => {
+        setUsers(responce);
+      });
+  }, [users]);
 
   const handleChange = (event: any) => {
     setUserSelector(event.target.value);
@@ -40,16 +49,11 @@ const App: React.FC = () => {
 
           <select className="App__user-selector" id="user-selector" value={userSelector} onChange={handleChange}>
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {users.map((user: any) => {
+              return (
+                <option value={user.id} key={user.id}>{user.name}</option>
+              );
+            })}
           </select>
         </label>
       </header>
