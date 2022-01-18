@@ -1,45 +1,81 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import classNames from 'classnames';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import { getPostDetails } from '../../api/post';
+import { CommentsList } from '../CommentsList';
+import { ForComment } from '../../Types/Comment';
+import { createCommemt, deleteComment } from '../../api/comment';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  postId: number,
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = ({ postId }) => {
+  const [comments, getComments] = useState<ForComment[]>([]);
+  const [hiddenComments, setHiddenComments] = useState(false);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const fetchDetails = async () => {
+    if (postId > 0) {
+      const detailsFromServer = await getPostDetails(postId);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+      getComments(detailsFromServer);
+    }
+  };
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  useEffect(() => {
+    fetchDetails();
+  }, [postId]);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+  const removeComment = (commentId: number) => {
+    deleteComment(commentId);
+    getComments((preComments: ForComment[]) => preComments
+      .filter(preComment => preComment.id !== commentId));
+  };
+
+  const addComment = (name: string, email: string, body: string) => {
+    createCommemt(postId, name, email, body)
+      .then(() => getPostDetails(postId)
+        .then(result => getComments(result)));
+  };
+
+  return (
+    <div className="PostDetails">
+      <h2>
+        Post details:
+      </h2>
+
+      <section className="PostDetails__post">
+        <p>sunt aut facere repellat provident occaecati excepturi optio</p>
+      </section>
+
+      <section
+        className={classNames('PostDetails__comments', { 'PostDetails__comments--m-b': !hiddenComments })}
+      >
+        <button
+          type="button"
+          className="button"
+          onClick={() => setHiddenComments(!hiddenComments)}
+        >
+          Hide
+          {' '}
+          {comments.length}
+          {' '}
+          comments
+        </button>
+        {hiddenComments && (
+          <CommentsList
+            comments={comments}
+            removeComment={removeComment}
+          />
+        )}
+      </section>
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm addComment={addComment} />
+        </div>
+      </section>
+    </div>
+  );
+};
