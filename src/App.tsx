@@ -6,7 +6,7 @@ import { PostDetails } from './components/PostDetails';
 import { getAllPosts, getUserPosts } from './api/post';
 
 export const App: React.FC = () => {
-  const [allPosts, getAllPostsState] = useState([]);
+  const [allPosts, setAllPosts] = useState([]);
   const [postId, selectedPostId] = useState<number | null>(null);
 
   useEffect(() => {
@@ -14,7 +14,7 @@ export const App: React.FC = () => {
       try {
         const postFromServer = await getAllPosts();
 
-        getAllPostsState(postFromServer);
+        setAllPosts(postFromServer);
       } catch {
         throw new Error('Error');
       }
@@ -34,7 +34,11 @@ export const App: React.FC = () => {
           <select
             className="App__user-selector"
             id="user-selector"
-            onChange={async (event) => getAllPostsState(await getUserPosts(+event.target.value))}
+            onChange={async (event) => {
+              const postsByUser = await getUserPosts(+event.target.value);
+
+              setAllPosts(postsByUser);
+            }}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
@@ -53,7 +57,11 @@ export const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList allPosts={allPosts} selectedPostId={selectedPostId} postId={postId} />
+          <PostsList
+            allPosts={allPosts}
+            selectedPostId={selectedPostId}
+            postId={postId}
+          />
         </div>
 
         <div className="App__content">

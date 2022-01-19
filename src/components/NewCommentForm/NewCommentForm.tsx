@@ -6,9 +6,22 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ addComment }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [comment, setComment] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
+
+  const handleChange = (event: HTMLInputElement | HTMLTextAreaElement) => {
+    const { name, value } = event;
+
+    setComment({
+      ...comment,
+      [name]: value,
+    });
+  };
+
+  const { name, email, body } = comment;
 
   return (
     <form
@@ -17,9 +30,11 @@ export const NewCommentForm: React.FC<Props> = ({ addComment }) => {
         event.preventDefault();
         if (name.length > 0 && email.length > 0 && body.length > 0) {
           addComment(name, email, body);
-          setBody('');
-          setEmail('');
-          setName('');
+          setComment({
+            name: '',
+            email: '',
+            body: '',
+          });
         }
       }}
     >
@@ -30,7 +45,7 @@ export const NewCommentForm: React.FC<Props> = ({ addComment }) => {
           value={name}
           placeholder="Your name"
           className="NewCommentForm__input"
-          onChange={(event) => setName(event.target.value)}
+          onChange={(event) => handleChange(event.target)}
         />
       </div>
 
@@ -41,7 +56,7 @@ export const NewCommentForm: React.FC<Props> = ({ addComment }) => {
           value={email}
           placeholder="Your email"
           className="NewCommentForm__input"
-          onChange={(event) => setEmail(event.target.value)}
+          onChange={(event) => handleChange(event.target)}
         />
       </div>
 
@@ -51,7 +66,7 @@ export const NewCommentForm: React.FC<Props> = ({ addComment }) => {
           value={body}
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          onChange={(event) => setBody(event.target.value)}
+          onChange={(event) => handleChange(event.target)}
         />
       </div>
 

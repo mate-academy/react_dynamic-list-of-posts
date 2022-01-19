@@ -12,14 +12,14 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ postId }) => {
-  const [comments, getComments] = useState<ForComment[]>([]);
+  const [comments, setComments] = useState<ForComment[]>([]);
   const [hiddenComments, setHiddenComments] = useState(false);
 
   const fetchDetails = async () => {
     if (postId > 0) {
       const detailsFromServer = await getPostDetails(postId);
 
-      getComments(detailsFromServer);
+      setComments(detailsFromServer);
     }
   };
 
@@ -29,14 +29,14 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
 
   const removeComment = (commentId: number) => {
     deleteComment(commentId);
-    getComments((preComments: ForComment[]) => preComments
+    setComments((preComments: ForComment[]) => preComments
       .filter(preComment => preComment.id !== commentId));
   };
 
   const addComment = (name: string, email: string, body: string) => {
     createCommemt(postId, name, email, body)
       .then(() => getPostDetails(postId)
-        .then(result => getComments(result)));
+        .then(result => setComments(result)));
   };
 
   return (
@@ -52,17 +52,19 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
       <section
         className={classNames('PostDetails__comments', { 'PostDetails__comments--m-b': !hiddenComments })}
       >
-        <button
-          type="button"
-          className="button"
-          onClick={() => setHiddenComments(!hiddenComments)}
-        >
-          Hide
-          {' '}
-          {comments.length}
-          {' '}
-          comments
-        </button>
+        {comments.length > 0 && (
+          <button
+            type="button"
+            className="button"
+            onClick={() => setHiddenComments(!hiddenComments)}
+          >
+            Hide
+            {' '}
+            {comments.length}
+            {' '}
+            comments
+          </button>
+        )}
         {hiddenComments && (
           <CommentsList
             comments={comments}

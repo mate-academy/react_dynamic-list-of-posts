@@ -12,7 +12,7 @@ export const CommentsList: React.FC<Props> = ({
 }) => {
   return (
     <ul className="CommentsList__list">
-      {comments && comments.map((comment: ForComment) => (
+      {comments.map((comment: ForComment) => (
         <li key={comment.id} className="CommentsList__list-item">
           <button
             type="button"
