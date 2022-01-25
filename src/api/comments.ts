@@ -11,12 +11,8 @@ const request = (url: string, options?: {}) => {
     });
 };
 
-// export const getPostComments = (postId: number): Promise<Comment[]> => {
-//   return request(`/comments?postId=${postId - 1}`);
-// };
-
-export const getPostComments = (): Promise<Comment[]> => {
-  return request('/comments');
+export const getPostComments = (postId: number): Promise<Comment[]> => {
+  return request(`/comments?postId=${postId}`);
 };
 
 export const remove = async (comentId: number): Promise<Comment> => {

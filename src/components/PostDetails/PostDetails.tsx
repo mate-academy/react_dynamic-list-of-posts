@@ -16,10 +16,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   const [error, setError] = useState('');
 
   const loadComments = async () => {
-    const allPostComments = await getPostComments();
-
-    const currentPostComments
-    = allPostComments.filter(postComment => postComment.postId === selectedPostId);
+    const currentPostComments = await getPostComments(selectedPostId);
 
     setPostComments(currentPostComments);
   };
@@ -28,12 +25,10 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
     try {
       setError('');
 
-      const [currentPostDetails, allPostComments] = await Promise.all([
-        getPostDetails(selectedPostId), getPostComments(),
+      const [currentPostDetails, currentPostComments] = await Promise.all([
+        getPostDetails(selectedPostId),
+        getPostComments(selectedPostId),
       ]);
-
-      const currentPostComments
-      = allPostComments.filter(postComment => postComment.postId === selectedPostId);
 
       setPostComments(currentPostComments);
 
@@ -59,28 +54,27 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
       <h2>Post details:</h2>
       <h2>{error}</h2>
 
-      {(postDetails && postComments) ? (
+      {(postDetails) ? (
         <>
           <section className="PostDetails__post">
             <p>{postDetails?.title}</p>
           </section>
 
           <section className="PostDetails__comments">
-            {isVisible ? (
-              <button
-                type="button"
-                className="button"
-                onClick={() => setIsVisible(false)}
-              >
-                {`Hide ${postComments?.length} comments`}
-              </button>
+
+            {postComments?.length === 0 ? (
+              <p>No comments yet</p>
             ) : (
               <button
                 type="button"
                 className="button"
-                onClick={() => setIsVisible(true)}
+                onClick={() => setIsVisible(!isVisible)}
               >
-                {`Show ${postComments?.length} comments`}
+                {isVisible ? (
+                  `Hide ${postComments?.length} comments`
+                ) : (
+                  `Show ${postComments?.length} comments`
+                )}
               </button>
             )}
 
@@ -88,7 +82,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
               <ul className="PostDetails__list">
                 {postComments?.map(postComment => (
                   <li
-                    key={`${postComment.id}`}
+                    key={postComment.id}
                     className="PostDetails__list-item"
                   >
                     <button

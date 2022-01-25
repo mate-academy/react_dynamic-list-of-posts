@@ -49,7 +49,7 @@ export const PostsList: React.FC<Props> = ({ selectedUser, setSelectedPostId, se
       ) : (
         <ul className="PostsList__list">
           {posts.map(post => (
-            <li key={`${post.id}`} className="PostsList__item">
+            <li key={post.id} className="PostsList__item">
               <div>
                 <b>{`User #${post.userId}: `}</b>
                 {post.title}
