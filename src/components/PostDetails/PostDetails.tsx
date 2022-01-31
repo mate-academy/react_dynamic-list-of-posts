@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getComments, removeComment } from '../../api/comments';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
@@ -18,17 +19,20 @@ interface Comment {
 type Props = {
   postDetails: Post,
   selectedPostId: number,
-  getCommentsFromServer: (commentsId: number) => void,
-  comments: Comment[] | null,
 };
 
 export const PostDetails: React.FC<Props> = ({
   postDetails,
   selectedPostId,
-  getCommentsFromServer,
-  comments,
 }) => {
   const [commentsId, setCommentsId] = useState(selectedPostId);
+  const [comments, setComments] = useState([]);
+
+  const getCommentsFromServer = (id: number) => {
+    getComments(id).then(commentsList => {
+      setComments(commentsList);
+    });
+  };
 
   return (
     <div className="PostDetails">
@@ -50,26 +54,18 @@ export const PostDetails: React.FC<Props> = ({
           >
             Show comments
           </button>
-          {comments
-            && (
-              <ul className="PostDetails__list">
-                {comments.map(comment => (
-                  <li
-                    className="PostDetails__list-item"
-                    key={comment.id}
-                  >
-                    <button
-                      type="button"
-                      className="PostDetails__remove-button button"
-                    >
-                      X
-                    </button>
-                    <p>{comment.body}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          ;
+          {comments.length > 0 && (
+            <ul className="PostDetails__list">
+              {comments.map((comment: Comment) => (
+                <li
+                  className="PostDetails__list-item"
+                  key={comment.id}
+                >
+                  <p>{comment.body}</p>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
       ) : (
         <section className="PostDetails__comments">
@@ -86,7 +82,7 @@ export const PostDetails: React.FC<Props> = ({
           {comments
             && (
               <ul className="PostDetails__list">
-                {comments.map(comment => (
+                {comments.map((comment: Comment) => (
                   <li
                     className="PostDetails__list-item"
                     key={comment.id}
@@ -94,6 +90,10 @@ export const PostDetails: React.FC<Props> = ({
                     <button
                       type="button"
                       className="PostDetails__remove-button button"
+                      onClick={async () => {
+                        await removeComment(comment.id);
+                        await getCommentsFromServer(selectedPostId);
+                      }}
                     >
                       X
                     </button>
@@ -102,13 +102,16 @@ export const PostDetails: React.FC<Props> = ({
                 ))}
               </ul>
             )}
-          ;
         </section>
       )}
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm />
+          <NewCommentForm
+            commentsId={selectedPostId}
+            getCommentsFromServer={getCommentsFromServer}
+            setCommentsId={setCommentsId}
+          />
         </div>
       </section>
     </div>

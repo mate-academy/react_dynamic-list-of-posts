@@ -4,13 +4,11 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getPostDetails } from './api/posts';
-import { getComments } from './api/comments';
 
 const App: React.FC = () => {
   const [userId, setUserId] = useState('0');
   const [selectedPostId, setPostId] = useState(0);
   const [postDetails, setPostDetails] = useState(null);
-  const [comments, setComments] = useState(null);
 
   const selectPost = (postId: number) => {
     setPostId(postId);
@@ -19,12 +17,6 @@ const App: React.FC = () => {
   const getDetails = (id: number) => {
     getPostDetails(id).then(details => {
       setPostDetails(details);
-    });
-  };
-
-  const getCommentsFromServer = (commentsId: number) => {
-    getComments(commentsId).then(commentsList => {
-      setComments(commentsList);
     });
   };
 
@@ -78,8 +70,6 @@ const App: React.FC = () => {
               <PostDetails
                 postDetails={postDetails}
                 selectedPostId={selectedPostId}
-                getCommentsFromServer={getCommentsFromServer}
-                comments={comments}
               />
             )}
         </div>
