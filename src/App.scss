@@ -37,6 +37,12 @@ ul {
   background-color: white;
 }
 
+.button {
+  :disabled {
+    background-color: #fff;
+  }
+}
+
 .App {
   &__header {
     position: sticky;
