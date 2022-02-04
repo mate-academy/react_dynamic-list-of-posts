@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './NewCommentForm.scss';
+import { NewCommentFormUi } from './NewCommentFormUI';
 
 type Props = {
   handleAdd: (comment: NewComment) => void
@@ -14,6 +15,15 @@ export const NewCommentForm: React.FC<Props> = ({ handleAdd, selectedPostId }) =
     postId: 0,
   });
 
+  const clearState = () => {
+    setState({
+      name: '',
+      email: '',
+      body: '',
+      postId: 0,
+    });
+  };
+
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
 
@@ -26,47 +36,17 @@ export const NewCommentForm: React.FC<Props> = ({ handleAdd, selectedPostId }) =
   const handleOnSubmit = () => {
     const post:NewComment = { ...state, postId: selectedPostId };
 
+    clearState();
     handleAdd(post);
   };
 
   return (
-    <form className="NewCommentForm">
-      <div className="form-field">
-        <input
-          type="text"
-          name="name"
-          placeholder="Your name"
-          className="NewCommentForm__input"
-          onChange={handleOnChange}
-        />
-      </div>
-
-      <div className="form-field">
-        <input
-          type="text"
-          name="email"
-          placeholder="Your email"
-          className="NewCommentForm__input"
-          onChange={handleOnChange}
-        />
-      </div>
-
-      <div className="form-field">
-        <textarea
-          name="body"
-          placeholder="Type comment here"
-          className="NewCommentForm__input"
-          onChange={handleOnChange}
-        />
-      </div>
-
-      <button
-        type="button"
-        className="NewCommentForm__submit-button button"
-        onClick={handleOnSubmit}
-      >
-        Add a comment
-      </button>
-    </form>
+    <NewCommentFormUi
+      handleOnChange={handleOnChange}
+      handleOnSubmit={handleOnSubmit}
+      name={state.name}
+      email={state.email}
+      body={state.body}
+    />
   );
 };
