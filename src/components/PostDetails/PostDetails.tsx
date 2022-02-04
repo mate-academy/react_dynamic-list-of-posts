@@ -1,4 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from 'react';
 import {
   getPostComments,
   Comment,
@@ -33,13 +38,13 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
       });
   }, [postId]);
 
-  const getComments = () => {
+  const getComments = useCallback(() => {
     getPostComments(postId)
       .then(receivedComments => {
         setComments(receivedComments);
         setLoadingComments(true);
       });
-  };
+  }, []);
 
   useEffect(getComments, [postId, idDeletedComment, newComment]);
 
