@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   getPostComments,
   Comment,
@@ -18,12 +18,12 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ postId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [post, setPost] = useState<Post>();
-  const [newComment, setNewComment] = useState<NewComment>();
 
   const [showComments, setShowComments] = useState(true);
   const [loadingPost, setLoadingPost] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
-  const [idDeletedComment, setIdDeletedComment] = useState<number>();
+  const [idDeletedComment, setIdDeletedComment] = useState(0);
+  const [newComment, setNewComment] = useState<NewComment>();
 
   useEffect(() => {
     getPostDetails(postId)
@@ -33,30 +33,36 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
       });
   }, [postId]);
 
-  useEffect(() => {
+  const getComments = () => {
     getPostComments(postId)
       .then(receivedComments => {
         setComments(receivedComments);
         setLoadingComments(true);
       });
-  }, [newComment, idDeletedComment, postId]);
+  };
 
-  useEffect(() => {
+  useEffect(getComments, [postId, idDeletedComment, newComment]);
+
+  useMemo(async () => {
     if (idDeletedComment) {
-      deleteComment(idDeletedComment);
+      await deleteComment(idDeletedComment);
     }
+
+    getComments();
   }, [idDeletedComment]);
 
-  useEffect(() => {
+  useMemo(async () => {
     if (newComment) {
-      createComment({
+      await createComment({
         ...newComment,
         id: comments.length,
         postId,
-        createdAt: `${new Date()}`,
-        updatedAt: `${new Date()}`,
+        createdAt: '',
+        updatedAt: '',
       });
     }
+
+    getComments();
   }, [newComment]);
 
   return (
@@ -74,16 +80,18 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
           </section>
 
           <section className="PostDetails__comments">
-            <button
-              type="button"
-              className="PostDetails__button button"
-              onClick={() => {
-                setShowComments(currentValue => !currentValue);
-              }}
-            >
-              {showComments ? 'Hide' : 'Show'}
-              {` ${comments.length} comments`}
-            </button>
+            {comments.length > 0 && (
+              <button
+                type="button"
+                className="PostDetails__button button"
+                onClick={() => {
+                  setShowComments(currentValue => !currentValue);
+                }}
+              >
+                {showComments ? 'Hide' : 'Show'}
+                {` ${comments.length} comments`}
+              </button>
+            )}
 
             {loadingComments && comments ? (
               showComments && (
@@ -115,7 +123,9 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
           </section>
           <section>
             <div className="PostDetails__form-wrapper">
-              <NewCommentForm setNewComment={setNewComment} />
+              <NewCommentForm
+                setNewComment={setNewComment}
+              />
             </div>
           </section>
         </div>

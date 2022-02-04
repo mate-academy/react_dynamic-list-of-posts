@@ -12,10 +12,7 @@ export type Comment = {
 };
 
 export function getPostComments(postId: number) {
-  return request(`${BASE_URL}/comments?postId=${postId}`)
-    .then(comments => {
-      return comments.filter((comment: Comment) => comment.postId === postId);
-    });
+  return request(`${BASE_URL}/comments?postId=${postId}`);
 }
 
 export const createComment = (comment: Comment) => {
