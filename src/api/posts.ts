@@ -18,7 +18,7 @@ export const getUserPosts = async (userId: number): Promise<Post[]> => {
 
 export const getSelectedPost = async (postId: number): Promise<Post> => {
   try {
-    const response = await fetch(`${BASE_URL}/posts11/${String(postId)}`);
+    const response = await fetch(`${BASE_URL}/posts/${String(postId)}`);
 
     return await response.json();
   } catch (error) {
