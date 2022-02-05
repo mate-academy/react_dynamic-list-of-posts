@@ -44,7 +44,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
         setComments(receivedComments);
         setLoadingComments(true);
       });
-  }, []);
+  }, [postId, idDeletedComment, newComment]);
 
   useEffect(getComments, [postId, idDeletedComment, newComment]);
 
