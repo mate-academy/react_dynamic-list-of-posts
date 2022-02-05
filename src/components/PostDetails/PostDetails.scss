@@ -1,4 +1,7 @@
 .PostDetails {
+  position: sticky;
+  top: 50px;
+
   &__post {
     padding: 10px 0 15px;
   }
@@ -7,16 +10,27 @@
     text-align: right;
   }
 
+  &__button {
+    margin-bottom: 16px;
+  
+    &:hover:disabled {
+      cursor: no-drop;
+      background-color: #b8b3d2;
+      
+    }
+  }
+
   &__list {
     list-style: none;
+    margin: 0;
   }
 
   &__list-item {
-    margin: 5px 0;
+    margin-bottom: 16px;
+    padding: 0 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
     border-radius: 10px;
     font-style: italic;
     font-weight: 300;
@@ -36,13 +50,13 @@
     margin-right: 10px;
 
     &:hover {
-      color: #e9e6f2;
+      color: #b8b3d2;
       background-color: transparent;
     }
 
     &:hover + p {
       transition: color 0.12s;
-      color: #e9e6f2;
+      color: #b8b3d2;
     }
   }
 
