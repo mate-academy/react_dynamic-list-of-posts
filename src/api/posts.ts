@@ -1,4 +1,4 @@
-import { getData } from './api';
+import { request } from './api';
 
 export const getPosts = (userId: number) => {
   let endpoint = 'posts/';
@@ -7,9 +7,9 @@ export const getPosts = (userId: number) => {
     endpoint += `?userId=${userId}`;
   }
 
-  return getData<Post[]>(endpoint);
+  return request<Post[]>(endpoint);
 };
 
 export const getPostDetails = (postId: number) => {
-  return getData<Post>(`posts/${postId}`);
+  return request<Post>(`posts/${postId}`);
 };
