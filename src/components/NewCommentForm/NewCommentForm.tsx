@@ -14,7 +14,7 @@ export const NewCommentForm: React.FC<Props> = ({ onPostNewComment }) => {
   const [commentEmail, setCommentEmail] = useState('');
   const [commentBody, setCommentBody] = useState('');
 
-  const handleSubmitForm = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmitForm = (event: React.FormEvent) => {
     event.preventDefault();
 
     onPostNewComment(
@@ -29,7 +29,7 @@ export const NewCommentForm: React.FC<Props> = ({ onPostNewComment }) => {
   };
 
   return (
-    <form className="NewCommentForm">
+    <form className="NewCommentForm" onSubmit={handleSubmitForm}>
       <div className="form-field">
         <input
           type="text"
@@ -40,6 +40,7 @@ export const NewCommentForm: React.FC<Props> = ({ onPostNewComment }) => {
           onChange={(event) => {
             setCommentName(event.target.value);
           }}
+          required
         />
       </div>
 
@@ -53,6 +54,7 @@ export const NewCommentForm: React.FC<Props> = ({ onPostNewComment }) => {
           onChange={(event) => {
             setCommentEmail(event.target.value);
           }}
+          required
         />
       </div>
 
@@ -65,15 +67,13 @@ export const NewCommentForm: React.FC<Props> = ({ onPostNewComment }) => {
           onChange={(event) => {
             setCommentBody(event.target.value);
           }}
+          required
         />
       </div>
 
       <button
         type="submit"
         className="NewCommentForm__submit-button button"
-        onClick={(event) => {
-          handleSubmitForm(event);
-        }}
       >
         Add a comment
       </button>
