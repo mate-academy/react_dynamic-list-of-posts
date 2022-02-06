@@ -15,5 +15,14 @@
 
   &__submit-button {
     margin-top: 10px;
+
+    &:disabled{
+      cursor: not-allowed;
+      background-color: red;
+    }
+  }
+
+  &__error {
+    color: red;
   }
 }

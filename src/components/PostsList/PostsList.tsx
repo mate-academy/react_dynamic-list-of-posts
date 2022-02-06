@@ -1,37 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './PostsList.scss';
+// Components
+import { PostCard } from '../PostCard';
+// Types
+import { Post } from '../../types/Post';
+import { ChangeId } from '../../types/ChangeId';
+// Api requests
+import { getUserPosts } from '../../api/posts';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+type Props = {
+  selectedUserId: number;
+  selectedPostId: number;
+  onChangePostId: ChangeId;
+};
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList = React.memo<Props>(
+  ({ selectedUserId, selectedPostId, onChangePostId }) => {
+    const [posts, setPosts] = useState<[] | Post[]>([]);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+    useEffect(() => {
+      getUserPosts(selectedUserId)
+        .then(receivedPosts => setPosts(receivedPosts));
+    }, [selectedUserId]);
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
+    return (
+      <div className="PostsList">
+        <h2>Posts:</h2>
+
+        <ul className="PostsList__list">
+          {posts.map(({ id, userId, body }) => (
+            <li key={id} className="PostsList__item">
+              <PostCard
+                selectedPostId={selectedPostId}
+                id={id}
+                userId={userId}
+                body={body}
+                onChangePostId={onChangePostId}
+              />
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  },
 );

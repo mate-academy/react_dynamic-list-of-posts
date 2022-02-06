@@ -1,45 +1,55 @@
-import React from 'react';
-import { NewCommentForm } from '../NewCommentForm';
+import React, { useEffect, useState } from 'react';
 import './PostDetails.scss';
+// Components
+import { CommentsList } from '../CommentsList';
+import { NewCommentForm } from '../NewCommentForm';
+// Api requests
+import { getPostsDetails } from '../../api/posts';
+import { getPostComments } from '../../api/comments';
+// Types
+import { Post } from '../../types/Post';
+import { Comment } from '../../types/Comment';
+import { LoadComments } from '../../types/LoadComments';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  selectedPostId: number;
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails = React.memo<Props>(
+  ({ selectedPostId }) => {
+    const [post, setPost] = useState<Post | null>(null);
+    const [comments, setComments] = useState<Comment[]>([]);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+    const loadComments: LoadComments = (postId) => {
+      getPostComments(postId)
+        .then(receivedCommnets => setComments(receivedCommnets));
+    };
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+    useEffect(() => {
+      getPostsDetails(selectedPostId)
+        .then(receivedPost => setPost(receivedPost));
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+      loadComments(selectedPostId);
+    }, [selectedPostId]);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
+    return (
+      <div className="PostDetails">
+        <h2>Post details:</h2>
+
+        <section className="PostDetails__post">
+          <p>{post?.body}</p>
+        </section>
+
+        <section className="PostDetails__comments">
+          <CommentsList comments={comments} loadComments={loadComments} />
+        </section>
+
+        <section>
+          <div className="PostDetails__form-wrapper">
+            <NewCommentForm postId={selectedPostId} loadComments={loadComments} />
+          </div>
+        </section>
       </div>
-    </section>
-  </div>
+    );
+  },
 );
