@@ -29,13 +29,11 @@ const App: React.FC = () => {
 
   useEffect(() => {
     (async function fetchUserPosts() {
-      if (selectedUserId !== 0) {
-        toggleArePostsLoading(true);
-        const userPostsFromServer = await getUserPosts(selectedUserId);
+      toggleArePostsLoading(true);
+      const userPostsFromServer = await getUserPosts(selectedUserId);
 
-        setUserPosts(userPostsFromServer);
-        toggleArePostsLoading(false);
-      }
+      setUserPosts(userPostsFromServer);
+      toggleArePostsLoading(false);
     }());
   }, [selectedUserId]);
 
@@ -68,17 +66,11 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          {selectedUserId !== 0
-            ? (
-              <PostsList
-                posts={usersPosts}
-                postId={selectedPostId}
-                handleSelectedPost={handleSelectedPost}
-              />
-            )
-            : (
-              <h4>No user selected</h4>
-            )}
+          <PostsList
+            posts={usersPosts}
+            postId={selectedPostId}
+            handleSelectedPost={handleSelectedPost}
+          />
           {arePostsLoading && <Loader />}
         </div>
 
