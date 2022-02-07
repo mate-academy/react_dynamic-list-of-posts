@@ -32,9 +32,16 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
     }
   };
 
+  const clearInputs = () => {
+    setUserName('');
+    setEmail('');
+    setBody('');
+  };
+
   const addComment = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onAddComment(userName, email, body);
+    clearInputs();
   };
 
   return (
