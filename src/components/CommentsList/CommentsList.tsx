@@ -19,13 +19,18 @@ export const CommentsList: React.FC<Props> = ({ comments, loadComments }) => {
 
   return (
     <>
-      <button
-        type="button"
-        className="button"
-        onClick={clickHandler}
-      >
-        {`${commentsIsVisible ? 'Hide' : 'Show'} ${comments.length} comments`}
-      </button>
+      {comments.length === 0
+        ? (
+          <h3>There are no comments yet...</h3>
+        ) : (
+          <button
+            type="button"
+            className="button"
+            onClick={clickHandler}
+          >
+            {`${commentsIsVisible ? 'Hide' : 'Show'} ${comments.length} comments`}
+          </button>
+        )}
 
       <ul className="PostDetails__list">
         {commentsIsVisible && comments.map(({ id, postId, body }) => (

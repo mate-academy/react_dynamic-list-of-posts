@@ -24,7 +24,10 @@ export const NewCommentForm: React.FC<Props> = ({ postId, loadComments }) => {
 
   const changeHandler: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (e) => {
     const value = e.target.value.trimLeft();
-    const validation = /^((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[.!/\\\w]*))?)$/;
+    // В регулярних виразах не розбираюся
+    // Найшов таку валідацію, але вона не пропусттить "onishchuk.danil@gmail.",
+    // а "onishchuk.danil@gmail.com" пропускає
+    const validation = /^((([0-9A-Za-z]{1}[-0-9A-z\\.]{0,30}[0-9A-Za-z]?)|([0-9А-Яа-я]{1}[-0-9А-я\\.]{0,30}[0-9А-Яа-я]?))@([-A-Za-z]{1,}\.){1,}[-A-Za-z]{2,})$/;
 
     switch (e.target.name) {
       case 'name':
