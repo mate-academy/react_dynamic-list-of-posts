@@ -8,16 +8,18 @@ const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
-  const selectUserId = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedUserId(Number(event.target.value));
-  };
-
   const selectPostId = (postId: number) => {
     setSelectedPostId(postId);
   };
 
   const clearPostId = () => {
     setSelectedPostId(0);
+  };
+
+  const selectUserId = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedUserId(Number(event.target.value));
+
+    clearPostId();
   };
 
   return (

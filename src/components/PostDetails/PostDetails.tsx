@@ -14,24 +14,25 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [postComments, setPostComments] = useState<PostComment[]>([]);
   const [isCommentsShow, setIsCommentsShow] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isDetLoading, setIsDetLoading] = useState(false);
+  const [isComLoading, setIsComLoading] = useState(false);
 
   async function loadPostDetails() {
-    setIsLoading(true);
+    setIsDetLoading(true);
 
     const postFromServer = await getSelectedPost(selectedPostId);
 
     setSelectedPost(postFromServer);
 
-    setIsLoading(false);
+    setIsDetLoading(false);
   }
 
   async function loadComments() {
-    setIsLoading(true);
+    setIsComLoading(true);
     const commentsFromServer = await getPostComments(selectedPostId);
 
     setPostComments(commentsFromServer);
-    setIsLoading(false);
+    setIsComLoading(false);
   }
 
   const postNewComment = async (
@@ -39,8 +40,8 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
     email: string,
     body: string,
   ) => {
-    setIsLoading(true);
     if (selectedPost) {
+      setIsComLoading(true);
       await postComment({
         postId: selectedPost.id,
         name,
@@ -50,15 +51,15 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
     }
 
     await loadComments();
-    setIsLoading(false);
+    setIsComLoading(false);
   };
 
   const deleteComment = async (commentId: number) => {
-    setIsLoading(true);
+    setIsComLoading(true);
     await deletePostComment(commentId);
 
     await loadComments();
-    setIsLoading(false);
+    setIsComLoading(false);
   };
 
   const changeShowComments = () => {
@@ -70,7 +71,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
     loadComments();
   }, [selectedPostId]);
 
-  if (!isLoading && selectedPost) {
+  if (!isDetLoading && selectedPost) {
     return (
       <div className="PostDetails">
         <h2>Post details:</h2>
@@ -80,6 +81,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
           onDeleteComment={deleteComment}
           isCommentsShow={isCommentsShow}
           onchangeShowComments={changeShowComments}
+          isComLoading={isComLoading}
         />
         <section>
           <div className="PostDetails__form-wrapper">
