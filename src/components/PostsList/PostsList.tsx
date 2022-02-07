@@ -24,10 +24,6 @@ export const PostsList: React.FC<Props> = ({
 
   useEffect(() => {
     loadData();
-  }, []);
-
-  useEffect(() => {
-    loadData();
   }, [selectedUserId]);
 
   return (

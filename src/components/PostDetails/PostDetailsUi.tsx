@@ -5,7 +5,7 @@ import { NewCommentForm } from '../NewCommentForm';
 type Props = {
   postDetails: Post,
   isHidden: boolean,
-  comments: Comment[],
+  comments: PostComment[],
   initialize: boolean,
   selectedPostId: number,
   handleAdd: (comment: NewComment) => void,
@@ -41,7 +41,9 @@ export const PostDetailsUi: React.FC<Props> = ({
                     className="button"
                     onClick={handleVisabiliti}
                   >
-                    {`Hide ${comments.length} comments`}
+                    {isHidden
+                      ? `Show ${comments.length} comments`
+                      : `Hide ${comments.length} comments`}
                   </button>
 
                   <ul className="PostDetails__list">

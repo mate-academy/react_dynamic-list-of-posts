@@ -11,7 +11,7 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   const [postDetails, setPostDedails] = useState({} as Post);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<PostComment[]>([]);
   const [isHidden, setHidden] = useState(false);
   const [initialize, setInitialize] = useState(false);
 
@@ -28,10 +28,6 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
       setInitialize(false);
     }
   };
-
-  useEffect(() => {
-    loadData();
-  }, []);
 
   useEffect(() => {
     loadData();

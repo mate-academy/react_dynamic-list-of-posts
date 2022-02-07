@@ -18,13 +18,10 @@ export async function getPostDetails(postId: number): Promise<Post> {
   return postDetails.json();
 }
 
-export async function getPostComments(postId: number) {
-  const comments = await fetch(`${URL}comments`).then(response => response.json());
-  const filteredComments = comments.filter((comment: { postId: number; }) => (
-    comment.postId === postId
-  ));
+export async function getPostComments(postId: number): Promise<PostComment[]> {
+  const comments = await fetch(`${URL}comments?postId=${postId}`);
 
-  return filteredComments as Comment[];
+  return comments.json();
 }
 
 export async function deleteComment(commentId: number) {
@@ -36,7 +33,7 @@ export async function deleteComment(commentId: number) {
 export async function addComment(comment: NewComment) {
   return fetch(`${URL}comments`, {
     method: 'POST',
-    body: JSON.stringify({ ...comment }),
+    body: JSON.stringify(comment),
     headers: {
       'Content-Type': 'application/json',
     },

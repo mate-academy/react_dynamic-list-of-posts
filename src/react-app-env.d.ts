@@ -9,7 +9,7 @@ type Post = {
   updatedAt: string,
 };
 
-interface Comment extends Post{
+interface PostComment extends Post{
   postId: number
 }
 

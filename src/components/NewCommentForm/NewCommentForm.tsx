@@ -8,7 +8,7 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ handleAdd, selectedPostId }) => {
-  const [state, setState] = useState<NewComment>({
+  const [comment, setComment] = useState<NewComment>({
     name: '',
     email: '',
     body: '',
@@ -16,7 +16,7 @@ export const NewCommentForm: React.FC<Props> = ({ handleAdd, selectedPostId }) =
   });
 
   const clearState = () => {
-    setState({
+    setComment({
       name: '',
       email: '',
       body: '',
@@ -27,14 +27,14 @@ export const NewCommentForm: React.FC<Props> = ({ handleAdd, selectedPostId }) =
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
 
-    setState({
-      ...state,
+    setComment({
+      ...comment,
       [name]: value,
     });
   };
 
   const handleOnSubmit = () => {
-    const post:NewComment = { ...state, postId: selectedPostId };
+    const post:NewComment = { ...comment, postId: selectedPostId };
 
     clearState();
     handleAdd(post);
@@ -44,9 +44,9 @@ export const NewCommentForm: React.FC<Props> = ({ handleAdd, selectedPostId }) =
     <NewCommentFormUi
       handleOnChange={handleOnChange}
       handleOnSubmit={handleOnSubmit}
-      name={state.name}
-      email={state.email}
-      body={state.body}
+      name={comment.name}
+      email={comment.email}
+      body={comment.body}
     />
   );
 };
