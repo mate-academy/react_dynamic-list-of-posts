@@ -21,7 +21,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
     }());
   }, [postId]);
 
-  const handleClick = () => (showComments ? setShowComments(false) : setShowComments(true));
+  const handleClick = () => setShowComments(!showComments);
 
   return (
     post ? (
