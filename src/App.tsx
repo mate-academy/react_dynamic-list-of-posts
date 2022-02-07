@@ -38,13 +38,11 @@ const App: React.FC = () => {
     setSelectedUserId(+event.target.value);
   };
 
-  const handleClick = (postId: number) => {
-    if (postId !== selectedPostId) {
-      setSelectedPostId(postId);
-    } else {
-      setSelectedPostId(0);
-    }
-  };
+  const handleClick = (postId: number) => (
+    postId !== selectedPostId
+      ? setSelectedPostId(postId)
+      : setSelectedPostId(0)
+  );
 
   return (
     <div className="App">
