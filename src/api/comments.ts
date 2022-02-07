@@ -10,7 +10,7 @@ export const deletePostComment = (commentId: number) => {
   });
 };
 
-export const postNewComment = (comment: PostComment) => {
+export const postNewComment = (comment: Omit<PostComment, 'id'>) => {
   return request('/comments', {
     method: 'POST',
     headers: {

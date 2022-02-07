@@ -3,7 +3,7 @@ import './NewCommentForm.scss';
 
 type Props = {
   postId: number;
-  addComment: (comment: PostComment) => void;
+  addComment: (comment: Omit<PostComment, 'id'>) => void;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
@@ -11,11 +11,10 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
 
-  const handleAddComment: React.FormEventHandler = (event) => {
+  const handleSubmit: React.FormEventHandler = (event) => {
     event.preventDefault();
 
     addComment({
-      id: Number(new Date()),
       postId,
       name,
       email,
@@ -27,48 +26,10 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
     setBody('');
   };
 
-  // const [newComment, setNewComment] = useState<PostComment>({
-  //   id: Number(new Date()),
-  //   postId,
-  //   name: '',
-  //   email: '',
-  //   body: '',
-  // } as PostComment);
-
-  // const handleAddComment: React.FormEventHandler = (event) => {
-  //   event.preventDefault();
-
-  //   addComment(newComment);
-
-  //   setNewComment(
-  //     {
-  //       ...newComment,
-  //       id: Number(new Date()),
-  //       postId,
-  //       name: '',
-  //       email: '',
-  //       body: '',
-  //     },
-  //   );
-  // };
-
-  // const handleChange = (event: {
-  //   target: { name: string; value: string; };
-  // }) => {
-  //   const { name, value } = event.target;
-
-  //   setNewComment(
-  //     {
-  //       ...newComment,
-  //       [name]: value,
-  //     },
-  //   );
-  // };
-
   return (
     <form
       className="NewCommentForm"
-      onSubmit={handleAddComment}
+      onSubmit={handleSubmit}
     >
       <div className="form-field">
         <input

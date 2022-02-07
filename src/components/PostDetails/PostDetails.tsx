@@ -11,8 +11,7 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ postId }) => {
   const [post, setPost] = useState<Post>({} as Post);
   const [comments, setComments] = useState<PostComment[]>([]);
-  const [hideComments, setHideComments] = useState(false);
-  const [showComments, setShowComments] = useState(true);
+  const [areCommentsHidden, setAreCommentsHidden] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,6 +22,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
 
       setPost(postFromServer[0]);
       setComments(commentsFromServer);
+      setAreCommentsHidden(false);
     };
 
     fetchData();
@@ -36,7 +36,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
     ));
   };
 
-  const addComment = async (comment: PostComment) => {
+  const addComment = async (comment: Omit<PostComment, 'id'>) => {
     const newComment = await postNewComment(comment);
 
     setComments(currentComments => [...currentComments, newComment]);
@@ -51,32 +51,18 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
       </section>
 
       <section className="PostDetails__comments">
-        {!hideComments ? (
-          <button
-            type="button"
-            className="button PostDetails__button"
-            onClick={() => {
-              setHideComments(true);
-              setShowComments(false);
-            }}
-            disabled={comments.length < 1}
-          >
-            Hide comments
-          </button>
-        ) : (
-          <button
-            type="button"
-            className="button PostDetails__button"
-            onClick={() => {
-              setShowComments(true);
-              setHideComments(false);
-            }}
-          >
-            Show comments
-          </button>
-        )}
+        <button
+          type="button"
+          className="button PostDetails__button"
+          onClick={() => {
+            setAreCommentsHidden(!areCommentsHidden);
+          }}
+          disabled={comments.length < 1}
+        >
+          {!areCommentsHidden ? 'Hide comments' : 'Show comments'}
+        </button>
 
-        {showComments && (
+        {!areCommentsHidden && (
           <ul className="PostDetails__list">
             {comments.map(comment => (
               <li className="PostDetails__list-item" key={comment.id}>
