@@ -19,10 +19,11 @@ export const PostsList: React.FC<Props> = ({
 
   const loadData = async () => {
     setPosts(await getPosts(selectedUserId));
-    setInitialize(!initialize);
+    setInitialize(true);
   };
 
   useEffect(() => {
+    setInitialize(false);
     loadData();
   }, [selectedUserId]);
 
