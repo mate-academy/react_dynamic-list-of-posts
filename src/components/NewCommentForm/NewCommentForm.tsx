@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './NewCommentForm.scss';
+import { postComment } from '../../api/comments';
 
 type UpdateComments = () => void;
 
@@ -26,28 +27,14 @@ export const NewCommentForm: React.FC<Props> = (props) => {
     setBodyForComment(event.target.value);
   };
 
-  const postComment = async () => {
-    const data = {
-      postId,
-      name: nameForComment,
-      email: emailForComment,
-      body: bodyForComment,
-    };
-    const url = 'https://mate.academy/students-api/comments';
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-
-    return response.json();
-  };
-
   const handleAddComment = async (event: React.FormEvent) => {
     event.preventDefault();
-    await postComment();
+    await postComment(
+      postId,
+      nameForComment,
+      emailForComment,
+      bodyForComment,
+    );
     setNameForComment('');
     setEmailForComment('');
     setBodyForComment('');

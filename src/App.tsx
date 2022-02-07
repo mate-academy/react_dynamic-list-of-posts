@@ -7,8 +7,8 @@ import { getUserPosts } from './api/posts';
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[] | []>([]);
-  const [selectedUserId, setSelectedUserId] = useState<number>(0);
-  const [selectedPostId, setSelectedPostId] = useState<number>(0);
+  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState(0);
 
   const getPostsFromServer = async () => {
     const postsFromServer = await getUserPosts(selectedUserId);

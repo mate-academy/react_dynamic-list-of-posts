@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { getPostDetails } from '../../api/posts';
-import { getPostComments } from '../../api/comments';
+import { getPostComments, deleteComment } from '../../api/comments';
 
 type Props = {
   selectedPostId: number;
@@ -12,7 +12,7 @@ export const PostDetails: React.FC<Props> = (props) => {
   const { selectedPostId } = props;
   const [post, setPost] = useState<Post>();
   const [comments, setComments] = useState<Comment[]>();
-  const [commentsVisible, setCommentsVisible] = useState<boolean>(false);
+  const [commentsVisible, setCommentsVisible] = useState(false);
 
   const getPostDetailsFromServer = async () => {
     const postDetailsFromServer = await getPostDetails(selectedPostId);
@@ -55,18 +55,9 @@ export const PostDetails: React.FC<Props> = (props) => {
     );
   };
 
-  const deleteComment = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    const url = `https://mate.academy/students-api/comments/${event.currentTarget.name}`;
-    const response = await fetch(url, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    getCommentsFromServer();
-
-    return response.json();
+  const deleteHandler = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    await deleteComment(event.currentTarget.name);
+    await getCommentsFromServer();
   };
 
   return (
@@ -88,7 +79,7 @@ export const PostDetails: React.FC<Props> = (props) => {
                     type="button"
                     className="PostDetails__remove-button button"
                     name={String(comment.id)}
-                    onClick={deleteComment}
+                    onClick={deleteHandler}
                   >
                     X
                   </button>
