@@ -1,45 +1,112 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getComments, removeComment } from '../../api/comments';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  post: Post | null;
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = ({ post }) => {
+  const [isHideComment, setHideComment] = useState(true);
+  const [comments, setComments] = useState<CommentPost[]>([]);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const loadComments = async (id: number) => {
+    const commentsFromServer = await getComments(id);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+    setComments(commentsFromServer);
+  };
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  useEffect(() => {
+    if (post) {
+      loadComments(post.id);
+    }
+  },
+  [post]);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+  const deleteCommentHendler = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    await removeComment(+event.currentTarget.value);
+    if (post) {
+      loadComments(post.id);
+    }
+  };
+
+  const hideCommentHendler = () => {
+    setHideComment((isHide) => (!isHide));
+  };
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+      {
+        post
+          ? (
+            <>
+              <section className="PostDetails__post">
+                <p>
+                  {post.title}
+                </p>
+              </section>
+
+              <section className="PostDetails__comments">
+                <button
+                  type="button"
+                  className="button"
+                  onClick={hideCommentHendler}
+                >
+                  {
+                    isHideComment
+                      ? (<>Hide </>)
+                      : (<>Show </>)
+                  }
+                  {comments.length}
+                  <> comments</>
+                </button>
+                {
+                  isHideComment
+                  && (
+                    <ul className="PostDetails__list">
+                      {
+                        comments.map(comment => (
+                          <li
+                            className="PostDetails__list-item"
+                            key={comment.id}
+                          >
+                            <button
+                              type="button"
+                              className="PostDetails__remove-button button"
+                              value={comment.id}
+                              onClick={deleteCommentHendler}
+                            >
+                              X
+                            </button>
+                            <p>
+                              {comment.body}
+                            </p>
+                          </li>
+                        ))
+                      }
+                    </ul>
+                  )
+                }
+              </section>
+
+              <section>
+                <div className="PostDetails__form-wrapper">
+                  <NewCommentForm
+                    postId={post.id}
+                    updateComments={loadComments}
+                  />
+                </div>
+              </section>
+            </>
+          )
+          : (
+            <span>
+              Can not find post details
+            </span>
+          )
+      }
+    </div>
+  );
+};
