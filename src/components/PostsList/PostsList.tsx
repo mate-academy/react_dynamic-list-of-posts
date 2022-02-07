@@ -8,7 +8,11 @@ type Props = {
 
 };
 
-export const PostsList: React.FC<Props> = ({ posts, selectedPostId, handleClick }) => {
+export const PostsList: React.FC<Props> = ({
+  posts,
+  selectedPostId,
+  handleClick,
+}) => {
   return (
     <div className="PostsList">
       <h2>Posts:</h2>

@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useEffect, useState } from 'react';
-import { getUserPosts } from './api/posts';
+import { getUserPosts, getPostDetails } from './api/posts';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -10,13 +10,25 @@ const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
-  const selectedPost = posts.find(post => post.id === selectedPostId);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  const loadSelectedPost = async () => {
+    const postFromServer = await getPostDetails(selectedPostId);
+
+    setSelectedPost(postFromServer);
+  };
 
   const loadUserPosts = async () => {
-    const postFromServer = await getUserPosts(selectedUserId);
+    const postsFromServer = await getUserPosts(selectedUserId);
 
-    setPosts(postFromServer);
+    setPosts(postsFromServer);
   };
+
+  useEffect(() => {
+    if (selectedPostId) {
+      loadSelectedPost();
+    }
+  }, [selectedPostId]);
 
   useEffect(() => {
     loadUserPosts();
@@ -26,11 +38,13 @@ const App: React.FC = () => {
     setSelectedUserId(+event.target.value);
   };
 
-  const handleClick = (postId: number) => (
-    postId !== selectedPostId
-      ? setSelectedPostId(postId)
-      : setSelectedPostId(0)
-  );
+  const handleClick = (postId: number) => {
+    if (postId !== selectedPostId) {
+      setSelectedPostId(postId);
+    } else {
+      setSelectedPostId(0);
+    }
+  };
 
   return (
     <div className="App">
@@ -68,11 +82,13 @@ const App: React.FC = () => {
         </div>
 
         <div className="App__content">
-          {selectedPost && (
+          {selectedPostId && selectedPost ? (
             <PostDetails
               selectedPostId={selectedPostId}
               selectedPost={selectedPost}
             />
+          ) : (
+            <p>No post selected</p>
           )}
         </div>
       </main>

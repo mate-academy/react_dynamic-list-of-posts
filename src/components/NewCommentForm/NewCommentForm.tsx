@@ -10,18 +10,6 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
   const [userEmail, setUserEmail] = useState('');
   const [userBody, setUserBody] = useState('');
 
-  const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserName(event.target.value);
-  };
-
-  const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserEmail(event.target.value);
-  };
-
-  const handleChangeBody = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setUserBody(event.target.value);
-  };
-
   const clearForm = () => {
     setUserName('');
     setUserEmail('');
@@ -46,7 +34,9 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
           placeholder="Your name"
           className="NewCommentForm__input"
           value={userName}
-          onChange={(event) => handleChangeName(event)}
+          onChange={(event) => {
+            setUserName(event.target.value);
+          }}
         />
       </div>
 
@@ -57,7 +47,9 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
           placeholder="Your email"
           className="NewCommentForm__input"
           value={userEmail}
-          onChange={(event) => handleChangeEmail(event)}
+          onChange={(event) => {
+            setUserEmail(event.target.value);
+          }}
         />
       </div>
 
@@ -67,14 +59,15 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={userBody}
-          onChange={(event) => handleChangeBody(event)}
+          onChange={(event) => {
+            setUserBody(event.target.value);
+          }}
         />
       </div>
 
       <button
         type="submit"
         className="NewCommentForm__submit-button button"
-        // onClick={() => addNewComment(userName, userEmail, userBody)}
       >
         Add a comment
       </button>

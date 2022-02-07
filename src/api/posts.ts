@@ -5,7 +5,7 @@ export function getPosts() {
 }
 
 export function getUserPosts(userId: number) {
-  if (userId !== 0) {
+  if (userId) {
     return getData<Post[]>(`/posts?userId=${userId}`);
   }
 
@@ -13,5 +13,5 @@ export function getUserPosts(userId: number) {
 }
 
 export function getPostDetails(postId: number) {
-  return getData<Post[]>(`${postId}`);
+  return getData<Post>(`/posts?userId=${postId}`);
 }
