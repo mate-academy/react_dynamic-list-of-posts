@@ -13,9 +13,9 @@ export const PostsList: React.FC<Props> = ({ userId, selectedPostId, setPostId }
 
   useEffect(() => {
     async function loadPosts() {
-      const postsfromServer = await getUserPosts(userId);
+      const postsFromServer = await getUserPosts(userId);
 
-      setPosts(postsfromServer);
+      setPosts(postsFromServer);
     }
 
     loadPosts();
