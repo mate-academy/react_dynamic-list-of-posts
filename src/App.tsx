@@ -47,7 +47,7 @@ const App: React.FC = () => {
           />
         </div>
 
-        {selectedPostId && (
+        {selectedPostId !== 0 && (
           <div className="App__content">
             <PostDetails postId={selectedPostId} />
           </div>
