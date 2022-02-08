@@ -1,37 +1,43 @@
 import React from 'react';
 import './PostsList.scss';
+import classnames from 'classnames';
 
-export const PostsList: React.FC = () => (
+type Props = {
+  posts: Post[],
+  selectedPostId: number,
+  selectedPostHandler: (event: React.MouseEvent<HTMLButtonElement>, postId: number) => void,
+};
+
+export const PostsList: React.FC<Props> = ({ posts, selectedPostHandler, selectedPostId }) => (
   <div className="PostsList">
     <h2>Posts:</h2>
-
     <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
+      {posts.map((post) => (
+        <li
+          className="PostsList__item"
+          key={post.id}
         >
-          Close
-        </button>
-      </li>
-
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
+          <div>
+            <b>
+              [User#
+              {post.userId}
+              ]:
+            </b>
+            {post.title}
+          </div>
+          <button
+            type="button"
+            className={classnames('PostsList__button button', {
+              'PostsList__button-selected': post.id === selectedPostId,
+            })}
+            onClick={(event) => {
+              selectedPostHandler(event, post.id);
+            }}
+          >
+            Open
+          </button>
+        </li>
+      ))}
     </ul>
   </div>
 );
