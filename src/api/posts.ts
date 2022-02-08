@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { BASE_URL } from './api';
 
-export const getUserPosts = async (userId: number | null) => {
+export const getUserPosts = async (userId: number) => {
   let ADDITIONAL_URL: string;
 
   if (userId) {
@@ -15,9 +15,9 @@ export const getUserPosts = async (userId: number | null) => {
   return response.json();
 };
 
-export const getPostDetails = async (postId: number | null) => {
-  if (postId === null) {
-    return null;
+export const getPostDetails = async (postId: number) => {
+  if (!postId) {
+    return postId;
   }
 
   const response = await fetch(`${BASE_URL}/posts?id=${postId}`);
@@ -25,8 +25,8 @@ export const getPostDetails = async (postId: number | null) => {
   return response.json();
 };
 
-export const getPostComments = async (postId: number | null) => {
-  if (postId === null) {
+export const getPostComments = async (postId: number) => {
+  if (!postId) {
     return [];
   }
 

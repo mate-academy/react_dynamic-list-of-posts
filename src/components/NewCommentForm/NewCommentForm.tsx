@@ -10,7 +10,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
     name: '',
     email: '',
     body: '',
-    id: 1,
+    id: 2,
     postId,
   };
 
@@ -25,7 +25,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
     });
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     const COMMENTS_URL = 'https://mate.academy/students-api/comments';
@@ -38,7 +38,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
     };
 
     setComment(emptyComment);
-    fetch(COMMENTS_URL, options);
+    await fetch(COMMENTS_URL, options);
   };
 
   return (

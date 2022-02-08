@@ -6,7 +6,7 @@ import './PostDetails.scss';
 import { getPostDetails } from '../../api/posts';
 
 interface Props {
-  postId: number | null,
+  postId: number,
 }
 
 export const PostDetails: React.FC<Props> = ({ postId }) => {
@@ -42,7 +42,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
           </button>
 
           <ul className="PostDetails__list">
-            {showComments && <PostComments postId={postId} />}
+            <PostComments postId={postId} showComments={showComments} />
           </ul>
         </section>
 

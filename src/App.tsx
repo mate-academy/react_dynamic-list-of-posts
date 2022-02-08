@@ -10,8 +10,8 @@ import { getUsers } from './api/users';
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [userId, setUserId] = useState<number | null>(null);
-  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+  const [userId, setUserId] = useState<number>(0);
+  const [selectedPostId, setSelectedPostId] = useState<number>(0);
 
   useEffect(() => {
     (async function fetchData() {

@@ -3,7 +3,7 @@ import React from 'react';
 interface Props {
   post: Post,
   isSelected: boolean,
-  setSelectedPostId: React.Dispatch<React.SetStateAction<number | null>>,
+  setSelectedPostId: React.Dispatch<React.SetStateAction<number>>,
 }
 
 export const PostRenderer: React.FC<Props> = ({ post, isSelected, setSelectedPostId }) => {
@@ -26,7 +26,7 @@ export const PostRenderer: React.FC<Props> = ({ post, isSelected, setSelectedPos
         <button
           type="button"
           className="PostsList__button button"
-          onClick={() => setSelectedPostId(null)}
+          onClick={() => setSelectedPostId(0)}
         >
           Close
         </button>

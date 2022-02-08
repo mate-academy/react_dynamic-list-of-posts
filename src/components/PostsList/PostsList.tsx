@@ -4,8 +4,8 @@ import './PostsList.scss';
 
 interface Props {
   posts: Post[],
-  setSelectedPostId: React.Dispatch<React.SetStateAction<number | null>>,
-  selectedPostId: number | null,
+  setSelectedPostId: React.Dispatch<React.SetStateAction<number>>,
+  selectedPostId: number,
 }
 
 export const PostsList: React.FC<Props> = ({ posts, setSelectedPostId, selectedPostId }) => {
