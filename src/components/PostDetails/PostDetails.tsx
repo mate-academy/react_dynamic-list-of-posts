@@ -2,43 +2,65 @@ import React from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
+type Props = {
+  detail: string;
+  comm: Post[];
+  hide: boolean;
+  handleButtonHide: () => void;
+  deleteComm: (id: number) => Promise<void>;
+  testId: number;
+  fetchComments: () => Promise<void>;
+};
+
+export const PostDetails: React.FC<Props> = ({
+  detail,
+  comm,
+  hide,
+  handleButtonHide,
+  deleteComm,
+  testId,
+  fetchComments,
+}) => (
   <div className="PostDetails">
     <h2>Post details:</h2>
 
     <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
+      <p>{detail}</p>
     </section>
 
     <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+      <button
+        type="button"
+        className="button button-visible"
+        onClick={handleButtonHide}
+      >
+        Hide 2 comments
+      </button>
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
-
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
+      <ul
+        className={hide ? 'PostDetails__list' : 'PostDetails__list--hide'}
+      >
+        {comm.map(e => (
+          <li key={e.id} className="PostDetails__list-item">
+            <button
+              type="button"
+              className="PostDetails__remove-button button"
+              onClick={() => deleteComm(e.id)}
+            >
+              X
+            </button>
+            <p>{e.body}</p>
+          </li>
+        ))}
       </ul>
     </section>
 
     <section>
       <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
+        <NewCommentForm
+          fetchComments={fetchComments}
+          testId={testId}
+        />
       </div>
     </section>
   </div>
