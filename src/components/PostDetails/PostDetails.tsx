@@ -72,13 +72,9 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
               onClick={handleHideComments}
             >
               {isHiden ? (
-                <>
-                  Show comments
-                </>
+                'Show comments'
               ) : (
-                <>
-                  {`Hide ${postComments.length} comments`}
-                </>
+                `Hide ${postComments.length} comments`
               )}
             </button>
           )}

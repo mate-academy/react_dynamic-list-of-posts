@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import './NewCommentForm.scss';
 
 type Props = {
-  onAdd: (name: string, email: string, body: string) => Promise<void>,
+  onAdd: (
+    name: string,
+    email: string,
+    body: string,
+  ) => Promise<void>,
 };
 
 export const NewCommentForm: React.FC<Props> = ({

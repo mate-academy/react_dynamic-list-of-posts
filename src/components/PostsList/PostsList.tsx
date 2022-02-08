@@ -63,13 +63,9 @@ export const PostsList: React.FC<Props> = ({ userId, onChoose }) => {
                 onClick={() => handleClickButton(post.id)}
               >
                 {post.id === selectedPostId ? (
-                  <>
-                    Close
-                  </>
+                  'Close'
                 ) : (
-                  <>
-                    Open
-                  </>
+                  'Open'
                 )}
               </button>
             </li>
