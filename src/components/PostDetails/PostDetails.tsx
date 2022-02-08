@@ -1,45 +1,87 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getPostDetails } from '../../api/posts';
+import { getPostComments, deleteComment } from '../../api/comments';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  postId: number,
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = ({ postId }) => {
+  const [post, setPost] = useState<Post | null>(null);
+  const [comments, setComments] = useState<PostComment[]>([]);
+  const [isCommentsVisible, setIsCommentsVisible] = useState(false);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const loadPosts = async () => {
+    const postFromServer = await getPostDetails(postId);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+    setPost(postFromServer);
+  };
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  const loadComments = async () => {
+    const commentsFromServer = await getPostComments(postId);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+    setComments(commentsFromServer);
+  };
+
+  useEffect(() => {
+    loadPosts();
+    loadComments();
+  }, [postId]);
+
+  const handleCommentsVisibility = () => {
+    setIsCommentsVisible(!isCommentsVisible);
+  };
+
+  const handleCommentDelete = async (commentId: number) => {
+    await deleteComment(commentId);
+    loadComments();
+  };
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <p>{post?.body}</p>
+      </section>
+
+      <section className="PostDetails__comments">
+        <button
+          type="button"
+          className="button"
+          onClick={handleCommentsVisibility}
+        >
+          {isCommentsVisible ? 'Hide comments' : 'Show comments'}
+        </button>
+
+        {isCommentsVisible && (
+          <ul className="PostDetails__list">
+            {comments.map(comment => (
+              <li key={comment.id} className="PostDetails__list-item">
+                <button
+                  type="button"
+                  className="PostDetails__remove-button button"
+                  onClick={() => handleCommentDelete(comment.id)}
+                >
+                  X
+                </button>
+                <p>{comment.body}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            loadComments={loadComments}
+            postId={postId}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};
