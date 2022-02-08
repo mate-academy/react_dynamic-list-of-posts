@@ -68,7 +68,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
           {postComments && postComments.length > 0 && (
             <button
               type="button"
-              className="button"
+              className="button PostDetails__button-hide"
               onClick={handleHideComments}
             >
               {isHiden ? (

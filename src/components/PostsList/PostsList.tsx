@@ -15,13 +15,10 @@ export const PostsList: React.FC<Props> = ({ userId, onChoose }) => {
   const loadPosts = async () => {
     let userPosts;
 
-    switch (userId) {
-      case 0:
-        userPosts = await getPosts();
-        break;
-      default:
-        userPosts = await getUserPosts(userId);
-        break;
+    if (userId === 0) {
+      userPosts = await getPosts();
+    } else {
+      userPosts = await getUserPosts(userId);
     }
 
     setPosts(userPosts);
