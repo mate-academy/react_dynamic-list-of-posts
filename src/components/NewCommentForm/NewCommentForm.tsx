@@ -8,10 +8,10 @@ export type NewComment = {
 };
 
 type Props = {
-  setNewComment: (newComment: NewComment) => void,
+  createNewComment: (newComment: NewComment) => void,
 };
 
-export const NewCommentForm: React.FC<Props> = ({ setNewComment }) => {
+export const NewCommentForm: React.FC<Props> = ({ createNewComment }) => {
   const [comment, setComment] = useState<NewComment>({
     name: '',
     email: '',
@@ -19,7 +19,14 @@ export const NewCommentForm: React.FC<Props> = ({ setNewComment }) => {
   });
 
   return (
-    <form className="NewCommentForm">
+    <form
+      className="NewCommentForm"
+      onSubmit={(event) => {
+        event.preventDefault();
+        createNewComment(comment);
+        setComment({ name: '', email: '', body: '' });
+      }}
+    >
       <div className="form-field">
         <input
           type="text"
@@ -68,12 +75,8 @@ export const NewCommentForm: React.FC<Props> = ({ setNewComment }) => {
       </div>
 
       <button
-        type="button"
+        type="submit"
         className="NewCommentForm__submit-button button"
-        onClick={() => {
-          setNewComment(comment);
-          setComment({ name: '', email: '', body: '' });
-        }}
       >
         Add a comment
       </button>

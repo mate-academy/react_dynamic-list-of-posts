@@ -8,22 +8,18 @@ import { getUserPosts } from './api/post';
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
 
-  const [UserSelect, setUserSelect] = useState(0);
+  const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getUserPosts()
+    getUserPosts(selectedUserId)
       .then(receivedPosts => {
-        if (UserSelect === 0) {
-          setPosts(receivedPosts);
-        } else {
-          setPosts(receivedPosts.filter((postItem: Post) => UserSelect === postItem.userId));
-        }
+        setPosts(receivedPosts);
 
-        setLoading(true);
+        setLoading(false);
       });
-  }, [UserSelect]);
+  }, [selectedUserId]);
 
   return (
     <div className="App">
@@ -35,7 +31,7 @@ const App: React.FC = () => {
             className="App__user-selector"
             id="posts"
             onChange={({ target }) => {
-              setUserSelect(+target.value);
+              setSelectedUserId(+target.value);
             }}
           >
             <option value="0">All users</option>

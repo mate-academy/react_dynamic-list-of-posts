@@ -1,12 +1,10 @@
 import React, {
   useState,
   useEffect,
-  useMemo,
   useCallback,
 } from 'react';
 import {
   getPostComments,
-  Comment,
   createComment,
   deleteComment,
 } from '../../api/comments';
@@ -15,6 +13,16 @@ import { NewCommentForm, NewComment } from '../NewCommentForm';
 import { Post } from '../PostsList';
 import { Loader } from '../Loader';
 import './PostDetails.scss';
+
+type Comment = {
+  id: number,
+  postId: number,
+  name: string,
+  email: string,
+  body: string,
+  createdAt: string,
+  updatedAt: string,
+};
 
 type Props = {
   postId: number,
@@ -26,9 +34,6 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
 
   const [showComments, setShowComments] = useState(true);
   const [loadingPost, setLoadingPost] = useState(false);
-  const [loadingComments, setLoadingComments] = useState(false);
-  const [idDeletedComment, setIdDeletedComment] = useState(0);
-  const [newComment, setNewComment] = useState<NewComment>();
 
   useEffect(() => {
     getPostDetails(postId)
@@ -38,37 +43,25 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
       });
   }, [postId]);
 
-  const getComments = useCallback(() => {
-    getPostComments(postId)
+  const getComments = useCallback((id: number) => {
+    getPostComments(id)
       .then(receivedComments => {
         setComments(receivedComments);
-        setLoadingComments(true);
       });
-  }, [postId, idDeletedComment, newComment]);
+  }, []);
 
-  useEffect(getComments, [postId, idDeletedComment, newComment]);
+  useEffect(() => {
+    getComments(postId);
+  }, [postId]);
 
-  useMemo(async () => {
-    if (idDeletedComment) {
-      await deleteComment(idDeletedComment);
-    }
+  const createNewComment = async (newComment: NewComment) => {
+    await createComment({
+      ...newComment,
+      postId,
+    }, postId);
 
-    getComments();
-  }, [idDeletedComment]);
-
-  useMemo(async () => {
-    if (newComment) {
-      await createComment({
-        ...newComment,
-        id: comments.length,
-        postId,
-        createdAt: '',
-        updatedAt: '',
-      });
-    }
-
-    getComments();
-  }, [newComment]);
+    getComments(postId);
+  };
 
   return (
     <>
@@ -90,7 +83,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
                 type="button"
                 className="PostDetails__button button"
                 onClick={() => {
-                  setShowComments(currentValue => !currentValue);
+                  setShowComments(!showComments);
                 }}
               >
                 {showComments ? 'Hide' : 'Show'}
@@ -98,7 +91,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
               </button>
             )}
 
-            {loadingComments && comments ? (
+            {comments ? (
               showComments && (
                 <ul className="PostDetails__list">
                   {comments.map(currentComment => (
@@ -109,8 +102,10 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
                       <button
                         type="button"
                         className="PostDetails__remove-button button"
-                        onClick={() => {
-                          setIdDeletedComment(currentComment.id);
+                        onClick={async () => {
+                          await deleteComment(currentComment.id);
+
+                          getComments(postId);
                         }}
                       >
                         X
@@ -129,7 +124,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
           <section>
             <div className="PostDetails__form-wrapper">
               <NewCommentForm
-                setNewComment={setNewComment}
+                createNewComment={createNewComment}
               />
             </div>
           </section>

@@ -27,6 +27,8 @@ export const PostsList: React.FC<Props> = ({
     <div className="PostsList">
       <h2>Posts:</h2>
       {loading ? (
+        <Loader />
+      ) : (
         <ul className="PostsList__list">
           {posts.map((post: Post) => (
             <li key={post.id} className="PostsList__item">
@@ -59,8 +61,6 @@ export const PostsList: React.FC<Props> = ({
             </li>
           ))}
         </ul>
-      ) : (
-        <Loader />
       )}
     </div>
   );

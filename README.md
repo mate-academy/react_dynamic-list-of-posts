@@ -13,7 +13,7 @@ Implement the app to manage post comments.
 
 1. Create an `/src/api/posts.ts` and add a method `getUserPosts(userId)` there
 2. Load `posts` and show them using the `PostsList` on page load. (use `useEffect` as a `componentDidMount`)
-3. Implement the `UserSelect` to show only the `posts` of the selected user. (call `getUserPosts` each time when user changes)
+3. Implement the `selectedUserId` to show only the `posts` of the selected user. (call `getUserPosts` each time when user changes)
 4. Each `post` has an `Open` button that sets a `selectedPostId` in the `App`.
 5. After opening the details the `Open` button becomes `Close` and will close the details on click.
 6. `PostDetails` component should be shown only after selecting a `post`.

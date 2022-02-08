@@ -1,23 +1,19 @@
 import { BASE_URL } from './api';
 import { request } from './post';
 
-export type Comment = {
-  id: number,
+type Comment = {
   postId: number,
   name: string,
   email: string,
   body: string,
-  createdAt: string,
-  updatedAt: string,
 };
 
 export function getPostComments(postId: number) {
-  return request(`${BASE_URL}/comments`)
-    .then(response => response.filter((comment: Comment) => comment.postId === postId));
+  return request(`${BASE_URL}/comments?postId=${postId}`);
 }
 
-export const createComment = (comment: Comment) => {
-  return fetch(`${BASE_URL}/comments`, {
+export const createComment = (comment: Comment, postId: number) => {
+  return fetch(`${BASE_URL}/comments?postId=${postId}`, {
     method: 'POST',
     headers: {
       'Content-type': 'application/json; charset=UTF-8',
