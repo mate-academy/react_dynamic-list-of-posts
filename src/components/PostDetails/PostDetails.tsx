@@ -17,6 +17,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   const [post, setPost] = useState<Post | null>(null);
   const [isPostLoading, setIsPostLoading] = useState(false);
   const [comments, setComments] = useState<PostComment[]>([]);
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [isCommentsShow, toggleIsCommentsShow] = useState(true);
 
   const loadPostById = async (postId: number) => {
@@ -55,11 +56,18 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   };
 
   const handleAddComment = async (newComment: NewComment) => {
-    await addComment(newComment);
+    try {
+      setIsCommentsLoading(true);
+      await addComment(newComment);
 
-    const commentsFromServer = await getPostComments(newComment.postId);
+      const commentsFromServer = await getPostComments(newComment.postId);
 
-    setComments(commentsFromServer);
+      setComments(commentsFromServer);
+    } catch (error) {
+      throw new Error(`${error}`);
+    } finally {
+      setIsCommentsLoading(false);
+    }
   };
 
   return (
@@ -79,44 +87,46 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
                 <p>{post?.body}</p>
               </section>
 
-              <section className="PostDetails__comments">
-                {isCommentsShow && comments.length > 0
-                  ? (
-                    <button
-                      onClick={() => toggleIsCommentsShow(false)}
-                      type="button"
-                      className="button"
-                    >
-                      {`Hide ${comments.length} comments`}
-                    </button>
-                  )
-                  : (
-                    <button
-                      onClick={() => toggleIsCommentsShow(true)}
-                      type="button"
-                      className="button"
-                    >
-                      {comments.length > 0 ? `Show ${comments.length} comments` : 'No comments'}
-                    </button>
-                  )}
+              {isCommentsLoading ? <Loader /> : (
+                <section className="PostDetails__comments">
+                  {isCommentsShow && comments.length > 0
+                    ? (
+                      <button
+                        onClick={() => toggleIsCommentsShow(false)}
+                        type="button"
+                        className="button"
+                      >
+                        {`Hide ${comments.length} comments`}
+                      </button>
+                    )
+                    : (
+                      <button
+                        onClick={() => toggleIsCommentsShow(true)}
+                        type="button"
+                        className="button"
+                      >
+                        {comments.length > 0 ? `Show ${comments.length} comments` : 'No comments'}
+                      </button>
+                    )}
 
-                { isCommentsShow && (
-                  <ul className="PostDetails__list">
-                    {comments.map(comment => (
-                      <li key={comment.id} className="PostDetails__list-item">
-                        <button
-                          onClick={() => handleRemoveCommentById(comment.id, comment.postId)}
-                          type="button"
-                          className="PostDetails__remove-button button"
-                        >
-                          X
-                        </button>
-                        <p>{comment.body}</p>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </section>
+                  { isCommentsShow && (
+                    <ul className="PostDetails__list">
+                      {comments.map(comment => (
+                        <li key={comment.id} className="PostDetails__list-item">
+                          <button
+                            onClick={() => handleRemoveCommentById(comment.id, comment.postId)}
+                            type="button"
+                            className="PostDetails__remove-button button"
+                          >
+                            X
+                          </button>
+                          <p>{comment.body}</p>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              )}
 
               <section>
                 <div className="PostDetails__form-wrapper">
