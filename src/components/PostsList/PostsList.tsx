@@ -32,9 +32,6 @@ export const PostsList: React.FC<Props> = React
 
     const filteredPosts = filterPosts(+selectedUserId);
 
-    // eslint-disable-next-line no-console
-    console.log('postList');
-
     return (
       <div className="PostsList">
         <h2>Posts:</h2>

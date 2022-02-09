@@ -19,18 +19,18 @@ export const PostDetails: React.FC<Props> = React.memo(({ selectedPostId }) => {
     setPost(postItem);
   }, []);
 
-  const fetchComments = useCallback(async () => {
+  const fetchComments = async () => {
     if (post) {
       const commentsFromServer = await getPostComments(post.id);
 
       setComments(commentsFromServer);
     }
-  }, []);
+  };
 
-  const remove = useCallback(async (id: number) => {
+  const remove = async (id: number) => {
     await removeComment(id);
     await fetchComments();
-  }, []);
+  };
 
   useEffect(() => {
     fetchPost();
@@ -39,9 +39,6 @@ export const PostDetails: React.FC<Props> = React.memo(({ selectedPostId }) => {
   useEffect(() => {
     fetchComments();
   }, [selectedPostId]);
-
-  // eslint-disable-next-line no-console
-  console.log('postdetailes');
 
   return (
     <div className="PostDetails">

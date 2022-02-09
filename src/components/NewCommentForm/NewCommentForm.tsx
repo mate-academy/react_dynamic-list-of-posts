@@ -41,9 +41,6 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ postId, fetchCommen
     setName('');
   };
 
-  // eslint-disable-next-line no-console
-  console.log('newcomment');
-
   return (
     <form
       className="NewCommentForm"

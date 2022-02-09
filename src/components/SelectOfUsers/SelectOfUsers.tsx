@@ -26,9 +26,6 @@ export const SelectOfUsers: React.FC<Props> = React.memo(({ selectId }) => {
     selectId(value);
   };
 
-  // eslint-disable-next-line no-console
-  console.log('selectcomponent');
-
   return (
     <label htmlFor="select">
       Select a user: &nbsp;
