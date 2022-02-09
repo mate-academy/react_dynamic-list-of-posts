@@ -38,22 +38,24 @@ export const Comments: React.FC<Props> = ({ postId }) => {
 
   return (
     <div>
-      <section className="PostDetails__comments">
-        <ul className="PostDetails__list">
-          {comments.map(comment => (
-            <li className="PostDetails__list-item">
-              <button
-                type="button"
-                className="PostDetails__remove-button button"
-                onClick={() => deleteSelectedComment(comment.id)}
-              >
-                X
-              </button>
-              <p>{comment.body}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {comments.length > 0 ? (
+        <section className="PostDetails__comments">
+          <ul className="PostDetails__list">
+            {comments.map(comment => (
+              <li className="PostDetails__list-item">
+                <button
+                  type="button"
+                  className="PostDetails__remove-button button"
+                  onClick={() => deleteSelectedComment(comment.id)}
+                >
+                  X
+                </button>
+                <p>{comment.body}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : <p className="PostDetails__comments">No comments</p>}
 
       <section>
         <div className="PostDetails__form-wrapper">
