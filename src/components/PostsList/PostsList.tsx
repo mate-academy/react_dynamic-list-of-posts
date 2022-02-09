@@ -1,46 +1,66 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './PostsList.scss';
 
+import { loadUsersPosts } from '../../api/posts';
+
 type Props = {
-  listOfPosts: Post[];
   handleOpenPostDetails: (postId: number) => void;
   postId: number;
+  selectorValue: number;
 };
 
 export const PostsList: React.FC<Props> = ({
-  listOfPosts,
   handleOpenPostDetails,
   postId,
-}) => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+  selectorValue,
+}) => {
+  const [listOfPosts, setListOfPosts] = useState<Post[]>([]);
 
-    <ul className="PostsList__list">
-      {listOfPosts.map(post => (
-        <li key={post.id} className="PostsList__item">
-          <div>
-            <b>{`[User #${post.userId}]: `}</b>
-            {post.body}
-          </div>
-          {postId === post.id ? (
-            <button
-              type="button"
-              className="PostsList__button button"
-              onClick={() => handleOpenPostDetails(0)}
-            >
-              Close
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="PostsList__button button"
-              onClick={() => handleOpenPostDetails(post.id)}
-            >
-              Open
-            </button>
-          )}
-        </li>
-      ))}
-    </ul>
-  </div>
-);
+  const getUserPosts = async () => {
+    const userPostsFromServer = await loadUsersPosts();
+
+    if (selectorValue > 0) {
+      return setListOfPosts(userPostsFromServer.filter(post => post.userId === selectorValue));
+    }
+
+    return setListOfPosts(userPostsFromServer);
+  };
+
+  useEffect(() => {
+    getUserPosts();
+  }, [selectorValue]);
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul className="PostsList__list">
+        {listOfPosts.map(post => (
+          <li key={post.id} className="PostsList__item">
+            <div>
+              <b>{`[User #${post.userId}]: `}</b>
+              {post.body}
+            </div>
+            {postId === post.id ? (
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => handleOpenPostDetails(0)}
+              >
+                Close
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => handleOpenPostDetails(post.id)}
+              >
+                Open
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};

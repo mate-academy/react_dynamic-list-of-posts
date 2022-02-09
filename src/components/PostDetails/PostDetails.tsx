@@ -1,23 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+
+import { loadUserComments, deleteComment } from '../../api/comments';
 
 type Props = {
   userPostTitle: string;
   userComments: Post[];
-  handleDeleteComment: (id: number) => Promise<void>;
   postId: number;
-  getUserComments: () => Promise<void>;
+  selectorValue: number;
+  setUserComments: React.Dispatch<React.SetStateAction<Post[]>>;
 };
 
 export const PostDetails: React.FC<Props> = ({
   userPostTitle,
   userComments,
-  handleDeleteComment,
   postId,
-  getUserComments,
+  selectorValue,
+  setUserComments,
 }) => {
   const [hideCommentsButton, setHideCommentsButton] = useState(true);
+
+  const getUserComments = async () => {
+    const userCommentsFromServer = await loadUserComments(postId);
+
+    setUserComments(userCommentsFromServer);
+  };
+
+  const handleDeleteComment = async (id: number) => {
+    await deleteComment(id);
+    await getUserComments();
+  };
+
+  useEffect(() => {
+    getUserComments();
+  }, [selectorValue]);
 
   const handleButtonHide = () => {
     setHideCommentsButton(!hideCommentsButton);

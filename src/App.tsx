@@ -1,49 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
-import { loadUsersPosts, loadUserPostDetails } from './api/posts';
-import { loadUserComments, deleteComment } from './api/comments';
+import { loadUserPostDetails } from './api/posts';
+import { loadUserComments } from './api/comments';
 
 const App: React.FC = () => {
-  const [listOfPosts, setListOfPosts] = useState<Post[]>([]);
-  const [selectorValue, setSelectorValue] = useState(0);
-  const [userPostTitle, setUserPostTitle] = useState('');
   const [userComments, setUserComments] = useState<Post[]>([]);
+  const [userPostTitle, setUserPostTitle] = useState('');
   const [postId, setPostId] = useState(0);
-
-  const getUserComments = async () => {
-    const userCommentsFromServer = await loadUserComments(postId);
-
-    setUserComments(userCommentsFromServer);
-  };
-
-  const getUserPosts = async () => {
-    const userPostsFromServer = await loadUsersPosts();
-
-    if (selectorValue > 0) {
-      return setListOfPosts(userPostsFromServer.filter(post => post.userId === selectorValue));
-    }
-
-    return setListOfPosts(userPostsFromServer);
-  };
-
-  const handleDeleteComment = async (id: number) => {
-    await deleteComment(id);
-    await getUserComments();
-  };
-
-  useEffect(() => {
-    getUserPosts();
-    getUserComments();
-  }, [selectorValue]);
-
-  const handleSelector = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectorValue(+event.target.value);
-  };
+  const [selectorValue, setSelectorValue] = useState(0);
 
   const handleOpenPostDetails = async (id: number) => {
     setPostId(id);
@@ -52,6 +21,10 @@ const App: React.FC = () => {
 
     setUserComments(userCommentsFromServer);
     setUserPostTitle(postDetailsFromServer.title);
+  };
+
+  const handleSelector = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectorValue(+event.target.value);
   };
 
   return (
@@ -83,7 +56,7 @@ const App: React.FC = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            listOfPosts={listOfPosts}
+            selectorValue={selectorValue}
             handleOpenPostDetails={handleOpenPostDetails}
             postId={postId}
           />
@@ -92,10 +65,10 @@ const App: React.FC = () => {
         <div className="App__content">
           {postId !== 0 && (
             <PostDetails
-              getUserComments={getUserComments}
+              setUserComments={setUserComments}
               userPostTitle={userPostTitle}
               userComments={userComments}
-              handleDeleteComment={handleDeleteComment}
+              selectorValue={selectorValue}
               postId={postId}
             />
           )}
