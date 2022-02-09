@@ -1,67 +1,57 @@
 import React, { useState, useEffect } from 'react';
 import './App.scss';
 import './styles/general.scss';
+
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import {
-  loadUsersPosts,
-  loadUserPostDetails,
-  loadUserComments,
-  deleteCommnt,
-} from './api/api';
+
+import { loadUsersPosts, loadUserPostDetails } from './api/posts';
+import { loadUserComments, deleteComment } from './api/comments';
 
 const App: React.FC = () => {
-  const [posts, setPost] = useState<Post[]>([]);
-  const [postId, setUserPost] = useState(0);
-  const [detail, setDetail] = useState('');
-  const [comm, setComm] = useState<Post[]>([]);
-  const [hide, setHide] = useState(true);
-  const [testId, setTestId] = useState(0);
+  const [listOfPosts, setListOfPosts] = useState<Post[]>([]);
+  const [selectorValue, setSelectorValue] = useState(0);
+  const [userPostTitle, setUserPostTitle] = useState('');
+  const [userComments, setUserComments] = useState<Post[]>([]);
+  const [postId, setPostId] = useState(0);
 
-  const fetchComments = async () => {
-    const com = await loadUserComments(testId);
+  const getUserComments = async () => {
+    const userCommentsFromServer = await loadUserComments(postId);
 
-    setComm(com);
+    setUserComments(userCommentsFromServer);
   };
 
-  const fetchListPosts = async () => {
+  const getUserPosts = async () => {
     const userPostsFromServer = await loadUsersPosts();
 
-    if (postId > 0) {
-      return setPost(userPostsFromServer.filter(e => e.userId === postId));
+    if (selectorValue > 0) {
+      return setListOfPosts(userPostsFromServer.filter(post => post.userId === selectorValue));
     }
 
-    return setPost(userPostsFromServer);
+    return setListOfPosts(userPostsFromServer);
   };
 
-  const deleteComm = async (id: number) => {
-    await deleteCommnt(id);
-    await fetchComments();
+  const handleDeleteComment = async (id: number) => {
+    await deleteComment(id);
+    await getUserComments();
   };
 
   useEffect(() => {
-    fetchListPosts();
-    fetchComments();
-  }, [postId]);
+    getUserPosts();
+    getUserComments();
+  }, [selectorValue]);
 
   const handleSelector = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setUserPost(+event.target.value);
+    setSelectorValue(+event.target.value);
   };
 
-  const openDetail = async (postId1 = 0) => {
-    setTestId(postId1);
-    const det = await loadUserPostDetails(postId1);
-    const comm12 = await loadUserComments(postId1);
+  const handleOpenPostDetails = async (id: number) => {
+    setPostId(id);
+    const postDetailsFromServer = await loadUserPostDetails(id);
+    const userCommentsFromServer = await loadUserComments(id);
 
-    // eslint-disable-next-line no-console
-    console.log('comm12---', comm12);
-
-    setComm(comm12);
-    setDetail(det.title);
-  };
-
-  const handleButtonHide = () => {
-    setHide(!hide);
+    setUserComments(userCommentsFromServer);
+    setUserPostTitle(postDetailsFromServer.title);
   };
 
   return (
@@ -72,7 +62,7 @@ const App: React.FC = () => {
 
           <select
             className="App__user-selector"
-            value={postId}
+            value={selectorValue}
             onChange={handleSelector}
           >
             <option value="0">All users</option>
@@ -93,22 +83,20 @@ const App: React.FC = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            posts={posts}
-            openDetail={openDetail}
-            testId={testId}
+            listOfPosts={listOfPosts}
+            handleOpenPostDetails={handleOpenPostDetails}
+            postId={postId}
           />
         </div>
 
         <div className="App__content">
-          {testId !== 0 && (
+          {postId !== 0 && (
             <PostDetails
-              fetchComments={fetchComments}
-              detail={detail}
-              comm={comm}
-              hide={hide}
-              handleButtonHide={handleButtonHide}
-              deleteComm={deleteComm}
-              testId={testId}
+              getUserComments={getUserComments}
+              userPostTitle={userPostTitle}
+              userComments={userComments}
+              handleDeleteComment={handleDeleteComment}
+              postId={postId}
             />
           )}
         </div>

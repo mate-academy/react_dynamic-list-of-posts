@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import './NewCommentForm.scss';
-import { addComm } from '../../api/api';
+import { addComment } from '../../api/comments';
 
 type Props = {
-  testId: number;
-  fetchComments: () => Promise<void>;
+  postId: number;
+  getUserComments: () => Promise<void>;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
-  testId,
-  fetchComments,
+  postId,
+  getUserComments,
 }) => {
   const [inputName, setInputName] = useState('');
   const [inputEmail, setInputEmail] = useState('');
   const [inputComment, setInputComment] = useState('');
 
-  const clearInput = () => {
+  const clearInputs = () => {
     setInputName('');
     setInputEmail('');
     setInputComment('');
@@ -23,9 +23,9 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    await addComm(testId, inputName, inputEmail, inputComment);
-    await fetchComments();
-    clearInput();
+    await addComment(postId, inputName, inputEmail, inputComment);
+    await getUserComments();
+    clearInputs();
   };
 
   return (
