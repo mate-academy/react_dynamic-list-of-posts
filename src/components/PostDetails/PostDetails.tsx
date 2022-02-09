@@ -45,9 +45,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
       </button>
 
       {showComments
-        ? (
-          <Comments postId={postId} />
-        )
+        ? (<Comments postId={postId} />)
         : <p className="PostDetails__comments">Comments hidden</p>}
     </div>
   );
