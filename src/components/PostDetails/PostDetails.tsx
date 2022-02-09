@@ -38,9 +38,16 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   }, [selectedPostId]);
 
   const loadCommentsByPostId = async (postId: number) => {
-    const commentsFromServer = await getPostComments(postId);
+    try {
+      setIsCommentsLoading(true);
+      const commentsFromServer = await getPostComments(postId);
 
-    setComments(commentsFromServer);
+      setComments(commentsFromServer);
+    } catch (error) {
+      throw new Error(`${error}`);
+    } finally {
+      setIsCommentsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -48,18 +55,23 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   }, [selectedPostId]);
 
   const handleRemoveCommentById = async (commentId: number, postId: number) => {
-    await removeComment(commentId);
+    try {
+      setIsCommentsLoading(true);
+      await removeComment(commentId);
+      const commentsFromServer = await getPostComments(postId);
 
-    const commentsFromServer = await getPostComments(postId);
-
-    setComments(commentsFromServer);
+      setComments(commentsFromServer);
+    } catch (error) {
+      throw new Error(`${error}`);
+    } finally {
+      setIsCommentsLoading(false);
+    }
   };
 
   const handleAddComment = async (newComment: NewComment) => {
     try {
       setIsCommentsLoading(true);
       await addComment(newComment);
-
       const commentsFromServer = await getPostComments(newComment.postId);
 
       setComments(commentsFromServer);
