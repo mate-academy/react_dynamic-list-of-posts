@@ -1,11 +1,5 @@
 export const BASE_URL = 'https://mate.academy/students-api';
 
-// export async function getAllPosts(): Promise<Post[]> {
-//   const response = await fetch(`${BASE_URL}/posts`);
-
-//   return response.json();
-// }
-
 export async function getUserPosts(userId: number): Promise<Post[]> {
   let response;
 
