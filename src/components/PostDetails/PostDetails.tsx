@@ -1,45 +1,52 @@
-import React from 'react';
-import { NewCommentForm } from '../NewCommentForm';
+import React, { useState, useEffect } from 'react';
+
+import { getPostDetails } from '../../api/posts';
+
+import { Comments } from '../Comments';
+
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  postId: number;
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = ({ postId }) => {
+  const [postDetails, setPostDetails] = useState<Post | null>(null);
+  const [showComments, setShowComments] = useState(true);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  useEffect(() => {
+    const fetchPostDetails = async () => {
+      const postFromServer = await getPostDetails(postId);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+      setPostDetails(postFromServer);
+    };
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+    fetchPostDetails();
+  }, [postId]);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+  const hideComments = () => {
+    setShowComments(!showComments);
+  };
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <p>{postDetails?.body}</p>
+      </section>
+
+      <button
+        type="button"
+        className="button"
+        onClick={hideComments}
+      >
+        Hide comments
+      </button>
+
+      {showComments ? (
+        <Comments postId={postId} />
+      ) : <p>Comments hidden</p>}
+    </div>
+  );
+};
