@@ -42,7 +42,10 @@ export const Comments: React.FC<Props> = ({ postId }) => {
         <section className="PostDetails__comments">
           <ul className="PostDetails__list">
             {comments.map(comment => (
-              <li className="PostDetails__list-item">
+              <li
+                className="PostDetails__list-item"
+                key={comment.id}
+              >
                 <button
                   type="button"
                   className="PostDetails__remove-button button"

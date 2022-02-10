@@ -37,7 +37,10 @@ export const PostsList: React.FC<Props> = (props) => {
       <ul className="PostsList__list">
         {posts.map(post => (
           <>
-            <li className="PostsList__item">
+            <li
+              className="PostsList__item"
+              key={post.id}
+            >
               <div>
                 <b>
                   {`[User #${post.userId}]: `}
