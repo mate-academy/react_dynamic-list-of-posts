@@ -15,7 +15,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
-    const kostyl = async () => {
+    const setter = async () => {
       const fetchedPost = await getPostDetails(selectedPostId);
       const fetchedComments = await getPostComments(selectedPostId);
 
@@ -23,7 +23,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
       setComments(fetchedComments);
     };
 
-    kostyl();
+    setter();
   }, [selectedPostId]);
 
   const removeComment = (commentId: number) => {
@@ -51,13 +51,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
           <button
             type="button"
             className="button"
-            onClick={() => {
-              if (hidden === false) {
-                setHidden(true);
-              } else {
-                setHidden(false);
-              }
-            }}
+            onClick={() => setHidden(!hidden)}
           >
             {!hidden
               ? `Hide ${comments.length} comments`
@@ -68,6 +62,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
         <ul className="PostDetails__list">
           {comments && comments.map(comment => (
             <li
+              key={comment.id}
               className={classNames('PostDetails__list-item', { 'PostDetails__list-item--hidden': hidden })}
             >
               <button

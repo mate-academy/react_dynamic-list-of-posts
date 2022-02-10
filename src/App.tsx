@@ -11,13 +11,13 @@ const App: React.FC = () => {
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
 
   useEffect(() => {
-    const kostyl = async () => {
+    const postSetter = async () => {
       const fetchedPosts = await getUserPosts(selectedUserId);
 
       setPosts(fetchedPosts);
     };
 
-    kostyl();
+    postSetter();
   }, [selectedUserId]);
 
   return (
