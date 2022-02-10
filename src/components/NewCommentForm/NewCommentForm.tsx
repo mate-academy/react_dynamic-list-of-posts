@@ -17,13 +17,18 @@ export const NewCommentForm: React.FC<Props> = (props) => {
     updateComments(postId);
   };
 
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await handleAddComment();
+    setCurrentName('');
+    setCurrentEmail('');
+    setCurrentText('');
+  };
+
   return (
     <form
       className="NewCommentForm"
-      onSubmit={async (event) => {
-        event.preventDefault();
-        await handleAddComment();
-      }}
+      onSubmit={handleSubmit}
     >
       <div className="form-field">
         <input
