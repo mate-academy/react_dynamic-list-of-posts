@@ -19,7 +19,6 @@ export const PostDetails: React.FC<Props> = (props) => {
     body: '',
   });
   const [comments, setComments] = useState<Comment[]>([]);
-  const [prevPostId, setPrevPostId] = useState(postId);
   const [hidden, setHidden] = useState(false);
   const currentPostDetails = async () => {
     setPostDetails(await getPostDetails(postId));
@@ -30,12 +29,9 @@ export const PostDetails: React.FC<Props> = (props) => {
   };
 
   useEffect(() => {
-    if (prevPostId !== postId) {
-      setPrevPostId(postId);
-      currentPostDetails();
-      currentComments(postId);
-    }
-  });
+    currentPostDetails();
+    currentComments(postId);
+  }, [postId]);
 
   const handleRemoveComment = async (comment: Comment) => {
     await deleteComment(comment.id);
