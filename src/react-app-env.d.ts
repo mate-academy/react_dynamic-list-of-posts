@@ -1,16 +1,21 @@
 /// <reference types="react-scripts" />
 
-type Post = {
+interface Post {
   id: number;
   userId: number;
   title: string;
   body: string;
-};
+}
 
-type PostComment = {
+interface User {
+  id: number,
+  name: string,
+}
+
+interface PostComment {
   id: number;
   userId: number;
   name: string;
   email: string;
   body: string;
-};
+}

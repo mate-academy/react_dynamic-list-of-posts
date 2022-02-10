@@ -12,6 +12,12 @@ export async function getUserPosts(userId: number): Promise<Post[]> {
   return response.json();
 }
 
+export async function getAllUsers(): Promise<User[]> {
+  const response = await fetch(`${BASE_URL}/users`);
+
+  return response.json();
+}
+
 export async function getPostDetails(postId: number): Promise<Post> {
   const response = await fetch(`${BASE_URL}/posts/${postId}`);
 
