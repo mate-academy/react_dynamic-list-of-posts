@@ -18,3 +18,8 @@ type Comments = {
   createdAt: string,
   updatedAt: string,
 };
+
+interface User {
+  id: number,
+  name: string,
+}
