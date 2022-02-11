@@ -7,6 +7,12 @@ interface Post {
   body: string;
 }
 
+interface User {
+  id: number;
+  name: string;
+  email: string;
+}
+
 interface PostComment {
   id: number;
   postId: number;

@@ -1,12 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { UserSelect } from './components/UsersSelect';
+import { getUsers } from './api/users';
 
 const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
+  const [users, setUsers] = useState<User[] | null>(null);
+
+  async function loadUsers() {
+    const usersFromServer = await getUsers();
+
+    setUsers([...usersFromServer]);
+  }
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
 
   const selectPostId = (postId: number) => {
     setSelectedPostId(postId);
@@ -25,30 +38,14 @@ const App: React.FC = () => {
   return (
     <div className="App">
       <header className="App__header">
-        <label htmlFor="user-select">
-          Select a user: &nbsp;
-
-          <select
-            id="user-select"
-            className="App__user-selector"
-            value={selectedUserId}
-            onChange={(event) => {
-              selectUserId(event);
-            }}
-          >
-            <option value={0}>All users</option>
-            <option value={1}>Leanne Graham</option>
-            <option value={2}>Ervin Howell</option>
-            <option value={3}>Clementine Bauch</option>
-            <option value={4}>Patricia Lebsack</option>
-            <option value={5}>Chelsey Dietrich</option>
-            <option value={6}>Mrs. Dennis Schulist</option>
-            <option value={7}>Kurtis Weissnat</option>
-            <option value={8}>Nicholas Runolfsdottir V</option>
-            <option value={9}>Glenna Reichert</option>
-            <option value={10}>Leanne Graham</option>
-          </select>
-        </label>
+        {users
+          && (
+            <UserSelect
+              users={users}
+              onSelectUserId={selectUserId}
+              selectedUserId={selectedUserId}
+            />
+          )}
       </header>
 
       <main className="App__main">

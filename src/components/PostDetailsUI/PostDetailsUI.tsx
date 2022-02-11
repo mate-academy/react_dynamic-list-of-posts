@@ -20,11 +20,7 @@ export const PostDetailsUI: React.FC<Props> = ({
   <>
     <section className="PostDetails__post">
       <b>
-        <span>
-          [User #
-          {selectedPost.userId}
-          ]:
-        </span>
+        <span>{`[User #${selectedPost.userId}]: `}</span>
       </b>
       {' '}
       <span>{selectedPost.title}</span>

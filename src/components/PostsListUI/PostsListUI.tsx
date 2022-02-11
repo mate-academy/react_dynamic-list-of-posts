@@ -15,12 +15,7 @@ export const PostsListUI: React.FC<Props> = ({
     {posts.map(post => (
       <li key={post.id} className="PostsList__item">
         <div>
-          <b>
-            [User #
-            {post.userId}
-            ]:
-            {' '}
-          </b>
+          <b>{`[User #${post.userId}]: `}</b>
           {post.title}
         </div>
         <button
