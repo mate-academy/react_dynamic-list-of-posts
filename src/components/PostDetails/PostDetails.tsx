@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getPostComments, removeComment } from '../../api/Comments';
 import { getPost } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
@@ -11,34 +11,39 @@ type Props = {
 export const PostDetails: React.FC<Props> = React.memo(({ selectedPostId }) => {
   const [post, setPost] = useState<PostItem | null>(null);
   const [comments, setComments] = useState<CommentInfo[]>([]);
-  const [visibilityOfComments, setvisibilityOfComments] = useState(true);
+  const [isCommentsVisible, setIsCommentsVisible] = useState(true);
 
-  const fetchPost = useCallback(async () => {
+  const fetchPost = async () => {
     const postItem = await getPost(selectedPostId);
 
     setPost(postItem);
-  }, []);
-
-  const fetchComments = async () => {
-    if (post) {
-      const commentsFromServer = await getPostComments(post.id);
-
-      setComments(commentsFromServer);
-    }
   };
 
-  const remove = async (id: number) => {
-    await removeComment(id);
+  const fetchComments = async () => {
+    const commentsFromServer = await getPostComments(selectedPostId);
+
+    setComments(commentsFromServer);
+  };
+
+  const handleCommentRemove = async (commentId: number) => {
+    await removeComment(commentId);
     await fetchComments();
   };
 
   useEffect(() => {
-    fetchPost();
+    const fetch = async () => {
+      await Promise.all([fetchPost(), fetchComments()]);
+    };
+
+    fetch();
   }, [selectedPostId]);
 
-  useEffect(() => {
-    fetchComments();
-  }, [selectedPostId]);
+  // useEffect(() => {
+  //   fetchComments();
+  // }, [post]);
+
+  // eslint-disable-next-line no-console
+  console.log(post);
 
   return (
     <div className="PostDetails">
@@ -50,34 +55,24 @@ export const PostDetails: React.FC<Props> = React.memo(({ selectedPostId }) => {
       {comments.length > 0
         ? (
           <section className="PostDetails__comments">
-            {visibilityOfComments && (
-              <button
-                type="button"
-                className="button"
-                onClick={() => setvisibilityOfComments(!visibilityOfComments)}
-              >
-                {`Hide ${comments.length} comments`}
-              </button>
-            )}
+            <button
+              type="button"
+              className="button"
+              onClick={() => setIsCommentsVisible(!isCommentsVisible)}
+            >
+              {isCommentsVisible
+                ? `Hide ${comments.length} comments`
+                : `Show ${comments.length} comments`}
+            </button>
 
-            {!visibilityOfComments && (
-              <button
-                type="button"
-                className="button"
-                onClick={() => setvisibilityOfComments(!visibilityOfComments)}
-              >
-                {`Show ${comments.length} comments`}
-              </button>
-            )}
-
-            {visibilityOfComments && (
+            {isCommentsVisible && (
               <ul className="PostDetails__list">
                 {comments.map(commentItem => (
                   <li className="PostDetails__list-item" key={commentItem.id}>
                     <button
                       type="button"
                       className="PostDetails__remove-button button"
-                      onClick={() => remove(commentItem.id)}
+                      onClick={() => handleCommentRemove(commentItem.id)}
                     >
                       X
                     </button>
