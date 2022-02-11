@@ -11,20 +11,22 @@ export const NewCommentForm: React.FC<Props> = ({
   postId,
   getUserComments,
 }) => {
-  const [inputName, setInputName] = useState('');
-  const [inputEmail, setInputEmail] = useState('');
-  const [inputComment, setInputComment] = useState('');
+  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+  const [userComment, setUserComment] = useState('');
 
   const clearInputs = () => {
-    setInputName('');
-    setInputEmail('');
-    setInputComment('');
+    setUserName('');
+    setUserEmail('');
+    setUserComment('');
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    await addComment(postId, inputName, inputEmail, inputComment);
+
+    await addComment(postId, userName, userEmail, userComment);
     await getUserComments();
+
     clearInputs();
   };
 
@@ -39,8 +41,8 @@ export const NewCommentForm: React.FC<Props> = ({
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={inputName}
-          onChange={event => setInputName(event.target.value)}
+          value={userName}
+          onChange={event => setUserName(event.target.value)}
         />
       </div>
 
@@ -50,8 +52,8 @@ export const NewCommentForm: React.FC<Props> = ({
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={inputEmail}
-          onChange={event => setInputEmail(event.target.value)}
+          value={userEmail}
+          onChange={event => setUserEmail(event.target.value)}
         />
       </div>
 
@@ -60,8 +62,8 @@ export const NewCommentForm: React.FC<Props> = ({
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={inputComment}
-          onChange={event => setInputComment(event.target.value)}
+          value={userComment}
+          onChange={event => setUserComment(event.target.value)}
         />
       </div>
 

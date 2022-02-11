@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import './App.scss';
 import './styles/general.scss';
 
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { UsersList } from './components/UsersList';
 
 import { loadUserPostDetails } from './api/posts';
-import { loadUserComments } from './api/comments';
+import { loadPostComments } from './api/comments';
 
 const App: React.FC = () => {
   const [userComments, setUserComments] = useState<Post[]>([]);
@@ -16,41 +17,27 @@ const App: React.FC = () => {
 
   const handleOpenPostDetails = async (id: number) => {
     setPostId(id);
-    const postDetailsFromServer = await loadUserPostDetails(id);
-    const userCommentsFromServer = await loadUserComments(id);
+    const [postDetailsFromServer, userCommentsFromServer] = await Promise.all([
+      loadUserPostDetails(id),
+      loadPostComments(id),
+    ]);
 
     setUserComments(userCommentsFromServer);
     setUserPostTitle(postDetailsFromServer.title);
   };
 
-  const handleSelector = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSelector = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectorValue(+event.target.value);
-  };
+  }, []);
 
   return (
     <div className="App">
       <header className="App__header">
-        <label htmlFor="label">
-          Select a user: &nbsp;
-
-          <select
-            className="App__user-selector"
-            value={selectorValue}
-            onChange={handleSelector}
-          >
-            <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
-          </select>
-        </label>
+        Select a user: &nbsp;
+        <UsersList
+          selectorValue={selectorValue}
+          handleSelector={handleSelector}
+        />
       </header>
 
       <main className="App__main">

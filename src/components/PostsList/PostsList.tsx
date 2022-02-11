@@ -14,16 +14,16 @@ export const PostsList: React.FC<Props> = ({
   postId,
   selectorValue,
 }) => {
-  const [listOfPosts, setListOfPosts] = useState<Post[]>([]);
+  const [postList, setPostList] = useState<Post[]>([]);
 
   const getUserPosts = async () => {
     const userPostsFromServer = await loadUsersPosts();
 
-    if (selectorValue > 0) {
-      return setListOfPosts(userPostsFromServer.filter(post => post.userId === selectorValue));
+    if (selectorValue) {
+      return setPostList(userPostsFromServer.filter(post => post.userId === selectorValue));
     }
 
-    return setListOfPosts(userPostsFromServer);
+    return setPostList(userPostsFromServer);
   };
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export const PostsList: React.FC<Props> = ({
       <h2>Posts:</h2>
 
       <ul className="PostsList__list">
-        {listOfPosts.map(post => (
+        {postList.map(post => (
           <li key={post.id} className="PostsList__item">
             <div>
               <b>{`[User #${post.userId}]: `}</b>

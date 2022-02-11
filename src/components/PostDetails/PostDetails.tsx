@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-import { loadUserComments, deleteComment } from '../../api/comments';
+import { loadPostComments, deleteComment } from '../../api/comments';
 
 type Props = {
   userPostTitle: string;
@@ -19,25 +19,25 @@ export const PostDetails: React.FC<Props> = ({
   selectorValue,
   setUserComments,
 }) => {
-  const [hideCommentsButton, setHideCommentsButton] = useState(true);
+  const [isCommemtsHidden, setIsCommemtsHidden] = useState(true);
 
-  const getUserComments = async () => {
-    const userCommentsFromServer = await loadUserComments(postId);
+  const getPostComments = async () => {
+    const userCommentsFromServer = await loadPostComments(postId);
 
     setUserComments(userCommentsFromServer);
   };
 
   const handleDeleteComment = async (id: number) => {
     await deleteComment(id);
-    await getUserComments();
+    await getPostComments();
   };
 
   useEffect(() => {
-    getUserComments();
+    getPostComments();
   }, [selectorValue]);
 
   const handleButtonHide = () => {
-    setHideCommentsButton(!hideCommentsButton);
+    setIsCommemtsHidden(!isCommemtsHidden);
   };
 
   return (
@@ -58,7 +58,7 @@ export const PostDetails: React.FC<Props> = ({
         </button>
 
         <ul
-          className={hideCommentsButton ? 'PostDetails__list' : 'PostDetails__list--hide'}
+          className={isCommemtsHidden ? 'PostDetails__list' : 'PostDetails__list--hide'}
         >
           {userComments.map(commentary => (
             <li key={commentary.id} className="PostDetails__list-item">
@@ -78,7 +78,7 @@ export const PostDetails: React.FC<Props> = ({
       <section>
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
-            getUserComments={getUserComments}
+            getUserComments={getPostComments}
             postId={postId}
           />
         </div>

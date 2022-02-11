@@ -15,3 +15,8 @@ type PostComm = {
   email: string,
   body: string,
 };
+
+type User = {
+  name: string,
+  id: number,
+};
