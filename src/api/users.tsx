@@ -1,7 +1,7 @@
-const API_URL = 'https://mate.academy/students-api/users';
+const BASE_URL = 'https://mate.academy/students-api';
 
 export const loadUsers = async () => {
-  const response = await fetch(API_URL);
+  const response = await fetch(`${BASE_URL}/users`);
 
   return response.json();
 };

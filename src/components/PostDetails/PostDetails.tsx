@@ -4,22 +4,29 @@ import './PostDetails.scss';
 
 import { loadPostComments, deleteComment } from '../../api/comments';
 
+import { loadUserPostDetails } from '../../api/posts';
+
 type Props = {
-  userPostTitle: string;
-  userComments: Post[];
   postId: number;
-  selectorValue: number;
-  setUserComments: React.Dispatch<React.SetStateAction<Post[]>>;
 };
 
 export const PostDetails: React.FC<Props> = ({
-  userPostTitle,
-  userComments,
   postId,
-  selectorValue,
-  setUserComments,
 }) => {
   const [isCommemtsHidden, setIsCommemtsHidden] = useState(true);
+
+  const [userComments, setUserComments] = useState<Post[]>([]);
+  const [userPostTitle, setUserPostTitle] = useState('');
+
+  const getPostData = async () => {
+    const [postDetailsFromServer, userCommentsFromServer] = await Promise.all([
+      loadUserPostDetails(postId),
+      loadPostComments(postId),
+    ]);
+
+    setUserComments(userCommentsFromServer);
+    setUserPostTitle(postDetailsFromServer.title);
+  };
 
   const getPostComments = async () => {
     const userCommentsFromServer = await loadPostComments(postId);
@@ -34,7 +41,8 @@ export const PostDetails: React.FC<Props> = ({
 
   useEffect(() => {
     getPostComments();
-  }, [selectorValue]);
+    getPostData();
+  }, [postId]);
 
   const handleButtonHide = () => {
     setIsCommemtsHidden(!isCommemtsHidden);
