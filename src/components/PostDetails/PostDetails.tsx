@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import cn from 'classnames';
 import './PostDetails.scss';
 
 import { NewCommentForm } from '../NewCommentForm';
@@ -65,7 +66,7 @@ export const PostDetails: React.FC<Props> = ({
         </button>
 
         <ul
-          className={isCommentsHidden ? 'PostDetails__list' : 'PostDetails__list--hide'}
+          className={cn({ 'PostDetails__list--hide': !isCommentsHidden }, 'PostDetails__list')}
         >
           {userComments.map(commentary => (
             <li key={commentary.id} className="PostDetails__list-item">
