@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
@@ -6,30 +6,30 @@ import * as commentsAPI from '../../api/comments';
 
 type Props = {
   selectedPost: Post,
-  selectedPostId: number,
 };
 
-export const PostDetails: React.FC<Props> = ({ selectedPost, selectedPostId }) => {
-  const [postComments, setPostComments] = useState([] as PostComment[]);
+export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
+  const [postComments, setPostComments] = useState<PostComment[]>([]);
   const [commentsVisibility, setCommentsVisibility] = useState(false);
 
-  useEffect(() => {
-    const loadData = async (postId: number) => {
-      const commentsFromServer = await commentsAPI.getPostComments(postId);
+  const loadData = async (postId: number) => {
+    const commentsFromServer = await commentsAPI.getPostComments(postId);
 
-      setPostComments(commentsFromServer);
-    };
+    setPostComments(commentsFromServer);
+  };
 
-    loadData(selectedPostId);
-  }, [selectedPostId, postComments]);
-
-  const commentsHandler = () => {
+  const commentsVisibilityHandler = () => {
     setCommentsVisibility(!commentsVisibility);
   };
 
-  const deletePostComment = (commentId: number) => {
-    commentsAPI.deleteSelectedComment(commentId);
-  };
+  const deleteCommentHandler = useCallback(async (postId: number) => {
+    await commentsAPI.deleteSelectedComment(postId);
+    await loadData(selectedPost.id);
+  }, []);
+
+  useEffect(() => {
+    loadData(selectedPost.id);
+  }, [selectedPost]);
 
   return (
     <div className="PostDetails">
@@ -46,7 +46,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost, selectedPostId }) =
           type="button"
           className="button"
           onClick={() => {
-            commentsHandler();
+            commentsVisibilityHandler();
           }}
         >
           {commentsVisibility && ' Hide ' }
@@ -68,11 +68,14 @@ export const PostDetails: React.FC<Props> = ({ selectedPost, selectedPostId }) =
                       type="button"
                       className="PostDetails__remove-button button"
                       onClick={() => {
-                        deletePostComment(postComment.id);
+                        deleteCommentHandler(postComment.id);
                       }}
                     >
                       X
                     </button>
+                    <h4>
+                      {postComment.title}
+                    </h4>
                     <p>{postComment.body}</p>
                   </li>
                 );
@@ -84,7 +87,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost, selectedPostId }) =
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm selectedPostId={selectedPostId} />
+          <NewCommentForm selectedPostId={selectedPost.id} loadData={loadData} />
         </div>
       </section>
     </div>

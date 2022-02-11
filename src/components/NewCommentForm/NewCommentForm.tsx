@@ -4,10 +4,11 @@ import './NewCommentForm.scss';
 import { createNewComment } from '../../api/comments';
 
 type Props = {
+  loadData: (postId: number) => void,
   selectedPostId: number,
 };
 
-export const NewCommentForm: React.FC<Props> = ({ selectedPostId }) => {
+export const NewCommentForm: React.FC<Props> = ({ selectedPostId, loadData }) => {
   const [commentDetails, setCommentDetails] = useState({} as NewComment);
 
   const handleInputDetails = (event: FormInput) => {
@@ -46,9 +47,9 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPostId }) => {
     setCommentDetails(newComment);
   };
 
-  const createCommentHandler = (event: React.FormEvent) => {
-    event.preventDefault();
-    createNewComment(commentDetails);
+  const createCommentHandler = async () => {
+    await createNewComment(commentDetails);
+    loadData(selectedPostId);
   };
 
   return (
@@ -89,7 +90,8 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPostId }) => {
         type="submit"
         className="NewCommentForm__submit-button button"
         onClick={(event) => {
-          createCommentHandler(event);
+          event.preventDefault();
+          createCommentHandler();
         }}
       >
         Add a comment

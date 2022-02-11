@@ -2,18 +2,14 @@ import { BASE_URL } from './api';
 
 export async function getPostComments(postId: number) {
   const response = await fetch(`${BASE_URL}/comments?postId=${postId}`);
-  const postComments = await response.json();
 
-  return postComments;
+  return response.json();
 }
 
 export async function deleteSelectedComment(postId: number) {
-  const deleteResponse = await fetch(`${BASE_URL}/comments/${postId}`, {
+  return fetch(`${BASE_URL}/comments/${postId}`, {
     method: 'DELETE',
   });
-  const notPostComments = await deleteResponse.json();
-
-  return notPostComments;
 }
 
 export async function createNewComment(

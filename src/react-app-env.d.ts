@@ -4,6 +4,7 @@ interface Post {
   userId: number,
   title: string,
   id: number,
+  body?: string,
 }
 
 interface PostComment {
@@ -13,11 +14,17 @@ interface PostComment {
   body: string,
 }
 
-interface NewComment{
+interface NewComment {
   postId: number,
   name: string,
   email: string,
   body: string,
+}
+
+interface User {
+  id: number,
+  name: string,
+  email: string,
 }
 
 type FormInput = React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>;
