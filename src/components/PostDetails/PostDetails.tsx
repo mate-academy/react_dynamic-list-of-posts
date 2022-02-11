@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-import { loadPostComments, deleteComment } from '../../api/comments';
+import { NewCommentForm } from '../NewCommentForm';
 
+import { loadPostComments, deleteComment } from '../../api/comments';
 import { loadUserPostDetails } from '../../api/posts';
 
 type Props = {
@@ -13,8 +13,7 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({
   postId,
 }) => {
-  const [isCommemtsHidden, setIsCommemtsHidden] = useState(true);
-
+  const [isCommentsHidden, setIsCommentsHidden] = useState(true);
   const [userComments, setUserComments] = useState<Post[]>([]);
   const [userPostTitle, setUserPostTitle] = useState('');
 
@@ -45,7 +44,7 @@ export const PostDetails: React.FC<Props> = ({
   }, [postId]);
 
   const handleButtonHide = () => {
-    setIsCommemtsHidden(!isCommemtsHidden);
+    setIsCommentsHidden(!isCommentsHidden);
   };
 
   return (
@@ -66,7 +65,7 @@ export const PostDetails: React.FC<Props> = ({
         </button>
 
         <ul
-          className={isCommemtsHidden ? 'PostDetails__list' : 'PostDetails__list--hide'}
+          className={isCommentsHidden ? 'PostDetails__list' : 'PostDetails__list--hide'}
         >
           {userComments.map(commentary => (
             <li key={commentary.id} className="PostDetails__list-item">
