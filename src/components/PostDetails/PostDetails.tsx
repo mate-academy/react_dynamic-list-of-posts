@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { getComments, removeComment } from '../../api/comments';
 import { selectedPostId } from '../../api/posts';
 import { Loader } from '../Loader';
@@ -15,11 +15,11 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
   const [post, setPost] = useState<Post | null>(null);
   const [isLoader, setLoader] = useState(false);
 
-  const loadComments = async (id: number) => {
+  const loadComments = useCallback(async (id: number) => {
     const commentsFromServer = await getComments(id);
 
     setComments(commentsFromServer);
-  };
+  }, []);
 
   const loadPostDetails = async (id: number) => {
     setLoader(true);

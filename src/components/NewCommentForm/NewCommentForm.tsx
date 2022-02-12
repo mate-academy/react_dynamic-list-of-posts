@@ -12,7 +12,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComments }) => {
   const [commentEmail, setCommentEmail] = useState('');
   const [commentBody, setCommentBody] = useState('');
 
-  const inputsHendler = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const hendlerInputs = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value, name } = event.currentTarget;
 
     switch (name) {
@@ -29,6 +29,12 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComments }) => {
     }
   };
 
+  const resetFields = () => {
+    setCommentName('');
+    setCommentEmail('');
+    setCommentBody('');
+  };
+
   const pushNewComment = async () => {
     await addComment({
       postId,
@@ -36,14 +42,12 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComments }) => {
       email: commentEmail,
       body: commentBody,
     });
-    setCommentName('');
-    setCommentEmail('');
-    setCommentBody('');
 
+    resetFields();
     updateComments(postId);
   };
 
-  const submitHendler = (event: React.FormEvent<HTMLFormElement>) => {
+  const hendlerSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     pushNewComment();
@@ -52,7 +56,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComments }) => {
   return (
     <form
       className="NewCommentForm"
-      onSubmit={submitHendler}
+      onSubmit={hendlerSubmit}
     >
       <div className="form-field">
         <input
@@ -61,7 +65,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComments }) => {
           placeholder="Your name"
           className="NewCommentForm__input"
           value={commentName}
-          onChange={inputsHendler}
+          onChange={hendlerInputs}
           required
         />
       </div>
@@ -73,7 +77,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComments }) => {
           placeholder="Your email"
           className="NewCommentForm__input"
           value={commentEmail}
-          onChange={inputsHendler}
+          onChange={hendlerInputs}
           required
         />
       </div>
@@ -84,7 +88,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComments }) => {
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={commentBody}
-          onChange={inputsHendler}
+          onChange={hendlerInputs}
           required
         />
       </div>
