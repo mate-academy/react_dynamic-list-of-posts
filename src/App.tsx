@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getPosts, getUserPosts, selectedPostId } from './api/posts';
+import { getPosts, getUserPosts } from './api/posts';
 import { getUsers } from './api/users';
+import { Loader } from './components/Loader';
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [postDetails, setPostDetails] = useState<Post | null>(null);
   const [users, setUsers] = useState<User[]>([]);
-  const [selectUser, setSelectUser] = useState(0);
-  const [selectPost, setSelectPost] = useState(0);
+  const [selectUserId, setSelectUserId] = useState(0);
+  const [selectPostId, setSelectPostId] = useState(0);
+  const [isLoader, setLoader] = useState(false);
 
   const loadPosts = async () => {
     const postsFromServer = await getPosts();
@@ -19,8 +20,8 @@ const App: React.FC = () => {
     setPosts(postsFromServer);
   };
 
-  const loadSelectedPosts = async () => {
-    const postsFromServer = await getUserPosts(selectUser);
+  const loadPostsByUserId = async () => {
+    const postsFromServer = await getUserPosts(selectUserId);
 
     setPosts(postsFromServer);
   };
@@ -31,38 +32,38 @@ const App: React.FC = () => {
     setUsers(usersFromServer);
   };
 
-  const loadPostDetails = async (id: number) => {
-    if (selectPost !== 0) {
-      const post = await selectedPostId(id);
-
-      setPostDetails(post);
-    }
+  const loadAllData = async () => {
+    setLoader(true);
+    await loadPosts();
+    await loadUsers();
+    setLoader(false);
   };
 
   useEffect(() => {
-    loadPosts();
-    loadUsers();
+    loadAllData();
   }, []);
 
   useEffect(() => {
-    if (selectUser !== 0) {
-      loadSelectedPosts();
+    if (selectUserId !== 0) {
+      loadPostsByUserId();
     } else {
       loadPosts();
     }
-  }, [selectUser]);
+  }, [selectUserId]);
 
-  useEffect(() => {
-    loadPostDetails(selectPost);
-  }, [selectPost]);
+  const hendlerSelect = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectUserId(+event.target.value);
+  }, []);
 
-  const selectHendler = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectUser(+event.target.value);
-  };
+  const hendlerOpenDetails = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+    setSelectPostId(+event.currentTarget.value);
+  }, []);
 
-  const openDetailsHendler = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setSelectPost(+event.currentTarget.value);
-  };
+  if (isLoader) {
+    return (
+      <Loader />
+    );
+  }
 
   return (
     <div className="App">
@@ -73,8 +74,8 @@ const App: React.FC = () => {
           <select
             className="App__user-selector"
             id="select_app"
-            value={selectUser}
-            onChange={selectHendler}
+            value={selectUserId}
+            onChange={hendlerSelect}
           >
             <option value="0">All users</option>
             {users.map(user => (
@@ -93,13 +94,13 @@ const App: React.FC = () => {
         <div className="App__sidebar">
           <PostsList
             posts={posts}
-            onDetails={openDetailsHendler}
-            postId={selectPost}
+            onDetails={hendlerOpenDetails}
+            postId={selectPostId}
           />
         </div>
 
         <div className="App__content">
-          <PostDetails post={postDetails} />
+          <PostDetails postId={selectPostId} />
         </div>
       </main>
     </div>
