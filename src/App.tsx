@@ -7,19 +7,19 @@ import { getAllPosts, getUserPosts } from './api/posts';
 import { Loader } from './components/Loader';
 
 const App: React.FC = () => {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPostId, setSelectedPostId] = useState(0);
   const [postsLoaded, setPostsLoaded] = useState(false);
 
   useEffect(() => {
-    const loadGoods = async () => {
+    const loadPosts = async () => {
       const postsFromServer = await getAllPosts();
 
       setPostsLoaded(true);
       setPosts(postsFromServer);
     };
 
-    loadGoods();
+    loadPosts();
   }, []);
 
   const handlePostId = (postId: number) => {
