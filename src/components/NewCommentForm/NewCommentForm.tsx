@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './NewCommentForm.scss';
 
 type Props = {
-  onAdd: (
+  handleAddComment: (
     name: string,
     email: string,
     body: string,
@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({
-  onAdd,
+  handleAddComment,
 }) => {
   const [commentName, setCommentName] = useState('');
   const [commentEmail, setCommentEmail] = useState('');
@@ -37,7 +37,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const handlerSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    onAdd(commentName, commentEmail, commentBody);
+    handleAddComment(commentName, commentEmail, commentBody);
     clearForm();
   };
 

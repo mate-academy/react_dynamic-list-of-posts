@@ -10,8 +10,8 @@ type Props = {};
 
 const App: React.FC<Props> = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [userId, setUserId] = useState<number>(0);
-  const [postId, setPostId] = useState<number>(0);
+  const [userId, setUserId] = useState(0);
+  const [postId, setPostId] = useState(0);
 
   const loadUsers = async () => {
     const usersFromServer = await getUsers();

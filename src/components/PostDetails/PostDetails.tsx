@@ -11,7 +11,7 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ postId }) => {
   const [post, setPost] = useState<Post | null>(null);
   const [postComments, setPostComments] = useState<PostComment[] | null>(null);
-  const [isHiden, setIsHiden] = useState<boolean>(false);
+  const [isHiden, setIsHiden] = useState(false);
 
   const loadPost = async (id: number) => {
     const postFromServer = await getPostById(id);
@@ -109,7 +109,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
         <section>
           <div className="PostDetails__form-wrapper">
             <NewCommentForm
-              onAdd={handleAddComment}
+              handleAddComment={handleAddComment}
             />
           </div>
         </section>
