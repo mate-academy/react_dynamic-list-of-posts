@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { addComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
 interface Props {
@@ -27,18 +28,8 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
-    const COMMENTS_URL = 'https://mate.academy/students-api/comments';
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: JSON.stringify(comment),
-    };
-
+    addComment(comment);
     setComment(emptyComment);
-    await fetch(COMMENTS_URL, options);
   };
 
   return (

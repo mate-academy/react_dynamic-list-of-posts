@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
+import { deleteComment } from '../../api/comments';
 import { getPostComments } from '../../api/posts';
 
 interface Props {
@@ -20,14 +21,6 @@ export const PostComments: React.FC<Props> = ({ postId, showComments }) => {
     fetchData();
   }, [comments]);
 
-  const handleClick = (commentId: number) => {
-    const COMMENT_URL = `https://mate.academy/students-api/comments/${commentId}`;
-
-    console.log(COMMENT_URL);
-
-    fetch(COMMENT_URL, { method: 'DELETE' });
-  };
-
   if (!showComments) {
     return <div>Comments are hidden</div>;
   }
@@ -40,7 +33,7 @@ export const PostComments: React.FC<Props> = ({ postId, showComments }) => {
             <button
               type="button"
               className="PostDetails__remove-button button"
-              onClick={() => handleClick(comment.id)}
+              onClick={() => deleteComment(comment.id)}
             >
               X
             </button>

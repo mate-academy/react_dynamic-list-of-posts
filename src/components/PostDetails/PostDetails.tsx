@@ -10,7 +10,7 @@ interface Props {
 }
 
 export const PostDetails: React.FC<Props> = ({ postId }) => {
-  const [showComments, setShowComments] = useState<boolean>(true);
+  const [showComments, setShowComments] = useState(true);
   const [post, setPost] = useState<Post | null>(null);
 
   useEffect(() => {
