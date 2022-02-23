@@ -1,15 +1,11 @@
 # React dynamic list of Posts
-- Replace `<your_account>` with your Github username in the
-  [DEMO LINK](https://<your_account>.github.io/react_dynamic-list-of-posts/)
-- Follow the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline)
-- Use [React TypeScript cheat sheet](https://mate-academy.github.io/fe-program/js/extra/react-typescript)
+
+  [DEMO LINK](https://vladyslav-harkusha.github.io/react_dynamic-list-of-posts/)
 
 ## Task
-You are given a basic markup and [the API](https://mate-academy.github.io/fe-students-api/).
+You are given [the API](https://mate-academy.github.io/fe-students-api/).
 
 Implement the app to manage post comments.
-
-> Don't use class components. Use React Hooks instead.
 
 1. Create an `/src/api/posts.ts` and add a method `getUserPosts(userId)` there
 2. Load `posts` and show them using the `PostsList` on page load. (use `useEffect` as a `componentDidMount`)

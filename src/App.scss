@@ -72,3 +72,12 @@ ul {
     border-color: green;
   }
 }
+
+.sticky {
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  right: 0;
+  background-color: #e9e6f2;
+  border-radius: 20px;
+}
