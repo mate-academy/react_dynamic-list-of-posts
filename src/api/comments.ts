@@ -15,7 +15,7 @@ export const addComment = (
   name: string,
   email: string,
   body: string,
-): Promise<Comment> => {
+): Promise<Response> => {
   return fetch(`${BASE_URL}/comments`, {
     method: 'POST',
     headers: {
@@ -27,6 +27,5 @@ export const addComment = (
       email,
       body,
     }),
-  })
-    .then(res => res.json());
+  });
 };

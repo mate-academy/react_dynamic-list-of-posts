@@ -28,23 +28,21 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
     getPostDetails(selectedPostId)
       .then(postFromServer => {
         setPost(postFromServer);
+      })
+      .then(() => {
         updateComments();
         setLoading(false);
       });
   }, [selectedPostId]);
 
-  useEffect(() => {
-    updateComments();
-  }, [postComments]);
-
   const onCommentDelete = (id: number) => {
-    deleteComment(id);
-    updateComments();
+    deleteComment(id)
+      .then(() => updateComments());
   };
 
   const onCommentAdd = (name: string, email: string, body: string) => {
-    addComment(selectedPostId, name, email, body);
-    updateComments();
+    addComment(selectedPostId, name, email, body)
+      .then(() => updateComments());
   };
 
   return loading ? (

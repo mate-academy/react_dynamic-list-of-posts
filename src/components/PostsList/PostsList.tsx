@@ -20,32 +20,36 @@ export const PostsList: React.FC<Props> = (
   <div className="PostsList">
     <h2>Posts:</h2>
 
-    <ul className="PostsList__list">
-      {posts.map(post => (
-        <li className="PostsList__item" key={post.id}>
-          <div>
-            <b>{`[User #${post.userId}]: `}</b>
-            {post.title}
-          </div>
-          {post.id === selectedPostId ? (
-            <button
-              type="button"
-              className="PostsList__button button"
-              onClick={() => setSelectedPostId(null)}
-            >
-              Close
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="PostsList__button button"
-              onClick={() => setSelectedPostId(post.id)}
-            >
-              Open
-            </button>
-          )}
-        </li>
-      ))}
-    </ul>
+    {posts.length === 0
+      ? <h3>No posts from this user yet</h3>
+      : (
+        <ul className="PostsList__list">
+          {posts.map(post => (
+            <li className="PostsList__item" key={post.id}>
+              <div>
+                <b>{`[User #${post.userId}]: `}</b>
+                {post.title}
+              </div>
+              {post.id === selectedPostId ? (
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  onClick={() => setSelectedPostId(null)}
+                >
+                  Close
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  onClick={() => setSelectedPostId(post.id)}
+                >
+                  Open
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
   </div>
 );
