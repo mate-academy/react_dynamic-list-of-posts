@@ -1,3 +1,5 @@
+import { Address } from './Address';
+
 export interface User {
   id: number,
   name: string,
@@ -7,14 +9,5 @@ export interface User {
   website: string,
   createdAt: string,
   updatedAt: string,
-  address: {
-    id: number,
-    userId: number,
-    street: string,
-    suite: string,
-    city: string,
-    zipcode: string,
-    createdAt: string,
-    updatedAt: string
-  }
+  address: Address
 }

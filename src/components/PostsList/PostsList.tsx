@@ -5,18 +5,16 @@ import { SelectedPostId } from '../../types/SelectedPostId';
 import './PostsList.scss';
 
 type Props = {
-  posts: Post[]
-  selectedPostId: SelectedPostId
+  posts: Post[],
+  selectedPostId: SelectedPostId,
   setSelectedPostId: React.Dispatch<React.SetStateAction<SelectedPostId>>
 };
 
-export const PostsList: React.FC<Props> = (
-  {
-    posts,
-    selectedPostId,
-    setSelectedPostId,
-  },
-) => (
+export const PostsList: React.FC<Props> = ({
+  posts,
+  selectedPostId,
+  setSelectedPostId,
+}) => (
   <div className="PostsList">
     <h2>Posts:</h2>
 
@@ -30,23 +28,19 @@ export const PostsList: React.FC<Props> = (
                 <b>{`[User #${post.userId}]: `}</b>
                 {post.title}
               </div>
-              {post.id === selectedPostId ? (
-                <button
-                  type="button"
-                  className="PostsList__button button"
-                  onClick={() => setSelectedPostId(null)}
-                >
-                  Close
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className="PostsList__button button"
-                  onClick={() => setSelectedPostId(post.id)}
-                >
-                  Open
-                </button>
-              )}
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => {
+                  if (post.id === selectedPostId) {
+                    setSelectedPostId(null);
+                  } else {
+                    setSelectedPostId(post.id);
+                  }
+                }}
+              >
+                {post.id === selectedPostId ? 'Close' : 'Open'}
+              </button>
             </li>
           ))}
         </ul>

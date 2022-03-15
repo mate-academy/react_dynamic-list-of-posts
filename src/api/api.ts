@@ -1,6 +1,7 @@
 export const BASE_URL = 'https://mate.academy/students-api';
 
-export const request = (url: string) => {
-  return fetch(url)
-    .then(responce => responce.json());
+export const request = async (url: string) => {
+  const responce = await fetch(url);
+
+  return responce.json();
 };

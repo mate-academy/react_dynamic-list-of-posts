@@ -20,14 +20,18 @@ const App: React.FC = () => {
   const [selectedPostId, setSelectedPostId] = useState<SelectedPostId>(null);
   const [loading, setLoading] = useState(false);
 
+  const fetchAPI = async () => {
+    const allPosts = await getAllPosts();
+    const allUsers = await getAllUsers();
+
+    setPosts(allPosts);
+    setUsers(allUsers);
+    setLoading(false);
+  };
+
   useEffect(() => {
     setLoading(true);
-    getAllPosts()
-      .then(postsFromServer => setPosts(postsFromServer))
-      .then(() => setLoading(false));
-
-    getAllUsers()
-      .then(usersFromServer => setUsers(usersFromServer));
+    fetchAPI();
   }, []);
 
   const onUserChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -63,15 +67,15 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          {loading ? (
-            <Loader />
-          ) : (
-            <PostsList
-              posts={posts}
-              selectedPostId={selectedPostId}
-              setSelectedPostId={setSelectedPostId}
-            />
-          )}
+          {loading
+            ? <Loader />
+            : (
+              <PostsList
+                posts={posts}
+                selectedPostId={selectedPostId}
+                setSelectedPostId={setSelectedPostId}
+              />
+            )}
         </div>
 
         <div className="App__content">

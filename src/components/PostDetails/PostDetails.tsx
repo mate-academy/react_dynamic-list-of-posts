@@ -15,7 +15,7 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   const [post, setPost] = useState<Post>();
   const [postComments, setPostComments] = useState<Comment[]>([]);
-  const [commentsHidden, setCommentsHidden] = useState(true);
+  const [isCommentsHidden, setIsCommentsHidden] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const updateComments = () => {
@@ -61,12 +61,12 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
             <button
               type="button"
               className="button"
-              onClick={() => setCommentsHidden(!commentsHidden)}
+              onClick={() => setIsCommentsHidden(!isCommentsHidden)}
             >
-              {`${commentsHidden ? 'Show' : 'Hide'} ${postComments.length} comments`}
+              {`${isCommentsHidden ? 'Show' : 'Hide'} ${postComments.length} comments`}
             </button>
 
-            {!commentsHidden && (
+            {!isCommentsHidden && (
               <ul className="PostDetails__list">
                 {postComments.map(postComment => (
                   <li key={postComment.id} className="PostDetails__list-item">
