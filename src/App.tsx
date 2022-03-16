@@ -1,41 +1,45 @@
-import React from 'react';
+/* eslint-disable jsx-a11y/label-has-associated-control */
+import React, { useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { UserSelect } from './components/UserSelect/UserSelect';
 
-const App: React.FC = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+export const App: React.FC = () => {
+  const [userId, setUserId] = useState(0);
+  const [selectedPostId, setPostId] = useState(0);
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+  const setSelectePostId = (postId : number) => {
+    if (selectedPostId === postId) {
+      setPostId(0);
+    } else {
+      setPostId(postId);
+    }
+  };
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+  const setSelectedUserId = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedUserId = +event.target.value;
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+    setUserId(selectedUserId);
+  };
 
-export default App;
+  return (
+    <div className="App">
+      <UserSelect selectedUserId={userId} setSelectedUserId={setSelectedUserId} />
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            selectedUserId={userId}
+            setSelectePostId={setSelectePostId}
+            selectedPostId={selectedPostId}
+          />
+        </div>
+
+        <div className="App__content">
+          <PostDetails selectedPostId={selectedPostId} />
+        </div>
+      </main>
+    </div>
+  );
+};

@@ -1,45 +1,63 @@
-import React from 'react';
-import { NewCommentForm } from '../NewCommentForm';
+import React, { useEffect, useState } from 'react';
+import {
+  addComment, deleteComment, getPostComments, getPostDetails,
+} from '../../api/posts';
+import { PostDetailsUi } from './PostDetailsUi';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  selectedPostId: number
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
+  const [postDetails, setPostDedails] = useState({} as Post);
+  const [comments, setComments] = useState<PostComment[]>([]);
+  const [isHidden, setHidden] = useState(false);
+  const [initialize, setInitialize] = useState(false);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const loadData = async () => {
+    if (selectedPostId !== 0) {
+      setInitialize(true);
+      const [postFromServer, commentsFromServer] = await Promise.all([
+        getPostDetails(selectedPostId),
+        getPostComments(selectedPostId),
+      ]);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+      setPostDedails(postFromServer);
+      setComments(commentsFromServer);
+      setInitialize(false);
+    }
+  };
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  useEffect(() => {
+    loadData();
+  }, [selectedPostId]);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+  const handleVisabiliti = () => {
+    setHidden(!isHidden);
+  };
+
+  const handleDelete = async (commentId: number) => {
+    await deleteComment(commentId);
+    loadData();
+  };
+
+  const handleAdd = async (comment: NewComment) => {
+    await addComment(comment);
+
+    loadData();
+  };
+
+  return (
+    <PostDetailsUi
+      isHidden={isHidden}
+      comments={comments}
+      initialize={initialize}
+      postDetails={postDetails}
+      selectedPostId={selectedPostId}
+      handleAdd={handleAdd}
+      handleDelete={handleDelete}
+      handleVisabiliti={handleVisabiliti}
+    />
+  );
+};
