@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { addComment, deleteComment, getPostComments } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
 import { Post } from '../../types/Post';
@@ -18,32 +18,34 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   const [isCommentsHidden, setIsCommentsHidden] = useState(true);
   const [loading, setLoading] = useState(false);
 
+  const fetchPostComments = useCallback(async () => {
+    setPostComments(await getPostComments(selectedPostId));
+  }, [selectedPostId]);
+
   const updateComments = () => {
-    getPostComments(selectedPostId)
-      .then(commentsFromServer => setPostComments(commentsFromServer));
+    fetchPostComments();
   };
+
+  const fetchPostDetails = useCallback(async () => {
+    setPost(await getPostDetails(selectedPostId));
+    updateComments();
+    setLoading(false);
+  }, [selectedPostId]);
 
   useEffect(() => {
     setLoading(true);
-    getPostDetails(selectedPostId)
-      .then(postFromServer => {
-        setPost(postFromServer);
-      })
-      .then(() => {
-        updateComments();
-        setLoading(false);
-      });
+    fetchPostDetails();
   }, [selectedPostId]);
 
-  const onCommentDelete = (id: number) => {
-    deleteComment(id)
-      .then(() => updateComments());
+  const onCommentDelete = async (id: number) => {
+    await deleteComment(id);
+    updateComments();
   };
 
-  const onCommentAdd = (name: string, email: string, body: string) => {
-    addComment(selectedPostId, name, email, body)
-      .then(() => updateComments());
-  };
+  const onCommentAdd = useCallback(async (name: string, email: string, body: string) => {
+    await addComment(selectedPostId, name, email, body);
+    updateComments();
+  }, [selectedPostId]);
 
   return loading ? (
     <Loader />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
@@ -20,27 +20,30 @@ const App: React.FC = () => {
   const [selectedPostId, setSelectedPostId] = useState<SelectedPostId>(null);
   const [loading, setLoading] = useState(false);
 
-  const fetchAPI = async () => {
-    const allPosts = await getAllPosts();
-    const allUsers = await getAllUsers();
-
-    setPosts(allPosts);
-    setUsers(allUsers);
+  const fetchPosts = useCallback(async () => {
+    setPosts(await getAllPosts());
     setLoading(false);
-  };
+  }, []);
+
+  const fetchUsers = useCallback(async () => {
+    setUsers(await getAllUsers());
+  }, []);
+
+  const fetchUserPosts = useCallback(async (userId: number) => {
+    setPosts(await getUserPosts(userId));
+  }, []);
 
   useEffect(() => {
     setLoading(true);
-    fetchAPI();
+    fetchPosts();
+    fetchUsers();
   }, []);
 
   const onUserChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     if (event.target.value) {
-      getUserPosts(+event.target.value)
-        .then(postsFromServer => setPosts(postsFromServer));
+      fetchUserPosts(+event.target.value);
     } else {
-      getAllPosts()
-        .then(postsFromServer => setPosts(postsFromServer));
+      fetchPosts();
     }
   };
 
