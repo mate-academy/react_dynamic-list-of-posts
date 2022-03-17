@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { postComment } from '../../api/comments';
 import './NewCommentForm.scss';
+
+import { Loader } from '../Loader';
 
 type Props = {
   selectedPostId: number,
@@ -11,25 +13,30 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ selectedPostId, fet
   const [isInvalidData, setInvalidData] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
-  const nameRef = React.useRef(document.createElement('input'));
-  const emailRef = React.useRef(document.createElement('input'));
-  const bodyRef = React.useRef(document.createElement('textarea'));
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [body, setBody] = useState('');
 
-  // eslint-disable-next-line no-console
-  console.log('form re');
+  const resetForm = useCallback(() => {
+    setName('');
+    setEmail('');
+    setBody('');
+  }, []);
 
-  const updateComments = async (newComment: CommentToPost) => {
+  const updateComments = useCallback(async (newComment: CommentToPost) => {
     await postComment(newComment);
     await fetchComments();
     setLoading(false);
-  };
+  }, [fetchComments]);
+
+  const removeError = useCallback(() => {
+    if (isInvalidData) {
+      setInvalidData(false);
+    }
+  }, [isInvalidData]);
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    const name = nameRef.current.value;
-    const email = emailRef.current.value;
-    const body = bodyRef.current.value;
 
     if (!name || !email || !body) {
       setInvalidData(true);
@@ -42,11 +49,8 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ selectedPostId, fet
         body,
       };
 
-      nameRef.current.value = '';
-      emailRef.current.value = '';
-      bodyRef.current.value = '';
-
       updateComments(newComment);
+      resetForm();
     }
   };
 
@@ -56,13 +60,12 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ selectedPostId, fet
         <input
           type="text"
           name="name"
-          ref={nameRef}
+          value={name}
           placeholder="Your name"
           className="NewCommentForm__input"
-          onChange={() => {
-            if (isInvalidData) {
-              setInvalidData(false);
-            }
+          onChange={(event) => {
+            removeError();
+            setName(event.target.value);
           }}
         />
       </div>
@@ -71,13 +74,12 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ selectedPostId, fet
         <input
           type="text"
           name="email"
-          ref={emailRef}
+          value={email}
           placeholder="Your email"
           className="NewCommentForm__input"
-          onChange={() => {
-            if (isInvalidData) {
-              setInvalidData(false);
-            }
+          onChange={(event) => {
+            removeError();
+            setEmail(event.target.value);
           }}
         />
       </div>
@@ -85,13 +87,12 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ selectedPostId, fet
       <div className="form-field">
         <textarea
           name="body"
-          ref={bodyRef}
+          value={body}
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          onChange={() => {
-            if (isInvalidData) {
-              setInvalidData(false);
-            }
+          onChange={(event) => {
+            removeError();
+            setBody(event.target.value);
           }}
         />
       </div>
@@ -104,7 +105,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ selectedPostId, fet
       </button>
 
       {isInvalidData && <p>Enter valid data</p>}
-      {isLoading && <p>Loading...</p>}
+      {isLoading && <Loader />}
     </form>
   );
 });

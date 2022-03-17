@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { getPosts, getUserPosts } from './api/posts';
 
 import './App.scss';
 import './styles/general.scss';
 
+import { Loader } from './components/Loader';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
@@ -14,20 +15,17 @@ const App: React.FC = () => {
   const [selectedPostId, setSelectedPostId] = useState(0);
   const [selectedUserId, setSelectedUserId] = useState(0);
 
-  // eslint-disable-next-line no-console
-  console.log('app re');
-
-  const fetchPosts = async () => {
+  const fetchPosts = useCallback(async () => {
     setPostsLoading(true);
     setPosts(await getPosts());
     setPostsLoading(false);
-  };
+  }, []);
 
-  const fetchUserPosts = async () => {
+  const fetchUserPosts = useCallback(async () => {
     setPostsLoading(true);
     setPosts(await getUserPosts(selectedUserId));
     setPostsLoading(false);
-  };
+  }, [selectedUserId]);
 
   useEffect(() => {
     if (selectedUserId === 0) {
@@ -67,7 +65,7 @@ const App: React.FC = () => {
       <main className="App__main">
         <div className="App__sidebar">
           {postsLoading
-            ? <p>Loading posts...</p>
+            ? <Loader />
             : (
               <PostsList
                 posts={posts}

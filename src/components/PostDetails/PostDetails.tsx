@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import './PostDetails.scss';
 
+import { Loader } from '../Loader';
 import { NewCommentForm } from '../NewCommentForm';
 import { getPostDetails } from '../../api/posts';
 import { deletePostComment, getPostComments } from '../../api/comments';
@@ -16,19 +17,16 @@ export const PostDetails: React.FC<Props> = React.memo(({ selectedPostId }) => {
   const [detailsLoading, setDetailsLoading] = useState(true);
   const [commentsVisible, setCommentsVisible] = useState(true);
 
-  // eslint-disable-next-line no-console
-  console.log('post details re');
-
   const fetchComments = useCallback(async () => {
     setComments(await getPostComments(selectedPostId));
     setDetailsLoading(false);
   }, [selectedPostId]);
 
-  const fetchPostDetails = async () => {
+  const fetchPostDetails = useCallback(async () => {
     setDetailsLoading(true);
     setPost(await getPostDetails(selectedPostId));
     fetchComments();
-  };
+  }, [selectedPostId]);
 
   useEffect(() => {
     if (selectedPostId !== 0) {
@@ -41,7 +39,7 @@ export const PostDetails: React.FC<Props> = React.memo(({ selectedPostId }) => {
       <h2>Post details:</h2>
 
       {detailsLoading
-        ? <p>Loading details...</p>
+        ? <Loader />
         : (
           <>
             <section className="PostDetails__post">
