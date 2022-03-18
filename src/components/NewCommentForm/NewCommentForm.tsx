@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { postComment } from '../../api/comments';
+
 import './NewCommentForm.scss';
 
 import { Loader } from '../Loader';
@@ -42,6 +43,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ selectedPostId, fet
       setInvalidData(true);
     } else {
       setLoading(true);
+
       const newComment = {
         postId: selectedPostId,
         name,

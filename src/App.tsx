@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { getUsers } from './api/users';
 import { getPosts, getUserPosts } from './api/posts';
 
 import './App.scss';
@@ -9,14 +10,19 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
 const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [postsLoading, setPostsLoading] = useState(true);
 
   const [selectedPostId, setSelectedPostId] = useState(0);
   const [selectedUserId, setSelectedUserId] = useState(0);
 
-  const fetchPosts = useCallback(async () => {
+  const fetchUsers = useCallback(async () => {
     setPostsLoading(true);
+    setUsers(await getUsers());
+  }, []);
+
+  const fetchPosts = useCallback(async () => {
     setPosts(await getPosts());
     setPostsLoading(false);
   }, []);
@@ -26,6 +32,10 @@ const App: React.FC = () => {
     setPosts(await getUserPosts(selectedUserId));
     setPostsLoading(false);
   }, [selectedUserId]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   useEffect(() => {
     if (selectedUserId === 0) {
@@ -48,16 +58,9 @@ const App: React.FC = () => {
             onChange={(event) => setSelectedUserId(+event.target.value)}
           >
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {users.map(user => (
+              <option value={user.id}>{user.name}</option>
+            ))}
           </select>
         </label>
       </header>
