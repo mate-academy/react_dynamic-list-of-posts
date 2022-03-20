@@ -21,7 +21,8 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchPosts = useCallback(async () => {
-    setPosts(await getAllPosts());
+    const postsFromServer = await getAllPosts();
+    setPosts(postsFromServer);
     setIsLoading(false);
   }, []);
 

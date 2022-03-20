@@ -40,7 +40,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   const onCommentDelete = async (id: number) => {
     setIsLoading(true);
     await deleteComment(id);
-    await setIsLoading(false);
+    setIsLoading(false);
     updateComments();
   };
 
