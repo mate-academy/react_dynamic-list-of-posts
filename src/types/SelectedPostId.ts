@@ -1,1 +1,1 @@
-export type SelectedPostId = number | null;
+export type SelectedPostId = number;
