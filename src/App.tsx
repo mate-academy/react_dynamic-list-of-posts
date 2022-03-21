@@ -17,21 +17,31 @@ import './styles/general.scss';
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [selectedPostId, setSelectedPostId] = useState<SelectedPostId>(null);
+  const [selectedPostId, setSelectedPostId] = useState<SelectedPostId>(0);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchPosts = useCallback(async () => {
-    const postsFromServer = await getAllPosts();
-    setPosts(postsFromServer);
-    setIsLoading(false);
+    try {
+      const postsFromServer = await getAllPosts();
+
+      setPosts(postsFromServer);
+      setIsLoading(false);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
   }, []);
 
   const fetchUsers = useCallback(async () => {
-    setUsers(await getAllUsers());
+    const fetchingUsers = await getAllUsers();
+
+    setUsers(fetchingUsers);
   }, []);
 
   const fetchUserPosts = useCallback(async (userId: number) => {
-    setPosts(await getUserPosts(userId));
+    const fetchingUserPosts = await getUserPosts(userId);
+
+    setPosts(fetchingUserPosts);
   }, []);
 
   useEffect(() => {

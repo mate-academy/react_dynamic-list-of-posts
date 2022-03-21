@@ -2,7 +2,7 @@ import { BASE_URL, request } from './api';
 import { Comment } from '../types/Comment';
 
 export const getPostComments = async (postId: number): Promise<Comment[]> => {
-  return await request(`${BASE_URL}/comments?postId=${postId}`);
+  return request(`${BASE_URL}/comments?postId=${postId}`);
 };
 
 export const deleteComment = (commentId: number): Promise<Response> => {

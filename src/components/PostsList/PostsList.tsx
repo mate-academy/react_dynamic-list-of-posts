@@ -32,7 +32,7 @@ export const PostsList: React.FC<Props> = ({
                 className="PostsList__button button"
                 onClick={() => {
                   if (post.id === selectedPostId) {
-                    setSelectedPostId(null);
+                    setSelectedPostId(0);
                   } else {
                     setSelectedPostId(post.id);
                   }
