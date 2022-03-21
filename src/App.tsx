@@ -19,6 +19,7 @@ const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedPostId, setSelectedPostId] = useState<SelectedPostId>(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const fetchPosts = useCallback(async () => {
     try {
@@ -27,8 +28,7 @@ const App: React.FC = () => {
       setPosts(postsFromServer);
       setIsLoading(false);
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
+      setIsError(true);
     }
   }, []);
 
@@ -81,6 +81,7 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
+          {isError && <h1>ERROR</h1>}
           {isLoading
             ? <Loader />
             : (
@@ -93,7 +94,7 @@ const App: React.FC = () => {
         </div>
 
         <div className="App__content">
-          {selectedPostId !== null && <PostDetails selectedPostId={selectedPostId} />}
+          {selectedPostId !== 0 && <PostDetails selectedPostId={selectedPostId} />}
         </div>
       </main>
     </div>

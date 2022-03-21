@@ -31,14 +31,9 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   const fetchPostDetails = useCallback(async () => {
     const fetchingPostDetails = await getPostDetails(selectedPostId);
 
-    if (selectedPostId === 0) {
-      setPost(undefined);
-      setIsLoading(false);
-    } else {
-      setPost(fetchingPostDetails);
-      updateComments();
-      setIsLoading(false);
-    }
+    setPost(fetchingPostDetails);
+    updateComments();
+    setIsLoading(false);
   }, [selectedPostId]);
 
   useEffect(() => {
