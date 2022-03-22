@@ -21,10 +21,10 @@ export const PostDetails: React.FC<Props> = (props) => {
 
   useEffect(() => {
     getPostDetails(selectedPostId)
-      .then(response => setPost(response));
+      .then(setPost);
 
     getPostComments(selectedPostId)
-      .then(response => setComments(response));
+      .then(setComments);
   }, [selectedPostId]);
 
   const deleteCommentServer = async (commentId: number) => {

@@ -39,19 +39,21 @@ export const NewCommentForm: React.FC<Props> = (props) => {
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={name}
+          value={name.trimLeft()}
           onChange={(event) => setName(event.currentTarget.value)}
+          required
         />
       </div>
 
       <div className="form-field">
         <input
-          type="text"
+          type="email"
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={email}
+          value={email.trimLeft()}
           onChange={(event) => setEmail(event.currentTarget.value)}
+          required
         />
       </div>
 
@@ -60,8 +62,9 @@ export const NewCommentForm: React.FC<Props> = (props) => {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={body}
+          value={body.trimLeft()}
           onChange={(event) => setBody(event.currentTarget.value)}
+          required
         />
       </div>
 
