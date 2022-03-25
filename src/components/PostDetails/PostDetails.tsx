@@ -1,45 +1,142 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { getComments, removeComment } from '../../api/comments';
+import { selectedPostId } from '../../api/posts';
+import { Loader } from '../Loader';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  postId: number;
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = ({ postId }) => {
+  const [isHideComment, setHideComment] = useState(true);
+  const [comments, setComments] = useState<CommentPost[]>([]);
+  const [post, setPost] = useState<Post | null>(null);
+  const [isLoader, setLoader] = useState(false);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const loadComments = useCallback(async (id: number) => {
+    const commentsFromServer = await getComments(id);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+    setComments(commentsFromServer);
+  }, []);
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  const loadPostDetails = async (id: number) => {
+    setLoader(true);
+    const postFromServer = await selectedPostId(id);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+    setPost(postFromServer);
+    setLoader(false);
+  };
+
+  useEffect(() => {
+    if (postId) {
+      loadPostDetails(postId);
+    }
+  },
+  [postId]);
+
+  useEffect(() => {
+    if (post) {
+      loadComments(postId);
+    }
+  },
+  [post]);
+
+  const hendlerDeleteComment = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    await removeComment(+event.currentTarget.value);
+    if (post) {
+      loadComments(postId);
+    }
+  };
+
+  const hendlerHideComment = () => {
+    setHideComment((isHide) => (!isHide));
+  };
+
+  if (isLoader) {
+    return (
+      <Loader />
+    );
+  }
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+      {
+        post
+          ? (
+            <>
+              <section className="PostDetails__post">
+                <p>
+                  {post.title}
+                </p>
+              </section>
+
+              {
+                !!comments.length
+                && (
+                  <section className="PostDetails__comments">
+                    <button
+                      type="button"
+                      className="button"
+                      onClick={hendlerHideComment}
+                    >
+                      {
+                        isHideComment
+                          ? (<>Hide </>)
+                          : (<>Show </>)
+                      }
+                      {comments.length}
+                      <> comments</>
+                    </button>
+                    {
+                      isHideComment
+                      && (
+                        <ul className="PostDetails__list">
+                          {
+                            comments.map(comment => (
+                              <li
+                                className="PostDetails__list-item"
+                                key={comment.id}
+                              >
+                                <button
+                                  type="button"
+                                  className="PostDetails__remove-button button"
+                                  value={comment.id}
+                                  onClick={hendlerDeleteComment}
+                                >
+                                  X
+                                </button>
+                                <p>
+                                  {comment.body}
+                                </p>
+                              </li>
+                            ))
+                          }
+                        </ul>
+                      )
+                    }
+                  </section>
+                )
+              }
+
+              <section>
+                <div className="PostDetails__form-wrapper">
+                  <NewCommentForm
+                    postId={post.id}
+                    updateComments={loadComments}
+                  />
+                </div>
+              </section>
+            </>
+          )
+          : (
+            <span>
+              Can not find post details
+            </span>
+          )
+      }
+    </div>
+  );
+};
