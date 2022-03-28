@@ -1,37 +1,64 @@
 import React from 'react';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+interface Props {
+  posts: Post[]
+  postId: number,
+  setPostId: (id: number) => void,
+}
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = ({
+  posts,
+  postId,
+  setPostId,
+}) => {
+  const handleButtonOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setPostId(+event.currentTarget.name);
+  };
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  const handleButtonClose = () => {
+    setPostId(0);
+  };
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+      <ul className="PostsList__list">
+        {posts.map(post => (
+          <li
+            key={post.id}
+            className="PostsList__item"
+          >
+            <div>
+              <b>
+                User $
+                {post.userId}
+              </b>
+              {post.title}
+            </div>
+            {postId !== post.id
+              ? (
+                <button
+                  name={`${post.id}`}
+                  onClick={handleButtonOpen}
+                  type="button"
+                  className="PostsList__button button"
+                >
+                  Open
+                </button>
+              ) : (
+                <button
+                  name={`${post.id}`}
+                  onClick={handleButtonClose}
+                  type="button"
+                  className="PostsList__button button"
+                >
+                  Close
+                </button>
+              )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
