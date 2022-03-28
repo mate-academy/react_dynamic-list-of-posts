@@ -17,6 +17,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, commentId, setComments
 
   const handlerSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+
     addComment({
       postId,
       name,
@@ -30,7 +31,10 @@ export const NewCommentForm: React.FC<Props> = ({ postId, commentId, setComments
   };
 
   return (
-    <form className="NewCommentForm">
+    <form
+      className="NewCommentForm"
+      onSubmit={handlerSubmit}
+    >
       <div className="form-field">
         <input
           type="text"
@@ -69,7 +73,6 @@ export const NewCommentForm: React.FC<Props> = ({ postId, commentId, setComments
       <button
         type="submit"
         className={classNames('NewCommentForm__submit-button', 'button')}
-        onClick={() => !(name && email && text) && handlerSubmit}
       >
         Add a comment
       </button>
