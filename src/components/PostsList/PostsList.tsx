@@ -1,18 +1,18 @@
 /* eslint-disable no-console */
-import React, { useState, useEffect } from 'react';
-import { getPosts } from '../../api/posts';
+import React from 'react';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [selectedPost, setSelectedPost] = useState(false);
+type Props = {
+  posts: Post[],
+  selectedPostId: number,
+  setSelectedPostId: (id: number) => void,
+};
 
-  useEffect(() => {
-    getPosts()
-      .then(response => setPosts(response));
-  }, []);
-  console.log(posts); // NEED TO DELETE
-
+export const PostsList: React.FC<Props> = ({
+  posts,
+  selectedPostId,
+  setSelectedPostId,
+}) => {
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
@@ -31,21 +31,21 @@ export const PostsList: React.FC = () => {
               </b>
               {post.title}
             </div>
-            {selectedPost ? (
+            {selectedPostId === 0 ? (
               <button
                 type="button"
                 className="PostsList__button button"
-                onClick={() => setSelectedPost(!selectedPost)}
+                onClick={() => setSelectedPostId(post.id)}
               >
-                Close
+                Open
               </button>
             ) : (
               <button
                 type="button"
                 className="PostsList__button button"
-                onClick={() => setSelectedPost(!selectedPost)}
+                onClick={() => setSelectedPostId(0)}
               >
-                Open
+                Close
               </button>
             )}
           </li>

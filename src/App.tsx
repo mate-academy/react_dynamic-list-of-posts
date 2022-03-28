@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
+import { getPosts } from './api/posts';
 import { getUsers } from './api/users';
 import './App.scss';
 import './styles/general.scss';
@@ -9,6 +10,14 @@ import { PostDetails } from './components/PostDetails';
 const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<number>(0);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedPostId, setSelectedPostId] = useState(0);
+
+  useEffect(() => {
+    getPosts()
+      .then(response => setPosts(response));
+  }, []);
+  console.log(posts); // NEED TO DELETE
 
   useEffect(() => {
     getUsers()
@@ -20,6 +29,7 @@ const App: React.FC = () => {
   };
 
   console.log(selectedUserId); // NEED TO DELETE
+  console.log(selectedPostId); // NEED TO DELETE
 
   return (
     <div className="App">
@@ -47,7 +57,11 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList />
+          <PostsList
+            posts={posts}
+            selectedPostId={selectedPostId}
+            setSelectedPostId={setSelectedPostId}
+          />
         </div>
 
         <div className="App__content">
