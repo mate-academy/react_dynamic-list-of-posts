@@ -5,7 +5,12 @@ import './PostDetails.scss';
 import {
   PostDetailsType, UserPost, PostCommentType,
 } from '../../react-app-env';
-import { getPostDetails, getPostComments, sendData } from '../../api/posts';
+import {
+  getPostDetails,
+  getPostComments,
+  sendData,
+  deleteData,
+} from '../../api/posts';
 
 export const PostDetails: React.FC<PostDetailsType> = ({ selectedPostId }) => {
   const [postDetails, setPostDetails] = useState<UserPost | undefined>();
@@ -33,6 +38,8 @@ export const PostDetails: React.FC<PostDetailsType> = ({ selectedPostId }) => {
   const deletePostComment = (comment: React.MouseEvent<HTMLButtonElement>) => {
     const targetCommentId = comment.currentTarget.parentElement?.dataset.id;
     const newPostComments = postComments.filter((item) => `${item.id}` !== targetCommentId);
+
+    deleteData(targetCommentId);
 
     setPostComments([...newPostComments]);
   };

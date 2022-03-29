@@ -22,7 +22,7 @@ export const sendData = async (newCommient: string, postId: number) => {
   fetch(`${API_SERVER}/comments?postId=${postId}`, requestOptions);
 };
 
-export const deleteData = async (postId: number) => {
+export const deleteData = async (commentId: string | undefined) => {
   const requestOptions = {
     method: 'DELETE',
     headers: {
@@ -30,7 +30,7 @@ export const deleteData = async (postId: number) => {
     },
   };
 
-  fetch(`${API_SERVER}/comments?postId=${postId}`, requestOptions);
+  fetch(`${API_SERVER}/comments/${commentId}`, requestOptions);
 };
 
 export const getUserPost = (userId: number) => {
