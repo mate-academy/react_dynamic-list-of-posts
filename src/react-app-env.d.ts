@@ -18,10 +18,10 @@ export type PostDetailsType = {
 };
 
 export type PostCommentType = {
-  id: number,
-  createdAt: string,
-  updatedAt: string,
-  postId: 79,
+  id?: number,
+  createdAt?: string,
+  updatedAt?: string,
+  postId: number,
   name: string,
   email: string,
   body: string,

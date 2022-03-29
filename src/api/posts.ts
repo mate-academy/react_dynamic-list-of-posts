@@ -22,6 +22,17 @@ export const sendData = async (newCommient: string, postId: number) => {
   fetch(`${API_SERVER}/comments?postId=${postId}`, requestOptions);
 };
 
+export const deleteData = async (postId: number) => {
+  const requestOptions = {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json;charsrt=utf-8',
+    },
+  };
+
+  fetch(`${API_SERVER}/comments?postId=${postId}`, requestOptions);
+};
+
 export const getUserPost = (userId: number) => {
   const endPoint = userId === 0
     ? '/posts'

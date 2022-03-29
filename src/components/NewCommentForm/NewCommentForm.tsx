@@ -1,9 +1,15 @@
 /* eslint-disable no-console */
 import React, { useState } from 'react';
 import './NewCommentForm.scss';
-import { sendData } from '../../api/posts';
 
-export const NewCommentForm: React.FC<{ postId: number }> = ({ postId }) => {
+import { PostCommentType } from '../../react-app-env';
+
+type NewCommentFormType = {
+  postId: number,
+  postComments: (newComment: PostCommentType) => void,
+};
+
+export const NewCommentForm: React.FC<NewCommentFormType> = ({ postId, postComments }) => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userComment, setUserComment] = useState('');
@@ -11,17 +17,15 @@ export const NewCommentForm: React.FC<{ postId: number }> = ({ postId }) => {
   const addNewComment = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    const newCommient = {
+    const newComment = {
+      id: +`${postId}${Date.toString}`,
       postId,
       name: userName,
       email: userEmail,
       body: userComment,
     };
 
-    sendData(JSON.stringify(newCommient), postId)
-      .catch((error) => {
-        throw new Error(error);
-      });
+    postComments(newComment);
 
     setUserName('');
     setUserEmail('');

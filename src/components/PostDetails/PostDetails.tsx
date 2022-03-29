@@ -1,8 +1,11 @@
+/* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
-import { PostDetailsType, UserPost, PostCommentType } from '../../react-app-env';
-import { getPostDetails, getPostComments } from '../../api/posts';
+import {
+  PostDetailsType, UserPost, PostCommentType,
+} from '../../react-app-env';
+import { getPostDetails, getPostComments, sendData } from '../../api/posts';
 
 export const PostDetails: React.FC<PostDetailsType> = ({ selectedPostId }) => {
   const [postDetails, setPostDetails] = useState<UserPost | undefined>();
@@ -17,6 +20,22 @@ export const PostDetails: React.FC<PostDetailsType> = ({ selectedPostId }) => {
         .then(respComment => setPostComments(respComment));
     }
   }, [selectedPostId]);
+
+  const addPostComments = (newComment: PostCommentType) => {
+    setPostComments([...postComments, newComment]);
+
+    sendData(JSON.stringify(newComment), selectedPostId)
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+
+  const deletePostComment = (comment: React.MouseEvent<HTMLButtonElement>) => {
+    const targetCommentId = comment.currentTarget.parentElement?.dataset.id;
+    const newPostComments = postComments.filter((item) => `${item.id}` !== targetCommentId);
+
+    setPostComments([...newPostComments]);
+  };
 
   return (
     <div className="PostDetails">
@@ -41,10 +60,11 @@ export const PostDetails: React.FC<PostDetailsType> = ({ selectedPostId }) => {
           : (<button type="button" className="button" disabled>No comments</button>)}
         <ul className="PostDetails__list">
           {isDisplayComment && postComments.map((comment) => (
-            <li key={comment.id} className="PostDetails__list-item">
+            <li key={comment.id} data-id={comment.id} className="PostDetails__list-item">
               <button
                 type="button"
                 className="PostDetails__remove-button button"
+                onClick={(event) => deletePostComment(event)}
               >
                 X
               </button>
@@ -56,7 +76,7 @@ export const PostDetails: React.FC<PostDetailsType> = ({ selectedPostId }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm postId={selectedPostId} />
+          <NewCommentForm postId={selectedPostId} postComments={addPostComments} />
         </div>
       </section>
     </div>
