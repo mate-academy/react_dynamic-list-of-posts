@@ -5,3 +5,8 @@ export const getPosts = async () => {
 
   return response.json();
 };
+
+export const getUserPosts = (userId: number) => {
+  return fetch(`${BASE_URL}/posts?userId=${userId}`)
+    .then(response => response.json());
+};

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
-import { getPosts } from './api/posts';
+import { getPosts, getUserPosts } from './api/posts';
 import { getUsers } from './api/users';
 import './App.scss';
 import './styles/general.scss';
@@ -12,12 +12,19 @@ const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState<number>(0);
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPostId, setSelectedPostId] = useState(0);
+  // const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    getPosts()
-      .then(response => setPosts(response));
-  }, []);
-  console.log(posts); // NEED TO DELETE
+    if (selectedUserId === 0) {
+      getPosts()
+        .then(response => {
+          setPosts(response);
+        });
+    } else {
+      getUserPosts(selectedUserId)
+        .then((postFromServer) => setPosts(postFromServer));
+    }
+  }, [selectedUserId]);
 
   useEffect(() => {
     getUsers()
@@ -28,8 +35,7 @@ const App: React.FC = () => {
     setSelectedUserId(+event.target.value);
   };
 
-  console.log(selectedUserId); // NEED TO DELETE
-  console.log(selectedPostId); // NEED TO DELETE
+  // console.log(selectedUserId); // NEED TO DELETE
 
   return (
     <div className="App">
