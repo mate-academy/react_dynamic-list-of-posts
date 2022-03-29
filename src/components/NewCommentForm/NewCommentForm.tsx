@@ -1,68 +1,76 @@
 import React, { useState } from 'react';
+import { postComment } from '../../api/comments';
+
 import './NewCommentForm.scss';
-import { BASE_URL } from '../../api/api';
 
-interface Props {
+import { Loader } from '../Loader';
+
+type Props = {
   postId: number,
-  updateComent: () => void;
-}
+  fetchComments: () => void,
+};
 
-export const NewCommentForm: React.FC<Props> = ({ postId, updateComent }) => {
-  const [newCommentName, setNewComment] = useState('');
+export const NewCommentForm: React.FC<Props> = React.memo(({ postId, fetchComments }) => {
+  const [newCommentName, setNewCommentName] = useState('');
   const [newCommentEmail, setNewCommentEmail] = useState('');
   const [newCommentBody, setNewCommentBody] = useState('');
+  const [isInputFill, setIsInputFill] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+
+  const removeFillError = () => {
+    if (isInputFill) {
+      setIsInputFill(false);
+    }
+  };
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewComment(event.target.value);
+    setNewCommentName(event.target.value);
+    removeFillError();
   };
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewCommentEmail(event.target.value);
+    removeFillError();
   };
 
   const handleBodyChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewCommentBody(event.target.value);
+    removeFillError();
   };
 
-  const addComment = async () => {
-    const data = {
-      postId,
-      name: newCommentName,
-      email: newCommentEmail,
-      body: newCommentBody,
-    };
-
-    const URL = `${BASE_URL}/comments`;
-
-    const response = await fetch(URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-
-      body: JSON.stringify(data),
-    });
-
-    return response.json();
+  const updateComments = async (newComment: PostComment) => {
+    await postComment(newComment);
+    await fetchComments();
+    setLoading(false);
   };
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await addComment();
-    setNewComment('');
-    setNewCommentEmail('');
-    setNewCommentBody('');
-    updateComent();
+
+    if (!newCommentName || !newCommentEmail || !newCommentBody) {
+      setIsInputFill(true);
+    } else {
+      setLoading(true);
+
+      const newComment = {
+        postId,
+        name: newCommentName,
+        email: newCommentEmail,
+        body: newCommentBody,
+      };
+
+      updateComments(newComment);
+      setNewCommentName('');
+      setNewCommentEmail('');
+      setNewCommentBody('');
+    }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="NewCommentForm"
-    >
+    <form className="NewCommentForm" onSubmit={handleSubmit}>
       <div className="form-field">
         <input
-          value={`${newCommentName}`}
+          value={newCommentName}
           type="text"
           name="name"
           placeholder="Your name"
@@ -73,7 +81,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComent }) => {
 
       <div className="form-field">
         <input
-          value={`${newCommentEmail}`}
+          value={newCommentEmail}
           type="text"
           name="email"
           placeholder="Your email"
@@ -84,7 +92,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComent }) => {
 
       <div className="form-field">
         <textarea
-          value={`${newCommentBody}`}
+          value={newCommentBody}
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
@@ -98,6 +106,8 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComent }) => {
       >
         Add a comment
       </button>
+      {isLoading && <Loader />}
+      {isInputFill && <h3>Fill all fields</h3>}
     </form>
   );
-};
+});

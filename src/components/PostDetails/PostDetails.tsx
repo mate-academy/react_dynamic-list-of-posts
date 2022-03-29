@@ -1,104 +1,96 @@
-import React, { useState, useEffect } from 'react';
-import { NewCommentForm } from '../NewCommentForm';
+import React, { useEffect, useState } from 'react';
 import './PostDetails.scss';
-import { getPostDetails } from '../../api/posts';
-import { getPostComments } from '../../api/comments';
-import { BASE_URL } from '../../api/api';
 
-interface Props {
+import { Loader } from '../Loader';
+import { NewCommentForm } from '../NewCommentForm';
+import { getPostDetails } from '../../api/posts';
+import { removePostComment, getPostComments } from '../../api/comments';
+
+type Props = {
   postId: number,
-}
+};
 
 export const PostDetails: React.FC<Props> = ({ postId }) => {
-  const [postDetails, setPostDetails] = useState<PostComment>();
-  const [postComments, setpostComments] = useState<PostComment[]>([]);
-  const [isHidden, setHidden] = useState(false);
+  const [postDetails, setPostDetails] = useState<Post>();
+  const [postComments, setpPostComments] = useState<Comment[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isHidden, setHidden] = useState(true);
 
-  const getDetails = async () => {
-    const details = await getPostDetails(postId);
+  const fetchComments = async () => {
+    setpPostComments(await getPostComments(postId));
+    setIsLoading(false);
+  };
 
-    setPostDetails(details);
+  const fetchPostDetails = async () => {
+    setIsLoading(true);
+    setPostDetails(await getPostDetails(postId));
+    fetchComments();
   };
 
   useEffect(() => {
-    getDetails();
+    if (postId !== 0) {
+      fetchPostDetails();
+    }
   }, [postId]);
-
-  const getComments = async () => {
-    const comments = await getPostComments(postId);
-
-    setpostComments(comments);
-  };
-
-  useEffect(() => {
-    getComments();
-  }, [postId]);
-
-  const handleHideButton = () => {
-    setHidden(!isHidden);
-  };
-
-  const deleteComment = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    const URL = `${BASE_URL}/comments/${+event.currentTarget.name}`;
-    const response = await fetch(URL, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    getComments();
-
-    return response.json();
-  };
 
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
 
-      <section className="PostDetails__post">
-        <p>{postDetails?.body}</p>
-      </section>
+      {isLoading
+        ? <Loader />
+        : (
+          <>
+            <section className="PostDetails__post">
+              <p>{postDetails?.title}</p>
+            </section>
 
-      <section className="PostDetails__comments">
-        <button
-          name={`${postDetails?.id}`}
-          type="button"
-          className="button"
-          onClick={handleHideButton}
-        >
-          {isHidden ? 'Show' : 'Hide'}
-        </button>
-        {!isHidden && (
-          <ul className="PostDetails__list">
-            {postComments.map(comment => (
-              <li
-                key={comment.id}
-                className="PostDetails__list-item"
-              >
-                <button
-                  name={`${comment.id}`}
-                  type="button"
-                  className="PostDetails__remove-button button"
-                  onClick={deleteComment}
-                >
-                  X
-                </button>
-                <p>{comment.body}</p>
-              </li>
-            ))}
-          </ul>
+            <section className="PostDetails__comments">
+              {postComments.length === 0
+                ? <p>No comments</p>
+                : (
+                  <>
+                    <button
+                      type="button"
+                      className="button"
+                      onClick={() => setHidden(!isHidden)}
+                    >
+                      {`${isHidden ? 'Hide' : 'Show'} ${postComments.length} comments`}
+                    </button>
+
+                    {isHidden && (
+                      <ul className="PostDetails__list">
+                        {postComments.map(comment => (
+                          <li className="PostDetails__list-item" key={comment.id}>
+                            <button
+                              type="button"
+                              className="PostDetails__remove-button button"
+                              onClick={() => {
+                                removePostComment(comment.id);
+                                setpPostComments(postComments.filter(c => c.id !== comment.id));
+                              }}
+                            >
+                              X
+                            </button>
+                            <p>{comment.body}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </>
+                )}
+            </section>
+
+            <section>
+              <div className="PostDetails__form-wrapper">
+                <NewCommentForm
+                  postId={postId}
+                  fetchComments={fetchComments}
+                />
+              </div>
+            </section>
+          </>
         )}
-      </section>
-
-      <section>
-        <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            postId={postId}
-            updateComent={getComments}
-          />
-        </div>
-      </section>
     </div>
   );
 };
