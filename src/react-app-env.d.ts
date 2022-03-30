@@ -5,8 +5,6 @@ interface Post {
   userId: number,
   title: string,
   body: string,
-  createdAt: Date,
-  updatedAt: Date,
 }
 
 interface User {
@@ -24,6 +22,4 @@ interface Comment {
   name: string,
   email: string,
   body: string,
-  createdAt: Date,
-  updatedAt: Date,
 }

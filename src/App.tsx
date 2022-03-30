@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import './App.scss';
-import './styles/general.scss';
+
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelect } from './components/UserSelect/UserSelect';
+import { Loader } from './components/Loader';
+
 import { getAllPosts, getUserPosts } from './api/posts';
 import { getAllUsers } from './api/users';
+
+import './App.scss';
+import './styles/general.scss';
 
 const App: React.FC = () => {
   const [selectedPostId, setSelectedPostId] = useState<number>(0);
   const [selectedUserId, setSelectedUserId] = useState<number>(0);
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [isPostsLoaded, setIsPostsLoaded] = useState(false);
 
   const fetchAllUsers = async () => {
     const recievedUsers = await getAllUsers();
@@ -26,12 +31,14 @@ const App: React.FC = () => {
   const fetchAllPosts = async () => {
     const recievedPosts = await getAllPosts();
 
+    setIsPostsLoaded(true);
     setPosts(recievedPosts);
   };
 
   const fetchUserPosts = async () => {
     const recievedPosts = await getUserPosts(selectedUserId);
 
+    setIsPostsLoaded(true);
     setPosts(recievedPosts);
   };
 
@@ -54,15 +61,21 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList
-            posts={posts}
-            postId={selectedPostId}
-            setPostId={setSelectedPostId}
-          />
+          {isPostsLoaded ? (
+            <PostsList
+              posts={posts}
+              postId={selectedPostId}
+              setPostId={setSelectedPostId}
+            />
+          ) : (
+            <Loader />
+          )}
         </div>
 
         <div className="App__content">
-          <PostDetails postId={selectedPostId} />
+          {selectedPostId !== 0 && (
+            <PostDetails postId={selectedPostId} />
+          )}
         </div>
       </main>
     </div>
