@@ -1,6 +1,11 @@
 /* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
-import { getPosts, getUserPosts } from './api/posts';
+import {
+  getPosts,
+  getUserPosts,
+  getPostDetails,
+  getPostComments,
+} from './api/posts';
 import { getUsers } from './api/users';
 import './App.scss';
 import './styles/general.scss';
@@ -12,6 +17,8 @@ const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState<number>(0);
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPostId, setSelectedPostId] = useState(0);
+  const [postDetails, setgetPostDetails] = useState<Post | null>(null);
+  const [postsComments, setPostsComments] = useState<CommentInfo[]>([]);
   // const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -24,12 +31,28 @@ const App: React.FC = () => {
       getUserPosts(selectedUserId)
         .then((postFromServer) => setPosts(postFromServer));
     }
+
+    setSelectedPostId(0);
   }, [selectedUserId]);
 
   useEffect(() => {
     getUsers()
       .then(response => setUsers(response));
   }, []);
+
+  useEffect(() => {
+    if (selectedPostId !== 0) {
+      getPostDetails(selectedPostId)
+        .then(response => setgetPostDetails(response));
+    } else {
+      setgetPostDetails(null);
+    }
+
+    getPostComments(selectedPostId)
+      .then(response => setPostsComments(response));
+
+    // console.log(postDetails); // NEED TO DELETE
+  }, [selectedPostId]);
 
   const onUserChoice = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedUserId(+event.target.value);
@@ -42,7 +65,6 @@ const App: React.FC = () => {
       <header className="App__header">
         <label htmlFor="temp-id">
           Select a user: &nbsp;
-
           <select
             className="App__user-selector"
             id="temp-id"
@@ -71,7 +93,15 @@ const App: React.FC = () => {
         </div>
 
         <div className="App__content">
-          <PostDetails />
+
+          {postDetails && (
+            <PostDetails
+              postDetails={postDetails}
+              postsComments={postsComments}
+              setPostsComments={setPostsComments}
+            />
+          )}
+
         </div>
       </main>
     </div>

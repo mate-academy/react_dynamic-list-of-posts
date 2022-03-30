@@ -7,7 +7,7 @@ interface Post {
   body: string;
 }
 
-interface Comment {
+interface CommentInfo {
   id: number;
   postId: number;
   name: string;

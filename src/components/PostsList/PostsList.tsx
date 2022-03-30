@@ -13,6 +13,14 @@ export const PostsList: React.FC<Props> = ({
   selectedPostId,
   setSelectedPostId,
 }) => {
+  const getSelectedPost = (id: number) => {
+    if (selectedPostId !== 0 && selectedPostId !== id) {
+      setSelectedPostId(0);
+    }
+
+    setSelectedPostId(id);
+  };
+
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
@@ -31,15 +39,7 @@ export const PostsList: React.FC<Props> = ({
               </b>
               {post.title}
             </div>
-            {selectedPostId === 0 ? (
-              <button
-                type="button"
-                className="PostsList__button button"
-                onClick={() => setSelectedPostId(post.id)}
-              >
-                Open
-              </button>
-            ) : (
+            {selectedPostId === post.id ? (
               <button
                 type="button"
                 className="PostsList__button button"
@@ -47,7 +47,16 @@ export const PostsList: React.FC<Props> = ({
               >
                 Close
               </button>
+            ) : (
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => getSelectedPost(post.id)}
+              >
+                Open
+              </button>
             )}
+            {/* {selectedPostId === post.id && } */}
           </li>
         ))}
       </ul>
