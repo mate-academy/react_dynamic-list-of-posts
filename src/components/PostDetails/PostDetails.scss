@@ -1,4 +1,6 @@
 .PostDetails {
+  position: sticky;
+  top: 20px;
   &__post {
     padding: 10px 0 15px;
   }
@@ -9,6 +11,10 @@
 
   &__list {
     list-style: none;
+
+    &--hide {
+      display: none;
+    }
   }
 
   &__list-item {
