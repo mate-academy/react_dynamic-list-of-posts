@@ -15,7 +15,6 @@ export const PostsList: React.FC<PostListType> = ({
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
-
       <ul className="PostsList__list">
         {postsFromServer.map(post => (
           <PostItem
@@ -25,7 +24,6 @@ export const PostsList: React.FC<PostListType> = ({
             setSelectedPostId={setSelectedPostId}
           />
         ))}
-
       </ul>
     </div>
   );
