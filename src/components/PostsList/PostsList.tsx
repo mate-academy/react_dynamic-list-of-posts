@@ -56,7 +56,6 @@ export const PostsList: React.FC<Props> = ({
                 Open
               </button>
             )}
-            {/* {selectedPostId === post.id && } */}
           </li>
         ))}
       </ul>

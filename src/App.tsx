@@ -19,7 +19,6 @@ const App: React.FC = () => {
   const [selectedPostId, setSelectedPostId] = useState(0);
   const [postDetails, setgetPostDetails] = useState<Post | null>(null);
   const [postsComments, setPostsComments] = useState<CommentInfo[]>([]);
-  // const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (selectedUserId === 0) {
@@ -57,8 +56,6 @@ const App: React.FC = () => {
   const onUserChoice = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedUserId(+event.target.value);
   };
-
-  // console.log(selectedUserId); // NEED TO DELETE
 
   return (
     <div className="App">
