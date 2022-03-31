@@ -22,7 +22,7 @@ export const PostDetails: React.FC<Props> = ({
   };
 
   const deleteCommentServer = async (commentId: number) => {
-    deleteComment(commentId);
+    await deleteComment(commentId);
     setPostsComments(postsComments.filter(comment => comment.id !== commentId));
   };
 
@@ -38,15 +38,27 @@ export const PostDetails: React.FC<Props> = ({
 
       {postDetails ? (
         <section className="PostDetails__comments">
-          <button
-            type="button"
-            className="button"
-            onClick={() => setVisibleComments(!visibleComments)}
-          >
-            Hide&nbsp;
-            {postsComments.length}
-            &nbsp;comments
-          </button>
+          {visibleComments ? (
+            <button
+              type="button"
+              className="button"
+              onClick={() => setVisibleComments(!visibleComments)}
+            >
+              Hide&nbsp;
+              {postsComments.length}
+              &nbsp;comments
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="button"
+              onClick={() => setVisibleComments(!visibleComments)}
+            >
+              Show&nbsp;
+              {postsComments.length}
+              &nbsp;comments
+            </button>
+          )}
 
           <ul className="PostDetails__list">
             {visibleComments && postsComments.map(comment => (

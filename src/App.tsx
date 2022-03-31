@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
 import {
   getPosts,
@@ -17,7 +16,7 @@ const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState<number>(0);
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPostId, setSelectedPostId] = useState(0);
-  const [postDetails, setgetPostDetails] = useState<Post | null>(null);
+  const [postDetails, setPostDetails] = useState<Post | null>(null);
   const [postsComments, setPostsComments] = useState<CommentInfo[]>([]);
 
   useEffect(() => {
@@ -42,15 +41,13 @@ const App: React.FC = () => {
   useEffect(() => {
     if (selectedPostId !== 0) {
       getPostDetails(selectedPostId)
-        .then(response => setgetPostDetails(response));
+        .then(response => setPostDetails(response));
     } else {
-      setgetPostDetails(null);
+      setPostDetails(null);
     }
 
     getPostComments(selectedPostId)
       .then(response => setPostsComments(response));
-
-    // console.log(postDetails); // NEED TO DELETE
   }, [selectedPostId]);
 
   const onUserChoice = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -91,12 +88,14 @@ const App: React.FC = () => {
 
         <div className="App__content">
 
-          {postDetails && (
+          {postDetails ? (
             <PostDetails
               postDetails={postDetails}
               postsComments={postsComments}
               setPostsComments={setPostsComments}
             />
+          ) : (
+            <p>No selected post</p>
           )}
 
         </div>
