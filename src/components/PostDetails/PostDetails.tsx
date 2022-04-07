@@ -12,9 +12,10 @@ import './PostDetails.scss';
 
 export const PostDetails = React.memo<Props>(
   ({ selectedPostId }) => {
-    const [details, setDetails] = useState<Post>();
+    const [details, setDetails] = useState<Post | null>(null);
     const [comments, setComments] = useState<Comment[]>([]);
     const [commentsStatus, setCommentsStatus] = useState(true);
+
     const loadDetails = () => {
       getPostDetails(selectedPostId).then(loadedDetails => setDetails(loadedDetails));
     };
@@ -24,7 +25,7 @@ export const PostDetails = React.memo<Props>(
     };
 
     const addComment = (newComment: Comment) => {
-      setComments([...comments, newComment]);
+      setComments(currComments => [...currComments, newComment]);
       createComment(newComment);
     };
 
