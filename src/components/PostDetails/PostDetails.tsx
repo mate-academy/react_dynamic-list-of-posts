@@ -1,8 +1,8 @@
-import React from 'react';
+import { FC, memo } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
+export const PostDetails: FC = memo(() => (
   <div className="PostDetails">
     <h2>Post details:</h2>
 
@@ -42,4 +42,4 @@ export const PostDetails: React.FC = () => (
       </div>
     </section>
   </div>
-);
+));
