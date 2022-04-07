@@ -35,7 +35,7 @@
   },
   "scripts": {
     "start": "mate-scripts start",
-    "build": "mate-scripts build",
+    "build": "react-scripts build",
     "test": "mate-scripts test",
     "lint-js": "mate-scripts lint -j",
     "lint-css": "mate-scripts lint -s",
