@@ -7,3 +7,7 @@ export const getUserPosts = (userId: number) => {
 
   return request(query);
 };
+
+export const getPostDetails = (postId: number) => {
+  return request(`/posts/${postId}`);
+};

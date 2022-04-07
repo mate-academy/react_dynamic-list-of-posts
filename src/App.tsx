@@ -11,6 +11,7 @@ import { getUserPosts } from './api/posts';
 
 const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState(0);
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -18,9 +19,13 @@ const App: React.FC = () => {
       .then(setPosts);
   }, [selectedUserId]);
 
-  const onSelect = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
+  const handleUserSelect = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedUserId(+event.target.value);
   }, [selectedUserId]);
+
+  const handlePostSelect = useCallback((postId) => () => {
+    setSelectedPostId(postId);
+  }, []);
 
   return (
     <div className="App">
@@ -31,7 +36,7 @@ const App: React.FC = () => {
           <select
             className="App__user-selector"
             value={selectedUserId}
-            onChange={onSelect}
+            onChange={handleUserSelect}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
@@ -50,11 +55,15 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList posts={posts} />
+          <PostsList
+            posts={posts}
+            onSelect={handlePostSelect}
+            selectedPostId={selectedPostId}
+          />
         </div>
 
         <div className="App__content">
-          <PostDetails />
+          {!!selectedPostId && <PostDetails postId={selectedPostId} />}
         </div>
       </main>
     </div>

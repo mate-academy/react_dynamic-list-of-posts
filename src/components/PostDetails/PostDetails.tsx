@@ -1,45 +1,99 @@
-import { FC, memo } from 'react';
+/* eslint-disable no-console */
+import {
+  FC, memo, useCallback, useEffect, useState,
+} from 'react';
+import { deleteComment, getPostComments } from '../../api/comments';
+import { getPostDetails } from '../../api/posts';
+import { useToggle } from '../../hooks/useToggle';
+import { Comment } from '../../types/comment';
+import { IPostDetails } from '../../types/PostDetails';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: FC = memo(() => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  postId: number;
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: FC<Props> = memo(({ postId }) => {
+  const [details, setDetails] = useState<IPostDetails | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isCommentsVisible, toggleCommentsVisible] = useToggle(true);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  useEffect(() => {
+    setDetails(null);
+    setComments([]);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+    const fetchDetails = async (id: number) => {
+      const data: IPostDetails = await getPostDetails(id);
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+      setDetails(data);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-));
+      return data;
+    };
+
+    const fetchComments = async (id: number) => {
+      const data: Comment[] = await getPostComments(id);
+
+      setComments(data);
+
+      return data;
+    };
+
+    Promise.all([fetchDetails(postId), fetchComments(postId)]).catch(console.warn);
+  }, [postId]);
+
+  const removeComment = useCallback((commentId: number) => () => {
+    deleteComment(commentId);
+    setComments((state) => state.filter(({ id }) => id !== commentId));
+  }, [postId]);
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      {details !== null
+        ? (
+          <>
+            <section className="PostDetails__post">
+              <p>{details.body}</p>
+            </section>
+
+            <section className="PostDetails__comments">
+              {!!comments.length && (
+                <button
+                  type="button"
+                  className="button"
+                  onClick={toggleCommentsVisible}
+                >
+                  {`${isCommentsVisible ? 'Hide' : 'Show'} ${comments.length} comments`}
+                </button>
+              )}
+
+              <ul className="PostDetails__list">
+                {isCommentsVisible && comments.map(({ body, id }) => (
+                  <li key={id} className="PostDetails__list-item">
+                    <button
+                      type="button"
+                      className="PostDetails__remove-button button"
+                      onClick={removeComment(id)}
+                    >
+                      X
+                    </button>
+                    <p>{body}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            <section>
+              <div className="PostDetails__form-wrapper">
+                <NewCommentForm />
+              </div>
+            </section>
+          </>
+        ) : (
+          <p>Loading...</p>
+        )}
+    </div>
+  );
+});
