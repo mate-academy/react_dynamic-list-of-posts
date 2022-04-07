@@ -5,7 +5,7 @@ import {
 import { deleteComment, getPostComments } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
 import { useToggle } from '../../hooks/useToggle';
-import { Comment } from '../../types/comment';
+import { Comment, CreateComment } from '../../types/comment';
 import { IPostDetails } from '../../types/PostDetails';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
@@ -18,6 +18,15 @@ export const PostDetails: FC<Props> = memo(({ postId }) => {
   const [details, setDetails] = useState<IPostDetails | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [isCommentsVisible, toggleCommentsVisible] = useToggle(true);
+
+  const onCreateComment = useCallback((body: CreateComment) => {
+    const newComment: Comment = {
+      ...body,
+      id: +new Date(),
+    };
+
+    setComments((state) => [...state, newComment]);
+  }, []);
 
   useEffect(() => {
     setDetails(null);
@@ -87,7 +96,7 @@ export const PostDetails: FC<Props> = memo(({ postId }) => {
 
             <section>
               <div className="PostDetails__form-wrapper">
-                <NewCommentForm />
+                <NewCommentForm postId={postId} onCreate={onCreateComment} />
               </div>
             </section>
           </>
