@@ -19,7 +19,7 @@ export const getPostComments = (postId: number): Promise<Comment[]> => {
 };
 
 export const deleteComment = (commentId: number) => {
-  return fetch(`${BASE_URL}/comments/${commentId}`, {
+  fetch(`${BASE_URL}/comments/${commentId}`, {
     method: 'DELETE',
   });
 };

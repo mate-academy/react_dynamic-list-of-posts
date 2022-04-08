@@ -52,18 +52,20 @@ export const PostDetails = React.memo<Props>(
         </section>
 
         <section className="PostDetails__comments">
-          <button
-            type="button"
-            className="button"
-            onClick={displayComments}
-          >
-            {commentsStatus ? (
-              `Hide ${comments.length} comments`
-            )
-              : (
-                `Show ${comments.length} comments`
-              )}
-          </button>
+          {comments.length > 0 && (
+            <button
+              type="button"
+              className="button"
+              onClick={displayComments}
+            >
+              {commentsStatus ? (
+                `Hide ${comments.length} comments`
+              )
+                : (
+                  `Show ${comments.length} comments`
+                )}
+            </button>
+          )}
 
           {commentsStatus && (
             <ul className="PostDetails__list">
