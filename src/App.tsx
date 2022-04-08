@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -11,9 +11,9 @@ const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
-  const selectPost = (postId:number) => {
+  const selectPost = useCallback((postId:number) => {
     setSelectedPostId(postId);
-  };
+  }, [setSelectedPostId]);
 
   const loadPosts = (userId:number) => {
     getUserPosts(userId).then(loadedPosts => setPosts(loadedPosts));

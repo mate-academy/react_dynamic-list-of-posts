@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import './NewCommentForm.scss';
 import { Comment } from '../../types/Comment';
 
-export const NewCommentForm: React.FC<Props> = ({ addComment, postId }) => {
+export const NewCommentForm = React.memo<Props>(({ addComment, postId }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
@@ -35,7 +35,7 @@ export const NewCommentForm: React.FC<Props> = ({ addComment, postId }) => {
   const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     addComment({
-      id: Math.trunc((Math.random() * Infinity) + Date.now()),
+      id: Math.trunc(Date.now()),
       name,
       email,
       body,
@@ -90,8 +90,7 @@ export const NewCommentForm: React.FC<Props> = ({ addComment, postId }) => {
       </button>
     </form>
   );
-};
-
+});
 interface Props {
   addComment: (newComment: Comment) => void,
   postId: number,

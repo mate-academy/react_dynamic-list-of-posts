@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   createComment,
   deleteComment,
@@ -24,10 +24,10 @@ export const PostDetails = React.memo<Props>(
       getPostComments(selectedPostId).then(loadedComments => setComments(loadedComments));
     };
 
-    const addComment = (newComment: Comment) => {
+    const addComment = useCallback((newComment: Comment) => {
       setComments(currComments => [...currComments, newComment]);
       createComment(newComment);
-    };
+    }, [comments]);
 
     const displayComments = () => {
       setCommentsStatus(currCommentsStatus => !currCommentsStatus);
