@@ -3,7 +3,7 @@ import {
   FC, memo, useCallback, useEffect, useState,
 } from 'react';
 import { deleteComment, getPostComments } from '../../api/comments';
-import { getPostDetails as getPostDetailsByPostId } from '../../api/posts';
+import { getPostDetailsById as getPostDetailsByPostId } from '../../api/posts';
 import { useToggle } from '../../hooks/useToggle';
 import { Comment, CreateComment } from '../../types/comment';
 import { IPostDetails } from '../../types/PostDetails';
@@ -25,7 +25,7 @@ export const PostDetails: FC<Props> = memo(({ postId }) => {
       id: +new Date(),
     };
 
-    setComments((state) => [...state, newComment]);
+    setComments((previousComments) => [...previousComments, newComment]);
   }, []);
 
   const fetchDetails = useCallback(async (id: number) => {
