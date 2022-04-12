@@ -1,57 +1,46 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-
 import React, {
-  ChangeEvent, useCallback, useEffect, useState,
+  ChangeEvent,
+  useCallback, useEffect, useState,
 } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getUserPosts } from './api/posts';
+import { getUsers } from './api/users';
+import { User } from './types/User';
+import { Post } from './types/Post';
+import { Header } from './components/Header/Header';
 
 const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
+    getUsers()
+      .then(usersFromServer => setUsers(usersFromServer));
+
     getUserPosts(selectedUserId)
       .then(setPosts);
   }, [selectedUserId]);
 
   const handleUserSelect = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedUserId(+event.target.value);
-  }, [selectedUserId]);
+    setSelectedUserId(Number(event.target.value));
+  }, [setSelectedUserId]);
 
-  const handlePostSelect = useCallback((postId) => () => {
+  const handlePostSelect = useCallback((postId: number) => () => {
     setSelectedPostId(postId);
   }, []);
 
   return (
     <div className="App">
-      <header className="App__header">
-        <label>
-          Select a user: &nbsp;
-
-          <select
-            className="App__user-selector"
-            value={selectedUserId}
-            onChange={handleUserSelect}
-          >
-            <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
-          </select>
-        </label>
-      </header>
+      <Header
+        users={users}
+        selectedUserId={selectedUserId}
+        onChangeUser={handleUserSelect}
+      />
 
       <main className="App__main">
         <div className="App__sidebar">

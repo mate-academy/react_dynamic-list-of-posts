@@ -3,7 +3,7 @@ import {
   FC, memo, useCallback, useEffect, useState,
 } from 'react';
 import { deleteComment, getPostComments } from '../../api/comments';
-import { getPostDetails } from '../../api/posts';
+import { getPostDetails as getPostDetailsByPostId } from '../../api/posts';
 import { useToggle } from '../../hooks/useToggle';
 import { Comment, CreateComment } from '../../types/comment';
 import { IPostDetails } from '../../types/PostDetails';
@@ -28,33 +28,33 @@ export const PostDetails: FC<Props> = memo(({ postId }) => {
     setComments((state) => [...state, newComment]);
   }, []);
 
+  const fetchDetails = useCallback(async (id: number) => {
+    const data: IPostDetails = await getPostDetailsByPostId(id);
+
+    setDetails(data);
+
+    return data;
+  }, []);
+
+  const fetchComments = useCallback(async (id: number) => {
+    const data: Comment[] = await getPostComments(id);
+
+    setComments(data);
+
+    return data;
+  }, []);
+
   useEffect(() => {
     setDetails(null);
     setComments([]);
 
-    const fetchDetails = async (id: number) => {
-      const data: IPostDetails = await getPostDetails(id);
-
-      setDetails(data);
-
-      return data;
-    };
-
-    const fetchComments = async (id: number) => {
-      const data: Comment[] = await getPostComments(id);
-
-      setComments(data);
-
-      return data;
-    };
-
     Promise.all([fetchDetails(postId), fetchComments(postId)]).catch(console.warn);
-  }, [postId]);
+  }, [fetchComments, fetchDetails, postId]);
 
   const removeComment = useCallback((commentId: number) => () => {
     deleteComment(commentId);
-    setComments((state) => state.filter(({ id }) => id !== commentId));
-  }, [postId]);
+    setComments((previousComments) => previousComments.filter(({ id }) => id !== commentId));
+  }, []);
 
   return (
     <div className="PostDetails">
