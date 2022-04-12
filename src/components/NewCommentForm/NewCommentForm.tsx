@@ -1,39 +1,92 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { addComment } from '../../api/Comments';
 import './NewCommentForm.scss';
 
-export const NewCommentForm: React.FC = () => (
-  <form className="NewCommentForm">
-    <div className="form-field">
-      <input
-        type="text"
-        name="name"
-        placeholder="Your name"
-        className="NewCommentForm__input"
-      />
-    </div>
+type Props = {
+  postId: number,
+  fetchComments: () => void,
+};
 
-    <div className="form-field">
-      <input
-        type="text"
-        name="email"
-        placeholder="Your email"
-        className="NewCommentForm__input"
-      />
-    </div>
+export const NewCommentForm: React.FC<Props> = React.memo(({ postId, fetchComments }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [comment, setComment] = useState('');
 
-    <div className="form-field">
-      <textarea
-        name="body"
-        placeholder="Type comment here"
-        className="NewCommentForm__input"
-      />
-    </div>
+  const handleInputName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
 
-    <button
-      type="submit"
-      className="NewCommentForm__submit-button button"
+    setName(value);
+  };
+
+  const handleInputEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+
+    setEmail(value);
+  };
+
+  const handleTextArea = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { value } = event.target;
+
+    setComment(value);
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    await addComment(postId, name, email, comment);
+    await fetchComments();
+
+    setComment('');
+    setEmail('');
+    setName('');
+  };
+
+  return (
+    <form
+      className="NewCommentForm"
+      onSubmit={handleSubmit}
     >
-      Add a comment
-    </button>
-  </form>
-);
+      <div className="form-field">
+        <input
+          type="text"
+          name="name"
+          placeholder="Your name"
+          value={name}
+          onChange={handleInputName}
+          className="NewCommentForm__input"
+          required
+        />
+      </div>
+
+      <div className="form-field">
+        <input
+          type="text"
+          name="email"
+          value={email}
+          onChange={handleInputEmail}
+          placeholder="Your email"
+          className="NewCommentForm__input"
+          required
+        />
+      </div>
+
+      <div className="form-field">
+        <textarea
+          name="body"
+          value={comment}
+          onChange={handleTextArea}
+          placeholder="Type comment here"
+          className="NewCommentForm__input"
+          required
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="NewCommentForm__submit-button button"
+      >
+        Add a comment
+      </button>
+    </form>
+  );
+});
