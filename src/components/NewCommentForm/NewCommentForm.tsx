@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import { addComments } from '../../api/comments';
 import './NewCommentForm.scss';
 
@@ -8,23 +8,40 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ postId, addNewComment }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [comment, setComment] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
 
-  const inputHandler = (event: React.ChangeEvent<HTMLInputElement
-  | HTMLTextAreaElement>) => {
+  const inputHandler = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { value } = event.target;
+
     switch (event.target.name) {
       case 'name':
-        setName(event.target.value);
+        setComment({
+          name: value,
+          email: comment.email,
+          body: comment.body,
+        });
         break;
 
       case 'email':
-        setEmail(event.target.value);
+        setComment({
+          name: comment.name,
+          email: value,
+          body: comment.body,
+        });
         break;
 
       case 'body':
-        setBody(event.target.value);
+        setComment({
+          name: comment.name,
+          email: comment.email,
+          body: value,
+        });
         break;
 
       default:
@@ -32,8 +49,17 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addNewComment }) => {
     }
   };
 
+  const reset = () => {
+    setComment({
+      name: '',
+      email: '',
+      body: '',
+    });
+  };
+
   const addCommentsHandler = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const { name, email, body } = comment;
 
     if (postId) {
       addComments(postId, name, email, body)
@@ -42,9 +68,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addNewComment }) => {
         });
     }
 
-    setName('');
-    setEmail('');
-    setBody('');
+    reset();
   };
 
   return (
@@ -58,7 +82,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addNewComment }) => {
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={name}
+          value={comment.name}
           onChange={inputHandler}
           required
         />
@@ -70,7 +94,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addNewComment }) => {
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={email}
+          value={comment.email}
           onChange={inputHandler}
           required
         />
@@ -81,7 +105,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addNewComment }) => {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={body}
+          value={comment.body}
           onChange={inputHandler}
           required
         />
