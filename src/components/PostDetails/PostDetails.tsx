@@ -39,8 +39,7 @@ export const PostDetails = React.memo<Props>(
     };
 
     useEffect(() => {
-      loadComments();
-      loadDetails();
+      Promise.all([loadComments(), loadDetails()]);
     }, [selectedPostId]);
 
     return (

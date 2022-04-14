@@ -1,31 +1,31 @@
 import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
-import { BASE_URL } from './api';
+import { request } from './api';
 
-export const getUserPosts = (userId: number): Promise<Post[]> => {
+export const getUserPosts = (userId?: number): Promise<Post[]> => {
   if (!userId) {
-    return fetch(`${BASE_URL}/posts`).then(response => response.json());
+    return request('/posts');
   }
 
-  return fetch(`${BASE_URL}/posts?userId=${userId}`).then(response => response.json());
+  return request(`/posts?userId=${userId}`);
 };
 
 export const getPostDetails = (postId: number): Promise<Post> => {
-  return fetch(`${BASE_URL}/posts/${postId}`).then(response => response.json());
+  return request(`/posts/${postId}`);
 };
 
 export const getPostComments = (postId: number): Promise<Comment[]> => {
-  return fetch(`${BASE_URL}/comments?postId=${postId}`).then(response => response.json());
+  return request(`/comments?postId=${postId}`);
 };
 
 export const deleteComment = (commentId: number) => {
-  fetch(`${BASE_URL}/comments/${commentId}`, {
+  return request(`/comments/${commentId}`, {
     method: 'DELETE',
   });
 };
 
 export const createComment = (newComment: Comment) => {
-  fetch(`${BASE_URL}/comments`, {
+  request('/comments', {
     method: 'POST',
     body: JSON.stringify(newComment),
   });

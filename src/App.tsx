@@ -6,20 +6,28 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { Post } from './types/Post';
 import { getUserPosts } from './api/posts';
+import { getUsers } from './api/users';
+import { User } from './types/User';
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPostId, setSelectedPostId] = useState(0);
-
+  const [users, setUsers] = useState<User[]>([]);
   const selectPost = useCallback((postId:number) => {
     setSelectedPostId(postId);
   }, [setSelectedPostId]);
 
-  const loadPosts = (userId:number) => {
+  const loadPosts = (userId?:number) => {
     getUserPosts(userId).then(loadedPosts => setPosts(loadedPosts));
   };
 
-  useEffect(() => loadPosts(0), []);
+  const loadUsers = () => {
+    getUsers().then(loadedUsers => setUsers(loadedUsers.slice(0, 8)));
+  };
+
+  useEffect(() => {
+    Promise.all([loadPosts(), loadUsers()]);
+  }, []);
 
   const selectHandler = (event:React.ChangeEvent<HTMLSelectElement>) => {
     loadPosts(+event.target.value);
@@ -35,17 +43,10 @@ const App: React.FC = () => {
             className="App__user-selector"
             onChange={selectHandler}
           >
-            <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            <option value="0">all users</option>
+            {users.map(user => (
+              <option value={user.id}>{user.name}</option>
+            ))}
           </select>
         </label>
       </header>
