@@ -1,41 +1,67 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { UserSelect } from './components/UserSelect';
+import { BASE_URL } from './api/api';
 
-const App: React.FC = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+const App: React.FC = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState(0);
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+  const fetchUsers = async () => {
+    const response = await fetch(`${BASE_URL}/users`);
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+    if (!response.ok) {
+      throw new Error(`Status: ${response.status}
+        - StatusText: ${response.statusText}`);
+    }
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+    const data = await response.json();
+
+    setUsers(data);
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  return (
+    <div className="App">
+      <header className="App__header">
+        <UserSelect
+          users={users}
+          onUserSelect={setSelectedUserId}
+        />
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            posts={posts}
+            userId={selectedUserId}
+            onPostsSet={setPosts}
+            onPostId={setSelectedPostId}
+            selectedPostId={selectedPostId}
+          />
+        </div>
+
+        <div className="App__content">
+          {(selectedPostId > 0) && (
+            <PostDetails
+              postId={selectedPostId}
+              onCommentsSet={setComments}
+              comments={comments}
+            />
+          )}
+        </div>
+      </main>
+    </div>
+  );
+};
 
 export default App;
