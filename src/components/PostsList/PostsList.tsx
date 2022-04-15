@@ -1,37 +1,67 @@
 import React from 'react';
+import { Loader } from '../Loader';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export type Post = {
+  id: number,
+  userId: number,
+  title: string,
+  body: string,
+  createdAt: string,
+  updatedAt: string,
+};
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+type Props = {
+  posts: Post[],
+  loading: boolean,
+  setSelectedPostId: (selectedPostId: number) => void,
+  selectedPostId: number,
+};
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+export const PostsList: React.FC<Props> = ({
+  posts,
+  setSelectedPostId, selectedPostId,
+  loading,
+}) => {
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+      {loading ? (
+        <Loader />
+      ) : (
+        <ul className="PostsList__list">
+          {posts.map((post: Post) => (
+            <li key={post.id} className="PostsList__item">
+              <div>
+                <b>
+                  {`[User #${post.userId}]:`}
+                </b>
+                {post.title}
+              </div>
+              {selectedPostId !== post.id && (
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  onClick={() => {
+                    setSelectedPostId(post.id);
+                  }}
+                >
+                  Open
+                </button>
+              )}
+              {selectedPostId === post.id && (
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  disabled
+                >
+                  Close
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
