@@ -1,37 +1,52 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+import { getUserPosts } from '../../api/post';
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+interface State {
+  selectedUserId: number,
+  selectedPostId: number | null,
+  handlePostId: (value: number | null) => void,
+}
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+export const PostsList: React.FC<State> = ({ selectedUserId, selectedPostId, handlePostId }) => {
+  const [posts, setPosts] = useState<Post[]>([]);
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+  useEffect(() => {
+    getUserPosts(selectedUserId)
+      .then(result => setPosts(result));
+  }, [selectedUserId]);
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul className="PostsList__list">
+        {posts.map(post => {
+          const isPostSelected = post.id === selectedPostId;
+
+          return (
+            <li
+              className="PostsList__item"
+              key={post.id}
+            >
+              <div>
+                <b>{`[User #${post.userId}]:`}</b>
+                {post.title}
+              </div>
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => {
+                  handlePostId(isPostSelected ? null : post.id);
+                }}
+              >
+                {isPostSelected ? 'Close' : 'Open'}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
