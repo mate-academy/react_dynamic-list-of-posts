@@ -4,7 +4,7 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelect } from './components/UserSelect';
-import { BASE_URL } from './api/api';
+import { requestUsers } from './api/posts';
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -14,14 +14,7 @@ const App: React.FC = () => {
   const [selectedPostId, setSelectedPostId] = useState(0);
 
   const fetchUsers = async () => {
-    const response = await fetch(`${BASE_URL}/users`);
-
-    if (!response.ok) {
-      throw new Error(`Status: ${response.status}
-        - StatusText: ${response.statusText}`);
-    }
-
-    const data = await response.json();
+    const data = await requestUsers();
 
     setUsers(data);
   };
@@ -51,7 +44,7 @@ const App: React.FC = () => {
         </div>
 
         <div className="App__content">
-          {(selectedPostId > 0) && (
+          {(!!selectedPostId) && (
             <PostDetails
               postId={selectedPostId}
               onCommentsSet={setComments}

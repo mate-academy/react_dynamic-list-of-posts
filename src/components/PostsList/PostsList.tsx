@@ -1,7 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import './PostsList.scss';
-import { getUserPosts } from '../../api/posts';
-import { BASE_URL } from '../../api/api';
+import { getUserPosts, fetchAllPosts } from '../../api/posts';
 
 type Props = {
   posts: Post[],
@@ -19,16 +18,9 @@ export const PostsList: React.FC<Props> = ({
   selectedPostId,
 }) => {
   const fetchPosts = async () => {
-    const response = await fetch(`${BASE_URL}/posts`);
+    const result = await fetchAllPosts();
 
-    if (!response.ok) {
-      throw new Error(`Status: ${response.status}
-        - StatusText: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    onPostsSet(data);
+    onPostsSet(result);
   };
 
   useEffect(() => {

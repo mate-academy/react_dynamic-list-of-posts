@@ -7,9 +7,7 @@ type Props = {
 
 export const UserSelect: React.FC<Props> = ({
   users,
-  // user,
   onUserSelect,
-  // userId,
 }) => {
   return (
     <label>

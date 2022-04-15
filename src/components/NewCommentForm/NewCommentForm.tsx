@@ -1,6 +1,7 @@
 import React, { FormEvent, useState } from 'react';
-import { BASE_URL } from '../../api/api';
+// import { BASE_URL } from '../../api/api';
 import './NewCommentForm.scss';
+import { createComment } from '../../api/comments';
 
 type Props = {
   postId: number,
@@ -20,30 +21,19 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const response = await fetch(`${BASE_URL}/comments`, {
-      method: 'POST',
-      body: JSON.stringify({
-        postId,
-        name,
-        email,
-        body: comment,
-      }),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
-    });
-
-    const data = await response.json();
-
-    return data;
+    createComment(postId, name, email, comment);
   };
 
   return (
     <form
       className="NewCommentForm"
-      onSubmit={(e) => {
-        handleSubmit(e);
-        reset();
+      onSubmit={async (e) => {
+        try {
+          await handleSubmit(e);
+          reset();
+        } catch (error) {
+          throw new Error('Error happened');
+        }
       }}
     >
       <div className="form-field">
