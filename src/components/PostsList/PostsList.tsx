@@ -4,10 +4,12 @@ import { Post } from '../../types/post';
 import './PostsList.scss';
 
 interface Props {
-  userId: number
+  userId: number,
+  onSelect: (postId: number) => void,
+  selectedPostId: number
 }
 
-export const PostsList: FC<Props> = ({ userId }) => {
+export const PostsList: FC<Props> = ({ userId, onSelect, selectedPostId }) => {
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
@@ -17,6 +19,16 @@ export const PostsList: FC<Props> = ({ userId }) => {
       getUserPosts(userId).then(data => setPosts(data));
     }
   }, [userId]);
+
+  const isOpened = (postId: number) => selectedPostId === postId;
+
+  const postDetailsToggle = (postId: number) => {
+    if (isOpened(postId)) {
+      onSelect(0);
+    } else {
+      onSelect(postId);
+    }
+  };
 
   return (
     <div className="PostsList">
@@ -32,8 +44,9 @@ export const PostsList: FC<Props> = ({ userId }) => {
             <button
               type="button"
               className="PostsList__button button"
+              onClick={() => postDetailsToggle(post.id)}
             >
-              Close
+              {isOpened(post.id) ? 'Close' : 'Open'}
             </button>
           </li>
         ))}

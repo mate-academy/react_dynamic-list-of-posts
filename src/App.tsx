@@ -6,10 +6,13 @@ import { PostDetails } from './components/PostDetails';
 
 const App: FC = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState(0);
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedUserId(+event.target.value);
   };
+
+  const selectPost = (id: number) => setSelectedPostId(id);
 
   return (
     <div className="App">
@@ -41,11 +44,15 @@ const App: FC = () => {
         <div className="App__sidebar">
           <PostsList
             userId={selectedUserId}
+            onSelect={selectPost}
+            selectedPostId={selectedPostId}
           />
         </div>
 
         <div className="App__content">
-          <PostDetails />
+          <PostDetails
+            postId={selectedPostId}
+          />
         </div>
       </main>
     </div>
