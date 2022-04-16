@@ -1,14 +1,22 @@
 import { FC, useEffect, useState } from 'react';
-import { getPosts } from '../../api/posts';
+import { getPosts, getUserPosts } from '../../api/posts';
 import { Post } from '../../types/post';
 import './PostsList.scss';
 
-export const PostsList: FC = () => {
+interface Props {
+  userId: number
+}
+
+export const PostsList: FC<Props> = ({ userId }) => {
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
-    getPosts().then(data => setPosts(data));
-  }, []);
+    if (userId === 0) {
+      getPosts().then(data => setPosts(data));
+    } else {
+      getUserPosts(userId).then(data => setPosts(data));
+    }
+  }, [userId]);
 
   return (
     <div className="PostsList">
