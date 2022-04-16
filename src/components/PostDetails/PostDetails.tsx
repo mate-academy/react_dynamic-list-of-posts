@@ -15,12 +15,21 @@ export const PostDetails: FC<Props> = ({ postId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [hasCommentsHidden, setHasCommentsHidden] = useState(false);
 
+  const loadComments = () => {
+    getPostComments(postId)
+      .then(commentsFromServer => setComments(commentsFromServer));
+  };
+
+  // const loadComments = useCallback(() => {
+  //   getPostComments(postId)
+  //     .then(commentsFromServer => setComments(commentsFromServer));
+  // }, [postId]);
+
   useEffect(() => {
     if (postId !== 0) {
       getPostDetails(postId)
         .then(postFromServer => setPost(postFromServer));
-      getPostComments(postId)
-        .then(commentsFromServer => setComments(commentsFromServer));
+      loadComments();
     } else {
       setPost(null);
       setComments([]);
@@ -68,7 +77,10 @@ export const PostDetails: FC<Props> = ({ postId }) => {
 
           <section>
             <div className="PostDetails__form-wrapper">
-              <NewCommentForm />
+              <NewCommentForm
+                postId={post.id}
+                reload={loadComments}
+              />
             </div>
           </section>
         </>

@@ -1,9 +1,9 @@
 export interface Comment {
-  id: number,
+  id?: number,
   postId: number,
   name: string,
   email: string,
   body: string,
-  createdAt: string,
-  updatedAt: string
+  createdAt?: string,
+  updatedAt?: string
 }
