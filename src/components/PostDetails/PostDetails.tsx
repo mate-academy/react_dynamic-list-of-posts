@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { getPostComments } from '../../api/comments';
+import { getPostComments, removeComment } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
 import { Comment } from '../../types/comment';
 import { Post } from '../../types/post';
@@ -24,6 +24,11 @@ export const PostDetails: FC<Props> = ({ postId }) => {
   //   getPostComments(postId)
   //     .then(commentsFromServer => setComments(commentsFromServer));
   // }, [postId]);
+
+  const deleteComment = (commentId = 0) => {
+    removeComment(commentId);
+    loadComments();
+  };
 
   useEffect(() => {
     if (postId !== 0) {
@@ -63,6 +68,7 @@ export const PostDetails: FC<Props> = ({ postId }) => {
                       <button
                         type="button"
                         className="PostDetails__remove-button button"
+                        onClick={() => deleteComment(comment.id)}
                       >
                         X
                       </button>

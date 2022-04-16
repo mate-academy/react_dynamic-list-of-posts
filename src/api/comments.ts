@@ -14,3 +14,7 @@ export const addComment = ({
     body,
   }),
 });
+
+export const removeComment = (commentId: number) => request(`/comments/${commentId}`, {
+  method: 'DELETE',
+});
