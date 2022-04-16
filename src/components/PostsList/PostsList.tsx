@@ -1,37 +1,35 @@
-import React from 'react';
+import { FC, useEffect, useState } from 'react';
+import { getPosts } from '../../api/posts';
+import { Post } from '../../types/post';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList: FC = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  useEffect(() => {
+    getPosts().then(data => setPosts(data));
+  }, []);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      <ul className="PostsList__list">
+        {posts.map(post => (
+          <li className="PostsList__item" key={post.id}>
+            <div>
+              <b>{`[User #${post.userId}]: `}</b>
+              {post.title}
+            </div>
+            <button
+              type="button"
+              className="PostsList__button button"
+            >
+              Close
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
