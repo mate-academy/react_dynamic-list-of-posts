@@ -1,5 +1,7 @@
 import { FC, useEffect, useState } from 'react';
+import { getPostComments } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
+import { Comment } from '../../types/comment';
 import { Post } from '../../types/post';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
@@ -10,12 +12,18 @@ interface Props {
 
 export const PostDetails: FC<Props> = ({ postId }) => {
   const [post, setPost] = useState<Post | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [hasCommentsHidden, setHasCommentsHidden] = useState(false);
 
   useEffect(() => {
     if (postId !== 0) {
-      getPostDetails(postId).then(data => setPost(data));
+      getPostDetails(postId)
+        .then(postFromServer => setPost(postFromServer));
+      getPostComments(postId)
+        .then(commentsFromServer => setComments(commentsFromServer));
     } else {
       setPost(null);
+      setComments([]);
     }
   }, [postId]);
 
@@ -29,31 +37,34 @@ export const PostDetails: FC<Props> = ({ postId }) => {
             <p>{post.body}</p>
           </section>
 
-          <section className="PostDetails__comments">
-            <button type="button" className="button">Hide 2 comments</button>
+          {comments.length > 0 && (
+            <section className="PostDetails__comments">
+              <button
+                type="button"
+                className="button"
+                onClick={() => setHasCommentsHidden(has => !has)}
+              >
+                {`${hasCommentsHidden ? 'show' : 'hide'} ${comments.length} comments`}
+              </button>
 
-            <ul className="PostDetails__list">
-              <li className="PostDetails__list-item">
-                <button
-                  type="button"
-                  className="PostDetails__remove-button button"
-                >
-                  X
-                </button>
-                <p>My first comment</p>
-              </li>
+              {!hasCommentsHidden && (
+                <ul className="PostDetails__list">
+                  {comments.map(comment => (
+                    <li className="PostDetails__list-item" key={comment.id}>
+                      <button
+                        type="button"
+                        className="PostDetails__remove-button button"
+                      >
+                        X
+                      </button>
+                      <p>{comment.body}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
 
-              <li className="PostDetails__list-item">
-                <button
-                  type="button"
-                  className="PostDetails__remove-button button"
-                >
-                  X
-                </button>
-                <p>sad sds dfsadf asdf asdf</p>
-              </li>
-            </ul>
-          </section>
+            </section>
+          )}
 
           <section>
             <div className="PostDetails__form-wrapper">

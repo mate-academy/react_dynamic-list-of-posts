@@ -49,11 +49,13 @@ const App: FC = () => {
           />
         </div>
 
-        <div className="App__content">
-          <PostDetails
-            postId={selectedPostId}
-          />
-        </div>
+        {selectedPostId !== 0 && (
+          <div className="App__content">
+            <PostDetails
+              postId={selectedPostId}
+            />
+          </div>
+        )}
       </main>
     </div>
   );
