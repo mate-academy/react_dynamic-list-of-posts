@@ -20,6 +20,11 @@ export const PostDetails: React.FC<Props> = ({
 }) => {
   const [isComment, setIsComment] = useState(false);
   const [post, setPost] = useState<Post | null>(null);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [text, setText] = useState('');
+  const [removeText, setRemoveText] = useState(false);
+  const [commentId, setCommentId] = useState(0);
 
   const fetchPosts = async () => {
     const posts = await getPostDetails(postId);
@@ -28,6 +33,15 @@ export const PostDetails: React.FC<Props> = ({
   };
 
   const fetchComments = async () => {
+    // If "X" Button clicked => remove comment
+
+    if (removeText) {
+      removeComment(commentId);
+      const result = await getPostComments(postId);
+
+      onCommentsSet(result);
+    }
+
     const commentsArr = await getPostComments(postId);
 
     onCommentsSet(commentsArr);
@@ -36,7 +50,7 @@ export const PostDetails: React.FC<Props> = ({
   useEffect(() => {
     fetchPosts();
     fetchComments();
-  }, [postId]);
+  }, [postId, commentId]);
 
   return (
     <div className="PostDetails">
@@ -55,7 +69,7 @@ export const PostDetails: React.FC<Props> = ({
       >
         {!isComment ? 'Show' : 'Hide'}
         {' '}
-        {comments.length}
+        {comments.length < 1 ? null : comments.length}
         {' '}
         {comments.length === 1 ? 'comment' : 'comments'}
       </button>
@@ -69,7 +83,10 @@ export const PostDetails: React.FC<Props> = ({
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
-                  onClick={() => removeComment(comment.id)}
+                  onClick={() => {
+                    setRemoveText(true);
+                    setCommentId(comment.id);
+                  }}
                 >
                   X
                 </button>
@@ -84,6 +101,13 @@ export const PostDetails: React.FC<Props> = ({
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             postId={postId}
+            name={name}
+            email={email}
+            comment={text}
+            onSetName={setName}
+            onSetEmail={setEmail}
+            onSetComment={setText}
+            onCommentsSet={onCommentsSet}
           />
         </div>
       </section>

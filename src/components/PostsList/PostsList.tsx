@@ -64,7 +64,7 @@ export const PostsList: React.FC<Props> = ({
               {post.body}
             </div>
 
-            {!selectedPostId ? (
+            {selectedPostId !== post.id ? (
               <button
                 type="button"
                 className="PostsList__button button"
