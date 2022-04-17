@@ -1,37 +1,66 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getUserPosts } from '../../api/posts';
+import { Post } from '../../types/Post';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+interface Props {
+  selectedUserId: number;
+  onSelect: (postId: number) => void;
+  selectedPostId: number;
+}
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = ({
+  selectedUserId, onSelect, selectedPostId,
+}) => {
+  const [posts, setPosts] = useState<Post[]>([]);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  useEffect(() => {
+    const loadPosts = () => {
+      getUserPosts(selectedUserId)
+        .then(loadedPosts => setPosts(loadedPosts));
+    };
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+    loadPosts();
+  }, [selectedUserId]);
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      {posts.length
+        ? (
+          <ul className="PostsList__list">
+            {posts.map(({ title, userId, id }) => (
+              <li
+                className="PostsList__item"
+                key={id}
+              >
+                <div>
+                  <b>
+                    {`[User #${userId}]: `}
+                  </b>
+                  {title}
+                </div>
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  onClick={id !== selectedPostId
+                    ? () => onSelect(id)
+                    : () => onSelect(0)}
+                >
+                  {
+                    id !== selectedPostId
+                      ? <p>Open &#9658;</p>
+                      : <p>Close &#9668;</p>
+                  }
+                </button>
+              </li>
+            ))}
+          </ul>
+        )
+        : (
+          <p>Not posts yet</p>
+        )}
+    </div>
+  );
+};
