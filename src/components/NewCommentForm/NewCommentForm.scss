@@ -4,6 +4,11 @@
   align-items: center;
   padding: 20px;
 
+  &-title {
+    color: red;
+    font-weight: bold;
+  }
+
   &__input {
     border: none;
     border-bottom: 1px solid #4d457b;
