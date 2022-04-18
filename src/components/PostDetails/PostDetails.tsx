@@ -26,16 +26,21 @@ export const PostDetails: React.FC = React.memo(() => {
   };
 
   const toDeleteComment = (commentId = 0) => {
-    deleteComment(commentId);
-    const filteredComments = comments.filter(
-      comment => comment.id !== commentId,
-    );
+    deleteComment(commentId)
+      .then(deletedComment => {
+        if (deletedComment) {
+          const filteredComments = comments.filter(
+            comment => comment.id !== commentId,
+          );
 
-    setComments(filteredComments);
+          setComments(filteredComments);
+        }
+      });
   };
 
   useEffect(() => {
-    Promise.all([loadPostDetails(), loadPostComments()]);
+    loadPostDetails();
+    loadPostComments();
   }, [selectedPostId]);
 
   return (

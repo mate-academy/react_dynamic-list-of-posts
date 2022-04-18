@@ -1,12 +1,13 @@
 export const BASE_URL = 'https://mate.academy/students-api';
 
-export const request = (endpoint: string, method?:RequestInit) => {
-  return fetch(`${BASE_URL}${endpoint}`, method)
+export const request = (endpoint: string, option?:RequestInit) => {
+  return fetch(`${BASE_URL}${endpoint}`, option)
+    .then(response => response.json())
     .then(response => {
-      if (!response.ok) {
+      if (response.Error) {
         throw new Error(`${response.status} - ${response.statusText}`);
       }
 
-      return response.json();
+      return response;
     });
 };

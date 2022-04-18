@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent } from 'react';
+import { postComment } from '../../api/comments';
 import { usePostsContext } from '../../customHooks/usePostsContext';
 import './NewCommentForm.scss';
 
@@ -38,14 +39,16 @@ export const NewCommentForm: React.FC = React.memo(() => {
     event.preventDefault();
 
     const newComment = {
-      id: new Date().valueOf(),
       postId: selectedPostId,
       body: userComment,
       name: userName,
       email: userEmail,
     };
 
-    setComments([...comments, newComment]);
+    postComment(newComment)
+      .then((response) => {
+        setComments([...comments, response]);
+      });
     resetForm();
   };
 
