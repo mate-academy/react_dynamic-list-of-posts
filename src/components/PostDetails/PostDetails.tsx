@@ -26,18 +26,19 @@ export const PostDetails: React.FC<Props> = React.memo(({ selectedPostId }) => {
   };
 
   const removeComment = (commentId: number) => {
-    setComments(comments.filter(comment => comment.id !== commentId));
-    deleteComment(commentId);
+    deleteComment(commentId)
+      .then(response => {
+        if (response) {
+          setComments(comments.filter(comment => comment.id !== commentId));
+        }
+      });
   };
 
   const createComment = useCallback((newComment: FetchComment) => {
-    const commentToList = {
-      ...newComment,
-      id: Date.now().valueOf(),
-    };
-
-    setComments(currentComments => [...currentComments, commentToList]);
-    addComment(newComment);
+    addComment(newComment)
+      .then(response => {
+        setComments(currentComments => [...currentComments, response]);
+      });
   }, [comments]);
 
   useEffect(() => {

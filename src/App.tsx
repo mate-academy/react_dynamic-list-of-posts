@@ -23,7 +23,8 @@ export const App: React.FC = React.memo(() => {
   };
 
   useEffect(() => {
-    Promise.all([loadPosts(selectedUserId), loadUsers()]);
+    loadPosts(selectedUserId);
+    loadUsers();
   }, [selectedUserId]);
 
   const selectPost = useCallback(
