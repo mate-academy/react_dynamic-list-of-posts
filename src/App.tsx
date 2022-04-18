@@ -1,12 +1,21 @@
-import { ChangeEvent, FC, useState } from 'react';
+import {
+  ChangeEvent, FC, useEffect, useState,
+} from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { User } from './types/user';
+import { getUsers } from './api/users';
 
 const App: FC = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    getUsers().then(data => setUsers(data));
+  }, []);
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedUserId(+event.target.value);
@@ -26,16 +35,11 @@ const App: FC = () => {
             onChange={handleChange}
           >
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {users.map(user => (
+              <option key={user.id} value={user.id}>
+                {user.name}
+              </option>
+            ))}
           </select>
         </label>
       </header>

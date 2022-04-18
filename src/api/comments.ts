@@ -7,6 +7,9 @@ export const addComment = ({
   postId, name, email, body,
 }: Comment) => request('/comments', {
   method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
   body: JSON.stringify({
     postId,
     name,

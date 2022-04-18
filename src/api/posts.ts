@@ -1,7 +1,8 @@
+import { Post } from '../types/post';
 import { request } from './api';
 
-export const getPosts = () => request('/posts');
+export const getPosts = (): Promise<Post[]> => request('/posts');
 
-export const getUserPosts = (userId: number) => request(`/posts?userId=${userId}`);
+export const getUserPosts = (userId: number): Promise<Post[]> => request(`/posts?userId=${userId}`);
 
-export const getPostDetails = (postId: number) => request(`/posts/${postId}`);
+export const getPostDetails = (postId: number): Promise<Post> => request(`/posts/${postId}`);

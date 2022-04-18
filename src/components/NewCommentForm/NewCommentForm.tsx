@@ -1,10 +1,11 @@
 import { FC, FormEvent, useState } from 'react';
 import { addComment } from '../../api/comments';
+import { Comment } from '../../types/comment';
 import './NewCommentForm.scss';
 
 interface Props {
   postId: number,
-  reload: () => void;
+  setComment: (comment: Comment) => void;
 }
 
 interface Errors {
@@ -13,7 +14,7 @@ interface Errors {
   body: string
 }
 
-export const NewCommentForm: FC<Props> = ({ postId, reload }) => {
+export const NewCommentForm: FC<Props> = ({ postId, setComment }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
@@ -23,6 +24,12 @@ export const NewCommentForm: FC<Props> = ({ postId, reload }) => {
     email: '',
     body: '',
   }));
+
+  const resetForm = () => {
+    setName('');
+    setEmail('');
+    setBody('');
+  };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -57,9 +64,10 @@ export const NewCommentForm: FC<Props> = ({ postId, reload }) => {
       name,
       email,
       body,
+    }).then(comment => {
+      setComment(comment);
+      resetForm();
     });
-
-    reload();
   };
 
   return (
