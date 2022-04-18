@@ -1,8 +1,7 @@
 export const API_URL = 'https://mate.academy/students-api';
 
 export const request = (
-  endpoint: string,
-  options?: RequestInit | undefined,
+  endpoint: string, options?: RequestInit,
 ) => {
   return fetch(`${API_URL}/${endpoint}`, options)
     .then(response => response.json())
