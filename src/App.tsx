@@ -41,7 +41,7 @@ export const App: React.FC = () => {
         <label>
           Select a user: &nbsp;
 
-          <select className="App__user-selector" onChange={changeHendler}>
+          <select className="App__user-selector" onChange={(changeHendler)}>
             <option defaultValue="0">All users</option>
             {users.map(user => (
               <option key={user.id} value={user.id}>{user.name}</option>

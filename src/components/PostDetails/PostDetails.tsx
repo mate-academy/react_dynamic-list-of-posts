@@ -20,7 +20,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       .then(detailsFromSserver => {
         setPostDetails(detailsFromSserver);
       });
-  }, []);
+  }, [selectedPost]);
 
   useEffect(() => {
     getPostComments(selectedPost)
