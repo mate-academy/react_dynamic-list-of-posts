@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+
 import {
   ChangeEvent,
   FC,
@@ -61,12 +63,13 @@ export const App: FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          {/* eslint-disable-next-line no-nested-ternary */}
-          {postsIsLoading
-            ? <Loader />
-            : posts.length
-              ? <PostsList />
-              : 'No posts found'}
+          {
+            postsIsLoading
+              ? <Loader />
+              : posts.length
+                ? <PostsList />
+                : 'No posts found'
+          }
         </div>
 
         <div className="App__content">

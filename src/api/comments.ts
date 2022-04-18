@@ -1,12 +1,10 @@
 import { Comment } from '../types/Comment';
 
 import {
-  post, remove, request, wait,
+  post, remove, request,
 } from './api';
 
-export const getPostComments = async (postId: number) => {
-  await wait(1000);
-
+export const getPostComments = (postId: number) => {
   return request(`/comments?postId=${postId}`);
 };
 

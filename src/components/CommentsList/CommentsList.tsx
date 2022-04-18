@@ -5,10 +5,11 @@ import { PostsContext } from '../../PostsContext';
 import { removePostComment } from '../../api/comments';
 
 export const CommentsList: FC = memo(() => {
-  const { postComments } = useContext(PostsContext);
+  const { postComments, loadComments } = useContext(PostsContext);
 
-  const deleteComment = useCallback((commentId: number) => {
-    removePostComment(commentId);
+  const deleteComment = useCallback(async (commentId: number) => {
+    await removePostComment(commentId);
+    loadComments();
   }, []);
 
   return (

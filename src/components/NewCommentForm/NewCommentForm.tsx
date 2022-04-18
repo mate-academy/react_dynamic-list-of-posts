@@ -13,7 +13,7 @@ import { addPostComment } from '../../api/comments';
 import { PostsContext } from '../../PostsContext';
 
 export const NewCommentForm: FC = memo(() => {
-  const { selectedPostId } = useContext(PostsContext);
+  const { selectedPostId, loadComments } = useContext(PostsContext);
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userComment, setUserComment] = useState('');
@@ -52,11 +52,12 @@ export const NewCommentForm: FC = memo(() => {
     setHasCommentError(false);
   }, []);
 
-  const handleSubmit = useCallback((event: FormEvent<HTMLFormElement>) => {
+  // eslint-disable-next-line max-len
+  const handleSubmit = useCallback(async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (userName && userEmail && userComment) {
-      addPostComment({
+      await addPostComment({
         postId: selectedPostId,
         name: userName,
         email: userEmail,
@@ -64,6 +65,7 @@ export const NewCommentForm: FC = memo(() => {
       });
 
       resetForm();
+      loadComments();
     }
 
     if (!userName) {

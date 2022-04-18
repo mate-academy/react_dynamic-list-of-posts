@@ -15,6 +15,7 @@ interface PostsContextInterface {
   setSelectedPostId: Dispatch<SetStateAction<number>>,
   showComments: boolean,
   setShowComments: Dispatch<SetStateAction<boolean>>,
+  loadComments: () => void | Promise<void>,
   postComments: Comment[],
   setPostComment: Dispatch<SetStateAction<Comment[]>>,
   postsIsLoading: boolean,
@@ -30,6 +31,7 @@ export const PostsContext = createContext<PostsContextInterface>({
   setSelectedPostId: () => {},
   showComments: false,
   setShowComments: () => {},
+  loadComments: () => {},
   postComments: [],
   setPostComment: () => {},
   postsIsLoading: false,
@@ -41,7 +43,7 @@ export const PostsProvider: FC = ({ children }) => {
   const [selectedUserId, setSelectedUserId] = useState<number>(0);
   const [selectedPostId, setSelectedPostId] = useState<number>(0);
   const [showComments, setShowComments] = useState<boolean>(false);
-  const [postComments, setPostComment] = useState<Comment[]>([]);
+  const [postComments, setPostComments] = useState<Comment[]>([]);
   const [postsIsLoading, setPostsIsLoading] = useState(false);
 
   const loadPosts = async () => {
@@ -54,13 +56,18 @@ export const PostsProvider: FC = ({ children }) => {
     setPostsIsLoading(false);
   };
 
+  const loadComments = async () => {
+    const data = await getPostComments(selectedPostId);
+
+    setPostComments(data);
+  };
+
   useEffect(() => {
     loadPosts();
   }, [selectedUserId]);
 
   useEffect(() => {
-    getPostComments(selectedPostId)
-      .then(data => setPostComment(data));
+    loadComments();
   }, [selectedPostId]);
 
   const contextValues = {
@@ -72,8 +79,9 @@ export const PostsProvider: FC = ({ children }) => {
     setSelectedPostId,
     showComments,
     setShowComments,
+    loadComments,
     postComments,
-    setPostComment,
+    setPostComment: setPostComments,
     postsIsLoading,
     setPostsIsLoading,
   };
