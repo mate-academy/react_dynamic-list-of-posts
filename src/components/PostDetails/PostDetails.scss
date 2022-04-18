@@ -5,6 +5,7 @@
 
   &__comments {
     text-align: right;
+    margin-bottom: 15px;
   }
 
   &__list {
@@ -43,6 +44,18 @@
     &:hover + p {
       transition: color 0.12s;
       color: #e9e6f2;
+    }
+  }
+
+  &__x {
+    border: none;
+    background: transparent;
+    opacity: 0.4;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 0.8;
+      cursor: pointer;
     }
   }
 
