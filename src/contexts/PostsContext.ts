@@ -14,7 +14,7 @@ type PostsContextType = {
 export const PostsContext = React.createContext<PostsContextType>({
   posts: [],
   setPosts: () => {},
-  selectedPostId: 87,
+  selectedPostId: 0,
   setSelectedPostId: () => {},
   comments: [],
   setComments: () => {},
