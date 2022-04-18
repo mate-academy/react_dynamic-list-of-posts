@@ -1,45 +1,92 @@
-import React from 'react';
+import { FC, useEffect, useState } from 'react';
+import { getPostComments, removeComment } from '../../api/comments';
+import { getPostDetails } from '../../api/posts';
+import { Comment } from '../../types/comment';
+import { Post } from '../../types/post';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+interface Props {
+  postId: number
+}
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: FC<Props> = ({ postId }) => {
+  const [post, setPost] = useState<Post | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [hasCommentsHidden, setHasCommentsHidden] = useState(false);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const setComment = (comment: Comment) => setComments([...comments, comment]);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  const deleteComment = (commentId = 0) => {
+    removeComment(commentId).then((item => {
+      if (item) {
+        setComments(comments.filter(comment => comment.id !== commentId));
+      }
+    }));
+  };
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  useEffect(() => {
+    if (postId !== 0) {
+      getPostDetails(postId)
+        .then(postFromServer => setPost(postFromServer));
+      getPostComments(postId)
+        .then(commentsFromServer => setComments(commentsFromServer));
+    } else {
+      setPost(null);
+      setComments([]);
+    }
+  }, [postId]);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      {post && (
+        <>
+          <section className="PostDetails__post">
+            <p>{post.body}</p>
+          </section>
+
+          {comments.length > 0 && (
+            <section className="PostDetails__comments">
+              <button
+                type="button"
+                className="button"
+                onClick={() => setHasCommentsHidden(has => !has)}
+              >
+                {`${hasCommentsHidden ? 'show' : 'hide'} ${comments.length} comments`}
+              </button>
+
+              {!hasCommentsHidden && (
+                <ul className="PostDetails__list">
+                  {comments.map(comment => (
+                    <li className="PostDetails__list-item" key={comment.id}>
+                      <button
+                        type="button"
+                        className="PostDetails__remove-button button"
+                        onClick={() => deleteComment(comment.id)}
+                      >
+                        X
+                      </button>
+                      <p>{comment.body}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+            </section>
+          )}
+
+          <section>
+            <div className="PostDetails__form-wrapper">
+              <NewCommentForm
+                postId={post.id}
+                setComment={setComment}
+              />
+            </div>
+          </section>
+        </>
+      )}
+    </div>
+  );
+};
