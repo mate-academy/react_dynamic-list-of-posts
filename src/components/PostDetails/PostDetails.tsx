@@ -52,6 +52,15 @@ export const PostDetails: React.FC<Props> = ({
     fetchComments();
   }, [postId, commentId]);
 
+  const clickHandler = (id: number) => {
+    setRemoveText(true);
+    setCommentId(id);
+  };
+
+  const buttonTextOptOne = comments.length < 1 ? null : comments.length;
+
+  const buttonTextOptTwo = comments.length === 1 ? 'comment' : 'comments';
+
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
@@ -69,9 +78,9 @@ export const PostDetails: React.FC<Props> = ({
       >
         {!isComment ? 'Show' : 'Hide'}
         {' '}
-        {comments.length < 1 ? null : comments.length}
+        {buttonTextOptOne}
         {' '}
-        {comments.length === 1 ? 'comment' : 'comments'}
+        {buttonTextOptTwo}
       </button>
 
       {isComment && (
@@ -83,10 +92,7 @@ export const PostDetails: React.FC<Props> = ({
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
-                  onClick={() => {
-                    setRemoveText(true);
-                    setCommentId(comment.id);
-                  }}
+                  onClick={() => clickHandler(comment.id)}
                 >
                   X
                 </button>
