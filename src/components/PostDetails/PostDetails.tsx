@@ -1,45 +1,122 @@
-import React from 'react';
+import React, {
+  Dispatch, SetStateAction, useEffect, useState,
+} from 'react';
+
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import { getPostComments, removeComment } from '../../api/comments';
+import { getPostDetails } from '../../api/posts';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  postId: number,
+  onCommentsSet: Dispatch<SetStateAction<Comment[]>>,
+  comments: Comment[],
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = ({
+  postId,
+  onCommentsSet,
+  comments,
+}) => {
+  const [isComment, setIsComment] = useState(false);
+  const [post, setPost] = useState<Post | null>(null);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [text, setText] = useState('');
+  const [removeText, setRemoveText] = useState(false);
+  const [commentId, setCommentId] = useState(0);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const fetchPosts = async () => {
+    const posts = await getPostDetails(postId);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+    setPost(posts);
+  };
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  const fetchComments = async () => {
+    // If "X" Button clicked => remove comment
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+    if (removeText) {
+      removeComment(commentId);
+      const result = await getPostComments(postId);
+
+      onCommentsSet(result);
+    }
+
+    const commentsArr = await getPostComments(postId);
+
+    onCommentsSet(commentsArr);
+  };
+
+  useEffect(() => {
+    fetchPosts();
+    fetchComments();
+  }, [postId, commentId]);
+
+  const clickHandler = (id: number) => {
+    setRemoveText(true);
+    setCommentId(id);
+  };
+
+  const buttonTextOptOne = comments.length < 1 ? null : comments.length;
+
+  const buttonTextOptTwo = comments.length === 1 ? 'comment' : 'comments';
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <p>{post?.title}</p>
+      </section>
+
+      <button
+        type="button"
+        className="button"
+        onClick={() => {
+          setIsComment(prev => !prev);
+        }}
+      >
+        {!isComment ? 'Show' : 'Hide'}
+        {' '}
+        {buttonTextOptOne}
+        {' '}
+        {buttonTextOptTwo}
+      </button>
+
+      {isComment && (
+        <section className="PostDetails__comments">
+
+          <ul className="PostDetails__list">
+            {comments.map(comment => (
+              <li key={comment.id} className="PostDetails__list-item">
+                <button
+                  type="button"
+                  className="PostDetails__remove-button button"
+                  onClick={() => clickHandler(comment.id)}
+                >
+                  X
+                </button>
+                <p>{comment.body}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            postId={postId}
+            name={name}
+            email={email}
+            comment={text}
+            onSetName={setName}
+            onSetEmail={setEmail}
+            onSetComment={setText}
+            onCommentsSet={onCommentsSet}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};
