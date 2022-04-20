@@ -1,6 +1,8 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, {
+  memo, useCallback, useEffect, useState,
+} from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { deleteComment, getPostComments } from '../../api/comments';
+import { addComment, deleteComment, getPostComments } from '../../api/comments';
 import { getPostById } from '../../api/posts';
 import { Post, Comment } from '../../types';
 import { NewCommentForm } from '../NewCommentForm';
@@ -43,22 +45,25 @@ export const PostDetails: React.FC<Props> = memo(({
       });
   };
 
-  const newComment = (
+  const newComment = useCallback((
     name: string,
     email: string,
     body: string,
   ) => {
+    const addedComment = {
+      id: Number(uuidv4()),
+      postId: selectedPostId,
+      name,
+      email,
+      body,
+    };
+
     setComments((prev) => (
-      [...prev,
-        {
-          id: +uuidv4(),
-          postId: selectedPostId,
-          name,
-          email,
-          body,
-        }]
+      [...prev, addedComment]
     ));
-  };
+
+    addComment(addedComment);
+  }, [comments]);
 
   useEffect(() => {
     getSelectedPost();
