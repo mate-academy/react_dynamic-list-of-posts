@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Comment } from '../../types';
+import { CommentForServer } from '../../types';
 import './NewCommentForm.scss';
 
 type Props = {
-  addComment: (newComment: Comment) => void,
+  addComment: (newComment: CommentForServer) => void,
   postId: number,
 };
 
@@ -23,12 +23,10 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ addComment, postId 
     event.preventDefault();
 
     addComment({
-      id: Math.trunc(Date.now()),
       name,
       email,
       body: comment,
       postId,
-      createdAt: new Date(),
     });
     resetForm();
   };

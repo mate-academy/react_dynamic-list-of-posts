@@ -1,9 +1,9 @@
 import { Post } from '../types';
-import { BASE_URL, getAllPosts } from './api';
+import { BASE_URL, getPostsFromServer } from './api';
 
 export function getPostByUserId(userId?: number): Promise<Post[]> {
   if (!userId) {
-    return getAllPosts();
+    return getPostsFromServer();
   }
 
   return fetch(`${BASE_URL}/posts/?userId=${userId}`)

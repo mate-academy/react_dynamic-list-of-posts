@@ -5,12 +5,12 @@ export interface Post {
 }
 
 export interface Comment {
-  id: number,
-  postId: number,
-  name: string,
-  email: string,
-  body: string,
-  createdAt: Date,
+  id: number;
+  postId: number;
+  name: string;
+  email: string;
+  body: string;
+  createdAt: Date;
 }
 
 export interface User {
@@ -19,4 +19,11 @@ export interface User {
   username: string;
   email: string;
   phone: string;
+}
+
+export interface CommentForServer {
+  postId: number;
+  name: string;
+  email: string;
+  body: string;
 }

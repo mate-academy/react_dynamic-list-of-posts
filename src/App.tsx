@@ -3,7 +3,7 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getAllUsers } from './api/api';
+import { getUsersFromServer } from './api/api';
 import { Post, User } from './types';
 import { getPostByUserId } from './api/posts';
 
@@ -18,7 +18,7 @@ const App: React.FC = () => {
   );
 
   const getUsers = () => (
-    getAllUsers().then(data => (
+    getUsersFromServer().then(data => (
       setUsers(data.slice(0, 8))
     ))
   );

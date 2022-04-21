@@ -5,7 +5,7 @@ import {
   getPostComments,
 } from '../../api/comments';
 import { getPostById } from '../../api/posts';
-import { Post, Comment } from '../../types';
+import { Post, Comment, CommentForServer } from '../../types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
@@ -32,13 +32,20 @@ export const PostDetails: React.FC<Props> = React.memo(({ selectedPostId }) => {
   );
 
   const removeComment = (commentId: number) => {
-    setComments(comments.filter(comment => comment.id !== commentId));
-    deleteComment(commentId);
+    deleteComment(commentId).then(res => {
+      if (res) {
+        setComments(comments.filter(comment => comment.id !== commentId));
+      }
+    });
   };
 
-  const addComment = useCallback((newComment: Comment) => {
-    setComments(currComments => [...currComments, newComment]);
-    createComment(newComment);
+  const addComment = useCallback((newComment: CommentForServer) => {
+    createComment(newComment)
+      .then(coment => {
+        if (coment) {
+          setComments(currComments => [...currComments, coment]);
+        }
+      });
   }, [comments]);
 
   useEffect(() => {
