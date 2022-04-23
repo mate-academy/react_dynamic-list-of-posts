@@ -3,6 +3,7 @@
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  height: max-content;
 
   &__input {
     border: none;
@@ -11,9 +12,22 @@
     font-size: 0.9rem;
     padding: 10px 5px;
     color: #4d457b;
+    outline: none;
+
+    &--textarea {
+      resize: none;
+      width: 100%;
+      padding: 10px;
+    }
   }
 
   &__submit-button {
+    margin-top: 10px;
+  }
+
+  &__warning-message {
+    font-size: 1.1em;
+    color: #ff2929;
     margin-top: 10px;
   }
 }
