@@ -1,37 +1,49 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
+import { PostsListUI } from '../PostsListUI';
+import { Loader } from '../Loader';
+import { getUserPosts } from '../../api/posts';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+type Props = {
+  selectedUserId: number;
+  selectedPostId: number;
+  onOpenPostDetails: (postId: number) => void;
+  onClearPostDetails: () => void;
+};
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = ({
+  selectedUserId,
+  selectedPostId,
+  onOpenPostDetails,
+  onClearPostDetails,
+}) => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [postsLoading, setPostsLoading] = useState(true);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  useEffect(() => {
+    async function loadPosts() {
+      setPostsLoading(true);
+      setPosts([]);
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      const postsFromServer = await getUserPosts(selectedUserId);
+
+      setPosts([...postsFromServer]);
+      setPostsLoading(false);
+    }
+
+    loadPosts();
+  }, [selectedUserId]);
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+      {postsLoading && <Loader />}
+      <PostsListUI
+        posts={posts}
+        selectedPostId={selectedPostId}
+        onOpenPostDetails={onOpenPostDetails}
+        onClearPostDetails={onClearPostDetails}
+      />
+    </div>
+  );
+};
