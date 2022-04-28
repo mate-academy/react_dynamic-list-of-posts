@@ -1,41 +1,101 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import * as postApi from './api/api';
+import { UserSelect } from './components/UserSelect/UserSelect';
 
-const App: React.FC = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+const App: React.FC = () => {
+  const [posts, newList] = useState<Post[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState('');
+  const [postDetails, setPostDetails] = useState('');
+  const [postComments, setPostComments] = useState<Comment[]>([]);
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+  useEffect(() => {
+    if (selectedUserId === 0) {
+      postApi.getAllPosts()
+        .then((newPosts) => {
+          return newList(newPosts);
+        });
+    } else {
+      postApi.getUserPosts(selectedUserId)
+        .then((userPosts) => {
+          return newList(userPosts);
+        });
+    }
+  }, [selectedUserId]);
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+  useEffect(() => {
+    if (selectedPostId !== '') {
+      postApi.getPostDetails(selectedPostId)
+        .then((title) => {
+          return setPostDetails(title.body);
+        });
+      postApi.getPostComments(selectedPostId)
+        .then((comments) => {
+          return setPostComments(comments);
+        });
+    }
+  }, [selectedPostId]);
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    event.preventDefault();
+    setSelectedUserId(+event.target.value);
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    setSelectedPostId(event.currentTarget.value);
+  };
+
+  const addComment = (
+    name: string,
+    email: string,
+    text: string,
+  ) => {
+    postApi.addNewComment(name, email, text, selectedPostId)
+      .then((comments) => {
+        return setPostComments(comments);
+      });
+  };
+
+  const deleteComment = (commentId: string) => {
+    postApi.deleteComment(commentId)
+      .then((comments) => {
+        return setPostComments(comments);
+      });
+  };
+
+  return (
+    <div className="App">
+      <header className="App__header">
+        <UserSelect user={handleChange} />
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            posts={posts}
+            click={handleClick}
+            status={selectedPostId}
+          />
+        </div>
+
+        <div className="App__content">
+          {selectedPostId !== '' && (
+            <PostDetails
+              details={postDetails}
+              comments={postComments}
+              onAdd={addComment}
+              onDelete={deleteComment}
+            />
+          )}
+        </div>
+      </main>
+    </div>
+  );
+};
 
 export default App;
