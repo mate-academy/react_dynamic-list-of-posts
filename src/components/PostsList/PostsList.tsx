@@ -1,37 +1,77 @@
-import React from 'react';
+import { FC, useEffect, useState } from 'react';
+import { getPosts, getUserPosts } from '../../api/posts';
 import './PostsList.scss';
+import { Loader } from '../Loader';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+interface Props {
+  userId: number,
+  onSelect: (postId: number) => void,
+  selectedPostId: number,
+  isLoadPost: boolean,
+}
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: FC<Props> = (
+  {
+    userId,
+    onSelect,
+    selectedPostId,
+    isLoadPost: load,
+  },
+) => {
+  const [posts, setPosts] = useState<Post[]>([]);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  useEffect(() => {
+    if (userId === 0) {
+      getPosts().then(data => {
+        setPosts(data);
+      });
+    } else {
+      getUserPosts(userId).then(
+        data => {
+          setPosts(data);
+        },
+      );
+    }
+  }, [userId]);
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+  const isOpened = (postId: number) => selectedPostId === postId;
+
+  const postDetailsToggle = (postId: number) => {
+    if (isOpened(postId)) {
+      onSelect(0);
+    } else {
+      onSelect(postId);
+    }
+  };
+
+  return (
+    <>
+      <div className="PostsList">
+        <h2>Posts:</h2>
+        {posts.length ? (
+          <ul className="PostsList__list">
+            {posts.map(post => (
+              <li className="PostsList__item" key={post.id}>
+                <div>
+                  <b>{`[User #${post.userId}]: `}</b>
+                  {post.title}
+                </div>
+                <button
+                  type="button"
+                  className="PostsList__button button"
+                  onClick={() => postDetailsToggle(post.id)}
+                >
+                  {isOpened(post.id) ? 'Close' : 'Open'}
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <>
+            {load ? <Loader /> : <h3>User has no posts</h3>}
+          </>
+        )}
+      </div>
+    </>
+  );
+};
