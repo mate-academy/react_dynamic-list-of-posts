@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Comment } from '../../types';
 import './NewCommentForm.scss';
+import { createComments } from '../../api/comments';
 
 type Props = {
   postId: number,
@@ -19,14 +20,8 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
     event.preventDefault();
 
     if (name && email && body) {
-      const newComment = {
-        name,
-        email,
-        body,
-        postId,
-      };
-
-      createComment(newComment);
+      createComments(postId, name, email, body)
+        .then(response => createComment(response));
     }
 
     setName('');

@@ -3,7 +3,7 @@ import { getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { Post, Comment } from '../../types';
-import { getPostComments } from '../../api/comments';
+import { getPostComments, getDeleteComment } from '../../api/comments';
 
 type Props = {
   selectedPostId: number,
@@ -35,6 +35,7 @@ export const PostDetails: React.FC<Props> = React.memo(({ selectedPostId }) => {
   }, []);
 
   const deleteComment = useCallback((id: number) => {
+    getDeleteComment(id);
     setComments(prev => prev.filter(comment => comment.id !== id));
   }, []);
 
@@ -56,13 +57,15 @@ export const PostDetails: React.FC<Props> = React.memo(({ selectedPostId }) => {
           </section>
 
           <section className="PostDetails__comments">
-            <button
-              type="button"
-              className="button"
-              onClick={() => setHideShow(!hideShow)}
-            >
-              {`${hideShow ? 'Hide' : 'Show'} ${comments.length} comments`}
-            </button>
+            {comments.length ? (
+              <button
+                type="button"
+                className="button"
+                onClick={() => setHideShow(!hideShow)}
+              >
+                {`${hideShow ? 'Hide' : 'Show'} ${comments.length} comments`}
+              </button>
+            ) : ('There are no comments yet!')}
 
             {hideShow && (
               <ul className="PostDetails__list">
