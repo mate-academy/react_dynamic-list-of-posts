@@ -21,7 +21,7 @@ Implement the app to manage post comments.
 8. Create `getPostDetails(postId)` method in `/src/api/posts.ts` and load post details from `/posts/:postId`.
 9. Create `getPostComments(postId)` method in `/src/api/comments.ts`, load comments from `/comments?postId={postId}`.
 10. Add a button to `show`/`hide` comments, which should have the name `Show comments`/`Hide comments` respectively.
-11. Add an `X` button near each comment to delete it on the server.
+11. Add a delete button near each comment to delete it on the server using this symbol `X`.
 12. Add a form to add a new comment to the current post. The form should have a submit button with the name `Add a comment` in it and 3 fields: 
 - for user name  with the placeholder `Your name` 
 - for user email with the placeholder `Your email` 
