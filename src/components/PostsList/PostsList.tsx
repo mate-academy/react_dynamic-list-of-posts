@@ -41,6 +41,7 @@ export const PostsList: React.FC<Props> = ({
                 <button
                   type="button"
                   className="PostsList__button button"
+                  onClick={click}
                 >
                   Close
                 </button>

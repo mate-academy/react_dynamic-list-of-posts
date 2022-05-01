@@ -5,7 +5,7 @@ import './PostDetails.scss';
 type Props = {
   details: string,
   comments: Comment[],
-  onAdd: (name: string, email:string, text:string) => void,
+  onAdd: (comment: NewComment) => void,
   onDelete: (commentId: string) => void,
 };
 
@@ -14,14 +14,13 @@ export const PostDetails: React.FC<Props> = ({
 }) => {
   const [defaultVisibility, setVisibility] = useState(true);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const buttonVisibility = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (event.currentTarget.name === 'hide'
-    || event.currentTarget.name === 'show') {
-      setVisibility(!defaultVisibility);
-    } else {
-      onDelete(event.currentTarget.value);
-    }
+    setVisibility(!defaultVisibility);
+  };
+
+  const deleteComment = (event: React.MouseEvent<HTMLButtonElement>) => {
+    onDelete(event.currentTarget.value);
   };
 
   return (
@@ -38,7 +37,7 @@ export const PostDetails: React.FC<Props> = ({
             type="button"
             className="PostsList__button button"
             name="hide"
-            onClick={handleClick}
+            onClick={buttonVisibility}
           >
             {`Hide ${comments.length} comments`}
           </button>
@@ -48,7 +47,7 @@ export const PostDetails: React.FC<Props> = ({
             type="button"
             className="PostsList__button button"
             name="show"
-            onClick={handleClick}
+            onClick={buttonVisibility}
           >
             {`Show ${comments.length} comments`}
           </button>
@@ -66,7 +65,7 @@ export const PostDetails: React.FC<Props> = ({
                     type="button"
                     className="PostDetails__remove-button button"
                     value={`${comment.id}`}
-                    onClick={handleClick}
+                    onClick={deleteComment}
                   >
                     X
                   </button>

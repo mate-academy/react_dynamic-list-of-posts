@@ -2,38 +2,36 @@ import React, { useState } from 'react';
 import './NewCommentForm.scss';
 
 type Props = {
-  onAdd: (name: string, email:string, text:string) => void,
+  onAdd: (comment: NewComment) => void,
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onAdd }) => {
-  const [name, newName] = useState('');
-  const [email, newMail] = useState('');
-  const [text, newText] = useState('');
-
-  const reset = () => {
-    newName('');
-    newMail('');
-    newText('');
+  const newComment = {
+    name: '',
+    email: '',
+    body: '',
   };
+
+  const [comment, setComment] = useState<NewComment>(newComment);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     if (event.target.name === 'name') {
-      newName(event.target.value);
+      comment.name = event.target.value;
     } else {
-      newMail(event.target.value);
+      comment.email = event.target.value;
     }
   };
 
   const handleChangeText = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     event.preventDefault();
-    newText(event.target.value);
+    comment.body = event.target.value;
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    reset();
-    onAdd(name, email, text);
+    setComment(newComment);
+    onAdd(comment);
   };
 
   return (
@@ -48,7 +46,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAdd }) => {
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={name}
+          value={comment.name}
           onChange={handleChange}
         />
       </div>
@@ -59,7 +57,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAdd }) => {
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={email}
+          value={comment.email}
           onChange={handleChange}
         />
       </div>
@@ -69,7 +67,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAdd }) => {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={text}
+          value={comment.body}
           onChange={handleChangeText}
         />
       </div>

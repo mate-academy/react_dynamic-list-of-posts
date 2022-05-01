@@ -38,7 +38,7 @@ const App: React.FC = () => {
           return setPostComments(comments);
         });
     }
-  }, [selectedPostId]);
+  }, [selectedPostId, postComments]);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     event.preventDefault();
@@ -50,12 +50,10 @@ const App: React.FC = () => {
     setSelectedPostId(event.currentTarget.value);
   };
 
-  const addComment = (
-    name: string,
-    email: string,
-    text: string,
-  ) => {
-    postApi.addNewComment(name, email, text, selectedPostId)
+  const addComment = (comment: NewComment) => {
+    const { name, email, body } = comment;
+
+    postApi.addNewComment(name, email, body, selectedPostId)
       .then((comments) => {
         return setPostComments(comments);
       });
