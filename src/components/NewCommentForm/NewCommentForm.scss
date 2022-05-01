@@ -11,9 +11,18 @@
     font-size: 0.9rem;
     padding: 10px 5px;
     color: #4d457b;
+
+    &--error {
+      border-color: red;
+      color: red;
+    }
   }
 
   &__submit-button {
     margin-top: 10px;
+  }
+
+  &__error {
+    color: red;
   }
 }
