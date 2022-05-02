@@ -14,10 +14,18 @@ interface Errors {
   body: string
 }
 
+interface InputData {
+  name: string,
+  email: string,
+  body: string
+}
+
 export const NewCommentForm: FC<Props> = ({ postId, setComment }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [dataIn, setDataIn] = useState((): InputData => ({
+    name: '',
+    email: '',
+    body: '',
+  }));
 
   const [errors, setErrors] = useState((): Errors => ({
     name: '',
@@ -26,44 +34,53 @@ export const NewCommentForm: FC<Props> = ({ postId, setComment }) => {
   }));
 
   const resetForm = () => {
-    setName('');
-    setEmail('');
-    setBody('');
+    setDataIn(state => ({
+      ...state,
+      name: '',
+    }));
+    setDataIn(state => ({
+      ...state,
+      email: '',
+    }));
+    setDataIn(state => ({
+      ...state,
+      body: '',
+    }));
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!name) {
+    if (!dataIn.name) {
       setErrors(state => ({
         ...state,
         name: 'Please, write your name',
       }));
     }
 
-    if (!isEmailValid.test(email)) {
+    if (!isEmailValid.test(dataIn.email)) {
       setErrors(state => ({
         ...state,
         email: 'Please, write correct email',
       }));
     }
 
-    if (!body) {
+    if (!dataIn.body) {
       setErrors(state => ({
         ...state,
         body: 'Please, write something',
       }));
     }
 
-    if (!name || !isEmailValid.test(email) || !body) {
+    if (!dataIn.name || !isEmailValid.test(dataIn.email) || !dataIn.body) {
       return;
     }
 
     addComment(
       postId,
-      name,
-      email,
-      body,
+      dataIn.name,
+      dataIn.email,
+      dataIn.body,
     ).then(comment => {
       setComment(comment);
       resetForm();
@@ -78,9 +95,12 @@ export const NewCommentForm: FC<Props> = ({ postId, setComment }) => {
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={name}
+          value={dataIn.name}
           onChange={(event) => {
-            setName(event.target.value);
+            setDataIn(state => ({
+              ...state,
+              name: event.target.value,
+            }));
             setErrors(state => ({
               ...state,
               name: '',
@@ -96,9 +116,12 @@ export const NewCommentForm: FC<Props> = ({ postId, setComment }) => {
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={email}
+          value={dataIn.email}
           onChange={(event) => {
-            setEmail(event.target.value);
+            setDataIn(state => ({
+              ...state,
+              email: event.target.value,
+            }));
             setErrors(state => ({
               ...state,
               email: '',
@@ -113,9 +136,12 @@ export const NewCommentForm: FC<Props> = ({ postId, setComment }) => {
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={body}
+          value={dataIn.body}
           onChange={(event) => {
-            setBody(event.target.value);
+            setDataIn(state => ({
+              ...state,
+              body: event.target.value,
+            }));
             setErrors(state => ({
               ...state,
               body: '',

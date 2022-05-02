@@ -1,6 +1,8 @@
 import { request } from './api';
 
-export const getPostComments = (postId: number) => request(`/comments?postId=${postId}`);
+export const getPostComments = (postId: number) => request(
+  `/comments?postId=${postId}`,
+);
 
 export const addComment = (
   postId: number,
@@ -20,6 +22,9 @@ export const addComment = (
   }),
 });
 
-export const removeComment = (commentId: number) => request(`/comments/${commentId}`, {
-  method: 'DELETE',
-});
+export const removeComment = (commentId: number) => request(
+  `/comments/${commentId}`,
+  {
+    method: 'DELETE',
+  },
+);
