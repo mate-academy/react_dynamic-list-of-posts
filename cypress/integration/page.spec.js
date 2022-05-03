@@ -1,5 +1,3 @@
-/// <reference types="cypress" />
-
 const commentBody = Math.random();
 
 const page = {
@@ -33,6 +31,8 @@ describe('Page', () => {
   it('should show only the posts of the selected user', () => {
     cy.intercept('**/posts?userId=3', { fixture: 'post' });
     cy.intercept('**/users', { fixture: 'users' });
+
+    cy.visit('/');
 
     cy.get('select')
       .select('Clementine Bauch');
@@ -73,9 +73,11 @@ describe('Page', () => {
       .should('be.visible');
   });
 
-  it.only('should have an option to delete comment by clicking "X"', () => {
+  it('should have an option to delete comment by clicking "X"', () => {
     cy.intercept('POST', '**/comments').as('postComment');
     cy.intercept('DELETE', `**/comments/*`).as('deleteComment');
+
+    cy.visit('/');
 
     page.clickButton('Open');
 
@@ -104,6 +106,8 @@ describe('Page', () => {
   it('should have option to add comment to post using comment adding form', () => {
     cy.intercept('**/comments').as('comment');
 
+    cy.visit('/');
+
     page.clickButton('Open');
 
     page.postComment();
@@ -120,6 +124,8 @@ describe('Page', () => {
     cy.intercept('**/posts', { fixture: 'post' });
     cy.intercept('**/comments?postId=87', { fixture: 'comments' })
       .as('comment');
+
+    cy.visit('/');
 
     page.clickButton('Open');
 
