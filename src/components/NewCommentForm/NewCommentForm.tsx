@@ -34,18 +34,11 @@ export const NewCommentForm: FC<Props> = ({ postId, setComment }) => {
   }));
 
   const resetForm = () => {
-    setDataIn(state => ({
-      ...state,
+    setDataIn({
       name: '',
-    }));
-    setDataIn(state => ({
-      ...state,
       email: '',
-    }));
-    setDataIn(state => ({
-      ...state,
       body: '',
-    }));
+    });
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
