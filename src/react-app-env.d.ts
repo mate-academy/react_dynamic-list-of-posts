@@ -11,3 +11,8 @@ type Comments = {
   id: number;
   body: string;
 };
+
+type User = {
+  id: number;
+  name: string;
+};

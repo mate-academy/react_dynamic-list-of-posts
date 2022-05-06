@@ -3,7 +3,7 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getUserPosts } from './api/api';
+import { getUserPosts, getAllUsers } from './api/api';
 import { Loader } from './components/Loader/Loader';
 
 type Props = {
@@ -13,13 +13,18 @@ type Props = {
 const App: React.FC<Props> = () => {
   const [userId, setUserId] = useState('0');
   const [posts, setPosts] = useState<Post[]>([]);
-  const [selectedPostId, setSelectedPostId] = useState<number>();
+  const [selectedPostId, setSelectedPostId] = useState<number>(0);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [usersList, setUsersList] = useState<User[]>([]);
 
   const selectHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setUserId(event.target.value);
     setLoading(true);
   };
+
+  useEffect(() => {
+    getAllUsers().then(results => setUsersList(results));
+  }, []);
 
   useEffect(() => {
     getUserPosts(userId).then(res => {
@@ -38,16 +43,11 @@ const App: React.FC<Props> = () => {
 
           <select className="App__user-selector" onChange={selectHandler}>
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {usersList.map(user => (
+              <option key={user.id} value={user.id}>
+                {user.name}
+              </option>
+            ))}
           </select>
         </label>
       </header>

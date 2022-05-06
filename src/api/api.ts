@@ -9,3 +9,8 @@ export const getUserPosts = (userId: string) => {
   return fetch(`${BASE_URL}/posts?userId=${userId}`)
     .then(response => response.json());
 };
+
+export const getAllUsers = () => {
+  return fetch(`${BASE_URL}/users`)
+    .then(response => response.json());
+};

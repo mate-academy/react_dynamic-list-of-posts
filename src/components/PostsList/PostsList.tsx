@@ -4,7 +4,7 @@ import './PostsList.scss';
 type Props = {
   posts: Post[];
   setSelectedPostId: (arg0: number) => void;
-  selectedPostId: number | undefined;
+  selectedPostId: number;
 };
 
 export const PostsList: React.FC<Props> = (props) => {

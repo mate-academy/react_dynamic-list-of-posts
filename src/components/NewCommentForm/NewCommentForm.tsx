@@ -39,7 +39,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComments }) => {
       setName('');
       setEmail('');
       setBody('');
-      setErrorMessage(' ');
+      setErrorMessage('');
     }
   }
 
