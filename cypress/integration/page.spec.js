@@ -12,7 +12,7 @@ const page = {
       .type('test');
 
     cy.get('[placeholder="Your email"]')
-      .type('test@com');
+      .type('test@test.com');
 
     cy.get('[placeholder="Type comment here"]')
       .type(commentBody);
@@ -29,6 +29,7 @@ describe('Page', () => {
   });
 
   it('should show only the posts of the selected user', () => {
+    cy.intercept('**/posts', { fixture: 'post' });
     cy.intercept('**/posts?userId=3', { fixture: 'post' });
     cy.intercept('**/users', { fixture: 'users' });
 
@@ -120,8 +121,9 @@ describe('Page', () => {
       .should('eq', 201);
   });
 
-  it('should have option to show/hide comments by clicking correspondent button', () => {
+  it.only('should have option to show/hide comments by clicking correspondent button', () => {
     cy.intercept('**/posts', { fixture: 'post' });
+    cy.intercept('**/posts/87', { fixture: 'post' });
     cy.intercept('**/comments?postId=87', { fixture: 'comments' })
       .as('comment');
 
@@ -129,7 +131,7 @@ describe('Page', () => {
 
     page.clickButton('Open');
 
-    cy.wait('@comment',);
+    cy.wait('@comment');
 
     cy.wait(400);
 
