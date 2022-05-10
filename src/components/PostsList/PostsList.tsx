@@ -39,7 +39,7 @@ export const PostsList: React.FC<Props> = ({
               className="PostsList__button button"
               onClick={() => getSelectedPostId(post.id)}
             >
-              {(selectedPostId === post.id) ? 'Open' : 'Close'}
+              {(selectedPostId === post.id) ? 'Close' : 'Open'}
             </button>
           </li>
         ))}
