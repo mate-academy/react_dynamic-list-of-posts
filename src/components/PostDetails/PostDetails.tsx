@@ -48,10 +48,6 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   };
 
   const toggleBtnComments = () => {
-    if (comments.length === 0) {
-      return 'No comments yet';
-    }
-
     if (!visibleComments && comments.length > 0) {
       return `Show ${comments.length} comments`;
     }
@@ -74,14 +70,17 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
             </section>
 
             <section className="PostDetails__comments">
-              <button
-                type="button"
-                className="button"
-                onClick={getVisibleComments}
-              >
-                {toggleBtnComments()}
-              </button>
-
+              { (comments.length === 0)
+                ? <p> No comments yet </p>
+                : (
+                  <button
+                    type="button"
+                    className="button"
+                    onClick={getVisibleComments}
+                  >
+                    {toggleBtnComments()}
+                  </button>
+                ) }
               {visibleComments
                 && (
                   <ul className="PostDetails__list">

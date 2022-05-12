@@ -14,34 +14,41 @@ export const NewCommentForm: React.FC<Props> = ({
   addComment,
 }) => {
   const [newId, setNewId] = useState(commentsLength);
-  const [newName, setNewName] = useState('');
-  const [newEmail, setNewEmail] = useState('');
-  const [newText, setNewText] = useState('');
+
+  const [createComment, setCreateComment] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
 
   const handleChange = (
-    setInput: (value: string) => void,
     event:React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
-    setInput(event.target.value);
+    const { name, value } = event.target;
+
+    setCreateComment(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   const resetForm = () => {
-    setNewName('');
-    setNewEmail('');
-    setNewText('');
+    setCreateComment({
+      name: '',
+      email: '',
+      body: '',
+    });
   };
 
   const handleSubmit = (event:React.FormEvent) => {
     event.preventDefault();
     setNewId((prev) => prev + 1);
 
-    if (newName && newEmail && newText) {
+    if (createComment) {
       const newComment: Comment = {
         id: newId,
-        name: newName,
         postId: selectedPostId,
-        email: newEmail,
-        body: newText,
+        ...createComment,
       };
 
       addComment(newComment);
@@ -60,9 +67,9 @@ export const NewCommentForm: React.FC<Props> = ({
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={newName}
+          value={createComment.name}
           required
-          onChange={(value) => handleChange(setNewName, value)}
+          onChange={handleChange}
         />
       </div>
 
@@ -72,9 +79,9 @@ export const NewCommentForm: React.FC<Props> = ({
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={newEmail}
+          value={createComment.email}
           required
-          onChange={(value) => handleChange(setNewEmail, value)}
+          onChange={handleChange}
         />
       </div>
 
@@ -83,9 +90,9 @@ export const NewCommentForm: React.FC<Props> = ({
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={newText}
+          value={createComment.body}
           required
-          onChange={(value) => handleChange(setNewText, value)}
+          onChange={handleChange}
         />
       </div>
 

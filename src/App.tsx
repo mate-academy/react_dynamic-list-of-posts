@@ -58,7 +58,6 @@ const App: React.FC = () => {
             {users.map(user => (
               <option
                 key={user.id}
-                value="1"
               >
                 {user.name}
               </option>
