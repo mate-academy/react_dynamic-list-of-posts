@@ -1,36 +1,47 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { Comment } from '../../types/types';
 import './NewCommentForm.scss';
-import { createComment } from '../../api/api';
-import { Posts } from '../../types/types';
+import { createComments } from '../../api/comments';
 
-interface Props {
-  post: Posts,
-  resetComent: () => void
-}
+type Props = {
+  postId: number,
+  createComment: (comment: Omit<Comment, 'id'>) => void,
+};
 
-export const NewCommentForm: React.FC<Props> = ({ post, resetComent }) => {
-  const [nameValue, setNameValue] = useState('');
-  const [emailValue, setEmailValue] = useState('');
-  const [bodyValue, setBodyValue] = useState('');
+export const NewCommentForm: React.FC<Props> = React.memo(({
+  createComment,
+  postId,
+}) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [body, setBody] = useState('');
+
+  const handleSubmit = useCallback((event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (name && email && body) {
+      createComments(postId, name, email, body)
+        .then(response => createComment(response));
+    }
+
+    setName('');
+    setEmail('');
+    setBody('');
+  }, [postId, name, email, body]);
 
   return (
     <form
       className="NewCommentForm"
-      onSubmit={(event) => {
-        event.preventDefault();
-        createComment(post.id, nameValue, emailValue, bodyValue);
-        resetComent();
-      }}
+      onSubmit={handleSubmit}
     >
       <div className="form-field">
         <input
           type="text"
           name="name"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={nameValue}
-          onChange={(event) => setNameValue(event.target.value)}
-          required
         />
       </div>
 
@@ -38,22 +49,20 @@ export const NewCommentForm: React.FC<Props> = ({ post, resetComent }) => {
         <input
           type="text"
           name="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={emailValue}
-          onChange={(event) => setEmailValue(event.target.value)}
-          required
         />
       </div>
 
       <div className="form-field">
         <textarea
           name="body"
+          value={body}
+          onChange={(event) => setBody(event.target.value)}
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={bodyValue}
-          onChange={(event) => setBodyValue(event.target.value)}
-          required
         />
       </div>
 
@@ -65,4 +74,4 @@ export const NewCommentForm: React.FC<Props> = ({ post, resetComent }) => {
       </button>
     </form>
   );
-};
+});

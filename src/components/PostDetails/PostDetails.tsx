@@ -1,38 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
-import { Posts, Comments } from '../../types/types';
-import { getPostComments, getUserPosts, removeComment } from '../../api/api';
+import { Post, Comment } from '../../types/types';
+import { getPostComments, deleteComments } from '../../api/comments';
 
-interface Props {
-  selectedPostId: number
-}
+type Props = {
+  selectedPostId: number,
+};
 
-export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
-  const [selectedPost, setSelectedPost] = useState<Posts>();
-  const [comments, setComments] = useState<Comments[]>([]);
-  const [visiblePosts, setVisiblePosts] = useState(false);
-  const [resetComment, setresetComment] = useState(false);
+export const PostDetails: React.FC<Props> = React.memo(({ selectedPostId }) => {
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [hideShow, setHideShow] = useState(true);
+
+  const getDetails = useCallback((id: number) => {
+    getPostDetails(id)
+      .then(response => setSelectedPost(response));
+  }, []);
+
+  const getComments = useCallback((id: number) => {
+    getPostComments(id)
+      .then((response: Comment[]) => setComments(response));
+  }, []);
+
+  const createComment = useCallback((comment) => {
+    setComments(prev => ([
+      ...prev,
+      {
+        id: Math.floor(Math.random() * 1000000),
+        ...comment,
+      },
+    ]));
+  }, []);
+
+  const deleteComment = useCallback((id: number) => {
+    deleteComments(id);
+    setComments(prev => prev.filter(comment => comment.id !== id));
+  }, []);
 
   useEffect(() => {
-    if (selectedPostId) {
-      getUserPosts(`${selectedPostId}`)
-        .then(post => {
-          setSelectedPost(post);
-        });
-      getPostComments(`?postId=${selectedPostId}`)
-        .then(comment => {
-          setComments(comment);
-        });
-    } else {
-      setSelectedPost(undefined);
-      setComments([]);
-    }
-  }, [selectedPostId, resetComment]);
+    setSelectedPost(null);
+    setComments([]);
+    getComments(selectedPostId);
+    getDetails(selectedPostId);
+  }, [selectedPostId, getDetails, getComments]);
 
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
+
       {selectedPost && (
         <>
           <section className="PostDetails__post">
@@ -40,30 +57,27 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
           </section>
 
           <section className="PostDetails__comments">
-            {comments.length !== 0 && (
+            {comments.length ? (
               <button
                 type="button"
                 className="button"
-                onClick={() => setVisiblePosts(post => !post)}
+                onClick={() => setHideShow(!hideShow)}
               >
-                {visiblePosts ? 'Hide' : 'Show'}
-                {' '}
-                {comments.length}
-                {' '}
-                comments
+                {`${hideShow ? 'Hide' : 'Show'} ${comments.length} comments`}
               </button>
-            )}
-            {!visiblePosts && (
+            ) : ('There are no comments yet!')}
+
+            {hideShow && (
               <ul className="PostDetails__list">
                 {comments.map(comment => (
-                  <li className="PostDetails__list-item" key={comment.id}>
+                  <li
+                    className="PostDetails__list-item"
+                    key={comment.id}
+                  >
                     <button
                       type="button"
                       className="PostDetails__remove-button button"
-                      onClick={() => {
-                        removeComment(`${comment.id}`);
-                        setresetComment(!resetComment);
-                      }}
+                      onClick={() => deleteComment(comment.id)}
                     >
                       X
                     </button>
@@ -77,8 +91,8 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
           <section>
             <div className="PostDetails__form-wrapper">
               <NewCommentForm
-                post={selectedPost}
-                resetComent={() => setresetComment(!resetComment)}
+                postId={selectedPostId}
+                createComment={createComment}
               />
             </div>
           </section>
@@ -86,4 +100,4 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
       )}
     </div>
   );
-};
+});

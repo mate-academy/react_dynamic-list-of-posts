@@ -1,29 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { request, getPostDetails } from './api/api';
-import { Posts } from './types/types';
+import { Post } from './types/types';
+import { getUserPosts, getAllPosts } from './api/posts';
 
 const App: React.FC = () => {
-  const [posts, setPosts] = useState<Posts[]>([]);
-  const [selectValue, setSelectValue] = useState('0');
-  const [selectedPostId, setSelectedPostId] = useState<number>(0);
+  const [user, setUser] = useState('0');
+  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [userPost, setUserPost] = useState<Post[]>([]);
+
+  const selectPost = useCallback((postId: number) => {
+    setSelectedPostId(postId);
+  }, []);
 
   useEffect(() => {
-    if (selectValue === '0') {
-      request()
+    if (user !== '0') {
+      getUserPosts(user)
         .then(post => {
-          setPosts(post);
+          setUserPost(post);
         });
     } else {
-      getPostDetails(`${selectValue}`)
-        .then(post => {
-          setPosts(post);
-        });
+      getAllPosts()
+        .then(post => setUserPost(post));
     }
-  }, [selectValue]);
+  }, [user]);
 
   return (
     <div className="App">
@@ -33,8 +35,8 @@ const App: React.FC = () => {
 
           <select
             className="App__user-selector"
-            value={selectValue}
-            onChange={(event) => setSelectValue(event.target.value)}
+            value={user}
+            onChange={(event) => setUser(event.target.value)}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
@@ -54,11 +56,9 @@ const App: React.FC = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            visiblePosts={posts}
-            selectedPost={(postId) => {
-              setSelectedPostId(postId);
-            }}
+            userPost={userPost}
             selectedPostId={selectedPostId}
+            selectPost={selectPost}
           />
         </div>
 
