@@ -37,7 +37,7 @@ const App: React.FC = () => {
     getUserPosts(selectedUser)
       .then(response => {
         if (selectedUser !== 0) {
-          setPosts(response.filter(user => user.id === selectedUser));
+          setPosts(response.filter(user => user.userId === selectedUser));
         } else {
           setPosts(response);
         }
