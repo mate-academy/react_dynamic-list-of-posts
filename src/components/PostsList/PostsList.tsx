@@ -27,23 +27,24 @@ export const PostsList: React.FC<Props> = ({
                 {post.title}
               </div>
 
-              { postId === post.id ? (
-                <button
-                  type="button"
-                  className="PostsList__button button"
-                  onClick={() => setPostId(0)}
-                >
-                  Close
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className="PostsList__button button"
-                  onClick={() => setPostId(post.id)}
-                >
-                  Open
-                </button>
-              )}
+              {postId === post.id
+                ? (
+                  <button
+                    type="button"
+                    className="PostsList__button button"
+                    onClick={() => setPostId(0)}
+                  >
+                    Close
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="PostsList__button button"
+                    onClick={() => setPostId(post.id)}
+                  >
+                    Open
+                  </button>
+                )}
             </li>
           ))}
         </ul>

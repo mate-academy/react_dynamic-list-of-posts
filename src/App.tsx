@@ -66,7 +66,7 @@ const App: React.FC = () => {
           >
             <option value="0">All users</option>
             {users.map(user => (
-              <option value={user.id}>{user.name}</option>
+              <option value={user.id} key={user.id}>{user.name}</option>
             ))}
           </select>
         </label>

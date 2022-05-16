@@ -24,8 +24,10 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
   };
 
   const fetchPostDetails = async () => {
+    const postDetailsFromServer = await getPostDetails(postId);
+
     setIsLoading(true);
-    setPostDetails(await getPostDetails(postId));
+    setPostDetails(postDetailsFromServer);
     fetchComments();
   };
 
