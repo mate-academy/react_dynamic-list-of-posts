@@ -1,41 +1,116 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { getPostDetails, getUserPosts, getUsers } from './api/posts';
+import { addPostComent, getPostComments, removeComments } from './api/comments';
+import { Post } from './types';
 
-const App: React.FC = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+interface User {
+  name: string;
+  id: number;
+}
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+const App: React.FC = () => {
+  const [posts, setPosts] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [selectUser, setSelectUser] = useState(0);
+  const [postId, setPostId] = useState(0);
+  const [postDetails, setPostDetails] = useState<Post | null>(null);
+  const [postComments, setPostComments] = useState([]);
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+  const changePostId = (id: number) => {
+    setPostId(id);
+  };
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+  useEffect(() => {
+    getUsers().then(setUsers);
+  }, []);
+
+  useEffect(() => {
+    getPostComments(postId).then(result => {
+      setPostComments(result);
+    });
+
+    getPostDetails(postId).then(result => {
+      setPostDetails(result);
+    }).catch(() => {
+      setPostDetails(null);
+    });
+
+    getUserPosts(selectUser).then(setPosts);
+  }, [selectUser, postId]);
+
+  const handleDeleteComment = async (commentId: number) => {
+    await removeComments(commentId);
+
+    const commentsFromServer = await getPostComments(postId);
+
+    setPostComments(commentsFromServer);
+  };
+
+  const handleAddComment = async (
+    name: string,
+    email: string,
+    body: string,
+  ) => {
+    await addPostComent(postId, name, email, body);
+
+    const commentsFromServer = await getPostComments(postId);
+
+    setPostComments(commentsFromServer);
+  };
+
+  return (
+    <div className="App">
+      <header className="App__header">
+        <label>
+          Select a user: &nbsp;
+
+          <select
+            className="App__user-selector"
+            onChange={(event) => {
+              setSelectUser(+event.target.value);
+            }}
+          >
+            <option value="0">All users</option>
+            {users.map((user: User) => (
+              <option
+                key={user.id}
+                value={user.id}
+              >
+                {user.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            posts={posts}
+            postId={postId}
+            changePostId={changePostId}
+          />
+        </div>
+
+        <div className="App__content">
+          {postId === 0
+            ? 'Not select Post'
+            : (
+              <PostDetails
+                postComments={postComments}
+                postDetails={postDetails}
+                handleDeleteComment={handleDeleteComment}
+                handleAddComment={handleAddComment}
+              />
+            )}
+        </div>
+      </main>
+    </div>
+  );
+};
 
 export default App;

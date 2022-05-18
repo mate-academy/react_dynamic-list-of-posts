@@ -1,45 +1,115 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { removeComments } from '../../api/comments';
+import { Comment, Post } from '../../types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  postComments: Comment[];
+  postDetails: Post | null;
+  handleDeleteComment: (postId: number) => void;
+  handleAddComment: (name: string, email: string, body: string) => void;
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = ({
+  postComments,
+  postDetails,
+  handleDeleteComment,
+  handleAddComment,
+}) => {
+  const [showBtn, setShowBtn] = useState(true);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const toogleBtn = () => {
+    setShowBtn(!showBtn);
+  };
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+      {postDetails && (
+        <section className="PostDetails__post">
+          <h4>{postDetails.title}</h4>
+          <p>{postDetails.body}</p>
+        </section>
+      )}
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+      {!!postComments.length && (
+        <section className="PostDetails__comments">
+          {postComments.length === 1 ? (
+            <>
+              <button
+                type="button"
+                className="button"
+                hidden={!showBtn}
+                onClick={toogleBtn}
+              >
+                Hide 1 comment
+              </button>
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+              <button
+                type="button"
+                className="button"
+                hidden={showBtn}
+                onClick={toogleBtn}
+              >
+                Show 1 comment
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="button"
+                hidden={!showBtn}
+                onClick={toogleBtn}
+              >
+                {`Hide ${postComments.length} comments`}
+              </button>
+
+              <button
+                type="button"
+                className="button"
+                hidden={showBtn}
+                onClick={toogleBtn}
+              >
+                {`Show ${postComments.length} comments`}
+              </button>
+            </>
+          )}
+
+          {showBtn && (
+            <ul className="PostDetails__list">
+              {postComments.map(comment => (
+                <li
+                  className="PostDetails__list-item"
+                  key={comment.id}
+                >
+                  <button
+                    type="button"
+                    className="PostDetails__remove-button button"
+                    onClick={() => {
+                      removeComments(comment.id);
+                      handleDeleteComment(comment.id);
+                    }}
+                  >
+                    X
+                  </button>
+                  <p>{comment.body}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            handleAddComment={handleAddComment}
+            postDetails={postDetails}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};
