@@ -10,9 +10,11 @@ type Props = {
 export const NewCommentForm: React.FC<Props> = React.memo((
   { postId, changeReload },
 ) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
   const [formValid, setFormValid] = useState(true);
 
   /* eslint-disable max-len */
@@ -20,18 +22,22 @@ export const NewCommentForm: React.FC<Props> = React.memo((
   const emailValidation
   = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-  const stateReset = () => {
-    setName('');
-    setEmail('');
-    setBody('');
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+
+    setForm(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+    setFormValid(true);
   };
 
-  const changeHangler = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    callback: (input: string) => void,
-  ) => {
-    callback(event.target.value);
-    setFormValid(true);
+  const stateReset = () => {
+    setForm({
+      name: '',
+      email: '',
+      body: '',
+    });
   };
 
   useEffect(() => {
@@ -40,13 +46,13 @@ export const NewCommentForm: React.FC<Props> = React.memo((
 
   const formValidation = useMemo(() => {
     return (
-      name.length > 0
-      && emailValidation.test(email)
-      && body.length > 0);
-  }, [name, email, body]);
+      form.name.length > 0
+      && emailValidation.test(form.email)
+      && form.body.length > 0);
+  }, [form.name, form.email, form.body]);
 
   const toPostComment = () => {
-    postComment(postId, name, email, body)
+    postComment(postId, form.name, form.email, form.body)
       .then(() => (changeReload()));
     stateReset();
   };
@@ -70,8 +76,8 @@ export const NewCommentForm: React.FC<Props> = React.memo((
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={name}
-          onChange={event => changeHangler(event, setName)}
+          value={form.name}
+          onChange={handleChange}
         />
       </div>
 
@@ -81,8 +87,8 @@ export const NewCommentForm: React.FC<Props> = React.memo((
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={email}
-          onChange={event => changeHangler(event, setEmail)}
+          value={form.email}
+          onChange={handleChange}
         />
       </div>
 
@@ -91,8 +97,8 @@ export const NewCommentForm: React.FC<Props> = React.memo((
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input NewCommentForm__input--textarea"
-          value={body}
-          onChange={event => changeHangler(event, setBody)}
+          value={form.body}
+          onChange={handleChange}
         />
       </div>
 
