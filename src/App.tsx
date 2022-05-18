@@ -1,41 +1,85 @@
-import React from 'react';
-import './App.scss';
-import './styles/general.scss';
+import React, { useState, useEffect } from 'react';
+
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { UserSelect } from './components/UserSelect/UserSelect';
+import { Loader } from './components/Loader';
 
-const App: React.FC = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+import { getAllPosts, getUserPosts } from './api/posts';
+import { getAllUsers } from './api/users';
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+import './App.scss';
+import './styles/general.scss';
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+const App: React.FC = () => {
+  const [selectedPostId, setSelectedPostId] = useState<number>(0);
+  const [selectedUserId, setSelectedUserId] = useState<number>(0);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [isPostsLoaded, setIsPostsLoaded] = useState(false);
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+  const fetchAllUsers = async () => {
+    const recievedUsers = await getAllUsers();
+
+    setUsers(recievedUsers);
+  };
+
+  useEffect(() => {
+    fetchAllUsers();
+  }, []);
+
+  const fetchAllPosts = async () => {
+    const recievedPosts = await getAllPosts();
+
+    setIsPostsLoaded(true);
+    setPosts(recievedPosts);
+  };
+
+  const fetchUserPosts = async () => {
+    const recievedPosts = await getUserPosts(selectedUserId);
+
+    setIsPostsLoaded(true);
+    setPosts(recievedPosts);
+  };
+
+  useEffect(() => {
+    if (!selectedUserId) {
+      fetchAllPosts();
+    } else {
+      fetchUserPosts();
+    }
+  }, [selectedUserId]);
+
+  return (
+    <div className="App">
+      <header className="App__header">
+        <UserSelect
+          users={users}
+          setUserId={setSelectedUserId}
+        />
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          {isPostsLoaded ? (
+            <PostsList
+              posts={posts}
+              postId={selectedPostId}
+              setPostId={setSelectedPostId}
+            />
+          ) : (
+            <Loader />
+          )}
+        </div>
+
+        <div className="App__content">
+          {selectedPostId !== 0 && (
+            <PostDetails postId={selectedPostId} />
+          )}
+        </div>
+      </main>
+    </div>
+  );
+};
 
 export default App;
