@@ -1,6 +1,8 @@
 .PostDetails {
   &__post {
     padding: 10px 0 15px;
+    max-width: 100%;
+    word-break: break-word;
   }
 
   &__comments {
