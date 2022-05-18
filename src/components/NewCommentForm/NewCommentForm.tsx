@@ -15,20 +15,11 @@ export const NewCommentForm: React.FC <FormProps> = ({
   currentPostId,
   addNewComment,
 }) => {
-  const [
-    commentUserName,
-    setCommentUserName,
-  ] = useState('');
+  const [commentUserName, setCommentUserName] = useState('');
 
-  const [
-    commentEmail,
-    setCommentEmail,
-  ] = useState('');
+  const [commentEmail, setCommentEmail] = useState('');
 
-  const [
-    commentText,
-    setCommentText,
-  ] = useState('');
+  const [commentText, setCommentText] = useState('');
 
   const nameInputUpdate = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCommentUserName(event.target.value);

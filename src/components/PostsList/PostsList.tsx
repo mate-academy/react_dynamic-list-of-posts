@@ -1,15 +1,15 @@
 import './PostsList.scss';
 
 type Props = {
-  postsList: Post[],
+  posts: Post[],
   selectedId: number,
-  handleOpenClick: (postId: number) => void;
+  openPost: (postId: number) => void;
 };
 
 export const PostsList: React.FC <Props> = ({
-  postsList,
+  posts,
   selectedId,
-  handleOpenClick,
+  openPost,
 }) => {
   return (
     <div className="PostsList">
@@ -17,30 +17,27 @@ export const PostsList: React.FC <Props> = ({
 
       <ul className="PostsList__list">
         {
-          postsList.map(post => (
-            <>
-              <li
-                key={post.id}
-                className="PostsList__item"
+          posts.map(post => (
+            <li
+              key={post.id}
+              className="PostsList__item"
+            >
+              <div>
+                <b>
+                  {`[User #${post.userId}]: `}
+                </b>
+                {post.title}
+              </div>
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => {
+                  openPost(post.id);
+                }}
               >
-                <div>
-                  <b>
-                    {`[User #${post.userId}]: `}
-                  </b>
-                  {post.title}
-                </div>
-
-                <button
-                  type="button"
-                  className="PostsList__button button"
-                  onClick={() => {
-                    handleOpenClick(post.id);
-                  }}
-                >
-                  {post.id === selectedId ? 'Close' : 'Open'}
-                </button>
-              </li>
-            </>
+                {post.id === selectedId ? 'Close' : 'Open'}
+              </button>
+            </li>
           ))
         }
       </ul>

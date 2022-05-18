@@ -4,46 +4,35 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getPostDetails, getPosts } from './api/posts';
+import { Loader } from './components/Loader';
 
 const App: React.FC = () => {
-  const [
-    listOfPosts,
-    setListOfPosts,
-  ] = useState<Post[]>([]);
+  const [listOfPosts, setListOfPosts] = useState<Post[]>([]);
 
-  const [
-    visibleListOfPosts,
-    setVisibleListOfPosts,
-  ] = useState([...listOfPosts]);
+  const [selectedPostId, setSelectedPostId] = useState(-1);
 
-  const [
-    selectedPostId,
-    setSelectedPostId,
-  ] = useState(-1);
+  const [selectedPostContent, setSelectedPostContent] = useState('');
 
-  const [
-    selectedPostContent,
-    setSelectedPostContent,
-  ] = useState('');
+  const [selectedUserId, setSelectedUserId] = useState(0);
 
-  const userSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    if (+event.target.value === 0) {
-      setVisibleListOfPosts([...listOfPosts]);
+  const [isLoading, setIsLoading] = useState(false);
 
-      return;
+  const [areCommentsChanged, setAreCommentsChanged] = useState(false);
+
+  const getVisibleListOfPosts = () => {
+    if (selectedUserId === 0) {
+      return listOfPosts;
     }
 
-    setVisibleListOfPosts(listOfPosts
-      .filter(post => {
-        if (post.userId) {
-          return post.userId === +event.target.value;
-        }
-
-        return false;
-      }));
+    return listOfPosts
+      .filter(post => post.userId === selectedUserId);
   };
 
-  const handleButtonOpenClick = async (postId: number) => {
+  const selectUser = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedUserId(+event.target.value);
+  };
+
+  const openPost = async (postId: number) => {
     if (postId === selectedPostId) {
       setSelectedPostId(-1);
       setSelectedPostContent('');
@@ -53,15 +42,22 @@ const App: React.FC = () => {
 
     setSelectedPostId(postId);
 
+    setIsLoading(true);
+
     const detailsOfSelectedPost = await getPostDetails(postId);
 
     setSelectedPostContent(detailsOfSelectedPost.body);
+
+    setIsLoading(false);
+  };
+
+  const changeCommentsState = () => {
+    setAreCommentsChanged(prev => !prev);
   };
 
   useEffect(() => {
     getPosts().then(result => {
       setListOfPosts(result);
-      setVisibleListOfPosts(result);
     });
   }, []);
 
@@ -73,7 +69,7 @@ const App: React.FC = () => {
 
           <select
             className="App__user-selector"
-            onChange={userSelect}
+            onChange={selectUser}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
@@ -91,25 +87,26 @@ const App: React.FC = () => {
       </header>
 
       <main className="App__main">
-        <div className="App__sidebar">
+        <div className="App__content">
           <PostsList
-            postsList={visibleListOfPosts}
+            posts={getVisibleListOfPosts()}
             selectedId={selectedPostId}
-            handleOpenClick={handleButtonOpenClick}
+            openPost={openPost}
           />
         </div>
-
-        <div className="App__content">
+        <div className="App__sidebar">
           {
-            selectedPostId !== 0
-            && (
-              <PostDetails
-                postId={selectedPostId}
-                content={selectedPostContent}
-                // comments={commentsContent}
-                // removeButtonClick={removeComment}
-              />
-            )
+            selectedPostId > 0 && (
+              isLoading
+                ? <Loader />
+                : (
+                  <PostDetails
+                    postId={selectedPostId}
+                    content={selectedPostContent}
+                    areCommentsChanged={areCommentsChanged}
+                    changeCommentsState={changeCommentsState}
+                  />
+                ))
           }
         </div>
       </main>

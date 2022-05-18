@@ -1,4 +1,4 @@
-import { request, requestWithOptions } from './api';
+import { request } from './api';
 
 export const getPostComments = async (postId: number) => {
   const comments = await request(`/comments?postId=${postId}`);
@@ -8,7 +8,7 @@ export const getPostComments = async (postId: number) => {
 
 export const deleteComment = async (commentId: number) => {
   const deleteResult
-  = await requestWithOptions(`/comments/${commentId}`, { method: 'DELETE' });
+  = await request(`/comments/${commentId}`, { method: 'DELETE' });
 
   return deleteResult;
 };
@@ -30,7 +30,7 @@ export const addComment
 
   try {
     const addResult
-    = await requestWithOptions('/comments', options);
+    = await request('/comments', options);
 
     return addResult;
   } catch {
