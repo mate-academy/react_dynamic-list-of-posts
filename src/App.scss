@@ -72,3 +72,7 @@ ul {
     border-color: green;
   }
 }
+
+iframe {
+  pointer-events: none;
+}
