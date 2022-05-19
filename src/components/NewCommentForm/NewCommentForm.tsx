@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Post } from '../../types';
+import React, { useState } from 'react';
 import './NewCommentForm.scss';
 
 type Props = {
   handleAddComment: (name: string, email: string, body: string) => void;
-  postDetails: Post | null;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   handleAddComment,
-  postDetails,
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -20,10 +17,6 @@ export const NewCommentForm: React.FC<Props> = ({
     setEmail('');
     setBody('');
   };
-
-  useEffect(() => {
-    clearState();
-  }, [postDetails]);
 
   return (
     <form

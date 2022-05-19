@@ -1,5 +1,4 @@
 import { BASE_URL } from './api';
-import { Post } from '../types';
 
 export const request = (
   url: string,
@@ -15,14 +14,12 @@ export const request = (
     });
 };
 
-export const getUserPosts = async (id: number) => {
-  let allPosts = await request('/posts/');
+export const getUserPosts = (id: number) => {
+  return request(`/posts?userId=${id}`);
+};
 
-  if (id !== 0) {
-    allPosts = allPosts.filter((post: Post) => post.userId === id);
-  }
-
-  return allPosts;
+export const getPosts = () => {
+  return request('/posts/');
 };
 
 export const getUsers = () => {

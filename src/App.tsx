@@ -3,9 +3,7 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getPostDetails, getUserPosts, getUsers } from './api/posts';
-import { addPostComent, getPostComments, removeComments } from './api/comments';
-import { Post } from './types';
+import { getPosts, getUserPosts, getUsers } from './api/posts';
 
 interface User {
   name: string;
@@ -17,8 +15,6 @@ const App: React.FC = () => {
   const [users, setUsers] = useState([]);
   const [selectUser, setSelectUser] = useState(0);
   const [postId, setPostId] = useState(0);
-  const [postDetails, setPostDetails] = useState<Post | null>(null);
-  const [postComments, setPostComments] = useState([]);
 
   const changePostId = (id: number) => {
     setPostId(id);
@@ -29,38 +25,12 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    getPostComments(postId).then(result => {
-      setPostComments(result);
-    });
-
-    getPostDetails(postId).then(result => {
-      setPostDetails(result);
-    }).catch(() => {
-      setPostDetails(null);
-    });
-
-    getUserPosts(selectUser).then(setPosts);
-  }, [selectUser, postId]);
-
-  const handleDeleteComment = async (commentId: number) => {
-    await removeComments(commentId);
-
-    const commentsFromServer = await getPostComments(postId);
-
-    setPostComments(commentsFromServer);
-  };
-
-  const handleAddComment = async (
-    name: string,
-    email: string,
-    body: string,
-  ) => {
-    await addPostComent(postId, name, email, body);
-
-    const commentsFromServer = await getPostComments(postId);
-
-    setPostComments(commentsFromServer);
-  };
+    if (!selectUser) {
+      getPosts().then(setPosts);
+    } else {
+      getUserPosts(selectUser).then(setPosts);
+    }
+  }, [selectUser]);
 
   return (
     <div className="App">
@@ -100,12 +70,7 @@ const App: React.FC = () => {
           {postId === 0
             ? 'Not select Post'
             : (
-              <PostDetails
-                postComments={postComments}
-                postDetails={postDetails}
-                handleDeleteComment={handleDeleteComment}
-                handleAddComment={handleAddComment}
-              />
+              <PostDetails postId={postId} />
             )}
         </div>
       </main>

@@ -1,23 +1,49 @@
-import React, { useState } from 'react';
-import { removeComments } from '../../api/comments';
-import { Comment, Post } from '../../types';
+import React, { useEffect, useState } from 'react';
+import { Post, Comment } from '../../types';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import { getPostDetails } from '../../api/posts';
+import {
+  addPostComent,
+  getPostComments,
+  removeComments,
+} from '../../api/comments';
 
 type Props = {
-  postComments: Comment[];
-  postDetails: Post | null;
-  handleDeleteComment: (postId: number) => void;
-  handleAddComment: (name: string, email: string, body: string) => void;
+  postId: number;
 };
 
-export const PostDetails: React.FC<Props> = ({
-  postComments,
-  postDetails,
-  handleDeleteComment,
-  handleAddComment,
-}) => {
+export const PostDetails: React.FC<Props> = ({ postId }) => {
   const [showBtn, setShowBtn] = useState(true);
+  const [postDetails, setPostDetails] = useState<Post | null>(null);
+  const [postComments, setPostComments] = useState<Comment[] | null>(null);
+
+  const handleDeleteComment = async (commentId: number) => {
+    await removeComments(commentId);
+
+    const commentsFromServer = await getPostComments(postId);
+
+    setPostComments(commentsFromServer);
+  };
+
+  const handleAddComment = async (
+    name: string,
+    email: string,
+    body: string,
+  ) => {
+    await addPostComent(postId, name, email, body);
+
+    const commentsFromServer = await getPostComments(postId);
+
+    setPostComments(commentsFromServer);
+  };
+
+  useEffect(() => {
+    getPostComments(postId).then(setPostComments);
+
+    getPostDetails(postId).then(setPostDetails)
+      .catch(() => setPostDetails(null));
+  }, [postId]);
 
   const toogleBtn = () => {
     setShowBtn(!showBtn);
@@ -33,53 +59,30 @@ export const PostDetails: React.FC<Props> = ({
         </section>
       )}
 
-      {!!postComments.length && (
+      {postComments && (
         <section className="PostDetails__comments">
-          {postComments.length === 1 ? (
-            <>
-              <button
-                type="button"
-                className="button"
-                hidden={!showBtn}
-                onClick={toogleBtn}
-              >
-                Hide 1 comment
-              </button>
 
-              <button
-                type="button"
-                className="button"
-                hidden={showBtn}
-                onClick={toogleBtn}
-              >
-                Show 1 comment
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                type="button"
-                className="button"
-                hidden={!showBtn}
-                onClick={toogleBtn}
-              >
-                {`Hide ${postComments.length} comments`}
-              </button>
+          <button
+            type="button"
+            className="button"
+            hidden={!showBtn}
+            onClick={toogleBtn}
+          >
+            {`Hide ${postComments.length} comments`}
+          </button>
 
-              <button
-                type="button"
-                className="button"
-                hidden={showBtn}
-                onClick={toogleBtn}
-              >
-                {`Show ${postComments.length} comments`}
-              </button>
-            </>
-          )}
+          <button
+            type="button"
+            className="button"
+            hidden={showBtn}
+            onClick={toogleBtn}
+          >
+            {`Show ${postComments.length} comments`}
+          </button>
 
           {showBtn && (
             <ul className="PostDetails__list">
-              {postComments.map(comment => (
+              {postComments.map((comment: Comment) => (
                 <li
                   className="PostDetails__list-item"
                   key={comment.id}
@@ -104,10 +107,7 @@ export const PostDetails: React.FC<Props> = ({
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            handleAddComment={handleAddComment}
-            postDetails={postDetails}
-          />
+          <NewCommentForm handleAddComment={handleAddComment} />
         </div>
       </section>
     </div>

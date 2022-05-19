@@ -4,10 +4,6 @@ export const getPostComments = (postId: number) => {
   return request(`/comments?postId=${postId}`);
 };
 
-export const allComments = () => {
-  return request('/comments');
-};
-
 export const removeComments = (postId: number) => {
   return request(`/comments/${postId}`, { method: 'DELETE' });
 };
