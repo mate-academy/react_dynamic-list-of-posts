@@ -4,7 +4,6 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getPosts } from './api/posts';
-import { Loader } from './components/Loader';
 
 const App: React.FC = () => {
   const [listOfPosts, setListOfPosts] = useState<Post[]>([]);
@@ -12,8 +11,6 @@ const App: React.FC = () => {
   const [selectedPostId, setSelectedPostId] = useState(-1);
 
   const [selectedUserId, setSelectedUserId] = useState(0);
-
-  const [isPostDetailsLoading, setIsPostDetailsLoading] = useState(false);
 
   const getVisibleListOfPosts = () => {
     if (selectedUserId === 0) {
@@ -36,10 +33,6 @@ const App: React.FC = () => {
     }
 
     setSelectedPostId(postId);
-
-    setIsPostDetailsLoading(true);
-
-    setIsPostDetailsLoading(false);
   };
 
   useEffect(() => {
@@ -84,14 +77,17 @@ const App: React.FC = () => {
 
         <div className="App__content">
           {
-            selectedPostId > 0 && (
-              isPostDetailsLoading
-                ? <Loader />
-                : (
-                  <PostDetails
-                    postId={selectedPostId}
-                  />
-                ))
+            selectedPostId > 0
+              ? (
+                <PostDetails
+                  postId={selectedPostId}
+                />
+              )
+              : (
+                <p className="PostDetailsHint">
+                  Please, select post to see details
+                </p>
+              )
           }
         </div>
       </main>

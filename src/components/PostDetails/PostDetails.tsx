@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { addComment, deleteComment, getPostComments } from '../../api/comments';
 import { NewCommentForm } from '../NewCommentForm';
 import { getPostDetails } from '../../api/posts';
+import { Loader } from '../Loader/Loader';
 import './PostDetails.scss';
 
 type PostProps = {
@@ -15,7 +16,7 @@ export const PostDetails: React.FC <PostProps> = ({ postId }) => {
 
   const [comments, setComments] = useState<Comment[]>([]);
 
-  // const [areCommentsChanged, setAreCommentsChanged] = useState(false);
+  const [isPostDetailsLoading, setIsPostDetailsLoading] = useState(true);
 
   const reloadComments = async () => {
     const postCommentsFS = await getPostComments(postId);
@@ -49,9 +50,11 @@ export const PostDetails: React.FC <PostProps> = ({ postId }) => {
     const detailsOfSelectedPost = await getPostDetails(postId);
 
     setPostContent(detailsOfSelectedPost.body);
+    setIsPostDetailsLoading(false);
   };
 
   useEffect(() => {
+    setIsPostDetailsLoading(true);
     getPostContent();
     reloadComments();
   }, [postId]);
@@ -60,14 +63,19 @@ export const PostDetails: React.FC <PostProps> = ({ postId }) => {
     <div className="PostDetails">
       <h2>Post details:</h2>
 
-      <section className="PostDetails__post">
-        <p>
-          {postContent}
-        </p>
-      </section>
+      {
+        isPostDetailsLoading
+          ? <Loader />
+          : (
+            <section className="PostDetails__post">
+              <p>
+                {postContent}
+              </p>
+            </section>
+          )
+      }
 
       <section className="PostDetails__comments">
-
         {
           (comments.length > 0)
           && (
