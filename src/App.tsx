@@ -3,7 +3,7 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getPostDetails, getPosts } from './api/posts';
+import { getPosts } from './api/posts';
 import { Loader } from './components/Loader';
 
 const App: React.FC = () => {
@@ -11,13 +11,9 @@ const App: React.FC = () => {
 
   const [selectedPostId, setSelectedPostId] = useState(-1);
 
-  const [selectedPostContent, setSelectedPostContent] = useState('');
-
   const [selectedUserId, setSelectedUserId] = useState(0);
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [areCommentsChanged, setAreCommentsChanged] = useState(false);
+  const [isPostDetailsLoading, setIsPostDetailsLoading] = useState(false);
 
   const getVisibleListOfPosts = () => {
     if (selectedUserId === 0) {
@@ -35,24 +31,15 @@ const App: React.FC = () => {
   const openPost = async (postId: number) => {
     if (postId === selectedPostId) {
       setSelectedPostId(-1);
-      setSelectedPostContent('');
 
       return;
     }
 
     setSelectedPostId(postId);
 
-    setIsLoading(true);
+    setIsPostDetailsLoading(true);
 
-    const detailsOfSelectedPost = await getPostDetails(postId);
-
-    setSelectedPostContent(detailsOfSelectedPost.body);
-
-    setIsLoading(false);
-  };
-
-  const changeCommentsState = () => {
-    setAreCommentsChanged(prev => !prev);
+    setIsPostDetailsLoading(false);
   };
 
   useEffect(() => {
@@ -87,24 +74,22 @@ const App: React.FC = () => {
       </header>
 
       <main className="App__main">
-        <div className="App__content">
+        <div className="App__sidebar">
           <PostsList
             posts={getVisibleListOfPosts()}
             selectedId={selectedPostId}
             openPost={openPost}
           />
         </div>
-        <div className="App__sidebar">
+
+        <div className="App__content">
           {
             selectedPostId > 0 && (
-              isLoading
+              isPostDetailsLoading
                 ? <Loader />
                 : (
                   <PostDetails
                     postId={selectedPostId}
-                    content={selectedPostContent}
-                    areCommentsChanged={areCommentsChanged}
-                    changeCommentsState={changeCommentsState}
                   />
                 ))
           }

@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { addComment, deleteComment, getPostComments } from '../../api/comments';
 import { NewCommentForm } from '../NewCommentForm';
+import { getPostDetails } from '../../api/posts';
 import './PostDetails.scss';
 
 type PostProps = {
   postId: number,
-  content: string,
-  areCommentsChanged: boolean,
-  changeCommentsState: () => void,
 };
 
-export const PostDetails: React.FC <PostProps> = ({
-  postId,
-  content,
-  areCommentsChanged,
-  changeCommentsState,
-}) => {
+export const PostDetails: React.FC <PostProps> = ({ postId }) => {
+  const [postContent, setPostContent] = useState('');
+
   const [areCommentsVisible, setAreCommentsVisible] = useState(true);
 
   const [comments, setComments] = useState<Comment[]>([]);
+
+  // const [areCommentsChanged, setAreCommentsChanged] = useState(false);
 
   const reloadComments = async () => {
     const postCommentsFS = await getPostComments(postId);
@@ -30,7 +27,7 @@ export const PostDetails: React.FC <PostProps> = ({
     setAreCommentsVisible(prevState => !prevState);
   };
 
-  const addNewComment = (
+  const addNewComment = async (
     event: React.FormEvent<HTMLFormElement>,
     currentPostId: number,
     commentUserName: string,
@@ -39,20 +36,25 @@ export const PostDetails: React.FC <PostProps> = ({
   ) => {
     event.preventDefault();
 
-    addComment(currentPostId, commentUserName, commentEmail, commentText);
+    await addComment(currentPostId, commentUserName, commentEmail, commentText);
     reloadComments();
-    changeCommentsState();
   };
 
-  const removeComment = (commentId: number, reloading: () => void) => {
-    deleteComment(commentId);
-    reloading();
-    changeCommentsState();
+  const removeComment = async (commentId: number) => {
+    await deleteComment(commentId);
+    reloadComments();
+  };
+
+  const getPostContent = async () => {
+    const detailsOfSelectedPost = await getPostDetails(postId);
+
+    setPostContent(detailsOfSelectedPost.body);
   };
 
   useEffect(() => {
-    getPostComments(postId).then(commentsArr => setComments(commentsArr));
-  }, [postId, areCommentsChanged]);
+    getPostContent();
+    reloadComments();
+  }, [postId]);
 
   return (
     <div className="PostDetails">
@@ -60,7 +62,7 @@ export const PostDetails: React.FC <PostProps> = ({
 
       <section className="PostDetails__post">
         <p>
-          {content}
+          {postContent}
         </p>
       </section>
 
@@ -97,7 +99,7 @@ export const PostDetails: React.FC <PostProps> = ({
                         type="button"
                         className="PostDetails__remove-button button"
                         onClick={() => {
-                          removeComment(comment.id, reloadComments);
+                          removeComment(comment.id);
                         }}
                       >
                         X
