@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 
@@ -27,7 +27,7 @@ const App: React.FC = () => {
   const [isPostListLoading, setPostListLoading] = useState(false);
   const [posts, setPosts] = useState<Post[] | null>(null);
 
-  const getPost = async () => {
+  const getPost = useCallback(async () => {
     try {
       const commentsPromise = getPostComments(selectedPostId);
       const currentPost = await getPostDetails(selectedPostId);
@@ -41,13 +41,13 @@ const App: React.FC = () => {
       setSelectedPost(null);
       setSelectedPostComments(null);
     }
-  };
+  }, [selectedPostId]);
 
   useEffect(() => {
     getPost();
   }, [selectedPostId]);
 
-  const getComments = async () => {
+  const getComments = useCallback(async () => {
     try {
       const currentPostComments = await getPostComments(selectedPostId);
 
@@ -55,14 +55,14 @@ const App: React.FC = () => {
     } catch (error) {
       setSelectedPostComments(null);
     }
-  };
+  }, [selectedPostId]);
 
-  const deleteComment = async (id: number) => {
+  const deleteComment = useCallback(async (id: number) => {
     await deleteCommentFromServer(id);
     getComments();
-  };
+  }, [getComments]);
 
-  const getUserByNameFromServer = async (username: string) => {
+  const getUserByNameFromServer = useCallback(async (username: string) => {
     try {
       const userArr = await getUserByName(username);
 
@@ -71,7 +71,7 @@ const App: React.FC = () => {
     } catch (error) {
       setUser(null);
     }
-  };
+  }, []);
 
   return (
     <div className="App">

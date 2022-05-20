@@ -12,7 +12,7 @@ type Props = {
   getComments: () => Promise<void>;
 };
 
-export const PostDetails: React.FC<Props> = ({
+export const PostDetails: React.FC<Props> = React.memo(({
   selectedPost,
   selectedPostComments,
   deleteComment,
@@ -40,7 +40,7 @@ export const PostDetails: React.FC<Props> = ({
             className="button"
             onClick={() => setCommentsVisible(!isCommentsVisible)}
           >
-            {`Hide ${selectedPostComments.length} comments`}
+            {`${isCommentsVisible ? ('Hide') : ('Show')} ${selectedPostComments.length} comments`}
           </button>
 
           <ul className="PostDetails__list">
@@ -78,4 +78,4 @@ export const PostDetails: React.FC<Props> = ({
       </section>
     </div>
   );
-};
+});

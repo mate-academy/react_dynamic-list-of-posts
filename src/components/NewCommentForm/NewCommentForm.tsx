@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+/* eslint-disable no-console */
+import React, { useCallback, useState } from 'react';
+import classNames from 'classnames';
 
 import { Comment } from '../../types/Comment';
 
 import { addComment } from '../../api/comments';
+
+import { emailValidator } from '../../functions/emailValidator';
 
 import './NewCommentForm.scss';
 
@@ -11,35 +15,48 @@ type Props = {
   postId: number;
 };
 
-export const NewCommentForm: React.FC<Props> = ({
+export const NewCommentForm: React.FC<Props> = React.memo(({
   getComments,
   postId,
 }) => {
   const [inputName, setInputName] = useState('');
   const [inputEmail, setInputEmail] = useState('');
   const [inputComment, setInputComment] = useState('');
+  const [isEmailValid, setEmailValid] = useState(true);
+  const [isSubmited, setSubmitted] = useState(false);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      setSubmitted(true);
 
-    if (!inputName || !inputEmail || !inputComment) {
-      return;
-    }
+      if (!inputName || !inputEmail || !inputComment) {
+        return;
+      }
 
-    const newComment: Omit<Comment, 'id'> = {
-      postId,
-      name: inputName,
-      email: inputEmail,
-      body: inputComment,
-    };
+      if (!emailValidator(inputEmail)) {
+        setEmailValid(false);
 
-    await addComment(newComment);
-    await getComments();
+        return;
+      }
 
-    setInputName('');
-    setInputEmail('');
-    setInputComment('');
-  };
+      const newComment: Omit<Comment, 'id'> = {
+        postId,
+        name: inputName,
+        email: inputEmail,
+        body: inputComment,
+      };
+
+      await addComment(newComment);
+      await getComments();
+
+      setSubmitted(false);
+      setInputName('');
+      setInputEmail('');
+      setInputComment('');
+    },
+    [inputName, inputEmail, inputComment, postId],
+  );
 
   return (
     <form
@@ -60,14 +77,34 @@ export const NewCommentForm: React.FC<Props> = ({
       </div>
 
       <div className="form-field">
+        {!isEmailValid && (
+          <p className="NewCommentForm__emailError">
+            Email is invalid
+          </p>
+        )}
+
         <input
           type="text"
           name="email"
           placeholder="Your email"
-          className="NewCommentForm__input"
+          className={classNames(
+            'NewCommentForm__input',
+            { 'NewCommentForm__input--invalid': !isEmailValid },
+          )}
           value={inputEmail}
           onChange={({ target }) => {
+            if (isSubmited) {
+              if (inputEmail !== target.value) {
+                setEmailValid(true);
+              }
+            }
+
             setInputEmail(target.value);
+          }}
+          onBlur={({ target }) => {
+            if (isSubmited) {
+              setEmailValid(emailValidator(target.value));
+            }
           }}
         />
       </div>
@@ -92,4 +129,4 @@ export const NewCommentForm: React.FC<Props> = ({
       </button>
     </form>
   );
-};
+});

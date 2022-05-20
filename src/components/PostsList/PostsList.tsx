@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import './PostsList.scss';
 import { getUserPostsByID, getUsersPosts } from '../../api/posts';
 import { User } from '../../types/User';
@@ -21,7 +21,7 @@ type Props = {
   setPosts: React.Dispatch<React.SetStateAction<Post[] | null>>;
 };
 
-export const PostsList: React.FC<Props> = ({
+export const PostsList: React.FC<Props> = React.memo(({
   user,
   selectValue,
   selectedPostId,
@@ -34,7 +34,7 @@ export const PostsList: React.FC<Props> = ({
   posts,
   setPosts,
 }) => {
-  const getPostsFromServer = async () => {
+  const getPostsFromServer = useCallback(async () => {
     try {
       const allPosts = await getUsersPosts();
 
@@ -43,9 +43,9 @@ export const PostsList: React.FC<Props> = ({
     } catch (error) {
       setPosts(null);
     }
-  };
+  }, []);
 
-  const getPostsFromServerByID = async () => {
+  const getPostsFromServerByID = useCallback(async () => {
     try {
       if (user !== null) {
         const userPosts = await getUserPostsByID(user.id);
@@ -57,7 +57,7 @@ export const PostsList: React.FC<Props> = ({
       setPosts(null);
       setPostListLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     setPostListLoading(true);
@@ -122,4 +122,4 @@ export const PostsList: React.FC<Props> = ({
 
     </div>
   );
-};
+});
