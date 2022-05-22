@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import classNames from 'classnames';
 import { addComment, deleteComment, getPostComments } from '../../api/comments';
 import { NewCommentForm } from '../NewCommentForm';
 import { getPostDetails } from '../../api/posts';
@@ -17,6 +18,11 @@ export const PostDetails: React.FC <PostProps> = ({ postId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
 
   const [isPostDetailsLoading, setIsPostDetailsLoading] = useState(true);
+
+  const formWrapperStylesClass = classNames({
+    'PostDetails__form-wrapper': true,
+    Hidden: postId < 1,
+  });
 
   const reloadComments = async () => {
     const postCommentsFS = await getPostComments(postId);
@@ -124,11 +130,7 @@ export const PostDetails: React.FC <PostProps> = ({ postId }) => {
 
       <section>
         <div
-          className={
-            postId < 1
-              ? 'PostDetails__form-wrapper Hidden'
-              : 'PostDetails__form-wrapper'
-          }
+          className={formWrapperStylesClass}
         >
           <NewCommentForm
             currentPostId={postId}
