@@ -1,45 +1,120 @@
-import React from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import {
+  createComment,
+  deletePostComment,
+  getPostComments,
+  getPostDetails,
+} from '../../api/posts';
+import { Loader } from '../Loader';
 import { NewCommentForm } from '../NewCommentForm';
+import { PostComment } from '../PostComment/PostComment';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  selectedPostId: number;
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+type PostDetail = {
+  details: Post;
+  comments: PostComment[];
+};
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+export const PostDetails: React.FC<Props> = ({
+  selectedPostId,
+}) => {
+  const [postDetails, setPostDetails] = useState<PostDetail | null>(null);
+  const [isCommentsVisible, setIsCommentVisible] = useState(true);
+  const [commentLoading, setCommentLoading] = useState(false);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  const getDetailsFromServer = async () => {
+    const [details, comments] = await Promise.all([
+      getPostDetails(selectedPostId),
+      getPostComments(selectedPostId),
+    ]);
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+    await setPostDetails({ details, comments });
+    setCommentLoading(false);
+  };
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+  useEffect(() => {
+    setPostDetails(null);
+    getDetailsFromServer();
+  }, [selectedPostId]);
+
+  const handleCommentVisible = useCallback(() => {
+    setIsCommentVisible(prev => !prev);
+  }, []);
+
+  const handleAddComment = async (newComment: NewComment) => {
+    setCommentLoading(true);
+    await createComment(newComment);
+    getDetailsFromServer();
+  };
+
+  const handleDeleteComment = async (deleteId: number) => {
+    setCommentLoading(true);
+    await deletePostComment(deleteId);
+    getDetailsFromServer();
+  };
+
+  const commentsLength = useMemo(() => {
+    return postDetails ? postDetails.comments.length : 0;
+  }, [postDetails]);
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      {postDetails ? (
+        <>
+          <section className="PostDetails__post">
+            <p>{postDetails.details.body}</p>
+          </section>
+
+          {(commentsLength > 0) && (
+            <section
+              data-cy="postDetails"
+              className="PostDetails__comments"
+            >
+              <button
+                onClick={handleCommentVisible}
+                type="button"
+                className="button"
+              >
+                {`${isCommentsVisible ? 'Hide' : 'Show'} ${commentsLength} comment${commentsLength > 1 ? 's' : ''}`}
+              </button>
+
+              {isCommentsVisible && (
+                <ul className="PostDetails__list">
+                  {postDetails.comments.map(comment => (
+                    <PostComment
+                      key={comment.id}
+                      comment={comment}
+                      handleDeleteComment={handleDeleteComment}
+                    />
+                  ))}
+                </ul>
+              )}
+            </section>
+          )}
+
+          {commentLoading && <Loader />}
+
+          <section>
+            <div className="PostDetails__form-wrapper">
+              <NewCommentForm
+                selectedPostId={selectedPostId}
+                handleAddComment={handleAddComment}
+              />
+            </div>
+          </section>
+        </>
+      ) : <Loader />}
+    </div>
+  );
+};

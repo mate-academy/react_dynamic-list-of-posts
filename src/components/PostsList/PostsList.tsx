@@ -1,37 +1,57 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { getUserPosts } from '../../api/posts';
+import { Loader } from '../Loader';
+import { PostItem } from '../PostItem/PostItem';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+type Props = {
+  selectedUserId: number;
+  onSelectPostId: (x: number) => void;
+  selectedPostId: number | null;
+};
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = ({
+  selectedUserId,
+  onSelectPostId,
+  selectedPostId,
+}) => {
+  const [posts, setPosts] = useState<Post[] | []>([]);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  useEffect(() => {
+    const getDataFromServer = async () => {
+      const dataFromServer = await getUserPosts();
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      setPosts(dataFromServer);
+    };
+
+    getDataFromServer();
+  }, [selectedUserId]);
+
+  const visiblePosts = useMemo(() => {
+    return (selectedUserId === 0)
+      ? posts
+      : posts.filter(post => post.userId === selectedUserId);
+  }, [selectedUserId, posts]);
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul
+        className="PostsList__list"
+        data-cy="postDetails"
+      >
+        {posts.length > 0 ? (
+          visiblePosts.map(post => (
+            <PostItem
+              key={post.id}
+              post={post}
+              onSelectPostId={onSelectPostId}
+              selectedPostId={selectedPostId}
+            />
+          ))
+        ) : <Loader />}
+      </ul>
+    </div>
+  );
+};
