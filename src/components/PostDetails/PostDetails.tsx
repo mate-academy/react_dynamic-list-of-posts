@@ -50,17 +50,17 @@ export const PostDetails: React.FC<Props> = ({
     setIsCommentVisible(prev => !prev);
   }, []);
 
-  const handleAddComment = async (newComment: NewComment) => {
+  const handleAddComment = useCallback(async (newComment: NewComment) => {
     setCommentLoading(true);
     await createComment(newComment);
     getDetailsFromServer();
-  };
+  }, [postDetails]);
 
-  const handleDeleteComment = async (deleteId: number) => {
+  const handleDeleteComment = useCallback(async (deleteId: number) => {
     setCommentLoading(true);
     await deletePostComment(deleteId);
     getDetailsFromServer();
-  };
+  }, [postDetails]);
 
   const commentsLength = useMemo(() => {
     return postDetails ? postDetails.comments.length : 0;
