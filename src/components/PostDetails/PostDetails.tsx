@@ -1,45 +1,116 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { deleteComments, getPostComments } from '../../api/comments';
+import { getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  selectedPost: number,
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
+  const [currentPost, setCurrentPost] = useState<Post | null>(null);
+  const [commentsList, setCommentsList] = useState<Comments[]>([]);
+  const [isHideComment, setIsHideComment] = useState(false);
+  const [buttonName, setButtonName] = useState('Hide');
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  useEffect(() => {
+    if (selectedPost) {
+      getPostDetails(selectedPost)
+        .then(post => setCurrentPost(post));
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
+      getPostComments(selectedPost)
+        .then(comments => setCommentsList(comments));
+    }
+  }, [selectedPost]);
+
+  const hideShowButtonHandler = () => {
+    setIsHideComment(!isHideComment);
+
+    if (isHideComment) {
+      setButtonName('Hide');
+    } else {
+      setButtonName('Show');
+    }
+  };
+
+  const deleteHandler = (commentId: number) => {
+    deleteComments(commentId)
+      .then(deletedComment => {
+        if (deletedComment) {
+          setCommentsList(
+            commentsList.filter(comment => comment.id !== commentId),
+          );
+        }
+      });
+  };
+
+  const addNewComment = (newComment: Comments) => {
+    setCommentsList([
+      ...commentsList,
+      newComment,
+    ]);
+  };
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <p>{currentPost?.body}</p>
+      </section>
+
+      <section className="PostDetails__comments">
+        <button
+          type="button"
+          className="button"
+          hidden={commentsList.length === 0}
+          onClick={hideShowButtonHandler}
+        >
+          {`${buttonName} ${commentsList.length}
+          ${(commentsList.length === 1) ? 'comment' : 'comments'}` }
+        </button>
+
+        {commentsList.length > 0 ? (
+          <ul
+            className="PostDetails__list"
+            hidden={isHideComment}
           >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
-
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
+            {commentsList.map(comment => (
+              <li
+                key={comment.id}
+                className="PostDetails__list-item"
+              >
+                <button
+                  type="button"
+                  className="PostDetails__remove-button button"
+                  onClick={() => deleteHandler(comment.id)}
+                >
+                  X
+                </button>
+                <p>
+                  {comment.body}
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p
+            className="PostDetails__list-item"
           >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+            No comments yet
+          </p>
+        )}
+      </section>
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            postId={currentPost?.id}
+            addNewComment={addNewComment}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};
