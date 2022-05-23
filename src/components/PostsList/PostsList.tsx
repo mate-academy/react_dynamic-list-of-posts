@@ -1,37 +1,47 @@
 import React from 'react';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
+interface Props {
+  posts: Post[],
+  onSelectedPostId: (postId: number) => void,
+  selectedPostId: number,
+}
+
+export const PostsList: React.FC<Props> = ({
+  posts,
+  onSelectedPostId,
+  selectedPostId,
+}) => (
   <div className="PostsList">
     <h2>Posts:</h2>
 
     <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+      {posts.map(post => {
+        const { userId, title, id } = post;
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
+        return (
+          <li
+            className="PostsList__item"
+            key={id}
+          >
+            <div>
+              <b>
+                [User&nbsp;
+                {userId}
+                ]:
+              </b>
+              {title}
+            </div>
+            <button
+              type="button"
+              className="PostsList__button button"
+              onClick={() => onSelectedPostId(id)}
+            >
+              {selectedPostId === post.id ? 'Close' : 'Open'}
+            </button>
+          </li>
+        );
+      })}
     </ul>
   </div>
 );
