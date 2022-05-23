@@ -9,6 +9,7 @@ import { addComment } from '../../api/comments';
 import { emailValidator } from '../../functions/emailValidator';
 
 import './NewCommentForm.scss';
+import { Loader } from '../Loader';
 
 type Props = {
   getComments: () => Promise<void>;
@@ -24,18 +25,23 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
   const [inputComment, setInputComment] = useState('');
   const [isEmailValid, setEmailValid] = useState(true);
   const [isSubmited, setSubmitted] = useState(false);
+  const [isAddCommentLoading, setAddCommentLoading] = useState(false);
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
+      setAddCommentLoading(true);
       setSubmitted(true);
 
       if (!inputName || !inputEmail || !inputComment) {
+        setAddCommentLoading(false);
+
         return;
       }
 
       if (!emailValidator(inputEmail)) {
         setEmailValid(false);
+        setAddCommentLoading(false);
 
         return;
       }
@@ -51,6 +57,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
       await getComments();
 
       setSubmitted(false);
+      setAddCommentLoading(false);
       setInputName('');
       setInputEmail('');
       setInputComment('');
@@ -124,8 +131,9 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
       <button
         type="submit"
         className="NewCommentForm__submit-button button"
+        disabled={isAddCommentLoading}
       >
-        Add a comment
+        {isAddCommentLoading ? (<Loader />) : 'Add a comment'}
       </button>
     </form>
   );

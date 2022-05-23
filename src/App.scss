@@ -5,9 +5,25 @@
 body {
   min-height: 100vh;
   background-color: #e9e6f2;
-  padding: 20px;
+  margin: 0;
+  padding: 20px 10px 0;
   color: #4d457b;
   font-family: "Roboto", sans-serif;
+
+  &::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #fafafd;
+    border-radius: 20px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #4d457b;
+    border-radius: 20px;
+    border: 1px solid lightblue;
+  }
 }
 
 h2 {

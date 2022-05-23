@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 
@@ -6,28 +6,26 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
 import { getUserByName } from './api/users';
-import { getPostDetails } from './api/posts';
-import { getPostComments, deleteCommentFromServer } from './api/comments';
+import { getPostComments } from './api/comments';
 
 import { User } from './types/User';
 import { Post } from './types/Post';
 import { Comment } from './types/Comment';
 import { Loader } from './components/Loader';
+import { getPostDetails } from './api/posts';
 
 const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [selectValue, setSelectValue] = useState('All users');
   const [selectedPostId, setSelectedPostId] = useState(0);
+  const [selectValue, setSelectValue] = useState('All users');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [
     selectedPostComments,
     setSelectedPostComments,
-  ] = useState<Comment[] | null>(null);
+  ] = useState<Comment[]>([]);
   const [isPostLoading, setPostLoading] = useState(false);
-  const [isPostListLoading, setPostListLoading] = useState(false);
-  const [posts, setPosts] = useState<Post[] | null>(null);
 
-  const getPost = useCallback(async () => {
+  const getPostFromServerByID = useCallback(async () => {
     try {
       const commentsPromise = getPostComments(selectedPostId);
       const currentPost = await getPostDetails(selectedPostId);
@@ -39,28 +37,19 @@ const App: React.FC = () => {
     } catch (error) {
       setPostLoading(false);
       setSelectedPost(null);
-      setSelectedPostComments(null);
+      setSelectedPostComments([]);
     }
   }, [selectedPostId]);
 
-  useEffect(() => {
-    getPost();
-  }, [selectedPostId]);
-
-  const getComments = useCallback(async () => {
+  const getCommentsFromServer = useCallback(async () => {
     try {
       const currentPostComments = await getPostComments(selectedPostId);
 
       setSelectedPostComments(currentPostComments);
     } catch (error) {
-      setSelectedPostComments(null);
+      setSelectedPostComments([]);
     }
   }, [selectedPostId]);
-
-  const deleteComment = useCallback(async (id: number) => {
-    await deleteCommentFromServer(id);
-    getComments();
-  }, [getComments]);
 
   const getUserByNameFromServer = useCallback(async (username: string) => {
     try {
@@ -73,6 +62,33 @@ const App: React.FC = () => {
     }
   }, []);
 
+  const handleOpenPostDetails = useCallback((id: number) => {
+    if (selectedPostId === id) {
+      setPostLoading(false);
+      setSelectedPostId(0);
+      setSelectedPost(null);
+      setSelectedPostComments([]);
+
+      return;
+    }
+
+    setSelectedPost(null);
+    setSelectedPostComments([]);
+    setPostLoading(true);
+    setSelectedPostId(id);
+  }, [selectedPostId]);
+
+  const handeleSelectUser = useCallback((value: string) => {
+    setSelectValue(value);
+    setUser(null);
+
+    if (value === 'All users') {
+      return;
+    }
+
+    getUserByNameFromServer(value);
+  }, []);
+
   return (
     <div className="App">
       <header className="App__header">
@@ -82,20 +98,7 @@ const App: React.FC = () => {
           <select
             className="App__user-selector"
             value={selectValue}
-            onChange={({ target }) => {
-              setPostListLoading(true);
-              setSelectValue(target.value);
-              setUser(null);
-              setPosts(null);
-
-              if (target.value === 'All users') {
-                setPostListLoading(false);
-
-                return;
-              }
-
-              getUserByNameFromServer(target.value);
-            }}
+            onChange={({ target }) => handeleSelectUser(target.value)}
           >
             <option value="All users">
               All users
@@ -144,16 +147,10 @@ const App: React.FC = () => {
         <div className="App__sidebar">
           <PostsList
             user={user}
-            selectValue={selectValue}
             selectedPostId={selectedPostId}
-            setSelectedPostId={setSelectedPostId}
-            setPostLoading={setPostLoading}
-            setSelectedPost={setSelectedPost}
-            setSelectedPostComments={setSelectedPostComments}
-            isPostListLoading={isPostListLoading}
-            setPostListLoading={setPostListLoading}
-            posts={posts}
-            setPosts={setPosts}
+            selectValue={selectValue}
+            handleOpenPostDetails={handleOpenPostDetails}
+            getPostFromServerByID={getPostFromServerByID}
           />
         </div>
 
@@ -162,8 +159,7 @@ const App: React.FC = () => {
             <PostDetails
               selectedPost={selectedPost}
               selectedPostComments={selectedPostComments}
-              deleteComment={deleteComment}
-              getComments={getComments}
+              getComments={getCommentsFromServer}
             />
           </div>
         )}
