@@ -1,11 +1,3 @@
-import { BASE_URL } from './api';
+import { request } from './api';
 
-export const getUserByName = async (username: string) => {
-  const response = await fetch(`${BASE_URL}/users?name=${username}`);
-
-  if (!response.ok) {
-    throw new Error(`${response.status}: ${response.text()}`);
-  }
-
-  return response.json();
-};
+export const getUserByName = (username: string) => request(`/users?name=${username}`);

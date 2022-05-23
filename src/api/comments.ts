@@ -1,16 +1,8 @@
 /* eslint-disable no-console */
 import { Comment } from '../types/Comment';
-import { BASE_URL } from './api';
+import { request, BASE_URL } from './api';
 
-export const getPostComments = async (postId: number) => {
-  const response = await fetch(`${BASE_URL}/comments?postId=${postId}`);
-
-  if (!response.ok) {
-    throw new Error(`${response.status}: ${response.text}`);
-  }
-
-  return response.json();
-};
+export const getPostComments = (postId: number) => request(`${postId}`);
 
 export const deleteCommentFromServer = async (id: number) => {
   await fetch(`${BASE_URL}/comments/${id}`, {
