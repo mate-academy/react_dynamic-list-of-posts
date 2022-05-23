@@ -31,7 +31,7 @@ export const PostDetails: React.FC<Props> = ({
   const [isCommentsVisible, setIsCommentVisible] = useState(true);
   const [commentLoading, setCommentLoading] = useState(false);
 
-  const getDetailsFromServer = async () => {
+  const getDetailsFromServer = useCallback(async () => {
     const [details, comments] = await Promise.all([
       getPostDetails(selectedPostId),
       getPostComments(selectedPostId),
@@ -39,7 +39,7 @@ export const PostDetails: React.FC<Props> = ({
 
     await setPostDetails({ details, comments });
     setCommentLoading(false);
-  };
+  }, [selectedPostId]);
 
   useEffect(() => {
     setPostDetails(null);

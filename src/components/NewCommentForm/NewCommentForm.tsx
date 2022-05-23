@@ -1,4 +1,9 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react';
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useCallback,
+  useState,
+} from 'react';
 import './NewCommentForm.scss';
 
 type Props = {
@@ -19,13 +24,13 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const [newComment, setNewComment] = useState(initialState);
 
-  const handleInput = (
+  const handleInput = useCallback((
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { value, name } = event.target;
 
     setNewComment(prev => ({ ...prev, [name]: value, postId: selectedPostId }));
-  };
+  }, [selectedPostId, newComment]);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -52,7 +57,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
       <div className="form-field">
         <input
-          type="text"
+          type="email"
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
