@@ -15,8 +15,6 @@ export const createComment = async (newComment: NewComment) => {
   return response.json();
 };
 
-export const deletePostComment = async (commentId: number) => {
-  const response = await fetch(`${BASE_URL}/comments/${commentId}`, { method: 'DELETE' });
-
-  return response.json();
+export const deletePostComment = (commentId: number) => {
+  fetch(`${BASE_URL}/comments/${commentId}`, { method: 'DELETE' });
 };
