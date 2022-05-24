@@ -5,6 +5,10 @@
 
   &__comments {
     text-align: right;
+
+    &--no-comments {
+      font-weight: bold;
+    }
   }
 
   &__list {

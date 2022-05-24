@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { UserSelect } from './components/UserSelect';
 import { getUsers } from './api/users';
 import { getUserPosts } from './api/posts';
 
@@ -11,84 +12,74 @@ import './styles/general.scss';
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [postId, setPostId] = useState(0);
-  const [userId, setUserId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [selectedUserId, setSelectedUserId] = useState(0);
   const [loadPost, setLoadPost] = useState(true);
-  const [toggleComments, setToggleComments] = useState(false);
+  const [toggleDetails, setToggleDetails] = useState(false);
 
-  const toggleCommentsChahgeHandler = (value: boolean) => {
-    setToggleComments(value);
+  const toggleShowDetailsHandler = (value: boolean) => {
+    setToggleDetails(value);
   };
 
+  const fetchUsers = useCallback(async () => {
+    const allUsers = await getUsers();
+
+    setUsers(allUsers);
+    setLoadPost(false);
+  }, []);
+
+  const fetchUserPosts = useCallback(async () => {
+    const userPosts = await getUserPosts(selectedUserId);
+
+    setPosts(userPosts);
+    setLoadPost(false);
+  }, [selectedUserId]);
+
   useEffect(() => {
-    getUsers()
-      .then(setUsers)
-      .then(() => {
-        setLoadPost(false);
-      });
+    fetchUsers();
   }, []);
 
   useEffect(() => {
-    getUserPosts(userId)
-      .then(setPosts)
-      .then(() => {
-        setLoadPost(false);
-      });
-  }, [userId]);
+    fetchUserPosts();
+  }, [selectedUserId]);
 
   const changeUser = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setUserId(+event.target.value);
+    setSelectedUserId(+event.target.value);
   };
 
   const changePostId = (post: Post, id: number) => {
-    setPostId(postId === post.id ? 0 : id);
+    setSelectedPostId(selectedPostId === post.id ? 0 : id);
   };
 
   return (
     <div className="App">
       <header className="App__header">
-        <label>
-          Select a user: &nbsp;
-
-          <select
-            className="App__user-selector"
-            value={userId}
-            onChange={(event) => {
-              changeUser(event);
-              setLoadPost(true);
-            }}
-          >
-            <option value="0">All users</option>
-            {users.map(user => (
-              <option
-                key={user.id}
-                value={user.id}
-              >
-                {user.name}
-              </option>
-            ))}
-          </select>
-        </label>
+        <UserSelect
+          users={users}
+          selectedUserId={selectedUserId}
+          changeUser={changeUser}
+          setLoadPost={setLoadPost}
+        />
       </header>
 
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
             posts={posts}
-            postId={postId}
+            selectedPostId={selectedPostId}
             changePostId={changePostId}
             loadPost={loadPost}
-            toggleCommentsChahgeHandler={toggleCommentsChahgeHandler}
+            toggleShowDetailsHandler={toggleShowDetailsHandler}
           />
         </div>
 
         <div className="App__content">
-          {postId !== 0
+          {selectedPostId !== 0
             && (
               <PostDetails
-                postId={postId}
-                toggleComments={toggleComments}
-                toggleCommentsChahgeHandler={toggleCommentsChahgeHandler}
+                selectedPostId={selectedPostId}
+                toggleDetails={toggleDetails}
+                toggleShowDetailsHandler={toggleShowDetailsHandler}
               />
             )}
         </div>

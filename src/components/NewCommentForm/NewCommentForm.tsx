@@ -3,12 +3,12 @@ import './NewCommentForm.scss';
 import { postComment } from '../../api/comments';
 
 type Props = {
-  postId: number;
+  selectedPostId: number;
   changeReload: () => void;
 };
 
 export const NewCommentForm: React.FC<Props> = React.memo((
-  { postId, changeReload },
+  { selectedPostId, changeReload },
 ) => {
   const [form, setForm] = useState({
     name: '',
@@ -42,7 +42,7 @@ export const NewCommentForm: React.FC<Props> = React.memo((
 
   useEffect(() => {
     stateReset();
-  }, [postId]);
+  }, [selectedPostId]);
 
   const formValidation = useMemo(() => {
     return (
@@ -51,9 +51,9 @@ export const NewCommentForm: React.FC<Props> = React.memo((
       && form.body.length > 0);
   }, [form.name, form.email, form.body]);
 
-  const toPostComment = () => {
-    postComment(postId, form.name, form.email, form.body)
-      .then(() => (changeReload()));
+  const toPostComment = async () => {
+    await postComment(selectedPostId, form.name, form.email, form.body);
+    changeReload();
     stateReset();
   };
 

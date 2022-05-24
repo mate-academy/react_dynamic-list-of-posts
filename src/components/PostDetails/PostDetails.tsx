@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { getPostDetails } from '../../api/posts';
@@ -6,15 +6,15 @@ import { getComments, deleteComment } from '../../api/comments';
 import { Loader } from '../Loader';
 
 type Props = {
-  postId: number;
-  toggleComments: boolean;
-  toggleCommentsChahgeHandler: (value: boolean) => void;
+  selectedPostId: number;
+  toggleDetails: boolean;
+  toggleShowDetailsHandler: (value: boolean) => void;
 };
 
 export const PostDetails: React.FC<Props> = React.memo(({
-  postId,
-  toggleComments,
-  toggleCommentsChahgeHandler,
+  selectedPostId,
+  toggleDetails,
+  toggleShowDetailsHandler,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [post, setPost] = useState<Post>();
@@ -22,23 +22,28 @@ export const PostDetails: React.FC<Props> = React.memo(({
   const [reload, setReload] = useState(false);
 
   const changeReload = () => {
-    setReload(curr => !curr);
+    setReload(prevState => !prevState);
   };
 
+  const fetch = useCallback(async () => {
+    const [postComment, postDetails] = await Promise.all([
+      await getComments(selectedPostId), await getPostDetails(selectedPostId),
+    ]);
+
+    setComments(postComment);
+    setPost(postDetails);
+    toggleShowDetailsHandler(false);
+  }, []);
+
   useEffect(() => {
-    Promise.all([
-      getComments(postId).then(setComments),
-      getPostDetails(postId).then(setPost),
-    ]).then(() => {
-      toggleCommentsChahgeHandler(false);
-    });
-  }, [postId, reload, toggleComments]);
+    fetch();
+  }, [selectedPostId, reload, toggleDetails]);
 
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
 
-      {toggleComments
+      {toggleDetails
         ? <Loader />
         : (
           <>
@@ -47,19 +52,25 @@ export const PostDetails: React.FC<Props> = React.memo(({
             </section>
 
             <section className="PostDetails__comments">
-              {comments.length > 0 && (
-                <button
-                  type="button"
-                  className="button"
-                  onClick={() => setShowCommets(curr => !curr)}
-                >
-                  {
-                    `${showCommets ? 'Show' : 'Hide'}
-                  ${comments.length}
-                  ${comments.length > 1 ? 'comments' : 'comment'}`
-                  }
-                </button>
-              )}
+              {comments.length > 0
+                ? (
+                  <button
+                    type="button"
+                    className="button"
+                    onClick={() => setShowCommets(prevState => !prevState)}
+                  >
+                    {
+                      `${showCommets ? 'Show' : 'Hide'}
+                    ${comments.length}
+                    ${comments.length > 1 ? 'comments' : 'comment'}`
+                    }
+                  </button>
+                )
+                : (
+                  <p className="PostDetails__comments--no-comments">
+                    So far, no comments...
+                  </p>
+                )}
 
               {!showCommets && (
                 <ul className="PostDetails__list">
@@ -71,11 +82,9 @@ export const PostDetails: React.FC<Props> = React.memo(({
                       <button
                         type="button"
                         className="PostDetails__remove-button button"
-                        onClick={() => {
-                          deleteComment(comment.id)
-                            .then(() => {
-                              changeReload();
-                            });
+                        onClick={async () => {
+                          await deleteComment(comment.id);
+                          changeReload();
                         }}
                       >
                         X
@@ -92,7 +101,7 @@ export const PostDetails: React.FC<Props> = React.memo(({
       <section>
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
-            postId={postId}
+            selectedPostId={selectedPostId}
             changeReload={changeReload}
           />
         </div>

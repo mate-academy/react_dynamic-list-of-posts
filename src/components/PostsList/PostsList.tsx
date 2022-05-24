@@ -4,18 +4,18 @@ import './PostsList.scss';
 
 type Props = {
   posts: Post[];
-  postId: number;
+  selectedPostId: number;
   loadPost: boolean;
   changePostId: (post: Post, id: number) => void;
-  toggleCommentsChahgeHandler: (value: boolean) => void;
+  toggleShowDetailsHandler: (value: boolean) => void;
 };
 
 export const PostsList: React.FC<Props> = React.memo(({
   posts,
-  postId,
+  selectedPostId,
   loadPost: load,
   changePostId,
-  toggleCommentsChahgeHandler,
+  toggleShowDetailsHandler,
 }) => {
   return (
     <div className="PostsList">
@@ -37,10 +37,10 @@ export const PostsList: React.FC<Props> = React.memo(({
                   className="PostsList__button button"
                   onClick={() => {
                     changePostId(post, post.id);
-                    toggleCommentsChahgeHandler(true);
+                    toggleShowDetailsHandler(true);
                   }}
                 >
-                  {postId === post.id ? 'Closed' : 'Open'}
+                  {selectedPostId === post.id ? 'Closed' : 'Open'}
                 </button>
               </li>
             ))}
