@@ -8,11 +8,13 @@ const App: React.FC = () => {
   const [selectedUserId, setSelectedUser] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
 
-  const handleSelect = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
-    const { value } = event.target;
+  const handleSelectUser = useCallback(
+    (event: ChangeEvent<HTMLSelectElement>) => {
+      const { value } = event.target;
 
-    setSelectedUser(+value);
-  }, []);
+      setSelectedUser(+value);
+    }, [],
+  );
 
   const onSelectPostId = useCallback((value: number) => {
     setSelectedPostId(value === selectedPostId ? null : value);
@@ -27,7 +29,7 @@ const App: React.FC = () => {
           <select
             className="App__user-selector"
             value={String(selectedUserId)}
-            onChange={handleSelect}
+            onChange={handleSelectUser}
           >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
@@ -66,5 +68,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
-// Пункт номер 9, створити метод getPost

@@ -15,7 +15,7 @@ export const PostsList: React.FC<Props> = ({
   onSelectPostId,
   selectedPostId,
 }) => {
-  const [posts, setPosts] = useState<Post[] | []>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     const getDataFromServer = async () => {
@@ -25,7 +25,7 @@ export const PostsList: React.FC<Props> = ({
     };
 
     getDataFromServer();
-  }, [selectedUserId]);
+  }, []);
 
   const visiblePosts = useMemo(() => {
     return (selectedUserId === 0)

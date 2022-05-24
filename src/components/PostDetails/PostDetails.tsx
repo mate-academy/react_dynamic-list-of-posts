@@ -1,15 +1,14 @@
 import React, {
   useCallback,
   useEffect,
-  useMemo,
   useState,
 } from 'react';
+import { getPostDetails } from '../../api/posts';
 import {
   createComment,
   deletePostComment,
   getPostComments,
-  getPostDetails,
-} from '../../api/posts';
+} from '../../api/comments';
 import { Loader } from '../Loader';
 import { NewCommentForm } from '../NewCommentForm';
 import { PostComment } from '../PostComment/PostComment';
@@ -19,30 +18,28 @@ type Props = {
   selectedPostId: number;
 };
 
-type PostDetail = {
-  details: Post;
-  comments: PostComment[];
-};
-
 export const PostDetails: React.FC<Props> = ({
   selectedPostId,
 }) => {
-  const [postDetails, setPostDetails] = useState<PostDetail | null>(null);
+  const [details, setDetails] = useState<Post | null>(null);
+  const [comments, setComments] = useState<PostComment[]>([]);
   const [isCommentsVisible, setIsCommentVisible] = useState(true);
   const [commentLoading, setCommentLoading] = useState(false);
 
   const getDetailsFromServer = useCallback(async () => {
-    const [details, comments] = await Promise.all([
+    const [detailsFromServer, commentsFromServer] = await Promise.all([
       getPostDetails(selectedPostId),
       getPostComments(selectedPostId),
     ]);
 
-    await setPostDetails({ details, comments });
+    await setDetails(detailsFromServer);
+    await setComments(commentsFromServer);
     setCommentLoading(false);
   }, [selectedPostId]);
 
   useEffect(() => {
-    setPostDetails(null);
+    setDetails(null);
+    setComments([]);
     getDetailsFromServer();
   }, [selectedPostId]);
 
@@ -52,31 +49,35 @@ export const PostDetails: React.FC<Props> = ({
 
   const handleAddComment = useCallback(async (newComment: NewComment) => {
     setCommentLoading(true);
-    await createComment(newComment);
-    getDetailsFromServer();
-  }, [postDetails]);
+    const createdComment = await createComment(newComment);
+    const newComments = await [...comments, createdComment];
+
+    setComments(newComments);
+    setCommentLoading(false);
+  }, [comments]);
 
   const handleDeleteComment = useCallback(async (deleteId: number) => {
     setCommentLoading(true);
     await deletePostComment(deleteId);
-    getDetailsFromServer();
-  }, [postDetails]);
+    const filteredComments = [...comments].filter(
+      comment => comment.id !== deleteId,
+    );
 
-  const commentsLength = useMemo(() => {
-    return postDetails ? postDetails.comments.length : 0;
-  }, [postDetails]);
+    setComments(filteredComments);
+    setCommentLoading(false);
+  }, [comments]);
 
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
 
-      {postDetails ? (
+      {details ? (
         <>
           <section className="PostDetails__post">
-            <p>{postDetails.details.body}</p>
+            <p>{details.body}</p>
           </section>
 
-          {(commentsLength > 0) && (
+          {(comments.length > 0) && (
             <section
               data-cy="postDetails"
               className="PostDetails__comments"
@@ -86,12 +87,12 @@ export const PostDetails: React.FC<Props> = ({
                 type="button"
                 className="button"
               >
-                {`${isCommentsVisible ? 'Hide' : 'Show'} ${commentsLength} comment${commentsLength > 1 ? 's' : ''}`}
+                {`${isCommentsVisible ? 'Hide' : 'Show'} ${comments.length} comment${comments.length > 1 ? 's' : ''}`}
               </button>
 
               {isCommentsVisible && (
                 <ul className="PostDetails__list">
-                  {postDetails.comments.map(comment => (
+                  {comments.map(comment => (
                     <PostComment
                       key={comment.id}
                       comment={comment}

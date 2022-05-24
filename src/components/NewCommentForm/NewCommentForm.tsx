@@ -22,7 +22,14 @@ export const NewCommentForm: React.FC<Props> = ({
     body: '',
   };
 
+  const initialError = {
+    name: '',
+    email: '',
+    body: '',
+  };
+
   const [newComment, setNewComment] = useState(initialState);
+  const [newCommentError, setNewCommentError] = useState(initialError);
 
   const handleInput = useCallback((
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -34,8 +41,27 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    handleAddComment(newComment);
-    setNewComment(initialState);
+    setNewCommentError({ ...initialError });
+
+    if (!newComment.name.trim()) {
+      setNewCommentError(prev => ({ ...prev, name: 'Enter title!' }));
+    }
+
+    if (!newComment.body.trim()) {
+      setNewCommentError(prev => ({ ...prev, body: 'Enter comment!' }));
+    }
+
+    if (!newComment.email.trim()) {
+      setNewCommentError(prev => ({ ...prev, email: 'Enter email!' }));
+    }
+
+    const validComment = Object.values(newComment).every(item => item);
+    const validErrors = Object.values(newCommentError).some(item => item);
+
+    if (validComment && validErrors) {
+      handleAddComment(newComment);
+      setNewComment(initialState);
+    }
   };
 
   return (
@@ -51,8 +77,10 @@ export const NewCommentForm: React.FC<Props> = ({
           className="NewCommentForm__input"
           onChange={handleInput}
           value={newComment.name}
-          required
         />
+        {newCommentError.name && (
+          <p className="error-message">{newCommentError.name}</p>
+        )}
       </div>
 
       <div className="form-field">
@@ -63,8 +91,10 @@ export const NewCommentForm: React.FC<Props> = ({
           className="NewCommentForm__input"
           onChange={handleInput}
           value={newComment.email}
-          required
         />
+        {newCommentError.email && (
+          <p className="error-message">{newCommentError.email}</p>
+        )}
       </div>
 
       <div className="form-field">
@@ -74,8 +104,11 @@ export const NewCommentForm: React.FC<Props> = ({
           className="NewCommentForm__input"
           onChange={handleInput}
           value={newComment.body}
-          required
         />
+        {newCommentError.body && (
+          <p className="error-message">{newCommentError.body}</p>
+        )}
+
       </div>
 
       <button
