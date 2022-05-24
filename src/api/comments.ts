@@ -2,7 +2,7 @@
 import { Comment } from '../types/Comment';
 import { request, BASE_URL } from './api';
 
-export const getPostComments = (postId: number) => request(`${postId}`);
+export const getPostComments = (postId: number) => request(`/comments?postId=${postId}`);
 
 export const deleteCommentFromServer = async (id: number) => {
   await fetch(`${BASE_URL}/comments/${id}`, {

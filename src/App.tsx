@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState, FC } from 'react';
 import './App.scss';
 import './styles/general.scss';
 
@@ -14,7 +14,7 @@ import { Comment } from './types/Comment';
 import { Loader } from './components/Loader';
 import { getPostDetails } from './api/posts';
 
-const App: React.FC = () => {
+const App: FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [selectedPostId, setSelectedPostId] = useState(0);
   const [selectValue, setSelectValue] = useState('All users');
@@ -78,7 +78,7 @@ const App: React.FC = () => {
     setSelectedPostId(id);
   }, [selectedPostId]);
 
-  const handeleSelectUser = useCallback((value: string) => {
+  const handleSelectUser = useCallback((value: string) => {
     setSelectValue(value);
     setUser(null);
 
@@ -98,7 +98,7 @@ const App: React.FC = () => {
           <select
             className="App__user-selector"
             value={selectValue}
-            onChange={({ target }) => handeleSelectUser(target.value)}
+            onChange={({ target }) => handleSelectUser(target.value)}
           >
             <option value="All users">
               All users
