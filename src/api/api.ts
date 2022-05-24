@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://mate.academy/students-api';
+const BASE_URL = 'https://mate.academy/students-api';
 
 export const getRequest = async (bodyRequest: string) => {
   const response = await fetch(`${BASE_URL}${bodyRequest}`);
@@ -8,4 +8,20 @@ export const getRequest = async (bodyRequest: string) => {
   }
 
   return response.json();
+};
+
+export const postRequest = async (bodyRequest: string, objInJSON: string) => {
+  await fetch(`${BASE_URL}${bodyRequest}`, {
+    method: 'POST',
+    body: objInJSON,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+};
+
+export const deleteRequest = async (bodyRequest: string) => {
+  await fetch(`${BASE_URL}${bodyRequest}`, {
+    method: 'DELETE',
+  });
 };
