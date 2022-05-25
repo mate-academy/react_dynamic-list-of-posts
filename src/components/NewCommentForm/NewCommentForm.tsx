@@ -1,39 +1,119 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import './NewCommentForm.scss';
+import { postComment } from '../../api/comments';
 
-export const NewCommentForm: React.FC = () => (
-  <form className="NewCommentForm">
-    <div className="form-field">
-      <input
-        type="text"
-        name="name"
-        placeholder="Your name"
-        className="NewCommentForm__input"
-      />
-    </div>
+type Props = {
+  selectedPostId: number;
+  changeReload: () => void;
+};
 
-    <div className="form-field">
-      <input
-        type="text"
-        name="email"
-        placeholder="Your email"
-        className="NewCommentForm__input"
-      />
-    </div>
+export const NewCommentForm: React.FC<Props> = React.memo((
+  { selectedPostId, changeReload },
+) => {
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
+  const [formValid, setFormValid] = useState(true);
 
-    <div className="form-field">
-      <textarea
-        name="body"
-        placeholder="Type comment here"
-        className="NewCommentForm__input"
-      />
-    </div>
+  /* eslint-disable max-len */
+  /* eslint-disable no-useless-escape */
+  const emailValidation
+  = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-    <button
-      type="submit"
-      className="NewCommentForm__submit-button button"
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+
+    setForm(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+    setFormValid(true);
+  };
+
+  const stateReset = () => {
+    setForm({
+      name: '',
+      email: '',
+      body: '',
+    });
+  };
+
+  useEffect(() => {
+    stateReset();
+  }, [selectedPostId]);
+
+  const formValidation = useMemo(() => {
+    return (
+      form.name.length > 0
+      && emailValidation.test(form.email)
+      && form.body.length > 0);
+  }, [form.name, form.email, form.body]);
+
+  const toPostComment = async () => {
+    await postComment(selectedPostId, form.name, form.email, form.body);
+    changeReload();
+    stateReset();
+  };
+
+  return (
+    <form
+      className="NewCommentForm"
+      onSubmit={(event) => {
+        event.preventDefault();
+
+        if (formValidation) {
+          toPostComment();
+        } else {
+          setFormValid(false);
+        }
+      }}
     >
-      Add a comment
-    </button>
-  </form>
-);
+      <div className="form-field">
+        <input
+          type="text"
+          name="name"
+          placeholder="Your name"
+          className="NewCommentForm__input"
+          value={form.name}
+          onChange={handleChange}
+        />
+      </div>
+
+      <div className="form-field">
+        <input
+          type="text"
+          name="email"
+          placeholder="Your email"
+          className="NewCommentForm__input"
+          value={form.email}
+          onChange={handleChange}
+        />
+      </div>
+
+      <div className="form-field">
+        <textarea
+          name="body"
+          placeholder="Type comment here"
+          className="NewCommentForm__input NewCommentForm__input--textarea"
+          value={form.body}
+          onChange={handleChange}
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="NewCommentForm__submit-button button"
+      >
+        Add a comment
+      </button>
+
+      {!formValid && (
+        <p className="NewCommentForm__warning-message">
+          Enter valid data!
+        </p>
+      )}
+    </form>
+  );
+});
