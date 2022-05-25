@@ -25,9 +25,13 @@ export const PostDetails: React.FC<Props> = React.memo(({
     setReload(prevState => !prevState);
   };
 
+  const visibleComments = () => {
+    setShowCommets(prevState => !prevState);
+  };
+
   const fetch = useCallback(async () => {
     const [postComment, postDetails] = await Promise.all([
-      await getComments(selectedPostId), await getPostDetails(selectedPostId),
+      getComments(selectedPostId), getPostDetails(selectedPostId),
     ]);
 
     setComments(postComment);
@@ -57,7 +61,7 @@ export const PostDetails: React.FC<Props> = React.memo(({
                   <button
                     type="button"
                     className="button"
-                    onClick={() => setShowCommets(prevState => !prevState)}
+                    onClick={visibleComments}
                   >
                     {
                       `${showCommets ? 'Show' : 'Hide'}
