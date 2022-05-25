@@ -1,39 +1,140 @@
-import React from 'react';
+/* eslint-disable no-console */
+import React, { useCallback, useState } from 'react';
+import classNames from 'classnames';
+
+import { Comment } from '../../types/Comment';
+
+import { addComment } from '../../api/comments';
+
+import { emailValidator } from '../../functions/emailValidator';
+
 import './NewCommentForm.scss';
+import { Loader } from '../Loader';
 
-export const NewCommentForm: React.FC = () => (
-  <form className="NewCommentForm">
-    <div className="form-field">
-      <input
-        type="text"
-        name="name"
-        placeholder="Your name"
-        className="NewCommentForm__input"
-      />
-    </div>
+type Props = {
+  getComments: () => Promise<void>;
+  postId: number;
+};
 
-    <div className="form-field">
-      <input
-        type="text"
-        name="email"
-        placeholder="Your email"
-        className="NewCommentForm__input"
-      />
-    </div>
+export const NewCommentForm: React.FC<Props> = React.memo(({
+  getComments,
+  postId,
+}) => {
+  const [inputName, setInputName] = useState('');
+  const [inputEmail, setInputEmail] = useState('');
+  const [inputComment, setInputComment] = useState('');
+  const [isEmailValid, setEmailValid] = useState(true);
+  const [isSubmited, setSubmitted] = useState(false);
+  const [isAddCommentLoading, setAddCommentLoading] = useState(false);
 
-    <div className="form-field">
-      <textarea
-        name="body"
-        placeholder="Type comment here"
-        className="NewCommentForm__input"
-      />
-    </div>
+  const handleSubmit = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      setAddCommentLoading(true);
+      setSubmitted(true);
 
-    <button
-      type="submit"
-      className="NewCommentForm__submit-button button"
+      if (!inputName || !inputEmail || !inputComment) {
+        setAddCommentLoading(false);
+
+        return;
+      }
+
+      if (!emailValidator(inputEmail)) {
+        setEmailValid(false);
+        setAddCommentLoading(false);
+
+        return;
+      }
+
+      const newComment: Omit<Comment, 'id'> = {
+        postId,
+        name: inputName,
+        email: inputEmail,
+        body: inputComment,
+      };
+
+      await addComment(newComment);
+      await getComments();
+
+      setSubmitted(false);
+      setAddCommentLoading(false);
+      setInputName('');
+      setInputEmail('');
+      setInputComment('');
+    },
+    [inputName, inputEmail, inputComment, postId],
+  );
+
+  return (
+    <form
+      className="NewCommentForm"
+      onSubmit={(event) => handleSubmit(event)}
     >
-      Add a comment
-    </button>
-  </form>
-);
+      <div className="form-field">
+        <input
+          type="text"
+          name="name"
+          placeholder="Your name"
+          className="NewCommentForm__input"
+          value={inputName}
+          onChange={({ target }) => {
+            setInputName(target.value);
+          }}
+        />
+      </div>
+
+      <div className="form-field">
+        {!isEmailValid && (
+          <p className="NewCommentForm__emailError">
+            Email is invalid
+          </p>
+        )}
+
+        <input
+          type="text"
+          name="email"
+          placeholder="Your email"
+          className={classNames(
+            'NewCommentForm__input',
+            { 'NewCommentForm__input--invalid': !isEmailValid },
+          )}
+          value={inputEmail}
+          onChange={({ target }) => {
+            if (isSubmited) {
+              if (inputEmail !== target.value) {
+                setEmailValid(true);
+              }
+            }
+
+            setInputEmail(target.value);
+          }}
+          onBlur={({ target }) => {
+            if (isSubmited) {
+              setEmailValid(emailValidator(target.value));
+            }
+          }}
+        />
+      </div>
+
+      <div className="form-field">
+        <textarea
+          name="body"
+          placeholder="Type comment here"
+          className="NewCommentForm__input"
+          value={inputComment}
+          onChange={({ target }) => {
+            setInputComment(target.value);
+          }}
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="NewCommentForm__submit-button button"
+        disabled={isAddCommentLoading}
+      >
+        {isAddCommentLoading ? (<Loader />) : 'Add a comment'}
+      </button>
+    </form>
+  );
+});

@@ -4,6 +4,10 @@
   align-items: center;
   padding: 20px;
 
+  &__emailError {
+    margin-top: 10px;
+  }
+
   &__input {
     border: none;
     border-bottom: 1px solid #4d457b;
@@ -11,9 +15,18 @@
     font-size: 0.9rem;
     padding: 10px 5px;
     color: #4d457b;
+    resize: none;
+
+    &--invalid {
+      border-color: red;
+    }
   }
 
   &__submit-button {
     margin-top: 10px;
   }
+}
+
+.form-field {
+  margin-top: 10px;
 }
