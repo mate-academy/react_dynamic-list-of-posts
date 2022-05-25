@@ -16,7 +16,7 @@ import { getPostDetails } from './api/posts';
 
 const App: FC = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [selectValue, setSelectValue] = useState('All users');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [
@@ -27,13 +27,15 @@ const App: FC = () => {
 
   const getPostFromServerByID = useCallback(async () => {
     try {
-      const commentsPromise = getPostComments(selectedPostId);
-      const currentPost = await getPostDetails(selectedPostId);
-      const currentPostComments = await commentsPromise;
+      if (selectedPostId) {
+        const commentsPromise = getPostComments(selectedPostId);
+        const currentPost = await getPostDetails(selectedPostId);
+        const currentPostComments = await commentsPromise;
 
-      setPostLoading(false);
-      setSelectedPost(currentPost);
-      setSelectedPostComments(currentPostComments);
+        setPostLoading(false);
+        setSelectedPost(currentPost);
+        setSelectedPostComments(currentPostComments);
+      }
     } catch (error) {
       setPostLoading(false);
       setSelectedPost(null);
@@ -43,9 +45,11 @@ const App: FC = () => {
 
   const getCommentsFromServer = useCallback(async () => {
     try {
-      const currentPostComments = await getPostComments(selectedPostId);
+      if (selectedPostId) {
+        const currentPostComments = await getPostComments(selectedPostId);
 
-      setSelectedPostComments(currentPostComments);
+        setSelectedPostComments(currentPostComments);
+      }
     } catch (error) {
       setSelectedPostComments([]);
     }
@@ -56,7 +60,7 @@ const App: FC = () => {
       const userArr = await getUserByName(username);
 
       setUser(userArr[0]);
-      setSelectedPostId(0);
+      setSelectedPostId(null);
     } catch (error) {
       setUser(null);
     }
@@ -65,7 +69,7 @@ const App: FC = () => {
   const handleOpenPostDetails = useCallback((id: number) => {
     if (selectedPostId === id) {
       setPostLoading(false);
-      setSelectedPostId(0);
+      setSelectedPostId(null);
       setSelectedPost(null);
       setSelectedPostComments([]);
 

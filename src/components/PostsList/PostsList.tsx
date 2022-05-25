@@ -7,7 +7,7 @@ import { User } from '../../types/User';
 import { getUserPostsByID, getUsersPosts } from '../../api/posts';
 
 type Props = {
-  selectedPostId: number;
+  selectedPostId: number | null;
   user: User | null;
   selectValue: string;
   handleOpenPostDetails: (id: number) => void;
