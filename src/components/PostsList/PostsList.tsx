@@ -1,37 +1,58 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { Post } from '../../types/Post';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+type Props = {
+  posts: Post[],
+  selectedPostId: number | null,
+  setSelectedPostId: (id: number | null) => void,
+};
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = ({
+  posts,
+  selectedPostId,
+  setSelectedPostId,
+}) => {
+  // const [selectedPost, setSelectedPost] = useState(selectedPostId);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  const handleVisibilityOfDetails = useCallback((id: number) => {
+    if (selectedPostId === id) {
+      setSelectedPostId(null);
+    }
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+    if (id !== selectedPostId) {
+      setSelectedPostId(id);
+    }
+
+    if (selectedPostId === null) {
+      setSelectedPostId(id);
+    }
+  }, [selectedPostId]);
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul className="PostsList__list" data-cy="postDetails">
+        {posts.map((post) => (
+          <li
+            key={post.id}
+            className="PostsList__item"
+          >
+            <div>
+              <b>{`[User #${post.userId}]: `}</b>
+              {post.title}
+            </div>
+            <button
+              type="button"
+              className="PostsList__button button"
+              onClick={() => handleVisibilityOfDetails(post.id)}
+            >
+              {selectedPostId === post.id ? 'Close' : 'Open'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
