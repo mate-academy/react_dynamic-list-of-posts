@@ -29,6 +29,12 @@ ul {
   padding: 0;
 }
 
+.error-message {
+  color: tomato;
+  margin: 5px 0;
+  font-size: 12px;
+}
+
 %stretch-panel {
   flex-grow: 1;
   margin: 10px;
@@ -38,10 +44,6 @@ ul {
 }
 
 .App {
-  &__header {
-    position: sticky;
-    padding: 10px;
-  }
 
   &__user-selector {
     padding: 5px;
