@@ -22,6 +22,27 @@ export const PostDetails: React.FC<Props> = React.memo(({
   const [commentsIsShowing, setCommentsIsShowing] = useState(true);
   const [someCommentIsDeleting, setSomeCommentIsDeleting] = useState(false);
 
+  const addSelectedPostComment
+  = useCallback((comment: Omit<Comment, 'id'>) => {
+    setCommentsForSelectedPost(prevValue => [
+      ...prevValue,
+      { ...comment, id: prevValue.length + 1 },
+    ]);
+  }, [commentsForSelectedPost]);
+  const removeSelectedPostComment
+  = useCallback((id: number) => {
+    setCommentsForSelectedPost(
+      prevValue => prevValue.filter(comment => comment.id !== id),
+    );
+  }, [commentsForSelectedPost]);
+
+  const removeCommentBtnClickHandler = useCallback(async (id: number) => {
+    setSomeCommentIsDeleting(true);
+    await removePostCommetById(id);
+    removeSelectedPostComment(id);
+    setSomeCommentIsDeleting(false);
+  }, [removeSelectedPostComment]);
+
   const getPostDetails = useCallback(async () => {
     try {
       setSelectedPostDetails(null);
@@ -69,11 +90,8 @@ export const PostDetails: React.FC<Props> = React.memo(({
                     <button
                       type="button"
                       className="PostDetails__remove-button button"
-                      onClick={async () => {
-                        setSomeCommentIsDeleting(true);
-                        await removePostCommetById(comment.id);
-                        setSomeCommentIsDeleting(false);
-                        getPostDetails();
+                      onClick={() => {
+                        removeCommentBtnClickHandler(comment.id);
                       }}
                     >
                       {someCommentIsDeleting ? <Loader /> : 'X'}
@@ -89,7 +107,7 @@ export const PostDetails: React.FC<Props> = React.memo(({
             <div className="PostDetails__form-wrapper">
               <NewCommentForm
                 selectedPostId={selectedPostId}
-                getPostDetails={getPostDetails}
+                addSelectedPostComment={addSelectedPostComment}
               />
             </div>
           </section>

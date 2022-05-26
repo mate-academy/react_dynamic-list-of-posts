@@ -45,6 +45,16 @@ export const PostsList: React.FC<Props> = React.memo(({
     getUserPosts();
   }, [filterByUserId]);
 
+  const removeCommentBtnClickHandler = useCallback((postId: number) => {
+    if (selectedPostId === postId) {
+      setSelectedPostId(0);
+
+      return;
+    }
+
+    setSelectedPostId(postId);
+  }, [selectedPostId]);
+
   return (
     <>
       <header className="PostsList__filter-props-block">
@@ -100,13 +110,7 @@ export const PostsList: React.FC<Props> = React.memo(({
                     type="button"
                     className="PostsList__button button"
                     onClick={() => {
-                      if (selectedPostId === post.id) {
-                        setSelectedPostId(0);
-
-                        return;
-                      }
-
-                      setSelectedPostId(post.id);
+                      removeCommentBtnClickHandler(post.id);
                     }}
                   >
                     {selectedPostId === post.id
