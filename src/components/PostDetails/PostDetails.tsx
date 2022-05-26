@@ -1,45 +1,104 @@
-import React from 'react';
-import { NewCommentForm } from '../NewCommentForm';
+import React, { useEffect, useState } from 'react';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+import { Loader } from '../Loader';
+import { NewCommentForm } from '../NewCommentForm';
+import { getPostDetails } from '../../api/posts';
+import { removePostComment, getPostComments } from '../../api/comments';
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+type Props = {
+  postId: number,
+};
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+export const PostDetails: React.FC<Props> = ({ postId }) => {
+  const [postDetails, setPostDetails] = useState<Post>();
+  const [postComments, setPostComments] = useState<Comment[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isHidden, setHidden] = useState(true);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  const fetchComments = async () => {
+    const postCommentsFromServer = await getPostComments(postId);
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+    setPostComments(postCommentsFromServer);
+    setIsLoading(false);
+  };
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+  const fetchPostDetails = async () => {
+    const postDetailsFromServer = await getPostDetails(postId);
+
+    setIsLoading(true);
+    setPostDetails(postDetailsFromServer);
+    fetchComments();
+  };
+
+  useEffect(() => {
+    if (postId !== 0) {
+      fetchPostDetails();
+    }
+  }, [postId]);
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      {isLoading
+        ? <Loader />
+        : (
+          <>
+            <section className="PostDetails__post">
+              <p>{postDetails?.title}</p>
+            </section>
+
+            <section className="PostDetails__comments">
+              {postComments.length === 0
+                ? <p>No comments</p>
+                : (
+                  <>
+                    <button
+                      type="button"
+                      className="button"
+                      onClick={() => setHidden(!isHidden)}
+                    >
+                      {`${isHidden ? 'Hide' : 'Show'} ${postComments.length} comments`}
+                    </button>
+
+                    {isHidden && (
+                      <ul className="PostDetails__list">
+                        {postComments.map(comment => (
+                          <li
+                            className="PostDetails__list-item"
+                            key={comment.id}
+                          >
+                            <button
+                              type="button"
+                              className="PostDetails__remove-button button"
+                              onClick={() => {
+                                removePostComment(comment.id);
+                                setPostComments(postComments
+                                  .filter(c => c.id !== comment.id));
+                              }}
+                            >
+                              X
+                            </button>
+                            <p>{comment.body}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </>
+                )}
+            </section>
+
+            <section>
+              <div className="PostDetails__form-wrapper">
+                <NewCommentForm
+                  postId={postId}
+                  fetchComments={fetchComments}
+                />
+              </div>
+            </section>
+          </>
+        )}
+    </div>
+  );
+};
