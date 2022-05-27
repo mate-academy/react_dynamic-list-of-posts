@@ -42,7 +42,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
       <h2>Post details:</h2>
 
       <section className="PostDetails__post">
-        <p>{post?.title}</p>
+        <p>{post?.body}</p>
       </section>
 
       <section className="PostDetails__comments">
