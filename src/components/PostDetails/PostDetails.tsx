@@ -48,17 +48,21 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
     }
   }, [selectedPostId]);
 
+  const updateComments = useCallback(async () => {
+    if (selectedPostId) {
+      const userPostComments = await getPostComments(selectedPostId);
+
+      setComments(userPostComments);
+    }
+  }, [selectedPostId]);
+
   const handleRemoveComment = useCallback(async (commentId: number) => {
     try {
       setIsCommentsLoading(true);
       await removeComment(commentId);
     } finally {
       setIsCommentsLoading(false);
-      if (selectedPostId) {
-        const userPostComments = await getPostComments(selectedPostId);
-
-        setComments(userPostComments);
-      }
+      updateComments();
     }
   }, [selectedPostId, comments]);
 
@@ -68,11 +72,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
       await addComment(newComment);
     } finally {
       setIsCommentsLoading(false);
-      if (selectedPostId) {
-        const userPostComments = await getPostComments(selectedPostId);
-
-        setComments(userPostComments);
-      }
+      updateComments();
     }
   }, [selectedPostId, comments]);
 
