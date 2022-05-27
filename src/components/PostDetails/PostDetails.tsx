@@ -4,13 +4,14 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-// import { NewCommentForm } from '../NewCommentForm';
-import { getPostComments, removeComment } from '../../api/comments';
+import { NewCommentForm } from '../NewCommentForm';
+import { addComment, getPostComments, removeComment } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
 import { Comment } from '../../types/Comment';
 import { Post } from '../../types/Post';
 import './PostDetails.scss';
 import { Loader } from '../Loader';
+import { NewComment } from '../../types/NewComment';
 
 type Props = {
   selectedPostId: number | null;
@@ -51,6 +52,20 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
     try {
       setIsCommentsLoading(true);
       await removeComment(commentId);
+    } finally {
+      setIsCommentsLoading(false);
+      if (selectedPostId) {
+        const userPostComments = await getPostComments(selectedPostId);
+
+        setComments(userPostComments);
+      }
+    }
+  }, [selectedPostId, comments]);
+
+  const handleAddComment = useCallback(async (newComment: NewComment) => {
+    try {
+      setIsCommentsLoading(true);
+      await addComment(newComment);
     } finally {
       setIsCommentsLoading(false);
       if (selectedPostId) {
@@ -123,15 +138,16 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
                 </ul>
               )}
             </section>
-            <section>
-              <div className="PostDetails__form-wrapper">
-                {/* <NewCommentForm
-                  selectedPostId={selectedPostId}
-                  setComments={setComments}
-                  comments={comments}
-                /> */}
-              </div>
-            </section>
+            {details?.body && (
+              <section>
+                <div className="PostDetails__form-wrapper">
+                  <NewCommentForm
+                    handleAddComment={handleAddComment}
+                    selectedPostId={selectedPostId}
+                  />
+                </div>
+              </section>
+            )}
           </>
         )}
       </div>

@@ -1,19 +1,15 @@
 import React, { useCallback, useState } from 'react';
-import { addComment } from '../../api/comments';
-import { Comment } from '../../types/Comment';
 import { NewComment } from '../../types/NewComment';
 import './NewCommentForm.scss';
 
 type Props = {
-  selectedPostId: number;
-  setComments: (newComments: Comment[] | null) => void;
-  comments: Comment[] | null;
+  handleAddComment: (newComment: NewComment) => void;
+  selectedPostId: number | null;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
+  handleAddComment,
   selectedPostId,
-  setComments,
-  comments,
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -51,7 +47,7 @@ export const NewCommentForm: React.FC<Props> = ({
   );
 
   const handleSubmit
-    = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
+    = useCallback((event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
       if (!name.trim()) {
@@ -66,22 +62,20 @@ export const NewCommentForm: React.FC<Props> = ({
         return;
       }
 
-      const newComment: NewComment = {
-        postId: selectedPostId,
-        name,
-        email,
-        body,
-      };
+      if (selectedPostId) {
+        const newComment: NewComment = {
+          postId: selectedPostId,
+          name,
+          email,
+          body,
+        };
 
-      const addedComment = await addComment(newComment);
-      const newComments
-        = comments ? [...comments, addedComment] : [addedComment];
-
-      setComments(newComments);
-      setName('');
-      setEmail('');
-      setBody('');
-    }, [selectedPostId, comments, name, body, email]);
+        handleAddComment(newComment);
+        setName('');
+        setEmail('');
+        setBody('');
+      }
+    }, [selectedPostId, name, body, email]);
 
   return (
     <form
