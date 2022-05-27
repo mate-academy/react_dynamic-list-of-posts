@@ -1,29 +1,21 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 
 type Props = {
-  setUserId: (userId: number) => void;
-  setSelectedPostId: (id: number | null) => void;
+  selectedUser: string;
+  handleSelectedUser: (id: string) => void;
 };
 
 export const UserSelect: React.FC<Props> = ({
-  setUserId,
-  setSelectedPostId,
+  selectedUser,
+  handleSelectedUser,
 }) => {
-  const [selectedUserId, setSelectedUser] = useState('0');
-
-  const handleUserSelect = useCallback((value: string) => {
-    setSelectedUser(value);
-    setUserId(+value);
-    setSelectedPostId(null);
-  }, []);
-
   return (
     <label>
       Select a user: &nbsp;
       <select
-        value={selectedUserId}
+        value={selectedUser}
         className="App__user-selector"
-        onChange={({ target }) => handleUserSelect(target.value)}
+        onChange={({ target }) => handleSelectedUser(target.value)}
       >
         <option value="0">All users</option>
         <option value="1">Leanne Graham</option>

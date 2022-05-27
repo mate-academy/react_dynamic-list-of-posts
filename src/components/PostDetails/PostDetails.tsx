@@ -1,95 +1,140 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { NewCommentForm } from '../NewCommentForm';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+// import { NewCommentForm } from '../NewCommentForm';
 import { getPostComments, removeComment } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
 import { Comment } from '../../types/Comment';
 import { Post } from '../../types/Post';
 import './PostDetails.scss';
+import { Loader } from '../Loader';
 
 type Props = {
-  selectedPostId: number;
+  selectedPostId: number | null;
 };
 
 export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
-  const [details, setPDetails] = useState<Post | null>(null);
+  const [details, setDetails] = useState<Post | null>(null);
+  const [isDetailsLoading, setIsDetailsLoading] = useState(false);
   const [comments, setComments] = useState<Comment[] | null>(null);
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [isVisibleComments, setIsVisibleComments] = useState(true);
 
   const handleVisibilityComments = useCallback(() => {
     setIsVisibleComments(!isVisibleComments);
   }, [isVisibleComments]);
 
-  const handleRemoveComment = useCallback(async (commentId: number) => {
-    await removeComment(commentId);
-    const updatedComments
-      = comments?.filter((comment) => comment.id !== commentId) || null;
-
-    setComments(updatedComments);
-  }, [comments]);
-
   const postDetails = useCallback(async () => {
-    const [userPostDetails, userPostComments] = await Promise.all([
-      getPostDetails(selectedPostId),
-      getPostComments(selectedPostId),
-    ]);
+    if (selectedPostId) {
+      try {
+        setIsDetailsLoading(true);
+        const [userPostDetails, userPostComments] = await Promise.all([
+          getPostDetails(selectedPostId),
+          getPostComments(selectedPostId),
+        ]);
 
-    setPDetails(userPostDetails);
-    setComments(userPostComments);
+        setDetails(userPostDetails);
+        setComments(userPostComments);
+      } finally {
+        setIsDetailsLoading(false);
+      }
+    } else {
+      setDetails(null);
+      setComments(null);
+    }
   }, [selectedPostId]);
 
-  useEffect(() => {
-    setComments(comments);
-    postDetails();
+  const handleRemoveComment = useCallback(async (commentId: number) => {
+    try {
+      setIsCommentsLoading(true);
+      await removeComment(commentId);
+    } finally {
+      setIsCommentsLoading(false);
+      if (selectedPostId) {
+        const userPostComments = await getPostComments(selectedPostId);
+
+        setComments(userPostComments);
+      }
+    }
   }, [selectedPostId, comments]);
 
+  const isComments = useMemo(() => {
+    return comments && comments.length > 0;
+  }, [comments]);
+
+  useEffect(() => {
+    postDetails();
+  }, [selectedPostId]);
+
   return (
-    <div className="PostDetails">
-      <h2>Post details:</h2>
+    <>
+      <div className="PostDetails">
+        <h2>Post details:</h2>
+        {isDetailsLoading && <Loader />}
+        {!isDetailsLoading && (
+          <>
+            <section className="PostDetails__post">
+              <p>{details?.body}</p>
+            </section>
 
-      <section className="PostDetails__post">
-        <p>{details?.body}</p>
-      </section>
+            <section className="PostDetails__comments">
+              {details?.body && !isComments && (
+                <button
+                  type="button"
+                  className="PostDetails__nocomments
+                  button"
+                >
+                  No comments
+                </button>
+              )}
 
-      <section className="PostDetails__comments">
-        <button
-          type="button"
-          className="button"
-          onClick={handleVisibilityComments}
-        >
-          {(comments && comments.length > 0) && (isVisibleComments
-            ? `Hide ${comments?.length} comments`
-            : `Show ${comments?.length} comments`)}
+              {details?.body && isComments && (
+                <button
+                  type="button"
+                  className="button"
+                  onClick={handleVisibilityComments}
+                >
+                  {isVisibleComments && `Hide ${comments?.length} comments`}
+                  {!isVisibleComments && `Show ${comments?.length} comments`}
+                </button>
+              )}
 
-          {(!comments || !comments.length) && 'No comments'}
-        </button>
-
-        <ul className="PostDetails__list" data-cy="postDetails">
-          {isVisibleComments && comments?.map((comment) => (
-            <li
-              className="PostDetails__list-item"
-              key={comment.id}
-            >
-              <button
-                type="button"
-                className="PostDetails__remove-button button"
-                onClick={() => handleRemoveComment(comment.id)}
-              >
-                X
-              </button>
-              <p>{comment.body}</p>
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section>
-        <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            selectedPostId={selectedPostId}
-            setComments={setComments}
-            comments={comments}
-          />
-        </div>
-      </section>
-    </div>
+              {isCommentsLoading && <Loader />}
+              {!isCommentsLoading && (
+                <ul className="PostDetails__list" data-cy="postDetails">
+                  {isVisibleComments && comments?.map((comment) => (
+                    <li
+                      className="PostDetails__list-item"
+                      key={comment.id}
+                    >
+                      <button
+                        type="button"
+                        className="PostDetails__remove-button button"
+                        onClick={() => handleRemoveComment(comment.id)}
+                      >
+                        X
+                      </button>
+                      <p>{comment.body}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+            <section>
+              <div className="PostDetails__form-wrapper">
+                {/* <NewCommentForm
+                  selectedPostId={selectedPostId}
+                  setComments={setComments}
+                  comments={comments}
+                /> */}
+              </div>
+            </section>
+          </>
+        )}
+      </div>
+    </>
   );
 };

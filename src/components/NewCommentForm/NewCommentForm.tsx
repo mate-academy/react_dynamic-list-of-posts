@@ -6,7 +6,7 @@ import './NewCommentForm.scss';
 
 type Props = {
   selectedPostId: number;
-  setComments: (newComments: Comment[]) => void;
+  setComments: (newComments: Comment[] | null) => void;
   comments: Comment[] | null;
 };
 
@@ -21,36 +21,34 @@ export const NewCommentForm: React.FC<Props> = ({
   const [isValidName, setIsValidName] = useState(true);
   const [isValidMessage, setIsValidMessage] = useState(true);
 
-  const handleInput = useCallback((target: EventTarget
-  & (HTMLInputElement | HTMLTextAreaElement)) => {
-    switch (target.name) {
-      case 'name':
-        if (name !== target.value) {
-          setIsValidName(true);
-        }
+  const handleInput = useCallback(
+    (target: EventTarget & (HTMLInputElement | HTMLTextAreaElement)) => {
+      switch (target.name) {
+        case 'name':
+          if (name !== target.value) {
+            setIsValidName(true);
+          }
 
-        setName(target.value);
+          setName(target.value);
+          break;
 
-        break;
+        case 'body':
+          if (body !== target.value) {
+            setIsValidMessage(true);
+          }
 
-      case 'body':
-        if (body !== target.value) {
-          setIsValidMessage(true);
-        }
+          setBody(target.value);
+          break;
 
-        setBody(target.value);
+        case 'email':
+          setEmail(target.value);
+          break;
 
-        break;
-
-      case 'email':
-        setEmail(target.value);
-
-        break;
-
-      default:
-        break;
-    }
-  }, [name, email, body]);
+        default:
+          break;
+      }
+    }, [name, email, body],
+  );
 
   const handleSubmit
     = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
@@ -83,7 +81,7 @@ export const NewCommentForm: React.FC<Props> = ({
       setName('');
       setEmail('');
       setBody('');
-    }, [selectedPostId, comments]);
+    }, [selectedPostId, comments, name, body, email]);
 
   return (
     <form
@@ -130,8 +128,8 @@ export const NewCommentForm: React.FC<Props> = ({
         Add a comment
       </button>
       <div className="NewCommentForm__error">
-        {!isValidMessage && 'Please, enter a message'}
         {!isValidName && 'Please, enter a name'}
+        {!isValidMessage && 'Please, enter a message'}
       </div>
     </form>
   );

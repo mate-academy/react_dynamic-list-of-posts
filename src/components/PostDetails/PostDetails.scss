@@ -28,6 +28,12 @@
     );
   }
 
+  &__nocomments {
+    &:hover {
+      cursor: inherit;
+    }
+  }
+
   &__remove-button {
     min-width: 20px;
     color: inherit;
