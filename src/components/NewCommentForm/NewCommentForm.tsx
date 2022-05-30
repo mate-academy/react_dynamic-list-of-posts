@@ -11,6 +11,9 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment, postId }) => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [newComment, setNewComment] = useState('');
+  const [userError, setUserError] = useState<string | null>(null);
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [commentError, setCommentError] = useState<string | null>(null);
 
   const addInfo = (event:
   ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -19,19 +22,44 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment, postId }) => {
     switch (name) {
       case 'name':
         setUserName(value);
+        setUserError(null);
         break;
 
       case 'email':
         setUserEmail(value);
+        setEmailError(null);
         break;
 
       case 'body':
         setNewComment(value);
+        setCommentError(null);
         break;
 
       default:
         throw new Error('error');
     }
+  };
+
+  const validate = () => {
+    if (!userName.trim()) {
+      setUserError('Please enter your name');
+
+      return false;
+    }
+
+    if (!userEmail.trim()) {
+      setEmailError('Please enter your email');
+
+      return false;
+    }
+
+    if (!newComment.trim()) {
+      setCommentError('Please enter your comment');
+
+      return false;
+    }
+
+    return true;
   };
 
   const postNewComment = async () => {
@@ -50,10 +78,15 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment, postId }) => {
   const submitForm = (event: SyntheticEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    postNewComment();
-    setUserName('');
-    setUserEmail('');
-    setNewComment('');
+    if (validate()) {
+      postNewComment();
+      setUserName('');
+      setUserEmail('');
+      setNewComment('');
+      setUserError(null);
+      setEmailError(null);
+      setCommentError(null);
+    }
   };
 
   return (
@@ -68,17 +101,20 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment, postId }) => {
           onChange={addInfo}
         />
       </div>
+      {userError && <p className="Form__error">{userError}</p>}
 
       <div className="form-field">
         <input
-          type="text"
+          type="email"
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
           value={userEmail}
           onChange={addInfo}
+          required
         />
       </div>
+      {emailError && <p className="Form__error">{emailError}</p>}
 
       <div className="form-field">
         <textarea
@@ -89,6 +125,7 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment, postId }) => {
           onChange={addInfo}
         />
       </div>
+      {commentError && <p className="Form__error">{commentError}</p>}
 
       <button
         type="submit"

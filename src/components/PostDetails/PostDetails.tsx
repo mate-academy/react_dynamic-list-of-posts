@@ -16,18 +16,10 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   useEffect(() => {
     async function result() {
       const postFromServer = await getPostDetails(selectedPostId);
-
-      setPost(postFromServer);
-    }
-
-    result();
-  }, [selectedPostId]);
-
-  useEffect(() => {
-    async function result() {
       const commentsFromServer = await getPostComments(selectedPostId);
 
       setComments(commentsFromServer);
+      setPost(postFromServer);
     }
 
     result();
@@ -35,6 +27,11 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
 
   const addNewComment = (newComment: Commentary) => {
     setComments([...comments, newComment]);
+  };
+
+  const handleRemoveComment = (id: number) => {
+    removeComment(id);
+    setComments(comments.filter(el => el.id !== id));
   };
 
   return (
@@ -52,7 +49,8 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
             className="button"
             onClick={() => setCommentsVisible(state => !state)}
           >
-            {commentsVisible ? `Hide ${comments.length} comments`
+            {commentsVisible
+              ? `Hide ${comments.length} comments`
               : `Show ${comments.length} comments`}
           </button>
         )}
@@ -64,10 +62,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
-                  onClick={() => {
-                    removeComment(comment.id);
-                    setComments(comments.filter(el => el.id !== comment.id));
-                  }}
+                  onClick={() => handleRemoveComment(comment.id)}
                 >
                   X
                 </button>
