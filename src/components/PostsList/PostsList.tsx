@@ -1,37 +1,53 @@
-import React from 'react';
+import {
+  FC,
+  memo,
+  useCallback,
+  useContext,
+} from 'react';
 import './PostsList.scss';
+import { PostsContext } from '../../PostsContext';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList: FC = memo(() => {
+  const { posts, selectedPostId, setSelectedPostId } = useContext(PostsContext);
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  const handleButton = useCallback((currentPostId: number) => {
+    if (currentPostId !== selectedPostId) {
+      setSelectedPostId(currentPostId);
+    } else {
+      setSelectedPostId(0);
+    }
+  }, [selectedPostId]);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      <ul className="PostsList__list">
+        {posts.map(post => (
+          <li
+            className="PostsList__item"
+            key={post.id}
+          >
+            <div>
+              <b>{`[User #${post.userId}]:`}</b>
+              {post.body}
+            </div>
+            <button
+              type="button"
+              className="PostsList__button button"
+              onClick={() => {
+                handleButton(post.id);
+              }}
+            >
+              {
+                post.id === selectedPostId
+                  ? 'Close'
+                  : 'Open'
+              }
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+});
