@@ -1,37 +1,63 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { getUserPosts } from '../../api/posts';
+import { Post } from '../../types/Post';
+import { Loader } from '../Loader';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+interface Props {
+  selectedUser: string,
+  selectedPostId: number | null,
+  handleSelectedPost: (postId: number) => void,
+}
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = ({
+  selectedUser,
+  selectedPostId,
+  handleSelectedPost,
+}) => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [isPostLoaded, setIsPostLoaded] = useState(false);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  const getPosts = useCallback(async () => {
+    const userPosts = await getUserPosts(+selectedUser);
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+    setPosts(userPosts);
+    setIsPostLoaded(true);
+  }, [selectedUser]);
+
+  useEffect(() => {
+    getPosts();
+  }, [selectedUser]);
+
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul
+        className="PostsList__list"
+        data-cy="postDetails"
+      >
+        {!isPostLoaded && <Loader />}
+        {isPostLoaded && posts.map(post => {
+          const isOpen = selectedPostId === post.id;
+
+          return (
+            <li key={post.id} className="PostsList__item">
+              <div>
+                <b>{`[User #${post.userId}]: `}</b>
+                {post.title}
+              </div>
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => handleSelectedPost(post.id)}
+              >
+                {isOpen ? 'Close' : 'Open'}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
