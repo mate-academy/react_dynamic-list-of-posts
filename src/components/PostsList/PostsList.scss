@@ -1,6 +1,10 @@
 .PostsList {
   width: 100%;
 
+  &__title {
+    text-transform: capitalize;
+  }
+
   &__user-button {
     cursor: pointer;
     padding: 5px 10px;

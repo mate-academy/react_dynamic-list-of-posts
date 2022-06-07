@@ -1,45 +1,94 @@
-import React from 'react';
+/* eslint-disable no-console */
+import {
+  FC, useState, useEffect,
+} from 'react';
+import { getPostComments, getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  selectPostId: number;
+  // onSelectPost: (postId: number) => void;
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: FC<Props> = ({
+  // onSelectPost,
+  selectPostId,
+}) => {
+  const [post, setPost] = useState<Post>(Object);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isVisibleComment, setIsVisibleComment] = useState(false);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const toggleCommentSection = () => {
+    setIsVisibleComment(!isVisibleComment);
+  };
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
+  useEffect(() => {
+    getPostDetails(selectPostId).then((data) => {
+      setPost(data);
+    });
+  }, [selectPostId]);
+
+  useEffect(() => {
+    getPostComments(selectPostId).then((data) => {
+      setComments(data);
+    });
+  }, [selectPostId]);
+
+  console.log('comments', comments);
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <p>{post.body}</p>
+      </section>
+
+      {comments.length > 0 && (
+        <section className="PostDetails__comments">
           <button
             type="button"
-            className="PostDetails__remove-button button"
+            className="button"
+            onClick={toggleCommentSection}
           >
-            X
+            {isVisibleComment
+              ? `Hide ${comments.length} comments`
+              : `Show ${comments.length} comments`}
           </button>
-          <p>My first comment</p>
-        </li>
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+          <ul className="PostDetails__list">
+            {isVisibleComment && comments.map(comment => (
+              <li
+                key={comment.id}
+                className="PostDetails__list-item"
+              >
+                <button
+                  type="button"
+                  className="PostDetails__remove-button button"
+                >
+                  X
+                </button>
+                <p>{comment.body}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm />
+        </div>
+      </section>
+    </div>
+  );
+};
+
+// body: " gjhkbjlnk;ml,"
+// createdAt: "2022-04-17T18:44:16.357Z"
+// email: "hjkl@jakasvjk.com"
+// id: 19083
+// name: "vjblnjlk;l"
+// postId: 87
+// updatedAt: "2022-04-17T18:44:16.357Z
