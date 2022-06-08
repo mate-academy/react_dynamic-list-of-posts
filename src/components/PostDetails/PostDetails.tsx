@@ -15,7 +15,7 @@ export const PostDetails: React.FC<Props> = ({
 }) => {
   const [postDetails, setPostDetails] = useState<Post | null>(null);
   const [postComments, setPostComments] = useState<Comment[]>([]);
-  const [showButton, setShowButton] = useState(false);
+  const [showButton, setShowButton] = useState(true);
 
   useEffect(() => {
     const getPostDetails = async (id: number) => {
@@ -69,23 +69,24 @@ export const PostDetails: React.FC<Props> = ({
 
             <section className="PostDetails__comments" data-cy="postDetails">
               <div className="PostDetails__buttons">
-                {!showButton
+                {showButton
                   ? (
-                    <button
-                      type="button"
-                      className="button"
-                      onClick={() => setShowButton(true)}
-                    >
-                      Show comments
-                    </button>
-                  )
-                  : (
                     <button
                       type="button"
                       className="button"
                       onClick={() => setShowButton(false)}
                     >
                       Hide comments
+                    </button>
+                  )
+                  : (
+                    <button
+                      type="button"
+                      className="button"
+                      onClick={() => setShowButton(true)}
+
+                    >
+                      Show comments
                     </button>
                   )}
               </div>
