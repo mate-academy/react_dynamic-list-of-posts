@@ -4,18 +4,14 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import {
-  ComentsPost,
   DetailsPost,
-  NewPostBody,
   Post,
 } from './types/Post';
 import {
   getAllPosts,
-  getPostComments,
   getPostDetails,
   getUserPosts,
-  postNewComment,
-  removeComment,
+
 } from './api/api';
 
 const App: React.FC = () => {
@@ -23,7 +19,6 @@ const App: React.FC = () => {
   const [error, setErorr] = useState('');
   const [selectedPostId, setSelectedPostId] = useState<number>(0);
   const [selectedPost, setSelectedPost] = useState<DetailsPost | null>(null);
-  const [postComments, setPostComments] = useState<ComentsPost[] | null>(null);
 
   async function fetchPostList() {
     const result = await getAllPosts();
@@ -49,12 +44,6 @@ const App: React.FC = () => {
     setPosts(result);
   }
 
-  async function fetchPostComments(PostId: number) {
-    const result = await getPostComments(PostId);
-
-    setPostComments(result);
-  }
-
   async function fetchpostDetails(postId: number) {
     if (postId === selectedPostId) {
       setSelectedPost(null);
@@ -65,26 +54,9 @@ const App: React.FC = () => {
 
     const result = await getPostDetails(postId);
 
-    fetchPostComments(postId);
-
     setSelectedPostId(postId);
     setErorr('');
     setSelectedPost(result);
-  }
-
-  async function deleteComment(commentId: number) {
-    await removeComment(commentId);
-    fetchPostComments(selectedPostId);
-  }
-
-  async function postComment(newComment: NewPostBody) {
-    const preparedData = {
-      postId: selectedPostId,
-      ...newComment,
-    };
-
-    await postNewComment(preparedData);
-    fetchPostComments(selectedPostId);
   }
 
   return (
@@ -117,18 +89,14 @@ const App: React.FC = () => {
             // eslint-disable-next-line
             selectPostId={fetchpostDetails}
           />
-          {error}
+          <p>{error}</p>
         </div>
 
         <div className="App__content">
           {selectedPost && (
             <PostDetails
               selectedPost={selectedPost}
-              postComments={postComments}
-              // eslint-disable-next-line
-              deleteComment={deleteComment}
-              // eslint-disable-next-line
-              postComment={postComment}
+              selectedPostId={selectedPostId}
             />
           )}
         </div>

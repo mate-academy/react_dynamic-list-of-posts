@@ -15,8 +15,7 @@ export async function getAllPosts() {
 
 export async function getUserPosts(userId: number) {
   try {
-    // eslint-disable-next-line
-    const response = await fetch(`${BASE_URL}/posts${userId === 0 ? '' : '?userId=' + userId}`);
+    const response = await fetch(`${BASE_URL}/posts?userId=${userId}`);
     const data = await response.json();
 
     if (!data) {
@@ -31,8 +30,7 @@ export async function getUserPosts(userId: number) {
 
 export async function getPostDetails(postId: number) {
   try {
-    // eslint-disable-next-line
-    const response = await fetch(`${BASE_URL}/posts${postId && '/' + postId}`);
+    const response = await fetch(`${BASE_URL}/posts/${postId}`);
     const data = await response.json();
 
     if (!data) {
@@ -48,7 +46,7 @@ export async function getPostDetails(postId: number) {
 export async function getPostComments(postId: number) {
   try {
     // eslint-disable-next-line
-    const response = await fetch(`${BASE_URL}/comments${postId === 0 ? '' : '?postId=' + postId}`);
+    const response = await fetch(`${BASE_URL}/comments?postId=${postId}`);
     const data = await response.json();
 
     if (!data) {

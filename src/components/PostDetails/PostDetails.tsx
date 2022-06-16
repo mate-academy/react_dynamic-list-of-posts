@@ -1,22 +1,45 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { getPostComments, postNewComment, removeComment } from '../../api/api';
 import { ComentsPost, DetailsPost, NewPostBody } from '../../types/Post';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
 type Props = {
   selectedPost: DetailsPost;
-  postComments: ComentsPost[] | null;
-  deleteComment: (postId: number) => void;
-  postComment: (preparedData: NewPostBody) => void;
+  selectedPostId: number
 };
 
 export const PostDetails: React.FC<Props> = ({
   selectedPost,
-  postComments,
-  deleteComment,
-  postComment,
+  selectedPostId,
 }) => {
   const [isShow, setIsShow] = useState(true);
+  const [postComments, setPostComments] = useState<ComentsPost[] | null>(null);
+
+  async function fetchPostComments(PostId: number) {
+    const result = await getPostComments(PostId);
+
+    setPostComments(result);
+  }
+
+  useEffect(() => {
+    fetchPostComments(selectedPostId);
+  }, [selectedPostId]);
+
+  async function deleteComment(commentId: number) {
+    await removeComment(commentId);
+    fetchPostComments(selectedPostId);
+  }
+
+  const postComment = useCallback(async (newComment: NewPostBody) => {
+    const preparedData = {
+      postId: selectedPostId,
+      ...newComment,
+    };
+
+    await postNewComment(preparedData);
+    fetchPostComments(selectedPostId);
+  }, [selectedPostId]);
 
   return (
     <div className="PostDetails">
