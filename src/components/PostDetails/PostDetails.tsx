@@ -1,29 +1,30 @@
 /* eslint-disable react/require-default-props */
 import React, { useEffect, useState } from 'react';
-import { request } from '../../api/api';
+import { deleteRequest } from '../../api/api';
+import { getPostComments } from '../../api/comments';
 import { Post, Comment } from '../../react-app-env';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
 interface Props {
-  post?: Post;
+  post: Post;
 }
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [commentsList, setCommentsList] = useState<Comment[]>([]);
   const [isCommentsVisible, setVisibilityOfComments] = useState(true);
+  const [needToUpdate, setNeedToUpdate] = useState(false);
 
   async function finder() {
-    if (post) {
-      const result = await request(`comments?postId=${post.id}`);
+    const result = await getPostComments(post.id);
 
-      setCommentsList(result);
-    }
+    setCommentsList(result);
   }
 
   useEffect(() => {
     finder();
-  }, [post]);
+    setVisibilityOfComments(true);
+  }, [post, needToUpdate]);
 
   return (
     <div className="PostDetails">
@@ -44,8 +45,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
               }}
             >
               {(isCommentsVisible)
-                ? `Hide ${commentsList.length} comments`
-                : `Show ${commentsList.length} comments`}
+                ? 'Hide comments'
+                : 'Show comments'}
             </button>
           )}
           <ul className="PostDetails__list">
@@ -56,6 +57,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
+                  onClick={async () => {
+                    await deleteRequest(`comments/${singleComment.id}`);
+                    setNeedToUpdate(!needToUpdate);
+                  }}
                 >
                   X
                 </button>
@@ -66,7 +71,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         </section>
         <section>
           <div className="PostDetails__form-wrapper">
-            <NewCommentForm />
+            <NewCommentForm
+              currentPostId={post.id}
+              needToUpdate={needToUpdate}
+              setNeedToUpdate={setNeedToUpdate}
+            />
           </div>
         </section>
       </>

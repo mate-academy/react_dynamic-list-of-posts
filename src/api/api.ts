@@ -7,3 +7,9 @@ export async function request(specify : string) {
 
   return result;
 }
+
+export function deleteRequest(specify : string) {
+  const result = fetch(`${BASE_URL}/${specify}`, { method: 'DELETE' });
+
+  return result;
+}
