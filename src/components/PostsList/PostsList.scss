@@ -1,5 +1,6 @@
 .PostsList {
   width: 100%;
+  box-sizing: border-box;
 
   &__user-button {
     cursor: pointer;
@@ -30,5 +31,9 @@
 
   &__button {
     margin-left: 10px;
+
+    &--selected {
+      border: 1px solid blue;
+    }
   }
 }
