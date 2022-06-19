@@ -13,7 +13,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const getComments = (postId: number) => {
     getPostComments(postId)
-      .then(res => setComments(res));
+      .then(res => setComments(res))
+      // eslint-disable-next-line no-console
+      .catch(error => console.log(error, 'Request failed'));
   };
 
   useEffect(() => {

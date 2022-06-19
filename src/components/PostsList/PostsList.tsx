@@ -20,7 +20,9 @@ export const PostsList: React.FC<Props>
 
     const getPosts = (userId: number) => {
       getUserPosts(userId)
-        .then(res => setPosts(res));
+        .then(res => setPosts(res))
+        // eslint-disable-next-line no-console
+        .catch(error => console.log(error, 'Request failed'));
     };
 
     useEffect(() => {
@@ -35,7 +37,7 @@ export const PostsList: React.FC<Props>
           className="PostsList__list"
           data-cy="postDetails"
         >
-          {posts.map(post => (
+          {posts && (posts.map(post => (
             <li
               className="PostsList__item"
               key={post.id}
@@ -71,7 +73,7 @@ export const PostsList: React.FC<Props>
                   </button>
                 )}
             </li>
-          ))}
+          )))}
         </ul>
       </div>
     );
