@@ -43,6 +43,10 @@ export const NewCommentForm: React.FC<Props> = ({ postId, newListComments }) => 
       })
         .then(() => newListComments());
     }
+
+    setName('');
+    setEmail('');
+    setBody('');
   };
 
   const onInputName = () => {
