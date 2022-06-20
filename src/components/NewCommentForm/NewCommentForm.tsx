@@ -15,29 +15,62 @@ export const NewCommentForm: React.FC<Props> = ({ postId, newListComments }) => 
   const [emailUncorrect, setEmailUncorrect] = useState(false);
   const [bodyEmpty, setBodyEmpty] = useState(false);
 
-  const showError = (changeState: any) => {
+  const showError = (changeState: React.Dispatch<React.SetStateAction<boolean>>) => {
     changeState(true);
   };
 
-  const hideError = (changeState: any) => {
+  const hideError = (changeState: React.Dispatch<React.SetStateAction<boolean>>) => {
     changeState(false);
+  };
+
+  const onChangeInput = (
+    event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>,
+    dataChange: (n: string) => void,
+  ) => {
+    const { value } = event.target;
+
+    dataChange(value);
+  };
+
+  const submitNewComment = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!nameUncorrect && !emailUncorrect && !bodyEmpty && name && body && email) {
+      addComment('/comments', {
+        postId,
+        name,
+        email,
+        body,
+      })
+        .then(() => newListComments());
+    }
+  };
+
+  const onInputName = () => {
+    const regex = new RegExp('^[a-zA-Zа-яА-ЯёЁіІїЇ\']+$');
+
+    if (!regex.test(name)) {
+      showError(setNameUncorrect);
+    } else {
+      hideError(setNameUncorrect);
+    }
+  };
+
+  const onInputMail = () => {
+    return (!email.includes('@'))
+      ? showError(setEmailUncorrect)
+      : hideError(setEmailUncorrect);
+  };
+
+  const onInputText = () => {
+    return (body.length < 3)
+      ? showError(setBodyEmpty)
+      : hideError(setBodyEmpty);
   };
 
   return (
     <form
       className="NewCommentForm"
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (!nameUncorrect && !emailUncorrect && !bodyEmpty && name && body && email) {
-          addComment('/comments', {
-            postId,
-            name,
-            email,
-            body,
-          })
-            .then(() => newListComments());
-        }
-      }}
+      onSubmit={(e) => submitNewComment(e)}
     >
       <div className="form-field">
         {nameUncorrect && <p className="NewCommentForm__input-error">Please input correct name</p>}
@@ -47,20 +80,8 @@ export const NewCommentForm: React.FC<Props> = ({ postId, newListComments }) => 
           value={name}
           placeholder="Your name"
           className="NewCommentForm__input"
-          onChange={(e) => {
-            const { value } = e.target;
-
-            setName(value.trim());
-          }}
-          onBlur={() => {
-            const regex = new RegExp('^[a-zA-Zа-яА-ЯёЁ\'][a-zA-Z-а-яА-ЯёЁ\'][a-zA-Zа-яА-ЯёЁ\']?$');
-
-            if (!regex.test(name)) {
-              showError(setNameUncorrect);
-            } else {
-              hideError(setNameUncorrect);
-            }
-          }}
+          onChange={(e) => onChangeInput(e, setName)}
+          onBlur={() => onInputName()}
         />
       </div>
       <div className="form-field">
@@ -71,18 +92,8 @@ export const NewCommentForm: React.FC<Props> = ({ postId, newListComments }) => 
           value={email}
           placeholder="Your email"
           className="NewCommentForm__input"
-          onChange={(e) => {
-            const { value } = e.target;
-
-            setEmail(value.trim());
-          }}
-          onBlur={() => {
-            if (!email.includes('@')) {
-              showError(setEmailUncorrect);
-            } else {
-              hideError(setEmailUncorrect);
-            }
-          }}
+          onChange={(e) => onChangeInput(e, setEmail)}
+          onBlur={() => onInputMail()}
         />
       </div>
 
@@ -93,18 +104,8 @@ export const NewCommentForm: React.FC<Props> = ({ postId, newListComments }) => 
           value={body}
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          onChange={(e) => {
-            const { value } = e.target;
-
-            setBody(value);
-          }}
-          onBlur={() => {
-            if (body.length < 3) {
-              showError(setBodyEmpty);
-            } else {
-              hideError(setBodyEmpty);
-            }
-          }}
+          onChange={(e) => onChangeInput(e, setBody)}
+          onBlur={() => onInputText()}
         />
       </div>
 

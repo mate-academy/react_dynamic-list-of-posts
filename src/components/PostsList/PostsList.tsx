@@ -5,7 +5,7 @@ import { Post } from '../../types/Post';
 
 type Props = {
   currentId: number,
-  openPost:any,
+  openPost: (idPost: number | null) => void,
 };
 
 export const PostsList: React.FC<Props> = ({ currentId, openPost }) => {
@@ -41,7 +41,7 @@ export const PostsList: React.FC<Props> = ({ currentId, openPost }) => {
                 const target = e.nativeEvent.target as HTMLButtonElement;
 
                 if (target.classList.contains('button--active')) {
-                  openPost(0);
+                  openPost(null);
                   target.classList.remove('button--active');
                   target.innerText = 'Open';
                 } else {

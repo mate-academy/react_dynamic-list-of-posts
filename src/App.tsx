@@ -14,14 +14,14 @@ type User = {
 const App: React.FC = () => {
   const [visibleUsers, setVisibleUsers] = useState<User[]>([]);
   const [currentSelect, setCurrentSelect] = useState<number>(0);
-  const [selectedPostId, setSelectedPostId] = useState<number>(0);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
 
   useEffect(() => {
     getUsers()
       .then(res => setVisibleUsers(res.slice(0, 10)));
   }, []);
 
-  const openPost = (idPost:number) => {
+  const openPost = (idPost:number | null) => {
     setSelectedPostId(idPost);
   };
 
@@ -58,7 +58,7 @@ const App: React.FC = () => {
         </div>
 
         <div className="App__content">
-          {(selectedPostId !== 0) && <PostDetails selectedPostId={selectedPostId} />}
+          {selectedPostId && <PostDetails selectedPostId={selectedPostId} />}
         </div>
       </main>
     </div>
