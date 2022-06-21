@@ -42,9 +42,6 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
     requestComments();
   }, [selectedPostId]);
 
-  // eslint-disable-next-line no-console
-  console.log(comments);
-
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
