@@ -2,9 +2,9 @@ import { NewComment } from '../react-app-env';
 import { BASE_URL } from './api';
 
 export const getPostComments = async (postId: number) => {
-  const response = fetch(`${BASE_URL}/comments?postId=${postId}`);
+  const response = await fetch(`${BASE_URL}/comments?postId=${postId}`);
 
-  return (await response).json();
+  return response.json();
 };
 
 export const deleteComment = async (commentId: number) => {

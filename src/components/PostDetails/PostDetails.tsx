@@ -80,20 +80,18 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
         {showComments && (
           <ul className="PostDetails__list">
             {comments.map(comment => (
-              <li key={comment.id}>
-                <li className="PostDetails__list-item">
-                  <button
-                    type="button"
-                    className="PostDetails__remove-button button"
-                    onClick={async () => {
-                      await deleteComment(comment.id);
-                      await requestComments();
-                    }}
-                  >
-                    X
-                  </button>
-                  <p>{comment.body}</p>
-                </li>
+              <li key={comment.id} className="PostDetails__list-item">
+                <button
+                  type="button"
+                  className="PostDetails__remove-button button"
+                  onClick={async () => {
+                    await deleteComment(comment.id);
+                    await requestComments();
+                  }}
+                >
+                  X
+                </button>
+                <p>{comment.body}</p>
               </li>
             ))}
           </ul>
@@ -106,7 +104,6 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
           {post && (
             <NewCommentForm
               post={post}
-              comments={comments}
               onRequest={requestComments}
             />
 

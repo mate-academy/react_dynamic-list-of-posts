@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
 import { addComment } from '../../api/comments';
 import './NewCommentForm.scss';
-import { Post, Comment } from '../../react-app-env';
+import { Post } from '../../react-app-env';
 
 type Props = {
   post: Post,
-  comments: Comment[],
   onRequest: () => void,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   post,
-  comments,
   onRequest,
 }) => {
   const [name, setName] = useState('');
@@ -22,7 +20,6 @@ export const NewCommentForm: React.FC<Props> = ({
     event.preventDefault();
 
     const newComment = {
-      id: comments.length + 1,
       postId: post.id,
       name,
       email,
@@ -51,6 +48,7 @@ export const NewCommentForm: React.FC<Props> = ({
           onChange={(event) => {
             setName(event.target.value);
           }}
+          required
         />
       </div>
 
@@ -64,6 +62,7 @@ export const NewCommentForm: React.FC<Props> = ({
           onChange={(event) => {
             setEmail(event.target.value);
           }}
+          required
         />
       </div>
 
@@ -76,6 +75,7 @@ export const NewCommentForm: React.FC<Props> = ({
           onChange={(event) => {
             setBody(event.target.value);
           }}
+          required
         />
       </div>
 

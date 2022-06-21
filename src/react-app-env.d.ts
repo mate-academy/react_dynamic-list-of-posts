@@ -20,7 +20,6 @@ export interface Comment {
 }
 
 export interface NewComment {
-  id: number,
   postId: number,
   name: string,
   email: string,
