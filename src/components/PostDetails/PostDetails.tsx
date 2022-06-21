@@ -64,7 +64,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                 >
                   X
                 </button>
-                <p>{post.body}</p>
+                <p>{singleComment.body}</p>
               </li>
             )))}
           </ul>
