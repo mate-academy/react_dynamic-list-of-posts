@@ -14,10 +14,27 @@ export function getUserPosts(userId: number): Promise<Post[]> {
 export function getPostComments(postId: number): Promise<Comment[]> {
   return fetch(`${BASE_URL}/comments?postId=${postId}`)
     .then(response => {
-      if (response.ok) {
+      if (!response.ok) {
         throw new Error('Something went wrong.');
       } else {
         return response.json();
       }
     });
+}
+
+export function createPostComments(comment: NewComment) {
+  return fetch(`${BASE_URL}/comments`, {
+    method: 'POST',
+    body: JSON.stringify(comment),
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8',
+    },
+  })
+    .then(response => response.json());
+}
+
+export function deletePostComments(id: number) {
+  return fetch(`${BASE_URL}/comments/${id}`, {
+    method: 'DELETE',
+  });
 }

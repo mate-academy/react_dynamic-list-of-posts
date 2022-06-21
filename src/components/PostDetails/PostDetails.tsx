@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getPostComments } from '../../api/posts';
+import { deletePostComments, getPostComments } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
@@ -9,7 +9,13 @@ interface Props {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[] | null>(null);
-  const [hideComments, setHideComments] = useState<boolean>(false);
+  const [hideComments, setHideComments] = useState(false);
+  const [deleteCounter, setDeleteCounter] = useState(1);
+
+  const deleteComment = (id: number) => {
+    deletePostComments(id);
+    setDeleteCounter(deleteCounter + 1);
+  };
 
   const getComments = (postId: number) => {
     getPostComments(postId)
@@ -20,7 +26,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     getComments(post.id);
-  }, [post]);
+  }, [post, deleteCounter]);
 
   return (
     <div className="PostDetails">
@@ -31,6 +37,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </section>
 
       <section className="PostDetails__comments">
+
         <button
           type="button"
           className="button button--pb"
@@ -56,6 +63,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
+                  onClick={() => {
+                    deleteComment(comment.id);
+                  }}
                 >
                   X
                 </button>
@@ -69,7 +79,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm />
+          <NewCommentForm
+            postId={post.id}
+            getComments={getComments}
+          />
         </div>
       </section>
     </div>
