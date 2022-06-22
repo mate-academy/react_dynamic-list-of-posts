@@ -1,45 +1,106 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { API } from '../../api/api';
+import { Comment, Post } from '../../react-app-env';
+import { Loader } from '../Loader';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  selectedPostId: number;
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
+  const [post, setPost] = useState<Post>();
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [showComments, setShowComments] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const deleteComments = (id: number) => {
+    API.deleteComments(id);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+    setComments(prev => prev.filter(el => el.id !== id));
+  };
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  const addNewComment = (comment: Partial<Comment>) => {
+    API.addComment({ ...comment, postId: selectedPostId })
+      .then((data) => setComments([...comments, data]));
+  };
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+  useEffect(() => {
+    setIsLoading(true);
+
+    if (selectedPostId !== 0) {
+      API.getPostDetails(selectedPostId)
+        .then(data => setPost(data));
+
+      API.getPostComments(selectedPostId)
+        .then(data => {
+          setComments(data);
+          setIsLoading(false);
+        });
+    }
+  }, [selectedPostId]);
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      {!isLoading ? (
+        <>
+          <section className="PostDetails__post">
+            <p>{post?.body}</p>
+          </section>
+
+          {Boolean(comments.length) && (
+            <section className="PostDetails__comments">
+              <button
+                type="button"
+                className="button"
+                onClick={() => setShowComments((prev) => !prev)}
+              >
+                {showComments ? 'Hide' : 'Show'}
+                {' '}
+                {comments?.length}
+                {' '}
+                comments
+              </button>
+
+              <ul className="PostDetails__list">
+                {
+                  showComments && (
+                    comments.map(comment => (
+                      <li
+                        key={comment.id}
+                        className="PostDetails__list-item"
+                      >
+                        <button
+                          type="button"
+                          className="PostDetails__remove-button button"
+                          onClick={() => deleteComments(comment.id)}
+                        >
+                          X
+                        </button>
+                        <p>{comment.body}</p>
+                      </li>
+                    ))
+                  )
+                }
+              </ul>
+            </section>
+          )}
+        </>
+      ) : (
+        <Loader />
+      )}
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            addNewComment={addNewComment}
+            selectedPostId={selectedPostId}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};
