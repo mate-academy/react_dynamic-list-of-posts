@@ -32,3 +32,13 @@
     margin-left: 10px;
   }
 }
+
+.button {
+  &-active {
+    background-color: rgb(240, 80, 80);
+
+    &:hover {
+      background-color: rgb(180, 20, 20);
+    }
+  }
+}
