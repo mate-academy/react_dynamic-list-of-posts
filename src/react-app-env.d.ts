@@ -4,3 +4,13 @@ interface UserPost {
   userId: number,
   title: string,
 }
+
+interface User {
+  id: number,
+  name: string,
+  email: string,
+}
+
+interface UserWithPosts extends User {
+  posts: UserPost[],
+}
