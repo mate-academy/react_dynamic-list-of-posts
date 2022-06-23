@@ -1,37 +1,67 @@
 import React from 'react';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+type Props = {
+  postsToShow: Post[];
+  selectedPostId: number;
+  setSelectedPostId: (id:number) => void;
+};
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = ({
+  postsToShow,
+  selectedPostId,
+  setSelectedPostId,
+}) => {
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+      <ul
+        className="PostsList__list"
+        data-cy="postDetails"
+      >
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+        {postsToShow.map(post => {
+          const { id, userId, title } = post;
+
+          return (
+            <li
+              key={id}
+              className="PostsList__item"
+            >
+              <div>
+                <b>
+                  [
+                  User #
+                  {userId}
+                  ]:
+                </b>
+                {title}
+              </div>
+
+              {selectedPostId === id
+                ? (
+                  <button
+                    type="button"
+                    className="PostsList__button button"
+                    onClick={() => setSelectedPostId(0)}
+                  >
+                    Close
+                  </button>
+                )
+                : (
+                  <button
+                    type="button"
+                    className="PostsList__button button"
+                    onClick={() => setSelectedPostId(id)}
+                  >
+                    Open
+                  </button>
+                )}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
