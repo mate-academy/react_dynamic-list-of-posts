@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { getUsers } from './api/api';
 
 const App: React.FC = () => {
   const [userId, setUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
   const [post, setPost] = useState<Post | null>(null);
+  const [users, setUsers] = useState<User[]>();
+
+  useEffect(() => {
+    getUsers()
+      .then(allUsers => setUsers(allUsers))
+      // eslint-disable-next-line no-console
+      .catch(err => console.log(err));
+  }, []);
 
   return (
     <div className="App">
@@ -23,16 +32,10 @@ const App: React.FC = () => {
             }}
           >
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {users
+              && users.map(user => (
+                <option key={user.id} value={user.id}>{user.name}</option>
+              ))}
           </select>
         </label>
       </header>
@@ -46,16 +49,14 @@ const App: React.FC = () => {
             setPost={setPost}
           />
         </div>
-
-        <div className="App__content">
-          {post
+        {post
           && (
-            <PostDetails
-              selectedPostId={selectedPostId}
-            />
+            <div className="App__content">
+              <PostDetails
+                selectedPostId={selectedPostId}
+              />
+            </div>
           )}
-        </div>
-
       </main>
     </div>
   );

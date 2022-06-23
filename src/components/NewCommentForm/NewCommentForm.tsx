@@ -4,12 +4,14 @@ import { createComment } from '../../api/comments';
 
 type Props = {
   postId: number | null,
-  commentsFromServer: (id: number | null) => void
+  setComments: (comment: Comments[] | null) => void
+  comments: Comments[] | null,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   postId,
-  commentsFromServer,
+  setComments,
+  comments,
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -18,18 +20,19 @@ export const NewCommentForm: React.FC<Props> = ({
   const commentAdder = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const commentToSend: NewComment = {
+    const commentToSend: Comments = {
       postId,
       name,
       email,
       body,
+      id: comments && comments.length + 1,
     };
 
     createComment(commentToSend);
+    setComments(comments && [...comments, commentToSend]);
     setName('');
     setEmail('');
     setBody('');
-    commentsFromServer(postId);
   };
 
   return (

@@ -14,7 +14,6 @@ export const PostDetails: React.FC<Props> = ({
   const [postInfo, setPostInfo] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comments[] | null>(null);
   const [visibleComments, setVisibleComments] = useState(true);
-  const [deleting, setDeleting] = useState(1);
 
   const commentsFromServer = (id: number | null) => {
     getPostComments(id)
@@ -30,11 +29,11 @@ export const PostDetails: React.FC<Props> = ({
       .catch(err => console.log(err));
 
     commentsFromServer(selectedPostId);
-  }, [selectedPostId, deleting]);
+  }, [selectedPostId]);
 
   const deleteComments = (id: number) => {
     deleteComment(id);
-    setDeleting(deleting + 1);
+    setComments(comments && comments.filter(comment => comment.id !== id));
   };
 
   return (
@@ -55,7 +54,7 @@ export const PostDetails: React.FC<Props> = ({
             }
           }}
         >
-          {`${visibleComments ? 'Hide' : 'Show'}${comments?.length} comments`}
+          {`${visibleComments ? 'Hide ' : 'Show '}${comments?.length} comments`}
         </button>
 
         {visibleComments
@@ -70,7 +69,8 @@ export const PostDetails: React.FC<Props> = ({
                   type="button"
                   className="PostDetails__remove-button button"
                   onClick={() => {
-                    deleteComments(comment.id);
+                    comment.id
+                    && deleteComments(comment.id);
                   }}
                 >
                   X
@@ -86,7 +86,8 @@ export const PostDetails: React.FC<Props> = ({
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             postId={selectedPostId}
-            commentsFromServer={commentsFromServer}
+            setComments={setComments}
+            comments={comments}
           />
         </div>
       </section>
