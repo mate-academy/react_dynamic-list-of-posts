@@ -29,6 +29,10 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
     setComments(comments?.filter((comment) => comment.id !== commentId));
   };
 
+  const setNewComment = (currentComments: Comment[], newComment: Comment) => {
+    setComments([...currentComments, newComment]);
+  };
+
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
@@ -65,7 +69,11 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
       </section>
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm />
+          <NewCommentForm
+            selectedPostId={selectedPostId}
+            comments={comments}
+            setNewComment={setNewComment}
+          />
         </div>
       </section>
     </div>

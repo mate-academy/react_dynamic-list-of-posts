@@ -23,15 +23,8 @@ export const PostsList: React.FC<Props>
 
       <ul className="PostsList__list" data-cy="postDetails">
         {
-          selectedUserId
-            ? (
-              <UsersPosts
-                user={users[selectedUserId - 1]}
-                selectedPostId={selectedPostId}
-                selectPostId={selectPostId}
-              />
-            )
-            : users.map((user) => (
+          !selectedUserId
+            ? users.map((user) => (
               (
                 <UsersPosts
                   user={user}
@@ -41,6 +34,13 @@ export const PostsList: React.FC<Props>
                 />
               )
             ))
+            : (
+              <UsersPosts
+                user={users[selectedUserId - 1]}
+                selectedPostId={selectedPostId}
+                selectPostId={selectPostId}
+              />
+            )
         }
       </ul>
     </div>
