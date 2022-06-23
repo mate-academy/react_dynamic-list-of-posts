@@ -69,8 +69,9 @@ export const PostDetails: React.FC<Props> = ({
                   type="button"
                   className="PostDetails__remove-button button"
                   onClick={() => {
-                    comment.id
-                    && deleteComments(comment.id);
+                    if (comment.id) {
+                      deleteComments(comment.id);
+                    }
                   }}
                 >
                   X
