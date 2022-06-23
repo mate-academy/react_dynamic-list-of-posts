@@ -1,41 +1,122 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { getPostDetails, getUserPosts } from './api/posts';
+import {
+  getPostComments,
+  deletePostComment,
+  addNewComment,
+} from './api/coments';
+import { getAllUsers } from './api/users';
 
-const App: React.FC = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+const App: React.FC = () => {
+  const [postsToShow, setPostsToShow] = useState<Post[]>([]);
+  const [selectedUser, setSelectedUser] = useState('0');
+  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [postDetails, setPostDetails] = useState(null);
+  const [postsComments, setPostsComments] = useState<Comment[] | []>([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [hideDetails, setHideDetails] = useState(false);
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+  useEffect(() => {
+    getUserPosts('/posts')
+      .then(response => setPostsToShow(response));
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+    getAllUsers()
+      .then(response => setAllUsers(response));
+  }, []);
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+  useEffect(() => {
+    const userSelect = async () => {
+      const postType = selectedUser === '0'
+        ? '/posts'
+        : `/posts?userId=${selectedUser}`;
+
+      const response = await getUserPosts(postType);
+
+      setPostsToShow(response);
+    };
+
+    userSelect();
+  }, [selectedUser]);
+
+  useEffect(() => {
+    getPostDetails(selectedPostId)
+      .then(response => setPostDetails(response));
+
+    getPostComments(selectedPostId)
+      .then(response => setPostsComments(response));
+  }, [selectedPostId]);
+
+  const deletePostCommentById = async (commentId:number) => {
+    await deletePostComment(commentId);
+
+    getPostComments(selectedPostId)
+      .then(response => setPostsComments(response));
+  };
+
+  const newComment = (body:NewComment) => {
+    addNewComment(body)
+      .then(response => setPostsComments([
+        ...postsComments,
+        response,
+      ]));
+  };
+
+  return (
+    <div className="App">
+      <header className="App__header">
+        <label>
+          Select a user: &nbsp;
+
+          <select
+            className="App__user-selector"
+            value={selectedUser}
+            onChange={(event) => setSelectedUser(event.target.value)}
+          >
+            <option value="0">All users</option>
+
+            {allUsers.slice(0, 10).map(user => {
+              const { id, name } = user;
+
+              return (
+                <option
+                  key={id}
+                  value={id}
+                >
+                  {name}
+                </option>
+              );
+            })}
+          </select>
+        </label>
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            postsToShow={postsToShow}
+            selectedPostId={selectedPostId}
+            setSelectedPostId={setSelectedPostId}
+          />
+        </div>
+
+        <div className="App__content">
+          <PostDetails
+            selectedPostId={selectedPostId}
+            postDetails={postDetails}
+            postsComments={postsComments}
+            hideDetails={hideDetails}
+            setHideDetails={setHideDetails}
+            deletePostCommentById={deletePostCommentById}
+            newComment={newComment}
+          />
+        </div>
+      </main>
+    </div>
+  );
+};
 
 export default App;
