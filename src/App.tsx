@@ -66,9 +66,12 @@ const App: React.FC = () => {
             )}
         </div>
 
-        <div className="App__content">
-          <PostDetails />
-        </div>
+        {selectedPostId !== 0
+          && (
+            <div className="App__content">
+              <PostDetails selectedPostId={selectedPostId} />
+            </div>
+          )}
       </main>
     </div>
   );

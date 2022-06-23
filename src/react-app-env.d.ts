@@ -14,3 +14,9 @@ interface User {
 interface UserWithPosts extends User {
   posts: UserPost[],
 }
+
+interface Comment {
+  id: number,
+  postId: number,
+  body: string,
+}

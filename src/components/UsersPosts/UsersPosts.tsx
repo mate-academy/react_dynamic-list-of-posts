@@ -7,12 +7,18 @@ type Props = {
 };
 
 export const UsersPosts: React.FC<Props>
-= ({ user, selectedPostId, selectPostId }) => {
+= ({
+  user, selectedPostId, selectPostId,
+}) => {
   const [isOpen, setToggle] = useState(false);
-
   const clickHandler = (userPostId: number) => {
-    selectPostId(userPostId);
-    setToggle(!isOpen);
+    if (userPostId === selectedPostId) {
+      setToggle(!isOpen);
+      selectPostId(0);
+    } else {
+      setToggle(!isOpen);
+      selectPostId(userPostId);
+    }
   };
 
   return (

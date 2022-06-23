@@ -11,7 +11,10 @@ type Props = {
 
 export const PostsList: React.FC<Props>
 = ({
-  users, selectedUserId, selectedPostId, selectPostId,
+  users,
+  selectedUserId,
+  selectedPostId,
+  selectPostId,
 }) => {
   return (
 
