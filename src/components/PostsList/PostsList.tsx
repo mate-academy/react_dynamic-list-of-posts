@@ -1,37 +1,48 @@
 import React from 'react';
 import './PostsList.scss';
+import { UsersPosts } from '../UsersPosts/UsersPosts';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+type Props = {
+  users: UserWithPosts[];
+  selectedUserId: number;
+  selectedPostId: number;
+  selectPostId: (postId: number) => void;
+};
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props>
+= ({
+  users,
+  selectedUserId,
+  selectedPostId,
+  selectPostId,
+}) => {
+  return (
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      <ul className="PostsList__list" data-cy="postDetails">
+        {
+          !selectedUserId
+            ? users.map((user) => (
+              (
+                <UsersPosts
+                  user={user}
+                  key={user.id}
+                  selectedPostId={selectedPostId}
+                  selectPostId={selectPostId}
+                />
+              )
+            ))
+            : (
+              <UsersPosts
+                user={users[selectedUserId - 1]}
+                selectedPostId={selectedPostId}
+                selectPostId={selectPostId}
+              />
+            )
+        }
+      </ul>
+    </div>
+  );
+};
