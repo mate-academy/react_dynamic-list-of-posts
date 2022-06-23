@@ -14,11 +14,11 @@ export const deleteComment = async (commentId: number) => {
 };
 
 export const addComment = async (comment: NewComment) => {
-  const response = await fetch(`${BASE_URL}/comments`, {
+  await fetch(`${BASE_URL}/comments`, {
     method: 'POST',
     headers: { 'Content-type': 'application/json; charset=UTF-8' },
     body: JSON.stringify(comment),
   });
 
-  return response.json();
+  // return response.json();
 };

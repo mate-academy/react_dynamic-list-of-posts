@@ -54,7 +54,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
       <div className="form-field">
         <input
-          type="text"
+          type="email"
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"

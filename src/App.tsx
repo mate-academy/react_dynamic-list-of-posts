@@ -4,13 +4,23 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getPosts, getUserPosts } from './api/post';
+import { User } from './react-app-env';
+import { getUsers } from './api/users';
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState([]);
   const [selectedPostId, setSelectedPostId] = useState(0);
+  const [users, setUsers] = useState<User[]>([]);
 
-  const handleSelectedPostId = (postId: number) => {
-    setSelectedPostId(postId);
+  const requestUsers = async () => {
+    try {
+      const usersFromServer = await getUsers();
+
+      setUsers(usersFromServer.slice(0, 10));
+    } catch {
+      // eslint-disable-next-line no-console
+      console.log('Eror');
+    }
   };
 
   const requestPosts = async () => {
@@ -25,8 +35,13 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
+    requestUsers();
     requestPosts();
   }, []);
+
+  const handleSelectedPostId = (postId: number) => {
+    setSelectedPostId(postId);
+  };
 
   const handleSelect = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const userPost = await getUserPosts(+event.target.value);
@@ -49,16 +64,9 @@ const App: React.FC = () => {
             onChange={handleSelect}
           >
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {users.map(user => (
+              <option value={user.id} key={user.id}>{user.name}</option>
+            ))}
           </select>
         </label>
       </header>
