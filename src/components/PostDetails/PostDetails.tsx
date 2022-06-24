@@ -2,38 +2,39 @@ import React, { useState, useEffect } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { Post, Comment } from '../../react-app-env';
-import { comments } from '../../api/LocalData/comments';
+import { getComments, delComment } from '../../api/api';
 
 type Props = {
   post: Post | undefined;
+  setIsLoading: (arg: boolean) => void,
 };
 
 export const PostDetails: React.FC<Props> = ({
   post,
+  setIsLoading,
 }) => {
-  const [commentsList, setCommentsList] = useState<Comment[] | undefined>([]);
+  const [commentsList, setCommentsList] = useState<Comment[]>([]);
   const [visiblecomments, setVisiblecomments] = useState(false);
+  //  console.log(post);
 
-  const findcomments = () => {
-    const result = post
-      ? comments.filter(co => post.id === co.postId)
-      : undefined;
+  const findcomments = async () => {
+    if (post) {
+      const result = await getComments(post?.id);
 
-    setCommentsList(result);
+      setCommentsList(result);
+      setIsLoading(false);
+    }
   };
 
-  const deletecomment = (id: number) => {
+  const deletecomment = async (id: number) => {
     if (commentsList) {
-      const index = commentsList.findIndex(item => item.id === id);
-
-      commentsList.splice(index, 1);
-      const copy = [...commentsList];
-
-      setCommentsList(copy);
+      await delComment(id);
+      findcomments();
     }
   };
 
   useEffect(() => {
+    setIsLoading(true);
     findcomments();
   }, [post]);
 
@@ -81,8 +82,10 @@ export const PostDetails: React.FC<Props> = ({
                   <p>{comm.body}</p>
                 </li>
               ))}
+              {setIsLoading(false)}
             </ul>
           </section>
+
           <section>
             <div className="PostDetails__form-wrapper">
               <NewCommentForm

@@ -4,10 +4,12 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { Post } from './react-app-env';
+import { Loader } from './components/Loader';
 
 const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState('0');
   const [selectedPost, setSelectedPost] = useState<Post>();
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <div className="App">
@@ -20,6 +22,7 @@ const App: React.FC = () => {
             value={currentUser}
             onChange={(event) => {
               setCurrentUser(event.target.value);
+              setIsLoading(true);
             }}
           >
             <option value="0" disabled>All users</option>
@@ -38,16 +41,19 @@ const App: React.FC = () => {
       </header>
       <main className="App__main">
         <div className="App__sidebar">
+          {isLoading && <Loader />}
           <PostsList
             userSelectedId={currentUser}
             selectPost={setSelectedPost}
             post={selectedPost}
+            setIsLoading={setIsLoading}
           />
         </div>
 
         <div className="App__content">
           <PostDetails
             post={selectedPost}
+            setIsLoading={setIsLoading}
           />
         </div>
       </main>

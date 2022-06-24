@@ -1,26 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import './PostsList.scss';
-// import { getUserPosts } from '../../api/post';
-import { posts } from '../../api/LocalData/posts';
+import { getPosts } from '../../api/api';
 import { Post } from '../../react-app-env';
 
 type Props = {
   userSelectedId: string;
   selectPost: (arg?: Post) => void;
   post: Post | undefined;
+  setIsLoading: (arg: boolean) => void,
 };
 
 export const PostsList: React.FC<Props> = ({
   userSelectedId,
   selectPost,
   post,
+  setIsLoading,
 }) => {
   const [currentPostList, setPostList] = useState<Post[]>([]);
 
-  const findposts = () => {
-    const result = posts.filter(po => po.userId === +userSelectedId);
+  const findposts = async () => {
+    const result = await getPosts(userSelectedId);
 
     setPostList(result);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -59,6 +61,8 @@ export const PostsList: React.FC<Props> = ({
                   } else {
                     selectPost(po);
                   }
+
+                  setIsLoading(true);
                 }}
               >
                 {post && (post.id === po.id)

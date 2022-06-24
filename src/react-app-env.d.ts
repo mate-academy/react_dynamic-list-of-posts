@@ -31,21 +31,20 @@ export interface Company {
 }
 
 export interface Post {
-  userId: number,
+  userId: string,
   id: number,
   title: string,
   body: string,
+  createdAt: string,
+  updatedAt: string,
 }
 
 export interface Comment {
-  postId: number,
   id: number,
+  postId: number,
   name: string,
   email: string,
   body: string,
-}
-
-export interface PreparedData extends Post {
-  user?: User,
-  comments: Comment[],
+  createdAt: string,
+  updatedAt: string
 }

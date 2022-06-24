@@ -1,6 +1,7 @@
 import './NewCommentForm.scss';
 import React, { FormEvent, useState } from 'react';
 import { Comment } from '../../react-app-env';
+import { postComment, getComments } from '../../api/api';
 
 type Props = {
   commentsList: Comment[] | undefined;
@@ -15,12 +16,20 @@ export const NewCommentForm: React.FC<Props> = ({
   const [yourcomment, setYourcomment] = useState('');
   const [error, setError] = useState(false);
 
-  const addComment = (newComment: Comment) => {
+  const addComment = async (newComment: Comment) => {
     if (commentsList) {
-      commentsList.unshift(newComment);
-      const copy = [...commentsList];
+      postComment(
+        newComment.name,
+        newComment.email,
+        newComment.body,
+        newComment.postId,
+        newComment.createdAt,
+        newComment.updatedAt,
+      );
 
-      setCommentsList(copy);
+      const afterAdded = await getComments(newComment.postId);
+
+      setCommentsList(afterAdded);
     }
   };
 
@@ -34,6 +43,8 @@ export const NewCommentForm: React.FC<Props> = ({
         name: yourname,
         email: youremail,
         body: yourcomment,
+        createdAt: `${new Date()}`,
+        updatedAt: `${new Date()}`,
       };
 
       addComment(newComment);
