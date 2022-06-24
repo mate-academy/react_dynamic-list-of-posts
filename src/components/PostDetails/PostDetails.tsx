@@ -10,23 +10,30 @@ interface Props {
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[] | null>(null);
   const [hideComments, setHideComments] = useState(false);
-  const [deleteCounter, setDeleteCounter] = useState(1);
 
-  const deleteComment = (id: number) => {
-    deletePostComments(id);
-    setDeleteCounter(deleteCounter + 1);
+  const deleteComment = async (id: number) => {
+    await deletePostComments(id);
   };
 
-  const getComments = (postId: number) => {
-    getPostComments(postId)
-      .then(res => setComments(res))
+  const getComments = async (postId: number) => {
+    try {
+      const commentsFromS = await getPostComments(postId);
+
+      setComments(commentsFromS);
+    } catch (error) {
       // eslint-disable-next-line no-console
-      .catch(error => console.log(error, 'Request failed'));
+      console.log(error, 'Request failed');
+    }
+  };
+
+  const updateComments = async (id: number, postId: number) => {
+    await deleteComment(id);
+    await getComments(postId);
   };
 
   useEffect(() => {
     getComments(post.id);
-  }, [post, deleteCounter]);
+  }, [post]);
 
   return (
     <div className="PostDetails">
@@ -64,7 +71,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   type="button"
                   className="PostDetails__remove-button button"
                   onClick={() => {
-                    deleteComment(comment.id);
+                    updateComments(comment.id, post.id);
                   }}
                 >
                   X

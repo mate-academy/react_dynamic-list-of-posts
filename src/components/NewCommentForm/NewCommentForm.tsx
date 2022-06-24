@@ -4,21 +4,22 @@ import './NewCommentForm.scss';
 
 interface Props {
   postId: number;
-  getComments: (id: number) => void;
+  getComments: (id: number) => Promise<void>;
 }
 
 export const NewCommentForm: React.FC<Props> = ({
-  postId, getComments,
+  postId,
+  getComments,
 }) => {
   const [commentName, setCommentName] = useState('');
   const [commentEmail, setCommentEmail] = useState('');
   const [commentBody, setCommentBody] = useState('');
 
-  const createComments = (comment: NewComment) => {
-    createPostComments(comment);
+  const createComments = async (comment: NewComment) => {
+    await createPostComments(comment);
   };
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const newComment = {
@@ -28,18 +29,21 @@ export const NewCommentForm: React.FC<Props> = ({
       postId,
     };
 
-    createComments(newComment);
-    getComments(postId);
+    await createComments(newComment);
+    await getComments(postId);
 
     setCommentName('');
     setCommentEmail('');
     setCommentBody('');
   };
 
+  // eslint-disable-next-line no-console
+  console.log('work');
+
   return (
     <form
       className="NewCommentForm"
-      onSubmit={event => {
+      onSubmit={(event) => {
         onSubmit(event);
       }}
     >

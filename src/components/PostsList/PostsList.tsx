@@ -18,11 +18,15 @@ export const PostsList: React.FC<Props>
   }) => {
     const [posts, setPosts] = useState<Post[]>([]);
 
-    const getPosts = (userId: number) => {
-      getUserPosts(userId)
-        .then(res => setPosts(res))
+    const getPosts = async (userId: number) => {
+      try {
+        const postsFromS = await getUserPosts(userId);
+
+        setPosts(postsFromS);
+      } catch (error) {
         // eslint-disable-next-line no-console
-        .catch(error => console.log(error, 'Request failed'));
+        console.log(error, 'Request failed');
+      }
     };
 
     useEffect(() => {
