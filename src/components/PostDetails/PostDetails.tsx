@@ -21,6 +21,12 @@ export const PostDetails: React.FC <Props> = ({ postId }) => {
   });
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentsVisible, setCommentsVisible] = useState(true);
+  const [checkIfCommentWasAdded, setCheckIfCommentWasAdded] = useState(false);
+
+  const commentAdded = () => {
+    setCheckIfCommentWasAdded(!checkIfCommentWasAdded);
+    console.log('comm added');
+  };
 
   useEffect(() => {
     getPostComments(postId)
@@ -32,7 +38,7 @@ export const PostDetails: React.FC <Props> = ({ postId }) => {
       .then(postFromServer => {
         setDetails(postFromServer);
       });
-  }, [postId]);
+  }, [postId, checkIfCommentWasAdded]);
 
   return (
     <div className="PostDetails">
@@ -93,7 +99,10 @@ export const PostDetails: React.FC <Props> = ({ postId }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm postId={postId} />
+          <NewCommentForm
+            postId={postId}
+            onAdded={commentAdded}
+          />
         </div>
       </section>
     </div>

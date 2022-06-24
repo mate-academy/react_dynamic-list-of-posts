@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -13,10 +13,12 @@ const App: React.FC = () => {
   const [selectedUserPosts, setSelectedUserPosts] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
-  getUsers()
-    .then(usersFromServer => {
-      setUsers(usersFromServer);
-    });
+  useEffect(() => {
+    getUsers()
+      .then(usersFromServer => {
+        setUsers(usersFromServer);
+      });
+  }, [selectedUserPosts]);
 
   const addPostInfo = (postId: number) => {
     setSelectedPostId(postId);

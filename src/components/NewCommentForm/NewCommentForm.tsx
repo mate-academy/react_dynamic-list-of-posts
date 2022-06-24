@@ -4,9 +4,10 @@ import './NewCommentForm.scss';
 
 type Props = {
   postId: number;
+  onAdded: () => void;
 };
 
-export const NewCommentForm: React.FC <Props> = ({ postId }) => {
+export const NewCommentForm: React.FC <Props> = ({ postId, onAdded }) => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [commentBody, setCommentBody] = useState('');
@@ -38,6 +39,7 @@ export const NewCommentForm: React.FC <Props> = ({ postId }) => {
         setUserName('');
         setUserEmail('');
         setCommentBody('');
+        onAdded();
       }}
     >
       <div className="form-field">
