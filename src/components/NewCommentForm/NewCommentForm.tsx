@@ -37,9 +37,6 @@ export const NewCommentForm: React.FC<Props> = ({
     setCommentBody('');
   };
 
-  // eslint-disable-next-line no-console
-  console.log('work');
-
   return (
     <form
       className="NewCommentForm"
