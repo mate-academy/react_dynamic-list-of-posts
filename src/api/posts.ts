@@ -1,6 +1,6 @@
 import { BASE_URL } from './api';
 
-export const getUserPosts = async (userId: number | null) => {
+export const getUserPosts = async (userId: number) => {
   let response;
 
   if (!userId) {

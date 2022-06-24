@@ -1,16 +1,14 @@
 import React, { FormEvent, useState } from 'react';
 import { addComment } from '../../api/comments';
-import { Comment, Post } from '../../react-app-env';
 import './NewCommentForm.scss';
 
 type Props = {
-  post: Post,
-  comments: Comment[],
-  onCommentsHandler: (newComment: Comment) => void,
+  postId: number,
+  onCommentsHandler: () => void,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
-  post, comments, onCommentsHandler,
+  postId, onCommentsHandler,
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -30,15 +28,14 @@ export const NewCommentForm: React.FC<Props> = ({
 
     if (isFormValid()) {
       const newComment = {
-        id: comments.length + 1,
-        postId: post.id + 1,
+        postId,
         name,
         email,
         body: comment,
       };
 
       await addComment(newComment);
-      onCommentsHandler(newComment);
+      onCommentsHandler();
       setIsError(false);
       setName('');
       setEmail('');
@@ -81,13 +78,11 @@ export const NewCommentForm: React.FC<Props> = ({
           className="NewCommentForm__input"
         />
       </div>
-
       {isError && (
-        <div style={{ color: 'red' }}>
+        <div className="error">
           Please, fill in all fields
         </div>
       )}
-
       <button
         type="submit"
         className="NewCommentForm__submit-button button"

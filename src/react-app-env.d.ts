@@ -14,8 +14,20 @@ export interface Comment {
   body: string,
 }
 
+export interface NewComment {
+  postId: number,
+  name: string,
+  email: string,
+  body: string,
+}
+
 export interface Options {
   method: string;
   headers?: {} | undefined;
   body?: string | undefined;
+}
+
+export interface User {
+  id: number,
+  name: string,
 }
