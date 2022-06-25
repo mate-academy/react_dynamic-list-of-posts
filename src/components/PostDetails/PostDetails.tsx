@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { Post } from '../../types/Post';
@@ -16,10 +16,15 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   const [postComments, setPostComments] = useState<Comment[]>([]);
   const [visibleComments, setVisibleComments] = useState<boolean>(false);
 
-  const newListComments = () => {
+  const newListComments = useCallback(() => {
     getPostComments(selectedPostId)
       .then(res => setPostComments(res));
-  };
+  }, [selectedPostId]);
+
+  const removeComment = useCallback((element) => {
+    removeFromServer(`/comments/${element.id}`)
+      .then(() => newListComments());
+  }, [selectedPostId]);
 
   useEffect(() => {
     getPostDetails(selectedPostId)
@@ -29,6 +34,18 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   useEffect(() => {
     newListComments();
   }, [selectedPostId]);
+
+  const changeVisibleComments = (event: React.MouseEvent<Element>) => {
+    const target = event.target as HTMLButtonElement;
+
+    if (visibleComments) {
+      target.innerText = `Show ${postComments.length} comments`;
+      setVisibleComments(prev => !prev);
+    } else {
+      target.innerText = ` Hide ${postComments.length} comments`;
+      setVisibleComments(prev => !prev);
+    }
+  };
 
   return (
     <div className="PostDetails">
@@ -42,15 +59,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
           className="PostDetails__button button"
           disabled={postComments.length === 0}
           onClick={(e) => {
-            const target = e.target as HTMLButtonElement;
-
-            if (visibleComments) {
-              target.innerText = `Show ${postComments.length} comments`;
-              setVisibleComments(prev => !prev);
-            } else {
-              target.innerText = ` Hide ${postComments.length} comments`;
-              setVisibleComments(prev => !prev);
-            }
+            changeVisibleComments(e);
           }}
         >
           {` Show ${postComments.length} comments`}
@@ -67,8 +76,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
                   type="button"
                   className="PostDetails__remove-button button"
                   onClick={() => {
-                    removeFromServer(`/comments/${el.id}`)
-                      .then(() => newListComments());
+                    removeComment(el);
                   }}
                 >
                   X
