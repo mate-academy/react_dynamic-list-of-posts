@@ -1,10 +1,14 @@
 .PostDetails {
+  width: 450px;
+  min-height: 500px;
+
   &__post {
     padding: 10px 0 15px;
   }
 
   &__comments {
     text-align: right;
+    padding: 20px;
   }
 
   &__list {
