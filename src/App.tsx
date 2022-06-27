@@ -17,9 +17,9 @@ const App: React.FC = () => {
       const usersFromServer = await getUsers();
 
       setUsers(usersFromServer.slice(0, 10));
-    } catch {
+    } catch (error) {
       // eslint-disable-next-line no-console
-      console.log('Eror');
+      console.log(error.message);
     }
   };
 
@@ -28,9 +28,9 @@ const App: React.FC = () => {
       const postsFromServer = await getPosts();
 
       setPosts(postsFromServer);
-    } catch {
+    } catch (error) {
       // eslint-disable-next-line no-console
-      console.log('Error');
+      console.log(error.message);
     }
   };
 
