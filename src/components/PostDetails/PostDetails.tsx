@@ -14,14 +14,6 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [showComments, setShowComments] = useState(true);
 
-  // useEffect(() => {
-  //   getPostDetails(postId)
-  //     .then(response => setPost(response));
-
-  //   getPostComments(postId)
-  //     .then(response => setComments(response));
-  // }, [postId]);
-
   const getComments = async () => {
     const response = await getPostComments(postId);
 
