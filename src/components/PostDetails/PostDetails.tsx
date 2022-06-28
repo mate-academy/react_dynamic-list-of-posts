@@ -21,12 +21,6 @@ export const PostDetails: React.FC <Props> = ({ postId }) => {
   });
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentsVisible, setCommentsVisible] = useState(true);
-  const [checkIfCommentWasAdded, setCheckIfCommentWasAdded] = useState(false);
-
-  const commentAdded = () => {
-    setCheckIfCommentWasAdded(!checkIfCommentWasAdded);
-    console.log('comm added');
-  };
 
   useEffect(() => {
     getPostComments(postId)
@@ -38,7 +32,15 @@ export const PostDetails: React.FC <Props> = ({ postId }) => {
       .then(postFromServer => {
         setDetails(postFromServer);
       });
-  }, [postId, checkIfCommentWasAdded]);
+  }, [postId]);
+
+  const updateComments = () => {
+    getPostComments(postId)
+      .then(postFromServer => {
+        setComments(postFromServer);
+      });
+    console.log('comments updated');
+  };
 
   return (
     <div className="PostDetails">
@@ -78,7 +80,10 @@ export const PostDetails: React.FC <Props> = ({ postId }) => {
         {(comments.length !== 0 && commentsVisible) && (
           <ul className="PostDetails__list">
             {comments.map((comment => (
-              <li className="PostDetails__list-item">
+              <li
+                className="PostDetails__list-item"
+                key={comment.id}
+              >
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
@@ -101,7 +106,7 @@ export const PostDetails: React.FC <Props> = ({ postId }) => {
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             postId={postId}
-            onAdded={commentAdded}
+            onAdd={updateComments}
           />
         </div>
       </section>

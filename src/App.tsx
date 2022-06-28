@@ -10,7 +10,7 @@ const App: React.FC = () => {
     name: 'All users',
     id: 0,
   }]);
-  const [selectedUserPosts, setSelectedUserPosts] = useState(0);
+  const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
   useEffect(() => {
@@ -18,7 +18,7 @@ const App: React.FC = () => {
       .then(usersFromServer => {
         setUsers(usersFromServer);
       });
-  }, [selectedUserPosts]);
+  }, [selectedUserId]);
 
   const addPostInfo = (postId: number) => {
     setSelectedPostId(postId);
@@ -35,9 +35,9 @@ const App: React.FC = () => {
           Select a user: &nbsp;
           <select
             className="App__user-selector"
-            value={selectedUserPosts}
+            value={selectedUserId}
             onChange={(event) => {
-              setSelectedUserPosts(+event.target.value);
+              setSelectedUserId(+event.target.value);
             }}
           >
             <option
@@ -48,6 +48,7 @@ const App: React.FC = () => {
             {users.map((user => (
               <option
                 value={user.id}
+                key={user.id}
               >
                 {user.name}
               </option>
@@ -59,16 +60,16 @@ const App: React.FC = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            userPosts={selectedUserPosts}
+            userPosts={selectedUserId}
             onAdd={addPostInfo}
             onRemove={removePostInfo}
           />
         </div>
 
         <div className="App__content">
-          {selectedPostId !== 0 && (
+          {selectedPostId !== 0 ? (
             <PostDetails postId={selectedPostId} />
-          )}
+          ) : ('Please, select a post')}
         </div>
       </main>
     </div>

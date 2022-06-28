@@ -1,33 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-console */
 import React, { useState } from 'react';
 import './NewCommentForm.scss';
+import { createComment } from '../../api/api';
 
 type Props = {
   postId: number;
-  onAdded: () => void;
+  onAdd: () => void;
 };
 
-export const NewCommentForm: React.FC <Props> = ({ postId, onAdded }) => {
+export const NewCommentForm: React.FC <Props> = ({ postId, onAdd }) => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [commentBody, setCommentBody] = useState('');
-
-  const createComment = () => {
-    fetch('https://mate.academy/students-api/comments', {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
-      body: JSON.stringify({
-        postId,
-        name: userName,
-        email: userEmail,
-        body: commentBody,
-        createdAt: new Date(),
-        updateddAt: new Date(),
-      }),
-    });
-  };
 
   return (
     <form
@@ -35,11 +20,16 @@ export const NewCommentForm: React.FC <Props> = ({ postId, onAdded }) => {
       method="post"
       onSubmit={(event) => {
         event.preventDefault();
-        createComment();
+        createComment({
+          postId,
+          name: userName,
+          email: userEmail,
+          body: commentBody,
+        });
         setUserName('');
         setUserEmail('');
         setCommentBody('');
-        onAdded();
+        onAdd();
       }}
     >
       <div className="form-field">
@@ -48,6 +38,7 @@ export const NewCommentForm: React.FC <Props> = ({ postId, onAdded }) => {
           name="name"
           placeholder="Your name"
           value={userName}
+          required
           className="NewCommentForm__input"
           onChange={(event) => {
             setUserName(event.target.value);
@@ -57,8 +48,9 @@ export const NewCommentForm: React.FC <Props> = ({ postId, onAdded }) => {
 
       <div className="form-field">
         <input
-          type="text"
+          type="email"
           name="email"
+          required
           value={userEmail}
           placeholder="Your email"
           className="NewCommentForm__input"
@@ -71,6 +63,7 @@ export const NewCommentForm: React.FC <Props> = ({ postId, onAdded }) => {
       <div className="form-field">
         <textarea
           name="body"
+          required
           placeholder="Type comment here"
           value={commentBody}
           className="NewCommentForm__input"
