@@ -1,18 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './PostsList.scss';
 import { Post } from '../../react-app-env';
+import { getPosts, getUserPosts } from '../../api/posts';
 
 interface Props {
-  posts: Post[],
-  selectedPostId: number,
+  userId: number,
+  postId: number,
   setSelectedPostId: (postID: number) => void,
 }
 
 export const PostsList: React.FC<Props> = ({
-  posts,
-  selectedPostId,
+  userId,
+  postId,
   setSelectedPostId,
 }) => {
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    if (userId === 0) {
+      getPosts()
+        .then(response => setPosts(response));
+    } else {
+      getUserPosts(userId)
+        .then(response => setPosts(response));
+    }
+  }, [userId]);
+
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
@@ -28,12 +41,12 @@ export const PostsList: React.FC<Props> = ({
               type="button"
               className="PostsList__button button"
               onClick={() => (
-                selectedPostId === post.id
+                postId === post.id
                   ? setSelectedPostId(0)
                   : setSelectedPostId(post.id)
               )}
             >
-              {selectedPostId === post.id ? 'Close' : 'Open'}
+              {postId === post.id ? 'Close' : 'Open'}
             </button>
           </li>
         ))}

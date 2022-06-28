@@ -9,6 +9,11 @@ export interface Post {
   updatedAt: string,
 }
 
+export interface User {
+  id: number,
+  name: string,
+}
+
 export interface Comment {
   id: number,
   userId: number,

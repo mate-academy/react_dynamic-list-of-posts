@@ -3,26 +3,18 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getAllPosts } from './api/posts';
-import { Post } from './react-app-env';
+import { getUsers } from './api/users';
+import { User } from './react-app-env';
 
 const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
   useEffect(() => {
-    getAllPosts()
-      .then(response => setPosts(response));
+    getUsers()
+      .then(response => setUsers(response));
   }, []);
-
-  const selectedPosts = posts.filter(post => {
-    if (selectedUserId === 0) {
-      return post;
-    }
-
-    return post.userId === selectedUserId;
-  });
 
   return (
     <div className="App">
@@ -36,16 +28,9 @@ const App: React.FC = () => {
             }}
           >
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {users.map(user => (
+              <option value={user.id} key={user.id}>{user.name}</option>
+            ))}
           </select>
         </label>
       </header>
@@ -53,8 +38,8 @@ const App: React.FC = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            posts={selectedPosts}
-            selectedPostId={selectedPostId}
+            userId={selectedUserId}
+            postId={selectedPostId}
             setSelectedPostId={setSelectedPostId}
           />
         </div>
