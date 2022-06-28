@@ -33,7 +33,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     getComments(post.id);
-  }, [post]);
+  }, [post.id]);
 
   return (
     <div className="PostDetails">

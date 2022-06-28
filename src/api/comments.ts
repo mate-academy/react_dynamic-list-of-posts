@@ -2,17 +2,17 @@ import { BASE_URL } from './api';
 
 export function getPostComments(postId: number): Promise<Comment[]> {
   return fetch(`${BASE_URL}/comments?postId=${postId}`)
-    .then(response => {
-      if (!response.ok) {
+    .then(request => {
+      if (!request.ok) {
         throw new Error('Something went wrong.');
-      } else {
-        return response.json();
       }
+
+      return request.json();
     });
 }
 
 export async function createPostComments(comment: NewComment) {
-  const response = await fetch(`${BASE_URL}/comments`, {
+  const request = await fetch(`${BASE_URL}/comments`, {
     method: 'POST',
     body: JSON.stringify(comment),
     headers: {
@@ -20,7 +20,7 @@ export async function createPostComments(comment: NewComment) {
     },
   });
 
-  const res = await response.json();
+  const res = await request.json();
 
   return res;
 }
