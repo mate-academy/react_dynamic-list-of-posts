@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { User } from './react-app-env';
+import { getUsers } from './api/user';
 
 const App: React.FC = () => {
   const [userSelect, setUserSelect] = useState('0');
   const [postId, setPostId] = useState(0);
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    getUsers()
+      .then(usersFromServer => setUsers(usersFromServer));
+  }, []);
 
   return (
     <div className="App">
@@ -20,16 +28,9 @@ const App: React.FC = () => {
             onChange={(event) => setUserSelect(event.target.value)}
           >
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {users.map(user => (
+              <option value={user.id} key={user.id}>{user.name}</option>
+            ))}
           </select>
         </label>
       </header>
@@ -43,9 +44,13 @@ const App: React.FC = () => {
         </div>
 
         <div className="App__content">
-          {postId !== 0 && (
-            <PostDetails postId={postId} />
-          )}
+          {postId !== 0
+            ? (
+              <PostDetails postId={postId} />
+            )
+            : (
+              <p>No selected post</p>
+            )}
         </div>
       </main>
     </div>

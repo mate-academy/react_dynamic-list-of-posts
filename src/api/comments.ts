@@ -6,13 +6,13 @@ export const getPostComments = (postId: number) => {
     .then(response => response.json());
 };
 
-export const getCommentDelete = (commentId: number) => {
+export const deleteComment = (commentId: number) => {
   return fetch(`${BASE_URL}/comments/${commentId}`, {
     method: 'DELETE',
   });
 };
 
-export const getCommentAdd = (comment: NewComment) => {
+export const addComment = (comment: NewComment) => {
   return fetch(`${BASE_URL}/comments`, {
     method: 'POST',
     headers: { 'Content-type': 'application/json; charset=UTF-8' },

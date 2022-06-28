@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getCommentDelete, getPostComments } from '../../api/comments';
+import { deleteComment, getPostComments } from '../../api/comments';
 import { getPostDetails } from '../../api/post';
 import { Comment, NewComment, Post } from '../../react-app-env';
 import { NewCommentForm } from '../NewCommentForm';
@@ -27,7 +27,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
   }, [postId]);
 
   const handlerDelete = (commentId: number) => {
-    getCommentDelete(commentId);
+    deleteComment(commentId);
 
     getPostComments(postId)
       .then(commentsFromServer => setComments(commentsFromServer));

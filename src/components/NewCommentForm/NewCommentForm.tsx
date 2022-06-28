@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getCommentAdd } from '../../api/comments';
+import { addComment } from '../../api/comments';
 import { NewComment } from '../../react-app-env';
 import './NewCommentForm.scss';
 
@@ -26,7 +26,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, handleComment }) => {
       updatedAt: Date(),
     };
 
-    getCommentAdd(newComment);
+    addComment(newComment);
     handleComment(newComment);
 
     setName('');
@@ -54,7 +54,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, handleComment }) => {
 
       <div className="form-field">
         <input
-          type="text"
+          type="email"
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
