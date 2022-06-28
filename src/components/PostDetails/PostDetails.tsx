@@ -1,45 +1,90 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import { Post, Comment } from '../../react-app-env';
+import { getPostDetails } from '../../api/posts';
+import { getPostComments, deleteComment } from '../../api/comments';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+interface Props {
+  postId: number;
+}
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = ({ postId }) => {
+  const [post, setPost] = useState<Post>();
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [showComments, setShowComments] = useState(true);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  const getComments = async () => {
+    const response = await getPostComments(postId);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+    setComments(response);
+  };
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  const getDetails = async () => {
+    const response = await getPostDetails(postId);
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+    setPost(response);
+  };
+
+  useEffect(() => {
+    getComments();
+    getDetails();
+  }, [postId]);
+
+  const deleteHandler = async (commentId: number) => {
+    await deleteComment(commentId);
+    const updatedComments = await getPostComments(postId);
+
+    setComments(updatedComments);
+  };
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <p>{post?.body}</p>
+      </section>
+
+      <section className="PostDetails__comments">
+        <button
+          type="button"
+          className="button"
+          onClick={() => {
+            setShowComments(!showComments);
+          }}
+        >
+          {showComments ? 'Hide comments' : 'Show comments'}
+        </button>
+
+        {showComments && (
+          <ul className="PostDetails__list" data-cy="postDetails">
+            {comments.map(comment => (
+              <li className="PostDetails__list-item" key={comment.id}>
+                <button
+                  type="button"
+                  className="PostDetails__remove-button button"
+                  onClick={() => {
+                    deleteHandler(comment.id);
+                  }}
+                >
+                  X
+                </button>
+                <p>{comment.body}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            postId={postId}
+            getComments={getComments}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};
