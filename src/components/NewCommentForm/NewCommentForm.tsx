@@ -1,39 +1,109 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './NewCommentForm.scss';
 
-export const NewCommentForm: React.FC = () => (
-  <form className="NewCommentForm">
-    <div className="form-field">
-      <input
-        type="text"
-        name="name"
-        placeholder="Your name"
-        className="NewCommentForm__input"
-      />
-    </div>
+import { Formik, Form, Field } from 'formik';
+import { addComments } from '../../api/api';
 
-    <div className="form-field">
-      <input
-        type="text"
-        name="email"
-        placeholder="Your email"
-        className="NewCommentForm__input"
-      />
-    </div>
+interface MyFormValues {
+  name: string,
+  email: string,
+  body: string,
+}
 
-    <div className="form-field">
-      <textarea
-        name="body"
-        placeholder="Type comment here"
-        className="NewCommentForm__input"
-      />
-    </div>
+type Props = {
+  postId: number,
+  requestComments: () => void,
+};
 
-    <button
-      type="submit"
-      className="NewCommentForm__submit-button button"
-    >
-      Add a comment
-    </button>
-  </form>
-);
+export const NewCommentForm: React.FC<Props> = ({
+  postId,
+  requestComments,
+}) => {
+  const initialValues: MyFormValues = {
+    name: '',
+    email: '',
+    body: '',
+  };
+
+  // I tried to unit these states in 'Inputs' but I didn't succeed
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [body, setBody] = useState('');
+
+  const addingComment = async (value: MyFormValues) => {
+    setName(value.name);
+    setEmail(value.email);
+    setBody(value.body);
+
+    const packComment = {
+      postId,
+      name,
+      email,
+      body,
+    };
+
+    await addComments(packComment);
+    requestComments();
+    setName('');
+    setEmail('');
+    setBody('');
+  };
+
+  return (
+    <>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={(values, actions) => {
+          actions.setSubmitting(false);
+          // eslint-disable-next-line no-console
+          console.log({ values, actions });
+
+          addingComment(values);
+        }}
+
+      >
+        <Form className="NewCommentForm">
+          <div className="form-field">
+            <label htmlFor="name">
+              <Field
+                id="name"
+                name="name"
+                placeholder="Your name"
+                className="NewCommentForm__input"
+              />
+            </label>
+          </div>
+
+          <div className="form-field">
+            <label htmlFor="email">
+              <Field
+                id="email"
+                name="email"
+                placeholder="Your email"
+                className="NewCommentForm__input"
+              />
+            </label>
+          </div>
+
+          <div className="form-field">
+            <label htmlFor="body">
+              <Field
+                as="textarea"
+                id="body"
+                name="body"
+                placeholder="Type comment here"
+                className="NewCommentForm__input"
+              />
+            </label>
+          </div>
+          <button
+            type="submit"
+            className="NewCommentForm__submit-button button"
+          >
+            Submit
+          </button>
+        </Form>
+      </Formik>
+    </>
+  );
+};
