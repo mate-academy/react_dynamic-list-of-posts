@@ -1,7 +1,7 @@
 import './NewCommentForm.scss';
 import React, { FormEvent, useState } from 'react';
 import { Comment } from '../../react-app-env';
-import { postComment, getComments } from '../../api/api';
+import { postComment, getComments } from '../../api/comments';
 
 type Props = {
   commentsList: Comment[] | undefined;
@@ -23,8 +23,6 @@ export const NewCommentForm: React.FC<Props> = ({
         newComment.email,
         newComment.body,
         newComment.postId,
-        newComment.createdAt,
-        newComment.updatedAt,
       );
 
       const afterAdded = await getComments(newComment.postId);
@@ -43,8 +41,6 @@ export const NewCommentForm: React.FC<Props> = ({
         name: yourname,
         email: youremail,
         body: yourcomment,
-        createdAt: `${new Date()}`,
-        updatedAt: `${new Date()}`,
       };
 
       addComment(newComment);
@@ -66,6 +62,7 @@ export const NewCommentForm: React.FC<Props> = ({
         <input
           type="text"
           name="name"
+          required
           placeholder="Your name"
           value={yourname}
           className="NewCommentForm__input"
@@ -77,8 +74,9 @@ export const NewCommentForm: React.FC<Props> = ({
 
       <div className="form-field">
         <input
-          type="text"
+          type="email"
           name="email"
+          required
           placeholder="Your email"
           className="NewCommentForm__input"
           value={youremail}
@@ -93,6 +91,7 @@ export const NewCommentForm: React.FC<Props> = ({
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
+          required
           value={yourcomment}
           onChange={(event) => {
             setYourcomment(event.target.value);

@@ -1,25 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
-import { Post, Comment } from '../../react-app-env';
-import { getComments, delComment } from '../../api/api';
+import { Comment, Post } from '../../react-app-env';
+import { getComments, delComment } from '../../api/comments';
+import { getPostbyId } from '../../api/posts';
 
 type Props = {
-  post: Post | undefined;
+  postId: number | undefined;
   setIsLoading: (arg: boolean) => void,
 };
 
 export const PostDetails: React.FC<Props> = ({
-  post,
+  postId,
   setIsLoading,
 }) => {
   const [commentsList, setCommentsList] = useState<Comment[]>([]);
   const [visiblecomments, setVisiblecomments] = useState(false);
-  //  console.log(post);
+  const [postDetails, setPostDetails] = useState<Post>();
+
+  const findPost = async () => {
+    if (postId) {
+      const result = await getPostbyId(postId);
+
+      setPostDetails(result);
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+    findPost();
+  }, []);
 
   const findcomments = async () => {
-    if (post) {
-      const result = await getComments(post?.id);
+    if (postId) {
+      const result = await getComments(postId);
 
       setCommentsList(result);
       setIsLoading(false);
@@ -36,16 +51,16 @@ export const PostDetails: React.FC<Props> = ({
   useEffect(() => {
     setIsLoading(true);
     findcomments();
-  }, [post]);
+  }, [postId]);
 
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
-      {post && (
+      {postId && (
         <>
           <section className="PostDetails__post">
             <p>
-              {post?.title}
+              {postDetails?.title}
             </p>
           </section>
           <section className="PostDetails__comments">

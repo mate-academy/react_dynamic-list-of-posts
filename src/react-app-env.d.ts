@@ -35,8 +35,6 @@ export interface Post {
   id: number,
   title: string,
   body: string,
-  createdAt: string,
-  updatedAt: string,
 }
 
 export interface Comment {
@@ -45,6 +43,4 @@ export interface Comment {
   name: string,
   email: string,
   body: string,
-  createdAt: string,
-  updatedAt: string
 }

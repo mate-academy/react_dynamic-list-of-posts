@@ -1,22 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import './PostsList.scss';
-import { getPosts } from '../../api/api';
+import { getAllPosts, getPosts } from '../../api/posts';
 import { Post } from '../../react-app-env';
 
 type Props = {
   userSelectedId: string;
-  selectPost: (arg?: Post) => void;
-  post: Post | undefined;
+  selectPostId: (arg?: number) => void;
+  postId: number | undefined;
   setIsLoading: (arg: boolean) => void,
 };
 
 export const PostsList: React.FC<Props> = ({
   userSelectedId,
-  selectPost,
-  post,
+  selectPostId,
+  postId,
   setIsLoading,
 }) => {
   const [currentPostList, setPostList] = useState<Post[]>([]);
+
+  const allPosts = async () => {
+    const result = await getAllPosts();
+
+    setPostList(result);
+    setIsLoading(false);
+  };
 
   const findposts = async () => {
     const result = await getPosts(userSelectedId);
@@ -29,6 +36,10 @@ export const PostsList: React.FC<Props> = ({
     findposts();
   }, [userSelectedId]);
 
+  useEffect(() => {
+    allPosts();
+  }, []);
+
   return (
     <div className="PostsList">
       <>
@@ -37,35 +48,35 @@ export const PostsList: React.FC<Props> = ({
           className="PostsList__list"
           data-cy="postDetails"
         >
-          {currentPostList.map(po => (
+          {currentPostList.map(post => (
             <li
               className="PostsList__item"
-              key={po.id}
+              key={post.id}
             >
               <div>
                 <b>
                   [User
                   {' '}
-                  {po.userId}
+                  {post.userId}
                   ]:
                   {' '}
                 </b>
-                {po.body}
+                {post.body}
               </div>
               <button
                 type="button"
                 className="PostsList__button button"
                 onClick={() => {
-                  if ((post) && (post.id === po.id)) {
-                    selectPost(undefined);
+                  if ((post) && (postId === post.id)) {
+                    selectPostId(undefined);
                   } else {
-                    selectPost(po);
+                    selectPostId(post.id);
                   }
 
                   setIsLoading(true);
                 }}
               >
-                {post && (post.id === po.id)
+                {post && (postId === post.id)
                   ? 'Close'
                   : 'Open'}
               </button>
