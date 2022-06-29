@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { deletePostComments, getPostComments } from '../../api/posts';
+import { deletePostComments, getPostComments } from '../../api/comments';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 

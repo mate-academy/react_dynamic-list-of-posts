@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createPostComments } from '../../api/posts';
+import { createPostComments } from '../../api/comments';
 import './NewCommentForm.scss';
 
 interface Props {
