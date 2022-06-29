@@ -5,7 +5,7 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
 const App: React.FC = () => {
-  const [idOfUser, setIdOfUser] = useState<number>(0);
+  const [selectedUserId, setSelectedUserId] = useState<number>(0);
   const [selectedPostId, setSelectedPostId] = useState<number>(0);
   const [post, setPost] = useState<Post | null>(null);
 
@@ -17,9 +17,9 @@ const App: React.FC = () => {
 
           <select
             className="App__user-selector"
-            value={idOfUser}
+            value={selectedUserId}
             onChange={event => {
-              setIdOfUser(+event.target.value);
+              setSelectedUserId(+event.target.value);
             }}
           >
             <option value="0">All users</option>
@@ -40,7 +40,7 @@ const App: React.FC = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            idOfUser={idOfUser}
+            selectedUserId={selectedUserId}
             selectedPostId={selectedPostId}
             setSelectedPostId={setSelectedPostId}
             setPost={setPost}

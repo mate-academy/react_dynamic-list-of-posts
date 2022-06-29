@@ -3,7 +3,7 @@ import { getUserPosts } from '../../api/posts';
 import './PostsList.scss';
 
 interface Props {
-  idOfUser: number;
+  selectedUserId: number;
   selectedPostId: number;
   setSelectedPostId: (arg: number) => void;
   setPost: (arg: Post | null) => void;
@@ -11,7 +11,7 @@ interface Props {
 
 export const PostsList: React.FC<Props>
   = ({
-    idOfUser,
+    selectedUserId,
     selectedPostId,
     setSelectedPostId,
     setPost,
@@ -30,8 +30,8 @@ export const PostsList: React.FC<Props>
     };
 
     useEffect(() => {
-      getPosts(idOfUser);
-    }, [idOfUser]);
+      getPosts(selectedUserId);
+    }, [selectedUserId]);
 
     return (
       <div className="PostsList">

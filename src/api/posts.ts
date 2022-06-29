@@ -36,25 +36,8 @@ export async function createPostComments(comment: NewComment) {
   return res;
 }
 
-// export async function createPostComments(comment: NewComment) {
-//   return fetch(`${BASE_URL}/comments`, {
-//     method: 'POST',
-//     body: JSON.stringify(comment),
-//     headers: {
-//       'Content-type': 'application/json; charset=UTF-8',
-//     },
-//   })
-//     .then(response => response.json());
-// }
-
 export async function deletePostComments(id: number) {
   return fetch(`${BASE_URL}/comments/${id}`, {
     method: 'DELETE',
   });
 }
-
-// export function deletePostComments(id: number) {
-//   return fetch(`${BASE_URL}/comments/${id}`, {
-//     method: 'DELETE',
-//   });
-// }
