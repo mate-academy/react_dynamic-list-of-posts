@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
-import { Post } from './react-app-env';
+import { Post, User } from './react-app-env';
 import { getUserPosts } from './api/post';
+import { getUsers } from './api/users';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
 const App: React.FC = () => {
-  const [posts, getPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
   useEffect(() => {
     getUserPosts(selectedUserId)
-      .then(postsFromServer => getPosts(postsFromServer));
+      .then(postsFromServer => setPosts(postsFromServer));
+
+    getUsers()
+      .then(usersFromServer => setUsers(usersFromServer));
   }, []);
 
   const setPostId = (postId: number) => {
@@ -42,16 +47,14 @@ const App: React.FC = () => {
             }}
           >
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {users.map(user => (
+              <option
+                value={user.id}
+                key={user.id}
+              >
+                {user.name}
+              </option>
+            ))}
           </select>
         </label>
       </header>
