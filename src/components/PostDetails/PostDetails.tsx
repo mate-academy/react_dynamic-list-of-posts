@@ -12,19 +12,20 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
   const [comments, setComments] = useState<CommentWithId[]>([]);
   const [showComments, setShowComments] = useState(true);
 
-  useEffect(() => {
-    getSelectedPost(postId)
-      .then(postFromServer => setPost(postFromServer));
-  }, [postId]);
-
   const requestComments = () => {
     getComments(postId)
       .then(commentsFromServer => setComments(commentsFromServer));
   };
 
-  const deletingComment = (idOfComment: number) => {
-    removeComment(idOfComment);
+  useEffect(() => {
+    getSelectedPost(postId)
+      .then(postFromServer => setPost(postFromServer));
     requestComments();
+  }, [postId]);
+
+  const deletingComment = (idOfComment: number) => {
+    removeComment(idOfComment)
+      .then(() => requestComments());
   };
 
   return (
@@ -47,10 +48,6 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
             ? 'Hide comments'
             : 'Show comments'}
         </button>
-
-        {// eslint-disable-next-line no-console
-          console.log(showComments)
-        }
 
         {showComments && (
           <ul className="PostDetails__list">

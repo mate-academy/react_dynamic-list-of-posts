@@ -30,9 +30,6 @@ const App: React.FC = () => {
       });
   }, [userId]);
 
-  // eslint-disable-next-line no-console
-  console.log(allUsers, posts);
-
   return (
     <div className="App">
       <header className="App__header">

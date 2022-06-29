@@ -33,7 +33,9 @@ export const getComments = async (
   return comment;
 };
 
-export const addComments = async (comment: Comment): Promise<Comment[]> => {
+export const addComments = async (
+  comment: CommentFetch,
+): Promise<CommentFetch[]> => {
   const response = await fetch(`${BASE_URL}/comments`, {
     method: 'POST',
     body: JSON.stringify(comment),
@@ -41,6 +43,7 @@ export const addComments = async (comment: Comment): Promise<Comment[]> => {
       'Content-type': 'application/json; charset=UTF-8',
     },
   });
+    // .then(response => response.json())
 
   const addedComment = await response.json();
 

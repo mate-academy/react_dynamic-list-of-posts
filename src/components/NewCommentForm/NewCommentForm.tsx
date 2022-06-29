@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './NewCommentForm.scss';
 
 import { Formik, Form, Field } from 'formik';
@@ -25,28 +25,19 @@ export const NewCommentForm: React.FC<Props> = ({
     body: '',
   };
 
-  // I tried to unit these states in 'Inputs' but I didn't succeed
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
-
   const addingComment = async (value: MyFormValues) => {
-    setName(value.name);
-    setEmail(value.email);
-    setBody(value.body);
+    // eslint-disable-next-line no-console
+    console.log(value);
 
     const packComment = {
       postId,
-      name,
-      email,
-      body,
+      name: value.name,
+      email: value.email,
+      body: value.body,
     };
 
     await addComments(packComment);
     requestComments();
-    setName('');
-    setEmail('');
-    setBody('');
   };
 
   return (
@@ -54,11 +45,11 @@ export const NewCommentForm: React.FC<Props> = ({
       <Formik
         initialValues={initialValues}
         onSubmit={(values, actions) => {
-          actions.setSubmitting(false);
           // eslint-disable-next-line no-console
           console.log({ values, actions });
 
           addingComment(values);
+          actions.resetForm();
         }}
 
       >

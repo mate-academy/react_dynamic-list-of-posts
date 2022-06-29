@@ -15,13 +15,13 @@ interface User {
   phone: string,
 }
 
-interface Comment {
+interface CommentFetch {
   postId: number,
   name: string,
   email: string,
   body: string,
 }
 
-interface CommentWithId extends Comment {
+interface CommentWithId extends CommentFetch {
   id: number,
 }
