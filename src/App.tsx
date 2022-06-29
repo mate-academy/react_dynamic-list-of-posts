@@ -64,7 +64,9 @@ const App: React.FC = () => {
         </div>
 
         <div className="App__content">
-          {post && <PostDetails post={post} />}
+          {post === null
+            ? <h2>Here will be post details</h2>
+            : <PostDetails post={post} />}
         </div>
       </main>
     </div>
