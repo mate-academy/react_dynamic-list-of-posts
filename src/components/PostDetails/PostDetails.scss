@@ -5,6 +5,13 @@
 
   &__comments {
     text-align: right;
+
+    &--notFound {
+      font-weight: bold;
+      color: inherit;
+      margin-bottom: 20px;
+      text-align: center;
+    }
   }
 
   &__list {
