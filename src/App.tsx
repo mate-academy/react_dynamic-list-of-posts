@@ -19,19 +19,11 @@ const App: React.FC = () => {
 
     getUsers()
       .then(usersFromServer => setUsers(usersFromServer));
-  }, []);
+  }, [selectedUserId]);
 
   const setPostId = (postId: number) => {
     setSelectedPostId(postId);
   };
-
-  const visiblePosts = posts.filter(post => {
-    if (!selectedUserId) {
-      return post;
-    }
-
-    return post.userId === selectedUserId;
-  });
 
   return (
     <div className="App">
@@ -62,7 +54,7 @@ const App: React.FC = () => {
       <main className="App__main">
         <div className="App__sidebar">
           <PostsList
-            posts={visiblePosts}
+            posts={posts}
             selectPostId={selectedPostId}
             onSelectedPostId={setPostId}
           />

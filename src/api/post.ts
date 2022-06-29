@@ -7,7 +7,7 @@ export const getUserPosts = async (userId: number): Promise<Post[]> => {
   if (!userId) {
     response = await fetch(`${BASE_URL}/posts`);
   } else {
-    response = await fetch(`${BASE_URL}/posts/${userId}`);
+    response = await fetch(`${BASE_URL}/posts?userId=${userId}`);
   }
 
   return response.json();
