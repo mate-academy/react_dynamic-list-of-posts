@@ -1,27 +1,40 @@
 import React, { useState } from 'react';
 import './NewCommentForm.scss';
+import { addPostComments } from '../../api/comments';
 
 type Props = {
-  setComment: React.Dispatch<React.SetStateAction<Comments[] | undefined>>
+  selectedPostId: number,
+  requestForComments: () => Promise<void>,
 };
 
-export const NewCommentForm: React.FC<Props> = ({ setComment }) => {
+export const NewCommentForm: React.FC<Props> = ({
+  selectedPostId,
+  requestForComments,
+}) => {
   const [nameInput, setNameInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
   const [commentInput, setCommentInput] = useState('');
 
-  const addComment = (
+  const clear = () => {
+    setNameInput('');
+    setEmailInput('');
+    setCommentInput('');
+  };
+
+  const addComment = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     event.preventDefault();
 
     if (nameInput && emailInput && commentInput) {
-      setComment((current) => current && [...current, {
-        name: nameInput, email: emailInput, body: commentInput,
-      }]);
-      setNameInput('');
-      setEmailInput('');
-      setCommentInput('');
+      await addPostComments(
+        nameInput,
+        emailInput,
+        commentInput,
+        selectedPostId,
+      );
+      requestForComments();
+      clear();
     }
   };
 

@@ -21,7 +21,7 @@ type User = {
 };
 
 type Comments = {
-  id?: number,
+  id: number,
   createdAt?: string,
   updatedAt?: string,
   postId?: number,

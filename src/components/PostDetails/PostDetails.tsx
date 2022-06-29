@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { getPostDetails } from '../../api/posts';
-import { getPostComments } from '../../api/comments';
+import { deleteComments, getPostComments } from '../../api/comments';
 
 type Props = {
   selectedPostId: number,
@@ -13,20 +13,21 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   const [comments, setComments] = useState<Comments[]>();
   const [clickButton, setClickButton] = useState(false);
 
+  const requestForComments = () => (
+    getPostComments(selectedPostId)
+      .then(commentFormServer => setComments(commentFormServer))
+  );
+
   useEffect(() => {
     getPostDetails(selectedPostId)
       .then(postFromServer => setPost(postFromServer));
 
-    getPostComments(selectedPostId)
-      .then(commentFormServer => setComments(commentFormServer));
+    requestForComments();
   }, [selectedPostId]);
 
-  const filterComments = (commentFilter: Comments) => {
-    const result = comments?.filter(
-      commentF => commentF.name !== commentFilter.name,
-    );
-
-    setComments(result);
+  const deleteCom = async (i: number) => {
+    await deleteComments(i);
+    requestForComments();
   };
 
   return (
@@ -69,7 +70,9 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
                         <button
                           type="button"
                           className="PostDetails__remove-button button"
-                          onClick={() => filterComments(comment)}
+                          onClick={() => {
+                            deleteCom(comment.id);
+                          }}
                         >
                           X
                         </button>
@@ -83,7 +86,10 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
 
             <section>
               <div className="PostDetails__form-wrapper">
-                <NewCommentForm setComment={setComments} />
+                <NewCommentForm
+                  selectedPostId={selectedPostId}
+                  requestForComments={requestForComments}
+                />
               </div>
             </section>
           </div>
