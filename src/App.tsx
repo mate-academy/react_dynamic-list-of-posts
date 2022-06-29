@@ -1,13 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { Post } from './react-app-env';
+import { User } from './react-app-env';
+import { request } from './api/api';
 
 const App: React.FC = () => {
-  const [currentUser, setCurrentUser] = useState('0');
-  const [selectedPost, setSelectedPost] = useState<Post>();
+  const [currentUser, setCurrentUser] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+  const [userList, setUserList] = useState<User[]>([]);
+
+  useEffect(() => {
+    const getUsersFromServer = async () => {
+      const result = await request('Users');
+
+      setUserList(result);
+    };
+
+    getUsersFromServer();
+  }, []);
 
   return (
     <div className="App">
@@ -18,20 +30,13 @@ const App: React.FC = () => {
           <select
             className="App__user-selector"
             onChange={(event) => {
-              setCurrentUser(event.target.value);
+              setCurrentUser(Number(event.target.value));
             }}
           >
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {userList.map(singleUser => (
+              <option value={singleUser.id}>{singleUser.name}</option>
+            ))}
           </select>
         </label>
       </header>
@@ -40,14 +45,14 @@ const App: React.FC = () => {
         <div className="App__sidebar">
           <PostsList
             userId={currentUser}
-            selectPost={setSelectedPost}
-            post={selectedPost}
+            selectPostId={setSelectedPostId}
+            post={selectedPostId}
           />
         </div>
 
-        {selectedPost && (
+        {selectedPostId && (
           <div className="App__content">
-            <PostDetails post={selectedPost} />
+            <PostDetails post={selectedPostId} />
           </div>
         )}
       </main>

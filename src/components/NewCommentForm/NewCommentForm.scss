@@ -11,6 +11,10 @@
     font-size: 0.9rem;
     padding: 10px 5px;
     color: #4d457b;
+
+    &-invalid {
+      border: 1px solid red;
+    }
   }
 
   &__submit-button {

@@ -1,19 +1,21 @@
-import { BASE_URL, request } from './api';
+import { request } from './api';
 
-export async function getUserPosts(userId : string) {
+export async function getUserPosts(userId : number) {
   let result;
 
-  if (Number(userId) === 0) {
-    result = await (await request('posts'));
-  } else {
-    result = await (await fetch(`${BASE_URL}/posts?userId=${userId}`)).json();
+  if (userId === 0) {
+    result = await request('posts');
+
+    return result;
   }
 
-  return result;
+  result = await request(`/posts?userId=${userId}`);
+
+  return result.json();
 }
 
 export async function getPostDetails(postId : number) {
-  const result = await fetch(`${BASE_URL}/posts/:${postId}`);
+  const result = await request(`/posts/${postId}`);
 
   return result;
 }

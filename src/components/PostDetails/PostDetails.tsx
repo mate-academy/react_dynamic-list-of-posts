@@ -1,23 +1,26 @@
 /* eslint-disable react/require-default-props */
 import React, { useEffect, useState } from 'react';
-import { deleteRequest } from '../../api/api';
-import { getPostComments } from '../../api/comments';
-import { Post, Comment } from '../../react-app-env';
+import { getPostComments, deleteRequest } from '../../api/api';
+import { getPostDetails } from '../../api/posts';
+import { Comment, Post } from '../../react-app-env';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
 interface Props {
-  post: Post;
+  post: number;
 }
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [commentsList, setCommentsList] = useState<Comment[]>([]);
+  const [currPost, setCurrPost] = useState<Post>();
   const [isCommentsVisible, setVisibilityOfComments] = useState(true);
   const [needToUpdate, setNeedToUpdate] = useState(false);
 
   async function finder() {
-    const result = await getPostComments(post.id);
+    const result = await getPostComments(post);
+    const res = await getPostDetails(post);
 
+    setCurrPost(res);
     setCommentsList(result);
   }
 
@@ -33,13 +36,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     && (
       <>
         <section className="PostDetails__post">
-          <p>{post.title}</p>
+          <p>{currPost?.title}</p>
         </section>
         <section className="PostDetails__comments">
           {commentsList.length > 0
           && (
             <button
               type="button"
+              className="button"
               onClick={() => {
                 setVisibilityOfComments(!isCommentsVisible);
               }}
@@ -53,7 +57,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             { post
             && (isCommentsVisible)
             && (commentsList.map(singleComment => (
-              <li key={singleComment.id}>
+              <li key={singleComment.id} className="PostDetails__list-item">
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
@@ -72,7 +76,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         <section>
           <div className="PostDetails__form-wrapper">
             <NewCommentForm
-              currentPostId={post.id}
+              currentPostId={post}
               needToUpdate={needToUpdate}
               setNeedToUpdate={setNeedToUpdate}
             />

@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+import classNames from 'classnames';
 import React, { useState } from 'react';
 import { postComment } from '../../api/comments';
 import './NewCommentForm.scss';
@@ -12,7 +14,17 @@ export const NewCommentForm: React.FC<Props> = (
   { currentPostId, needToUpdate, setNeedToUpdate },
 ) => {
   const [name, setName] = useState('');
+
   const [email, setEmail] = useState('');
+  const [emailValid, setEmailValid] = useState(true);
+
+  function isValidEmail(emailAdress : string) {
+    // eslint-disable-next-line no-useless-escape
+    const result = (/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(emailAdress));
+
+    return result;
+  }
+
   const [memo, setMemo] = useState('');
 
   return (
@@ -20,8 +32,13 @@ export const NewCommentForm: React.FC<Props> = (
       className="NewCommentForm"
       onSubmit={async (event) => {
         event.preventDefault();
-        await postComment(name, email, memo, currentPostId);
-        setNeedToUpdate(!needToUpdate);
+        isValidEmail(email);
+        if (isValidEmail(email)) {
+          await postComment(name, email, memo, currentPostId);
+          setNeedToUpdate(!needToUpdate);
+        } else {
+          setEmailValid(false);
+        }
       }}
     >
       <div className="form-field">
@@ -43,11 +60,15 @@ export const NewCommentForm: React.FC<Props> = (
           type="text"
           name="email"
           placeholder="Your email"
-          className="NewCommentForm__input"
+          className={classNames(
+            { NewCommentForm__input: emailValid },
+            { 'NewCommentForm__input-invalid': !emailValid },
+          )}
           required
           value={email}
           onChange={(event) => {
             setEmail(event.target.value);
+            setEmailValid(true);
           }}
         />
       </div>

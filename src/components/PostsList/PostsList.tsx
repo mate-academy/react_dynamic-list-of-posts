@@ -5,21 +5,21 @@ import { Post } from '../../react-app-env';
 import './PostsList.scss';
 
 interface Props {
-  userId: string;
-  selectPost: (arg0?: Post) => void;
-  post?: Post;
+  userId: number; // current user id
+  selectPostId: (arg0: number | null) => void; // lifting state up, choosing selected post
+  post: number | null; // displayed post
 }
 
-export const PostsList: React.FC<Props> = ({ userId, selectPost, post }) => {
+export const PostsList: React.FC<Props> = ({ userId, selectPostId, post }) => {
   const [currentPostList, setPostList] = useState<Post[]>([]);
 
-  async function finder() {
+  async function finder() { // async function to get array of posts of currentUser
     const result = await getUserPosts(userId);
 
     setPostList(result);
   }
 
-  useEffect(() => {
+  useEffect(() => { // if user changed make new request to server, to get new array of posts
     finder();
   }, [userId]);
 
@@ -28,7 +28,7 @@ export const PostsList: React.FC<Props> = ({ userId, selectPost, post }) => {
       <h2>Posts:</h2>
       <ul className="PostsList__list">
         {
-          currentPostList.map(singlePost => (
+          currentPostList.map(singlePost => ( // making list of posts list
             <li className="PostList__item">
               <div>
                 <b>{`[User] #${singlePost.userId} `}</b>
@@ -37,15 +37,15 @@ export const PostsList: React.FC<Props> = ({ userId, selectPost, post }) => {
               <button
                 type="button"
                 className="PostsList__button button"
-                onClick={() => {
-                  if ((post) && (post.id === singlePost.id)) {
-                    selectPost(undefined);
+                onClick={() => { // button to open/close posts using setState
+                  if ((post) && (post === singlePost.id)) {
+                    selectPostId(null);
                   } else {
-                    selectPost(singlePost);
+                    selectPostId(singlePost.id);
                   }
                 }}
               >
-                {post && (post.id === singlePost.id)
+                {post && (post === singlePost.id)
                   ? 'close'
                   : 'open'}
               </button>

@@ -1,10 +1,4 @@
-import { BASE_URL, request } from './api';
-
-export async function getPostComments(postId : number) {
-  const result = await request(`comments?postId=${postId}`);
-
-  return result;
-}
+import { BASE_URL } from './api';
 
 export async function postComment(
   name : string, email : string, body : string, postId: number,
