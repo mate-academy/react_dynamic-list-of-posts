@@ -32,3 +32,11 @@
     margin-left: 10px;
   }
 }
+
+.danger {
+  background-color: brown;
+
+  &:hover {
+    background-color: red;
+  }
+}
