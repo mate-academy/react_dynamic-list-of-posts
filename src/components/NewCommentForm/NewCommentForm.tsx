@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { addComment, getPostComments } from '../../api/comments';
+import { NewComment } from '../../react-app-env';
+import { setComments } from '../../store';
+import { getPostDetailsId } from '../../store/selectors';
 import './NewCommentForm.scss';
 
-type Props = {
-  setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
-  postId: number,
-};
-
-export const NewCommentForm: React.FC<Props>
-  = ({ setComments, postId }) => {
+export const NewCommentForm: React.FC
+  = () => {
+    const dispatch = useDispatch();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [comment, setComment] = useState('');
+    const postId = useSelector(getPostDetailsId);
 
     const clearInput = () => {
       setName('');
@@ -32,7 +33,7 @@ export const NewCommentForm: React.FC<Props>
       await addComment(newComment);
       const result = await getPostComments(postId);
 
-      setComments(result);
+      dispatch(setComments(result));
 
       clearInput();
     };

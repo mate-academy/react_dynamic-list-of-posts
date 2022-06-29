@@ -30,3 +30,11 @@ interface NewComment {
 interface Comment extends NewComment {
   id: number
 }
+
+export interface State {
+  users: User[],
+  userId: number,
+  postDetailsId: number,
+  userPosts: Post[],
+  comments: Comment[],
+}

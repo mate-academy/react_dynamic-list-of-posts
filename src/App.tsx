@@ -1,55 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './App.scss';
 import './styles/general.scss';
+import { useSelector } from 'react-redux';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getUsers } from './api/posts';
+import { getPostDetailsId } from './store/selectors';
+import { Header } from './components/Header';
 
 const App: React.FC = () => {
-  const [selectUser, setSelectUser] = useState(0);
-  const [selectDetId, setSelectDetId] = useState(0);
-  const [users, setUsers] = useState<User[]>([]);
-
-  useEffect(() => {
-    getUsers()
-      .then(response => setUsers(response));
-  }, []);
+  const postId = useSelector(getPostDetailsId);
 
   return (
     <div className="App">
-      <header className="App__header">
-        <label>
-          Select a user: &nbsp;
-
-          <select
-            className="App__user-selector"
-            onChange={event => setSelectUser(+event.target.value)}
-          >
-            <option value="0">All users</option>
-            {users.map(user => (
-              <option
-                value={user.id}
-                key={user.id}
-              >
-                {user.name}
-              </option>
-            ))}
-          </select>
-        </label>
-      </header>
-
+      <Header />
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList
-            userId={selectUser}
-            setSelectDetId={setSelectDetId}
-            selectDetId={selectDetId}
-          />
+          <PostsList />
         </div>
 
-        {selectDetId !== 0 && (
+        {postId !== 0 && (
           <div className="App__content">
-            <PostDetails postId={selectDetId} />
+            <PostDetails />
           </div>
         )}
       </main>

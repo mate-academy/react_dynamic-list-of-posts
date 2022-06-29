@@ -1,32 +1,34 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { deleteComment, getPostComments } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
+import { Post } from '../../react-app-env';
+import { setComments } from '../../store';
+import { getComments, getPostDetailsId } from '../../store/selectors';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-type Props = {
-  postId: number
-};
-
-export const PostDetails: React.FC<Props> = ({ postId }) => {
+export const PostDetails: React.FC = () => {
+  const dispatch = useDispatch();
   const [postDetails, setPostDetails] = useState<Post>();
-  const [comments, setComments] = useState<Comment[]>([]);
   const [visible, setVisible] = useState(true);
+  const comments = useSelector(getComments);
+  const postId = useSelector(getPostDetailsId);
 
   useEffect(() => {
     getPostDetails(postId)
       .then(response => setPostDetails(response));
 
     getPostComments(postId)
-      .then(response => setComments(response));
+      .then(response => dispatch(setComments(response)));
   }, [postId]);
 
   const delComment = async (id: number) => {
     await deleteComment(id);
     const newComments = await getPostComments(postId);
 
-    setComments(newComments);
+    dispatch(setComments(newComments));
   };
 
   return (
@@ -71,10 +73,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm
-            setComments={setComments}
-            postId={postId}
-          />
+          <NewCommentForm />
         </div>
       </section>
     </div>
