@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -12,9 +12,9 @@ const App: React.FC = () => {
 
   const [postId, setPostId] = useState(0);
 
-  const settingPostId = (id: number) => {
+  const settingPostId = useCallback((id: number) => {
     setPostId(id);
-  };
+  }, []);
 
   useEffect(() => {
     getUsers()
