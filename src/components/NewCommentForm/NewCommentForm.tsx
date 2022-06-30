@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useState, useEffect } from 'react';
 import './NewCommentForm.scss';
 
 type Props = {
@@ -10,35 +10,54 @@ export const NewCommentForm: React.FC<Props> = ({
   selectedPostId,
   onAddNewComment,
 }) => {
-  const [nameValue, setNameValue] = useState<string>('');
-  const [emailValue, setEmailValue] = useState<string>('');
-  const [commentValue, setCommentValue] = useState<string>('');
+  const [newComment, setNewComment] = useState<NewComment>({
+    postId: selectedPostId,
+    name: '',
+    email: '',
+    body: '',
+  });
+
+  const [canSubmit, setCanSubmit] = useState<boolean>(false);
   const [isSubmitError, setIsSubmitError] = useState<boolean>(false);
 
   const clearCommentForm = () => {
-    setNameValue('');
-    setEmailValue('');
-    setCommentValue('');
+    setNewComment({
+      postId: selectedPostId,
+      name: '',
+      email: '',
+      body: '',
+    });
+  };
+
+  const validateForm = () => {
+    const { name, email, body } = newComment;
+
+    if (name === '' || email === '' || body === '') {
+      return setCanSubmit(false);
+    }
+
+    return setCanSubmit(true);
   };
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
+    setIsSubmitError(false);
 
-    if (nameValue === '' || emailValue === '' || commentValue === '') {
+    validateForm();
+
+    if (!canSubmit) {
       return setIsSubmitError(true);
     }
-
-    const newComment: NewComment = {
-      postId: selectedPostId,
-      name: nameValue,
-      email: emailValue,
-      body: commentValue,
-    };
 
     onAddNewComment(newComment);
 
     return clearCommentForm();
   };
+
+  useEffect(() => {
+    validateForm();
+    setIsSubmitError(false);
+  }, [newComment]);
 
   return (
     <form
@@ -51,10 +70,9 @@ export const NewCommentForm: React.FC<Props> = ({
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={nameValue}
+          value={newComment.name}
           onChange={(event) => {
-            setNameValue(event.target.value);
-            setIsSubmitError(false);
+            setNewComment({ ...newComment, name: event.target.value });
           }}
         />
       </div>
@@ -65,10 +83,9 @@ export const NewCommentForm: React.FC<Props> = ({
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={emailValue}
+          value={newComment.email}
           onChange={(event) => {
-            setEmailValue(event.target.value);
-            setIsSubmitError(false);
+            setNewComment({ ...newComment, email: event.target.value });
           }}
         />
       </div>
@@ -77,10 +94,9 @@ export const NewCommentForm: React.FC<Props> = ({
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={commentValue}
+          value={newComment.body}
           onChange={(event) => {
-            setCommentValue(event.target.value);
-            setIsSubmitError(false);
+            setNewComment({ ...newComment, body: event.target.value });
           }}
         />
       </div>
@@ -89,9 +105,7 @@ export const NewCommentForm: React.FC<Props> = ({
         className={`
         NewCommentForm__submit-button
         button
-        ${nameValue === ''
-        || emailValue === ''
-        || commentValue === '' ? 'disabled' : ''}
+        ${!canSubmit ? 'disabled' : ''}
         `}
       >
         Add a comment

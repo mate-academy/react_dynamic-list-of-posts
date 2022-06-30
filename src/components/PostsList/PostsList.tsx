@@ -28,7 +28,7 @@ export const PostsList: React.FC<Props> = ({
                 <b>{`[User #${post.userId}]: `}</b>
                 {post.title}
               </div>
-              {selectedPostId === post.id
+              {/* {selectedPostId === post.id
                 ? (
                   <button
                     type="button"
@@ -45,7 +45,27 @@ export const PostsList: React.FC<Props> = ({
                   >
                     Open
                   </button>
-                )}
+                )} */}
+
+              <button
+                type="button"
+                className={`
+                  PostsList__button
+                  button
+                  ${selectedPostId === post.id ? 'is-active' : ''}
+                `}
+                onClick={() => {
+                  if (selectedPostId === post.id) {
+                    return onPostSelect(0);
+                  }
+
+                  return onPostSelect(post.id);
+                }}
+              >
+                {selectedPostId === post.id
+                  ? 'Close'
+                  : 'Open'}
+              </button>
 
             </li>
           ))}

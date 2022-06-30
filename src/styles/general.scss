@@ -10,7 +10,7 @@
   color: white;
 
   transition: background-color 0.3s;
-
+  &.is-active,
   &:hover:not(.disabled) {
     background-color: #4d457b;
   }
