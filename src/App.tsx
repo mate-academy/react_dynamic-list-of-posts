@@ -68,7 +68,9 @@ const App: React.FC = () => {
         </div>
 
         <div className="App__content">
-          <PostDetails selectedPostId={selectedPostId} />
+          <PostDetails
+            selectedPostId={selectedPostId}
+          />
         </div>
       </main>
     </div>

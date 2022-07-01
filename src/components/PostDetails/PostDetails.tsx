@@ -20,7 +20,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
     if (selectedPostId) {
       loadPostDetails();
     }
-  }, [selectedPostId]);
+  }, [postDetails]);
 
   return (
     <div className="PostDetails">
