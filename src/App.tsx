@@ -19,7 +19,7 @@ const App: React.FC = () => {
     })();
   }, [selectedUserId]);
 
-  const selectPost = (postId: number) => {
+  const handleSelectPost = (postId: number) => {
     setSelectedPostId(postId);
   };
 
@@ -52,7 +52,7 @@ const App: React.FC = () => {
           <PostsList
             posts={posts}
             selectedPostId={selectedPostId}
-            onPostSelect={selectPost}
+            onPostSelect={handleSelectPost}
           />
         </div>
 
