@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { Comment, Post } from '../../react-app-env';
-import { getPostComments, getPostDetails } from '../../api/posts';
+import {
+  getPostComments,
+  getPostDetails,
+  deleteComment,
+} from '../../api/posts';
 
 interface Props {
   selectedPostId: number;
@@ -14,6 +18,7 @@ export const PostDetails: React.FC<Props> = ({
   const [showComments, setShowComments] = useState(true);
   const [postDetails, setPostDetails] = useState<Post>();
   const [comments, setComments] = useState<Comment[]>([]);
+  const [isCommentAdded, setIsCommentAdded] = useState(false);
 
   const loadPostDetails = async () => {
     const loadedPostDetails = await getPostDetails(selectedPostId);
@@ -30,15 +35,7 @@ export const PostDetails: React.FC<Props> = ({
   useEffect(() => {
     loadPostDetails();
     loadComments();
-  }, [selectedPostId]);
-
-  const deleteCommentHandler = (commentId: number) => {
-    setComments(comments.filter(comment => comment.id !== commentId));
-  };
-
-  const addCommentHandler = (newComment: Comment) => {
-    setComments(state => [...state, newComment]);
-  };
+  }, [selectedPostId, isCommentAdded]);
 
   return (
     <div className="PostDetails">
@@ -76,7 +73,14 @@ export const PostDetails: React.FC<Props> = ({
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
-                  onClick={() => deleteCommentHandler(comment.id)}
+                  onClick={() => {
+                    deleteComment(comment.id)
+                      .then(() => {
+                        setComments(comments.filter(item => (
+                          item.id !== comment.id
+                        )));
+                      });
+                  }}
                 >
                   X
                 </button>
@@ -90,11 +94,8 @@ export const PostDetails: React.FC<Props> = ({
       <section>
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
-            id={comments.length > 0
-              ? (comments[comments.length - 1].id + 1)
-              : (1)}
             selectedPostId={selectedPostId}
-            onAddComment={addCommentHandler}
+            onAddComment={setIsCommentAdded}
           />
         </div>
       </section>

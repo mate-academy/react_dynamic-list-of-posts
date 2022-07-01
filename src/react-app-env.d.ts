@@ -14,3 +14,10 @@ export interface Comment {
   email: string;
   body: string;
 }
+
+export interface NewComment {
+  postId: number;
+  name: string;
+  email: string;
+  body: string;
+}

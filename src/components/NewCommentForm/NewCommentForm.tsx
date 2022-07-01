@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import './NewCommentForm.scss';
-import { Comment } from '../../react-app-env';
+import { addComment } from '../../api/posts';
 
 interface Props {
-  id: number;
   selectedPostId: number;
-  onAddComment: (newComment: Comment) => void;
+  onAddComment: (added: boolean) => void;
 }
 
 export const NewCommentForm: React.FC<Props> = ({
-  id,
   selectedPostId,
   onAddComment,
 }) => {
@@ -17,26 +15,31 @@ export const NewCommentForm: React.FC<Props> = ({
   const [commentEmail, setCommentEmail] = useState('');
   const [commentBody, setCommentBody] = useState('');
 
-  const newComment = {
-    id,
-    postId: selectedPostId,
-    name: commentName,
-    email: commentEmail,
-    body: commentBody,
+  const addNewComment = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const newComment = {
+      postId: selectedPostId,
+      name: commentName,
+      email: commentEmail,
+      body: commentBody,
+    };
+
+    addComment(newComment)
+      .then(() => {
+        onAddComment(true);
+        setCommentName('');
+        setCommentEmail('');
+        setCommentBody('');
+      });
+
+    onAddComment(false);
   };
 
   return (
     <form
       className="NewCommentForm"
-      onSubmit={(event) => {
-        event.preventDefault();
-
-        onAddComment(newComment);
-
-        setCommentName('');
-        setCommentEmail('');
-        setCommentBody('');
-      }}
+      onSubmit={(event) => addNewComment(event)}
     >
       <div className="form-field">
         <input
