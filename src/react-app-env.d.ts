@@ -27,3 +27,10 @@ interface Comment {
   email: string;
   body: string;
 }
+
+interface NewComment {
+  postId: number;
+  name: string;
+  email: string;
+  body: string;
+}

@@ -50,13 +50,11 @@ export const PostDetails: React.FC<Props> = ({
     loadPostComments();
   };
 
-  // console.log('render');
-
   useEffect(
     () => {
       loadPostComments();
     },
-    [selectedPostId, postComments.length],
+    [selectedPostId],
   );
 
   return (
@@ -95,7 +93,10 @@ export const PostDetails: React.FC<Props> = ({
 
           <section>
             <div className="PostDetails__form-wrapper">
-              <NewCommentForm />
+              <NewCommentForm
+                selectedPostId={selectedPostId}
+                loadPostComments={loadPostComments}
+              />
             </div>
           </section>
         </>
