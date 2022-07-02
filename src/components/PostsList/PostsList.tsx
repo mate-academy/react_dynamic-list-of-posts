@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import { Loader } from '../Loader';
 import './PostsList.scss';
 
@@ -28,32 +29,14 @@ export const PostsList: React.FC<Props> = ({
                 <b>{`[User #${post.userId}]: `}</b>
                 {post.title}
               </div>
-              {/* {selectedPostId === post.id
-                ? (
-                  <button
-                    type="button"
-                    className="PostsList__button button"
-                    onClick={() => onPostSelect(0)}
-                  >
-                    Close
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="PostsList__button button"
-                    onClick={() => onPostSelect(post.id)}
-                  >
-                    Open
-                  </button>
-                )} */}
 
               <button
                 type="button"
-                className={`
-                  PostsList__button
-                  button
-                  ${selectedPostId === post.id ? 'is-active' : ''}
-                `}
+                className={classNames(
+                  'PostsList__button',
+                  'button',
+                  { 'is-active': selectedPostId === post.id },
+                )}
                 onClick={() => {
                   if (selectedPostId === post.id) {
                     return onPostSelect(0);
@@ -66,7 +49,6 @@ export const PostsList: React.FC<Props> = ({
                   ? 'Close'
                   : 'Open'}
               </button>
-
             </li>
           ))}
         </ul>
