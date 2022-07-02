@@ -13,6 +13,7 @@ export const PostDetails: React.FC<Props> = ({
 }) => {
   const [postDetails, setPostDetails] = useState<Post | null>(null);
   const [postComments, setPostComments] = useState<Comment[]>([]);
+  const [showComments, setShowComments] = useState(true);
 
   const loadPostDetails = async () => {
     try {
@@ -68,27 +69,35 @@ export const PostDetails: React.FC<Props> = ({
           </section>
 
           <section className="PostDetails__comments">
-            <button type="button" className="button">
-              {`Hide ${postComments.length} comments`}
+            <button
+              type="button"
+              className="button"
+              onClick={() => setShowComments(!showComments)}
+            >
+              {showComments
+                ? `Hide ${postComments.length} comments`
+                : `Show ${postComments.length} comments`}
             </button>
 
-            <ul className="PostDetails__list">
-              {postComments.map((comment: Comment) => (
-                <li
-                  key={comment.id}
-                  className="PostDetails__list-item"
-                >
-                  <button
-                    type="button"
-                    className="PostDetails__remove-button button"
-                    onClick={() => deleteHandler(comment.id)}
+            {showComments && (
+              <ul className="PostDetails__list">
+                {postComments.map((comment: Comment) => (
+                  <li
+                    key={comment.id}
+                    className="PostDetails__list-item"
                   >
-                    X
-                  </button>
-                  <p>{comment.body}</p>
-                </li>
-              ))}
-            </ul>
+                    <button
+                      type="button"
+                      className="PostDetails__remove-button button"
+                      onClick={() => deleteHandler(comment.id)}
+                    >
+                      X
+                    </button>
+                    <p>{comment.body}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
           </section>
 
           <section>
