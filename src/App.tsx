@@ -4,14 +4,18 @@ import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getAllPosts, getUserPosts } from './api/posts';
+import { Loader } from './components/Loader';
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPostId, setSelectedPostId] = useState(0);
+  const [postsLoaded, setPostsLoaded] = useState(false);
 
   useEffect(() => {
     const loadPosts = async () => {
       const postsFromServer = await getAllPosts();
+
+      setPostsLoaded(true);
 
       setPosts(postsFromServer);
     };
@@ -60,17 +64,24 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList
-            posts={posts}
-            selectedPostId={selectedPostId}
-            handlePostId={handlePostId}
-          />
+          {postsLoaded
+            ? (
+              <PostsList
+                posts={posts}
+                selectedPostId={selectedPostId}
+                handlePostId={handlePostId}
+              />
+            )
+            : <Loader />}
         </div>
 
         <div className="App__content">
-          <PostDetails
-            selectedPostId={selectedPostId}
-          />
+          {selectedPostId !== 0 && (
+            <PostDetails
+              selectedPostId={selectedPostId}
+            />
+          )}
+
         </div>
       </main>
     </div>

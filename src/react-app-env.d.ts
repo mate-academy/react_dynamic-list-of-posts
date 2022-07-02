@@ -7,3 +7,11 @@ type Post = {
   createdAt: string,
   updatedAt: string,
 };
+
+type PostComment = {
+  id: number,
+  postId: number,
+  name: string,
+  email: string,
+  body: string,
+};
