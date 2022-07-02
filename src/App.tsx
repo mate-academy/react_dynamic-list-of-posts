@@ -8,10 +8,9 @@ import { getUserPosts } from './api/posts';
 
 const App: React.FC = () => {
   const [users, setUsers] = useState<User[] | null>([]);
-  const [currentUserId, setCurrentUserId] = useState(7);
+  const [currentUserId, setCurrentUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState<number>(0);
   const [posts, setPosts] = useState<Post[] | null>([]);
-  // const [filteredPost, setFilteredPost] = useState<Post | null>(null);
 
   const getUsersFromServer = async () => {
     try {
@@ -46,19 +45,6 @@ const App: React.FC = () => {
     },
     [currentUserId],
   );
-
-  // useEffect(
-  //   () => {
-  //     const filterPost = posts?.filter(postDet => (
-  //       postDet.id === selectedPostId
-  //     ))[0];
-
-  //     if (filterPost) {
-  //       setFilteredPost(filterPost);
-  //     }
-  //   },
-  //   [selectedPostId],
-  // );
 
   return (
     <div className="App">
@@ -102,7 +88,6 @@ const App: React.FC = () => {
         <div className="App__content">
           <PostDetails
             selectedPostId={selectedPostId}
-            // filteredPost={filteredPost}
           />
         </div>
       </main>

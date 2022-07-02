@@ -5,3 +5,10 @@ export const getPostComments = async (postId: number) => {
 
   return response.json();
 };
+
+export const deleteComment = async (commentId: number) => {
+  const response = await fetch(`${BASE_URL}/comments/${commentId}`,
+    { method: 'DELETE' });
+
+  return response.json();
+};

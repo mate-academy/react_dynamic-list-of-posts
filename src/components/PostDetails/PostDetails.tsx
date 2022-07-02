@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { getPostComments } from '../../api/comments';
+import { deleteComment, getPostComments } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
 type Props = {
   selectedPostId: number;
-  // filteredPost: Post | null;
 };
 
 export const PostDetails: React.FC<Props> = ({
   selectedPostId,
-  // filteredPost,
 }) => {
   const [postDetails, setPostDetails] = useState<Post | null>(null);
   const [postComments, setPostComments] = useState<Comment[]>([]);
@@ -47,11 +45,18 @@ export const PostDetails: React.FC<Props> = ({
     }
   };
 
+  const deleteHandler = async (commentId: number) => {
+    await deleteComment(commentId);
+    loadPostComments();
+  };
+
+  // console.log('render');
+
   useEffect(
     () => {
       loadPostComments();
     },
-    [selectedPostId],
+    [selectedPostId, postComments.length],
   );
 
   return (
@@ -78,6 +83,7 @@ export const PostDetails: React.FC<Props> = ({
                   <button
                     type="button"
                     className="PostDetails__remove-button button"
+                    onClick={() => deleteHandler(comment.id)}
                   >
                     X
                   </button>
