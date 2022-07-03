@@ -2,12 +2,16 @@ import React from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
+interface PostDetailsProps {
+  post: Post;
+}
+
+export const PostDetails: React.FC<PostDetailsProps> = ({ post }) => (
   <div className="PostDetails">
-    <h2>Post details:</h2>
+    <h2>{`Post details: #${post.id}`}</h2>
 
     <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
+      <p>{`${post.body}`}</p>
     </section>
 
     <section className="PostDetails__comments">
