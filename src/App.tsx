@@ -10,7 +10,7 @@ import { getAllUsers } from './api/api';
 const App: React.FC = () => {
   const [allUsers, setAllUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState('0');
-  const [selectedPostId, setSelectedPostId] = useState<number>();
+  const [selectedPostId, setSelectedPostId] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {

@@ -5,8 +5,8 @@ import { Post } from '../../react-app-env';
 
 type Props = {
   userSelectedId: string;
-  selectPostId: (arg?: number) => void;
-  postId: number | undefined;
+  selectPostId: (arg: number) => void;
+  postId: number | null;
   setIsLoading: (arg: boolean) => void,
 };
 
@@ -55,11 +55,7 @@ export const PostsList: React.FC<Props> = ({
             >
               <div>
                 <b>
-                  [User
-                  {' '}
-                  {post.userId}
-                  ]:
-                  {' '}
+                  {`[User ${post.userId}]: `}
                 </b>
                 {post.body}
               </div>
@@ -68,7 +64,7 @@ export const PostsList: React.FC<Props> = ({
                 className="PostsList__button button"
                 onClick={() => {
                   if ((post) && (postId === post.id)) {
-                    selectPostId(undefined);
+                    selectPostId(0);
                   } else {
                     selectPostId(post.id);
                   }

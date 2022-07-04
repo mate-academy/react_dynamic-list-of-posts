@@ -6,7 +6,7 @@ import { getComments, delComment } from '../../api/comments';
 import { getPostbyId } from '../../api/posts';
 
 type Props = {
-  postId: number | undefined;
+  postId: number;
   setIsLoading: (arg: boolean) => void,
 };
 
@@ -56,7 +56,7 @@ export const PostDetails: React.FC<Props> = ({
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
-      {postId && (
+      {postId !== 0 && (
         <>
           <section className="PostDetails__post">
             <p>
