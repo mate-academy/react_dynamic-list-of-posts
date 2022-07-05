@@ -5,12 +5,13 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getUsers } from './api/api';
 import { getUserPosts } from './api/posts';
+import { Loader } from './components/Loader';
 
 const App: React.FC = () => {
   const [users, setUsers] = useState<User[] | null>([]);
   const [currentUserId, setCurrentUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState<number>(0);
-  const [posts, setPosts] = useState<Post[] | null>([]);
+  const [posts, setPosts] = useState<Post[] | null>(null);
 
   const getUsersFromServer = async () => {
     try {
@@ -35,7 +36,7 @@ const App: React.FC = () => {
 
       setPosts(postsFromServer);
     } catch {
-      setPosts([]);
+      setPosts(null);
     }
   };
 
@@ -78,11 +79,15 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList
-            selectedPostId={selectedPostId}
-            setSelectedPostId={setSelectedPostId}
-            posts={posts}
-          />
+          {posts
+            ? (
+              <PostsList
+                selectedPostId={selectedPostId}
+                setSelectedPostId={setSelectedPostId}
+                posts={posts}
+              />
+            )
+            : (<Loader />)}
         </div>
 
         <div className="App__content">
