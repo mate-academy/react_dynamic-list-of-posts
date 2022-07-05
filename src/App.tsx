@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -11,6 +11,8 @@ const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
+  const [count, setCount] = useState(0);
+
   const loadPosts = async () => {
     const loadedPosts = await getUserPosts(selectedUserId);
 
@@ -21,13 +23,22 @@ const App: React.FC = () => {
     loadPosts();
   }, [selectedUserId]);
 
-  const selectPostHandler = (postId: number) => {
-    setSelectedPostId(postId);
-  };
+  const selectPostHandler = useCallback(
+    (postId: number) => {
+      setSelectedPostId(postId);
+    },
+    [selectedPostId],
+  );
 
   return (
     <div className="App">
       <header className="App__header">
+        <button
+          type="button"
+          onClick={() => setCount((state) => state + 1)}
+        >
+          {count}
+        </button>
         <label>
           Select a user: &nbsp;
 

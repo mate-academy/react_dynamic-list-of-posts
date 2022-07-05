@@ -1,3 +1,4 @@
+import React from 'react';
 import { Post } from '../../react-app-env';
 import './PostsList.scss';
 
@@ -7,12 +8,12 @@ interface Props {
   onSelectPost: (postId: number) => void;
 }
 
-export const PostsList: React.FC<Props> = ({
-  posts,
-  selectedPostId,
-  onSelectPost,
-}) => {
-  return (
+export const PostsList: React.FC<Props> = React.memo(
+  ({
+    posts,
+    selectedPostId,
+    onSelectPost,
+  }) => (
     <div className="PostsList">
       <h2>Posts:</h2>
 
@@ -51,5 +52,5 @@ export const PostsList: React.FC<Props> = ({
         ))}
       </ul>
     </div>
-  );
-};
+  ),
+);
