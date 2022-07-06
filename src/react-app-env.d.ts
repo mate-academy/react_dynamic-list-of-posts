@@ -7,6 +7,11 @@ export interface Post {
   body: string;
 }
 
+export interface User {
+  id: number;
+  name: string;
+}
+
 export interface Comment {
   id: number;
   postId: number;

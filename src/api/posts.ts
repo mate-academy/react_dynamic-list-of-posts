@@ -22,6 +22,10 @@ export function getPostComments(postId: number) {
   return request(`/comments?postId=${postId}`);
 }
 
+export function getUsers() {
+  return request('/users');
+}
+
 export function addComment(comment: NewComment) {
   return request(
     '/comments',

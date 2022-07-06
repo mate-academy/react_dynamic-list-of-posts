@@ -7,6 +7,7 @@ import {
   getPostDetails,
   deleteComment,
 } from '../../api/posts';
+import { Loader } from '../Loader';
 
 interface Props {
   selectedPostId: number;
@@ -18,11 +19,16 @@ export const PostDetails: React.FC<Props> = React.memo(
   }) => {
     const [showComments, setShowComments] = useState(true);
     const [postDetails, setPostDetails] = useState<Post>();
+    const [postDetailsLoaded, setPostDetailsLoaded] = useState(false);
     const [comments, setComments] = useState<Comment[]>([]);
     const [isCommentAdded, setIsCommentAdded] = useState(false);
 
     const loadPostDetails = async () => {
+      setPostDetailsLoaded(false);
+
       const loadedPostDetails = await getPostDetails(selectedPostId);
+
+      setPostDetailsLoaded(true);
 
       setPostDetails(loadedPostDetails);
     };
@@ -42,9 +48,15 @@ export const PostDetails: React.FC<Props> = React.memo(
       <div className="PostDetails">
         <h2>{`Post details: ${postDetails?.id}`}</h2>
 
-        <section className="PostDetails__post">
-          <p>{postDetails?.body}</p>
-        </section>
+        {postDetailsLoaded
+          ? (
+            <section className="PostDetails__post">
+              <p>{postDetails?.body}</p>
+            </section>
+          )
+          : (
+            <Loader />
+          )}
 
         <section className="PostDetails__comments" data-cy="postDetails">
           {showComments
