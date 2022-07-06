@@ -1,20 +1,31 @@
 import React, { useState } from 'react';
 import './NewCommentForm.scss';
 
-// interface NewCommentFormProps {
-//   comments: Comment[];
-// }
+interface NewCommentFormProps {
+  onAddComment: (
+    name: string,
+    email: string,
+    comment: string,
+  ) => void;
+}
 
-export const NewCommentForm: React.FC = () => {
+export const NewCommentForm: React.FC<NewCommentFormProps> = (
+  { onAddComment },
+) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');
-  // let newComment: NewComment;
+
+  const clearInputFields = () => {
+    setName('');
+    setEmail('');
+    setComment('');
+  };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // newComment = { name, email, body: comment };
-    // comments.push('newComment');
+    onAddComment(name, email, comment);
+    clearInputFields();
   };
 
   return (
@@ -59,6 +70,8 @@ export const NewCommentForm: React.FC = () => {
       <button
         type="submit"
         className="NewCommentForm__submit-button button"
+        onClick={() => {
+        }}
       >
         Add a comment
       </button>

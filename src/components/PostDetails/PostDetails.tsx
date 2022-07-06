@@ -13,6 +13,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({
 }) => {
   const [postDetails, setPostDetails] = useState<Post | null>(null);
   const [comments, setComments] = useState<CommentType[] | null>(null);
+  const [isCommentsVisible, setIsCommentsVisible] = useState(true);
 
   const loadPostDetails = async () => {
     const receivedPostDetails = await getPostDetails(selectedPostId);
@@ -22,6 +23,39 @@ export const PostDetails: React.FC<PostDetailsProps> = ({
 
   const loadComments = async () => {
     setComments(await getPostComments(selectedPostId));
+  };
+
+  const deleteComment = (commentId: number) => {
+    if (comments) {
+      setComments(comments.filter((comment: CommentType) => (
+        comment.id !== commentId)));
+    }
+  };
+
+  const addComment = (name: string, email: string, body: string) => {
+    let newCommentId: number;
+
+    if (comments) {
+      const commentsIds = comments.map((postComment: CommentType) => (
+        postComment.id
+      ));
+
+      newCommentId = (Math.max(...commentsIds)) + 1;
+    } else {
+      newCommentId = 1;
+    }
+
+    const newComment = {
+      id: newCommentId,
+      createdAt: Date.now().toString(),
+      updatedAt: Date.now().toString(),
+      postId: selectedPostId,
+      name,
+      email,
+      body,
+    };
+
+    comments?.push(newComment);
   };
 
   useEffect(
@@ -40,13 +74,33 @@ export const PostDetails: React.FC<PostDetailsProps> = ({
       </section>
 
       <section className="PostDetails__comments">
-        <button
-          type="button"
-          className="button"
-          onClick={() => {}}
-        >
-          Hide comments
-        </button>
+        {
+          !comments
+            ? (
+              <button
+                type="button"
+                className="button"
+                onClick={() => {
+                  setIsCommentsVisible(!isCommentsVisible);
+                  loadComments();
+                }}
+              >
+                Show comments
+              </button>
+            )
+            : (
+              <button
+                type="button"
+                className="button"
+                onClick={() => {
+                  setIsCommentsVisible(!isCommentsVisible);
+                  setComments(null);
+                }}
+              >
+                Hide comments
+              </button>
+            )
+        }
 
         <ul className="PostDetails__list">
           {
@@ -56,7 +110,9 @@ export const PostDetails: React.FC<PostDetailsProps> = ({
                   <button
                     type="button"
                     className="PostDetails__remove-button button"
-                    onClick={() => { }}
+                    onClick={() => {
+                      deleteComment(comment.id);
+                    }}
                   >
                     X
                   </button>
@@ -70,7 +126,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm />
+          <NewCommentForm onAddComment={addComment} />
         </div>
       </section>
     </div>
