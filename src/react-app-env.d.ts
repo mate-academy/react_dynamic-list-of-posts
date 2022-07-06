@@ -8,3 +8,19 @@ interface Post {
   title: string;
   body: string;
 }
+
+interface CommentType {
+  id: number;
+  createdAt: string;
+  updatedAt: string;
+  postId: number;
+  name: string;
+  email: string;
+  body: string;
+}
+
+interface NewComment {
+  name: string;
+  email: string;
+  body: string;
+}

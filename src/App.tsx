@@ -1,4 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+} from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -6,25 +10,25 @@ import { PostDetails } from './components/PostDetails';
 import { getUserPosts } from './api/posts';
 
 const App: React.FC = () => {
-  const [userId, setUserId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState(0);
   const [posts, setPosts] = useState<Post[] | null>([]);
+  const [
+    selectedUserId, setSelectedUserId] = useState(0);
 
   const loadUserPosts = useCallback(
     async (id: number) => {
       setPosts(await getUserPosts(id));
-    }, [userId],
+    }, [selectedUserId],
   );
+
+  const handlePostSelect = async (postId: number) => {
+    setSelectedPostId(postId);
+  };
 
   useEffect(
     () => {
-      loadUserPosts(0);
-    }, [],
-  );
-
-  const handleUserSelect = useCallback(
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      setUserId(+event.target.value);
-    }, [userId],
+      loadUserPosts(selectedUserId);
+    }, [selectedUserId],
   );
 
   return (
@@ -35,10 +39,9 @@ const App: React.FC = () => {
 
           <select
             className="App__user-selector"
-            value={userId}
+            value={selectedUserId}
             onChange={(event) => {
-              loadUserPosts(+event.target.value);
-              handleUserSelect(event);
+              setSelectedUserId(+event.target.value);
             }}
           >
             <option value="0">All users</option>
@@ -58,23 +61,21 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          {
-            posts && (
-              <PostsList posts={posts} />
-            )
-          }
+          <PostsList
+            posts={posts}
+            selectedPostId={selectedPostId}
+            onPostSelect={handlePostSelect}
+          />
         </div>
 
         <div className="App__content">
-          <PostDetails post={{
-            id: 1,
-            createdAt: 'hgkkgkhghg',
-            updatedAt: 'jyghjgfhjgfj',
-            userId,
-            title: 'hjvhjvhvbhjnvb',
-            body: 'jhghjghjg',
-          }}
-          />
+          {
+            selectedPostId > 0 && (
+              <PostDetails
+                selectedPostId={selectedPostId}
+              />
+            )
+          }
         </div>
       </main>
     </div>

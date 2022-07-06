@@ -1,49 +1,78 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getPostComments } from '../../api/comments';
+import { getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
 interface PostDetailsProps {
-  post: Post;
+  selectedPostId: number;
 }
 
-export const PostDetails: React.FC<PostDetailsProps> = ({ post }) => (
-  <div className="PostDetails">
-    <h2>{`Post details: #${post.id}`}</h2>
+export const PostDetails: React.FC<PostDetailsProps> = ({
+  selectedPostId,
+}) => {
+  const [postDetails, setPostDetails] = useState<Post | null>(null);
+  const [comments, setComments] = useState<CommentType[] | null>(null);
 
-    <section className="PostDetails__post">
-      <p>{`${post.body}`}</p>
-    </section>
+  const loadPostDetails = async () => {
+    const receivedPostDetails = await getPostDetails(selectedPostId);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+    setPostDetails(receivedPostDetails);
+  };
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  const loadComments = async () => {
+    setComments(await getPostComments(selectedPostId));
+  };
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  useEffect(
+    () => {
+      loadPostDetails();
+      loadComments();
+    }, [selectedPostId],
+  );
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+  return (
+    <div className="PostDetails">
+      <h2>{`Post details: #${postDetails?.id}`}</h2>
+
+      <section className="PostDetails__post">
+        <p>{`${postDetails?.body}`}</p>
+      </section>
+
+      <section className="PostDetails__comments">
+        <button
+          type="button"
+          className="button"
+          onClick={() => {}}
+        >
+          Hide comments
+        </button>
+
+        <ul className="PostDetails__list">
+          {
+            comments && (
+              comments.map(comment => (
+                <li className="PostDetails__list-item" key={comment.id}>
+                  <button
+                    type="button"
+                    className="PostDetails__remove-button button"
+                    onClick={() => { }}
+                  >
+                    X
+                  </button>
+                  <p>{comment.body}</p>
+                </li>
+              ))
+            )
+          }
+        </ul>
+      </section>
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm />
+        </div>
+      </section>
+    </div>
+  );
+};

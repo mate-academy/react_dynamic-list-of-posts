@@ -2,11 +2,14 @@ import React from 'react';
 import './PostsList.scss';
 
 interface PostsListProps {
-  posts: Post[];
+  posts: Post[] | null;
+  selectedPostId: number;
+  onPostSelect: (postId: number) => void;
 }
 
-export const PostsList: React.FC<PostsListProps> = ({ posts }) => {
-  // const [userPosts, setUserPosts] = useState<Post[] | null>([]);
+export const PostsList: React.FC<PostsListProps> = (
+  { posts, selectedPostId, onPostSelect },
+) => {
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
@@ -21,12 +24,31 @@ export const PostsList: React.FC<PostsListProps> = ({ posts }) => {
                 </b>
                 {post.title}
               </div>
-              <button
-                type="button"
-                className="PostsList__button button"
-              >
-                Open
-              </button>
+              {
+                selectedPostId === post.id
+                  ? (
+                    <button
+                      type="button"
+                      className="PostsList__button button"
+                      onClick={() => {
+                        onPostSelect(0);
+                      }}
+                    >
+                      Close
+                    </button>
+                  )
+                  : (
+                    <button
+                      type="button"
+                      className="PostsList__button button"
+                      onClick={() => {
+                        onPostSelect(post.id);
+                      }}
+                    >
+                      Open
+                    </button>
+                  )
+              }
             </li>
           ))
         }
