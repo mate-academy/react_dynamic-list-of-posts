@@ -14,11 +14,14 @@ const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
-  const loadUsers = async () => {
-    const loadedUsers = await getUsers();
+  const loadUsers = useCallback(
+    async () => {
+      const loadedUsers = await getUsers();
 
-    setUsers(loadedUsers);
-  };
+      setUsers(loadedUsers);
+    },
+    [],
+  );
 
   useEffect(() => {
     loadUsers();
@@ -26,13 +29,16 @@ const App: React.FC = () => {
 
   const firstTenUsers = users.filter(user => user.id <= 10 && user.id >= 1);
 
-  const loadPosts = async () => {
-    const loadedPosts = await getUserPosts(selectedUserId);
+  const loadPosts = useCallback(
+    async () => {
+      const loadedPosts = await getUserPosts(selectedUserId);
 
-    setPostsLoaded(true);
+      setPostsLoaded(true);
 
-    setPosts(loadedPosts);
-  };
+      setPosts(loadedPosts);
+    },
+    [],
+  );
 
   useEffect(() => {
     loadPosts();

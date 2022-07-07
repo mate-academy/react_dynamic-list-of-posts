@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import { Comment, Post } from '../../react-app-env';
@@ -23,21 +23,27 @@ export const PostDetails: React.FC<Props> = React.memo(
     const [comments, setComments] = useState<Comment[]>([]);
     const [isCommentAdded, setIsCommentAdded] = useState(false);
 
-    const loadPostDetails = async () => {
-      setPostDetailsLoaded(false);
+    const loadPostDetails = useCallback(
+      async () => {
+        setPostDetailsLoaded(false);
 
-      const loadedPostDetails = await getPostDetails(selectedPostId);
+        const loadedPostDetails = await getPostDetails(selectedPostId);
 
-      setPostDetailsLoaded(true);
+        setPostDetailsLoaded(true);
 
-      setPostDetails(loadedPostDetails);
-    };
+        setPostDetails(loadedPostDetails);
+      },
+      [selectedPostId],
+    );
 
-    const loadComments = async () => {
-      const loadedComments = await getPostComments(selectedPostId);
+    const loadComments = useCallback(
+      async () => {
+        const loadedComments = await getPostComments(selectedPostId);
 
-      setComments(loadedComments);
-    };
+        setComments(loadedComments);
+      },
+      [selectedPostId],
+    );
 
     useEffect(() => {
       loadPostDetails();

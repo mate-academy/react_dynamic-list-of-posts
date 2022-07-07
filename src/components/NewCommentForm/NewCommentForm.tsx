@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import './NewCommentForm.scss';
 import { addComment } from '../../api/posts';
 
@@ -11,30 +11,38 @@ export const NewCommentForm: React.FC<Props> = ({
   selectedPostId,
   onAddComment,
 }) => {
-  const [commentName, setCommentName] = useState('');
-  const [commentEmail, setCommentEmail] = useState('');
-  const [commentBody, setCommentBody] = useState('');
+  const [newComment, setNewComment] = useState({
+    postId: selectedPostId,
+    name: '',
+    email: '',
+    body: '',
+  });
 
-  const addNewComment = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const {
+    name,
+    email,
+    body,
+  } = newComment;
 
-    const newComment = {
-      postId: selectedPostId,
-      name: commentName,
-      email: commentEmail,
-      body: commentBody,
-    };
+  const addNewComment = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
 
-    addComment(newComment)
-      .then(() => {
-        onAddComment(true);
-        setCommentName('');
-        setCommentEmail('');
-        setCommentBody('');
-      });
+      addComment(newComment)
+        .then(() => {
+          onAddComment(true);
+          setNewComment({
+            postId: selectedPostId,
+            name: '',
+            email: '',
+            body: '',
+          });
+        });
 
-    onAddComment(false);
-  };
+      onAddComment(false);
+    },
+    [newComment],
+  );
 
   return (
     <form
@@ -47,8 +55,11 @@ export const NewCommentForm: React.FC<Props> = ({
           name="name"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={commentName}
-          onChange={(event) => setCommentName(event.target.value)}
+          value={name}
+          onChange={(event) => setNewComment((state) => ({
+            ...state,
+            name: event.target.value,
+          }))}
         />
       </div>
 
@@ -58,8 +69,11 @@ export const NewCommentForm: React.FC<Props> = ({
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={commentEmail}
-          onChange={(event) => setCommentEmail(event.target.value)}
+          value={email}
+          onChange={(event) => setNewComment((state) => ({
+            ...state,
+            email: event.target.value,
+          }))}
         />
       </div>
 
@@ -68,8 +82,11 @@ export const NewCommentForm: React.FC<Props> = ({
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={commentBody}
-          onChange={(event) => setCommentBody(event.target.value)}
+          value={body}
+          onChange={(event) => setNewComment((state) => ({
+            ...state,
+            body: event.target.value,
+          }))}
         />
       </div>
 
