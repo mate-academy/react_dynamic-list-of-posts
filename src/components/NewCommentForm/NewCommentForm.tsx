@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useCallback, useState } from 'react';
 import { postComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
@@ -13,7 +13,9 @@ export const NewCommentForm: React.FC<Props> = ({
   const [newName, setNewName] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [newBody, setNewBody] = useState('');
-  const submitHandler = async (event: FormEvent<HTMLFormElement>) => {
+
+  // eslint-disable-next-line max-len
+  const submitHandler = useCallback(async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await postComment(
       {
@@ -27,7 +29,7 @@ export const NewCommentForm: React.FC<Props> = ({
     setNewName('');
     setNewEmail('');
     setNewBody('');
-  };
+  }, []);
 
   return (
     <form

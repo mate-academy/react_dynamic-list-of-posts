@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -12,7 +12,7 @@ const App: React.FC = () => {
   const [selectedPostId, setSelectedPostId] = useState<number>(0);
   const [posts, setPosts] = useState<Post[] | null>([]);
 
-  const getUsersFromServer = async () => {
+  const getUsersFromServer = useCallback(async () => {
     try {
       const usersFromServer = await getUsers();
 
@@ -20,7 +20,7 @@ const App: React.FC = () => {
     } catch {
       setUsers([]);
     }
-  };
+  }, []);
 
   useEffect(
     () => {
@@ -28,7 +28,7 @@ const App: React.FC = () => {
     },
     [],
   );
-  const getPostsFromServer = async () => {
+  const getPostsFromServer = useCallback(async () => {
     try {
       const postsFromServer = await getUserPosts(currentUserId);
 
@@ -36,7 +36,7 @@ const App: React.FC = () => {
     } catch {
       setPosts([]);
     }
-  };
+  }, []);
 
   useEffect(
     () => {
@@ -56,8 +56,8 @@ const App: React.FC = () => {
           >
             <option value="0">All users</option>
             {users?.map((user, index) => {
-              // there were 1307 users in the API so I limitted to 10
-              if (index < 10) {
+              // there were 1307 users in the API so I limitted to 50
+              if (index < 50) {
                 return (
                   <option
                     key={user.id}

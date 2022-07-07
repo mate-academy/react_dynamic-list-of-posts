@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { deleteComment, getPostComments } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
 import { NewCommentForm } from '../NewCommentForm';
@@ -14,7 +14,7 @@ export const PostDetails: React.FC<Props> = ({
   const [postComments, setPostComments] = useState<Comment[]>([]);
   const [showComments, setShowComments] = useState(true);
 
-  const loadPostDetails = async () => {
+  const loadPostDetails = useCallback(async () => {
     try {
       let postDetailsFromServer;
 
@@ -26,15 +26,9 @@ export const PostDetails: React.FC<Props> = ({
     } catch {
       setPostDetails(null);
     }
-  };
+  }, []);
 
-  useEffect(
-    () => {
-      loadPostDetails();
-    },
-    [selectedPostId],
-  );
-  const loadPostComments = async () => {
+  const loadPostComments = useCallback(async () => {
     try {
       const commentsFromServer = await getPostComments(selectedPostId);
 
@@ -42,7 +36,7 @@ export const PostDetails: React.FC<Props> = ({
     } catch {
       setPostComments([]);
     }
-  };
+  }, []);
 
   const deleteHandler = async (commentId: number) => {
     await deleteComment(commentId);
@@ -51,6 +45,7 @@ export const PostDetails: React.FC<Props> = ({
 
   useEffect(
     () => {
+      loadPostDetails();
       loadPostComments();
     },
     [selectedPostId],
