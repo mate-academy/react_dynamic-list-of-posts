@@ -1,37 +1,84 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { getUserPosts } from '../../api/posts';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+interface Props {
+  selectedUserId: number;
+  selectedPostId: number;
+  setSelectedPostId: (selectedPostId: number) => void;
+  setPost: (post: Post | null) => void;
+}
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
+export const PostsList: React.FC<Props>
+  = React.memo(
+    ({
+      selectedUserId,
+      selectedPostId,
+      setSelectedPostId,
+      setPost,
+    }) => {
+      const [posts, setPosts] = useState<Post[]>([]);
+
+      const getPosts = useCallback(
+        async (userId: number) => {
+          const postsFromServer = await getUserPosts(userId);
+
+          setPosts(postsFromServer);
+        },
+        [posts],
+      );
+
+      useEffect(() => {
+        getPosts(selectedUserId);
+      }, [selectedUserId]);
+
+      return (
+        <div className="PostsList">
+          <h2>Posts:</h2>
+
+          <ul
+            className="PostsList__list"
+            data-cy="postDetails"
+          >
+            {posts && (posts.map(post => (
+              <li
+                className="PostsList__item"
+                key={post.id}
+              >
+                <div>
+                  <b>{`[User #${post.userId}]: `}</b>
+                  {post.title}
+                </div>
+
+                {selectedPostId === post.id
+                  ? (
+                    <button
+                      type="button"
+                      className="PostsList__button button"
+                      onClick={() => {
+                        setSelectedPostId(0);
+                        setPost(null);
+                      }}
+                    >
+                      Close
+                    </button>
+                  )
+                  : (
+                    <button
+                      type="button"
+                      className="PostsList__button button"
+                      onClick={() => {
+                        setSelectedPostId(post.id);
+                        setPost(post);
+                      }}
+                    >
+                      Open
+                    </button>
+                  )}
+              </li>
+            )))}
+          </ul>
         </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
-
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      );
+    },
+  );
