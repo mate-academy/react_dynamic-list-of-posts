@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -11,11 +11,14 @@ const App: React.FC = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [users, setUsers] = useState<User[]>([]);
 
-  const getUsersFromServer = async () => {
-    const response = await getUsers();
+  const getUsersFromServer = useCallback(
+    async () => {
+      const response = await getUsers();
 
-    setUsers(response);
-  };
+      setUsers(response);
+    },
+    [users],
+  );
 
   useEffect(() => {
     getUsersFromServer();

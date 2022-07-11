@@ -1,6 +1,6 @@
 import { BASE_URL } from './api';
 
-export const getUsers = async () => {
+export const getUsers = async (): Promise<User[]> => {
   try {
     const response = await fetch(`${BASE_URL}/users/`);
 
@@ -8,11 +8,13 @@ export const getUsers = async () => {
       throw Error(response.statusText);
     }
 
-    return await response.json();
+    const users = await response.json();
+
+    return users.slice(0, 10);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.log(error);
   }
 
-  return null;
+  return [];
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { createPostComments } from '../../api/comments';
 import './NewCommentForm.scss';
 
@@ -11,31 +11,36 @@ export const NewCommentForm: React.FC<Props> = ({
   postId,
   getComments,
 }) => {
-  const [commentName, setCommentName] = useState('');
-  const [commentEmail, setCommentEmail] = useState('');
-  const [commentBody, setCommentBody] = useState('');
+  const [comment, setComment] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
 
-  const createComments = async (comment: NewComment) => {
-    await createPostComments(comment);
+  const createComments = async (newComment: NewComment) => {
+    await createPostComments(newComment);
   };
 
-  const handleSubmission = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmission = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
 
-    const newComment = {
-      name: commentName,
-      email: commentEmail,
-      body: commentBody,
-      postId,
-    };
+      const newComment = {
+        ...comment,
+        postId,
+      };
 
-    await createComments(newComment);
-    await getComments(postId);
+      await createComments(newComment);
+      await getComments(postId);
 
-    setCommentName('');
-    setCommentEmail('');
-    setCommentBody('');
-  };
+      setComment({
+        name: '',
+        email: '',
+        body: '',
+      });
+    },
+    [],
+  );
 
   return (
     <form
@@ -50,9 +55,12 @@ export const NewCommentForm: React.FC<Props> = ({
           type="text"
           placeholder="Your name"
           className="NewCommentForm__input"
-          value={commentName}
+          value={comment.name}
           onChange={event => {
-            setCommentName(event.target.value);
+            setComment(prevState => ({
+              ...prevState,
+              name: event.target.value,
+            }));
           }}
           required
         />
@@ -64,9 +72,12 @@ export const NewCommentForm: React.FC<Props> = ({
           type="text"
           placeholder="Your email"
           className="NewCommentForm__input"
-          value={commentEmail}
+          value={comment.email}
           onChange={event => {
-            setCommentEmail(event.target.value);
+            setComment(prevState => ({
+              ...prevState,
+              email: event.target.value,
+            }));
           }}
           required
         />
@@ -77,9 +88,12 @@ export const NewCommentForm: React.FC<Props> = ({
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          value={commentBody}
+          value={comment.body}
           onChange={event => {
-            setCommentBody(event.target.value);
+            setComment(prevState => ({
+              ...prevState,
+              body: event.target.value,
+            }));
           }}
           required
         />
