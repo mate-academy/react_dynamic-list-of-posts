@@ -18,7 +18,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<ForComments>(null);
   const [showComments, setShowComments] = useState<boolean>(false);
-  const [newComment, setNewComment] = useState<boolean>(false);
+  const [isNewComment, setIsNewComment] = useState<boolean>(false);
 
   useEffect(() => {
     setPost(null);
@@ -36,7 +36,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
       .catch((err) => {
         console.log(`${err}`);
       });
-  }, [selectedPostId, newComment]);
+  }, [selectedPostId, isNewComment]);
 
   const showHideComments = () => setShowComments(state => !state);
 
@@ -96,7 +96,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             postId={selectedPostId}
-            onNewComment={setNewComment}
+            onNewComment={setIsNewComment}
           />
         </div>
       </section>
