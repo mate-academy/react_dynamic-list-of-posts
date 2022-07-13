@@ -1,37 +1,50 @@
 import React from 'react';
 import './PostsList.scss';
+import { Post } from '../../Types/Post';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+type Props = {
+  posts: Post[];
+  selectedPost: number;
+  selectedPostId: (id: number) => void;
+};
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = ({
+  posts,
+  selectedPost,
+  selectedPostId,
+}) => {
+  const selectPost = (postId: number) => (selectedPost === postId
+    ? selectedPostId(0)
+    : selectedPostId(postId));
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+  return (
+    <div className="PostsList">
+      {posts.length ? (
+        <>
+          <h2>Posts:</h2>
+          <ul className="PostsList__list">
+            {posts.map(post => (
+              <li key={post.id} className="PostsList__item">
+                <div>
+                  <b>
+                    {`[User #${post.userId}]:`}
+                  </b>
+                  {post.title}
+                </div>
+                <button
+                  onClick={() => selectPost(post.id)}
+                  type="button"
+                  className={selectedPost === post.id
+                    ? 'PostsList__button button button--selected'
+                    : 'PostsList__button button'}
+                >
+                  {selectedPost === post.id ? 'Close' : 'Open'}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : <h2>No posts.</h2>}
+    </div>
+  );
+};
