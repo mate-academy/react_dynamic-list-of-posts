@@ -14,7 +14,10 @@ export const PostsList: React.FC<PostsListProps> = (
     <div className="PostsList">
       <h2>Posts:</h2>
 
-      <ul className="PostsList__list">
+      <ul
+        className="PostsList__list"
+        data-cy="postDetails"
+      >
         {
           posts?.map(post => (
             <li className="PostsList__item" key={post.id}>

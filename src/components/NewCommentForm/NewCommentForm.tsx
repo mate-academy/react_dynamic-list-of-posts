@@ -14,17 +14,18 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = (
 ) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [comment, setComment] = useState('');
+  const [body, setBody] = useState('');
 
   const clearInputFields = () => {
     setName('');
     setEmail('');
-    setComment('');
+    setBody('');
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onAddComment(name, email, comment);
+
+    onAddComment(name, email, body);
     clearInputFields();
   };
 
@@ -59,19 +60,17 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = (
 
       <div className="form-field">
         <textarea
-          value={comment}
+          value={body}
           name="body"
           placeholder="Type comment here"
           className="NewCommentForm__input"
-          onChange={(event) => setComment(event.target.value)}
+          onChange={(event) => setBody(event.target.value)}
         />
       </div>
 
       <button
         type="submit"
         className="NewCommentForm__submit-button button"
-        onClick={() => {
-        }}
       >
         Add a comment
       </button>
