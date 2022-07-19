@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
-import { Comment, Post } from '../../react-app-env';
 import {
   getPostComments,
   getPostDetails,

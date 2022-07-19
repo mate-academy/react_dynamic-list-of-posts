@@ -3,7 +3,6 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { Post, User } from './react-app-env';
 import { getUserPosts, getUsers } from './api/posts';
 import { Loader } from './components/Loader';
 
@@ -37,7 +36,7 @@ const App: React.FC = () => {
 
       setPosts(loadedPosts);
     },
-    [],
+    [posts],
   );
 
   useEffect(() => {
@@ -59,7 +58,6 @@ const App: React.FC = () => {
 
           <select
             className="App__user-selector"
-            value={selectedUserId}
             onChange={(event) => setSelectedUserId(+event.target.value)}
           >
             <option value="0">All users</option>

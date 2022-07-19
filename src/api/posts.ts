@@ -1,5 +1,4 @@
 import { BASE_URL } from './api';
-import { NewComment } from '../react-app-env';
 
 function request(url: string, options?: {}) {
   return fetch(`${BASE_URL}${url}`, options)
@@ -7,7 +6,7 @@ function request(url: string, options?: {}) {
 }
 
 export function getUserPosts(userId: number) {
-  if (userId !== 0) {
+  if (userId) {
     return request(`/posts?userId=${userId}`);
   }
 

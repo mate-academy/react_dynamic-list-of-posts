@@ -1,18 +1,16 @@
-/// <reference types="react-scripts" />
-
-export interface Post {
+interface Post {
   id: number;
   userId: number;
   title: string;
   body: string;
 }
 
-export interface User {
+interface User {
   id: number;
   name: string;
 }
 
-export interface Comment {
+interface Comment {
   id: number;
   postId: number;
   name: string;
@@ -20,7 +18,7 @@ export interface Comment {
   body: string;
 }
 
-export interface NewComment {
+interface NewComment {
   postId: number;
   name: string;
   email: string;

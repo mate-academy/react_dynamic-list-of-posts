@@ -1,5 +1,4 @@
 import React from 'react';
-import { Post } from '../../react-app-env';
 import './PostsList.scss';
 
 interface Props {
