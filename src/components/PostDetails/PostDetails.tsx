@@ -14,6 +14,8 @@ export const PostDetails: React.FC<Props> = React.memo(({ postId }) => {
   const [postDetails, setPostDetails] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [isCommentsVisible, setIsCommentsVisible] = useState(false);
+  const [fetchDetailsError, setFetchDetailsError] = useState(false);
+  const [fetchCommentsError, setFetchCommentsError] = useState(false);
 
   const onCommentVisibilityChange = () => {
     setIsCommentsVisible(!isCommentsVisible);
@@ -21,28 +23,27 @@ export const PostDetails: React.FC<Props> = React.memo(({ postId }) => {
 
   useEffect(() => {
     const fetchPostDetails = async () => {
-      const response = await getPostDetails(postId);
+      try {
+        const response = await getPostDetails(postId);
 
-      setPostDetails(response);
+        setPostDetails(response);
+      } catch (error) {
+        setFetchDetailsError(true);
+      }
     };
 
     const fetchPostComments = async () => {
-      const response = await getPostComments(postId);
+      try {
+        const response = await getPostComments(postId);
 
-      setComments(response);
+        setComments(response);
+      } catch (error) {
+        setFetchCommentsError(true);
+      }
     };
 
-    try {
-      fetchPostDetails();
-    } catch (error) {
-      throw new Error(`${error}`);
-    }
-
-    try {
-      fetchPostComments();
-    } catch (error) {
-      throw new Error(`${error}`);
-    }
+    fetchPostDetails();
+    fetchPostComments();
   }, [postId]);
 
   const onCommentDeleting = useCallback(async (commentId) => {
@@ -59,6 +60,10 @@ export const PostDetails: React.FC<Props> = React.memo(({ postId }) => {
     <div className="PostDetails">
       <h2>Post details:</h2>
 
+      {fetchDetailsError && (
+        <span>Failed to load posts details</span>
+      )}
+
       <section className="PostDetails__post">
         <p>{postDetails?.body}</p>
       </section>
@@ -74,6 +79,10 @@ export const PostDetails: React.FC<Props> = React.memo(({ postId }) => {
 
         {isCommentsVisible && (
           <ul data-cy="postDetails" className="PostDetails__list">
+            {fetchCommentsError && (
+              <span>Failed to load posts comments</span>
+            )}
+
             {comments.map(comment => (
               <li key={comment.id} className="PostDetails__list-item">
                 <button

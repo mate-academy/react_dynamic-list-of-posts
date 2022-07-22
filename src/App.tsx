@@ -11,33 +11,37 @@ import { User } from './types/user';
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [selectedUserId, setSelectedUserId] = useState(0);
-  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [selectedUserId, setSelectedUserId] = useState<number>(0);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+  const [fetchUsersError, setFetchUsersError] = useState(false);
+  const [fetchPostsError, setFetchPostsError] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await getUsers();
+      try {
+        const response = await getUsers();
 
-      setUsers(response);
+        setUsers(response);
+      } catch (error) {
+        setFetchUsersError(true);
+      }
     };
 
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
     const fetchUserPosts = async () => {
-      const response = await getUserPosts(selectedUserId);
+      try {
+        const response = await getUserPosts(selectedUserId);
 
-      setPosts(response);
+        setPosts(response);
+      } catch (error) {
+        setFetchPostsError(true);
+      }
     };
 
-    try {
-      fetchUsers();
-    } catch (error) {
-      throw new Error(`${error}`);
-    }
-
-    try {
-      fetchUserPosts();
-    } catch (error) {
-      throw new Error(`${error}`);
-    }
+    fetchUserPosts();
   }, [selectedUserId]);
 
   const handleSelectedUserId = (
@@ -54,14 +58,14 @@ const App: React.FC = () => {
     <div className="App">
       <header className="App__header">
         <label>
-          Select a user: &nbsp;
+          <span>Select a user: </span>
 
           <select
             className="App__user-selector"
             value={selectedUserId}
             onChange={handleSelectedUserId}
           >
-            <option value="0">All users</option>
+            <option disabled value="0">All users</option>
             {users?.map(user => (
               <option key={user.id} value={user.id}>
                 {user.name}
@@ -69,10 +73,16 @@ const App: React.FC = () => {
             ))}
           </select>
         </label>
+        {fetchUsersError && (
+          <span>Failed to load users</span>
+        )}
       </header>
 
       <main className="App__main">
         <div className="App__sidebar">
+          {fetchPostsError && (
+            <span>Failed to load posts</span>
+          )}
           <PostsList
             posts={posts}
             selectedPostId={selectedPostId}
@@ -81,7 +91,7 @@ const App: React.FC = () => {
         </div>
 
         <div className="App__content">
-          {selectedPostId > 0 && (
+          {selectedPostId && selectedPostId > 0 && (
             <PostDetails postId={selectedPostId} />
           )}
         </div>

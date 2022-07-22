@@ -4,7 +4,7 @@ import { Post } from '../../types/post';
 
 type Props = {
   posts: Post[],
-  selectedPostId: number,
+  selectedPostId: number | null,
   handleSelectedPostId: (postId: number) => void,
 };
 
@@ -16,8 +16,6 @@ export const PostsList: React.FC<Props> = React.memo(({
   const onPostIdChange = (postId: number) => {
     if (selectedPostId !== postId) {
       handleSelectedPostId(postId);
-    } else {
-      handleSelectedPostId(0);
     }
   };
 
