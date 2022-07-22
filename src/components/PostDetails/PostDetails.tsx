@@ -71,11 +71,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
               className="button"
               onClick={() => setCommentsVisibility(!areCommentsVisible)}
             >
-              {areCommentsVisible ? 'Hide' : 'Show'}
-              &nbsp;
-              {postComments.length}
-              {' '}
-              comments
+              {`${areCommentsVisible ? 'Hide' : 'Show'} ${postComments.length} comments`}
             </button>
 
             {areCommentsVisible && (

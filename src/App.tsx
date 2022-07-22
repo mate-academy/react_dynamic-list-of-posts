@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -7,13 +7,17 @@ import { getUsers } from './api/users';
 import { User } from './types/user';
 
 const App: React.FC = () => {
-  const [users, setUsers] = useState<User[] | []>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [selecteduUserId, setSelectedUserId] = useState<number>(0);
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
 
   useEffect(() => {
     getUsers()
       .then(loadedUsers => setUsers(loadedUsers));
+  }, []);
+
+  const selectUser = useCallback((userId: number) => {
+    setSelectedUserId(userId);
   }, []);
 
   return (
@@ -25,7 +29,7 @@ const App: React.FC = () => {
           <select
             className="App__user-selector"
             onChange={
-              (event) => setSelectedUserId(+event.target.value)
+              (event) => selectUser(+event.target.value)
             }
           >
             <option value="0" selected>
