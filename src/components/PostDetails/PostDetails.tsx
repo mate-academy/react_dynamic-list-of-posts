@@ -39,7 +39,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
 
   return (
     <div className="PostDetails">
-      <h2>Post details:</h2>
+      <h2>Post detail:</h2>
 
       <section className="PostDetails__post">
         <p>{postDetails?.body}</p>

@@ -1,6 +1,6 @@
 # React dynamic list of Posts
 - Replace `<your_account>` with your Github username in the
-  [DEMO LINK](https://Sardorbek1122.github.io/react_dynamic-list-of-posts/)
+c
 - Follow the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline)
 - Use [React TypeScript cheat sheet](https://mate-academy.github.io/fe-program/js/extra/react-typescript)
 
