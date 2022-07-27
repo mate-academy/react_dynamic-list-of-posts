@@ -16,6 +16,9 @@ export const NewCommentForm: React.FC<Props> = ({ onAdd }) => {
       onSubmit={(event) => {
         event.preventDefault();
         onAdd(comment, name, email);
+        setComment('');
+        setName('');
+        setEmail('');
       }}
     >
       <div className="form-field">
