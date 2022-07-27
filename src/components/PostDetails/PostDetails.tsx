@@ -81,7 +81,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
             >
               {`${isCollapsed ? 'Show' : 'Hide'} ${postComments.length} comments`}
             </button>
-            {isCollapsed && (
+            {!isCollapsed && (
               <ul className="PostDetails__list" data-cy="postDetails">
                 {postComments.map(comment => (
                   <li key={comment.id} className="PostDetails__list-item">
