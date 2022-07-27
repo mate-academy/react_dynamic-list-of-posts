@@ -19,3 +19,9 @@ interface Comment {
   body: string,
   email: string,
 }
+
+interface Option {
+  method: string,
+  headers: {},
+  body: string,
+}
