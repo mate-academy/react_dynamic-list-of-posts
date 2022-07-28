@@ -13,7 +13,7 @@ export function get<T>(url: string, option: Options): Promise<T> {
     .then(res => res.json());
 }
 
-export function post(url: string, data: any) {
+export function post(url: string, data: unknown) {
   return get(`${url}`, {
     method: 'POST',
     headers: {
