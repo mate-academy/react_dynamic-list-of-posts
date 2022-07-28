@@ -71,4 +71,8 @@ ul {
     flex-basis: 30%;
     border-color: green;
   }
+
+  &__error {
+    color: red;
+  }
 }
