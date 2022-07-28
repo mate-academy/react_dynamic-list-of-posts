@@ -5,7 +5,6 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import User from './components/types/User';
 import { getUsers } from './api/user';
-// import { getCommentsByPostId } from './api/comment';
 import Post from './components/types/Post';
 import { getPostsByUserID } from './api/post';
 
@@ -49,7 +48,7 @@ const App: React.FC = () => {
 
   const handleSelectedPostId = (chosenPostId: number) => {
     setSelectedPostId(chosenPostId);
-    setopenPostDetails(!openPostDetails);
+    setopenPostDetails(!!chosenPostId);
   };
 
   return (
