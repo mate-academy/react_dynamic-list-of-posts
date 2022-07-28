@@ -1,37 +1,48 @@
 import React from 'react';
+import { Post } from '../../types/post';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+type Props = {
+  posts: Post[],
+  selectedPostId: number,
+  onSelectPost: (id: number) => void,
+};
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = ({
+  posts,
+  onSelectPost,
+  selectedPostId,
+}) => {
+  const handleSelectPost = (id: number) => {
+    if (id === selectedPostId) {
+      onSelectPost(0);
+    } else {
+      onSelectPost(id);
+    }
+  };
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      <ul className="PostsList__list" data-cy="postDetails">
+        {posts.map(post => (
+          <li className="PostsList__item" key={post.id}>
+            <div>
+              <b>{`[User #${post.userId}]: `}</b>
+              {post.title}
+            </div>
+
+            <button
+              type="button"
+              className="PostsList__button button"
+              onClick={() => handleSelectPost(post.id)}
+            >
+              {selectedPostId === post.id ? 'Close' : 'Open'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
