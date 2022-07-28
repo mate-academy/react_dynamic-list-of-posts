@@ -1,37 +1,41 @@
 import React from 'react';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+interface Props {
+  posts: Post[],
+  selectedPostId: number,
+  onTogglePostDetails: (postId: number) => void,
+}
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = React.memo(
+  ({ posts, selectedPostId, onTogglePostDetails }) => (
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+      <ul className="PostsList__list">
+        {posts.length && posts.map((post: Post) => {
+          const isSelectedPost = post.id === selectedPostId;
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
+          return (
+            <li key={post.id} className="PostsList__item">
+              <div>
+                <b>{`[User #${post.userId}]: `}</b>
+                {post.title}
+              </div>
+
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={() => (isSelectedPost
+                  ? onTogglePostDetails(0)
+                  : onTogglePostDetails(post.id))}
+              >
+                {isSelectedPost ? 'Close' : 'Open'}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  ),
 );
