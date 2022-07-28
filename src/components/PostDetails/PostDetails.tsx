@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { getPostComments } from '../../api/comments';
+import {
+  deletePostComent,
+  getPostComments,
+  setPostComent,
+} from '../../api/comments';
 import { Comment } from '../../types/Comment';
 import { Post } from '../../types/Post';
 import { Loader } from '../Loader';
@@ -11,11 +15,12 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [visibleComments, setVisibleComments] = useState<Comment[]>([]);
-  const [hidenComments, setHideComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [hiddenComments, setHidenComments] = useState<Comment[]>([]);
 
   const [loadingError, setLoadingError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [update, setUpdate] = useState(0);
 
   useEffect(() => {
     setLoading(true);
@@ -24,48 +29,49 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       try {
         const commentsFromServer = await getPostComments(post.id);
 
-        setVisibleComments(commentsFromServer);
+        setComments(commentsFromServer);
         setLoading(false);
       } catch (error) {
         setLoading(false);
         setLoadingError(true);
       }
     })();
-  }, [post.id]);
+  }, []);
 
-  const getNewCommentsId = () => {
-    const maxValue = visibleComments
-      .map(comm => comm.id)
-      .sort((a, b) => a - b)[visibleComments.length - 1];
+  useEffect(() => {
+    (async () => {
+      try {
+        const commentsFromServer = await getPostComments(post.id);
 
-    return maxValue;
-  };
+        setComments(commentsFromServer);
+      } catch (error) {
+        setLoadingError(true);
+      }
+    })();
+  }, [comments]);
 
   const setNewComment = (
-    comentBody: string,
+    body: string,
     name: string,
     email: string,
   ) => {
-    setVisibleComments([
-      ...visibleComments,
-      {
-        name,
-        email,
-        id: getNewCommentsId() + 1,
-        body: comentBody,
-      },
-    ]);
+    setUpdate(update + 1);
+    setPostComent({
+      postId: post.id,
+      name,
+      email,
+      body,
+    });
   };
 
-  const coverComments = (currentComment: Comment) => {
-    setVisibleComments(
-      visibleComments
-        .filter(visComment => visComment.id !== currentComment.id),
-    );
-    setHideComments([
-      ...hidenComments,
-      currentComment,
-    ]);
+  const coverComments = (commentId = 0) => {
+    const deletedComment = comments.find(comm => comm.id === commentId);
+
+    if (deletedComment) {
+      setHidenComments([...hiddenComments, deletedComment]);
+    }
+
+    deletePostComent(commentId);
   };
 
   return (
@@ -81,26 +87,23 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           type="button"
           className="PostDetails__show-button button"
           onClick={() => {
-            setVisibleComments([
-              ...visibleComments,
-              ...hidenComments,
-            ]);
-            setHideComments([]);
+            hiddenComments.map(comment => setPostComent(comment));
+            setHidenComments([]);
           }}
         >
-          {`Hide ${hidenComments.length} comments`}
+          {`Hide ${hiddenComments.length} comments`}
         </button>
 
         {loading ? <Loader /> : (
           <>
-            {visibleComments.length > 0 && (
-              visibleComments.map(comment => (
+            {comments.length > 0 && (
+              comments.map(comment => (
                 <ul className="PostDetails__list" key={comment.id}>
                   <li className="PostDetails__list-item">
                     <button
                       type="button"
                       className="PostDetails__remove-button button"
-                      onClick={() => coverComments(comment)}
+                      onClick={() => coverComments(comment.id)}
                     >
                       X
                     </button>
