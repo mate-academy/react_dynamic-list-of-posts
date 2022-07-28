@@ -1,41 +1,98 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import User from './components/types/User';
+import { getUsers } from './api/user';
+import Post from './components/types/Post';
+import { getPostsByUserID } from './api/post';
 
-const App: React.FC = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [openPostDetails, setopenPostDetails] = useState(false);
+  const [failedToloadPosts, setFailedToloadPosts] = useState(false);
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+  useEffect(() => {
+    const getDataFromServer = async () => {
+      const usersFromServer = await getUsers();
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+      setUsers(usersFromServer);
+    };
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+    getDataFromServer();
+  }, []);
+
+  const handleSelectedUserId = (
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    setSelectedUserId(+event.target.value);
+  };
+
+  useEffect(() => {
+    const getPostsByUserFromServer = async () => {
+      try {
+        const postsFromServer = await getPostsByUserID(selectedUserId);
+
+        setPosts(postsFromServer);
+      } catch {
+        setFailedToloadPosts(true);
+      }
+    };
+
+    getPostsByUserFromServer();
+  }, [selectedUserId]);
+
+  const handleSelectedPostId = (chosenPostId: number) => {
+    setSelectedPostId(chosenPostId);
+    setopenPostDetails(!!chosenPostId);
+  };
+
+  return (
+    <div className="App">
+      <header className="App__header">
+        <label>
+          Select a user: &nbsp;
+
+          <select
+            className="App__user-selector"
+            value={selectedUserId}
+            onChange={handleSelectedUserId}
+          >
+            <option value="0">All users</option>
+            {users.map(user => (
+              <option
+                key={user.id}
+                value={user.id}
+              >
+                {user.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        {failedToloadPosts && (
+          <p>Failed to load users</p>
+        )}
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          <PostsList
+            posts={posts}
+            selectedPostId={selectedPostId}
+            handleSelectedPostId={handleSelectedPostId}
+          />
+        </div>
+
+        <div className="App__content">
+          {openPostDetails && <PostDetails postId={selectedPostId} />}
+        </div>
+      </main>
+    </div>
+  );
+};
 
 export default App;
