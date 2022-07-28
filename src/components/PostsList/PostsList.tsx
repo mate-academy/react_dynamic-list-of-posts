@@ -1,37 +1,59 @@
-import React from 'react';
+import { Post } from '../../types/Post';
+import { Loader } from '../Loader';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+interface Props {
+  posts: Post[] | null
+  selectedPostId: number
+  onSelectPost: React.Dispatch<React.SetStateAction<number>>
+  onSetDetailVisibility: React.Dispatch<React.SetStateAction<boolean>>
+}
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = ({
+  posts,
+  selectedPostId,
+  onSelectPost,
+}) => {
+  if (!posts) {
+    return <Loader />;
+  }
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  if (posts.length === 0) {
+    // eslint-disable-next-line max-len
+    return <h1 style={{ textAlign: 'center' }}>The user has no posts yet</h1>;
+  }
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul className="PostsList__list" data-cy="postDetails">
+        {posts.map(post => {
+          const handlePostSelector = () => {
+            if (selectedPostId === post.id) {
+              onSelectPost(0);
+            } else {
+              onSelectPost(post.id);
+            }
+          };
+
+          return (
+            <li key={post.id} className="PostsList__item">
+              <div>
+                <b>{`[User #${post.userId}]: `}</b>
+                {post.title}
+              </div>
+              <button
+                type="button"
+                className="PostsList__button button"
+                onClick={handlePostSelector}
+              >
+                {selectedPostId === post.id ? 'Close' : 'Open'}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
