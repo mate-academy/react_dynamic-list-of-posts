@@ -60,6 +60,8 @@ export const PostsList: React.FC<Props> = ({
                   onClick={() => {
                     if (!selectedPostId) {
                       selectPost(post);
+                    } else if (selectedPostId !== post.id) {
+                      selectPost(post);
                     } else {
                       selectPost(null);
                     }
