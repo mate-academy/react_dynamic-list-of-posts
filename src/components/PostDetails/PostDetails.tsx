@@ -20,7 +20,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const [loadingError, setLoadingError] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [update, setUpdate] = useState(0);
+  const [hasUpdate, setHasUpdate] = useState(0);
+  const [subscribe, setSubscribe] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -36,18 +37,28 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         setLoadingError(true);
       }
     })();
-  }, []);
+  }, [hasUpdate]);
 
   useEffect(() => {
-    (async () => {
-      try {
-        const commentsFromServer = await getPostComments(post.id);
+    if (subscribe) {
+      (async () => {
+        try {
+          const commentsFromServer = await getPostComments(post.id);
 
-        setComments(commentsFromServer);
-      } catch (error) {
-        setLoadingError(true);
+          setComments(commentsFromServer);
+        } catch (error) {
+          setLoadingError(true);
+        }
+      })();
+    }
+
+    const unsubscribe = () => {
+      if (post.id) {
+        setSubscribe(true);
       }
-    })();
+    };
+
+    return unsubscribe;
   }, [comments]);
 
   const setNewComment = (
@@ -55,7 +66,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     name: string,
     email: string,
   ) => {
-    setUpdate(update + 1);
+    setHasUpdate(hasUpdate + 1);
     setPostComent({
       postId: post.id,
       name,
@@ -65,6 +76,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   };
 
   const coverComments = (commentId = 0) => {
+    setHasUpdate(hasUpdate + 1);
     const deletedComment = comments.find(comm => comm.id === commentId);
 
     if (deletedComment) {
@@ -87,7 +99,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           type="button"
           className="PostDetails__show-button button"
           onClick={() => {
-            hiddenComments.map(comment => setPostComent(comment));
+            hiddenComments.forEach(comment => {
+              setPostComent({
+                name: comment.name,
+                email: comment.email,
+                body: comment.body,
+                postId: comment.postId,
+              });
+            });
             setHidenComments([]);
           }}
         >
