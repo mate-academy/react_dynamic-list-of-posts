@@ -3,6 +3,8 @@ import { deletePostComment, getCommentsByPostId } from '../../api/comment';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 import Comment from '../types/Comment';
+import { getPostById } from '../../api/post';
+import Post from '../types/Post';
 
 interface Props {
   postId: number;
@@ -10,6 +12,7 @@ interface Props {
 
 export const PostDetails: React.FC<Props> = ({ postId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
+  const [post, setPost] = useState<Post | null>(null);
   const [errorWithComments, setErrorWithComments] = useState(false);
   const [isCommentVisible, setCommentVisibility] = useState(true);
 
@@ -17,8 +20,10 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
     const getCommentsServer = async () => {
       try {
         const commentFromServer = await getCommentsByPostId(postId);
+        const postFromServer = await getPostById(postId);
 
         setComments(commentFromServer);
+        setPost(postFromServer);
       } catch {
         setErrorWithComments(true);
       }
@@ -42,7 +47,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
       <h2>Post details:</h2>
 
       <section className="PostDetails__post">
-        <p>sunt aut facere repellat provident occaecati excepturi optio</p>
+        <p>{post?.title}</p>
       </section>
 
       <section className="PostDetails__comments">

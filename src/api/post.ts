@@ -12,3 +12,7 @@ export const getPostsByUserID = (id: number): Promise<Post[]> => {
 export const getPost = (): Promise<Post[]> => {
   return get('/posts');
 };
+
+export const getPostById = (id: number): Promise<Post> => {
+  return get(`/posts/${id}`);
+};
