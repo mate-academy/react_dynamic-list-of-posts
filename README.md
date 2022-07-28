@@ -17,7 +17,7 @@ Implement the app to manage post comments.
 4. `post` should contain `title` of the post.
 5. Each `post` has an `Open` button that sets a `selectedPostId` in the `App`.
 6. After opening the details the `Open` button becomes `Close` and will close the details on click.
-7. You should add `data-cy="postDetails"` attribute to the element containing post comments.
+7. You should add `data-cy="postList"` attribute to the element containing post comments.
 8. `PostDetails` component should be shown only after selecting a `post`. 
 9. Create `getPostDetails(postId)` method in `/src/api/posts.ts` and load post details from `/posts/:postId`.
 10. Create `getPostComments(postId)` method in `/src/api/comments.ts`, load comments from `/comments?postId={postId}`.
