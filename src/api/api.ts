@@ -1,13 +1,13 @@
 const BASE_URL = 'https://mate.academy/students-api';
 
 export const request = async (url: string, method?: RequestInit) => {
-  const response = await fetch(`${BASE_URL}${url}`, method);
+  try {
+    const response = await fetch(`${BASE_URL}${url}`, method);
 
-  if (!response.ok) {
-    throw new Error(`${response.status}-${response.statusText}`);
+    return await response.json();
+  } catch {
+    return Response.error();
   }
-
-  return response.json();
 };
 
 export const getUsers = (users: string): Promise<User[]> => {

@@ -24,15 +24,15 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setNewComment(comment);
   };
 
+  const upLoadComents = async (postId: number) => {
+    const commentsFromServer = await getPostComments(postId);
+
+    setComments(commentsFromServer);
+  };
+
   useEffect(() => {
-    async function loader(postId: number) {
-      const commentsFromServer = await getPostComments(postId);
-
-      setComments(commentsFromServer);
-    }
-
-    loader(+post.id);
-  });
+    upLoadComents(+post.id);
+  }, [comments]);
 
   useEffect(() => {
     if (newComment) {
