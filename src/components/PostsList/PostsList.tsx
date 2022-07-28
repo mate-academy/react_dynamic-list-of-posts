@@ -1,4 +1,3 @@
-import React from 'react';
 import Post from '../types/Post';
 import './PostsList.scss';
 
@@ -13,6 +12,14 @@ export const PostsList: React.FC<Props> = ({
   selectedPostId,
   handleSelectedPostId,
 }) => {
+  const handlerButton = (postId: number) => {
+    if (selectedPostId !== postId) {
+      handleSelectedPostId(postId);
+    } else {
+      handleSelectedPostId(0);
+    }
+  };
+
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
@@ -38,7 +45,7 @@ export const PostsList: React.FC<Props> = ({
               className="PostsList__button button"
               value={post.id}
               onClick={() => (
-                handleSelectedPostId(post.id))}
+                handlerButton(post.id))}
             >
               { selectedPostId === post.id ? ('Close') : ('Open')}
             </button>

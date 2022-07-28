@@ -37,10 +37,6 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
     await setComments(filteredComments);
   }, [comments]);
 
-  const handleComments = () => {
-    setCommentVisibility(!isCommentVisible);
-  };
-
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
@@ -53,9 +49,9 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
         <button
           type="button"
           className="button"
-          onClick={handleComments}
+          onClick={() => setCommentVisibility(!isCommentVisible)}
         >
-          {isCommentVisible ? ('Show comments') : ('Hide comments')}
+          {isCommentVisible ? ('Hide comments') : ('Show comments')}
         </button>
         {errorWithComments && <p>Failed to Load Comments</p>}
         {isCommentVisible

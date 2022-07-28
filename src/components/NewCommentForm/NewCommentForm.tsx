@@ -44,6 +44,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
         <input
           type="text"
           name="name"
+          required
           placeholder="Your name"
           className="NewCommentForm__input"
           value={userName}
@@ -55,6 +56,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
         <input
           type="text"
           name="email"
+          required
           placeholder="Your email"
           className="NewCommentForm__input"
           value={userEmail}
@@ -65,6 +67,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
       <div className="form-field">
         <textarea
           name="body"
+          required
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={userComment}
