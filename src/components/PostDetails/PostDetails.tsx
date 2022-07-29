@@ -11,11 +11,11 @@ interface Props {
   selectedPostId: number,
 }
 
-export const PostDetails: React.FC<Props> = ({
+export const PostDetails = React.memo<Props>(({
   details,
   selectedPostId,
 }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<Comment[] | null>(null);
   const [isCmntsVisible, setCmntsVisible] = useState(false);
   const [isRefreshedComment, refreshComent] = useState(false);
 
@@ -25,10 +25,14 @@ export const PostDetails: React.FC<Props> = ({
         .then(currentPostComments => setComments(currentPostComments));
     }
 
+    if (selectedPostId !== details?.id) {
+      setComments(null);
+    }
+
     refreshComent(false);
   }, [details?.id, isRefreshedComment]);
 
-  if (!details) {
+  if (details?.id !== selectedPostId) {
     return <Loader />;
   }
 
@@ -41,21 +45,23 @@ export const PostDetails: React.FC<Props> = ({
       </section>
 
       <section className="PostDetails__comments">
-        {comments.length > 0 && (
-          <button
-            type="button"
-            className="button"
-            onClick={() => setCmntsVisible(!isCmntsVisible)}
-          >
-            {isCmntsVisible
-              ? `Hide ${comments.length} comments`
-              : `Show ${comments.length} comments`}
-          </button>
-        )}
+        {!comments
+          ? <Loader />
+          : comments.length !== 0 && (
+            <button
+              type="button"
+              className="button"
+              onClick={() => setCmntsVisible(!isCmntsVisible)}
+            >
+              {isCmntsVisible
+                ? `Hide ${comments.length} comments`
+                : `Show ${comments.length} comments`}
+            </button>
+          )}
 
         {isCmntsVisible && (
           <ul className="PostDetails__list">
-            {comments.map(comment => {
+            {comments?.map(comment => {
               const deleteComment = () => {
                 deletePostComment(comment.id);
                 refreshComent(true);
@@ -91,4 +97,4 @@ export const PostDetails: React.FC<Props> = ({
       </section>
     </div>
   );
-};
+});

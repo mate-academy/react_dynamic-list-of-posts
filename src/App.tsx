@@ -33,21 +33,23 @@ const App: React.FC = () => {
       .then(posts => {
         setVisiblePosts(posts);
       });
+  }, []);
 
+  useEffect(() => {
     getUsers()
       .then(allUsers => {
         setUsers(allUsers);
       });
+
+    if (selectedPostId === 0) {
+      return setDetailsVisibilyty(false);
+    }
 
     if (selectedPostId !== 0) {
       getPostDetails(selectedPostId)
         .then(post => setDetails(post));
 
       setDetailsVisibilyty(true);
-    }
-
-    if (selectedPostId === 0) {
-      return setDetailsVisibilyty(false);
     }
 
     return setDetails(null);

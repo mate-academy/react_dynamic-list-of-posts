@@ -1,3 +1,4 @@
+import React from 'react';
 import { Post } from '../../types/Post';
 import { Loader } from '../Loader';
 import './PostsList.scss';
@@ -9,7 +10,7 @@ interface Props {
   onSetDetailVisibility: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const PostsList: React.FC<Props> = ({
+export const PostsList = React.memo<Props>(({
   posts,
   selectedPostId,
   onSelectPost,
@@ -56,4 +57,4 @@ export const PostsList: React.FC<Props> = ({
       </ul>
     </div>
   );
-};
+});

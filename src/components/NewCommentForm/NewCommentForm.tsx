@@ -7,7 +7,7 @@ interface Props {
   onRefreshComent: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-export const NewCommentForm: React.FC<Props> = ({
+export const NewCommentForm = React.memo<Props>(({
   postId,
   onRefreshComent,
 }) => {
@@ -83,4 +83,4 @@ export const NewCommentForm: React.FC<Props> = ({
       </button>
     </form>
   );
-};
+});
