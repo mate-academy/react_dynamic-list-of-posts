@@ -1,4 +1,4 @@
-# React dynamic list of Posts
+# React Dynamic List of Posts
 
 > See [the working page](https://mate-academy.github.io/react_dynamic-list-of-posts/)
 
