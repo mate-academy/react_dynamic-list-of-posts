@@ -1,2 +1,0 @@
-(this["webpackJsonpreact_dynamic-list-of-posts"]=this["webpackJsonpreact_dynamic-list-of-posts"]||[]).push([[0],{3:function(t,n,e){t.exports=e(9)},8:function(t,n,e){},9:function(t,n,e){"use strict";e.r(n);var s=e(0),o=e.n(s),c=e(2),a=e.n(c),i=(e(8),function(){return o.a.createElement("h1",null,"Dynamic list of posts")});a.a.render(o.a.createElement(i,null),document.getElementById("root"))}},[[3,1,2]]]);
-//# sourceMappingURL=main.47922aae.chunk.js.map
