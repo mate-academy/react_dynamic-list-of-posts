@@ -3,12 +3,23 @@ import { addComment } from '../../api/comments';
 import { NewCommentFormProps } from '../../types';
 import './NewCommentForm.scss';
 
+type Validation = {
+  isNameValid: null | boolean,
+  isEmailValid: null | boolean,
+  isCommentValid: null | boolean,
+};
+
 export const NewCommentForm: React.FC<NewCommentFormProps> = ({
   postId, fetchComments,
 }) => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [commentBody, setComment] = useState('');
+  const [validation, setValidation] = useState<Validation>({
+    isNameValid: null,
+    isEmailValid: null,
+    isCommentValid: null,
+  });
 
   const postComment = async () => {
     await addComment({
@@ -30,6 +41,24 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
       return true;
     }
 
+    if (!userName.length) {
+      setValidation((prev) => ({ ...prev, isNameValid: false }));
+    } else {
+      setValidation((prev) => ({ ...prev, isNameValid: true }));
+    }
+
+    if (!emailRegex.test(userEmail)) {
+      setValidation((prev) => ({ ...prev, isEmailValid: false }));
+    } else {
+      setValidation((prev) => ({ ...prev, isEmailValid: true }));
+    }
+
+    if (!commentBody.length) {
+      setValidation((prev) => ({ ...prev, isCommentValid: false }));
+    } else {
+      setValidation((prev) => ({ ...prev, isCommentValid: true }));
+    }
+
     return false;
   };
 
@@ -37,6 +66,11 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
     setUserName('');
     setUserEmail('');
     setComment('');
+    setValidation({
+      isNameValid: null,
+      isEmailValid: null,
+      isCommentValid: null,
+    });
   }, []);
 
   const onFormSubmit = async (
@@ -67,7 +101,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
 
       <div className="form-field">
         <input
-          type="text"
+          type="email"
           name="email"
           required
           value={userEmail}
@@ -95,6 +129,23 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
       >
         Add a comment
       </button>
+      <div className="errors">
+        {validation.isCommentValid === false && (
+          <p className="input-error">
+            &#8226; Your comment should not be empty
+          </p>
+        )}
+        {validation.isEmailValid === false && (
+          <p className="input-error">
+            &#8226;  Please enter valid email address
+          </p>
+        )}
+        {validation.isNameValid === false && (
+          <p className="input-error">
+            &#8226; Field &#8220;name&#8221; should not be empty
+          </p>
+        )}
+      </div>
     </form>
   );
 };
