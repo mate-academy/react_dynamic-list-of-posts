@@ -83,7 +83,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
                                   type="button"
                                   className="PostDetails__remove-button button"
                                   onClick={() => {
-                                    deleteComment(el.postId)
+                                    deleteComment(el.id)
                                       .then(res => {
                                         if (res.ok) {
                                           setCommentsNumber(prev => prev - 1);

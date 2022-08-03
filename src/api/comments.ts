@@ -40,7 +40,7 @@ export const postPostComment = async (id: number, newComment: Comment) => {
 export const deleteComment = async (id: number) => {
   // eslint-disable-next-line no-console
   console.log(id); // delete Comment always deletes first comment of first post
-  const delComment = await fetch(`${BASE_URL}comments/1`, { method: 'DELETE' });
+  const delComment = await fetch(`${BASE_URL}comments/${id}`, { method: 'DELETE' });
 
   return delComment;
 };
