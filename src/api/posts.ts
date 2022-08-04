@@ -1,6 +1,6 @@
 import { request } from './api';
 
-export const getUserPosts = (userId = 0) => {
+export const getUserPosts = (userId = 0): Promise<Post[]> => {
   if (userId < 1) {
     return request('/posts');
   }

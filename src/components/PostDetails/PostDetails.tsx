@@ -12,34 +12,33 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
+  const [isError, setIsError] = useState(false);
+
   const [postDetails, setPostDetails] = useState<Post | null>(null);
-  const [postComments, setPostComments] = useState<PostComment[] | null>(null);
-  const [isError, setIsError] = useState<boolean>(false);
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [postComments, setPostComments] = useState<PostComment[]>([]);
+
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const getPost = async () => {
-    try {
-      const [
-        postDetailsFromServer,
-        postCommentsFromServer,
-      ] = await Promise.all([
-        getPostDetails(selectedPostId),
-        getPostComments(selectedPostId),
-      ]);
+    const loadPostDetails = async () => {
+      return getPostDetails(selectedPostId);
+    };
 
-      setPostDetails(postDetailsFromServer);
-      setPostComments(postCommentsFromServer);
-    } catch (error) {
-      setIsError(true);
-    }
+    const loadPostComments = async () => {
+      return getPostComments(selectedPostId);
+    };
+
+    Promise
+      .all([loadPostDetails(), loadPostComments()])
+      .then(([postDetailsFromServer, postCommentsFromServer]) => {
+        setPostDetails(postDetailsFromServer);
+        setPostComments(postCommentsFromServer);
+      })
+      .catch(() => setIsError(true));
   };
 
   useEffect(() => {
-    const a = async () => {
-      await getPost();
-    };
-
-    a();
+    getPost();
   }, [selectedPostId]);
 
   const handleRemoveCommentButton = async (commentId: number) => {
@@ -54,7 +53,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
   if (isError) {
     return (
       <div className="PostDetails">
-        <h1>An error occured while loading a post</h1>
+        <h1>An error occurred while loading a post</h1>
       </div>
     );
   }
@@ -67,7 +66,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
         <p>{postDetails.body}</p>
       </section>
 
-      {postComments === null || postComments.length < 1
+      {postComments.length < 1
         ? (
           <h2>No comments</h2>
         ) : (

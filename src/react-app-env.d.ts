@@ -1,5 +1,10 @@
 /// <reference types="react-scripts" />
 
+interface User {
+  id: number;
+  name: string;
+}
+
 interface Post {
   id: number;
   userId: number;
