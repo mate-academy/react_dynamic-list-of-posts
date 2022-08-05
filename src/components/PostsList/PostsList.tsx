@@ -4,8 +4,8 @@ import { Post } from '../../types/Post';
 
 type Props = {
   posts: Post[];
-  postIdHandler: (post: number | null) => void;
-  choosePost: number | null;
+  postIdHandler: (post: number | undefined) => void;
+  choosePost: number | undefined;
 };
 
 export const PostsList: React.FC<Props> = ({
@@ -29,7 +29,7 @@ export const PostsList: React.FC<Props> = ({
                 <button
                   type="button"
                   className="PostsList__button button"
-                  onClick={() => postIdHandler(null)}
+                  onClick={() => postIdHandler(undefined)}
                 >
                   Close
                 </button>

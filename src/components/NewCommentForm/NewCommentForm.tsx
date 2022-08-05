@@ -14,7 +14,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
 
   const sendCommentHandler = (event: React.FormEvent) => {
     event.preventDefault();
-    if (name.length !== 0 && email.length !== 0 && description.length !== 0) {
+    if (name.length && email.length && description.length) {
       const newComment: Comment = {
         postId,
         name,

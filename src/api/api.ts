@@ -1,5 +1,6 @@
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
+import { User } from '../types/User';
 
 export const BASE_URL = 'https://mate.academy/students-api';
 
@@ -24,15 +25,21 @@ export const getUserPosts = (userId:number): Promise<Post[]> => {
   return get(`/posts/?userId=${userId}`);
 };
 
+export const getUserName = (): Promise<User[]> => {
+  return get('/users');
+};
+
 export const getAllPosts = (): Promise<Post[]> => {
   return get('/posts/');
 };
 
-export const getPostDetails = (postId: number | null): Promise<Post> => {
+export const getPostDetails = (postId: number | undefined): Promise<Post> => {
   return get(`/posts/${postId}`);
 };
 
-export const getPostComments = (postId: number | null): Promise<Comment[]> => {
+export const getPostComments = (
+  postId: (number | undefined),
+): Promise<Comment[]> => {
   return get(`/comments?postId=${postId}`);
 };
 

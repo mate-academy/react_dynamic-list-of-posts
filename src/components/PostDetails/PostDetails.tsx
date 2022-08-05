@@ -11,7 +11,7 @@ import { Comment } from '../../types/Comment';
 import { Loader } from '../Loader';
 
 type Props = {
-  postId: number | null;
+  postId: number | undefined;
 };
 
 export const PostDetails: React.FC<Props> = ({ postId }) => {
