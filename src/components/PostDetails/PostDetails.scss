@@ -28,6 +28,12 @@
     );
   }
 
+  &__buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
   &__remove-button {
     min-width: 20px;
     color: inherit;

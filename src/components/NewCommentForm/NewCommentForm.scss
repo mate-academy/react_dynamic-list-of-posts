@@ -15,5 +15,31 @@
 
   &__submit-button {
     margin-top: 10px;
+
+    &--error {
+      padding: 4px 12px;
+      border-radius: 4px;
+      color: red;
+      font-style: italic;
+      margin-top: 16px;
+      animation: 1s alert linear;
+    }
+  }
+}
+
+@keyframes alert {
+  0% {
+    color: red;
+    background-color: #fff;
+  }
+  
+  50% {
+    color: #fff;
+    background-color: red;
+  }
+
+  100% {
+    color: red;
+    background-color: #fff;
   }
 }
