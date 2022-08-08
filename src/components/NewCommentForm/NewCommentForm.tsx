@@ -14,7 +14,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSubmit }) => {
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
 
-  const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     onSubmit(
       event,
       {
@@ -33,7 +33,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSubmit }) => {
   return (
     <form
       className="NewCommentForm"
-      onSubmit={handleOnSubmit}
+      onSubmit={handleSubmit}
     >
       <div className="form-field">
         <input

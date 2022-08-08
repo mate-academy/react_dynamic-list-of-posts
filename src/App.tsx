@@ -33,7 +33,7 @@ const App: React.FC = () => {
     <div className="App">
       <header className="App__header">
         <label>
-          Select a user: &nbsp;
+          Select a user:
 
           <select
             className="App__user-selector"

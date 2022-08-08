@@ -27,7 +27,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
     }
   }, [postId]);
 
-  const handleDEleteComment = async (commentId: number) => {
+  const handleDeleteComment = async (commentId: number) => {
     const deletedCommentId = await removePostComment(commentId);
 
     if (deletedCommentId) {
@@ -86,7 +86,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
                           <button
                             type="button"
                             className="PostDetails__remove-button button"
-                            onClick={() => handleDEleteComment(comment.id)}
+                            onClick={() => handleDeleteComment(comment.id)}
                           >
                             X
                           </button>
