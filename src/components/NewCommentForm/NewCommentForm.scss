@@ -13,7 +13,18 @@
     color: #4d457b;
   }
 
-  &__submit-button {
-    margin-top: 10px;
+  &__error-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
+
+  &__submit-button {
+    margin-top: 20px;
+  }
+}
+
+.error {
+  margin-top: 10px;
+  text-align: center;
 }
