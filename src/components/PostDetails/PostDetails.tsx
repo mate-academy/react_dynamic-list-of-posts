@@ -1,45 +1,117 @@
-import React from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
+import { Loader } from '../Loader';
+import { getPostDetails } from '../../api/posts';
+import { getPostComments, deletePostComment } from '../../api/comments';
+import { Post, Comment } from '../../react-app-env';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  selectedPostId: number;
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
+  const [findPost, setFindPost] = useState<Post | null>(null);
+  const [comments, setComments] = useState<Comment []>([]);
+  const [visibleComments, setVisibleComments] = useState(false);
+  const [commentsError, setCommentsError] = useState(false);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  useEffect(() => {
+    getPostDetails(selectedPostId)
+      .then(postDetails => setFindPost(postDetails));
+    setVisibleComments(false);
+    setCommentsError(false);
+  }, [selectedPostId]);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
+  const getAllComments = async () => {
+    const commentsFromServer = await getPostComments(selectedPostId);
+
+    if (commentsFromServer.length === 0) {
+      setComments([]);
+      setCommentsError(true);
+    } else {
+      setComments(commentsFromServer);
+      setCommentsError(false);
+    }
+  };
+
+  const showComments = () => {
+    if (visibleComments) {
+      setComments([]);
+      setVisibleComments(false);
+      setCommentsError(false);
+    } else {
+      getAllComments();
+      setVisibleComments(true);
+    }
+  };
+
+  const deleteComment = useCallback(async (deleteId: number) => {
+    await deletePostComment(deleteId);
+    const filteredComments = [...comments].filter(
+      comment => comment.id !== deleteId,
+    );
+
+    setComments(filteredComments);
+  }, [comments]);
+
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <p>{findPost?.body}</p>
+      </section>
+
+      {findPost ? (
+        <section
+          className="PostDetails__comments"
+          data-cy="postDetails"
+        >
           <button
             type="button"
-            className="PostDetails__remove-button button"
+            className="button"
+            onClick={() => showComments()}
           >
-            X
+            {visibleComments ? 'Hide comments' : 'Show comments'}
           </button>
-          <p>My first comment</p>
-        </li>
+          {visibleComments && (
+            <ul className="PostDetails__list">
+              {comments.map(comment => (
+                <li className="PostDetails__list-item" key={comment.id}>
+                  <button
+                    type="button"
+                    onClick={() => deleteComment(comment.id)}
+                    className="PostDetails__remove-button button"
+                  >
+                    X
+                  </button>
+                  <p>
+                    {comment.body}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      ) : (
+        <Loader />
+      )}
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+      {commentsError && (
+        <p className="PostDetails__comments--notFound">
+          There are no comments yet.
+        </p>
+      )}
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm
+            selectedId={selectedPostId}
+            setComments={getAllComments}
+          />
+        </div>
+      </section>
+    </div>
+  );
+};
