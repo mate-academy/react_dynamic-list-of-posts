@@ -27,6 +27,15 @@ const App: React.FC = () => {
     if (currentUser !== userId) {
       const posts = await getUserPosts(userId);
 
+      setSelectedPostId('');
+      setPostDetails({
+        id: '',
+        userId: '',
+        title: '',
+        body: '',
+        createdAt: '',
+        updatedAt: '',
+      });
       setCurrentUser(userId);
       setPostsList(posts);
     }
