@@ -1,19 +1,19 @@
 export const BASE_URL = 'https://mate.academy/students-api';
 
-// /posts?userId=4
 const addUrl = '/posts?userId=';
 const addUrlForAllUsers = '/posts';
 
-export async function getUserPosts(userId: number): Promise<Single> {
-  const endPoint = `${BASE_URL}${userId ? addUrl + userId : addUrlForAllUsers}`;
+export async function getUserPosts(userId: string): Promise<never[]> {
+  const endPoint = `${BASE_URL}${
+    (userId === '0')
+      ? addUrlForAllUsers
+      : addUrl + userId
+  }`;
 
   // eslint-disable-next-line no-console
-  console.log(endPoint);
+  console.log('userId:', userId, 'endPoint:', endPoint);
 
   const response = await fetch(endPoint);
-
-  //  eslint-disable-next-line no-console
-  console.log('response', response);
 
   if (!response.ok) {
     throw new Error('error');

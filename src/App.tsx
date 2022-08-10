@@ -1,11 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { getUserPosts } from './api/posts';
+import { getPostComments } from './api/comments';
 
 const App: React.FC = () => {
-  // const [postsList, setPostList] = useState([]);
+  const [postsList, setPostsList] = useState([]);
+  const [currentUser, setCurrentUser] = useState('');
+  const [selectedPostId, setSelectedPostId] = useState('');
+  // const [selectedPost, setSelectedPost] = useState(null);
+  const [postComments, setPostComments] = useState([]);
+
+  const downloadPosts = async (userId = '0') => {
+    // eslint-disable-next-line no-console
+    console.log(userId);
+
+    if (currentUser !== userId) {
+      const posts = await getUserPosts(userId);
+
+      setCurrentUser(userId);
+      setPostsList(posts);
+
+      // eslint-disable-next-line no-console
+      // console.log('postsList', posts);
+
+      // eslint-disable-next-line no-console
+      // console.log(postsList);
+    }
+  };
+
+  const downLoadComments = async (id: string) => {
+    if (selectedPostId === id) {
+      setSelectedPostId('');
+    } else {
+      const comments = await getPostComments(id);
+
+      setSelectedPostId(id);
+      setPostComments(comments);
+    }
+  };
 
   return (
     <div className="App">
@@ -13,7 +48,10 @@ const App: React.FC = () => {
         <label>
           Select a user: &nbsp;
 
-          <select className="App__user-selector">
+          <select
+            className="App__user-selector"
+            onChange={e => downloadPosts(e.target.value)}
+          >
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
             <option value="2">Ervin Howell</option>
@@ -27,16 +65,30 @@ const App: React.FC = () => {
             <option value="10">Leanne Graham</option>
           </select>
         </label>
+
+        <p>{`selectedPostId: ${selectedPostId}`}</p>
       </header>
 
       <main className="App__main">
         <div className="App__sidebar">
-          <PostsList />
+          <PostsList
+            postsList={postsList}
+            selectedPostId={selectedPostId}
+            downLoadComments={downLoadComments}
+          />
         </div>
 
-        <div className="App__content">
-          <PostDetails />
+        <div
+          className="App__content"
+          style={{
+            visibility: `${!selectedPostId ? 'hidden' : 'visible'}`,
+          }}
+        >
+          <PostDetails
+            postComments={postComments}
+          />
         </div>
+
       </main>
     </div>
   );

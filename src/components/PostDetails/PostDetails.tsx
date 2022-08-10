@@ -2,7 +2,13 @@ import React from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
+type Props = {
+  postComments: Comment[];
+};
+
+export const PostDetails: React.FC<Props> = ({
+  postComments,
+}) => (
   <div className="PostDetails">
     <h2>Post details:</h2>
 
@@ -14,6 +20,10 @@ export const PostDetails: React.FC = () => (
       <button type="button" className="button">Hide 2 comments</button>
 
       <ul className="PostDetails__list">
+        {postComments.forEach(comment => {
+          // eslint-disable-next-line no-console
+          console.log(comment);
+        })}
         <li className="PostDetails__list-item">
           <button
             type="button"
