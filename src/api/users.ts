@@ -21,8 +21,7 @@ export async function getUsers() {
     return Promise.reject('Content type is not supported');
   }
 
-  return response.json()
-    .then(res => new Set(res.map(i => i.userId)));
+  return response.json();
 }
 
 // const BASE_URL = 'https://mate.academy/students-api';

@@ -5,6 +5,8 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
 const App: React.FC = () => {
+  // const [postsList, setPostList] = useState([]);
+
   return (
     <div className="App">
       <header className="App__header">
