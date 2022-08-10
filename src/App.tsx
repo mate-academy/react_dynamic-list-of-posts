@@ -5,6 +5,7 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { getUserPosts, getPostDetails } from './api/posts';
 import { getPostComments } from './api/comments';
+import { Loader } from './components/Loader';
 
 const App: React.FC = () => {
   const [postsList, setPostsList] = useState([]);
@@ -48,6 +49,11 @@ const App: React.FC = () => {
     const newPostDetails = await getPostDetails(postId);
 
     setPostDetails(newPostDetails);
+
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval
+    // const timerId = window.setTimeout(setPostDetails, 5000, newPostDetails);
+
+    // window.clearTimeout(timerId);
   };
 
   const downLoadComments = async (id: string) => {
@@ -104,10 +110,16 @@ const App: React.FC = () => {
             visibility: `${!selectedPostId ? 'hidden' : 'visible'}`,
           }}
         >
-          <PostDetails
-            postComments={postComments}
-            postDetails={postDetails}
-          />
+          {!postDetails.id ? (
+            <div>
+              <Loader />
+            </div>
+          ) : (
+            <PostDetails
+              postComments={postComments}
+              postDetails={postDetails}
+            />
+          )}
         </div>
 
       </main>

@@ -58,6 +58,7 @@ export const PostDetails: React.FC<Props> = ({
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
+                  formMethod="DELETE"
                 >
                   X
                 </button>
