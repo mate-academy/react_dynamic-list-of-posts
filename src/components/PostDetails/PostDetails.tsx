@@ -1,55 +1,80 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
 type Props = {
   postComments: Comment[];
+  postDetails: Post;
+};
+
+// can't import from react-app-env.ts
+type Comment = {
+  id: string;
+  postId: string;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+  email: string;
+  body: string;
 };
 
 export const PostDetails: React.FC<Props> = ({
   postComments,
-}) => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+  postDetails,
+}) => {
+  // const postTitle = postDetails.title;
+  const counterComments = postComments.length;
+  const [showComments, setShowComments] = useState(true);
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+      <section className="PostDetails__post">
+        <p>{postDetails.title}</p>
+      </section>
 
-      <ul className="PostDetails__list">
-        {postComments.forEach(comment => {
-          // eslint-disable-next-line no-console
-          console.log(comment);
-        })}
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
+      <section className="PostDetails__comments">
+        <button
+          type="button"
+          className="PostDetails__button button"
+          onClick={() => setShowComments(!showComments)}
+        >
+          { showComments
+            ? `Hide ${counterComments} comments`
+            : 'Show comments' }
+        </button>
+
+        { showComments && (
+          <ul
+            className="PostDetails__list"
+            data-cy="postList"
           >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+            {postComments.map((comment: Comment) => (
+              <li
+                key={comment.id}
+                className="PostDetails__list-item"
+              >
+                <button
+                  type="button"
+                  className="PostDetails__remove-button button"
+                >
+                  X
+                </button>
+                <p>
+                  {comment.body}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
-
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm />
+        </div>
+      </section>
+    </div>
+  );
+};

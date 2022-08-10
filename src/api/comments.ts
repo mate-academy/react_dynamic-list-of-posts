@@ -1,8 +1,7 @@
 export const BASE_URL = 'https://mate.academy/students-api';
 
-const addUrl = '/comments?postId=';
-
 export async function getPostComments(postId: string): Promise<never[]> {
+  const addUrl = '/comments?postId=';
   const endPoint = `${BASE_URL}${addUrl}${postId}`;
 
   // eslint-disable-next-line no-console

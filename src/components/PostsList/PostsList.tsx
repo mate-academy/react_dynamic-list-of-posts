@@ -5,12 +5,14 @@ type Props = {
   postsList: Post[];
   selectedPostId: string;
   downLoadComments: (id: string) => void;
+  downloadPostDetails: (postId: string) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
   postsList,
   selectedPostId,
   downLoadComments,
+  downloadPostDetails,
 }) => {
   return (
     <div className="PostsList">
@@ -34,7 +36,10 @@ export const PostsList: React.FC<Props> = ({
             <button
               type="button"
               className="PostsList__button button"
-              onClick={() => downLoadComments(post.id)}
+              onClick={() => {
+                downLoadComments(post.id);
+                downloadPostDetails(post.id);
+              }}
             >
               {(selectedPostId === post.id) ? 'Close' : 'Open'}
             </button>

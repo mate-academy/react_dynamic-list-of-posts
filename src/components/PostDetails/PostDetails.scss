@@ -1,6 +1,12 @@
 .PostDetails {
+  max-height: max-content;
+
   &__post {
     padding: 10px 0 15px;
+  }
+
+  &__button {
+    margin-bottom: 10px;
   }
 
   &__comments {

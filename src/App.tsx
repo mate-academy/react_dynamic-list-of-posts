@@ -3,17 +3,24 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getUserPosts } from './api/posts';
+import { getUserPosts, getPostDetails } from './api/posts';
 import { getPostComments } from './api/comments';
 
 const App: React.FC = () => {
   const [postsList, setPostsList] = useState([]);
   const [currentUser, setCurrentUser] = useState('');
   const [selectedPostId, setSelectedPostId] = useState('');
-  // const [selectedPost, setSelectedPost] = useState(null);
+  const [postDetails, setPostDetails] = useState({
+    id: '',
+    userId: '',
+    title: '',
+    body: '',
+    createdAt: '',
+    updatedAt: '',
+  });
   const [postComments, setPostComments] = useState([]);
 
-  const downloadPosts = async (userId = '0') => {
+  const downloadPosts = async (userId: string) => {
     // eslint-disable-next-line no-console
     console.log(userId);
 
@@ -22,13 +29,16 @@ const App: React.FC = () => {
 
       setCurrentUser(userId);
       setPostsList(posts);
-
-      // eslint-disable-next-line no-console
-      // console.log('postsList', posts);
-
-      // eslint-disable-next-line no-console
-      // console.log(postsList);
     }
+  };
+
+  const downloadPostDetails = async (postId: string) => {
+    // eslint-disable-next-line no-console
+    console.log(postId);
+
+    const newPostDetails = await getPostDetails(postId);
+
+    setPostDetails(newPostDetails);
   };
 
   const downLoadComments = async (id: string) => {
@@ -74,6 +84,7 @@ const App: React.FC = () => {
           <PostsList
             postsList={postsList}
             selectedPostId={selectedPostId}
+            downloadPostDetails={downloadPostDetails}
             downLoadComments={downLoadComments}
           />
         </div>
@@ -86,6 +97,7 @@ const App: React.FC = () => {
         >
           <PostDetails
             postComments={postComments}
+            postDetails={postDetails}
           />
         </div>
 

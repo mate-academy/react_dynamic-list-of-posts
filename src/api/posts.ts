@@ -1,9 +1,9 @@
 export const BASE_URL = 'https://mate.academy/students-api';
 
-const addUrl = '/posts?userId=';
-const addUrlForAllUsers = '/posts';
-
 export async function getUserPosts(userId: string): Promise<never[]> {
+  const addUrl = '/posts?userId=';
+  const addUrlForAllUsers = '/posts';
+
   const endPoint = `${BASE_URL}${
     (userId === '0')
       ? addUrlForAllUsers
@@ -12,6 +12,27 @@ export async function getUserPosts(userId: string): Promise<never[]> {
 
   // eslint-disable-next-line no-console
   console.log('userId:', userId, 'endPoint:', endPoint);
+
+  const response = await fetch(endPoint);
+
+  if (!response.ok) {
+    throw new Error('error');
+  }
+
+  if (!response.headers.get('content-type')?.includes('application/json')) {
+    // eslint-disable-next-line prefer-promise-reject-errors
+    return Promise.reject('Content type is not supported');
+  }
+
+  return response.json();
+}
+
+export async function getPostDetails(postId: string): Promise<Post> {
+  const addUrl = '/posts/';
+  const endPoint = `${BASE_URL}${addUrl}${postId}`;
+
+  // eslint-disable-next-line no-console
+  console.log('postId:', postId, 'endPoint:', endPoint);
 
   const response = await fetch(endPoint);
 

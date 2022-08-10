@@ -10,8 +10,8 @@ type Post = {
 };
 
 type Comment = {
-  postId: string;
   id: string;
+  postId: string;
   createdAt: string;
   updatedAt: string;
   name: string;
