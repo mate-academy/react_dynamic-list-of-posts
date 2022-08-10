@@ -25,7 +25,7 @@ export const NewCommentForm: React.FC = () => (
       <textarea
         name="body"
         placeholder="Type comment here"
-        className="NewCommentForm__input"
+        className="NewCommentForm__input NewCommentForm__input--textarea"
       />
     </div>
 
