@@ -1,12 +1,25 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
 const App: React.FC = () => {
-  const [userSelect, setUserSelect] = useState<number>(0);
-  const [selectedPostId, setSelectedPostId] = useState<number>(-1);
+  const [userSelect, setUserSelect] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+
+  const users = [
+    { id: 0, title: 'All users' },
+    { id: 1, title: 'Leanne Graham' },
+    { id: 2, title: 'Ervin Howell' },
+    { id: 3, title: 'Clementine Bauch' },
+    { id: 4, title: 'Patricia Lebsack' },
+    { id: 5, title: 'Chelsey Dietrich' },
+    { id: 6, title: 'Mrs. Dennis Schulist' },
+    { id: 7, title: 'Kurtis Weissnat' },
+    { id: 8, title: 'Nicholas Runolfsdottir V' },
+    { id: 9, title: 'Glenna Reichert' },
+  ];
 
   return (
     <div className="App">
@@ -17,21 +30,17 @@ const App: React.FC = () => {
           <select
             className="App__user-selector"
             onChange={(e) => {
-              setSelectedPostId(-1);
+              setSelectedPostId(null);
               setUserSelect(Number(e.target.value));
             }}
           >
-            <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {
+              users.map(el => (
+                <Fragment key={el.id}>
+                  <option value={el.id}>{el.title}</option>
+                </Fragment>
+              ))
+            }
           </select>
         </label>
       </header>
@@ -46,7 +55,7 @@ const App: React.FC = () => {
         </div>
 
         {
-          selectedPostId >= 1 && (
+          selectedPostId && (
             <div className="App__content">
               <PostDetails
                 selectedPostId={selectedPostId}

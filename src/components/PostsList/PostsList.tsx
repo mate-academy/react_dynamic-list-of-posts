@@ -6,8 +6,8 @@ import { PostData } from '../../types/PostData';
 
 type Props = {
   userSelect: number;
-  setSelectedPostId: React.Dispatch<React.SetStateAction<number>>;
-  selectedPostId: number;
+  setSelectedPostId: React.Dispatch<React.SetStateAction<number | null>>;
+  selectedPostId: number | null;
 };
 
 export const PostsList: React.FC<Props> = (
@@ -59,7 +59,7 @@ export const PostsList: React.FC<Props> = (
                               className="PostsList__button button"
                               style={{ background: 'red' }}
                               onClick={() => {
-                                setSelectedPostId(-1);
+                                setSelectedPostId(null);
                               }}
                             >
                               Close
@@ -71,7 +71,7 @@ export const PostsList: React.FC<Props> = (
                               onClick={() => {
                                 setSelectedPostId(element.id);
                               }}
-                              disabled={selectedPostId >= 1}
+                              disabled={selectedPostId !== null}
                             >
                               Open
                             </button>

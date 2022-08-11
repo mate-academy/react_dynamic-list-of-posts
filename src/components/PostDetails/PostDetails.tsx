@@ -38,6 +38,8 @@ export const PostDetails: React.FC<Props> = ({ selectedPostId }) => {
       getPostComments(singlePost.id)
         .then(res => {
           if (res.responseError.error === null) {
+            // eslint-disable-next-line no-console
+            console.log(res.data);
             setComments(res.data);
           } else {
             // eslint-disable-next-line no-console
