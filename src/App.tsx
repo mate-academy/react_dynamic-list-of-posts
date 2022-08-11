@@ -7,6 +7,8 @@ import { getUserPosts, getPostDetails } from './api/posts';
 import { getPostComments } from './api/comments';
 import { Loader } from './components/Loader';
 
+// yoyoyooyooyooy
+
 const App: React.FC = () => {
   const [postsList, setPostsList] = useState([]);
   const [currentUser, setCurrentUser] = useState('');
