@@ -1,6 +1,6 @@
 import React from 'react';
 import './PostsList.scss';
-import { Post } from '../../Post';
+import { Post } from '../../types/Post';
 
 type Props = {
   posts: Post[],

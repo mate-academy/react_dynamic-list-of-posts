@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { getPostComments } from '../../api/comments';
 import { getPostDetails, request } from '../../api/posts';
-import { Post } from '../../Post';
-import { Comment } from '../../Comment';
+import { Post } from '../../types/Post';
+import { Comment } from '../../types/Comment';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
