@@ -1,37 +1,61 @@
-import React from 'react';
+import { useEffect } from 'react';
+import { getPosts } from '../../api/posts';
+import { Post } from '../../types/Post';
+import { PostItem } from '../PostItem/PostItem';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+type Props = {
+  postList: Post[];
+  setPostList: React.Dispatch<React.SetStateAction<Post[]>>;
+  userSelected: number;
+  setShowDetails: React.Dispatch<React.SetStateAction<number | null>>;
+  showDetails: number | null;
+};
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = (
+  {
+    setPostList,
+    postList,
+    userSelected,
+    setShowDetails,
+    showDetails,
+  },
+) => {
+  useEffect(() => {
+    getPosts()
+      .then(res => {
+        if (res?.length > 0) {
+          setPostList(res);
+        }
+      });
+  }, []);
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+      <ul className="PostsList__list">
+        {
+          postList
+            .filter(el => {
+              switch (userSelected) {
+                case 0:
+                  return true;
+                default:
+                  return el.userId === userSelected;
+              }
+            })
+            .map(el => {
+              return (
+                <PostItem
+                  post={el}
+                  key={el.id}
+                  setShowDetails={setShowDetails}
+                  showDetails={showDetails}
+                />
+              );
+            })
+        }
+      </ul>
+    </div>
+  );
+};

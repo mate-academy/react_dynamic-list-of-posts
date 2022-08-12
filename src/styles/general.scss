@@ -14,3 +14,11 @@
     background-color: #4d457b;
   }
 }
+
+.red {
+  background: rgb(209, 94, 94);
+
+  &:hover {
+    background: rgb(237, 60, 60);
+  }
+}
