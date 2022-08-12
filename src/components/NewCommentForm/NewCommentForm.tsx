@@ -32,33 +32,12 @@ export const NewCommentForm: React.FC<Props>
     setData(updatedData);
   };
 
-  /*
-  const sendCommentToServer = () => {
-    console.log(data);
-    postComment(data);
-    setData({
-      postId: +postId,
-      name: '',
-      email: '',
-      body: '',
-    });
-  };
-  */
   async function sendCommentToServer() {
-    console.log(data);
     await postComment(data)
       .then(() => rerender(!renderState));
-
-    console.log('comment sent');
-  }
-
-  /*
-  async function loadUserPosts(userNumber:string) {
-    const loaded = await getUserPosts(userNumber);
-
-    setLoadedPosts(loaded);
-  }
-*/
+  } // I know it`s a dumb way to force parent to rerender, but this is
+  // one I come up with. Feel free to suggest a better way
+  // to force rerender of parent component from child
 
   return (
     <form className="NewCommentForm">

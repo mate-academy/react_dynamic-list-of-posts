@@ -66,14 +66,6 @@ const App: React.FC = () => {
             <option value="10">Leanne Graham</option>
           </select>
         </label>
-        <button
-          type="button"
-          onClick={() => {
-            console.log(selectedPostId);
-          }}
-        >
-          postId
-        </button>
       </header>
 
       <main className="App__main">
