@@ -1,37 +1,51 @@
 import React from 'react';
+import classNames from 'classnames';
+import { Pos } from '../../types/pos';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+interface Props {
+  posts: Pos[],
+  setPost: (arg0:string) => void,
+  selectedPost: string,
+}
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props>
+= ({ posts, setPost, selectedPost }) => {
+  const postClickHandler = (postId:string) => (
+    (postId === selectedPost)
+      ? setPost('')
+      : setPost(postId)
+  );
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      <ul className="PostsList__list" data-cy="postDetails">
+        {posts.map((onePost:Pos) => (
+          <li className="PostsList__item" key={onePost.id}>
+            <div>
+              <b>
+                [User #
+                {onePost.userId}
+                ]:&#160;
+              </b>
+              {onePost.title}
+            </div>
+            <button
+              type="button"
+              className={classNames('PostsList__button', 'button',
+                { 'special-close': selectedPost === onePost.id })}
+              onClick={() => postClickHandler(onePost.id)}
+            >
+              {(selectedPost !== onePost.id
+                ? 'Open'
+                : 'Close'
+              )}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
