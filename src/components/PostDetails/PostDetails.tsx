@@ -70,7 +70,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
             </button>
           )}
         {comsVisibility && (
-          <ul className="PostDetails__list">
+          <ul className="PostDetails__list" data-cy="postList">
             {comments.map(oneComment => (
               <li className="PostDetails__list-item" key={oneComment.id}>
                 <button
