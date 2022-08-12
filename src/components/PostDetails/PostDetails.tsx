@@ -1,45 +1,57 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NewCommentForm } from '../NewCommentForm';
+import { Post } from '../../types/Post';
+import { Comment } from '../../types/Comment';
+import { getPosts } from '../../api/posts';
+import { CommentList } from '../CommentList/CommentList';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  showDetails: number;
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC <Props> = ({ showDetails }) => {
+  const [postDetails, setPostDetails] = useState<Post | null>(null);
+  const [commentsToPost, setCommentsToPost] = useState<Comment[]>([]);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  useEffect(() => {
+    getPosts(showDetails)
+      .then(res => {
+        if (res.body) {
+          setPostDetails(res);
+        }
+      })
+      // eslint-disable-next-line no-console
+      .catch(err => console.warn(err));
+  }, []);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+      {
+        postDetails && (
+          <>
+            <section className="PostDetails__post">
+              <p>{postDetails.body}</p>
+            </section>
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+            <CommentList
+              postId={postDetails.id}
+              commentsToPost={commentsToPost}
+              setCommentsToPost={setCommentsToPost}
+            />
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+            <section>
+              <div className="PostDetails__form-wrapper">
+                <NewCommentForm
+                  postId={postDetails.id}
+                  setCommentsToPost={setCommentsToPost}
+                />
+              </div>
+            </section>
+          </>
+        )
+      }
+    </div>
+  );
+};
