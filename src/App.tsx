@@ -19,7 +19,8 @@ const App: React.FC = () => {
 
       setUsers(usersFromServer);
     } catch {
-      setUsers([]);
+      // setUsers([]);
+      throw new Error('Some error occured');
     }
   };
 
@@ -40,12 +41,9 @@ const App: React.FC = () => {
     }
   };
 
-  useEffect(
-    () => {
-      getPostsFromServer();
-    },
-    [currentUserId],
-  );
+  useEffect(() => {
+    getPostsFromServer();
+  }, [currentUserId]);
 
   return (
     <div className="App">
