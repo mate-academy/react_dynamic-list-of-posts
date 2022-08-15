@@ -26,23 +26,21 @@ export const PostsList: React.FC<Props> = ({
 
       <ul className="PostsList__list" data-cy="postDetails">
         {posts.map(post => (
-          <>
-            <li className="PostsList__item" key={post.id}>
-              <div>
-                <b>{`[User #${post.userId}]: `}</b>
-                {post.title}
-              </div>
-              <button
-                type="button"
-                className="PostsList__button button"
-                onClick={() => handleClick(post.id)}
-              >
-                {(selectedPost === post.id)
-                  ? 'Close'
-                  : 'Open'}
-              </button>
-            </li>
-          </>
+          <li className="PostsList__item" key={post.id}>
+            <div>
+              <b>{`[User #${post.userId}]: `}</b>
+              {post.title}
+            </div>
+            <button
+              type="button"
+              className="PostsList__button button"
+              onClick={() => handleClick(post.id)}
+            >
+              {(selectedPost === post.id)
+                ? 'Close'
+                : 'Open'}
+            </button>
+          </li>
         ))}
       </ul>
     </div>

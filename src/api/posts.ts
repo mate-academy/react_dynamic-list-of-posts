@@ -5,7 +5,7 @@ export const loadPosts = (): Promise<Post[]> => {
 };
 
 export const getUserPosts = (userId: number): Promise<Post[]> => {
-  return request(`post?userId=${userId}`);
+  return request(`posts?userId=${userId}`);
 };
 
 export const loadPost = (postId: number): Promise<Post> => {

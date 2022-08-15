@@ -12,10 +12,6 @@ const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPost, setSelectedPost] = useState(0);
 
-  const getPostId = (postId: number) => {
-    setSelectedPost(postId);
-  };
-
   useEffect(() => {
     const getUsers = async () => {
       const usersFromServer = await loadUsers();
@@ -28,11 +24,11 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const loadUserPosts = async () => {
-      const usersFromServer = (selectedUserId === 0)
+      const userPostsFromServer = (!selectedUserId)
         ? await loadPosts()
         : await getUserPosts(selectedUserId);
 
-      setPosts(usersFromServer);
+      setPosts(userPostsFromServer);
     };
 
     loadUserPosts();
@@ -40,6 +36,10 @@ const App: React.FC = () => {
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedUserId(+event.target.value);
+  };
+
+  const getPostId = (postId: number) => {
+    setSelectedPost(postId);
   };
 
   return (
@@ -50,7 +50,7 @@ const App: React.FC = () => {
 
           <select className="App__user-selector" onChange={handleChange}>
             <option value="0">All users</option>
-            {users.map(user => (
+            {users.map((user) => (
               <option value={user.id} key={user.id}>{user.name}</option>
             ))}
           </select>
