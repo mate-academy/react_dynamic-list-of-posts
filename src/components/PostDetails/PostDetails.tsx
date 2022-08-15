@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Loader } from '../Loader';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
@@ -22,19 +23,27 @@ export const PostDetails: React.FC<Props> = ({
   postComments,
   postDetails,
 }) => {
-  // const postTitle = postDetails.title;
-  const counterComments = postComments.length;
   const [showComments, setShowComments] = useState(true);
+
+  const counterComments = postComments.length;
+  const showLoaderForTitlePost = !postDetails.title;
+  const showLoaderForComments = !postComments;
 
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
 
       <section className="PostDetails__post">
+        { showLoaderForTitlePost
+          && <Loader /> }
+
         <p>{postDetails.title}</p>
       </section>
 
       <section className="PostDetails__comments">
+        { showLoaderForComments
+          && <Loader /> }
+
         <button
           type="button"
           className="PostDetails__button button"
@@ -73,7 +82,9 @@ export const PostDetails: React.FC<Props> = ({
 
       <section>
         <div className="PostDetails__form-wrapper">
-          <NewCommentForm />
+          <NewCommentForm
+            post={postDetails}
+          />
         </div>
       </section>
     </div>

@@ -7,8 +7,6 @@ import { getUserPosts, getPostDetails } from './api/posts';
 import { getPostComments } from './api/comments';
 import { Loader } from './components/Loader';
 
-// yoyoyooyooyooy
-
 const App: React.FC = () => {
   const [postsList, setPostsList] = useState([]);
   const [currentUser, setCurrentUser] = useState('');
@@ -51,11 +49,6 @@ const App: React.FC = () => {
     const newPostDetails = await getPostDetails(postId);
 
     setPostDetails(newPostDetails);
-
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval
-    // const timerId = window.setTimeout(setPostDetails, 5000, newPostDetails);
-
-    // window.clearTimeout(timerId);
   };
 
   const downLoadComments = async (id: string) => {
@@ -77,8 +70,12 @@ const App: React.FC = () => {
 
           <select
             className="App__user-selector"
+            defaultValue="DEFAULT"
             onChange={e => downloadPosts(e.target.value)}
           >
+            <option value="DEFAULT" disabled>
+              Choose...
+            </option>
             <option value="0">All users</option>
             <option value="1">Leanne Graham</option>
             <option value="2">Ervin Howell</option>
@@ -92,19 +89,19 @@ const App: React.FC = () => {
             <option value="10">Leanne Graham</option>
           </select>
         </label>
-
-        <p>{`selectedPostId: ${selectedPostId}`}</p>
       </header>
 
       <main className="App__main">
-        <div className="App__sidebar">
-          <PostsList
-            postsList={postsList}
-            selectedPostId={selectedPostId}
-            downloadPostDetails={downloadPostDetails}
-            downLoadComments={downLoadComments}
-          />
-        </div>
+        {currentUser && (
+          <div className="App__sidebar">
+            <PostsList
+              postsList={postsList}
+              selectedPostId={selectedPostId}
+              downloadPostDetails={downloadPostDetails}
+              downLoadComments={downLoadComments}
+            />
+          </div>
+        )}
 
         <div
           className="App__content"

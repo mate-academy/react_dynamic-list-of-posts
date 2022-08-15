@@ -26,6 +26,10 @@
     margin-bottom: 5px;
     background-color: #fafafd;
     line-height: 1.5;
+
+    &--active {
+      border: 1px solid #4d457b;
+    }
   }
 
   &__button {
