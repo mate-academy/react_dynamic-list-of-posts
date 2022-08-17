@@ -6,7 +6,7 @@ export const PostDetails: React.FC = () => (
   <div className="PostDetails">
     <h2>Post details:</h2>
 
-    <section className="PostDetails__post">
+    <section className="PostDetails__post" data-cy="postDetails">
       <p>sunt aut facere repellat provident occaecati excepturi optio</p>
     </section>
 
