@@ -3,8 +3,8 @@ import {
 } from 'react';
 import './NewCommentForm.scss';
 import { Comment } from '../../types/Comment';
-import { addComment, getPostComments } from '../../api/comments';
-// import { getComments } from '../PostDetails/getComments';
+import { addComment } from '../../api/comments';
+import { getComments } from '../PostDetails/getComments';
 
 interface Props {
   postId: number;
@@ -26,13 +26,7 @@ export const NewCommentForm = (
 
     await addComment(postId, name, mail, message);
 
-    getPostComments(postId).then(response => {
-      if ('Error' in response) {
-        console.warn(response.Error); // eslint-disable-line
-      } else {
-        updateComments(response);
-      }
-    }).finally(() => setIsLoading(false));
+    getComments(postId, updateComments, setIsLoading);
 
     setName('');
     setMail('');
