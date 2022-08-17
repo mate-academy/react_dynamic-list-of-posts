@@ -1,45 +1,59 @@
-import React from 'react';
+/* eslint-disable no-console */
+import React, { useEffect, useState } from 'react';
+import { PostComments } from '../PostComments';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
+import { getPostDetails } from '../../api/posts';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+interface Props {
+  postId: number,
+}
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+export const PostDetails: React.FC<Props> = ({ postId }) => {
+  const [showComments, setShowComments] = useState(true);
+  const [post, setPost] = useState<Post | null>(null);
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+  useEffect(() => {
+    (async function fetchData() {
+      const fetchedPost = await getPostDetails(postId);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
+      setPost(fetchedPost ? fetchedPost[0] : null);
+    }());
+  }, [postId]);
+
+  const handleClick = () => setShowComments(!showComments);
+
+  return (
+    post ? (
+      <div className="PostDetails">
+        <h2>Post details:</h2>
+
+        <section className="PostDetails__post">
+          <p>{post.body}</p>
+        </section>
+
+        <section className="PostDetails__comments">
           <button
             type="button"
-            className="PostDetails__remove-button button"
+            className="button"
+            onClick={handleClick}
           >
-            X
+            {showComments ? 'Hide comments' : 'Show comments'}
           </button>
-          <p>My first comment</p>
-        </li>
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+          <ul className="PostDetails__list">
+            <PostComments postId={postId} showComments={showComments} />
+          </ul>
+        </section>
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
+        <section>
+          <div className="PostDetails__form-wrapper">
+            <NewCommentForm postId={post.id} />
+          </div>
+        </section>
       </div>
-    </section>
-  </div>
-);
+    ) : (
+      <div>No post selected</div>
+    )
+  );
+};

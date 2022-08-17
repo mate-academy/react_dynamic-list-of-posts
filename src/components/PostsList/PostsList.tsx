@@ -1,37 +1,30 @@
 import React from 'react';
+import { PostRenderer } from '../PostRenderer';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+interface Props {
+  posts: Post[],
+  setSelectedPostId: React.Dispatch<React.SetStateAction<number>>,
+  selectedPostId: number,
+}
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+export const PostsList: React.FC<Props> = ({ posts, setSelectedPostId, selectedPostId }) => {
+  return (
+    <div className="PostsList">
+      <h2>Posts:</h2>
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
-
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+      <ul className="PostsList__list">
+        {posts.map(post => (
+          post && (
+            <li key={post.id} className="PostsList__item">
+              <PostRenderer
+                post={post}
+                isSelected={post.id === selectedPostId}
+                setSelectedPostId={setSelectedPostId}
+              />
+            </li>
+          )))}
+      </ul>
+    </div>
+  );
+};
