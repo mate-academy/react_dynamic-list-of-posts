@@ -1,30 +1,36 @@
-# React dynamic list of Posts
-- Replace `<your_account>` with your Github username in the
-  [DEMO LINK](https://<your_account>.github.io/react_dynamic-list-of-posts/)
-- Follow the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline)
-- Use [React TypeScript cheat sheet](https://mate-academy.github.io/fe-program/js/extra/react-typescript)
+# React Dynamic List of Posts
 
-## Task
-You are given a basic markup and [the API](https://mate-academy.github.io/fe-students-api/).
+Implement the App with ability to show posts of a selected user. Each post can
+be opened in the sidebar with its comments. There should delete a comment and a
+form to add new comments.
 
-Implement the app to manage post comments.
+> Here is [the working version](https://mate-academy.github.io/react_dynamic-list-of-posts/)
 
-> Don't use class components. Use React Hooks instead.
-
-1. Create an `/src/api/posts.ts` and add a method `getUserPosts(userId)` there.
-2. Load `posts` and show them using the `PostsList` on page load (use `useEffect` as a `componentDidMount`). You should add `data-cy="postDetails"` attribute to the `PostsList` `<ul>` or `<ol>` element.
-3. Implement the `UserSelect` to show only the `posts` of the selected user. (call `getUserPosts` each time when user changes).
-4. `post` should contain `title` of the post.
-5. Each `post` has an `Open` button that sets a `selectedPostId` in the `App`.
-6. After opening the details the `Open` button becomes `Close` and will close the details on click.
-7. You should add `data-cy="postList"` attribute to the element containing post comments.
-8. `PostDetails` component should be shown only after selecting a `post`. 
-9. Create `getPostDetails(postId)` method in `/src/api/posts.ts` and load post details from `/posts/:postId`.
-10. Create `getPostComments(postId)` method in `/src/api/comments.ts`, load comments from `/comments?postId={postId}`.
-11. Add a button to `show`/`hide` comments, which should have the name `Show comments`/`Hide comments` respectively.
-12. Add a delete button near each comment to delete it on the server using this symbol `X`.
-13. Add a form to add a new comment to the current post. The form should have a submit button with the name `Add a comment` in it and 3 fields: 
-- for user name  with the placeholder `Your name` 
-- for user email with the placeholder `Your email` 
-- for comment with the placeholder `Type comment here`
-14. Comments should be immediately updated after adding or removing.
+1. Learn the `utils/fetchClient.ts` and use it to interact with the API (tests expect that you each API request is sent after 300 ms delay);
+1. Initially the `App` shows the `UserSelector` and a paragraph `No user selected` in the main content block.
+    - load users from the API on page load;
+    - implement the `UserSelector` as a dropdown using the given markup;
+1. When a user is selected load the user's posts form [the API](https://mate-academy.github.io/fe-students-api/) and show them using a table in the main content clock;
+    - show the `<Loader>` while waiting for the API response;
+    - show an error notification if `posts` loading fails;
+    - if the user has no posts show the `No posts yet` notification.
+1. Add the `Sidebar--open` class to the sidebar when a post is selected;
+    - the post details should appear there immediately;
+    - the post commnets should be loaded from the API;
+    - the `Loader` is shown before comments are loaded;
+    - `CommentsError` notification is show on loading error;
+    - `NoComments` message is shown if the post does not have comments yet;
+1. Show the `Write a comment` button below the comments
+    - after click hide the button and show the form to add new comment;
+    - the form stays visible until the other post is opened;
+    - the form should be implemented as a separate component;
+1. The form requires an author's name and email and a comment text.
+    - show errors only after the form is submitted;
+    - remove an error on the field change;
+    - keep the `name` and `email` after the successful submit but clear a comment text;
+    - The `Clear` button should also clear all errors;
+    - Add the `is-loading` class to the submit button while waiting for a response;
+    - Add the new comment received as a response from the `API` to the end of the list;
+1. Implement comment deletion
+    - Delete the commnet immediately not waiting for the server response to improve the UX.
+1. (*) Handle `Add` and `Delete` errors so the user can retry

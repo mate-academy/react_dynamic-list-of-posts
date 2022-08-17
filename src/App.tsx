@@ -1,41 +1,64 @@
 import React from 'react';
+import 'bulma/bulma.sass';
+import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-import './styles/general.scss';
+
+import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { UserSelector } from './components/UserSelector';
+import { Loader } from './components/Loader';
 
-const App: React.FC = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+export const App: React.FC = () => {
+  return (
+    <main className="section">
+      <div className="container">
+        <div className="tile is-ancestor">
+          <div className="tile is-parent">
+            <div className="tile is-child box is-success">
+              <div className="block">
+                <UserSelector />
+              </div>
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+              <div className="block" data-cy="MainContent">
+                <p data-cy="NoSelectedUser">
+                  No user selected
+                </p>
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+                <Loader />
 
-      <div className="App__content">
-        <PostDetails />
+                <div
+                  className="notification is-danger"
+                  data-cy="PostsLoadingError"
+                >
+                  Something went wrong!
+                </div>
+
+                <div className="notification is-warning" data-cy="NoPostsYet">
+                  No posts yet
+                </div>
+
+                <PostsList />
+              </div>
+            </div>
+          </div>
+
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              'Sidebar--open',
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              <PostDetails />
+            </div>
+          </div>
+        </div>
       </div>
     </main>
-  </div>
-);
-
-export default App;
+  );
+};
