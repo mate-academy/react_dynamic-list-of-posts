@@ -5,7 +5,7 @@ import { Post } from '../../types/Post';
 import { getPostDetails } from '../../api/posts';
 import { Loader } from '../Loader';
 import { apiHelper } from '../../api/apiHelper';
-import { getPostComments } from '../../api/comments';
+import { deleteCommentById, getPostComments } from '../../api/comments';
 import { Comment } from '../../types/Comment';
 
 interface Props {
@@ -18,6 +18,7 @@ export const PostDetails: FC<Props> = ({ postId }) => {
   const [errorMsg, setErrorMsg] = useState('');
   const [comments, setComments] = useState<Comment[]>([]);
   const [isHide, setIsHide] = useState(false);
+  const [needUpdate, setNeedUpdate] = useState(false);
 
   useEffect(() => {
     apiHelper(
@@ -35,7 +36,15 @@ export const PostDetails: FC<Props> = ({ postId }) => {
       setIsLoading,
       setErrorMsg,
     ).then(setComments);
-  }, [postId]);
+
+    setNeedUpdate(false);
+  }, [postId, needUpdate]);
+
+  const removeCommentById = (commentId: number) => {
+    // eslint-disable-next-line
+    deleteCommentById(commentId).then(res => console.log(res));
+    setComments(prev => prev.filter(comm => comm.id !== commentId));
+  };
 
   return (
     <>
@@ -66,6 +75,7 @@ export const PostDetails: FC<Props> = ({ postId }) => {
                       <button
                         type="button"
                         className="PostDetails__remove-button button"
+                        onClick={() => removeCommentById(comment.id)}
                       >
                         X
                       </button>
@@ -79,7 +89,10 @@ export const PostDetails: FC<Props> = ({ postId }) => {
 
           <section>
             <div className="PostDetails__form-wrapper">
-              <NewCommentForm />
+              <NewCommentForm
+                postId={postId}
+                handleUpdate={setNeedUpdate}
+              />
             </div>
           </section>
         </div>
