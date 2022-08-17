@@ -18,3 +18,12 @@ type Comment = {
   email: string;
   body: string;
 };
+
+type PostDetails = {
+  id: string;
+  userId: string;
+  title: string;
+  body: string;
+  createdAt: string;
+  updatedAt: string;
+};

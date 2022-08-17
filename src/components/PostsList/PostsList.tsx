@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import React from 'react';
-import { Loader } from '../Loader';
 import './PostsList.scss';
 
 type Props = {
@@ -16,8 +15,6 @@ export const PostsList: React.FC<Props> = ({
   downLoadComments,
   downloadPostDetails,
 }) => {
-  // const [showPostsLoader, setShowPostsLoader] = useState(false);
-
   const postsListHandle = (postId: string) => {
     downLoadComments(postId);
     downloadPostDetails(postId);
@@ -27,9 +24,6 @@ export const PostsList: React.FC<Props> = ({
     <div className="PostsList">
       <h2>Posts:</h2>
       <p>{`Count posts: ${postsList.length}`}</p>
-      {postsList.length > 0 || (
-        <Loader />
-      )}
 
       <ul className="PostsList__list">
         {postsList.map((post: Post) => (

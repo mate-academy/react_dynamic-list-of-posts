@@ -7,48 +7,70 @@ import { getUserPosts, getPostDetails } from './api/posts';
 import { getPostComments } from './api/comments';
 import { Loader } from './components/Loader';
 
+const initialPostDetails = {
+  id: '',
+  userId: '',
+  title: '',
+  body: '',
+  createdAt: '',
+  updatedAt: '',
+};
+
 const App: React.FC = () => {
   const [postsList, setPostsList] = useState([]);
   const [currentUser, setCurrentUser] = useState('');
   const [selectedPostId, setSelectedPostId] = useState('');
-  const [postDetails, setPostDetails] = useState({
-    id: '',
-    userId: '',
-    title: '',
-    body: '',
-    createdAt: '',
-    updatedAt: '',
-  });
+  const [postDetails, setPostDetails] = useState(initialPostDetails);
   const [postComments, setPostComments] = useState([]);
+  const [showLoaderPostsList, setShowLoaderPostsList] = useState(false);
+  const [showLoaderPostsDetails, setShowLoaderPostsDetails] = useState(false);
 
   const downloadPosts = async (userId: string) => {
     // eslint-disable-next-line no-console
     console.log(userId);
 
-    if (currentUser !== userId) {
-      const posts = await getUserPosts(userId);
+    setShowLoaderPostsList(true);
 
-      setSelectedPostId('');
-      setPostDetails({
-        id: '',
-        userId: '',
-        title: '',
-        body: '',
-        createdAt: '',
-        updatedAt: '',
-      });
-      setCurrentUser(userId);
-      setPostsList(posts);
+    try {
+      if (currentUser !== userId) {
+        const posts = await getUserPosts(userId);
+
+        setSelectedPostId('');
+        setPostDetails({
+          id: '',
+          userId: '',
+          title: '',
+          body: '',
+          createdAt: '',
+          updatedAt: '',
+        });
+        setCurrentUser(userId);
+        setPostsList(posts);
+        setShowLoaderPostsList(false);
+      }
+    } catch (error) {
+      setShowLoaderPostsList(false);
+      // eslint-disable-next-line no-console
+      console.log('error', error);
     }
   };
 
   const downloadPostDetails = async (postId: string) => {
-    // eslint-disable-next-line no-console
-    console.log(postId);
+    setShowLoaderPostsDetails(true);
 
-    const newPostDetails = await getPostDetails(postId);
+    try {
+      // eslint-disable-next-line no-console
+      console.log(postId);
 
-    setPostDetails(newPostDetails);
+      const newPostDetails = await getPostDetails(postId);
+
+      setPostDetails(newPostDetails);
+      setShowLoaderPostsDetails(false);
+    } catch (error) {
+      setShowLoaderPostsDetails(false);
+      // eslint-disable-next-line no-console
+      console.log('error', error);
+    }
   };
 
   const downLoadComments = async (id: string) => {
@@ -76,7 +98,7 @@ const App: React.FC = () => {
             <option value="DEFAULT" disabled>
               Choose...
             </option>
-            <option value="0">All users</option>
+            <option value="All">All users</option>
             <option value="1">Leanne Graham</option>
             <option value="2">Ervin Howell</option>
             <option value="3">Clementine Bauch</option>
@@ -94,32 +116,38 @@ const App: React.FC = () => {
       <main className="App__main">
         {currentUser && (
           <div className="App__sidebar">
-            <PostsList
-              postsList={postsList}
-              selectedPostId={selectedPostId}
-              downloadPostDetails={downloadPostDetails}
-              downLoadComments={downLoadComments}
-            />
+            {showLoaderPostsList ? (
+              <Loader />
+            ) : (
+              <PostsList
+                postsList={postsList}
+                selectedPostId={selectedPostId}
+                downloadPostDetails={downloadPostDetails}
+                downLoadComments={downLoadComments}
+              />
+            )}
           </div>
         )}
 
-        <div
-          className="App__content"
-          style={{
-            visibility: `${!selectedPostId ? 'hidden' : 'visible'}`,
-          }}
-        >
-          {!postDetails.id ? (
-            <div>
-              <Loader />
-            </div>
-          ) : (
-            <PostDetails
-              postComments={postComments}
-              postDetails={postDetails}
-            />
-          )}
-        </div>
+        {postDetails.id && (
+          <div
+            className="App__content"
+            style={{
+              visibility: `${!selectedPostId ? 'hidden' : 'visible'}`,
+            }}
+          >
+            {showLoaderPostsDetails ? (
+              <div>
+                <Loader />
+              </div>
+            ) : (
+              <PostDetails
+                postComments={postComments}
+                postDetails={postDetails}
+              />
+            )}
+          </div>
+        )}
 
       </main>
     </div>

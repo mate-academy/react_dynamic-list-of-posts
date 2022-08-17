@@ -1,71 +1,77 @@
+/* eslint-disable no-cond-assign */
 export const BASE_URL = 'https://mate.academy/students-api';
 
-// const request = (url: string): Promise<never[]> => {
-//   return fetch(`${BASE_URL}${url}`)
-//     .then(response => {
-//       if (!response.ok) {
-//         // eslint-disable-next-line @typescript-eslint/no-throw-literal
-//         throw `${response.status} - ${response.statusText}`;
-//       }
+export const request = async (url: string) => {
+  // eslint-disable-next-line no-console
+  console.log(`${BASE_URL}${url}`);
 
-//       return response.json();
-//     });
-// };
+  const response = await fetch(`${BASE_URL}${url}`);
 
-// export const getUserPosts = (userId: string) => {
-//   const endPoint = `${
+  if (!response.ok) {
+    // eslint-disable-next-line prefer-promise-reject-errors
+    return Promise.reject(
+      `${response.status} - ${response.statusText}`,
+    );
+  }
+
+  if (!response.headers.get('content-type')?.includes('application/json')) {
+    // eslint-disable-next-line prefer-promise-reject-errors
+    return Promise.reject('Content-type is not supported');
+  }
+
+  return response.json();
+};
+
+export const getUserPosts = (userId: string) => request(
+  (userId === 'All') ? '/posts' : `/posts?userId=${userId}`,
+);
+
+export const getPostDetails = (postId: string) => request(`/posts/${postId}`);
+
+// export async function getUserPosts(userId: string): Promise<never[]> {
+//   const addUrl = '/posts?userId=';
+//   const addUrlForAllUsers = '/posts';
+
+//   const endPoint = `${BASE_URL}${
 //     (userId === '0')
-//       ? '/posts'
-//       : `/posts?userId=${userId}`
+//       ? addUrlForAllUsers
+//       : addUrl + userId
 //   }`;
 
-//   return request(endPoint);
-// };
+//   // eslint-disable-next-line no-console
+//   console.log('userId:', userId, 'endPoint:', endPoint);
 
-export async function getUserPosts(userId: string): Promise<never[]> {
-  const addUrl = '/posts?userId=';
-  const addUrlForAllUsers = '/posts';
+//   const response = await fetch(endPoint);
 
-  const endPoint = `${BASE_URL}${
-    (userId === '0')
-      ? addUrlForAllUsers
-      : addUrl + userId
-  }`;
+//   if (!response.ok) {
+//     throw new Error('error');
+//   }
 
-  // eslint-disable-next-line no-console
-  console.log('userId:', userId, 'endPoint:', endPoint);
+//   if (!response.headers.get('content-type')?.includes('application/json')) {
+//     // eslint-disable-next-line prefer-promise-reject-errors
+//     return Promise.reject('Content type is not supported');
+//   }
 
-  const response = await fetch(endPoint);
+//   return response.json();
+// }
 
-  if (!response.ok) {
-    throw new Error('error');
-  }
+// export async function getPostDetails(postId: string): Promise<Post> {
+//   const addUrl = '/posts/';
+//   const endPoint = `${BASE_URL}${addUrl}${postId}`;
 
-  if (!response.headers.get('content-type')?.includes('application/json')) {
-    // eslint-disable-next-line prefer-promise-reject-errors
-    return Promise.reject('Content type is not supported');
-  }
+//   // eslint-disable-next-line no-console
+//   console.log('postId:', postId, 'endPoint:', endPoint);
 
-  return response.json();
-}
+//   const response = await fetch(endPoint);
 
-export async function getPostDetails(postId: string): Promise<Post> {
-  const addUrl = '/posts/';
-  const endPoint = `${BASE_URL}${addUrl}${postId}`;
+//   if (!response.ok) {
+//     throw new Error('error');
+//   }
 
-  // eslint-disable-next-line no-console
-  console.log('postId:', postId, 'endPoint:', endPoint);
+//   if (!response.headers.get('content-type')?.includes('application/json')) {
+//     // eslint-disable-next-line prefer-promise-reject-errors
+//     return Promise.reject('Content type is not supported');
+//   }
 
-  const response = await fetch(endPoint);
-
-  if (!response.ok) {
-    throw new Error('error');
-  }
-
-  if (!response.headers.get('content-type')?.includes('application/json')) {
-    // eslint-disable-next-line prefer-promise-reject-errors
-    return Promise.reject('Content type is not supported');
-  }
-
-  return response.json();
-}
+//   return response.json();
+// }
