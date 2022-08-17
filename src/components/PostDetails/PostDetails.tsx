@@ -5,6 +5,8 @@ import { Post } from '../../types/Post';
 import { getPostDetails } from '../../api/posts';
 import { Loader } from '../Loader';
 import { apiHelper } from '../../api/apiHelper';
+import { getPostComments } from '../../api/comments';
+import { Comment } from '../../types/Comment';
 
 interface Props {
   postId: number,
@@ -14,6 +16,8 @@ export const PostDetails: FC<Props> = ({ postId }) => {
   const [post, setPost] = useState<Post | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isHide, setIsHide] = useState(false);
 
   useEffect(() => {
     apiHelper(
@@ -22,6 +26,15 @@ export const PostDetails: FC<Props> = ({ postId }) => {
       setIsLoading,
       setErrorMsg,
     ).then(setPost);
+  }, [postId]);
+
+  useEffect(() => {
+    apiHelper(
+      getPostComments,
+      postId,
+      setIsLoading,
+      setErrorMsg,
+    ).then(setComments);
   }, [postId]);
 
   return (
@@ -34,31 +47,35 @@ export const PostDetails: FC<Props> = ({ postId }) => {
             <p>{post.title}</p>
           </section>
 
-          <section className="PostDetails__comments">
-            <button type="button" className="button">Hide 2 comments</button>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <section className="PostDetails__comments">
+              <button
+                type="button"
+                className="button"
+                onClick={() => setIsHide(prevState => !prevState)}
+              >
+                {`${isHide ? 'Show' : 'Hide'} ${comments.length}`}
+              </button>
 
-            <ul className="PostDetails__list">
-              <li className="PostDetails__list-item">
-                <button
-                  type="button"
-                  className="PostDetails__remove-button button"
-                >
-                  X
-                </button>
-                <p>My first comment</p>
-              </li>
-
-              <li className="PostDetails__list-item">
-                <button
-                  type="button"
-                  className="PostDetails__remove-button button"
-                >
-                  X
-                </button>
-                <p>sad sds dfsadf asdf asdf</p>
-              </li>
-            </ul>
-          </section>
+              {!isHide && (
+                <ul className="PostDetails__list" data-cy="postList">
+                  {comments.map(comment => (
+                    <li key={comment.id} className="PostDetails__list-item">
+                      <button
+                        type="button"
+                        className="PostDetails__remove-button button"
+                      >
+                        X
+                      </button>
+                      <p>{comment.body}</p>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          )}
 
           <section>
             <div className="PostDetails__form-wrapper">
