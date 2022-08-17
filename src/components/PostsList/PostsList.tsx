@@ -1,37 +1,70 @@
 import React from 'react';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+import { Post } from '../../types/Post';
+import { Loader } from '../Loader';
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+type Props = {
+  loading: boolean,
+  posts: Post[],
+  selectedPost: Post | null,
+  setSelectedPost: (selectedPost: Post | null) => void,
+  onSelectingPost: (selectedPost: Post) => void,
+};
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+export const PostsList: React.FC<Props> = ({
+  loading,
+  posts,
+  selectedPost,
+  setSelectedPost,
+  onSelectingPost,
+}) => {
+  return (loading
+    ? (<Loader />)
+    : (
+      <div className="PostsList">
+        <h2>Posts:</h2>
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+        {posts.length ? (
+          <ul className="PostsList__list" data-cy="postDetails">
+            {posts.map(post => (
+              <li className="PostsList__item" key={post.id}>
+                <div>
+                  <b>{`[User #${post.userId}]: `}</b>
+                  {post.title}
+                </div>
+
+                {(selectedPost?.id !== post.id)
+                  ? (
+                    <button
+                      type="button"
+                      className="PostsList__button button"
+                      onClick={() => {
+                        onSelectingPost(post);
+                      }}
+                    >
+                      Open
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="PostsList__button button"
+                      onClick={() => {
+                        setSelectedPost(null);
+                      }}
+                    >
+                      Close
+                    </button>
+                  )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div>
+            The selected user has no posts yet
+          </div>
+        )}
+      </div>
+    )
+  );
+};
