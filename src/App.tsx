@@ -1,41 +1,117 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.scss';
 import './styles/general.scss';
+
+import { Post } from './types/Post';
+import { User } from './types/User';
+import { Comment } from './types/Comment';
+
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
-const App: React.FC = () => (
-  <div className="App">
-    <header className="App__header">
-      <label>
-        Select a user: &nbsp;
+import { getAllUsers } from './api/users';
+import { getAllPosts } from './api/posts';
+import { getUserPosts } from './api/userPosts';
+import { getPostComments } from './api/comments';
+import { Loader } from './components/Loader';
 
-        <select className="App__user-selector">
-          <option value="0">All users</option>
-          <option value="1">Leanne Graham</option>
-          <option value="2">Ervin Howell</option>
-          <option value="3">Clementine Bauch</option>
-          <option value="4">Patricia Lebsack</option>
-          <option value="5">Chelsey Dietrich</option>
-          <option value="6">Mrs. Dennis Schulist</option>
-          <option value="7">Kurtis Weissnat</option>
-          <option value="8">Nicholas Runolfsdottir V</option>
-          <option value="9">Glenna Reichert</option>
-          <option value="10">Leanne Graham</option>
-        </select>
-      </label>
-    </header>
+const App: React.FC = () => {
+  const [allUsers, setAllUsers] = useState<User[] | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [userPosts, setUserPosts] = useState<Post[] | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [postComments, setPostComments] = useState<Comment[] | null>(null);
+  const [isLoadingPost, setIsLoadingPost] = useState(false);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
 
-    <main className="App__main">
-      <div className="App__sidebar">
-        <PostsList />
-      </div>
+  useEffect(() => {
+    const loadAllUsers = async () => {
+      const result = await getAllUsers();
 
-      <div className="App__content">
-        <PostDetails />
-      </div>
-    </main>
-  </div>
-);
+      setAllUsers(result);
+    };
+
+    loadAllUsers();
+  }, []);
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      setIsLoadingPost(true);
+
+      const result = selectedUserId === 0
+        ? await getAllPosts()
+        : await getUserPosts(selectedUserId);
+
+      setUserPosts(result);
+      setIsLoadingPost(false);
+    };
+
+    loadPosts();
+  }, [selectedUserId]);
+
+  const handleSelectingPost = async (post: Post) => {
+    setIsLoadingDetails(true);
+    setSelectedPost(post);
+
+    const result = await getPostComments(post.id);
+
+    setPostComments(result);
+    setIsLoadingDetails(false);
+  };
+
+  return (
+    <div className="App">
+      <header className="App__header">
+        <label>
+          Select a user: &nbsp;
+
+          <select
+            className="App__user-selector"
+            value={selectedUserId}
+            onChange={(e) => {
+              setSelectedUserId(+e.target.value);
+              setSelectedPost(null);
+            }}
+          >
+            <option value="0">All users</option>
+            {allUsers?.map(user => (
+              <option value={user.id} key={user.id}>
+                {user.name ? user.name : `Incognito user: id${user.id}`}
+              </option>
+            ))}
+          </select>
+        </label>
+      </header>
+
+      <main className="App__main">
+        <div className="App__sidebar">
+          {userPosts && (
+            <PostsList
+              loading={isLoadingPost}
+              posts={userPosts}
+              selectedPost={selectedPost}
+              setSelectedPost={setSelectedPost}
+              onSelectingPost={handleSelectingPost}
+            />
+          )}
+        </div>
+
+        {selectedPost && (
+          <div className="App__content">
+            {isLoadingDetails
+              ? (<Loader />)
+              : (
+                <PostDetails
+                  selectedPost={selectedPost}
+                  postComments={postComments}
+                  setPostComments={setPostComments}
+                />
+              )}
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
 
 export default App;
