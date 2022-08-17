@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
 import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
@@ -26,9 +27,6 @@ const App: React.FC = () => {
   const [showLoaderPostsDetails, setShowLoaderPostsDetails] = useState(false);
 
   const downloadPosts = async (userId: string) => {
-    // eslint-disable-next-line no-console
-    console.log(userId);
-
     setShowLoaderPostsList(true);
 
     try {
@@ -36,14 +34,7 @@ const App: React.FC = () => {
         const posts = await getUserPosts(userId);
 
         setSelectedPostId('');
-        setPostDetails({
-          id: '',
-          userId: '',
-          title: '',
-          body: '',
-          createdAt: '',
-          updatedAt: '',
-        });
+        setPostDetails(initialPostDetails);
         setCurrentUser(userId);
         setPostsList(posts);
         setShowLoaderPostsList(false);
@@ -95,9 +86,7 @@ const App: React.FC = () => {
             defaultValue="DEFAULT"
             onChange={e => downloadPosts(e.target.value)}
           >
-            <option value="DEFAULT" disabled>
-              Choose...
-            </option>
+            <option value="DEFAULT" disabled>Choose...</option>
             <option value="All">All users</option>
             <option value="1">Leanne Graham</option>
             <option value="2">Ervin Howell</option>
@@ -129,25 +118,23 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {postDetails.id && (
-          <div
-            className="App__content"
-            style={{
-              visibility: `${!selectedPostId ? 'hidden' : 'visible'}`,
-            }}
-          >
-            {showLoaderPostsDetails ? (
-              <div>
-                <Loader />
-              </div>
-            ) : (
-              <PostDetails
-                postComments={postComments}
-                postDetails={postDetails}
-              />
-            )}
-          </div>
-        )}
+        <div
+          className={classNames(
+            'App__content',
+            { 'App__content--hidden': !selectedPostId },
+          )}
+        >
+          {showLoaderPostsDetails ? (
+            <div>
+              <Loader />
+            </div>
+          ) : (
+            <PostDetails
+              postComments={postComments}
+              postDetails={postDetails}
+            />
+          )}
+        </div>
 
       </main>
     </div>

@@ -27,3 +27,10 @@ type PostDetails = {
   createdAt: string;
   updatedAt: string;
 };
+
+type NewComment = {
+  postId: string,
+  name: string,
+  email: string,
+  body: string,
+};

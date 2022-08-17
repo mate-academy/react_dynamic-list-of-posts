@@ -35,9 +35,10 @@ export const PostsList: React.FC<Props> = ({
           >
             <div>
               <b>{`[User #${post.userId}]: `}</b>
-              {post.id}
+              <strong>{post.title}</strong>
               :
-              {post.title}
+              <br />
+              {post.body}
             </div>
 
             <button

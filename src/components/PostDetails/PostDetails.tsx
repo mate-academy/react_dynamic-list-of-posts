@@ -83,7 +83,7 @@ export const PostDetails: React.FC<Props> = ({
       <section>
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
-            post={postDetails}
+            postId={postDetails.id}
           />
         </div>
       </section>

@@ -71,5 +71,10 @@ ul {
 
     flex-basis: 30%;
     border-color: green;
+    visibility: visible;
+
+    &--hidden {
+      visibility: hidden;
+    }
   }
 }
