@@ -6,6 +6,7 @@ import { PostDetails } from './components/PostDetails';
 import { Post } from './types/Post';
 import { getUserPosts } from './api/posts';
 import { Loader } from './components/Loader';
+import { apiHelper } from './api/apiHelper';
 
 const App: FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -15,19 +16,12 @@ const App: FC = () => {
   const [selectedPostId, setSelectedPostId] = useState(0);
 
   useEffect(() => {
-    setIsLoading(true);
-    getUserPosts(userId)
-      .then(res => {
-        if ('Error' in res) {
-          return Promise.reject(res.Error);
-        }
-
-        setPosts(res);
-
-        return Promise.resolve();
-      })
-      .catch(setErrorMsg)
-      .finally(() => setIsLoading(false));
+    apiHelper(
+      getUserPosts,
+      userId,
+      setIsLoading,
+      setErrorMsg,
+    ).then(setPosts);
   }, [userId]);
 
   return (
@@ -66,9 +60,11 @@ const App: FC = () => {
             />
           </div>
 
-          <div className="App__content">
-            <PostDetails />
-          </div>
+          {selectedPostId !== 0 && (
+            <div className="App__content">
+              <PostDetails postId={selectedPostId} />
+            </div>
+          )}
         </main>
       )}
       {isLoading && <Loader />}
