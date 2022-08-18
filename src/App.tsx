@@ -8,7 +8,7 @@ import { Loader } from './components/Loader';
 import { apiHelper } from './api/apiHelper';
 import { Post } from './types/Post';
 import { User } from './types/User';
-import { getUser } from './api/users';
+import { getUserById } from './api/users';
 
 const App: FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -36,7 +36,7 @@ const App: FC = () => {
 
   useEffect(() => {
     const uniqueIds = new Set(posts.map(post => post.userId));
-    const usersRequests = Array.from(uniqueIds).map(id => getUser(id));
+    const usersRequests = Array.from(uniqueIds).map(id => getUserById(id));
 
     Promise.all(usersRequests)
       .then(data => {
