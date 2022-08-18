@@ -10,7 +10,6 @@ interface Props {
 }
 
 export const NewCommentForm: FC<Props> = ({ postId, handleUpdate }) => {
-  const [id, setId] = useState(generateId());
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
@@ -19,14 +18,13 @@ export const NewCommentForm: FC<Props> = ({ postId, handleUpdate }) => {
     event.preventDefault();
 
     addComment({
-      id,
+      id: generateId(),
       postId,
       name,
       email,
       body,
     }).then(() => handleUpdate(true));
 
-    setId(generateId());
     setName('');
     setEmail('');
     setBody('');
