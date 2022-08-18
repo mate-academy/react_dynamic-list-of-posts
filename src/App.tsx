@@ -3,10 +3,12 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { Post } from './types/Post';
 import { getUserPosts } from './api/posts';
 import { Loader } from './components/Loader';
 import { apiHelper } from './api/apiHelper';
+import { Post } from './types/Post';
+import { User } from './types/User';
+import { getUser } from './api/users';
 
 const App: FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -14,6 +16,8 @@ const App: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [selectedPostId, setSelectedPostId] = useState(0);
+  const [isPostsLoaded, setIsPostsLoaded] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
     apiHelper(
@@ -21,8 +25,28 @@ const App: FC = () => {
       userId,
       setIsLoading,
       setErrorMsg,
-    ).then(setPosts);
+    ).then(res => {
+      setPosts(res);
+
+      if (!isPostsLoaded) {
+        setIsPostsLoaded(true);
+      }
+    });
   }, [userId]);
+
+  useEffect(() => {
+    const uniqueIds = new Set(posts.map(post => post.userId));
+    const usersRequests = Array.from(uniqueIds).map(id => getUser(id));
+
+    Promise.all(usersRequests)
+      .then(data => {
+        if ('Error' in data) {
+          throw new Error('error');
+        } else {
+          setUsers(data);
+        }
+      });
+  }, [isPostsLoaded]);
 
   return (
     <div className="App">
@@ -36,16 +60,11 @@ const App: FC = () => {
             onChange={(event) => setUserId(Number(event.target.value))}
           >
             <option value="0">All users</option>
-            <option value="1">Leanne Graham</option>
-            <option value="2">Ervin Howell</option>
-            <option value="3">Clementine Bauch</option>
-            <option value="4">Patricia Lebsack</option>
-            <option value="5">Chelsey Dietrich</option>
-            <option value="6">Mrs. Dennis Schulist</option>
-            <option value="7">Kurtis Weissnat</option>
-            <option value="8">Nicholas Runolfsdottir V</option>
-            <option value="9">Glenna Reichert</option>
-            <option value="10">Leanne Graham</option>
+            {users.length > 0 && (
+              users.map(user => (
+                <option key={user.id} value={user.id}>{user.name}</option>
+              ))
+            )}
           </select>
         </label>
       </header>

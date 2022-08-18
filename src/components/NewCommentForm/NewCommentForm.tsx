@@ -2,8 +2,6 @@ import { FC, FormEvent, useState } from 'react';
 import './NewCommentForm.scss';
 import { addComment } from '../../api/comments';
 
-const generateId = () => Math.trunc(Math.random() * 10000);
-
 interface Props {
   postId: number,
   handleUpdate: (bool: boolean) => void;
@@ -18,7 +16,6 @@ export const NewCommentForm: FC<Props> = ({ postId, handleUpdate }) => {
     event.preventDefault();
 
     addComment({
-      id: generateId(),
       postId,
       name,
       email,

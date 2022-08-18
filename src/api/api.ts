@@ -2,6 +2,7 @@ export const BASE_URL = 'https://mate.academy/students-api';
 export const ENDPOINTS = {
   posts: '/posts',
   comments: '/comments',
+  users: '/users',
 };
 
 export const request = <T>(query: string, options = {}): Promise<T> => {

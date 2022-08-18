@@ -12,7 +12,7 @@ export const deleteCommentById = (commentId: number) => (
   request<CommentPromise>(`${ENDPOINTS.comments}/${commentId}`, { method: 'DELETE' })
 );
 
-export const addComment = (newComment: Comment) => (
+export const addComment = (newComment: Omit<Comment, 'id'>) => (
   request<CommentPromise>(
     ENDPOINTS.comments,
     {

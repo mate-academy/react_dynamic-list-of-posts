@@ -41,9 +41,8 @@ export const PostDetails: FC<Props> = ({ postId }) => {
   }, [postId, needUpdate]);
 
   const removeCommentById = (commentId: number) => {
-    // eslint-disable-next-line
-    deleteCommentById(commentId).then(res => console.log(res));
-    setNeedUpdate(true);
+    deleteCommentById(commentId)
+      .then(() => setNeedUpdate(true));
   };
 
   return (
