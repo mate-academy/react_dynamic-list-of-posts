@@ -70,6 +70,9 @@ export const NewCommentForm = (
       <button
         type="submit"
         className="NewCommentForm__submit-button button"
+        disabled={name.trim().length === 0
+          || mail.trim().length === 0
+          || message.trim().length === 0}
       >
         Add a comment
       </button>

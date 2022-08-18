@@ -3,11 +3,11 @@ import { Post } from '../../types/Post';
 
 interface Props {
   posts: Post[];
-  selectedPost: number;
+  selectedPostId: number;
   onSelectedPost: (selectedPost: number) => void;
 }
 
-export const PostsList = ({ posts, selectedPost, onSelectedPost }: Props) => {
+export const PostsList = ({ posts, selectedPostId, onSelectedPost }: Props) => {
   return (
     <div className="PostsList">
       <h2>Posts:</h2>
@@ -19,7 +19,7 @@ export const PostsList = ({ posts, selectedPost, onSelectedPost }: Props) => {
               <b>{`[User #${post.userId}]: `}</b>
               {post.title}
             </div>
-            {selectedPost === post.id ? (
+            {selectedPostId === post.id ? (
               <button
                 type="button"
                 className="PostsList__button button"
