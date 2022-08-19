@@ -64,6 +64,7 @@ export const NewCommentForm: FC<Props> = ({ postId, handleUpdate }) => {
       <button
         type="submit"
         className="NewCommentForm__submit-button button"
+        disabled={!name.trim() || !email.trim() || !body.trim()}
       >
         Add a comment
       </button>
