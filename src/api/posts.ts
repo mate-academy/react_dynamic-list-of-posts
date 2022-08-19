@@ -1,8 +1,8 @@
-import { Pos } from '../types/pos';
+import { Post } from '../types/post';
 
 const API_URL = 'https://mate.academy/students-api';
 
-export function getUserPosts(userId: string): Promise<Pos[]> {
+export function getUserPosts(userId: string): Promise<Post[]> {
   return fetch(`${API_URL}/posts?userId=${userId}`)
     .then(res => res.json())
     .catch(() => ({
@@ -11,7 +11,7 @@ export function getUserPosts(userId: string): Promise<Pos[]> {
     }));
 }
 
-export function getAllPosts(): Promise<Pos[]> {
+export function getAllPosts(): Promise<Post[]> {
   return fetch(`${API_URL}/posts`)
     .then(res => res.json())
     .catch(() => ({
@@ -20,7 +20,7 @@ export function getAllPosts(): Promise<Pos[]> {
     }));
 }
 
-export function getPostDetails(postId: string): Promise<Pos> {
+export function getPostDetails(postId: string): Promise<Post> {
   return fetch(`${API_URL}/posts/${postId}`)
     .then(res => res.json())
     .catch(() => ({

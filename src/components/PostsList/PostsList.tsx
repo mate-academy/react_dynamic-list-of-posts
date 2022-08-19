@@ -1,10 +1,10 @@
 import React from 'react';
 import classNames from 'classnames';
-import { Pos } from '../../types/pos';
+import { Post } from '../../types/post';
 import './PostsList.scss';
 
 interface Props {
-  posts: Pos[],
+  posts: Post[],
   setPost: (arg0:string) => void,
   selectedPost: string,
 }
@@ -22,7 +22,7 @@ export const PostsList: React.FC<Props>
       <h2>Posts:</h2>
 
       <ul className="PostsList__list" data-cy="postDetails">
-        {posts.map((onePost:Pos) => (
+        {posts.map((onePost:Post) => (
           <li className="PostsList__item" key={onePost.id}>
             <div>
               <b>

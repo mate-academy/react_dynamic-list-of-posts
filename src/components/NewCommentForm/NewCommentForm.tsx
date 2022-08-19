@@ -1,22 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CommentToPost } from '../../types/comment-to-post';
 import { postComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
 interface Props {
   postId: string,
-  rerender: (arg0:boolean) => void,
-  renderState: boolean,
+  reloadComments: () => void,
 }
 
 export const NewCommentForm: React.FC<Props>
-= ({ postId, rerender, renderState }) => {
+= ({ postId, reloadComments }) => {
   const [data, setData] = useState<CommentToPost>({
     postId: +postId,
     name: '',
     email: '',
     body: '',
   });
+
+  useEffect(() => {
+    const updatedData = { ...data };
+
+    updatedData.postId = +postId;
+    setData(updatedData);
+  }, [postId]);
 
   const dataChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const updatedData = { ...data };
@@ -35,7 +41,7 @@ export const NewCommentForm: React.FC<Props>
   async function sendCommentToServer() {
     await postComment(data)
       .then(() => {
-        rerender(!renderState);
+        reloadComments();
         setData({
           postId: +postId,
           name: '',
@@ -43,9 +49,7 @@ export const NewCommentForm: React.FC<Props>
           body: '',
         });
       });
-  } // I know it`s a dumb way to force parent to rerender, but this is
-  // one I come up with. Feel free to suggest a better way
-  // to force rerender of parent component from child
+  }
 
   return (
     <form className="NewCommentForm">
@@ -56,7 +60,7 @@ export const NewCommentForm: React.FC<Props>
           placeholder="Your name"
           className="NewCommentForm__input"
           value={data.name}
-          onChange={(e) => dataChangeHandler(e)}
+          onChange={dataChangeHandler}
         />
       </div>
 
@@ -67,7 +71,7 @@ export const NewCommentForm: React.FC<Props>
           placeholder="Your email"
           className="NewCommentForm__input"
           value={data.email}
-          onChange={(e) => dataChangeHandler(e)}
+          onChange={dataChangeHandler}
         />
       </div>
 
@@ -77,16 +81,14 @@ export const NewCommentForm: React.FC<Props>
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={data.body}
-          onChange={(e) => textChangeHandler(e)}
+          onChange={textChangeHandler}
         />
       </div>
 
       <button
         type="button"
         className="NewCommentForm__submit-button button"
-        onClick={
-          sendCommentToServer
-        }
+        onClick={sendCommentToServer}
       >
         Add a comment
       </button>

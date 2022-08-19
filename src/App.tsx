@@ -3,13 +3,13 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { Pos } from './types/pos';
+import { Post } from './types/post';
 import { getUserPosts, getAllPosts } from './api/posts';
 
 const App: React.FC = () => {
-  const [loadedPosts, setLoadedPosts] = useState<Pos[]>([]);
+  const [loadedPosts, setLoadedPosts] = useState<Post[]>([]);
   const [userId, setUserId] = useState<string>('0');
-  const [selectedPostId, setselectedPostId] = useState<string>('');
+  const [selectedPostId, setSelectedPostId] = useState<string>('');
 
   const loadAllPosts = useCallback(
     async () => {
@@ -33,10 +33,6 @@ const App: React.FC = () => {
       loadAllPosts();
     }
   }, [userId]);
-
-  useEffect(() => {
-    loadAllPosts();
-  }, []);
 
   const changeUserId = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setUserId(event.target.value);
@@ -72,7 +68,7 @@ const App: React.FC = () => {
         <div className="App__sidebar">
           <PostsList
             posts={loadedPosts}
-            setPost={setselectedPostId}
+            setPost={setSelectedPostId}
             selectedPost={selectedPostId}
           />
         </div>

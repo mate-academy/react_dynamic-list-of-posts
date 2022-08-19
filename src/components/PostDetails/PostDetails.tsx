@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getPostDetails } from '../../api/posts';
-import { Pos } from '../../types/pos';
+import { Post } from '../../types/post';
 import { NewCommentForm } from '../NewCommentForm';
 import { deleteComment, getPostComments } from '../../api/comments';
 import './PostDetails.scss';
@@ -11,10 +11,9 @@ interface Props {
 }
 
 export const PostDetails: React.FC<Props> = ({ postId }) => {
-  const [selectedPost, setSelectedPost] = useState<Pos | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [comsVisibility, setComsVisibility] = useState<boolean>(true);
-  const [rerender, setRerender] = useState(false);
 
   async function loadPost() {
     try {
@@ -22,8 +21,8 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
 
       setSelectedPost(loaded);
     } catch (error) {
-      // eslint-disable-next-line no-alert
-      alert(error);
+      // eslint-disable-next-line no-console
+      console.log(error);
     }
   }
 
@@ -36,7 +35,7 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
   useEffect(() => {
     loadPost();
     loadComments();
-  }, [postId, rerender]);
+  }, [postId]);
 
   const comsVisTrigger = () => {
     setComsVisibility(prevState => !prevState);
@@ -90,8 +89,8 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             postId={postId}
-            rerender={setRerender}
-            renderState={rerender}
+            // eslint-disable-next-line react/jsx-no-bind
+            reloadComments={loadComments}
           />
         </div>
       </section>
