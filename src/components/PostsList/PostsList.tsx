@@ -4,8 +4,8 @@ import './PostsList.scss';
 
 type Props = {
   posts: Post[],
-  selectedPostId: number,
-  setSelectedPostId: React.Dispatch<React.SetStateAction<number>>
+  selectedPostId: number | null,
+  setSelectedPostId: React.Dispatch<React.SetStateAction<number | null>>
 };
 
 export const PostsList: React.FC<Props> = ({
@@ -28,7 +28,7 @@ export const PostsList: React.FC<Props> = ({
               <button
                 type="button"
                 className="PostsList__button button"
-                onClick={() => setSelectedPostId(NaN)}
+                onClick={() => setSelectedPostId(null)}
               >
                 Close
               </button>

@@ -9,8 +9,8 @@ import { Loader } from './components/Loader';
 
 const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [selectedUser, setSelectedUser] = useState('0');
-  const [selectedPostId, setSelectedPostId] = useState(NaN);
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const hadleResponse = (res: Post[]) => {
@@ -20,7 +20,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    if (selectedUser === '0') {
+    if (selectedUser === null || selectedUser === '0') {
       getAllPosts().then(hadleResponse);
     } else {
       getUserPosts(selectedUser).then(hadleResponse);
@@ -35,7 +35,7 @@ const App: React.FC = () => {
 
           <select
             className="App__user-selector"
-            value={selectedUser}
+            value={selectedUser || '0'}
             onChange={e => setSelectedUser(e.target.value)}
           >
             <option value="0">All users</option>
@@ -66,7 +66,7 @@ const App: React.FC = () => {
           )}
         </div>
 
-        {!Number.isNaN(selectedPostId) && (
+        {selectedPostId && (
           <div className="App__content">
             <PostDetails selectedPostId={selectedPostId} />
           </div>
