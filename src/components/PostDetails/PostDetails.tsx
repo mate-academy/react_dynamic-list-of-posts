@@ -55,19 +55,15 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
       </section>
 
       <section className="PostDetails__comments">
-        {comments.length === 0
-          ? null
-          : (
-            <button
-              type="button"
-              className="button"
-              onClick={comsVisTrigger}
-            >
-              Hide&#160;
-              {comments.length}
-              &#160;comments
-            </button>
-          )}
+        <button
+          type="button"
+          className="button"
+          onClick={comsVisTrigger}
+        >
+          {comsVisibility
+            ? ('Hide comments')
+            : ('Show comments')}
+        </button>
         {comsVisibility && (
           <ul className="PostDetails__list" data-cy="postList">
             {comments.map(oneComment => (
