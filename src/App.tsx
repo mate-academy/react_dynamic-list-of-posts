@@ -83,32 +83,40 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {(selectedUserId === 0)
-                  ? (
-                    <p data-cy="NoSelectedUser">
-                      No user selected
-                    </p>
-                  )
-                  : isLoading
-                    ? (<Loader />)
-                    : (visiblePosts.length === 0)
-                      ? (
-                        <div
-                          className="notification is-warning"
-                          data-cy="NoPostsYet"
-                        >
-                          No posts yet
-                        </div>
-                      )
-                      : (
-                        <PostsList
-                          posts={visiblePosts}
-                          onChoose={(post) => {
-                            handleChoosePost(post);
-                          }}
-                          selectedPostId={selectedPost?.id}
-                        />
-                      )}
+                {(() => {
+                  if (selectedUserId === 0) {
+                    return (
+                      <p data-cy="NoSelectedUser">
+                        No user selected
+                      </p>
+                    );
+                  }
+
+                  if (isLoading) {
+                      return (<Loader />);
+                    }
+
+                  if (visiblePosts.length === 0) {
+                    return (
+                      <div
+                        className="notification is-warning"
+                        data-cy="NoPostsYet"
+                      >
+                        No posts yet
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <PostsList
+                      posts={visiblePosts}
+                      onChoose={(post) => {
+                          handleChoosePost(post);
+                      }}
+                      selectedPostId={selectedPost?.id}
+                    />
+                  );
+                })()}
 
                 {hasError && (
                   <div

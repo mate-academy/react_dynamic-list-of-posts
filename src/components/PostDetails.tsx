@@ -61,51 +61,60 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         </div>
 
         <div className="block">
-          {isLoading
-            ? (<Loader />)
-            : comments.length === 0
-              ? (
-                <p className="title is-4" data-cy="NoCommentsMessage">
+          {(() => {
+            if (isLoading) {
+              return (<Loader />);
+            }
+
+            if (comments.length === 0) {
+              return (
+                <p
+                  className="title is-4"
+                  data-cy="NoCommentsMessage"
+                >
                   No comments yet
                 </p>
-              )
-              : (
-                <>
-                  <p className="title is-4">
-                    Comments:
-                  </p>
+              );
+            }
 
-                  {comments.map(comment => (
-                    <article
-                      className="message is-small"
-                      data-cy="Comment"
-                      key={comment.id}
-                    >
-                      <div className="message-header">
-                        <a
-                          href="mailto:misha@mate.academy"
-                          data-cy="CommentAuthor"
-                        >
-                          {comment.name}
-                        </a>
-                        <button
-                          data-cy="CommentDelete"
-                          type="button"
-                          className="delete is-small"
-                          aria-label="delete"
-                          onClick={() => handleRemove(comment.id)}
-                        >
-                          delete button
-                        </button>
-                      </div>
+            return (
+              <>
+                <p className="title is-4">
+                  Comments:
+                </p>
 
-                      <div className="message-body" data-cy="CommentBody">
-                        {comment.body}
-                      </div>
-                    </article>
-                  ))}
-                </>
-              )}
+                {comments.map(comment => (
+                  <article
+                    className="message is-small"
+                    data-cy="Comment"
+                    key={comment.id}
+                  >
+                    <div className="message-header">
+                      <a
+                        href="mailto:misha@mate.academy"
+                        data-cy="CommentAuthor"
+                      >
+                        {comment.name}
+                      </a>
+                      <button
+                        data-cy="CommentDelete"
+                        type="button"
+                        className="delete is-small"
+                        aria-label="delete"
+                        onClick={() => handleRemove(comment.id)}
+                      >
+                        delete button
+                      </button>
+                    </div>
+
+                    <div className="message-body" data-cy="CommentBody">
+                      {comment.body}
+                    </div>
+                  </article>
+                ))}
+              </>
+            );
+          })()}
 
           {hasError && (
             <div className="notification is-danger" data-cy="CommentsError">
