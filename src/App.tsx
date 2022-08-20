@@ -93,8 +93,8 @@ export const App: React.FC = () => {
                   }
 
                   if (isLoading) {
-                      return (<Loader />);
-                    }
+                    return (<Loader />);
+                  }
 
                   if (visiblePosts.length === 0) {
                     return (
@@ -111,7 +111,7 @@ export const App: React.FC = () => {
                     <PostsList
                       posts={visiblePosts}
                       onChoose={(post) => {
-                          handleChoosePost(post);
+                        handleChoosePost(post);
                       }}
                       selectedPostId={selectedPost?.id}
                     />
