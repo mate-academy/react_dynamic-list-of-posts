@@ -1,45 +1,88 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { deleteMethod } from '../../api/api';
+import { getPostComments } from '../../api/comments';
+import { getPostDetails } from '../../api/posts';
+import { Comment } from '../../types/Comment';
+import { Post } from '../../types/Post';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
-export const PostDetails: React.FC = () => (
-  <div className="PostDetails">
-    <h2>Post details:</h2>
+type Props = {
+  postId: number;
+};
 
-    <section className="PostDetails__post">
-      <p>sunt aut facere repellat provident occaecati excepturi optio</p>
-    </section>
+const emptyPost = {
+  id: 0,
+  title: '',
+  body: '',
+  createdAt: 'December 17, 1995 03:24:00',
+  updatedAt: 'December 17, 1995 03:24:00',
+  userId: 0,
+};
 
-    <section className="PostDetails__comments">
-      <button type="button" className="button">Hide 2 comments</button>
+export const PostDetails: React.FC<Props> = ({ postId }) => {
+  const [post, setPost] = useState<Post>(emptyPost);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isCommentsHidden, setIsCommentsHidden] = useState(true);
 
-      <ul className="PostDetails__list">
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>My first comment</p>
-        </li>
+  useEffect(() => {
+    (async function fetchData() {
+      setPost(await getPostDetails(postId));
+      setComments(await getPostComments(postId));
+    }());
+  }, [postId, comments]);
 
-        <li className="PostDetails__list-item">
-          <button
-            type="button"
-            className="PostDetails__remove-button button"
-          >
-            X
-          </button>
-          <p>sad sds dfsadf asdf asdf</p>
-        </li>
-      </ul>
-    </section>
+  const deleteComment = (commentId:number) => {
+    return deleteMethod(`/comments/${commentId}`);
+  };
 
-    <section>
-      <div className="PostDetails__form-wrapper">
-        <NewCommentForm />
-      </div>
-    </section>
-  </div>
-);
+  return (
+    <div className="PostDetails">
+      <h2>Post details:</h2>
+
+      <section className="PostDetails__post">
+        <p>{post.title}</p>
+      </section>
+
+      <section className="PostDetails__comments">
+        <button
+          type="button"
+          className="button"
+          onClick={() => {
+            setIsCommentsHidden(!isCommentsHidden);
+          }}
+        >
+          {isCommentsHidden
+            ? `Show ${comments.length} comments`
+            : `Hide ${comments.length} comments`}
+        </button>
+
+        {!isCommentsHidden
+          && (
+            <ul className="PostDetails__list">
+              {comments.map(comment => (
+                <li className="PostDetails__list-item">
+                  <button
+                    type="button"
+                    className="PostDetails__remove-button button"
+                    onClick={() => {
+                      deleteComment(comment.id);
+                    }}
+                  >
+                    X
+                  </button>
+                  <p>{comment.body}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+      </section>
+
+      <section>
+        <div className="PostDetails__form-wrapper">
+          <NewCommentForm postId={post.id} />
+        </div>
+      </section>
+    </div>
+  );
+};
