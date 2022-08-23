@@ -20,7 +20,7 @@ const App: React.FC = () => {
 
       setUsers(usersFromServer);
     } catch {
-      setIsError((prev) => !prev);
+      setIsError(true);
     }
   };
 
@@ -58,18 +58,18 @@ const App: React.FC = () => {
             >
               <option value="0">All users</option>
               {users?.map((user) => {
-                if (user.name !== null) {
-                  return (
-                    <option
-                      key={user.id}
-                      value={user.id}
-                    >
-                      {user.name}
-                    </option>
-                  );
+                if (!user.name) {
+                  return null;
                 }
 
-                return null;
+                return (
+                  <option
+                    key={user.id}
+                    value={user.id}
+                  >
+                    {user.name}
+                  </option>
+                );
               })}
             </select>
           </label>
