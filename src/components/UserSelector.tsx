@@ -8,13 +8,19 @@ import { User } from '../types/User';
 import { client } from '../utils/fetchClient';
 
 interface Props {
-  getPosts: (userId: number) => void
+  getPosts: (userId: number) => void;
+  selectedUserId: number | null;
   onUserChange: (newValue: null) => void;
+  setSelectedPostId: (newValue: null) => void;
 }
 
-export const UserSelector: React.FC<Props> = ({ getPosts, onUserChange }) => {
+export const UserSelector: React.FC<Props> = ({
+  getPosts,
+  onUserChange,
+  selectedUserId,
+  setSelectedPostId,
+}) => {
   const [users, setUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -41,14 +47,18 @@ export const UserSelector: React.FC<Props> = ({ getPosts, onUserChange }) => {
   }, []);
 
   const handleSelect = useCallback((user) => {
-    if (user !== selectedUser) {
-      setSelectedUser(user);
-      getPosts(user.id);
-      onUserChange(null);
+    const { id } = user;
+
+    if (id !== selectedUserId) {
+      onUserChange(id);
+      getPosts(id);
+      setSelectedPostId(null);
     }
 
     setIsOpen(false);
-  }, [selectedUser]);
+  }, [selectedUserId]);
+
+  const selectedUserName = users.find(({ id }) => id === selectedUserId)?.name;
 
   return (
     <div
@@ -64,7 +74,7 @@ export const UserSelector: React.FC<Props> = ({ getPosts, onUserChange }) => {
           aria-controls="dropdown-menu"
           onClick={handleOpen}
         >
-          <span>{selectedUser?.name || 'Choose a user'}</span>
+          <span>{selectedUserName || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />

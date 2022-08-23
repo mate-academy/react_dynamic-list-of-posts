@@ -15,8 +15,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
-  useEffect(() => {
-    setIsFormOpen(false);
+  const getComments = useCallback(() => {
     setIsLoading(true);
     client.get<Comment[]>(`/comments?postId=${post?.id}`)
       .then(commentsFromServer => {
@@ -27,6 +26,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       .finally(() => setIsLoading(false));
   }, [post]);
 
+  useEffect(() => {
+    setIsFormOpen(false);
+    getComments();
+  }, []);
+
   const openFormHandler = useCallback(() => {
     setIsFormOpen(prevValue => !prevValue);
   }, []);
@@ -34,10 +38,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const handleDelete = useCallback((commentId: number) => {
     client.delete(`/comments/${commentId}`);
     setComments(prevValue => prevValue.filter(el => el.id !== commentId));
-  }, []);
-
-  const addNewComment = useCallback((comment: Comment) => {
-    setComments(prevValue => [...prevValue, comment]);
   }, []);
 
   return (
@@ -115,7 +115,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         {isFormOpen && (
           <NewCommentForm
             postId={post.id}
-            addComment={addNewComment}
+            onUpdate={getComments}
           />
         )}
       </div>

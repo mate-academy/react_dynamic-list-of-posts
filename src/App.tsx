@@ -13,28 +13,24 @@ import { client } from './utils/fetchClient';
 import { Post } from './types/Post';
 
 export const App: React.FC = () => {
-  const [isUserSelected, setIsUserSelected] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [isNoPosts, setIsNoPosts] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
   const getPosts = useCallback((userId: number) => {
     setIsLoading(true);
-    setIsNoPosts(false);
-    setIsUserSelected(true);
     client.get<Post[]>(`/posts?userId=${userId}`)
       .then(postsFromServer => {
         setPosts(postsFromServer);
-        setIsNoPosts(!postsFromServer.length);
         setHasError(false);
       })
       .catch(() => setHasError(true))
       .finally(() => setIsLoading(false));
   }, []);
 
-  const isPostVisible = isUserSelected && !hasError && !isNoPosts;
+  const selectedPost = posts.find(({ id }) => id === selectedPostId);
 
   return (
     <main className="section">
@@ -45,12 +41,14 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   getPosts={getPosts}
-                  onUserChange={setSelectedPost}
+                  selectedUserId={selectedUserId}
+                  onUserChange={setSelectedUserId}
+                  setSelectedPostId={setSelectedPostId}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!isUserSelected && (
+                {selectedUserId === null && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
@@ -65,17 +63,18 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {isPostVisible && (isLoading
-                  ? (<Loader />)
-                  : (
-                    <PostsList
-                      posts={posts}
-                      onOpen={setSelectedPost}
-                      selectedPost={selectedPost}
-                    />
-                  ))}
+                {isLoading && <Loader />}
 
-                {isNoPosts && !hasError && (
+                {posts.length > 0 && !isLoading && (
+                  <PostsList
+                    posts={posts}
+                    onOpen={setSelectedPostId}
+                    selectedPostId={selectedPostId}
+                  />
+                )}
+
+                {posts.length === 0 && selectedUserId !== null
+                && !isLoading && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
@@ -91,7 +90,7 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': selectedPost },
+              { 'Sidebar--open': selectedPostId !== null },
             )}
           >
             <div className="tile is-child box is-success ">

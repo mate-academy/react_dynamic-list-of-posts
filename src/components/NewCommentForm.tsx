@@ -1,21 +1,21 @@
 import cn from 'classnames';
 import React, { FormEvent, useCallback, useState } from 'react';
-import { Comment, CommentData } from '../types/Comment';
+import { CommentData } from '../types/Comment';
 import { client } from '../utils/fetchClient';
 
 interface Props {
   postId: number;
-  addComment: (newValue: Comment) => void;
+  onUpdate: () => void;
 }
 
-export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
+export const NewCommentForm: React.FC<Props> = ({ postId, onUpdate }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
   const [hasError, setHasError] = useState(false);
   const [isSending, setIsSendign] = useState(false);
 
-  const isErrorVisible = useCallback((field: string) => (
+  const checkOnError = useCallback((field: string) => (
     !field.length && hasError
   ), [hasError]);
 
@@ -37,9 +37,8 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
         .finally(() => {
           setIsSendign(false);
           setBody('');
+          onUpdate();
         });
-
-      addComment({ id: Math.random() + postId, ...newComment });
     }
   };
 
@@ -64,7 +63,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
             id="comment-author-name"
             placeholder="Name Surname"
             className={cn('input',
-              { 'is-danger': isErrorVisible(name) })}
+              { 'is-danger': checkOnError(name) })}
             value={name}
             onChange={event => setName(event.target.value)}
           />
@@ -73,7 +72,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
             <i className="fas fa-user" />
           </span>
 
-          {isErrorVisible(name) && (
+          {checkOnError(name) && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -83,7 +82,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
           )}
         </div>
 
-        {isErrorVisible(name) && (
+        {checkOnError(name) && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -102,7 +101,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
             id="comment-author-email"
             placeholder="email@test.com"
             className={cn('input',
-              { 'is-danger': isErrorVisible(email) })}
+              { 'is-danger': checkOnError(email) })}
             value={email}
             onChange={event => setEmail(event.target.value)}
           />
@@ -111,7 +110,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
             <i className="fas fa-envelope" />
           </span>
 
-          {isErrorVisible(email) && (
+          {checkOnError(email) && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -121,7 +120,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
           )}
         </div>
 
-        {isErrorVisible(email) && (
+        {checkOnError(email) && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -139,13 +138,13 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
             name="body"
             placeholder="Type comment here"
             className={cn('textarea',
-              { 'is-danger': isErrorVisible(body) })}
+              { 'is-danger': checkOnError(body) })}
             value={body}
             onChange={event => setBody(event.target.value)}
           />
         </div>
 
-        {isErrorVisible(body) && (
+        {checkOnError(body) && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
