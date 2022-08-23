@@ -29,7 +29,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   useEffect(() => {
     setIsFormOpen(false);
     getComments();
-  }, []);
+  }, [post]);
 
   const openFormHandler = useCallback(() => {
     setIsFormOpen(prevValue => !prevValue);
