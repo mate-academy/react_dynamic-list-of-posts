@@ -1,4 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
+import {
+  addComments,
+  deleteComments,
+  getComments,
+  getPostComments,
+} from '../../api/posts';
 import { Comment } from '../../types/Comment';
 import { Post } from '../../types/Post';
 import { Loader } from '../Loader';
@@ -7,39 +13,103 @@ import './PostDetails.scss';
 
 type Props = {
   selectPostDetails: Post | null;
-  showOrHideComments: () => void | Promise<void>;
-  showComments: boolean;
-  postComments: Comment[];
-  deleteComment: (commentId: Comment) => void;
-  changeName: (value: React.ChangeEvent<HTMLInputElement>) => void;
-  changeEmail: (value: React.ChangeEvent<HTMLInputElement>) => void;
-  changeBody: (value: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  postName: string;
-  postEmail: string;
-  postBody: string;
-  addComment: () => void;
-  isLoadingComments: boolean;
-  isLoadingForm: boolean;
+  selectedPostId: number | null;
 };
 
 export const PostDetails: React.FC<Props> = (
   {
     selectPostDetails,
-    showOrHideComments,
-    showComments,
-    postComments,
-    deleteComment,
-    changeName,
-    changeEmail,
-    changeBody,
-    postName,
-    postEmail,
-    postBody,
-    addComment,
-    isLoadingComments,
-    isLoadingForm,
+    selectedPostId,
   },
 ) => {
+  const [postName, setPostName] = useState<string>('');
+  const [postEmail, setPostEmail] = useState<string>('');
+  const [postBody, setPostBody] = useState<string>('');
+  const [showComments, setShowComments] = useState<boolean>(false);
+  const [postComments, setPostComments] = useState<Comment[]>([]);
+  const [isLoadingComments, setIsloadingComments] = useState<boolean>(false);
+  const [isLoadingForm, setIsloadingForm] = useState<boolean>(false);
+
+  const changeName = (value: React.ChangeEvent<HTMLInputElement>) => {
+    setPostName(value.target.value);
+  };
+
+  const changeEmail = (value: React.ChangeEvent<HTMLInputElement>) => {
+    setPostEmail(value.target.value);
+  };
+
+  const changeBody = (value: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setPostBody(value.target.value);
+  };
+
+  const loadComments = async (postId: number) => {
+    const loadPostComments = await getPostComments(postId);
+
+    setIsloadingComments(false);
+    setPostComments(loadPostComments);
+  };
+
+  const showOrHideComments = async () => {
+    setIsloadingComments(true);
+    if (showComments) {
+      setShowComments(false);
+    } else {
+      setShowComments(true);
+    }
+
+    if (selectedPostId) {
+      loadComments(selectedPostId);
+    }
+  };
+
+  const uniqueId = async () => {
+    const numbers: Comment[] = await getComments();
+
+    return numbers[numbers.length - 1].id + 1;
+  };
+
+  const addComment = async () => {
+    const emailPattern = '[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$';
+
+    if (!postName
+      || !postEmail || !postEmail.match(emailPattern) || !postBody) {
+      return null;
+    }
+
+    setIsloadingComments(true);
+    setIsloadingForm(true);
+
+    if (selectedPostId) {
+      const addCom
+      = await addComments(
+        postName,
+        postEmail,
+        postBody,
+        uniqueId,
+        selectedPostId,
+      );
+
+      loadComments(selectedPostId);
+      setPostName('');
+      setPostEmail('');
+      setPostBody('');
+      setIsloadingForm(false);
+
+      return addCom;
+    }
+
+    return null;
+  };
+
+  const removeComment = async (comment: Comment) => {
+    setIsloadingComments(true);
+    const remComment = await deleteComments(comment.id);
+
+    loadComments(comment.postId);
+
+    return remComment;
+  };
+
   if (!selectPostDetails) {
     return null;
   }
@@ -70,7 +140,7 @@ export const PostDetails: React.FC<Props> = (
                     <button
                       type="button"
                       className="PostDetails__remove-button button"
-                      onClick={() => deleteComment(comment)}
+                      onClick={() => removeComment(comment)}
                     >
                       X
                     </button>
