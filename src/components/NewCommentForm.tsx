@@ -38,6 +38,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onUpdate }) => {
           setIsSendign(false);
           setBody('');
           onUpdate();
+          setHasError(false);
         });
     }
   };
