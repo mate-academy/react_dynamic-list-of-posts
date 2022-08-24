@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getPostComments } from '../../api/comments';
+import { getPostDetails } from '../../api/posts';
 import { Loader } from '../Loader';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
 type Props = {
-  postComments: Comment[];
-  postDetails: Post;
+  currentUser: string;
+  selectedPostId: string,
+  // postComments: Comment[];
+  // postDetails: Post;
 };
 
 // can't import from react-app-env.ts
@@ -19,25 +23,75 @@ type Comment = {
   body: string;
 };
 
+const initialPostDetails = {
+  id: '',
+  userId: '',
+  title: '',
+  body: '',
+  createdAt: '',
+  updatedAt: '',
+};
+
 export const PostDetails: React.FC<Props> = ({
-  postComments,
-  postDetails,
+  currentUser,
+  selectedPostId,
+  // postComments,
+  // postDetails,
 }) => {
+  const [postComments, setPostComments] = useState([]);
+  const [postDetails, setPostDetails] = useState(initialPostDetails);
+
   const [showComments, setShowComments] = useState(true);
 
   const counterComments = postComments.length;
-  const showLoaderForTitlePost = !postDetails.title;
+  // const showLoaderForTitlePost = !postDetails.title;
   const showLoaderForComments = !postComments;
+
+  const loadData = async () => {
+    // setShowLoaderPostsList(true);
+
+    // eslint-disable-next-line no-console
+    console.log('selectedPostId =', selectedPostId);
+    // eslint-disable-next-line no-console
+    console.log('currentUser = ', currentUser);
+
+    try {
+      // const comments = await getPostDetails(selectedPostId);
+      const [comments, newPostDetails] = await Promise.all([
+        getPostComments(selectedPostId),
+        getPostDetails(currentUser),
+      ]);
+
+      setPostComments(comments);
+      setPostDetails(newPostDetails);
+      // setShowLoaderPostsList(false);
+    } catch (error) {
+      // setShowLoaderPostsList(false);
+      // eslint-disable-next-line no-console
+      console.log('error', error);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedPostId) {
+      // eslint-disable-next-line no-console
+      console.log('mounted new comment by postId = ', selectedPostId);
+
+      loadData();
+    }
+  },
+  [currentUser, selectedPostId]);
 
   return (
     <div className="PostDetails">
       <h2>Post details:</h2>
 
       <section className="PostDetails__post">
-        { showLoaderForTitlePost
-          && <Loader /> }
-
-        <p>{postDetails.title}</p>
+        { postDetails.title ? (
+          <Loader />
+        ) : (
+          <p>{postDetails.title}</p>
+        )}
       </section>
 
       <section className="PostDetails__comments">

@@ -4,75 +4,62 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { getUserPosts, getPostDetails } from './api/posts';
-import { getPostComments } from './api/comments';
-import { Loader } from './components/Loader';
+import {
+// getUserPosts,
+// getPostDetails,
+} from './api/posts';
+// import { getPostComments } from './api/comments';
+// import { Loader } from './components/Loader';
 
-const initialPostDetails = {
-  id: '',
-  userId: '',
-  title: '',
-  body: '',
-  createdAt: '',
-  updatedAt: '',
-};
+// const initialPostDetails = {
+//   id: '',
+//   userId: '',
+//   title: '',
+//   body: '',
+//   createdAt: '',
+//   updatedAt: '',
+// };
 
 const App: React.FC = () => {
-  const [postsList, setPostsList] = useState([]);
   const [currentUser, setCurrentUser] = useState('');
   const [selectedPostId, setSelectedPostId] = useState('');
-  const [postDetails, setPostDetails] = useState(initialPostDetails);
-  const [postComments, setPostComments] = useState([]);
-  const [showLoaderPostsList, setShowLoaderPostsList] = useState(false);
-  const [showLoaderPostsDetails, setShowLoaderPostsDetails] = useState(false);
+  const [shoePostDetails, setShowPostDetails] = useState(false);
+  // const [postDetails, setPostDetails] = useState(initialPostDetails);
+  // const [postComments, setPostComments] = useState([]);
+  // const [showLoaderPostsDetails, setShowLoaderPostsDetails] = useState(false);
 
-  const downloadPosts = async (userId: string) => {
-    setShowLoaderPostsList(true);
+  // const downloadPostDetails = async (postId: string) => {
+  //   setShowLoaderPostsDetails(true);
 
-    try {
-      if (currentUser !== userId) {
-        const posts = await getUserPosts(userId);
+  //   try {
+  //     // eslint-disable-next-line no-console
+  //     console.log(postId);
 
-        setSelectedPostId('');
-        setPostDetails(initialPostDetails);
-        setCurrentUser(userId);
-        setPostsList(posts);
-        setShowLoaderPostsList(false);
-      }
-    } catch (error) {
-      setShowLoaderPostsList(false);
-      // eslint-disable-next-line no-console
-      console.log('error', error);
-    }
-  };
+  //     const newPostDetails = await getPostDetails(postId);
 
-  const downloadPostDetails = async (postId: string) => {
-    setShowLoaderPostsDetails(true);
+  //     setPostDetails(newPostDetails);
+  //     setShowLoaderPostsDetails(false);
+  //   } catch (error) {
+  //     setShowLoaderPostsDetails(false);
+  //     // eslint-disable-next-line no-console
+  //     console.log('error', error);
+  //   }
+  // };
 
-    try {
-      // eslint-disable-next-line no-console
-      console.log(postId);
+  // const downLoadComments = async (id: string) => {
+  //   if (selectedPostId === id) {
+  //     setSelectedPostId('');
+  //   } else {
+  //     const comments = await getPostComments(id);
 
-      const newPostDetails = await getPostDetails(postId);
+  //     setSelectedPostId(id);
+  //     setPostComments(comments);
+  //   }
+  // };
 
-      setPostDetails(newPostDetails);
-      setShowLoaderPostsDetails(false);
-    } catch (error) {
-      setShowLoaderPostsDetails(false);
-      // eslint-disable-next-line no-console
-      console.log('error', error);
-    }
-  };
-
-  const downLoadComments = async (id: string) => {
-    if (selectedPostId === id) {
-      setSelectedPostId('');
-    } else {
-      const comments = await getPostComments(id);
-
-      setSelectedPostId(id);
-      setPostComments(comments);
-    }
+  const selectUserHandler = (userId: string) => {
+    setCurrentUser(userId);
+    setShowPostDetails(false);
   };
 
   return (
@@ -84,7 +71,7 @@ const App: React.FC = () => {
           <select
             className="App__user-selector"
             defaultValue="DEFAULT"
-            onChange={e => downloadPosts(e.target.value)}
+            onChange={e => selectUserHandler(e.target.value)}
           >
             <option value="DEFAULT" disabled>Choose...</option>
             <option value="All">All users</option>
@@ -105,33 +92,29 @@ const App: React.FC = () => {
       <main className="App__main">
         {currentUser && (
           <div className="App__sidebar">
-            {showLoaderPostsList ? (
-              <Loader />
-            ) : (
-              <PostsList
-                postsList={postsList}
-                selectedPostId={selectedPostId}
-                downloadPostDetails={downloadPostDetails}
-                downLoadComments={downLoadComments}
-              />
-            )}
+            <PostsList
+              currentUser={currentUser}
+              selectedPostId={selectedPostId}
+              setSelectedPostId={setSelectedPostId}
+              setShowPostDetails={setShowPostDetails}
+              // downloadPostDetails={downloadPostDetails}
+              // downLoadComments={downLoadComments}
+            />
           </div>
         )}
 
         <div
           className={classNames(
             'App__content',
-            { 'App__content--hidden': !selectedPostId },
+            { 'App__content--hidden': !shoePostDetails },
           )}
         >
-          {showLoaderPostsDetails ? (
-            <div>
-              <Loader />
-            </div>
-          ) : (
+          {shoePostDetails && (
             <PostDetails
-              postComments={postComments}
-              postDetails={postDetails}
+              currentUser={currentUser}
+              selectedPostId={selectedPostId}
+              // postComments={postComments}
+              // postDetails={postDetails}
             />
           )}
         </div>
