@@ -1,9 +1,9 @@
 /* eslint-disable no-cond-assign */
 export const BASE_URL = 'https://mate.academy/students-api';
 
-export const request = async (url: string) => {
+export const request = async (url: string, options: any = {}) => {
   // eslint-disable-next-line no-console
-  console.log(`${BASE_URL}${url}`);
+  console.log(`${BASE_URL}${url}`, options);
 
   const response = await fetch(`${BASE_URL}${url}`);
 

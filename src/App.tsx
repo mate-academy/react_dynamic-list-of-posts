@@ -4,10 +4,10 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import {
+// import {
 // getUserPosts,
 // getPostDetails,
-} from './api/posts';
+// } from './api/posts';
 // import { getPostComments } from './api/comments';
 // import { Loader } from './components/Loader';
 
@@ -23,7 +23,7 @@ import {
 const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState('');
   const [selectedPostId, setSelectedPostId] = useState('');
-  const [shoePostDetails, setShowPostDetails] = useState(false);
+  const [showPostDetails, setShowPostDetails] = useState(false);
   // const [postDetails, setPostDetails] = useState(initialPostDetails);
   // const [postComments, setPostComments] = useState([]);
   // const [showLoaderPostsDetails, setShowLoaderPostsDetails] = useState(false);
@@ -96,6 +96,7 @@ const App: React.FC = () => {
               currentUser={currentUser}
               selectedPostId={selectedPostId}
               setSelectedPostId={setSelectedPostId}
+              // showPostDetails={showPostDetails}
               setShowPostDetails={setShowPostDetails}
               // downloadPostDetails={downloadPostDetails}
               // downLoadComments={downLoadComments}
@@ -106,12 +107,12 @@ const App: React.FC = () => {
         <div
           className={classNames(
             'App__content',
-            { 'App__content--hidden': !shoePostDetails },
+            { 'App__content--hidden': !showPostDetails },
           )}
         >
-          {shoePostDetails && (
+          {showPostDetails && (
             <PostDetails
-              currentUser={currentUser}
+              // currentUser={currentUser}
               selectedPostId={selectedPostId}
               // postComments={postComments}
               // postDetails={postDetails}

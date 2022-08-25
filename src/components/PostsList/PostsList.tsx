@@ -8,6 +8,7 @@ type Props = {
   currentUser: string;
   setSelectedPostId: (postId: string) => void;
   selectedPostId: string;
+  // showPostDetails: boolean;
   setShowPostDetails: (value: boolean) => void;
   // downLoadComments: (id: string) => void;
   // downloadPostDetails: (postId: string) => void;
@@ -17,12 +18,13 @@ export const PostsList: React.FC<Props> = ({
   currentUser,
   selectedPostId,
   setSelectedPostId,
+  // showPostDetails,
   setShowPostDetails,
   // downLoadComments,
   // downloadPostDetails,
 }) => {
   const [postsList, setPostsList] = useState([]);
-  const [showLoaderPostsList, setShowLoaderPostsList] = useState(true);
+  const [showLoaderPostsList, setShowLoaderPostsList] = useState(false);
 
   const loadData = async () => {
     setShowLoaderPostsList(true);
@@ -52,12 +54,46 @@ export const PostsList: React.FC<Props> = ({
 
   const postsListHandle = (postId: string) => {
     // eslint-disable-next-line no-console
-    console.log('setSelectedPostId', postId);
-    setSelectedPostId(postId);
-    setShowPostDetails(true);
+    console.log('postId =', postId);
+
+    // eslint-disable-next-line no-console
+    console.log('selectedPostId before = ', selectedPostId);
 
     // downLoadComments(postId);
     // downloadPostDetails(postId);
+
+    // if (postId === selectedPostId) {
+    //   setShowPostDetails(!showPostDetails);
+    //   setSelectedPostId('');
+    // } else {
+    //   setShowPostDetails(true);
+    //   setSelectedPostId(postId);
+    // }
+
+    switch (true) {
+      case selectedPostId && postId === selectedPostId:
+        setSelectedPostId('');
+        setShowPostDetails(false);
+        // eslint-disable-next-line no-console
+        console.log(selectedPostId);
+        break;
+
+      case selectedPostId && postId !== selectedPostId:
+        setSelectedPostId(postId);
+        setShowPostDetails(true);
+        // eslint-disable-next-line no-console
+        console.log(selectedPostId);
+        break;
+
+      default:
+        setSelectedPostId(postId);
+        setShowPostDetails(true);
+        // eslint-disable-next-line no-console
+        console.log(selectedPostId);
+    }
+
+    // eslint-disable-next-line no-console
+    console.log('selectedPostId after =', selectedPostId);
   };
 
   return (
@@ -82,7 +118,7 @@ export const PostsList: React.FC<Props> = ({
                   <strong>{post.title}</strong>
                   :
                   <br />
-                  {post.body}
+                  {`${post.id} : ${post.body}`}
                 </div>
 
                 <button

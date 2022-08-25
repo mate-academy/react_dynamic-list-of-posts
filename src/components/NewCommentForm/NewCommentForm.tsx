@@ -7,28 +7,45 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ postId }) => {
+  // eslint-disable-next-line no-console
+  console.log('NewCommentForm', postId);
+
   const initialNewComment = {
-    postId,
+    // eslint-disable-next-line quote-props
+    'postId': postId,
     name: '',
     email: '',
     body: '',
   };
+
+  // eslint-disable-next-line no-console
+  console.log('initialNewComment = ', initialNewComment);
 
   const [newComment, setNewComment] = useState(initialNewComment);
 
   const inputChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
+    // eslint-disable-next-line no-console
+    console.log('newComment handler before', newComment);
+
     setNewComment({
       ...newComment,
       [event.target.name]: event.target.value,
     });
+
+    // eslint-disable-next-line no-console
+    console.log('newComment handler after', newComment);
   };
 
   const newCommentFormSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    createComment(newComment);
+    // eslint-disable-next-line no-console
+    console.log('new comment submit', newComment);
+
+    // eslint-disable-next-line no-console
+    createComment(newComment).then((response) => console.log(response));
     setNewComment(initialNewComment);
   };
 
