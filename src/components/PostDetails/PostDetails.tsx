@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { getPostComments } from '../../api/comments';
+import { deleteComment, getPostComments } from '../../api/comments';
 import { getPostDetails } from '../../api/posts';
 import { Loader } from '../Loader';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
 type Props = {
-  // currentUser: string;
   selectedPostId: string,
-  // postComments: Comment[];
-  // postDetails: Post;
 };
 
 // can't import from react-app-env.ts
@@ -33,44 +30,34 @@ const initialPostDetails = {
 };
 
 export const PostDetails: React.FC<Props> = ({
-  // currentUser,
   selectedPostId,
-  // postComments,
-  // postDetails,
 }) => {
+  // eslint-disable-next-line no-console
+  console.log('render PostDetails');
+
   const [postComments, setPostComments] = useState([]);
   const [postDetails, setPostDetails] = useState(initialPostDetails);
   const [showComments, setShowComments] = useState(true);
   const [showLoaderPostsDetails, setShowLoaderPostsDetails] = useState(false);
 
   const counterComments = postComments.length;
-  // const showLoaderForTitlePost = !postDetails.title;
-  // const showLoaderForComments = !postComments;
 
   const loadData = async () => {
     setShowLoaderPostsDetails(true);
 
     // eslint-disable-next-line no-console
     console.log('selectedPostId =', selectedPostId);
-    // eslint-disable-next-line no-console
-    // console.log('currentUser = ', currentUser);
 
     try {
-      // const comments = await getPostDetails(selectedPostId);
       const [comments, newPostDetails] = await Promise.all([
         getPostComments(selectedPostId),
         getPostDetails(selectedPostId),
       ]);
 
-      // const comments = await getPostComments(selectedPostId);
-      // const newPostDetails = await getPostDetails(selectedPostId);
-
       setPostComments(comments);
       setPostDetails(newPostDetails);
-      // setShowLoaderPostsList(false);
       setShowLoaderPostsDetails(false);
     } catch (error) {
-      // setShowLoaderPostsList(false);
       // eslint-disable-next-line no-console
       console.log('error', error);
 
@@ -87,9 +74,17 @@ export const PostDetails: React.FC<Props> = ({
     }
   },
   [
-    // currentUser,
     selectedPostId,
   ]);
+
+  const onDeleteButton = (commentId: string) => {
+    deleteComment(commentId).then((response) => {
+      // eslint-disable-next-line no-console
+      console.log(response, 'loadData');
+
+      loadData();
+    });
+  };
 
   return (
     <div className="PostDetails">
@@ -128,10 +123,12 @@ export const PostDetails: React.FC<Props> = ({
                       type="button"
                       className="PostDetails__remove-button button"
                       formMethod="DELETE"
+                      onClick={() => onDeleteButton(comment.id)}
                     >
                       X
                     </button>
                     <p>
+                      {comment.id}
                       {comment.body}
                     </p>
                   </li>
@@ -144,11 +141,9 @@ export const PostDetails: React.FC<Props> = ({
 
       <section>
         <div className="PostDetails__form-wrapper">
-          {selectedPostId}
-          <br />
-          {postDetails.id}
           <NewCommentForm
-            postId={postDetails.id}
+            selectedPostId={selectedPostId}
+            loadData={loadData}
           />
         </div>
       </section>

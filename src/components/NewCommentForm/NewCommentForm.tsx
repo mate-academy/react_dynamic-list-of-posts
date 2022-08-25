@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
 type Props = {
-  postId: string;
+  selectedPostId: string;
+  loadData: () => void;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ postId }) => {
+export const NewCommentForm: React.FC<Props> = ({
+  selectedPostId,
+  loadData,
+}) => {
   // eslint-disable-next-line no-console
-  console.log('NewCommentForm', postId);
+  console.log('render NewCommentForm', selectedPostId, typeof selectedPostId);
 
   const initialNewComment = {
     // eslint-disable-next-line quote-props
-    'postId': postId,
+    'postId': selectedPostId,
     name: '',
     email: '',
     body: '',
@@ -23,11 +27,20 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
 
   const [newComment, setNewComment] = useState(initialNewComment);
 
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log('useEffect initialNewComment', initialNewComment);
+
+    setNewComment(initialNewComment);
+  },
+  [selectedPostId]);
+
   const inputChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     // eslint-disable-next-line no-console
-    console.log('newComment handler before', newComment);
+    console.log(selectedPostId, 'newComment handler before', newComment,
+      event.target.name, ' = ', event.target.value);
 
     setNewComment({
       ...newComment,
@@ -45,7 +58,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
     console.log('new comment submit', newComment);
 
     // eslint-disable-next-line no-console
-    createComment(newComment).then((response) => console.log(response));
+    createComment(newComment).then(() => loadData());
     setNewComment(initialNewComment);
   };
 
@@ -55,6 +68,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
       method="POST"
       onSubmit={newCommentFormSubmit}
     >
+      {selectedPostId}
       <div className="form-field">
         <input
           type="text"

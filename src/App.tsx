@@ -4,58 +4,11 @@ import './App.scss';
 import './styles/general.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-// import {
-// getUserPosts,
-// getPostDetails,
-// } from './api/posts';
-// import { getPostComments } from './api/comments';
-// import { Loader } from './components/Loader';
-
-// const initialPostDetails = {
-//   id: '',
-//   userId: '',
-//   title: '',
-//   body: '',
-//   createdAt: '',
-//   updatedAt: '',
-// };
 
 const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState('');
   const [selectedPostId, setSelectedPostId] = useState('');
   const [showPostDetails, setShowPostDetails] = useState(false);
-  // const [postDetails, setPostDetails] = useState(initialPostDetails);
-  // const [postComments, setPostComments] = useState([]);
-  // const [showLoaderPostsDetails, setShowLoaderPostsDetails] = useState(false);
-
-  // const downloadPostDetails = async (postId: string) => {
-  //   setShowLoaderPostsDetails(true);
-
-  //   try {
-  //     // eslint-disable-next-line no-console
-  //     console.log(postId);
-
-  //     const newPostDetails = await getPostDetails(postId);
-
-  //     setPostDetails(newPostDetails);
-  //     setShowLoaderPostsDetails(false);
-  //   } catch (error) {
-  //     setShowLoaderPostsDetails(false);
-  //     // eslint-disable-next-line no-console
-  //     console.log('error', error);
-  //   }
-  // };
-
-  // const downLoadComments = async (id: string) => {
-  //   if (selectedPostId === id) {
-  //     setSelectedPostId('');
-  //   } else {
-  //     const comments = await getPostComments(id);
-
-  //     setSelectedPostId(id);
-  //     setPostComments(comments);
-  //   }
-  // };
 
   const selectUserHandler = (userId: string) => {
     setCurrentUser(userId);
@@ -96,10 +49,7 @@ const App: React.FC = () => {
               currentUser={currentUser}
               selectedPostId={selectedPostId}
               setSelectedPostId={setSelectedPostId}
-              // showPostDetails={showPostDetails}
               setShowPostDetails={setShowPostDetails}
-              // downloadPostDetails={downloadPostDetails}
-              // downLoadComments={downLoadComments}
             />
           </div>
         )}
@@ -110,12 +60,9 @@ const App: React.FC = () => {
             { 'App__content--hidden': !showPostDetails },
           )}
         >
-          {showPostDetails && (
+          { selectedPostId && (
             <PostDetails
-              // currentUser={currentUser}
               selectedPostId={selectedPostId}
-              // postComments={postComments}
-              // postDetails={postDetails}
             />
           )}
         </div>

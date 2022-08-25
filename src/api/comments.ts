@@ -1,38 +1,47 @@
-import { request, BASE_URL } from './posts';
+import {
+  request,
+  // BASE_URL,
+} from './request';
 
 export const getPostComments = (postId: string) => request(
   `/comments?postId=${postId}`,
 );
 
-const post = (url: string, data: any) => {
+const post = (url: string, data: NewComment) => {
   return request(url, {
     method: 'POST',
     headers: {
-      'Content-type': 'application/json; charset=UTF-8',
+      'Content-type': 'application/json; charset=utf-8',
     },
     body: JSON.stringify(data),
   });
 };
 
-export const createComment = (newComment : NewComment) => {
-  // eslint-disable-next-line no-console
-  console.log(`${BASE_URL}/comments`, 'POST', newComment);
+// const patch = (url: string, data: NewComment) => {
+//   return request(url, {
+//     method: 'PATCH',
+//     headers: {
+//       'Content-type': 'application/json; charset=utf-8',
+//     },
+//     body: JSON.stringify(data),
+//   });
+// };
 
+// const updateComment = (commentId: string, newComment: NewComment) => {
+//   return patch(`//`)
+// };
+
+export const createComment = (newComment : NewComment) => {
   return post('/comments', newComment);
 };
 
-// export const createComment = (newComment : NewComment) => {
-//   // eslint-disable-next-line no-console
-//   console.log(`${BASE_URL}/comments`, 'POST', newComment);
+const remove = (url: string) => {
+  return request(url, { method: 'DELETE' });
+};
 
-//   // return fetch(`${BASE_URL}/comments`, {
-//   //   method: 'POST',
-//   //   headers: {
-//   //     'Content-type': 'application/json; charset=UTF-8',
-//   //   },
-//   //   body: JSON.stringify(newComment),
-//   // })
-//   //   .then(response => response.json());
+export const deleteComment = (commentId: string) => {
+  // eslint-disable-next-line no-console
+  console.log('commentId = ', commentId);
 
-//   return post()
-// };
+  return remove(`/comments/${commentId}`);
+};
