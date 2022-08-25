@@ -48,7 +48,7 @@ export const PostsList: React.FC<Props> = ({
     loadData();
 
     // eslint-disable-next-line no-console
-    console.log(postsList);
+    console.log('postsList = ', postsList);
   },
   [currentUser]);
 
