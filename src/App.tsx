@@ -101,6 +101,7 @@ export const App: React.FC = () => {
                       <PostsList
                         posts={posts}
                         selectPost={handleSelectedPostID}
+                        selectedPostID={selectedPostID}
                       />
                     )}
                   </>
@@ -117,7 +118,7 @@ export const App: React.FC = () => {
                 'is-parent',
                 'is-8-desktop',
                 'Sidebar',
-                'Sidebar--open',
+                { 'Sidebar--open': posts.length > 0 },
               )}
             >
               {postToShow && (

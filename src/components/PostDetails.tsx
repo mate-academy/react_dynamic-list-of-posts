@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
 import { client } from '../utils/fetchClient';
@@ -15,6 +15,7 @@ export const PostDetails: React.FC<Props> = (props) => {
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [hasLoadingError, setHasLoadingComments] = useState(false);
   const [hasLoadingEnd, setHasLoadingEnd] = useState(false);
+  const [isWriteComment, setIsWriteComment] = useState(false);
 
   useEffect(
     () => {
@@ -38,6 +39,14 @@ export const PostDetails: React.FC<Props> = (props) => {
           setIsLoadingComments(false);
           setHasLoadingEnd(true);
         });
+    },
+    [post],
+  );
+
+  const onAddComment = useCallback(
+    (comment: Comment) => {
+      setComments(prev => [...prev, comment]);
+      setIsWriteComment(false);
     },
     [],
   );
@@ -91,6 +100,16 @@ export const PostDetails: React.FC<Props> = (props) => {
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
+                      onClick={() => {
+                        client.delete(`/comments/${comment.id}`)
+                          .then(res => {
+                            if (res) {
+                              setComments(prev => (
+                                prev.filter(com => com.id !== comment.id)
+                              ));
+                            }
+                          });
+                      }}
                     >
                       delete button
                     </button>
@@ -104,66 +123,24 @@ export const PostDetails: React.FC<Props> = (props) => {
             </>
           )}
 
-          {/* <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
+          {!isWriteComment && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setIsWriteComment(true)}
             >
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article> */}
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
+        {isWriteComment && (
+          <NewCommentForm
+            postId={post.id}
+            onAddComment={onAddComment}
+          />
+        )}
       </div>
     </div>
   );

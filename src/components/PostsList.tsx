@@ -4,10 +4,11 @@ import { Post } from '../types/Post';
 type Props = {
   posts: Post[];
   selectPost: (id: number) => void;
+  selectedPostID: number;
 };
 
 export const PostsList: React.FC<Props> = (props) => {
-  const { posts, selectPost } = props;
+  const { posts, selectPost, selectedPostID } = props;
 
   return (
     <div data-cy="PostsList">
@@ -35,14 +36,27 @@ export const PostsList: React.FC<Props> = (props) => {
               </td>
 
               <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className="button is-link is-light"
-                  onClick={() => selectPost(post.id)}
-                >
-                  Open
-                </button>
+                {selectedPostID !== post.id
+                  ? (
+                    <button
+                      type="button"
+                      data-cy="PostButton"
+                      className="button is-link is-light"
+                      onClick={() => selectPost(post.id)}
+                    >
+                      Open
+                    </button>
+                  )
+                  : (
+                    <button
+                      type="button"
+                      data-cy="PostButton"
+                      className="button is-link"
+                      onClick={() => selectPost(0)}
+                    >
+                      Close
+                    </button>
+                  )}
               </td>
             </tr>
           ))}
