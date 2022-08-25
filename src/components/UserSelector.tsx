@@ -6,13 +6,19 @@ import { client } from '../utils/fetchClient';
 type Props = {
   userID: number;
   setUserID: (id: number) => void;
+  setPostID: (id: number) => void;
 };
 
 export const UserSelector: React.FC<Props> = (props) => {
+  const { userID, setUserID, setPostID } = props;
   const [dropdownState, setDropdownState] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
 
-  const { userID, setUserID } = props;
+  const handleClick = (id: number) => {
+    setUserID(id);
+    setDropdownState(state => !state);
+    setPostID(0);
+  };
 
   useEffect(() => {
     client.get<User[]>('/users')
@@ -65,10 +71,7 @@ export const UserSelector: React.FC<Props> = (props) => {
                 'dropdown-item',
                 { 'is-active': userID === user.id },
               )}
-              onClick={() => {
-                setUserID(user.id);
-                setDropdownState(state => !state);
-              }}
+              onClick={() => handleClick(user.id)}
             >
               {user.name}
             </a>

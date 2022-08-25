@@ -51,6 +51,17 @@ export const PostDetails: React.FC<Props> = (props) => {
     [],
   );
 
+  const handlerDeleteComment = (id: number) => {
+    client.delete(`/comments/${id}`)
+      .then(res => {
+        if (res) {
+          setComments(prev => (
+            prev.filter(com => com.id !== id)
+          ));
+        }
+      });
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -100,22 +111,16 @@ export const PostDetails: React.FC<Props> = (props) => {
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
-                      onClick={() => {
-                        client.delete(`/comments/${comment.id}`)
-                          .then(res => {
-                            if (res) {
-                              setComments(prev => (
-                                prev.filter(com => com.id !== comment.id)
-                              ));
-                            }
-                          });
-                      }}
+                      onClick={() => handlerDeleteComment(comment.id)}
                     >
                       delete button
                     </button>
                   </div>
 
-                  <div className="message-body" data-cy="CommentBody">
+                  <div
+                    className="message-body"
+                    data-cy="CommentBody"
+                  >
                     {comment.body}
                   </div>
                 </article>

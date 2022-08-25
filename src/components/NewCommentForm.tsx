@@ -31,6 +31,26 @@ export const NewCommentForm: React.FC<Props> = (props) => {
     setUserComment('');
   };
 
+  const handlerAddingComment = (comment: CommentData) => {
+    setIsCommentLoading(true);
+    client.post<Comment>('/comments', comment)
+      .then((res) => {
+        const newCom: Comment = {
+          id: res.id,
+          postId: res.postId,
+          name: res.name,
+          email: res.email,
+          body: res.body,
+        };
+
+        onAddComment(newCom);
+      })
+      .finally(() => {
+        setIsCommentLoading(false);
+        resetInputValues();
+      });
+  };
+
   return (
     <form
       data-cy="NewCommentForm"
@@ -145,25 +165,7 @@ export const NewCommentForm: React.FC<Props> = (props) => {
               'is-link',
               { 'is-loading': isCommentLoading },
             )}
-            onClick={() => {
-              setIsCommentLoading(true);
-              client.post<Comment>('/comments', commentToSend)
-                .then((res) => {
-                  const newCom: Comment = {
-                    id: res.id,
-                    postId: res.postId,
-                    name: res.name,
-                    email: res.email,
-                    body: res.body,
-                  };
-
-                  onAddComment(newCom);
-                })
-                .finally(() => {
-                  setIsCommentLoading(false);
-                  resetInputValues();
-                });
-            }}
+            onClick={() => handlerAddingComment(commentToSend)}
           >
             Add
           </button>

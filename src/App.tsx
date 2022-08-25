@@ -62,6 +62,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   userID={selectedUserId}
                   setUserID={handleSelectedUserId}
+                  setPostID={handleSelectedPostID}
                 />
               </div>
 
