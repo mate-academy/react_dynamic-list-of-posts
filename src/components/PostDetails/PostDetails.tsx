@@ -95,7 +95,8 @@ export const PostDetails: React.FC<Props> = ({
       ) : (
         <>
           <section className="PostDetails__post">
-            <p>{`${selectedPostId} : ${postDetails.title} : ${postDetails.id}`}</p>
+            <strong>{`${postDetails.id} : ${postDetails.title}`}</strong>
+            <p>{postDetails.body}</p>
           </section>
 
           <section className="PostDetails__comments">
@@ -128,8 +129,7 @@ export const PostDetails: React.FC<Props> = ({
                       X
                     </button>
                     <p>
-                      {comment.id}
-                      {comment.body}
+                      {`${comment.id} : ${comment.body}`}
                     </p>
                   </li>
                 ))}

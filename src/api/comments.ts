@@ -36,7 +36,9 @@ export const createComment = (newComment : NewComment) => {
 };
 
 const remove = (url: string) => {
-  return request(url, { method: 'DELETE' });
+  return request(url, {
+    method: 'DELETE',
+  });
 };
 
 export const deleteComment = (commentId: string) => {

@@ -11,26 +11,16 @@ export const NewCommentForm: React.FC<Props> = ({
   selectedPostId,
   loadData,
 }) => {
-  // eslint-disable-next-line no-console
-  console.log('render NewCommentForm', selectedPostId, typeof selectedPostId);
-
   const initialNewComment = {
-    // eslint-disable-next-line quote-props
-    'postId': selectedPostId,
+    postId: selectedPostId,
     name: '',
     email: '',
     body: '',
   };
 
-  // eslint-disable-next-line no-console
-  console.log('initialNewComment = ', initialNewComment);
-
   const [newComment, setNewComment] = useState(initialNewComment);
 
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log('useEffect initialNewComment', initialNewComment);
-
     setNewComment(initialNewComment);
   },
   [selectedPostId]);
@@ -38,26 +28,15 @@ export const NewCommentForm: React.FC<Props> = ({
   const inputChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    // eslint-disable-next-line no-console
-    console.log(selectedPostId, 'newComment handler before', newComment,
-      event.target.name, ' = ', event.target.value);
-
     setNewComment({
       ...newComment,
       [event.target.name]: event.target.value,
     });
-
-    // eslint-disable-next-line no-console
-    console.log('newComment handler after', newComment);
   };
 
   const newCommentFormSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    // eslint-disable-next-line no-console
-    console.log('new comment submit', newComment);
-
-    // eslint-disable-next-line no-console
     createComment(newComment).then(() => loadData());
     setNewComment(initialNewComment);
   };
@@ -68,7 +47,7 @@ export const NewCommentForm: React.FC<Props> = ({
       method="POST"
       onSubmit={newCommentFormSubmit}
     >
-      {selectedPostId}
+      {`postId: ${selectedPostId}`}
       <div className="form-field">
         <input
           type="text"
