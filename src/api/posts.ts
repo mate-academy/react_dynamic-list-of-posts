@@ -1,17 +1,19 @@
-export const getUserPosts = async (userId: number) => {
-  const response = await fetch(`https://mate.academy/students-api/posts?userId=${userId}`);
+import { request } from './api';
 
-  return response.json();
+export const getUserPosts = async (userId: number) => {
+  const response = await request(`https://mate.academy/students-api/posts?userId=${userId}`);
+
+  return response;
 };
 
 export const getPosts = async () => {
-  const response = await fetch('https://mate.academy/students-api/posts');
+  const response = await request('/posts');
 
-  return response.json();
+  return response;
 };
 
 export const getPostDetails = async (postId:number) => {
-  const response = await fetch(`https://mate.academy/students-api/posts/${postId}`);
+  const response = await request(`/posts/${postId}`);
 
-  return response.json();
+  return response;
 };

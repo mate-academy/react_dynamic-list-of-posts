@@ -23,8 +23,12 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
   return (
     <form
       className="NewCommentForm"
-      onSubmit={() => {
+      onSubmit={(e) => {
+        e.preventDefault();
         createComment();
+        setName('');
+        setEmail('');
+        setBody('');
       }}
     >
       <div className="form-field">
@@ -43,7 +47,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
 
       <div className="form-field">
         <input
-          type="text"
+          type="email"
           name="email"
           placeholder="Your email"
           className="NewCommentForm__input"

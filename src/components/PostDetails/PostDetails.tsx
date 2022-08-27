@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect, useState } from 'react';
 import { deleteMethod } from '../../api/api';
 import { getPostComments } from '../../api/comments';
@@ -52,9 +53,11 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
             setIsCommentsHidden(!isCommentsHidden);
           }}
         >
-          {isCommentsHidden
-            ? `Show ${comments.length} comments`
-            : `Hide ${comments.length} comments`}
+          {comments.length === 0
+            ? 'No comments yet'
+            : (isCommentsHidden
+              ? `Show ${comments.length} comments`
+              : `Hide ${comments.length} comments`)}
         </button>
 
         {!isCommentsHidden

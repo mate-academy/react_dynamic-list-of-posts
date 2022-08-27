@@ -30,10 +30,7 @@ const App: React.FC = () => {
       return;
     }
 
-    const newUser = users.find(user => user.name === value);
-
-    const newPosts = newUser
-      ? await getUserPosts(newUser.id) : await getPosts();
+    const newPosts = await getUserPosts(+value);
 
     setPosts(newPosts);
   };
@@ -62,7 +59,7 @@ const App: React.FC = () => {
           >
             <option value="0">All users</option>
             {users.map(user => (
-              <option key={user.id} value={user.name}>{user.name}</option>
+              <option key={user.id} value={user.id}>{user.name}</option>
             ))}
           </select>
         </label>
@@ -70,17 +67,21 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
+          React.memo(
           <PostsList
             posts={posts}
             selectedPostId={selectedPostId}
             handleClick={handleClick}
           />
+          )
         </div>
 
         {selectedPostId !== 0
           && (
             <div className="App__content">
+              React.memo(
               <PostDetails postId={selectedPostId} />
+              )
             </div>
           )}
       </main>

@@ -1,10 +1,15 @@
 export const BASE_URL = 'https://mate.academy/students-api';
 
-export const request = async (url:string, options: Record<string, unknown>) => {
-  const response = await fetch(`${BASE_URL}${url}`, options);
-
-  return response.json;
+const defaultOptions = {
+  method: 'GET',
 };
+
+export const request
+  = async (url:string, options: Record<string, unknown> = defaultOptions) => {
+    const response = await fetch(`${BASE_URL}${url}`, options);
+
+    return response.json();
+  };
 
 export const postMethod = (url:string, data: Record<string, unknown>) => {
   return request(url, {
