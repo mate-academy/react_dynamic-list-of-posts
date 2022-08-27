@@ -1,70 +1,95 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './PostsList.scss';
 
 import { Post } from '../../types/Post';
+
+import { getAllPosts, getUserPosts } from '../../api/posts';
+
 import { Loader } from '../Loader';
 
 type Props = {
-  loading: boolean,
-  posts: Post[],
-  selectedPost: Post | null,
-  setSelectedPost: (selectedPost: Post | null) => void,
-  onSelectingPost: (selectedPost: Post) => void,
+  selectedUserId: number,
+  selectedPostId: number | null,
+  setSelectedPostId: (selectedPostId: number | null) => void,
 };
 
 export const PostsList: React.FC<Props> = ({
-  loading,
-  posts,
-  selectedPost,
-  setSelectedPost,
-  onSelectingPost,
+  selectedUserId,
+  selectedPostId,
+  setSelectedPostId,
 }) => {
-  return (loading
-    ? (<Loader />)
-    : (
+  const [userPosts, setUserPosts] = useState<Post[] | null>(null);
+  const [isLoadingPost, setIsLoadingPost] = useState(false);
+
+  const onSelectingPost = (post: Post) => {
+    setSelectedPostId(post.id);
+  };
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      setIsLoadingPost(true);
+
+      const result = selectedUserId === 0
+        ? await getAllPosts()
+        : await getUserPosts(selectedUserId);
+
+      setUserPosts(result);
+      setIsLoadingPost(false);
+    };
+
+    loadPosts();
+  }, [selectedUserId]);
+
+  return (userPosts && !isLoadingPost
+    ? (
       <div className="PostsList">
         <h2>Posts:</h2>
 
-        {posts.length ? (
-          <ul className="PostsList__list" data-cy="postDetails">
-            {posts.map(post => (
-              <li className="PostsList__item" key={post.id}>
-                <div>
-                  <b>{`[User #${post.userId}]: `}</b>
-                  {post.title}
-                </div>
+        {userPosts.length
+          ? (
+            <ul className="PostsList__list" data-cy="postDetails">
+              {userPosts.map(post => (
+                <li className="PostsList__item" key={post.id}>
+                  <div>
+                    <b>{`[User #${post.userId}]: `}</b>
+                    {post.title}
+                  </div>
 
-                {(selectedPost?.id !== post.id)
-                  ? (
-                    <button
-                      type="button"
-                      className="PostsList__button button"
-                      onClick={() => {
-                        onSelectingPost(post);
-                      }}
-                    >
-                      Open
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      className="PostsList__button button"
-                      onClick={() => {
-                        setSelectedPost(null);
-                      }}
-                    >
-                      Close
-                    </button>
-                  )}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div>
-            The selected user has no posts yet
-          </div>
-        )}
+                  {(selectedPostId !== post.id)
+                    ? (
+                      <button
+                        type="button"
+                        className="PostsList__button button"
+                        onClick={() => {
+                          onSelectingPost(post);
+                        }}
+                      >
+                        Open
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="PostsList__button button"
+                        onClick={() => {
+                          setSelectedPostId(null);
+                        }}
+                      >
+                        Close
+                      </button>
+                    )}
+                </li>
+              ))}
+            </ul>
+          )
+          : (
+            <div>
+              The selected user has no posts yet
+            </div>
+          )}
       </div>
+    )
+    : (
+      <Loader />
     )
   );
 };

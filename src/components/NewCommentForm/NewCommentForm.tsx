@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
 import './NewCommentForm.scss';
 
-import { Post } from '../../types/Post';
 import { Comment } from '../../types/Comment';
 
 import { addComment, getPostComments } from '../../api/comments';
 
 type Props = {
-  selectedPost: Post,
+  selectedPostId: number,
   setPostComments: (comments: Comment[] | null) => void,
   setIsLoadingComments: (status: boolean) => void,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
-  selectedPost,
+  selectedPostId,
   setPostComments,
   setIsLoadingComments,
 }) => {
@@ -26,11 +25,12 @@ export const NewCommentForm: React.FC<Props> = ({
 
     setIsLoadingComments(true);
 
-    await addComment(selectedPost.id, name, email, newComment);
+    await addComment(selectedPostId, name, email, newComment);
 
-    const result = await getPostComments(selectedPost.id);
+    const result = await getPostComments(selectedPostId);
 
     setPostComments(result);
+
     setIsLoadingComments(false);
     setName('');
     setEmail('');
