@@ -34,6 +34,12 @@
     );
   }
 
+  &__textarea {
+    height: auto;
+    border: transparent;
+    background-color: transparent;
+  }
+
   &__remove-button {
     min-width: 20px;
     color: inherit;

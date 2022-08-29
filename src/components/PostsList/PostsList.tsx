@@ -5,14 +5,14 @@ import { Loader } from '../Loader';
 import './PostsList.scss';
 
 type Props = {
-  currentUser: string;
+  currentUserId: string;
   setSelectedPostId: (postId: string) => void;
   selectedPostId: string;
   setShowPostDetails: (value: boolean) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
-  currentUser,
+  currentUserId,
   selectedPostId,
   setSelectedPostId,
   setShowPostDetails,
@@ -24,7 +24,7 @@ export const PostsList: React.FC<Props> = ({
     setShowLoaderPostsList(true);
 
     try {
-      const posts = await getUserPosts(currentUser);
+      const posts = await getUserPosts(currentUserId);
 
       setPostsList(posts);
       setShowLoaderPostsList(false);
@@ -37,14 +37,14 @@ export const PostsList: React.FC<Props> = ({
 
   useEffect(() => {
     // eslint-disable-next-line no-console
-    console.log('mounted', currentUser);
+    console.log('mounted', currentUserId);
 
     loadData();
 
     // eslint-disable-next-line no-console
     console.log('postsList = ', postsList);
   },
-  [currentUser]);
+  [currentUserId]);
 
   const postsListHandle = (postId: string) => {
     // eslint-disable-next-line no-console
