@@ -40,7 +40,7 @@ export const PostDetails: React.FC<Props> = (props) => {
           setIsLoadingEnd(true);
         });
     },
-    [post, comments],
+    [post],
   );
 
   const onAddComment = useCallback(
