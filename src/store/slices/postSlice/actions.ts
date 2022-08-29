@@ -1,5 +1,6 @@
 import { postSlice } from "./postSlice";
 
 export const {
-  setPosts
+  setPosts,
+  selectPost
 } = postSlice.actions;

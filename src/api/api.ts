@@ -5,4 +5,4 @@ export const request = async (url: string) => {
   const data = await response.json();
 
   return data;
-}
+};
