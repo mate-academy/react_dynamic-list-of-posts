@@ -13,8 +13,8 @@ export const PostDetails: React.FC<Props> = (props) => {
   const { post } = props;
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
-  const [hasLoadingError, setHasLoadingComments] = useState(false);
-  const [hasLoadingEnd, setHasLoadingEnd] = useState(false);
+  const [hasLoadingError, setHasLoadingErrors] = useState(false);
+  const [isLoadingEnd, setIsLoadingEnd] = useState(false);
   const [isWriteComment, setIsWriteComment] = useState(false);
 
   useEffect(
@@ -33,14 +33,14 @@ export const PostDetails: React.FC<Props> = (props) => {
           )));
         })
         .catch(() => {
-          setHasLoadingComments(true);
+          setHasLoadingErrors(true);
         })
         .finally(() => {
           setIsLoadingComments(false);
-          setHasLoadingEnd(true);
+          setIsLoadingEnd(true);
         });
     },
-    [post],
+    [post, comments],
   );
 
   const onAddComment = useCallback(
@@ -56,7 +56,7 @@ export const PostDetails: React.FC<Props> = (props) => {
       .then(res => {
         if (res) {
           setComments(prev => (
-            prev.filter(com => com.id !== id)
+            prev.filter(comment => comment.id !== id)
           ));
         }
       });
@@ -87,7 +87,7 @@ export const PostDetails: React.FC<Props> = (props) => {
             </div>
           )}
 
-          {hasLoadingEnd && comments.length === 0 && (
+          {isLoadingEnd && comments.length === 0 && (
             <p
               className="title is-4"
               data-cy="NoCommentsMessage"
@@ -101,7 +101,11 @@ export const PostDetails: React.FC<Props> = (props) => {
               <p className="title is-4">Comments:</p>
 
               {comments.map(comment => (
-                <article className="message is-small" data-cy="Comment">
+                <article
+                  className="message is-small"
+                  data-cy="Comment"
+                  key={comment.id}
+                >
                   <div className="message-header">
                     <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                       {comment.name}
