@@ -1,37 +1,46 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { getAllPosts } from '../../api/posts';
+import { useActions } from '../../hooks/useActions';
+import { useAppSelector } from '../../hooks/useAppSelector';
 import './PostsList.scss';
 
-export const PostsList: React.FC = () => (
-  <div className="PostsList">
-    <h2>Posts:</h2>
+export const PostsList: React.FC = () => {
+  const { posts } = useAppSelector(state => state.postSlice);
+  const { setPosts } = useActions();
 
-    <ul className="PostsList__list">
-      <li className="PostsList__item">
-        <div>
-          <b>[User #1]: </b>
-          sunt aut facere repellat provident occaecati excepturi optio
-        </div>
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Close
-        </button>
-      </li>
+  useEffect(() => {
+    (async function() {
+      const userPosts =  await getAllPosts();
 
-      <li className="PostsList__item">
-        <div>
-          <b>[User #2]: </b>
-          et ea vero quia laudantium autem
-        </div>
+      setPosts(userPosts);
+    })()
+  }, [posts.length]);
 
-        <button
-          type="button"
-          className="PostsList__button button"
-        >
-          Open
-        </button>
-      </li>
-    </ul>
-  </div>
-);
+  return posts.length > 0 ? (
+    <div className="PostsList">
+      <h2>Posts:</h2>
+
+      <ul className="PostsList__list">
+        {posts.map(post => {
+          // console.log(post);
+
+          return (
+            <li className="PostsList__item" key={post.id}>
+              <div>
+                <b>[User {post.userId}]: </b>
+                {post.title}
+              </div>
+              <button
+                type="button"
+                className="PostsList__button button"
+              >
+                Close
+              </button>
+            </li>
+          )})}
+      </ul>
+    </div>
+  ) : (
+    <span>loading</span>
+  );
+}
