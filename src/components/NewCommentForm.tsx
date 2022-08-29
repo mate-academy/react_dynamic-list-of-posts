@@ -44,10 +44,6 @@ export const NewCommentForm: React.FC<Props> = (props) => {
         };
 
         onAddComment(newCom);
-      })
-      .finally(() => {
-        setIsCommentLoading(false);
-        resetInputValues();
       });
   };
 
