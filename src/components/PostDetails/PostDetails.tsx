@@ -7,6 +7,7 @@ import {
 } from '../../api/posts';
 import { Comment } from '../../types/Comment';
 import { Post } from '../../types/Post';
+import { validation } from '../../utils/validation';
 import { Loader } from '../Loader';
 import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
@@ -25,21 +26,21 @@ export const PostDetails: React.FC<Props> = (
   const [postName, setPostName] = useState<string>('');
   const [postEmail, setPostEmail] = useState<string>('');
   const [postBody, setPostBody] = useState<string>('');
-  const [showComments, setShowComments] = useState<boolean>(false);
+  const [isCommentVisible, setIsCommentVisible] = useState<boolean>(false);
   const [postComments, setPostComments] = useState<Comment[]>([]);
   const [isLoadingComments, setIsloadingComments] = useState<boolean>(false);
   const [isLoadingForm, setIsloadingForm] = useState<boolean>(false);
 
-  const changeName = (value: React.ChangeEvent<HTMLInputElement>) => {
-    setPostName(value.target.value);
+  const changeName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPostName(event.target.value);
   };
 
-  const changeEmail = (value: React.ChangeEvent<HTMLInputElement>) => {
-    setPostEmail(value.target.value);
+  const changeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPostEmail(event.target.value);
   };
 
-  const changeBody = (value: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPostBody(value.target.value);
+  const changeBody = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setPostBody(event.target.value);
   };
 
   const loadComments = async (postId: number) => {
@@ -49,12 +50,12 @@ export const PostDetails: React.FC<Props> = (
     setPostComments(loadPostComments);
   };
 
-  const showOrHideComments = async () => {
+  const showOrHideComments = () => {
     setIsloadingComments(true);
-    if (showComments) {
-      setShowComments(false);
+    if (isCommentVisible) {
+      setIsCommentVisible(false);
     } else {
-      setShowComments(true);
+      setIsCommentVisible(true);
     }
 
     if (selectedPostId) {
@@ -69,10 +70,7 @@ export const PostDetails: React.FC<Props> = (
   };
 
   const addComment = async () => {
-    const emailPattern = '[a-z0-9._%+-]+@[a-z0-9.-]+.[a-z]{2,}$';
-
-    if (!postName
-      || !postEmail || !postEmail.match(emailPattern) || !postBody) {
+    if (!validation(postName, postEmail, postBody)) {
       return null;
     }
 
@@ -80,14 +78,18 @@ export const PostDetails: React.FC<Props> = (
     setIsloadingForm(true);
 
     if (selectedPostId) {
+      const comment = {
+        name: postName,
+        email: postEmail,
+        body: postBody,
+        id: +uniqueId,
+        postId: selectedPostId,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
       const addCom
-      = await addComments(
-        postName,
-        postEmail,
-        postBody,
-        uniqueId,
-        selectedPostId,
-      );
+      = await addComments(comment);
 
       loadComments(selectedPostId);
       setPostName('');
@@ -103,11 +105,11 @@ export const PostDetails: React.FC<Props> = (
 
   const removeComment = async (comment: Comment) => {
     setIsloadingComments(true);
-    const remComment = await deleteComments(comment.id);
+    const deleteComment = await deleteComments(comment.id);
 
     loadComments(comment.postId);
 
-    return remComment;
+    return deleteComment;
   };
 
   if (!selectPostDetails) {
@@ -128,10 +130,10 @@ export const PostDetails: React.FC<Props> = (
           className="button"
           onClick={showOrHideComments}
         >
-          {showComments ? 'Hide comments' : 'Show comments'}
+          {isCommentVisible ? 'Hide comments' : 'Show comments'}
         </button>
 
-        {showComments && (
+        {isCommentVisible && (
           isLoadingComments ? <Loader /> : (
             <ul className="PostDetails__list">
               {postComments.length > 0

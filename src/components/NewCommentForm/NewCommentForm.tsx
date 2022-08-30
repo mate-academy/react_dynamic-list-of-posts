@@ -5,9 +5,9 @@ type Props = {
   name: string;
   email: string;
   body: string;
-  changeName: (value: React.ChangeEvent<HTMLInputElement>) => void;
-  changeEmail: (value: React.ChangeEvent<HTMLInputElement>) => void;
-  changeBody: (value: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  changeName: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  changeEmail: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  changeBody: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   addComment: () => void;
 };
 

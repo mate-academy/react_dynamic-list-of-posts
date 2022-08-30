@@ -1,89 +1,36 @@
-import { BASE_URL } from './api';
+import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
+import { User } from '../types/User';
+import { client } from '../utils/fetchClient';
 
 export const getUsers = () => {
-  return fetch(`${BASE_URL}/users`)
-    .then(result => result.json())
-    .catch(() => ({
-      Response: 'False',
-      Error: 'unexpected error',
-    }));
+  return client.get<User[]>('/users');
 };
 
 export const getPosts = () => {
-  return fetch(`${BASE_URL}/posts`)
-    .then(result => result.json())
-    .catch(() => ({
-      Response: 'False',
-      Error: 'unexpected error',
-    }));
+  return client.get<Post[]>('/posts');
 };
 
 export const getComments = () => {
-  return fetch(`${BASE_URL}/comments`)
-    .then(result => result.json())
-    .catch(() => ({
-      Response: 'False',
-      Error: 'unexpected error',
-    }));
+  return client.get<Comment[]>('/comments');
 };
 
 export const getUserPosts = (userId: number) => {
-  return fetch(`${BASE_URL}/posts?userId=${userId}`)
-    .then(result => result.json())
-    .catch(() => ({
-      Response: 'False',
-      Error: 'unexpected error',
-    }));
+  return client.get<Post[]>(`/posts?userId=${userId}`);
 };
 
 export const getPostDetails = (postId: number) => {
-  return fetch(`${BASE_URL}/posts/${postId}`)
-    .then(result => result.json())
-    .catch(() => ({
-      Response: 'False',
-      Error: 'unexpected error',
-    }));
+  return client.get<Post>(`/posts/${postId}`);
 };
 
 export const getPostComments = (postId: number) => {
-  return fetch(`${BASE_URL}/comments?postId=${postId}`)
-    .then(result => result.json())
-    .catch(() => ({
-      Response: 'False',
-      Error: 'unexpected error',
-    }));
+  return client.get<Comment[]>(`/comments?postId=${postId}`);
 };
 
 export const deleteComments = (commentId: number) => {
-  return fetch(`${BASE_URL}/comments/${commentId}`, { method: 'DELETE' })
-    .then(result => result.json())
-    .catch(() => ({
-      Response: 'False',
-      Error: 'unexpected error',
-    }));
+  return client.delete(`/comments/${commentId}`);
 };
 
-export const addComments
-  = (name: string, email: string, body: string,
-    id: () => Promise<number>, postId: number) => {
-    return fetch(`${BASE_URL}/comments/`, {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
-      body: JSON.stringify({
-        id,
-        postId,
-        name,
-        email,
-        body,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }),
-    })
-      .then(result => result.json())
-      .catch(() => ({
-        Response: 'False',
-        Error: 'unexpected error',
-      }));
-  };
+export const addComments = (comment: Comment) => {
+  return client.post<Comment>('/comments', comment);
+};

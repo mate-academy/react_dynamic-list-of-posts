@@ -16,42 +16,52 @@ import { Loader } from './components/Loader';
 export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState<number>(0);
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [selectPostDetails, setSelectPostDetails] = useState<Post | null>(null);
-  const [isLoading, setIsloading] = useState<boolean>(true);
-  const [isLoadingDetails, setIsloadingDetails] = useState<boolean>(true);
+  const [isLoading, setIsloading] = useState<boolean>(false);
+  const [isLoadingDetails, setIsloadingDetails] = useState<boolean>(false);
 
   useEffect(() => {
-    const showPosts = async () => {
-      const showAllPosts = await getPosts();
+    setIsloading(true);
+    const loadPosts = async () => {
+      const loadAllPosts = await getPosts();
 
       setIsloading(false);
-      setPosts(showAllPosts);
+      setPosts(loadAllPosts);
     };
 
-    showPosts();
+    loadPosts();
 
-    const showUsers = async () => {
-      const showAllUsers = await getUsers();
+    const loadUsers = async () => {
+      const loadAllUsers = await getUsers();
 
-      setUsers(showAllUsers);
+      setUsers(loadAllUsers);
     };
 
-    showUsers();
+    loadUsers();
   }, []);
+
+  useEffect(() => {
+    const loadUserPosts = async () => {
+      let loadAllUserPosts;
+
+      if (selectedUserId === 0) {
+        loadAllUserPosts = await getPosts();
+      } else {
+        loadAllUserPosts = await getUserPosts(selectedUserId);
+      }
+
+      setIsloading(false);
+      setPosts(loadAllUserPosts);
+    };
+
+    loadUserPosts();
+  }, [selectedUserId]);
 
   const filterPosts = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     setIsloading(true);
-    let showAllUserPosts;
-
-    if (+event.target.value === 0) {
-      showAllUserPosts = await getPosts();
-    } else {
-      showAllUserPosts = await getUserPosts(+event.target.value);
-    }
-
-    setIsloading(false);
-    setPosts(showAllUserPosts);
+    setSelectedUserId(+event.target.value);
   };
 
   const selectPostId = async (postId: number) => {
