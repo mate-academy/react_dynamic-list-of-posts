@@ -8,7 +8,7 @@ type Props = {
   handleClick: (value: number) => void,
 };
 
-export const PostsList: React.FC<Props> = (
+export const PostsList: React.FC<Props> = React.memo((
   { posts, selectedPostId, handleClick },
 ) => {
   return (
@@ -39,4 +39,4 @@ export const PostsList: React.FC<Props> = (
       </ul>
     </div>
   );
-};
+});

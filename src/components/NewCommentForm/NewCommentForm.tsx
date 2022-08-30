@@ -6,7 +6,7 @@ type Props = {
   postId: number,
 };
 
-export const NewCommentForm: React.FC<Props> = ({ postId }) => {
+export const NewCommentForm: React.FC<Props> = React.memo(({ postId }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
@@ -80,4 +80,4 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
       </button>
     </form>
   );
-};
+});

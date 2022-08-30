@@ -21,7 +21,7 @@ const emptyPost = {
   userId: 0,
 };
 
-export const PostDetails: React.FC<Props> = ({ postId }) => {
+export const PostDetails: React.FC<Props> = React.memo(({ postId }) => {
   const [post, setPost] = useState<Post>(emptyPost);
   const [comments, setComments] = useState<Comment[]>([]);
   const [isCommentsHidden, setIsCommentsHidden] = useState(true);
@@ -88,4 +88,4 @@ export const PostDetails: React.FC<Props> = ({ postId }) => {
       </section>
     </div>
   );
-};
+});

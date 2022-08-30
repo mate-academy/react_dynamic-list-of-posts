@@ -67,21 +67,17 @@ const App: React.FC = () => {
 
       <main className="App__main">
         <div className="App__sidebar">
-          React.memo(
           <PostsList
             posts={posts}
             selectedPostId={selectedPostId}
             handleClick={handleClick}
           />
-          )
         </div>
 
         {selectedPostId !== 0
           && (
             <div className="App__content">
-              React.memo(
               <PostDetails postId={selectedPostId} />
-              )
             </div>
           )}
       </main>
