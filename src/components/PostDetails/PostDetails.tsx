@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getPostComments } from '../../api/comments';
+import { deleteComment, getPostComments } from '../../api/comments';
 import { useActions } from '../../hooks/useActions';
 import { useAppSelector } from '../../hooks/useAppSelector';
 import { Comment } from '../../store/slices/commentSlice/commentsSlice';
@@ -18,7 +18,7 @@ export const PostDetails: React.FC = () => {
 
       setComments(postComments);
     })()
-  }, [selectedPost?.id]);
+  }, [comments]);
 
   const handleClick = () => {
     if (showHide === 'show') {
@@ -55,6 +55,7 @@ export const PostDetails: React.FC = () => {
                 <button
                   type="button"
                   className="PostDetails__remove-button button"
+                  onClick={() => deleteComment(comment.id)}
                 >
                   X
                 </button>
@@ -72,4 +73,4 @@ export const PostDetails: React.FC = () => {
       </section>
     </div>
   );
-}
+};
