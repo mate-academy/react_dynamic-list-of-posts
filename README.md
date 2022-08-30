@@ -1,3 +1,5 @@
+[LINK](https://oleksandr-leshchenko.github.io/react_dynamic-list-of-posts/)
+
 ## Task
 You are given a basic markup and [the API](https://mate-academy.github.io/fe-students-api/).
 
