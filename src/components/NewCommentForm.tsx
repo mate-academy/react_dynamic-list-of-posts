@@ -8,6 +8,12 @@ type Props = {
   onAddComment: (comment: Comment) => void;
 };
 
+const isCommentFilled = {
+  authorName: false,
+  authorEmail: false,
+  commentText: false,
+};
+
 export const NewCommentForm: React.FC<Props> = (props) => {
   const { postId, onAddComment } = props;
 
@@ -15,6 +21,8 @@ export const NewCommentForm: React.FC<Props> = (props) => {
   const [userEmail, setUserEmail] = useState('');
   const [userComment, setUserComment] = useState('');
   const [isCommentLoading, setIsCommentLoading] = useState(false);
+  // eslint-disable-next-line max-len
+  const [isCommentCompleated, setIsCommentCompleated] = useState(isCommentFilled);
 
   const smthToCleare = [userName, userEmail, userComment].some(Boolean);
 
@@ -63,9 +71,15 @@ export const NewCommentForm: React.FC<Props> = (props) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': !userName })}
+            className={classNames('input',
+              { 'is-danger': !userName && isCommentCompleated.authorName })}
             required
             value={userName}
+            onBlur={() => setIsCommentCompleated(prev => ({
+              ...prev,
+              authorName: true,
+            }
+            ))}
             onChange={(event) => setUserName(event.target.value)}
           />
 
@@ -75,7 +89,9 @@ export const NewCommentForm: React.FC<Props> = (props) => {
 
           <span
             className={classNames(
-              'icon', 'is-small', 'is-right', { 'has-text-danger': !userName },
+              'icon', 'is-small', 'is-right',
+              // eslint-disable-next-line max-len
+              { 'has-text-danger': !userName && isCommentCompleated.authorName },
             )}
             data-cy="ErrorIcon"
           >
@@ -84,7 +100,11 @@ export const NewCommentForm: React.FC<Props> = (props) => {
         </div>
 
         {!userName && (
-          <p className="help is-danger" data-cy="ErrorMessage">
+          <p
+            className={classNames('help',
+              { 'is-danger': !userName && isCommentCompleated.authorName })}
+            data-cy="ErrorMessage"
+          >
             Name is required
           </p>
         )}
@@ -101,10 +121,16 @@ export const NewCommentForm: React.FC<Props> = (props) => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': !userEmail })}
+            className={classNames('input',
+              { 'is-danger': !userEmail && isCommentCompleated.authorEmail })}
             required
             value={userEmail}
             onChange={(event) => setUserEmail(event.target.value)}
+            onBlur={() => setIsCommentCompleated(prev => ({
+              ...prev,
+              authorEmail: true,
+            }
+            ))}
           />
 
           <span className="icon is-small is-left">
@@ -113,7 +139,9 @@ export const NewCommentForm: React.FC<Props> = (props) => {
 
           <span
             className={classNames(
-              'icon', 'is-small', 'is-right', { 'has-text-danger': !userEmail },
+              'icon', 'is-small', 'is-right',
+              // eslint-disable-next-line max-len
+              { 'has-text-danger': !userEmail && isCommentCompleated.authorEmail },
             )}
             data-cy="ErrorIcon"
           >
@@ -122,7 +150,11 @@ export const NewCommentForm: React.FC<Props> = (props) => {
         </div>
 
         {!userEmail && (
-          <p className="help is-danger" data-cy="ErrorMessage">
+          <p
+            className={classNames('help',
+              { 'is-danger': !userEmail && isCommentCompleated.authorEmail })}
+            data-cy="ErrorMessage"
+          >
             Email is required
           </p>
         )}
@@ -138,15 +170,24 @@ export const NewCommentForm: React.FC<Props> = (props) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': !userComment })}
+            className={classNames('textarea',
+              { 'is-danger': !userComment && isCommentCompleated.commentText })}
             required
             value={userComment}
             onChange={(event) => setUserComment(event.target.value)}
+            onBlur={() => setIsCommentCompleated(prev => ({
+              ...prev,
+              commentText: true,
+            }))}
           />
         </div>
 
         {!userComment && (
-          <p className="help is-danger" data-cy="ErrorMessage">
+          <p
+            className={classNames('help',
+              { 'is-danger': !userComment && isCommentCompleated.commentText })}
+            data-cy="ErrorMessage"
+          >
             Enter some text
           </p>
         )}
@@ -156,6 +197,7 @@ export const NewCommentForm: React.FC<Props> = (props) => {
         <div className="control">
           <button
             type="submit"
+            disabled={!userName || !userEmail || !userComment}
             className={classNames(
               'button',
               'is-link',
