@@ -1,6 +1,8 @@
+import { Options } from '../types/Options';
+
 export const BASE_URL = 'https://mate.academy/students-api';
 
-export async function request(url: string, options?: {}) {
+export async function request(url: string, options?: Options) {
   try {
     const result = await fetch(`${BASE_URL}${url}`, options)
       .then(response => {

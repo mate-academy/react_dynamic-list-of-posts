@@ -7,8 +7,8 @@ import { addComment, getPostComments } from '../../api/comments';
 
 type Props = {
   selectedPostId: number,
-  setPostComments: (comments: Comment[] | null) => void,
-  setIsLoadingComments: (status: boolean) => void,
+  setPostComments: React.Dispatch<React.SetStateAction<Comment[] | null>>,
+  setIsLoadingComments: React.Dispatch<React.SetStateAction<boolean>>,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
@@ -20,7 +20,13 @@ export const NewCommentForm: React.FC<Props> = ({
   const [email, setEmail] = useState('');
   const [newComment, setNewComment] = useState('');
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const resetForm = () => {
+    setName('');
+    setEmail('');
+    setNewComment('');
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setIsLoadingComments(true);
@@ -32,9 +38,7 @@ export const NewCommentForm: React.FC<Props> = ({
     setPostComments(result);
 
     setIsLoadingComments(false);
-    setName('');
-    setEmail('');
-    setNewComment('');
+    resetForm();
   };
 
   return (

@@ -10,7 +10,7 @@ import { Loader } from '../Loader';
 type Props = {
   selectedUserId: number,
   selectedPostId: number | null,
-  setSelectedPostId: (selectedPostId: number | null) => void,
+  setSelectedPostId: React.Dispatch<React.SetStateAction<number | null>>,
 };
 
 export const PostsList: React.FC<Props> = ({

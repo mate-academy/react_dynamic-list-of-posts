@@ -10,19 +10,24 @@ import { PostDetails } from './components/PostDetails';
 import { getAllUsers } from './api/users';
 
 const App: React.FC = () => {
-  const [allUsers, setAllUsers] = useState<User[] | null>(null);
+  const [users, setUsers] = useState<User[] | null>(null);
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
 
   useEffect(() => {
-    const loadAllUsers = async () => {
+    const loadUsers = async () => {
       const result = await getAllUsers();
 
-      setAllUsers(result);
+      setUsers(result);
     };
 
-    loadAllUsers();
+    loadUsers();
   }, []);
+
+  const selectUser = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedUserId(+event.target.value);
+    setSelectedPostId(null);
+  };
 
   return (
     <div className="App">
@@ -33,13 +38,10 @@ const App: React.FC = () => {
           <select
             className="App__user-selector"
             value={selectedUserId}
-            onChange={(e) => {
-              setSelectedUserId(+e.target.value);
-              setSelectedPostId(null);
-            }}
+            onChange={selectUser}
           >
             <option value="0">All users</option>
-            {allUsers?.map(user => (
+            {users?.map(user => (
               <option value={user.id} key={user.id}>
                 {user.name
                   ? user.name
