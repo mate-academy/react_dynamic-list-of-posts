@@ -29,18 +29,24 @@ export const PostDetails: React.FC<Props> = (
   const [isCommentVisible, setIsCommentVisible] = useState<boolean>(false);
   const [postComments, setPostComments] = useState<Comment[]>([]);
   const [isLoadingComments, setIsloadingComments] = useState<boolean>(false);
-  const [isLoadingForm, setIsloadingForm] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const changeName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPostName(event.target.value);
-  };
+  const handleInputChange
+  = (event: React.ChangeEvent<HTMLInputElement>
+  | React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { value, name } = event.target;
 
-  const changeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPostEmail(event.target.value);
-  };
+    if (name === 'name') {
+      setPostName(value);
+    }
 
-  const changeBody = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPostBody(event.target.value);
+    if (name === 'email') {
+      setPostEmail(value);
+    }
+
+    if (name === 'body') {
+      setPostBody(value);
+    }
   };
 
   const loadComments = async (postId: number) => {
@@ -75,7 +81,7 @@ export const PostDetails: React.FC<Props> = (
     }
 
     setIsloadingComments(true);
-    setIsloadingForm(true);
+    setIsSubmitting(true);
 
     if (selectedPostId) {
       const comment = {
@@ -95,7 +101,7 @@ export const PostDetails: React.FC<Props> = (
       setPostName('');
       setPostEmail('');
       setPostBody('');
-      setIsloadingForm(false);
+      setIsSubmitting(false);
 
       return addCom;
     }
@@ -157,7 +163,7 @@ export const PostDetails: React.FC<Props> = (
 
       <section>
         <div className="PostDetails__form-wrapper">
-          {isLoadingForm
+          {isSubmitting
             ? <Loader />
             : (
               <NewCommentForm
@@ -165,9 +171,7 @@ export const PostDetails: React.FC<Props> = (
                 name={postName}
                 email={postEmail}
                 body={postBody}
-                changeName={changeName}
-                changeEmail={changeEmail}
-                changeBody={changeBody}
+                handleInputChange={handleInputChange}
               />
             )}
         </div>

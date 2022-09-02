@@ -5,10 +5,10 @@ type Props = {
   name: string;
   email: string;
   body: string;
-  changeName: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  changeEmail: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  changeBody: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   addComment: () => void;
+  handleInputChange:
+  (event: React.ChangeEvent<HTMLInputElement>
+  | React.ChangeEvent<HTMLTextAreaElement>) => void;
 };
 
 export const NewCommentForm: React.FC<Props> = (
@@ -16,10 +16,8 @@ export const NewCommentForm: React.FC<Props> = (
     name,
     email,
     body,
-    changeName,
-    changeEmail,
-    changeBody,
     addComment,
+    handleInputChange,
   },
 ) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -35,7 +33,7 @@ export const NewCommentForm: React.FC<Props> = (
           placeholder="Your name"
           className="NewCommentForm__input"
           value={name}
-          onChange={changeName}
+          onChange={handleInputChange}
           required
         />
       </div>
@@ -47,7 +45,7 @@ export const NewCommentForm: React.FC<Props> = (
           placeholder="Your email"
           className="NewCommentForm__input"
           value={email}
-          onChange={changeEmail}
+          onChange={handleInputChange}
           pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
           required
         />
@@ -59,7 +57,7 @@ export const NewCommentForm: React.FC<Props> = (
           placeholder="Type comment here"
           className="NewCommentForm__input"
           value={body}
-          onChange={changeBody}
+          onChange={handleInputChange}
           required
         />
       </div>

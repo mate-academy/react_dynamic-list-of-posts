@@ -19,11 +19,10 @@ export const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState<number>(0);
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [selectPostDetails, setSelectPostDetails] = useState<Post | null>(null);
-  const [isLoading, setIsloading] = useState<boolean>(false);
+  const [isLoading, setIsloading] = useState<boolean>(true);
   const [isLoadingDetails, setIsloadingDetails] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsloading(true);
     const loadPosts = async () => {
       const loadAllPosts = await getPosts();
 
@@ -59,7 +58,7 @@ export const App: React.FC = () => {
     loadUserPosts();
   }, [selectedUserId]);
 
-  const filterPosts = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const filterPosts = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setIsloading(true);
     setSelectedUserId(+event.target.value);
   };
