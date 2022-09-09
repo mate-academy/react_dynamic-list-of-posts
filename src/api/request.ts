@@ -1,4 +1,3 @@
-/* eslint-disable no-cond-assign */
 export const BASE_URL = 'https://mate.academy/students-api';
 
 // type OptionsRequest = {
@@ -34,10 +33,10 @@ export const request = async (
     );
   }
 
-  if (!response.headers.get('content-type')?.includes('application/json')) {
-    // eslint-disable-next-line prefer-promise-reject-errors
-    return Promise.reject('Content-type is not supported');
-  }
+  // if (!response.headers.get('content-type')?.includes('application/json')) {
+  //   // eslint-disable-next-line prefer-promise-reject-errors
+  //   return Promise.reject('Content-type is not supported');
+  // }
 
   return response.json();
 };

@@ -73,8 +73,8 @@ ul {
     border-color: green;
     visibility: visible;
 
-    &--hidden {
-      visibility: hidden;
+    &--empty {
+      background-color: transparent;
     }
   }
 }

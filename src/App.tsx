@@ -33,41 +33,31 @@ const App: React.FC = () => {
   const [showLoaderUsers, setShowLoaderUsers] = useState(false);
   const [currentUserId, setCurrentUserId] = useState('');
   const [selectedPostId, setSelectedPostId] = useState('');
-  const [showPostDetails, setShowPostDetails] = useState(false);
+  // const [showPostDetails, setShowPostDetails] = useState(false);
 
-  const loadData = async () => {
+  const loadUsersFromServer = async () => {
     setShowLoaderUsers(true);
-
-    // eslint-disable-next-line no-console
-    // console.log('selectedPostId =', selectedPostId);
 
     try {
       const usersFromServer = await getUsers();
 
-      // // eslint-disable-next-line array-callback-return
-      // usersFromServer.map((user: User) => {
-      //   // eslint-disable-next-line no-console
-      //   console.log(user.id);
-      // });
-
       setUsers(usersFromServer);
-      setShowLoaderUsers(false);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log('error', error);
-
+    } finally {
       setShowLoaderUsers(false);
     }
   };
 
   useEffect(() => {
-    loadData();
+    loadUsersFromServer();
   },
   []);
 
   const selectUserHandler = (userId: string) => {
     setCurrentUserId(userId);
-    setShowPostDetails(false);
+    // setShowPostDetails(false);
   };
 
   return (
@@ -106,7 +96,7 @@ const App: React.FC = () => {
               currentUserId={currentUserId}
               selectedPostId={selectedPostId}
               setSelectedPostId={setSelectedPostId}
-              setShowPostDetails={setShowPostDetails}
+              // setShowPostDetails={setShowPostDetails}
             />
           </div>
         )}
@@ -114,12 +104,13 @@ const App: React.FC = () => {
         <div
           className={classNames(
             'App__content',
-            { 'App__content--hidden': !showPostDetails },
+            { 'App__content--empty': !selectedPostId },
           )}
         >
           { selectedPostId && (
             <PostDetails
               selectedPostId={selectedPostId}
+              setSelectedPostId={setSelectedPostId}
             />
           )}
         </div>

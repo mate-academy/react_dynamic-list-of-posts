@@ -7,6 +7,7 @@ import './PostDetails.scss';
 
 type Props = {
   selectedPostId: string,
+  setSelectedPostId: (postId: string) => void;
 };
 
 // can't import from react-app-env.ts
@@ -29,8 +30,9 @@ const initialPostDetails = {
   updatedAt: '',
 };
 
-export const PostDetails: React.FC<Props> = ({
+export const PostDetails: React.FC<Props> = React.memo(({
   selectedPostId,
+  setSelectedPostId,
 }) => {
   // eslint-disable-next-line no-console
   console.log('render PostDetails');
@@ -82,7 +84,10 @@ export const PostDetails: React.FC<Props> = ({
       // eslint-disable-next-line no-console
       console.log(response, 'loadData');
 
-      loadData();
+      const currentPostId = selectedPostId;
+
+      setSelectedPostId('');
+      setSelectedPostId(currentPostId);
     });
   };
 
@@ -95,7 +100,7 @@ export const PostDetails: React.FC<Props> = ({
       ) : (
         <>
           <section className="PostDetails__post">
-            <strong>{`${postDetails.id} : ${postDetails.title}`}</strong>
+            <strong>{`${postDetails.title}`}</strong>
             <p>{postDetails.body}</p>
           </section>
 
@@ -129,7 +134,8 @@ export const PostDetails: React.FC<Props> = ({
                       X
                     </button>
                     <p>
-                      {`${comment.id} : ${comment.body}`}
+                      <strong>{`${comment.name}:`}</strong>
+                      {comment.body}
                     </p>
                   </li>
                 ))}
@@ -149,4 +155,4 @@ export const PostDetails: React.FC<Props> = ({
       </section>
     </div>
   );
-};
+});

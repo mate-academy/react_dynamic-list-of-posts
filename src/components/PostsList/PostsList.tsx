@@ -8,19 +8,17 @@ type Props = {
   currentUserId: string;
   setSelectedPostId: (postId: string) => void;
   selectedPostId: string;
-  setShowPostDetails: (value: boolean) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
   currentUserId,
   selectedPostId,
   setSelectedPostId,
-  setShowPostDetails,
 }) => {
   const [postsList, setPostsList] = useState([]);
   const [showLoaderPostsList, setShowLoaderPostsList] = useState(false);
 
-  const loadData = async () => {
+  const loadPostList = async () => {
     setShowLoaderPostsList(true);
 
     try {
@@ -38,8 +36,9 @@ export const PostsList: React.FC<Props> = ({
   useEffect(() => {
     // eslint-disable-next-line no-console
     console.log('mounted', currentUserId);
+    setSelectedPostId('');
 
-    loadData();
+    loadPostList();
 
     // eslint-disable-next-line no-console
     console.log('postsList = ', postsList);
@@ -56,21 +55,20 @@ export const PostsList: React.FC<Props> = ({
     switch (true) {
       case selectedPostId && postId === selectedPostId:
         setSelectedPostId('');
-        setShowPostDetails(false);
+        // setShowPostDetails(false);
         // eslint-disable-next-line no-console
         console.log('postId === selectedPostId', postId, selectedPostId);
         break;
 
       case selectedPostId && postId !== selectedPostId:
         setSelectedPostId(postId);
-        setShowPostDetails(true);
+        // setShowPostDetails(true);
         // eslint-disable-next-line no-console
         console.log('postId !== selectedPostId', postId, selectedPostId);
         break;
 
       default:
         setSelectedPostId(postId);
-        setShowPostDetails(true);
         // eslint-disable-next-line no-console
         console.log('selectedPostId undefined =', postId, selectedPostId);
     }
@@ -80,7 +78,9 @@ export const PostsList: React.FC<Props> = ({
   };
 
   return (
-    <div className="PostsList">
+    <div className={classNames('PostsList',
+      { 'PostsList--empty': !currentUserId })}
+    >
       <h2>Posts:</h2>
       {showLoaderPostsList ? (
         <Loader />
@@ -97,11 +97,11 @@ export const PostsList: React.FC<Props> = ({
                 data-cy="postDetails"
               >
                 <div>
-                  <b>{`[User #${post.userId}]: `}</b>
+                  {/* <b>{`[User #${post.userId}]: `}</b> */}
                   <strong>{post.title}</strong>
                   :
                   <br />
-                  {`${post.id} : ${post.body}`}
+                  {`${post.body}`}
                 </div>
 
                 <button
