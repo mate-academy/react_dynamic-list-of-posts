@@ -1,4 +1,4 @@
-import React from 'react';
+import { Post } from '../Post/Post';
 
 export const PostsList: React.FC = () => (
   <div data-cy="PostsList">
@@ -14,23 +14,7 @@ export const PostsList: React.FC = () => (
       </thead>
 
       <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
-
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+        <Post />
 
         <tr data-cy="Post">
           <td data-cy="PostId">18</td>

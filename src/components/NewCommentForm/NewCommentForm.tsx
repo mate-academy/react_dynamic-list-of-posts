@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const NewCommentForm: React.FC = () => {
   return (
     <form data-cy="NewCommentForm">

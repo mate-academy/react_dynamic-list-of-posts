@@ -1,5 +1,3 @@
-import React from 'react';
-
 export const UserSelector: React.FC = () => {
   return (
     <div
