@@ -11,10 +11,11 @@ export const PostDetails: React.FC = () => {
   const [postData, setPostData] = useState<IPost | null>(null);
 
   useEffect(() => {
-    setTimeout(
-      () => setPostData(currentPost),
-      !currentPost ? 500 : 0,
-    );
+    if (!currentPost) {
+      setTimeout(() => setPostData(null), 500);
+    } else {
+      setPostData(currentPost);
+    }
   }, [currentPost]);
 
   if (!postData) {
@@ -23,20 +24,18 @@ export const PostDetails: React.FC = () => {
 
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 data-cy="PostTitle">
-            {`#${postData.id}: `}
-            {postData.title}
-          </h2>
+      <div className="block">
+        <h2 data-cy="PostTitle">
+          {`#${postData.id}: `}
+          {postData.title}
+        </h2>
 
-          <p data-cy="PostBody">
-            {postData.body}
-          </p>
-        </div>
-
-        <Comments />
+        <p data-cy="PostBody">
+          {postData.body}
+        </p>
       </div>
+
+      <Comments />
     </div>
   );
 };

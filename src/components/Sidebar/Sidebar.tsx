@@ -23,7 +23,7 @@ export const Sidebar: React.FC = () => {
         },
       )}
     >
-      <div className="tile is-child box is-success ">
+      <div className="tile is-child box is-success">
         <PostDetails />
       </div>
     </div>
