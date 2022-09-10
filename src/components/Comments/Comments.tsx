@@ -32,6 +32,10 @@ export const Comments: React.FC = () => {
     return () => setIsFormVisible(false);
   }, [currentPost]);
 
+  if (!currentPost) {
+    return null;
+  }
+
   return (
     <>
       <div className="block">
@@ -70,7 +74,9 @@ export const Comments: React.FC = () => {
         )}
       </div>
 
-      {isFormVisible && <NewCommentForm />}
+      {isFormVisible && (
+        <NewCommentForm postId={currentPost.id} />
+      )}
     </>
   );
 };
