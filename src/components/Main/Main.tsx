@@ -76,8 +76,7 @@ export const Main: React.FC = () => {
             />
           )}
 
-          {(userStatus === EStatus.PENDING || postsStatus === EStatus.PENDING)
-          && (
+          {(postsStatus === EStatus.PENDING) && (
             <Loader />
           )}
         </div>
