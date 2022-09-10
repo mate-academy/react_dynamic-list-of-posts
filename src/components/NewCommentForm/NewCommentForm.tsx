@@ -10,6 +10,9 @@ type TProps = {
   postId: number;
 };
 
+// eslint-disable-next-line max-len
+const pattern = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+
 export const NewCommentForm: React.FC<TProps> = ({ postId }) => {
   const { newCommentStatus } = useSelector(
     (state: TRootState) => state.comments,
@@ -24,13 +27,13 @@ export const NewCommentForm: React.FC<TProps> = ({ postId }) => {
   const [emailError, setEmailError] = useState('');
   const [bodyError, setBodyError] = useState('');
 
-  const hasData = Boolean(name || email || body);
-  const hasErrors = Boolean(
-    !hasData || nameError || emailError || bodyError,
-  );
+  const isNameDefined = () => name;
+  const isEmailDefined = () => email;
+  const isEmailCorrect = () => pattern.test(email);
+  const isBodyDefined = () => body;
 
   const checkName = () => {
-    if (!name) {
+    if (!isNameDefined()) {
       setNameError('Name is required');
 
       return;
@@ -40,16 +43,13 @@ export const NewCommentForm: React.FC<TProps> = ({ postId }) => {
   };
 
   const checkEmail = () => {
-    if (!email) {
+    if (!isEmailDefined()) {
       setEmailError('Email is required');
 
       return;
     }
 
-    // eslint-disable-next-line max-len
-    const pattern = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
-
-    if (!pattern.test(email)) {
+    if (!isEmailCorrect()) {
       setEmailError('Email is invalid');
 
       return;
@@ -58,8 +58,8 @@ export const NewCommentForm: React.FC<TProps> = ({ postId }) => {
     setEmailError('');
   };
 
-  const checkMessage = () => {
-    if (!body) {
+  const checkBody = () => {
+    if (!isBodyDefined()) {
       setBodyError('Enter some text');
 
       return;
@@ -68,10 +68,10 @@ export const NewCommentForm: React.FC<TProps> = ({ postId }) => {
     setBodyError('');
   };
 
-  const checkFields = () => {
+  const checkAllFields = () => {
     checkName();
     checkEmail();
-    checkMessage();
+    checkBody();
   };
 
   const handleReset = () => {
@@ -83,23 +83,28 @@ export const NewCommentForm: React.FC<TProps> = ({ postId }) => {
     setBodyError('');
   };
 
+  const allCorrect = isNameDefined()
+    && isEmailDefined()
+    && isBodyDefined()
+    && isEmailCorrect();
+
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
-    checkFields();
+    if (!allCorrect) {
+      checkAllFields();
 
-    setTimeout(() => {
-      if (!hasErrors) {
-        dispatch(fetchNewComment({
-          name,
-          email,
-          body,
-          postId,
-        }));
+      return;
+    }
 
-        handleReset();
-      }
-    }, 0);
+    dispatch(fetchNewComment({
+      name,
+      email,
+      body,
+      postId,
+    }));
+
+    setBody('');
   };
 
   return (
@@ -205,7 +210,7 @@ export const NewCommentForm: React.FC<TProps> = ({ postId }) => {
             placeholder="Type comment here"
             value={body}
             onChange={event => setBody(event.target.value)}
-            onBlur={checkMessage}
+            onBlur={checkBody}
             className={classNames(
               'input',
               {
@@ -232,6 +237,7 @@ export const NewCommentForm: React.FC<TProps> = ({ postId }) => {
                 'is-loading': newCommentStatus === EStatus.PENDING,
               },
             )}
+            onClick={handleSubmit}
           >
             Add
           </button>
@@ -242,7 +248,6 @@ export const NewCommentForm: React.FC<TProps> = ({ postId }) => {
           <button
             type="reset"
             className="button is-link is-light"
-            disabled={!hasData}
             onClick={handleReset}
           >
             Clear
