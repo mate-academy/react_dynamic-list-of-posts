@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import { getUsers } from '../../api/users';
@@ -21,6 +20,9 @@ type TUSerState = {
   status: EStatus,
 };
 
+/* eslint-disable no-param-reassign */
+// Raason of this disabled rule is that Redux toolkit uses "Immer Library"
+// for state management. It allows mutating the state inside reducers.
 const userSlice = createSlice({
   name: 'user',
   initialState: {
@@ -47,6 +49,7 @@ const userSlice = createSlice({
       });
   },
 });
+/* eslint-enable no-param-reassign */
 
 export const { setCurrentUser } = userSlice.actions;
 export default userSlice.reducer;
