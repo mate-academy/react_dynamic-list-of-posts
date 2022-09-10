@@ -31,7 +31,10 @@ const userSlice = createSlice({
     status: EStatus.IDLE,
   } as TUSerState,
   reducers: {
-    setCurrentUser: (state, action) => {
+    setCurrentUser: (
+      state,
+      action: { type: string, payload: IUser | null },
+    ) => {
       state.currentUser = action.payload;
     },
   },

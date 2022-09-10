@@ -31,7 +31,10 @@ const postSlice = createSlice({
     status: EStatus.IDLE,
   } as TPostState,
   reducers: {
-    setCurrentPost: (state, action) => {
+    setCurrentPost: (
+      state,
+      action: { type: string, payload: IPost | null },
+    ) => {
       state.currentPost = action.payload;
     },
   },
