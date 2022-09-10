@@ -35,9 +35,17 @@ export const Main: React.FC = () => {
             </p>
           )}
 
-          {status === EStatus.PENDING && <Loader />}
+          {status === EStatus.PENDING && (
+            <Loader />
+          )}
 
-          {status === EStatus.ERROR && <Notification />}
+          {status === EStatus.ERROR && (
+            <Notification
+              isStyle="is-danger"
+              message="Something went wrong!"
+              cypressData="PostsLoadingError"
+            />
+          )}
 
           <PostsList />
         </div>
