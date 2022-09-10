@@ -1,6 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { getPostComments, postNewComment } from '../../api/comments';
+import {
+  deleteComment,
+  getPostComments,
+  postNewComment,
+  TCommentToPost,
+} from '../../api/comments';
 
 import { IComment } from '../../types/Comment.interface';
 import { EStatus } from '../../types/Status.enum';
@@ -16,7 +21,7 @@ export const fetchPostComments = createAsyncThunk(
 
 export const fetchNewComment = createAsyncThunk(
   'user/fetchNewComment',
-  async (comment: IComment) => {
+  async (comment: TCommentToPost) => {
     const response = await postNewComment(comment);
 
     return response;
@@ -40,6 +45,17 @@ const commentSlice = createSlice({
     newCommentStatus: EStatus.IDLE,
   } as TCommentState,
   reducers: {
+    removeComment: (state, action) => {
+      if (!action.payload.id) {
+        return;
+      }
+
+      state.comments = state.comments.filter(
+        comment => comment.id !== action.payload?.id,
+      );
+
+      deleteComment(action.payload.id);
+    },
   },
   extraReducers(builder) {
     builder
@@ -69,4 +85,5 @@ const commentSlice = createSlice({
 });
 /* eslint-enable no-param-reassign */
 
+export const { removeComment } = commentSlice.actions;
 export default commentSlice.reducer;

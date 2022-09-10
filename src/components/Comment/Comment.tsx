@@ -1,3 +1,8 @@
+import { useDispatch } from 'react-redux';
+
+import { removeComment } from '../../redux/slices/commentSlice';
+import { TRootDispatch } from '../../redux/store';
+
 import { IComment } from '../../types/Comment.interface';
 
 import './Comment.scss';
@@ -7,6 +12,8 @@ type TProps = {
 };
 
 export const Comment: React.FC<TProps> = ({ comment }) => {
+  const dispatch: TRootDispatch = useDispatch();
+
   return (
     <article className="message is-small" data-cy="Comment">
       <div className="message-header">
@@ -21,6 +28,7 @@ export const Comment: React.FC<TProps> = ({ comment }) => {
           type="button"
           className="delete is-small"
           aria-label="delete"
+          onClick={() => dispatch(removeComment(comment))}
         >
           delete button
         </button>
