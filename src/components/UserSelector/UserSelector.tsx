@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 
@@ -16,9 +16,34 @@ export const UserSelector: React.FC = () => {
   } = useSelector((state: TRootState) => state.users);
   const [listVisible, setListVisible] = useState(false);
 
+  const dropdownTrigger = useRef<HTMLDivElement | null>(null);
+  const dropdown = useRef<HTMLDivElement | null>(null);
+
   const dispatch: TRootDispatch = useDispatch();
 
-  useEffect(() => setListVisible(false), [currentUser]);
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      if (!dropdown.current || !dropdownTrigger.current) {
+        return;
+      }
+
+      if (dropdown.current.contains(event.target as Node)) {
+        return;
+      }
+
+      if (dropdownTrigger.current.contains(event.target as Node)) {
+        return;
+      }
+
+      setListVisible(false);
+    };
+
+    document.addEventListener('click', handleClick);
+
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, [listVisible]);
 
   return (
     <div className="block">
@@ -31,7 +56,10 @@ export const UserSelector: React.FC = () => {
           },
         )}
       >
-        <div className="dropdown-trigger">
+        <div
+          className="dropdown-trigger"
+          ref={dropdownTrigger}
+        >
           <button
             type="button"
             className="button"
@@ -51,16 +79,27 @@ export const UserSelector: React.FC = () => {
           </button>
         </div>
 
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        <div
+          className="dropdown-menu"
+          id="dropdown-menu"
+          role="menu"
+          ref={dropdown}
+        >
           <div className="dropdown-content">
             {users.map(user => (
               <a
                 href={`#${user.id}`}
                 key={user.id}
-                className="dropdown-item"
+                className={classNames(
+                  'dropdown-item',
+                  {
+                    'is-active': user.id === currentUser?.id,
+                  },
+                )}
                 onClick={event => {
                   event.preventDefault();
 
+                  setListVisible(false);
                   dispatch(setCurrentUser(user));
                   dispatch(setCurrentPost(null));
                 }}
