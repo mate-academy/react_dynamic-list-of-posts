@@ -15,7 +15,7 @@ export const fetchUsers = createAsyncThunk(
 );
 
 type TUSerState = {
-  list: IUser[],
+  users: IUser[],
   currentUser: IUser | null,
   status: EStatus,
 };
@@ -26,7 +26,7 @@ type TUSerState = {
 const userSlice = createSlice({
   name: 'user',
   initialState: {
-    list: [],
+    users: [],
     currentUser: null,
     status: EStatus.IDLE,
   } as TUSerState,
@@ -38,7 +38,7 @@ const userSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(fetchUsers.fulfilled, (state, action) => {
-        state.list = action.payload;
+        state.users = action.payload;
         state.status = EStatus.SUCCESS;
       })
       .addCase(fetchUsers.pending, state => {
