@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 
 import { setCurrentUser } from '../../redux/slices/userSlice';
+import { setCurrentPost } from '../../redux/slices/postSlice';
 
 import { TRootDispatch, TRootState } from '../../redux/store';
 
@@ -61,6 +62,7 @@ export const UserSelector: React.FC = () => {
                   event.preventDefault();
 
                   dispatch(setCurrentUser(user));
+                  dispatch(setCurrentPost(null));
                 }}
               >
                 {user.name}
