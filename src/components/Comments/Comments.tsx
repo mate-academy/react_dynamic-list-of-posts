@@ -62,7 +62,7 @@ export const Comments: React.FC = () => {
             ))
         )}
 
-        {!isFormVisible && (
+        {!isFormVisible && status === EStatus.SUCCESS && (
           <button
             data-cy="WriteCommentButton"
             type="button"
