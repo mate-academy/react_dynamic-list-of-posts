@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
+import classNames from 'classnames';
 
 import { setCurrentUser } from '../../redux/slices/userSlice';
 
@@ -9,7 +9,10 @@ import { TRootDispatch, TRootState } from '../../redux/store';
 import './UserSelector.scss';
 
 export const UserSelector: React.FC = () => {
-  const { list, currentUser } = useSelector((state: TRootState) => state.users);
+  const {
+    users,
+    currentUser,
+  } = useSelector((state: TRootState) => state.users);
   const [listVisible, setListVisible] = useState(false);
 
   const dispatch: TRootDispatch = useDispatch();
@@ -49,7 +52,7 @@ export const UserSelector: React.FC = () => {
 
         <div className="dropdown-menu" id="dropdown-menu" role="menu">
           <div className="dropdown-content">
-            {list.map(user => (
+            {users.map(user => (
               <a
                 href={`#${user.id}`}
                 key={user.id}
