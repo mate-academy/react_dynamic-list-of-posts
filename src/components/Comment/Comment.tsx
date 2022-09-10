@@ -1,11 +1,20 @@
+import { IComment } from '../../types/Comment.interface';
+
 import './Comment.scss';
 
-export const Comment: React.FC = () => {
+type TProps = {
+  comment: IComment;
+};
+
+export const Comment: React.FC<TProps> = ({ comment }) => {
   return (
     <article className="message is-small" data-cy="Comment">
       <div className="message-header">
-        <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-          Misha Hrynko
+        <a
+          href={`mailto:${comment.email}`}
+          data-cy="CommentAuthor"
+        >
+          {comment.name}
         </a>
         <button
           data-cy="CommentDelete"
@@ -18,7 +27,7 @@ export const Comment: React.FC = () => {
       </div>
 
       <div className="message-body" data-cy="CommentBody">
-        Some comment
+        {comment.body}
       </div>
     </article>
   );

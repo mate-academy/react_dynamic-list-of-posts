@@ -1,83 +1,76 @@
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { Comment } from '../Comment/Comment';
 import { Loader } from '../Loader/Loader';
 import { NewCommentForm } from '../NewCommentForm/NewCommentForm';
 
+import { fetchPostComments } from '../../redux/slices/commentSlice';
+
+import { TRootDispatch, TRootState } from '../../redux/store';
+import { EStatus } from '../../types/Status.enum';
+import { Notification } from '../Notification/Notification';
+
 export const Comments: React.FC = () => {
+  const {
+    comments,
+    status,
+  } = useSelector((state: TRootState) => state.comments);
+  const { currentPost } = useSelector((state: TRootState) => state.posts);
+  const [isFormVisible, setIsFormVisible] = useState(false);
+
+  const dispatch: TRootDispatch = useDispatch();
+
+  useEffect(() => {
+    if (!currentPost) {
+      return;
+    }
+
+    dispatch(fetchPostComments(currentPost.id));
+
+    // eslint-disable-next-line consistent-return
+    return () => setIsFormVisible(false);
+  }, [currentPost]);
+
   return (
     <>
       <div className="block">
-        <Loader />
+        {status === EStatus.PENDING && (
+          <Loader />
+        )}
 
-        <div className="notification is-danger" data-cy="CommentsError">
-          Something went wrong
-        </div>
+        {status === EStatus.ERROR && (
+          <Notification
+            isStyle="is-danger"
+            message="Something went wrong during comments loading!"
+            cypressData="CommentsError"
+          />
+        )}
 
-        <p className="title is-4" data-cy="NoCommentsMessage">
-          No comments yet
-        </p>
+        {status === EStatus.SUCCESS && (
+          !comments.length ? (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )
+            : comments.map(comment => (
+              <Comment comment={comment} key={comment.id} />
+            ))
+        )}
 
-        <Comment />
-
-        <article className="message is-small" data-cy="Comment">
-          <div className="message-header">
-            <a
-              href="mailto:misha@mate.academy"
-              data-cy="CommentAuthor"
-            >
-              Misha Hrynko
-            </a>
-
-            <button
-              data-cy="CommentDelete"
-              type="button"
-              className="delete is-small"
-              aria-label="delete"
-            >
-              delete button
-            </button>
-          </div>
-          <div
-            className="message-body"
-            data-cy="CommentBody"
+        {!isFormVisible && (
+          <button
+            data-cy="WriteCommentButton"
+            type="button"
+            className="button is-link"
+            onClick={() => setIsFormVisible(true)}
           >
-            One more comment
-          </div>
-        </article>
-
-        <article className="message is-small" data-cy="Comment">
-          <div className="message-header">
-            <a
-              href="mailto:misha@mate.academy"
-              data-cy="CommentAuthor"
-            >
-              Misha Hrynko
-            </a>
-
-            <button
-              data-cy="CommentDelete"
-              type="button"
-              className="delete is-small"
-              aria-label="delete"
-            >
-              delete button
-            </button>
-          </div>
-
-          <div className="message-body" data-cy="CommentBody">
-            {'Multi\nline\ncomment'}
-          </div>
-        </article>
-
-        <button
-          data-cy="WriteCommentButton"
-          type="button"
-          className="button is-link"
-        >
-          Write a comment
-        </button>
+            Write a comment
+          </button>
+        )}
       </div>
 
-      <NewCommentForm />
+      {isFormVisible && <NewCommentForm />}
     </>
   );
 };
