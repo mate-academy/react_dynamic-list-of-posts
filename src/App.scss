@@ -2,12 +2,15 @@
   box-sizing: border-box;
 }
 
+html {
+  font-family: "Roboto", sans-serif;
+}
+
 body {
   min-height: 100vh;
   background-color: #e9e6f2;
   padding: 20px;
   color: #4d457b;
-  font-family: "Roboto", sans-serif;
 }
 
 h2 {

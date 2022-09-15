@@ -1,6 +1,27 @@
 /// <reference types="react-scripts" />
 
-type Post = {
+type UserType = {
+  id: string;
+  name: string;
+  username: string;
+  email: string;
+  phone: string;
+  website: string;
+  createdAt: string;
+  updatedAt: string;
+  address: {
+    id: string;
+    userId: string;
+    street: string;
+    suite: string;
+    city: string;
+    zipcode: string;
+    createdAt: string;
+    updatedAt: string;
+  }
+};
+
+type PostType = {
   id: string;
   userId: string;
   title: string;
@@ -9,7 +30,7 @@ type Post = {
   updatedAt: string;
 };
 
-type Comment = {
+type CommentType = {
   id: string;
   postId: string;
   createdAt: string;
@@ -19,7 +40,7 @@ type Comment = {
   body: string;
 };
 
-type PostDetails = {
+type PostDetailsType = {
   id: string;
   userId: string;
   title: string;
@@ -28,8 +49,8 @@ type PostDetails = {
   updatedAt: string;
 };
 
-type NewComment = {
-  postId: string,
+type NewCommentType = {
+  postId: string | null,
   name: string,
   email: string,
   body: string,

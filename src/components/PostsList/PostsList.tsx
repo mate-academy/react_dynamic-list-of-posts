@@ -6,8 +6,8 @@ import './PostsList.scss';
 
 type Props = {
   currentUserId: string;
-  setSelectedPostId: (postId: string) => void;
-  selectedPostId: string;
+  setSelectedPostId: (postId: string | null) => void;
+  selectedPostId: string | null;
 };
 
 export const PostsList: React.FC<Props> = ({
@@ -25,56 +25,29 @@ export const PostsList: React.FC<Props> = ({
       const posts = await getUserPosts(currentUserId);
 
       setPostsList(posts);
-      setShowLoaderPostsList(false);
     } catch (error) {
-      setShowLoaderPostsList(false);
       // eslint-disable-next-line no-console
       console.log('error', error);
+    } finally {
+      setShowLoaderPostsList(false);
     }
   };
 
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log('mounted', currentUserId);
-    setSelectedPostId('');
+    setSelectedPostId(null);
 
     loadPostList();
-
-    // eslint-disable-next-line no-console
-    console.log('postsList = ', postsList);
   },
   [currentUserId]);
 
   const postsListHandle = (postId: string) => {
-    // eslint-disable-next-line no-console
-    console.log('postId =', postId);
-
-    // eslint-disable-next-line no-console
-    console.log('selectedPostId before = ', selectedPostId);
-
-    switch (true) {
-      case selectedPostId && postId === selectedPostId:
-        setSelectedPostId('');
-        // setShowPostDetails(false);
-        // eslint-disable-next-line no-console
-        console.log('postId === selectedPostId', postId, selectedPostId);
-        break;
-
-      case selectedPostId && postId !== selectedPostId:
-        setSelectedPostId(postId);
-        // setShowPostDetails(true);
-        // eslint-disable-next-line no-console
-        console.log('postId !== selectedPostId', postId, selectedPostId);
-        break;
-
-      default:
-        setSelectedPostId(postId);
-        // eslint-disable-next-line no-console
-        console.log('selectedPostId undefined =', postId, selectedPostId);
+    if (selectedPostId && postId === selectedPostId) {
+      setSelectedPostId(null);
+    } else if (selectedPostId && postId !== selectedPostId) {
+      setSelectedPostId(postId);
+    } else {
+      setSelectedPostId(postId);
     }
-
-    // eslint-disable-next-line no-console
-    console.log('selectedPostId after =', selectedPostId);
   };
 
   return (
@@ -89,7 +62,7 @@ export const PostsList: React.FC<Props> = ({
           <p>{`Count posts: ${postsList.length}`}</p>
 
           <ul className="PostsList__list">
-            {postsList.map((post: Post) => (
+            {postsList.map((post: PostType) => (
               <li
                 key={post.id}
                 className={classNames('PostsList__item',
@@ -97,7 +70,6 @@ export const PostsList: React.FC<Props> = ({
                 data-cy="postDetails"
               >
                 <div>
-                  {/* <b>{`[User #${post.userId}]: `}</b> */}
                   <strong>{post.title}</strong>
                   :
                   <br />

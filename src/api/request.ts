@@ -1,20 +1,14 @@
 export const BASE_URL = 'https://mate.academy/students-api';
 
-// type OptionsRequest = {
-//   method: string;
-//   headers: { 'Content-type': string; };
-//   body: string;
-// };
-
-// const initialOptionsRequest = {
-//   method: 'GET',
-//   headers: { 'Content-type': '' },
-//   body: '',
-// };
+type RequestOptionsType = {
+  method: 'GET' | 'POST' | 'DELETE';
+  headers?: { 'Content-type': 'application/json; charset=utf-8' };
+  body?: string;
+};
 
 export const request = async (
   url: string,
-  options: any = {
+  options: RequestOptionsType = {
     method: 'GET',
   },
 ) => {
@@ -32,11 +26,6 @@ export const request = async (
       `${response.status} - ${response.statusText}`,
     );
   }
-
-  // if (!response.headers.get('content-type')?.includes('application/json')) {
-  //   // eslint-disable-next-line prefer-promise-reject-errors
-  //   return Promise.reject('Content-type is not supported');
-  // }
 
   return response.json();
 };

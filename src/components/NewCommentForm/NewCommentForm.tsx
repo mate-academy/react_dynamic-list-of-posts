@@ -3,22 +3,25 @@ import { createComment } from '../../api/comments';
 import './NewCommentForm.scss';
 
 type Props = {
-  selectedPostId: string;
-  loadData: () => void;
+  selectedPostId: string | null;
+  loadPostDetails: () => void;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   selectedPostId,
-  loadData,
+  loadPostDetails,
 }) => {
-  const initialNewComment = {
+  const initialNewComment: NewCommentType = {
     postId: selectedPostId,
     name: '',
     email: '',
     body: '',
   };
 
-  const [newComment, setNewComment] = useState(initialNewComment);
+  const [
+    newComment,
+    setNewComment,
+  ] = useState<NewCommentType>(initialNewComment);
 
   useEffect(() => {
     setNewComment(initialNewComment);
@@ -37,8 +40,12 @@ export const NewCommentForm: React.FC<Props> = ({
   const newCommentFormSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    createComment(newComment).then(() => loadData());
-    setNewComment(initialNewComment);
+    if ((newComment.name.length > 0)
+    && (newComment.email.length > 0)
+    && (newComment.body.length > 0)) {
+      createComment(newComment).then(() => loadPostDetails());
+      setNewComment(initialNewComment);
+    }
   };
 
   return (
@@ -47,7 +54,6 @@ export const NewCommentForm: React.FC<Props> = ({
       method="POST"
       onSubmit={newCommentFormSubmit}
     >
-      {`postId: ${selectedPostId}`}
       <div className="form-field">
         <input
           type="text"

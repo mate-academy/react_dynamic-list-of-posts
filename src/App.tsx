@@ -7,33 +7,11 @@ import { PostDetails } from './components/PostDetails';
 import { getUsers } from './api/users';
 import { Loader } from './components/Loader';
 
-type User = {
-  id: string;
-  name: string;
-  username: string;
-  email: string;
-  phone: string;
-  website: string;
-  createdAt: string;
-  updatedAt: string;
-  address: {
-    id: string;
-    userId: string;
-    street: string;
-    suite: string;
-    city: string;
-    zipcode: string;
-    createdAt: string;
-    updatedAt: string;
-  }
-};
-
 const App: React.FC = () => {
   const [users, setUsers] = useState([]);
   const [showLoaderUsers, setShowLoaderUsers] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState('');
-  const [selectedPostId, setSelectedPostId] = useState('');
-  // const [showPostDetails, setShowPostDetails] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState('All');
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
 
   const loadUsersFromServer = async () => {
     setShowLoaderUsers(true);
@@ -57,7 +35,6 @@ const App: React.FC = () => {
 
   const selectUserHandler = (userId: string) => {
     setCurrentUserId(userId);
-    // setShowPostDetails(false);
   };
 
   return (
@@ -71,12 +48,12 @@ const App: React.FC = () => {
 
             <select
               className="App__user-selector"
-              defaultValue="DEFAULT"
+              defaultValue="All"
               onChange={e => selectUserHandler(e.target.value)}
             >
               <option value="DEFAULT" disabled>Choose...</option>
               <option value="All">All users</option>
-              {users.map((user : User) => (
+              {users.map((user : UserType) => (
                 <option
                   key={user.id}
                   value={user.id}
@@ -96,7 +73,6 @@ const App: React.FC = () => {
               currentUserId={currentUserId}
               selectedPostId={selectedPostId}
               setSelectedPostId={setSelectedPostId}
-              // setShowPostDetails={setShowPostDetails}
             />
           </div>
         )}

@@ -4,4 +4,4 @@ export const getUserPosts = (userId: string) => request(
   (userId === 'All') ? '/posts' : `/posts?userId=${userId}`,
 );
 
-export const getPostDetails = (postId: string) => request(`/posts/${postId}`);
+export const getPostDetails = (postId: string | null) => request(`/posts/${postId}`);

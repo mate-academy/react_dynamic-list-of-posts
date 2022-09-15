@@ -6,28 +6,8 @@ import { NewCommentForm } from '../NewCommentForm';
 import './PostDetails.scss';
 
 type Props = {
-  selectedPostId: string,
-  setSelectedPostId: (postId: string) => void;
-};
-
-// can't import from react-app-env.ts
-type Comment = {
-  id: string;
-  postId: string;
-  createdAt: string;
-  updatedAt: string;
-  name: string;
-  email: string;
-  body: string;
-};
-
-const initialPostDetails = {
-  id: '',
-  userId: '',
-  title: '',
-  body: '',
-  createdAt: '',
-  updatedAt: '',
+  selectedPostId: string | null;
+  setSelectedPostId: (postId: string | null) => void;
 };
 
 export const PostDetails: React.FC<Props> = React.memo(({
@@ -38,41 +18,34 @@ export const PostDetails: React.FC<Props> = React.memo(({
   console.log('render PostDetails');
 
   const [postComments, setPostComments] = useState([]);
-  const [postDetails, setPostDetails] = useState(initialPostDetails);
+  const [postDetails, setPostDetails] = useState<PostDetailsType | null>(null);
   const [showComments, setShowComments] = useState(true);
   const [showLoaderPostsDetails, setShowLoaderPostsDetails] = useState(false);
 
   const counterComments = postComments.length;
 
-  const loadData = async () => {
+  const loadPostDetails = async () => {
     setShowLoaderPostsDetails(true);
 
-    // eslint-disable-next-line no-console
-    console.log('selectedPostId =', selectedPostId);
-
     try {
-      const [comments, newPostDetails] = await Promise.all([
+      const [commentsFromServer, postDetailsFromServer] = await Promise.all([
         getPostComments(selectedPostId),
         getPostDetails(selectedPostId),
       ]);
 
-      setPostComments(comments);
-      setPostDetails(newPostDetails);
-      setShowLoaderPostsDetails(false);
+      setPostComments(commentsFromServer);
+      setPostDetails(postDetailsFromServer);
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log('error', error);
-
+    } finally {
       setShowLoaderPostsDetails(false);
     }
   };
 
   useEffect(() => {
     if (selectedPostId) {
-      // eslint-disable-next-line no-console
-      console.log('mounted new comment by postId = ', selectedPostId);
-
-      loadData();
+      loadPostDetails();
     }
   },
   [
@@ -80,13 +53,10 @@ export const PostDetails: React.FC<Props> = React.memo(({
   ]);
 
   const onDeleteButton = (commentId: string) => {
-    deleteComment(commentId).then((response) => {
-      // eslint-disable-next-line no-console
-      console.log(response, 'loadData');
-
+    deleteComment(commentId).then(() => {
       const currentPostId = selectedPostId;
 
-      setSelectedPostId('');
+      setSelectedPostId(null);
       setSelectedPostId(currentPostId);
     });
   };
@@ -95,16 +65,18 @@ export const PostDetails: React.FC<Props> = React.memo(({
     <div className="PostDetails">
       <h2>Post details:</h2>
 
+      {postDetails && (
+        <section className="PostDetails__post">
+          <strong>{`${postDetails.title}`}</strong>
+          <p>{postDetails.body}</p>
+        </section>
+      )}
+
       {showLoaderPostsDetails ? (
         <Loader />
       ) : (
-        <>
-          <section className="PostDetails__post">
-            <strong>{`${postDetails.title}`}</strong>
-            <p>{postDetails.body}</p>
-          </section>
-
-          <section className="PostDetails__comments">
+        <section className="PostDetails__comments">
+          {(counterComments > 0) && (
             <button
               type="button"
               className="PostDetails__button button"
@@ -114,42 +86,42 @@ export const PostDetails: React.FC<Props> = React.memo(({
                 ? `Hide ${counterComments} comments`
                 : 'Show comments' }
             </button>
+          )}
 
-            { showComments && (
-              <ul
-                className="PostDetails__list"
-                data-cy="postList"
-              >
-                {postComments.map((comment: Comment) => (
-                  <li
-                    key={comment.id}
-                    className="PostDetails__list-item"
+          { showComments && (
+            <ul
+              className="PostDetails__list"
+              data-cy="postList"
+            >
+              {postComments.map((comment: CommentType) => (
+                <li
+                  key={comment.id}
+                  className="PostDetails__list-item"
+                >
+                  <button
+                    type="button"
+                    className="PostDetails__remove-button button"
+                    formMethod="DELETE"
+                    onClick={() => onDeleteButton(comment.id)}
                   >
-                    <button
-                      type="button"
-                      className="PostDetails__remove-button button"
-                      formMethod="DELETE"
-                      onClick={() => onDeleteButton(comment.id)}
-                    >
-                      X
-                    </button>
-                    <p>
-                      <strong>{`${comment.name}:`}</strong>
-                      {comment.body}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        </>
+                    X
+                  </button>
+                  <p>
+                    <strong>{comment.name ? `${comment.name}: ` : 'noname: '}</strong>
+                    {comment.body}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       )}
 
       <section>
         <div className="PostDetails__form-wrapper">
           <NewCommentForm
             selectedPostId={selectedPostId}
-            loadData={loadData}
+            loadPostDetails={loadPostDetails}
           />
         </div>
       </section>
