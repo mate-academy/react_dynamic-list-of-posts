@@ -4,6 +4,11 @@
   align-items: center;
   padding: 20px;
 
+  &__form-field {
+    position: relative;
+    margin-bottom: 15px;
+  }
+
   &__input {
     width: 20em;
     border: none;
@@ -12,9 +17,27 @@
     font-size: 0.9rem;
     padding: 10px 5px;
     color: #4d457b;
+
+    &--text-area {
+      resize: none;
+      height: 85px;
+      width: 360px;
+    }
+  }
+
+  &__error {
+    position: absolute;
+    bottom: -14px;
+    left: 2px;
+    font-size: 12px;
+    color: red;
+
+    &--text-area {
+      bottom: -9px;
+    }
   }
 
   &__submit-button {
-    margin-top: 10px;
+    margin-top: 15px;
   }
 }
