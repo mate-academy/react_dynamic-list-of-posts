@@ -6,7 +6,6 @@ import { PostsList } from './components/PostList/PostsList';
 import { PostDetails } from './components/PostDetails/PostDetails';
 import { UserSelector } from './components/UserSelector/UserSelector';
 import { User } from './types/User';
-import { Post } from './types/Post';
 import { getUsers } from './utils/fetch_Users';
 import './App.scss';
 
@@ -14,8 +13,8 @@ export const App: React.FC = () => {
   const [isStarted, setIsStarted] = useState(false);
   const [usersLoadingError, setUsersLoadingError] = useState('');
   const [users, setUsers] = useState<User[]>([]);
-  const [selectedUserId, setSelectedUserId] = useState<number>(0);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
 
   useEffect(() => {
     getUsers()
@@ -35,7 +34,7 @@ export const App: React.FC = () => {
                   users={users}
                   selectedUserId={selectedUserId}
                   setSelectedUserId={setSelectedUserId}
-                  selectedPost={selectedPost}
+                  selectedPostId={selectedPostId}
                 />
               </div>
               <div className="block" data-cy="MainContent">
@@ -59,15 +58,15 @@ export const App: React.FC = () => {
                 {isStarted
                 && (
                   <PostsList
-                    selectedPost={selectedPost}
-                    setSelectedPost={setSelectedPost}
+                    selectedPostId={selectedPostId}
+                    setSelectedPostId={setSelectedPostId}
                     selectedUserId={selectedUserId}
                   />
                 )}
               </div>
             </div>
           </div>
-          {selectedPost
+          {selectedPostId
           && (
             <div
               data-cy="Sidebar"
@@ -82,7 +81,7 @@ export const App: React.FC = () => {
 
               <div className="tile is-child box is-success ">
                 <PostDetails
-                  selectedPost={selectedPost}
+                  selectedPostId={selectedPostId}
                 />
               </div>
             </div>

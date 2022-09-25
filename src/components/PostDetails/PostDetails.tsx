@@ -2,17 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Comment } from '../../types/Comment';
 import { Post } from '../../types/Post';
 import { deleteComment, getComments } from '../../utils/fetch_Comments';
+import { getPostDetails } from '../../utils/fetch_Posts';
 import { Loader } from '../Loader';
 import { NewCommentForm } from '../NewCommentsForm/NewCommentForm';
 
 type Props = {
-  selectedPost: Post | null,
+  selectedPostId: number | null,
 };
 
 export const PostDetails: React.FC<Props> = ({
-  selectedPost,
+  selectedPostId,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isNewFormVisible, setIsNewFormVisible] = useState(false);
   const [isCommentsLoaded, setIsCommentsLoaded] = useState(false);
   const [commentsError, setCommentsError] = useState('');
@@ -21,17 +23,21 @@ export const PostDetails: React.FC<Props> = ({
     setIsCommentsLoaded(false);
     setComments([]);
 
+    getPostDetails(selectedPostId)
+      .then(setSelectedPost)
+      .catch(() => setCommentsError('Something went wrong!'));
+
     getComments()
       .then(commentsFromApi => {
         setComments(
           commentsFromApi.filter(
-            comment => comment.postId === selectedPost?.id,
+            comment => comment.postId === selectedPostId,
           ),
         );
         setIsCommentsLoaded(true);
       })
       .catch(() => setCommentsError('Something went wrong!'));
-  }, [selectedPost]);
+  }, [selectedPostId]);
 
   useEffect(() => {
     setIsNewFormVisible(false);
@@ -59,7 +65,7 @@ export const PostDetails: React.FC<Props> = ({
   return (
     <div
       className={
-        selectedPost
+        selectedPostId
           ? 'PostDetails-show'
           : 'content'
       }
@@ -68,7 +74,7 @@ export const PostDetails: React.FC<Props> = ({
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {`${selectedPost?.id}: ${selectedPost?.title}`}
+            {`${selectedPostId}: ${selectedPost?.title}`}
           </h2>
 
           <p data-cy="PostBody">
@@ -145,7 +151,7 @@ export const PostDetails: React.FC<Props> = ({
       {isNewFormVisible
         && (
           <NewCommentForm
-            selectedPost={selectedPost}
+            selectedPostId={selectedPostId}
             setComments={setComments}
           />
         )}

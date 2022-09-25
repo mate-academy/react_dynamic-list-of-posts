@@ -5,14 +5,14 @@ import { Loader } from '../Loader';
 import './PostList.scss';
 
 type Props = {
-  selectedPost: Post | null,
-  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>,
-  selectedUserId: number,
+  selectedPostId: number | null,
+  setSelectedPostId: React.Dispatch<React.SetStateAction<number | null>>,
+  selectedUserId: number | null,
 };
 
 export const PostsList: React.FC<Props> = ({
-  selectedPost,
-  setSelectedPost,
+  selectedPostId,
+  setSelectedPostId,
   selectedUserId,
 }) => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -22,7 +22,7 @@ export const PostsList: React.FC<Props> = ({
 
   useEffect(() => {
     setIsPostsLoaded(false);
-    setSelectedPost(null);
+    setSelectedPostId(null);
     setPosts([]);
 
     getPosts()
@@ -34,12 +34,12 @@ export const PostsList: React.FC<Props> = ({
   }, [selectedUserId]);
 
   const handleOpenBtnClick = (post: Post) => {
-    setSelectedPost(post);
+    setSelectedPostId(post.id);
     setIsPostOpened(true);
   };
 
   const handleCloseBtnClick = () => {
-    setSelectedPost(null);
+    setSelectedPostId(null);
     setIsPostOpened(false);
   };
 
@@ -47,7 +47,7 @@ export const PostsList: React.FC<Props> = ({
     <div
       data-cy="PostsList"
       className={
-        !selectedPost
+        !selectedPostId
           ? 'PostList-stretch'
           : ''
       }
@@ -92,7 +92,7 @@ export const PostsList: React.FC<Props> = ({
                       </td>
 
                       <td className="has-text-right is-vcentered">
-                        {(!isPostOpened || post.id !== selectedPost?.id)
+                        {(!isPostOpened || post.id !== selectedPostId)
                     && (
                       <button
                         type="button"
@@ -103,7 +103,7 @@ export const PostsList: React.FC<Props> = ({
                         Open
                       </button>
                     )}
-                        {(post.id === selectedPost?.id && isPostOpened)
+                        {(post.id === selectedPostId && isPostOpened)
                     && (
                       <button
                         type="button"

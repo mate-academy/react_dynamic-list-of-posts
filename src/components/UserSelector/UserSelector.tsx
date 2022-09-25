@@ -1,28 +1,27 @@
 import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
-import { Post } from '../../types/Post';
 import { User } from '../../types/User';
 
 type Props = {
   setIsStarted: React.Dispatch<React.SetStateAction<boolean>>,
   users: User[],
-  selectedUserId: number,
-  setSelectedUserId: React.Dispatch<React.SetStateAction<number>>,
-  selectedPost: Post | null,
+  selectedUserId: number | null,
+  setSelectedUserId: React.Dispatch<React.SetStateAction<number | null>>,
+  selectedPostId: number | null,
 };
 export const UserSelector: React.FC<Props> = ({
   setIsStarted,
   users,
   selectedUserId,
   setSelectedUserId,
-  selectedPost,
+  selectedPostId,
 }) => {
   const [selectedUserName, setSelectedUserName] = useState('');
   const [isUsersListOpen, setIsUsersListOpen] = useState(false);
 
   useEffect(() => {
     setIsUsersListOpen(false);
-  }, [selectedPost]);
+  }, [selectedPostId]);
 
   const handleOnClick = (selectedUser: User) => {
     setSelectedUserId(selectedUser.id);

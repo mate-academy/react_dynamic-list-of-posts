@@ -1,16 +1,15 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { Comment } from '../../types/Comment';
-import { Post } from '../../types/Post';
 import { addComment } from '../../utils/fetch_Comments';
 
 type Props = {
-  selectedPost: Post | null,
+  selectedPostId: number | null,
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
-  selectedPost,
+  selectedPostId,
   setComments,
 }) => {
   const [authorName, setAuthorName] = useState('');
@@ -47,9 +46,9 @@ export const NewCommentForm: React.FC<Props> = ({
     setIsFormSubmit(true);
     const allRight = authorName && authorEmail && commentText;
 
-    if (allRight && selectedPost) {
+    if (allRight && selectedPostId) {
       const newComment = {
-        postId: selectedPost.id,
+        postId: selectedPostId,
         name: authorName,
         email: authorEmail,
         body: commentText,
