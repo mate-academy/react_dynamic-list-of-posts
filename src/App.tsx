@@ -1,15 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
+import classNames from 'classnames';
+import { PostsList } from './components/PostList/PostsList';
+import { PostDetails } from './components/PostDetails/PostDetails';
+import { UserSelector } from './components/UserSelector/UserSelector';
+import { Loader } from './components/Loader';
+import { User } from './types/User';
+import { Post } from './types/Post';
+import { getUsers } from './utils/fetch_Users';
+import { Comment } from './types/Comment';
 import './App.scss';
 
-import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
-
 export const App: React.FC = () => {
+  const [isStarted, setIsStarted] = useState(false);
+  const [loadingError, setLoadingError] = useState('');
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [isPostsLoaded, setIsPostsLoaded] = useState(false);
+  const [isCommentsLoaded, setIsCommentsLoaded] = useState(false);
+
+  useEffect(() => {
+    getUsers()
+      .then(usersFromApi => setUsers(usersFromApi))
+      .catch(() => setLoadingError('Something went wrong!'));
+  }, []);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,46 +35,80 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  setLoadingError={setLoadingError}
+                  users={users}
+                  setPosts={setPosts}
+                  setSelectedPost={setSelectedPost}
+                  setIsStarted={setIsStarted}
+                  setIsPostsLoaded={setIsPostsLoaded}
+                />
               </div>
-
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!isStarted
+                  && (
+                    <p data-cy="NoSelectedUser">
+                      No user selected
+                    </p>
+                  )}
 
-                <Loader />
+                {(isStarted && !isPostsLoaded)
+                  && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {loadingError
+               && (
+                 <div
+                   className="notification is-danger"
+                   data-cy="PostsLoadingError"
+                 >
+                   {loadingError}
+                 </div>
+               )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                {(isStarted && !posts.length && isPostsLoaded)
+                && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
+                {(posts.length > 0 && isPostsLoaded)
+                && (
+                  <PostsList
+                    posts={posts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
+                    setLoadingError={setLoadingError}
+                    setComments={setComments}
+                    setIsCommentsLoaded={setIsCommentsLoaded}
+                  />
+                )}
               </div>
             </div>
           </div>
+          {selectedPost
+          && (
+            <div
+              data-cy="Sidebar"
+              className={classNames(
+                'tile',
+                'is-parent',
+                'is-8-desktop',
+                'Sidebar',
+                'Sidebar--open',
+              )}
+            >
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
+              <div className="tile is-child box is-success ">
+                <PostDetails
+                  isCommentsLoaded={isCommentsLoaded}
+                  selectedPost={selectedPost}
+                  loadingError={loadingError}
+                  comments={comments}
+                  setComments={setComments}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </main>
