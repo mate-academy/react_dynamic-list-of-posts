@@ -5,27 +5,22 @@ import classNames from 'classnames';
 import { PostsList } from './components/PostList/PostsList';
 import { PostDetails } from './components/PostDetails/PostDetails';
 import { UserSelector } from './components/UserSelector/UserSelector';
-import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { Post } from './types/Post';
 import { getUsers } from './utils/fetch_Users';
-import { Comment } from './types/Comment';
 import './App.scss';
 
 export const App: React.FC = () => {
   const [isStarted, setIsStarted] = useState(false);
-  const [loadingError, setLoadingError] = useState('');
+  const [usersLoadingError, setUsersLoadingError] = useState('');
   const [users, setUsers] = useState<User[]>([]);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState<number>(0);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [isPostsLoaded, setIsPostsLoaded] = useState(false);
-  const [isCommentsLoaded, setIsCommentsLoaded] = useState(false);
 
   useEffect(() => {
     getUsers()
       .then(usersFromApi => setUsers(usersFromApi))
-      .catch(() => setLoadingError('Something went wrong!'));
+      .catch(() => setUsersLoadingError('Something went wrong!'));
   }, []);
 
   return (
@@ -36,12 +31,11 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  setLoadingError={setLoadingError}
-                  users={users}
-                  setPosts={setPosts}
-                  setSelectedPost={setSelectedPost}
                   setIsStarted={setIsStarted}
-                  setIsPostsLoaded={setIsPostsLoaded}
+                  users={users}
+                  selectedUserId={selectedUserId}
+                  setSelectedUserId={setSelectedUserId}
+                  selectedPost={selectedPost}
                 />
               </div>
               <div className="block" data-cy="MainContent">
@@ -52,34 +46,22 @@ export const App: React.FC = () => {
                     </p>
                   )}
 
-                {(isStarted && !isPostsLoaded)
-                  && <Loader />}
-
-                {loadingError
+                {usersLoadingError
                && (
                  <div
                    className="notification is-danger"
-                   data-cy="PostsLoadingError"
+                   data-cy="UsersLoadingError"
                  >
-                   {loadingError}
+                   {usersLoadingError}
                  </div>
                )}
 
-                {(isStarted && !posts.length && isPostsLoaded)
-                && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
-                {(posts.length > 0 && isPostsLoaded)
+                {isStarted
                 && (
                   <PostsList
-                    posts={posts}
                     selectedPost={selectedPost}
                     setSelectedPost={setSelectedPost}
-                    setLoadingError={setLoadingError}
-                    setComments={setComments}
-                    setIsCommentsLoaded={setIsCommentsLoaded}
+                    selectedUserId={selectedUserId}
                   />
                 )}
               </div>
@@ -100,11 +82,7 @@ export const App: React.FC = () => {
 
               <div className="tile is-child box is-success ">
                 <PostDetails
-                  isCommentsLoaded={isCommentsLoaded}
                   selectedPost={selectedPost}
-                  loadingError={loadingError}
-                  comments={comments}
-                  setComments={setComments}
                 />
               </div>
             </div>

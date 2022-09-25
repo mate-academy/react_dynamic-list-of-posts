@@ -1,27 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { Comment } from '../../types/Comment';
 import { Post } from '../../types/Post';
-import { deleteComment } from '../../utils/fetch_Comments';
+import { deleteComment, getComments } from '../../utils/fetch_Comments';
 import { Loader } from '../Loader';
 import { NewCommentForm } from '../NewCommentsForm/NewCommentForm';
 
 type Props = {
-  isCommentsLoaded: boolean,
   selectedPost: Post | null,
-  comments: Comment[],
-  loadingError: string,
-  setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
 };
 
 export const PostDetails: React.FC<Props> = ({
-  isCommentsLoaded,
-  comments,
   selectedPost,
-  loadingError,
-  setComments,
 }) => {
+  const [comments, setComments] = useState<Comment[]>([]);
   const [isNewFormVisible, setIsNewFormVisible] = useState(false);
-  const [deletionError, setDeletionError] = useState('');
+  const [isCommentsLoaded, setIsCommentsLoaded] = useState(false);
+  const [commentsError, setCommentsError] = useState('');
+
+  useEffect(() => {
+    setIsCommentsLoaded(false);
+    setComments([]);
+
+    getComments()
+      .then(commentsFromApi => {
+        setComments(
+          commentsFromApi.filter(
+            comment => comment.postId === selectedPost?.id,
+          ),
+        );
+        setIsCommentsLoaded(true);
+      })
+      .catch(() => setCommentsError('Something went wrong!'));
+  }, [selectedPost]);
 
   useEffect(() => {
     setIsNewFormVisible(false);
@@ -37,12 +47,12 @@ export const PostDetails: React.FC<Props> = ({
         .then(deletedComment => {
           if (deletedComment && typeof deletedComment === 'object') {
             if (Object.values(deletedComment).includes('Not Found')) {
-              setDeletionError('Unable to delete a comment');
+              setCommentsError('Unable to delete a comment');
               setComments(copyComments);
             }
           }
         })
-        .catch(() => setDeletionError('Something went wrong!'));
+        .catch(() => setCommentsError('Something went wrong!'));
     }
   };
 
@@ -66,10 +76,10 @@ export const PostDetails: React.FC<Props> = ({
           </p>
         </div>
 
-        {loadingError
+        {commentsError
           && (
             <div className="notification is-danger" data-cy="CommentsError">
-              {loadingError}
+              {commentsError}
             </div>
           )}
 
@@ -115,13 +125,6 @@ export const PostDetails: React.FC<Props> = ({
                   </div>
                 </article>
               ))}
-
-              {deletionError
-              && (
-                <div className="notification is-danger">
-                  {deletionError}
-                </div>
-              )}
 
               {!isNewFormVisible
              && (

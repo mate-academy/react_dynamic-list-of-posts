@@ -1,48 +1,46 @@
-import React, { useState } from 'react';
-import { Comment } from '../../types/Comment';
+import React, { useEffect, useState } from 'react';
 import { Post } from '../../types/Post';
-import { getComments } from '../../utils/fetch_Comments';
+import { getPosts } from '../../utils/fetch_Posts';
+import { Loader } from '../Loader';
 import './PostList.scss';
 
 type Props = {
-  posts: Post[],
-  setLoadingError: React.Dispatch<React.SetStateAction<string>>,
   selectedPost: Post | null,
   setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>,
-  setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
-  setIsCommentsLoaded: React.Dispatch<React.SetStateAction<boolean>>,
+  selectedUserId: number,
 };
 
 export const PostsList: React.FC<Props> = ({
-  posts,
-  setLoadingError,
   selectedPost,
   setSelectedPost,
-  setComments,
-  setIsCommentsLoaded,
+  selectedUserId,
 }) => {
+  const [posts, setPosts] = useState<Post[]>([]);
   const [isPostOpened, setIsPostOpened] = useState(false);
+  const [postsLoadingError, setPostsLoadingError] = useState('');
+  const [isPostsLoaded, setIsPostsLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsPostsLoaded(false);
+    setSelectedPost(null);
+    setPosts([]);
+
+    getPosts()
+      .then(postsFromApi => {
+        setPosts(postsFromApi.filter(post => post.userId === selectedUserId));
+        setIsPostsLoaded(true);
+      })
+      .catch(() => setPostsLoadingError('Something went wrong!'));
+  }, [selectedUserId]);
 
   const handleOpenBtnClick = (post: Post) => {
     setSelectedPost(post);
     setIsPostOpened(true);
-    setIsCommentsLoaded(false);
-
-    getComments()
-      .then(commentsFromApi => {
-        setComments(
-          commentsFromApi.filter(comment => comment.postId === post.id),
-        );
-        setIsCommentsLoaded(true);
-      })
-      .catch(() => setLoadingError('Something went wrong!'));
   };
 
   const handleCloseBtnClick = () => {
-    setIsCommentsLoaded(false);
-    setIsPostOpened(false);
-    setComments([]);
     setSelectedPost(null);
+    setIsPostOpened(false);
   };
 
   return (
@@ -54,53 +52,82 @@ export const PostsList: React.FC<Props> = ({
           : ''
       }
     >
-      <p className="title">Posts:</p>
+      {postsLoadingError
+    && (
+      <div
+        className="notification is-danger"
+        data-cy="PostsLoadingError"
+      >
+        {postsLoadingError}
+      </div>
+    )}
 
-      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-        <thead>
-          <tr className="has-background-link-light">
-            <th>#</th>
-            <th>Title</th>
-            <th> </th>
-          </tr>
-        </thead>
-        <tbody>
-          {posts.map(post => (
-            <tr data-cy="Post" key={post.id}>
-              <td data-cy="PostId">{post.id}</td>
+      {!isPostsLoaded
+     && <Loader />}
 
-              <td data-cy="PostTitle">
-                {post.title}
-              </td>
+      {(isPostsLoaded && posts.length > 0)
+          && (
+            <>
+              <p className="title">Posts:</p>
 
-              <td className="has-text-right is-vcentered">
-                {(!isPostOpened || post.id !== selectedPost?.id)
-              && (
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className="button is-light"
-                  onClick={() => handleOpenBtnClick(post)}
-                >
-                  Open
-                </button>
-              )}
-                {(post.id === selectedPost?.id && isPostOpened)
-               && (
-                 <button
-                   type="button"
-                   data-cy="PostButton"
-                   className="button is-link"
-                   onClick={() => handleCloseBtnClick()}
-                 >
-                   Close
-                 </button>
-               )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              <table
+                className="
+                  table is-fullwidth is-striped is-hoverable is-narrow
+                "
+              >
+                <thead>
+                  <tr className="has-background-link-light">
+                    <th>#</th>
+                    <th>Title</th>
+                    <th> </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {posts.map(post => (
+                    <tr data-cy="Post" key={post.id}>
+                      <td data-cy="PostId">{post.id}</td>
+
+                      <td data-cy="PostTitle">
+                        {post.title}
+                      </td>
+
+                      <td className="has-text-right is-vcentered">
+                        {(!isPostOpened || post.id !== selectedPost?.id)
+                    && (
+                      <button
+                        type="button"
+                        data-cy="PostButton"
+                        className="button is-light"
+                        onClick={() => handleOpenBtnClick(post)}
+                      >
+                        Open
+                      </button>
+                    )}
+                        {(post.id === selectedPost?.id && isPostOpened)
+                    && (
+                      <button
+                        type="button"
+                        data-cy="PostButton"
+                        className="button is-link"
+                        onClick={() => handleCloseBtnClick()}
+                      >
+                        Close
+                      </button>
+                    )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          )}
+
+      {(isPostsLoaded && !posts.length)
+            && (
+              <div className="notification is-warning" data-cy="NoPostsYet">
+                No posts yet
+              </div>
+            )}
     </div>
   );
 };

@@ -10,14 +10,14 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({
-  setComments,
   selectedPost,
+  setComments,
 }) => {
   const [authorName, setAuthorName] = useState('');
   const [authorEmail, setAuthorEmail] = useState('');
   const [commentText, setCommentText] = useState('');
   const [isFormSubmit, setIsFormSubmit] = useState(false);
-  const [isCommentsLoaded, setIsCommentsLoaded] = useState(true);
+  const [isCommentAdded, setIsCommentAdded] = useState(true);
   const [additionError, setAdditionError] = useState('');
 
   const errorAuthorName = isFormSubmit && !authorName;
@@ -27,7 +27,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const addNewComment = (newComment: Comment) => {
     addComment(newComment)
       .then(comments => {
-        setIsCommentsLoaded(true);
+        setIsCommentAdded(true);
 
         if (!comments.id) {
           setAdditionError('Unable to add a comment');
@@ -56,7 +56,7 @@ export const NewCommentForm: React.FC<Props> = ({
       };
 
       addNewComment(newComment);
-      setIsCommentsLoaded(false);
+      setIsCommentAdded(false);
       setCommentText('');
       setIsFormSubmit(false);
     }
@@ -199,7 +199,7 @@ export const NewCommentForm: React.FC<Props> = ({
               type="submit"
               className={classNames(
                 'button is-link',
-                { 'is-loading': !isCommentsLoaded },
+                { 'is-loading': !isCommentAdded },
               )}
             >
               Add

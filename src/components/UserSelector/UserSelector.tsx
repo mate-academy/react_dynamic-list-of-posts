@@ -1,41 +1,34 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Post } from '../../types/Post';
 import { User } from '../../types/User';
-import { getPosts } from '../../utils/fetch_Posts';
 
 type Props = {
-  users: User[],
-  setLoadingError: React.Dispatch<React.SetStateAction<string>>,
-  setPosts: React.Dispatch<React.SetStateAction<Post[]>>,
-  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>,
   setIsStarted: React.Dispatch<React.SetStateAction<boolean>>,
-  setIsPostsLoaded: React.Dispatch<React.SetStateAction<boolean>>,
+  users: User[],
+  selectedUserId: number,
+  setSelectedUserId: React.Dispatch<React.SetStateAction<number>>,
+  selectedPost: Post | null,
 };
 export const UserSelector: React.FC<Props> = ({
-  users,
-  setLoadingError,
-  setPosts,
-  setSelectedPost,
   setIsStarted,
-  setIsPostsLoaded,
+  users,
+  selectedUserId,
+  setSelectedUserId,
+  selectedPost,
 }) => {
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUserName, setSelectedUserName] = useState('');
   const [isUsersListOpen, setIsUsersListOpen] = useState(false);
 
-  const handleOnClick = (user: User) => {
-    setSelectedUser(user);
+  useEffect(() => {
+    setIsUsersListOpen(false);
+  }, [selectedPost]);
+
+  const handleOnClick = (selectedUser: User) => {
+    setSelectedUserId(selectedUser.id);
+    setSelectedUserName(selectedUser.name);
     setIsStarted(true);
     setIsUsersListOpen(false);
-    setIsPostsLoaded(false);
-    setSelectedPost(null);
-
-    getPosts()
-      .then(postsFromApi => {
-        setPosts(postsFromApi.filter(post => post.userId === user.id));
-        setIsPostsLoaded(true);
-      })
-      .catch(() => setLoadingError('Something went wrong!'));
   };
 
   return (
@@ -52,7 +45,7 @@ export const UserSelector: React.FC<Props> = ({
           onClick={() => setIsUsersListOpen(true)}
         >
           <span>
-            {selectedUser ? `${selectedUser.name}:` : 'Choose a user'}
+            {selectedUserName ? `${selectedUserName}:` : 'Choose a user'}
           </span>
 
           <span className="icon is-small">
@@ -76,7 +69,7 @@ export const UserSelector: React.FC<Props> = ({
                   className={classNames(
                     'dropdown-item',
                     {
-                      'is-active': user.id === selectedUser?.id,
+                      'is-active': user.id === selectedUserId,
                     },
                   )}
                   onClick={() => handleOnClick(user)}
