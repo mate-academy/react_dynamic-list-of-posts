@@ -31,10 +31,7 @@ export const NewCommentForm: React.FC<Props> = ({
       }
 
       const newComment = await createComment({
-        postId,
-        name,
-        email,
-        body,
+        postId, name, email, body,
       });
 
       onAdd(newComment);
