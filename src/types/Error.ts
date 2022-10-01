@@ -8,3 +8,5 @@ export enum Error {
 }
 
 export type ErrorElement = 'MainError' | 'CommentsError';
+
+export type ErrorType = 'NoPostsYet' | 'PostsLoadingError' | 'CommentsError';

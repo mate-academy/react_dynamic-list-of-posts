@@ -1,6 +1,10 @@
 import React from 'react';
 import { switchError } from '../../utils/switchError';
-import { Error, ErrorElement } from '../../types/Error';
+import {
+  Error,
+  ErrorElement,
+  ErrorType,
+} from '../../types/Error';
 import { Post } from '../../types/Post';
 
 type Props = {
@@ -16,6 +20,43 @@ export const ErrorNotification: React.FC<Props> = ({
   posts,
   selectedUser,
 }) => {
+  const notification = (type: ErrorType) => {
+    switch (type) {
+      case 'NoPostsYet':
+        return (
+          <div
+            className="notification is-warning"
+            data-cy="NoPostsYet"
+          >
+            {error}
+          </div>
+        );
+
+      case 'PostsLoadingError':
+        return (
+          <div
+            className="notification is-danger"
+            data-cy="PostsLoadingError"
+          >
+            {error}
+          </div>
+        );
+
+      case 'CommentsError':
+        return (
+          <div
+            className="notification is-danger"
+            data-cy="CommentsError"
+          >
+            {error}
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   const handleNotification = (type: Error) => {
     return switchError(
       type, error, element, posts, selectedUser,
@@ -24,59 +65,23 @@ export const ErrorNotification: React.FC<Props> = ({
 
   return (
     <>
-      {handleNotification(Error.NO_POSTS) && (
-        <div
-          className="notification is-warning"
-          data-cy="NoPostsYet"
-        >
-          {error}
-        </div>
-      )}
+      {handleNotification(Error.NO_POSTS)
+        && notification('NoPostsYet')}
 
-      {handleNotification(Error.GET_POSTS) && (
-        <div
-          className="notification is-danger"
-          data-cy="PostsLoadingError"
-        >
-          {error}
-        </div>
-      )}
+      {handleNotification(Error.GET_POSTS)
+        && notification('PostsLoadingError')}
 
-      {handleNotification(Error.GET_USERS) && (
-        <div
-          className="notification is-danger"
-          data-cy="PostsLoadingError"
-        >
-          {error}
-        </div>
-      )}
+      {handleNotification(Error.GET_USERS)
+        && notification('PostsLoadingError')}
 
-      {handleNotification(Error.GET_COMMENTS) && (
-        <div
-          className="notification is-danger"
-          data-cy="CommentsError"
-        >
-          {error}
-        </div>
-      )}
+      {handleNotification(Error.GET_COMMENTS)
+        && notification('CommentsError')}
 
-      {handleNotification(Error.ADD_COMMENT) && (
-        <div
-          className="notification is-danger"
-          data-cy="CommentsError"
-        >
-          {error}
-        </div>
-      )}
+      {handleNotification(Error.ADD_COMMENT)
+        && notification('CommentsError')}
 
-      {handleNotification(Error.DELETE_COMMENT) && (
-        <div
-          className="notification is-danger"
-          data-cy="CommentsError"
-        >
-          {error}
-        </div>
-      )}
+      {handleNotification(Error.DELETE_COMMENT)
+        && notification('CommentsError')}
     </>
   );
 };
