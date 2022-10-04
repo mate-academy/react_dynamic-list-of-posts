@@ -4,6 +4,7 @@ import {
   Error,
   ErrorElement,
   ErrorType,
+  ErrorStyle,
 } from '../../types/Error';
 import { Post } from '../../types/Post';
 
@@ -21,40 +22,18 @@ export const ErrorNotification: React.FC<Props> = ({
   selectedUser,
 }) => {
   const notification = (type: ErrorType) => {
-    switch (type) {
-      case 'NoPostsYet':
-        return (
-          <div
-            className="notification is-warning"
-            data-cy="NoPostsYet"
-          >
-            {error}
-          </div>
-        );
+    const errorStyle: ErrorStyle = (type === 'NoPostsYet')
+      ? 'is-warning'
+      : 'is-danger';
 
-      case 'PostsLoadingError':
-        return (
-          <div
-            className="notification is-danger"
-            data-cy="PostsLoadingError"
-          >
-            {error}
-          </div>
-        );
-
-      case 'CommentsError':
-        return (
-          <div
-            className="notification is-danger"
-            data-cy="CommentsError"
-          >
-            {error}
-          </div>
-        );
-
-      default:
-        return null;
-    }
+    return (
+      <div
+        className={`notification ${errorStyle}`}
+        data-cy={type}
+      >
+        {error}
+      </div>
+    );
   };
 
   const handleNotification = (type: Error) => {
