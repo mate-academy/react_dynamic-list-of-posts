@@ -1,4 +1,5 @@
 import React from 'react';
+import { switchError } from '../../utils/switchError';
 import { UserSelector } from '../UserSelector';
 import { ErrorNotification } from '../ErrorNotification';
 import { PostsList } from '../PostsList';
@@ -51,12 +52,20 @@ export const Content: React.FC<Props> = ({
             </p>
           )}
 
-        {error && (
+        {error
+          && error !== Error.NO_POSTS
+          && switchError(error) === 'PostsLoadingError'
+          && (
+            <ErrorNotification
+              error={error}
+            />
+          )}
+
+        {!posts?.length
+          && selectedUserId
+          && error === Error.NO_POSTS && (
           <ErrorNotification
             error={error}
-            posts={posts}
-            selectedUser={selectedUserId}
-            element="MainError"
           />
         )}
 

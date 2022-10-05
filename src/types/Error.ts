@@ -7,8 +7,6 @@ export enum Error {
   DELETE_COMMENT = 'Unable to delete comment',
 }
 
-export type ErrorElement = 'MainError' | 'CommentsError';
-
 export type ErrorType = 'NoPostsYet' | 'PostsLoadingError' | 'CommentsError';
 
 export type ErrorStyle = 'is-warning' | 'is-danger';

@@ -118,7 +118,6 @@ export const PostDetails: React.FC<Props> = ({
             && (
               <ErrorNotification
                 error={error}
-                element="CommentsError"
               />
             )}
 
