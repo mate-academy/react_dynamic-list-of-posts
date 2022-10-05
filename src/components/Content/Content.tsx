@@ -63,11 +63,12 @@ export const Content: React.FC<Props> = ({
 
         {!posts?.length
           && selectedUserId
-          && error === Error.NO_POSTS && (
-          <ErrorNotification
-            error={error}
-          />
-        )}
+          && error === Error.NO_POSTS
+          && (
+            <ErrorNotification
+              error={error}
+            />
+          )}
 
         {isLoading
           && <Loader />}
