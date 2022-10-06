@@ -8,5 +8,3 @@ export enum Error {
 }
 
 export type ErrorType = 'NoPostsYet' | 'PostsLoadingError' | 'CommentsError';
-
-export type ErrorStyle = 'is-warning' | 'is-danger';

@@ -1,33 +1,27 @@
 import React from 'react';
+import classNames from 'classnames';
 import { switchError } from '../../utils/switchError';
-import { Error, ErrorStyle } from '../../types/Error';
+import { Error } from '../../types/Error';
 
 type Props = {
   error: Error | null;
 };
 
 export const ErrorNotification: React.FC<Props> = ({ error }) => {
-  const handleNotification = (type: Error) => {
-    const errorType = switchError(type);
-
-    const errorStyle: ErrorStyle = (errorType === 'NoPostsYet')
-      ? 'is-warning'
-      : 'is-danger';
-
-    return (
-      <div
-        className={`notification ${errorStyle}`}
-        data-cy={errorType}
-      >
-        {error}
-      </div>
-    );
-  };
+  const errorType = !error
+    ? null
+    : switchError(error);
 
   return (
-    <>
-      {error
-        && handleNotification(error)}
-    </>
+    <div
+      className={classNames(
+        'notification',
+        { 'is-warning': errorType === 'NoPostsYet' },
+        { 'is-danger': errorType !== 'NoPostsYet' },
+      )}
+      data-cy={errorType}
+    >
+      {error}
+    </div>
   );
 };
