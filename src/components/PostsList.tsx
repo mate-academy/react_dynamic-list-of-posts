@@ -3,8 +3,6 @@ import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[]
-  // setShowPostsDetails: (value: boolean) => void
-  // showPostsDetails: boolean
   postId: number
   setPostId: (value: number) => void
   fetchComments: (value: number) => void
@@ -13,8 +11,6 @@ type Props = {
 
 export const PostsList: React.FC<Props> = ({
   posts,
-  // setShowPostsDetails,
-  // showPostsDetails,
   postId,
   setPostId,
   fetchComments,
@@ -52,7 +48,6 @@ export const PostsList: React.FC<Props> = ({
                       data-cy="PostButton"
                       className="button is-link"
                       onClick={() => {
-                        // setShowPostsDetails(!showPostsDetails);
                         setPostId(0);
                         setShowForm(false);
                       }}
@@ -66,7 +61,6 @@ export const PostsList: React.FC<Props> = ({
                       data-cy="PostButton"
                       className="button is-link is-light"
                       onClick={() => {
-                        // setShowPostsDetails(!showPostsDetails);
                         setPostId(post.id);
                         fetchComments(post.id);
                         setShowForm(false);

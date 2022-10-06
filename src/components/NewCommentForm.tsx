@@ -155,7 +155,6 @@ export const NewCommentForm: React.FC<Props> = ({ addComment }) => {
         <div className="control">
           <button
             type="submit"
-            // className="button is-link"
             className={classNames(
               'button is-link', {
                 'button is-link is-loading': spinner,

@@ -36,7 +36,6 @@ export const App: React.FC = () => {
   const [showComments, setShowComments] = useState(false);
   const [dropErrorComments, setDropErrorComments] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  // const [showPostsDetails, setShowPostsDetails] = useState(false);
 
   const fetchPosts = useCallback(async (selectedId: number) => {
     setShowPosts(false);
@@ -160,8 +159,6 @@ export const App: React.FC = () => {
                   ) : (
                     <PostsList
                       posts={posts}
-                      // setShowPostsDetails={setShowPostsDetails}
-                      // showPostsDetails={showPostsDetails}
                       postId={postId}
                       setPostId={setPostId}
                       fetchComments={fetchComments}
