@@ -1,7 +1,7 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { IComment } from '../types/Comment';
-// import { IComment } from '../types/Comment';
+import { ErrorTypes } from '../types/ErrorTypes';
 import { IPost } from '../types/Post';
 import { createComment } from '../utils/fetchClient';
 
@@ -10,16 +10,30 @@ interface Props {
   handleAddComment: (comment: IComment) => void;
 }
 
+interface Errors {
+  isErrorName: ErrorTypes | null;
+  isErrorEmail: ErrorTypes | null;
+  isErrorComment: ErrorTypes | null;
+}
+
 export const NewCommentForm: React.FC<Props> = (
   { post, handleAddComment },
 ) => {
-  const [inputName, setInputName] = useState<string>('');
-  const [inputEmail, setInutEmail] = useState<string>('');
-  const [inputComment, setInputComment] = useState<string>('');
+  const [inputData, setInputData] = useState({
+    inputName: '',
+    inputEmail: '',
+    inputComment: '',
+  });
 
-  const [isErrorName, setIsErrorName] = useState<boolean>(false);
-  const [isErrorEmail, setIsErrorEmail] = useState<boolean>(false);
-  const [isErrorComment, setIsErrorComment] = useState<boolean>(false);
+  const { inputName, inputEmail, inputComment } = inputData;
+
+  const [errors, setErrors] = useState<Errors>({
+    isErrorName: null,
+    isErrorEmail: null,
+    isErrorComment: null,
+  });
+
+  const { isErrorName, isErrorEmail, isErrorComment } = errors;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -30,50 +44,54 @@ export const NewCommentForm: React.FC<Props> = (
 
     switch (name) {
       case 'name':
-        setIsErrorName(false);
-        setInputName(value);
+        setErrors((prev) => ({ ...prev, isErrorName: null }));
+        setInputData((prev) => ({ ...prev, inputName: value }));
         break;
       case 'email':
-        setIsErrorEmail(false);
-        setInutEmail(value);
+        setErrors((prev) => ({ ...prev, isErrorEmail: null }));
+        setInputData((prev) => ({ ...prev, inputEmail: value }));
         break;
       case 'body':
-        setIsErrorComment(false);
-        setInputComment(value);
+        setErrors((prev) => ({ ...prev, isErrorComment: null }));
+        setInputData((prev) => ({ ...prev, inputComment: value }));
         break;
       default:
     }
   };
 
-  const clearErrors = () => {
-    setIsErrorName(false);
-    setIsErrorEmail(false);
-    setIsErrorComment(false);
-  };
+  const clearErrors = useCallback(() => {
+    setErrors({
+      isErrorName: null,
+      isErrorEmail: null,
+      isErrorComment: null,
+    });
+  }, []);
 
-  const clearFrom = () => {
-    setInputName('');
-    setInutEmail('');
-    setInputComment('');
+  const clearFrom = useCallback(() => {
+    setInputData({
+      inputName: '',
+      inputEmail: '',
+      inputComment: '',
+    });
 
     clearErrors();
-  };
+  }, []);
 
   const checkAllInputs = () => {
     let error = false;
 
     if (!inputName) {
-      setIsErrorName(true);
+      setErrors((prev) => ({ ...prev, isErrorName: ErrorTypes.Name }));
       error = true;
     }
 
     if (!inputEmail) {
-      setIsErrorEmail(true);
+      setErrors((prev) => ({ ...prev, isErrorEmail: ErrorTypes.Email }));
       error = true;
     }
 
     if (!inputComment) {
-      setIsErrorComment(true);
+      setErrors((prev) => ({ ...prev, isErrorComment: ErrorTypes.Comment }));
       error = true;
     }
 
@@ -143,7 +161,7 @@ export const NewCommentForm: React.FC<Props> = (
 
         {isErrorName && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Name is required
+            {ErrorTypes.Name}
           </p>
         )}
       </div>
@@ -182,7 +200,7 @@ export const NewCommentForm: React.FC<Props> = (
 
         {isErrorEmail && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
+            {ErrorTypes.Email}
           </p>
         )}
       </div>
@@ -207,7 +225,7 @@ export const NewCommentForm: React.FC<Props> = (
 
         {isErrorComment && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Enter some text
+            {ErrorTypes.Comment}
           </p>
         )}
       </div>

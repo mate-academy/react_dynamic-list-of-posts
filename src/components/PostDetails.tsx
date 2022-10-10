@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { IComment } from '../types/Comment';
 import { IPost } from '../types/Post';
 import { deleteComment, getComments } from '../utils/fetchClient';
@@ -16,21 +16,21 @@ export const PostDetails: React.FC<Props> = ({ activePost }) => {
   const [isError, setIsError] = useState<boolean>(false);
   const [isOpenForm, setIsOpenForm] = useState<boolean>(false);
 
-  const handleDeleteComment = (id: number) => {
+  const handleDeleteComment = useCallback((id: number) => {
     setComments(comments?.filter((comment: IComment) => {
       return comment.id !== id;
     }));
 
     deleteComment(id);
-  };
+  }, [comments]);
 
-  const handleAddComment = (comment: IComment) => {
+  const handleAddComment = useCallback((comment: IComment) => {
     setComments([comment, ...comments]);
-  };
+  }, [comments]);
 
-  const openForm = () => {
+  const openForm = useCallback(() => {
     setIsOpenForm(true);
-  };
+  }, []);
 
   useEffect(() => {
     setIsLoading(true);

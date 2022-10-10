@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -22,13 +22,13 @@ export const App: React.FC = () => {
   const [isError, setIsError] = useState<boolean>(false);
   const [isLoding, setIsLoading] = useState<boolean>(false);
 
-  const changeUser = (user: IUser) => {
+  const changeUser = useCallback((user: IUser) => {
     setActiveUser(user);
-  };
+  }, []);
 
-  const changePost = (post: IPost | null) => {
+  const changePost = useCallback((post: IPost | null) => {
     setActivePost(post);
-  };
+  }, []);
 
   useEffect(() => {
     getUsers()
@@ -42,6 +42,7 @@ export const App: React.FC = () => {
     }
 
     setActivePost(null);
+    setPosts(null);
 
     setIsLoading(true);
     getUserPosts(activeUser.id)

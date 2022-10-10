@@ -16,7 +16,6 @@ export const UserSelector: React.FC<Props> = (
 
   const chooseUser = (user: IUser) => {
     changeUser(user);
-    // eslint-disable-next-line no-console
     setIsOpen(true);
   };
 
