@@ -6,7 +6,7 @@ import classNames from 'classnames';
 
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
+import UserSelector from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts, getUsers } from './utils/fetchClient';
 import { IUser } from './types/User';
@@ -21,6 +21,7 @@ export const App: React.FC = () => {
 
   const [isError, setIsError] = useState<boolean>(false);
   const [isLoding, setIsLoading] = useState<boolean>(false);
+  const [isErrorPage, setIsErrorPage] = useState<boolean>(false);
 
   const changeUser = useCallback((user: IUser) => {
     setActiveUser(user);
@@ -31,9 +32,16 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    setIsLoading(true);
+
     getUsers()
       .then(setUsers)
-      .catch(() => setIsError(true));
+      .catch(() => {
+        // console.log('error masesege');
+        setIsErrorPage(true);
+        setIsError(true);
+      })
+      .finally(() => setIsLoading(false));
   }, []);
 
   useEffect(() => {
@@ -49,6 +57,10 @@ export const App: React.FC = () => {
       .then(setPosts)
       .finally(() => setIsLoading(false));
   }, [activeUser]);
+
+  if (isErrorPage) {
+    return null;
+  }
 
   return (
     <main className="section">

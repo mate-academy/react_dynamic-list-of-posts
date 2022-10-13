@@ -11,9 +11,9 @@ interface Props {
 }
 
 interface Errors {
-  isErrorName: ErrorTypes | null;
-  isErrorEmail: ErrorTypes | null;
-  isErrorComment: ErrorTypes | null;
+  errorName: ErrorTypes | null;
+  errorEmail: ErrorTypes | null;
+  errorComment: ErrorTypes | null;
 }
 
 export const NewCommentForm: React.FC<Props> = (
@@ -28,14 +28,15 @@ export const NewCommentForm: React.FC<Props> = (
   const { inputName, inputEmail, inputComment } = inputData;
 
   const [errors, setErrors] = useState<Errors>({
-    isErrorName: null,
-    isErrorEmail: null,
-    isErrorComment: null,
+    errorName: null,
+    errorEmail: null,
+    errorComment: null,
   });
 
-  const { isErrorName, isErrorEmail, isErrorComment } = errors;
+  const { errorName, errorEmail, errorComment } = errors;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
 
   const changeInputText = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -44,15 +45,15 @@ export const NewCommentForm: React.FC<Props> = (
 
     switch (name) {
       case 'name':
-        setErrors((prev) => ({ ...prev, isErrorName: null }));
+        setErrors((prev) => ({ ...prev, errorName: null }));
         setInputData((prev) => ({ ...prev, inputName: value }));
         break;
       case 'email':
-        setErrors((prev) => ({ ...prev, isErrorEmail: null }));
+        setErrors((prev) => ({ ...prev, errorEmail: null }));
         setInputData((prev) => ({ ...prev, inputEmail: value }));
         break;
       case 'body':
-        setErrors((prev) => ({ ...prev, isErrorComment: null }));
+        setErrors((prev) => ({ ...prev, errorComment: null }));
         setInputData((prev) => ({ ...prev, inputComment: value }));
         break;
       default:
@@ -61,9 +62,9 @@ export const NewCommentForm: React.FC<Props> = (
 
   const clearErrors = useCallback(() => {
     setErrors({
-      isErrorName: null,
-      isErrorEmail: null,
-      isErrorComment: null,
+      errorName: null,
+      errorEmail: null,
+      errorComment: null,
     });
   }, []);
 
@@ -81,17 +82,17 @@ export const NewCommentForm: React.FC<Props> = (
     let error = false;
 
     if (!inputName) {
-      setErrors((prev) => ({ ...prev, isErrorName: ErrorTypes.Name }));
+      setErrors((prev) => ({ ...prev, errorName: ErrorTypes.Name }));
       error = true;
     }
 
     if (!inputEmail) {
-      setErrors((prev) => ({ ...prev, isErrorEmail: ErrorTypes.Email }));
+      setErrors((prev) => ({ ...prev, errorEmail: ErrorTypes.Email }));
       error = true;
     }
 
     if (!inputComment) {
-      setErrors((prev) => ({ ...prev, isErrorComment: ErrorTypes.Comment }));
+      setErrors((prev) => ({ ...prev, errorComment: ErrorTypes.Comment }));
       error = true;
     }
 
@@ -122,8 +123,15 @@ export const NewCommentForm: React.FC<Props> = (
         handleAddComment(data as IComment);
         clearFrom();
       })
+      .catch(() => setIsError(true))
       .finally(() => setIsLoading(false));
   };
+
+  if (isError) {
+    setTimeout(() => {
+      setIsError(false);
+    }, 3000);
+  }
 
   return (
     <form data-cy="NewCommentForm" onSubmit={(event) => submitForm(event)}>
@@ -138,7 +146,7 @@ export const NewCommentForm: React.FC<Props> = (
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': isErrorName })}
+            className={classNames('input', { 'is-danger': errorName })}
             value={inputName}
             onChange={(event) => {
               changeInputText(event);
@@ -149,7 +157,7 @@ export const NewCommentForm: React.FC<Props> = (
             <i className="fas fa-user" />
           </span>
 
-          {isErrorName && (
+          {errorName && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -159,7 +167,7 @@ export const NewCommentForm: React.FC<Props> = (
           )}
         </div>
 
-        {isErrorName && (
+        {errorName && (
           <p className="help is-danger" data-cy="ErrorMessage">
             {ErrorTypes.Name}
           </p>
@@ -177,7 +185,7 @@ export const NewCommentForm: React.FC<Props> = (
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': isErrorEmail })}
+            className={classNames('input', { 'is-danger': errorEmail })}
             value={inputEmail}
             onChange={(event) => {
               changeInputText(event);
@@ -188,7 +196,7 @@ export const NewCommentForm: React.FC<Props> = (
             <i className="fas fa-envelope" />
           </span>
 
-          {isErrorEmail && (
+          {errorEmail && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -198,7 +206,7 @@ export const NewCommentForm: React.FC<Props> = (
           )}
         </div>
 
-        {isErrorEmail && (
+        {errorEmail && (
           <p className="help is-danger" data-cy="ErrorMessage">
             {ErrorTypes.Email}
           </p>
@@ -215,7 +223,7 @@ export const NewCommentForm: React.FC<Props> = (
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('input', { 'is-danger': isErrorComment })}
+            className={classNames('input', { 'is-danger': errorComment })}
             value={inputComment}
             onChange={(event) => {
               changeInputText(event);
@@ -223,7 +231,7 @@ export const NewCommentForm: React.FC<Props> = (
           />
         </div>
 
-        {isErrorComment && (
+        {errorComment && (
           <p className="help is-danger" data-cy="ErrorMessage">
             {ErrorTypes.Comment}
           </p>
@@ -252,6 +260,15 @@ export const NewCommentForm: React.FC<Props> = (
             Clear
           </button>
         </div>
+
+        {isError && (
+          <div
+            className="notification is-danger"
+            data-cy="PostsLoadingError"
+          >
+            Something went wrong!
+          </div>
+        )}
       </div>
     </form>
   );

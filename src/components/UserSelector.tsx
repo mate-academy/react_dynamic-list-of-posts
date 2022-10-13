@@ -8,7 +8,7 @@ interface Props {
   activeUser: IUser | null;
 }
 
-export const UserSelector: React.FC<Props> = (
+const UserSelector: React.FC<Props> = (
   { users, changeUser, activeUser },
 ) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
@@ -67,3 +67,5 @@ export const UserSelector: React.FC<Props> = (
     </div>
   );
 };
+
+export default React.memo(UserSelector);

@@ -11,7 +11,6 @@ interface Props {
 
 export const PostDetails: React.FC<Props> = ({ activePost }) => {
   const [comments, setComments] = useState<IComment[]>([]);
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isError, setIsError] = useState<boolean>(false);
   const [isOpenForm, setIsOpenForm] = useState<boolean>(false);
@@ -82,6 +81,7 @@ export const PostDetails: React.FC<Props> = ({ activePost }) => {
                     >
                       {comment.name}
                     </a>
+
                     <button
                       data-cy="CommentDelete"
                       type="button"
