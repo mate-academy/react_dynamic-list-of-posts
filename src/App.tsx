@@ -1,15 +1,67 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-
 import classNames from 'classnames';
+
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
+import UserSelector from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { getUserPosts, getUsers } from './utils/fetchClient';
+import { IUser } from './types/User';
+import { IPost } from './types/Post';
 
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<IUser[] | null>(null);
+  const [activeUser, setActiveUser] = useState<IUser | null>(null);
+
+  const [posts, setPosts] = useState<IPost[] | null>(null);
+  const [activePost, setActivePost] = useState<IPost | null>(null);
+
+  const [isError, setIsError] = useState<boolean>(false);
+  const [isLoding, setIsLoading] = useState<boolean>(false);
+  const [isErrorPage, setIsErrorPage] = useState<boolean>(false);
+
+  const changeUser = useCallback((user: IUser) => {
+    setActiveUser(user);
+  }, []);
+
+  const changePost = useCallback((post: IPost | null) => {
+    setActivePost(post);
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    getUsers()
+      .then(setUsers)
+      .catch(() => {
+        // console.log('error masesege');
+        setIsErrorPage(true);
+        setIsError(true);
+      })
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (!activeUser) {
+      return;
+    }
+
+    setActivePost(null);
+    setPosts(null);
+
+    setIsLoading(true);
+    getUserPosts(activeUser.id)
+      .then(setPosts)
+      .finally(() => setIsLoading(false));
+  }, [activeUser]);
+
+  if (isErrorPage) {
+    return null;
+  }
+
   return (
     <main className="section">
       <div className="container">
@@ -17,28 +69,41 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  users={users}
+                  changeUser={changeUser}
+                  activeUser={activeUser}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!activeUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isLoding && (
+                  <Loader />
+                )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {isError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {posts && (
+                  <PostsList
+                    posts={posts}
+                    changePost={changePost}
+                    activePost={activePost}
+                  />
+                )}
 
-                <PostsList />
               </div>
             </div>
           </div>
@@ -50,12 +115,15 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': activePost },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
+            {activePost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails activePost={activePost} />
+              </div>
+            )}
+
           </div>
         </div>
       </div>
