@@ -2,201 +2,86 @@ import React, {
   useState,
   useEffect,
   useCallback,
-  useMemo,
 } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-
-import classNames from 'classnames';
-
-import { User } from './types/User';
-
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
-import { getUsers } from './api/users';
-import { getPosts } from './api/post';
-import { getComments, deleteComment, createComment } from './api/comments';
+import { getPostsByUserId } from './api/post';
+import { Content } from './components/Content';
+import { Sidebar } from './components/Sidebar';
 import { Post } from './types/Post';
-import { Comment } from './types/Comment';
-import { Loader } from './components/Loader';
+import { Error } from './types/Error';
 
 export const App: React.FC = () => {
-  const [showUsers, setShowUsers] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
-  const [userId, setUserId] = useState(0);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [postId, setPostId] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [loadingComment, setLoadingComment] = useState(false);
-  const [dropError, setDropError] = useState(false);
-  const [showPosts, setShowPosts] = useState(false);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [showComments, setShowComments] = useState(false);
-  const [dropErrorComments, setDropErrorComments] = useState(false);
-  const [showForm, setShowForm] = useState(false);
+  const [postId, setPostId] = useState<number | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const fetchPosts = useCallback(async (selectedId: number) => {
-    setShowPosts(false);
-    setLoading(true);
-    setDropError(false);
-    try {
-      const postsFromServer = await getPosts(selectedId);
-
-      setPosts(postsFromServer);
-      setLoading(false);
-      setShowPosts(true);
-    } catch (error) {
-      setLoading(false);
-      setDropError(true);
-    }
+  const handleError = useCallback((errorType: Error | null) => {
+    setError(errorType);
   }, []);
 
-  const fetchComments = useCallback(async (selectedPostId: number) => {
-    setShowComments(false);
-    setLoadingComment(true);
-    setDropErrorComments(false);
-
-    try {
-      const commentsFromServer = await getComments(selectedPostId);
-
-      setComments(commentsFromServer);
-      setLoadingComment(false);
-      setShowComments(true);
-    } catch (error) {
-      setLoadingComment(false);
-      setDropErrorComments(true);
-    }
+  const handleOnPost = useCallback((id: number | null) => {
+    setPostId(id);
   }, []);
 
-  const removeComment = useCallback(async (commentId: number) => {
-    try {
-      await deleteComment(commentId);
-      setComments(prev => prev.filter((x) => x.id !== commentId));
-    } catch (error) {
-      setShowComments(false);
-      setDropErrorComments(true);
-    }
+  const handleSelectUser = useCallback((userId: number) => {
+    setSelectedUserId(userId);
+    setPostId(null);
   }, []);
 
-  const addComment = useCallback(async (
-    name: string,
-    email: string,
-    body: string,
-    setSpinner: (React.Dispatch<React.SetStateAction<boolean>>),
-  ) => {
-    setSpinner(true);
-
+  const getPostList = async (userId: number) => {
     try {
-      const newCommnet = await createComment(postId, name, email, body);
+      setIsLoading(true);
+      setError(null);
 
-      setComments((prev) => {
-        return [...prev, newCommnet];
-      });
-      setSpinner(false);
-    } catch (error) {
-      setSpinner(false);
+      if (!userId) {
+        return;
+      }
+
+      const postList = await getPostsByUserId(userId);
+
+      if (!postList.length) {
+        setError(Error.NO_POSTS);
+      }
+
+      setPosts(postList);
+    } catch {
+      setError(Error.GET_POSTS);
+    } finally {
+      setIsLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      const usersFromServer = await getUsers();
-
-      setUsers(usersFromServer);
-    };
-
-    fetchUsers();
-  }, []);
-
-  const selectedPost = useMemo(() => {
-    return posts.find(post => post.id === postId);
-  }, [posts, postId]);
+    if (selectedUserId) {
+      getPostList(selectedUserId);
+    }
+  }, [selectedUserId]);
 
   return (
     <main className="section">
       <div className="container">
         <div className="tile is-ancestor">
-          <div className="tile is-parent">
-            <div className="tile is-child box is-success">
-              <div className="block">
-                <UserSelector
-                  users={users}
-                  showUsers={showUsers}
-                  setShowUsers={setShowUsers}
-                  selectedUser={userId}
-                  setSelectedUser={setUserId}
-                  fetchPosts={fetchPosts}
-                  setPostId={setPostId}
-                />
-              </div>
+          <Content
+            posts={posts}
+            postId={postId}
+            selectedUserId={selectedUserId}
+            error={error}
+            isLoading={isLoading}
+            onPost={handleOnPost}
+            onSelectUser={handleSelectUser}
+            onError={handleError}
+          />
 
-              {dropError && (
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
-              )}
-
-              <div className="block" data-cy="MainContent">
-                {userId === 0 && (
-                  <p data-cy="NoSelectedUser">
-                    No user selected
-                  </p>
-                )}
-
-                {showPosts && (
-                  posts.length === 0 ? (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  ) : (
-                    <PostsList
-                      posts={posts}
-                      postId={postId}
-                      setPostId={setPostId}
-                      fetchComments={fetchComments}
-                      setShowForm={setShowForm}
-                    />
-                  )
-                )}
-
-                {loading && <Loader />}
-
-              </div>
-            </div>
-          </div>
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar', {
-                'Sidebar--open': postId !== 0,
-              },
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails
-                selectedPost={selectedPost}
-                comments={comments}
-                loadingComment={loadingComment}
-                showComments={showComments}
-                dropErrorComments={dropErrorComments}
-                removeComment={removeComment}
-                setShowForm={setShowForm}
-                showForm={showForm}
-                addComment={addComment}
-              />
-            </div>
-          </div>
+          <Sidebar
+            posts={posts}
+            postId={postId}
+            error={error}
+            onError={handleError}
+          />
         </div>
       </div>
     </main>
