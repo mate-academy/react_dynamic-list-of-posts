@@ -6,4 +6,9 @@ export interface Comment {
   body: string;
 }
 
-export type CommentData = Pick<Comment, 'name' | 'email' | 'body'>;
+export type CommentData = {
+  name: string,
+  email: string,
+  body: string,
+  postId: number,
+};
