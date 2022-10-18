@@ -2,6 +2,7 @@ import React, {
   useState,
   useCallback,
   useEffect,
+  useMemo,
 } from 'react';
 import {
   getCommentsByPostId,
@@ -31,7 +32,11 @@ export const PostDetails: React.FC<Props> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isCommentForm, setIsCommentForm] = useState(false);
 
-  const currentPost = posts.filter(post => post.id === postId)[0];
+  const currentPost = useMemo(() => posts.filter(
+    // eslint-disable-next-line function-paren-newline
+    post => post.id === postId)[0], []);
+
+  const correctWork = !isLoading && !error;
 
   const handleAddComment = useCallback((newComment) => {
     setComments(allComments => [...allComments, newComment]);
@@ -101,9 +106,8 @@ export const PostDetails: React.FC<Props> = ({
           {isLoading
             && <Loader />}
 
-          {!isLoading
+          {correctWork
             && !comments.length
-            && !error
             && (
               <p
                 className="title is-4"
@@ -121,17 +125,15 @@ export const PostDetails: React.FC<Props> = ({
               />
             )}
 
-          {!isLoading
+          {correctWork
             && comments.length > 0
-            && !error
             && (
               <p className="title is-4">
                 Comments:
               </p>
             )}
 
-          {!isLoading
-            && !error
+          {correctWork
             && comments.map(comment => (
               <article
                 key={comment.id}
@@ -165,9 +167,8 @@ export const PostDetails: React.FC<Props> = ({
               </article>
             ))}
 
-          {!isLoading
+          {correctWork
             && !isCommentForm
-            && !error
             && (
               <button
                 data-cy="WriteCommentButton"

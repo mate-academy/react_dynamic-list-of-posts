@@ -50,7 +50,6 @@ export const Content: React.FC<Props> = ({
           )}
 
         {error
-          && error !== Error.NO_POSTS
           && switchError(error) === 'PostsLoadingError'
           && (
             <ErrorNotification
@@ -68,17 +67,15 @@ export const Content: React.FC<Props> = ({
           )}
 
         {isLoading
-          && <Loader />}
-        {!isLoading
-          && posts.length > 0
-          && !error
-          && (
-            <PostsList
-              posts={posts}
-              postId={postId}
-              onPost={onPost}
-            />
-          )}
+          ? <Loader />
+          : posts.length > 0
+            && (
+              <PostsList
+                posts={posts}
+                postId={postId}
+                onPost={onPost}
+              />
+            )}
       </div>
     </div>
   </div>

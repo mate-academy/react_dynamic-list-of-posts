@@ -259,9 +259,8 @@ export const NewCommentForm: React.FC<Props> = ({
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button
-            type="reset"
+            type="button"
             className="
               button
               is-link
