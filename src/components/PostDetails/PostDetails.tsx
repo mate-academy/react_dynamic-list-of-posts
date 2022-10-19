@@ -37,7 +37,7 @@ export const PostDetails: React.FC<Props> = ({
   }, []);
 
   const currentPost
-   = useMemo(() => posts.filter(post => post.id === postId)[0], []);
+    = useMemo(() => posts.filter(post => post.id === postId)[0], [postId]);
 
   const handleDeleteComment = async (commentId: number) => {
     try {
