@@ -32,15 +32,12 @@ export const PostDetails: React.FC<Props> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isCommentForm, setIsCommentForm] = useState(false);
 
-  const currentPost = useMemo(() => posts.filter(
-    // eslint-disable-next-line function-paren-newline
-    post => post.id === postId)[0], []);
-
-  const correctWork = !isLoading && !error;
-
   const handleAddComment = useCallback((newComment) => {
     setComments(allComments => [...allComments, newComment]);
   }, []);
+
+  const currentPost
+   = useMemo(() => posts.filter(post => post.id === postId)[0], []);
 
   const handleDeleteComment = async (commentId: number) => {
     try {
@@ -106,8 +103,9 @@ export const PostDetails: React.FC<Props> = ({
           {isLoading
             && <Loader />}
 
-          {correctWork
+          {!isLoading
             && !comments.length
+            && !error
             && (
               <p
                 className="title is-4"
@@ -125,15 +123,17 @@ export const PostDetails: React.FC<Props> = ({
               />
             )}
 
-          {correctWork
+          {!isLoading
             && comments.length > 0
+            && !error
             && (
               <p className="title is-4">
                 Comments:
               </p>
             )}
 
-          {correctWork
+          {!isLoading
+            && !error
             && comments.map(comment => (
               <article
                 key={comment.id}
@@ -167,8 +167,9 @@ export const PostDetails: React.FC<Props> = ({
               </article>
             ))}
 
-          {correctWork
+          {!isLoading
             && !isCommentForm
+            && !error
             && (
               <button
                 data-cy="WriteCommentButton"
