@@ -60,7 +60,7 @@ export const NewCommentForm: React.FC<Props> = ({
       setIsError(true);
     }
 
-    resetForm();
+    setCommentBody('');
     setIsAdding(false);
   };
 
