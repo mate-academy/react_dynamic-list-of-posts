@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +8,41 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { getUserPosts } from './api/posts';
+import { Post } from './types/Post';
+import { Notification } from './components/Notification';
+import { NotificationType } from './types/NotificationType';
 
 export const App: React.FC = () => {
+  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
+  const [post, setPost] = useState<Post | null>(null);
+  const [noPosts, setNoPosts] = useState(false);
+  const [postsError, setPostsError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [newCommentForm, setNewCommentForm] = useState(false);
+
+  useEffect(() => {
+    if (selectedUserId) {
+      setUserPosts([]);
+      setPost(null);
+      setNoPosts(false);
+      setPostsError(false);
+      setLoading(true);
+
+      getUserPosts(selectedUserId)
+        .then((res) => {
+          if (res.length === 0) {
+            setNoPosts(true);
+          } else {
+            setUserPosts(res);
+          }
+        })
+        .catch(() => setPostsError(true))
+        .finally(() => setLoading(false));
+    }
+  }, [selectedUserId]);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,28 +50,45 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  selectedUserId={selectedUserId}
+                  setSelectedUserId={setSelectedUserId}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectedUserId && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {loading && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {postsError && (
+                  <Notification
+                    type={NotificationType.danger}
+                    massege="Something went wrong!"
+                    dataCy="PostsLoadingError"
+                  />
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {noPosts && (
+                  <Notification
+                    type={NotificationType.warning}
+                    massege="No posts yet"
+                    dataCy="NoPostsYet"
+                  />
+                )}
 
-                <PostsList />
+                {!userPosts.length || (
+                  <PostsList
+                    posts={userPosts}
+                    currentPost={post}
+                    setPost={setPost}
+                    setNewCommentForm={setNewCommentForm}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -50,11 +100,17 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': post },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {post && (
+                <PostDetails
+                  post={post}
+                  newCommentForm={newCommentForm}
+                  setNewCommentForm={setNewCommentForm}
+                />
+              )}
             </div>
           </div>
         </div>
