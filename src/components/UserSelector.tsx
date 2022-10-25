@@ -51,7 +51,7 @@ export const UserSelector: React.FC<Props> = ({
       data-cy="UserSelector"
       className={classNames(
         'dropdown',
-        { 'is-active': openList },
+        { 'is-active': false },
       )}
       ref={userListDropdown}
     >
