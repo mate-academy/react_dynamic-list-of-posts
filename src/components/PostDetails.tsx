@@ -5,7 +5,7 @@ import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { getPostComments } from '../api/comments';
+import { deleteComment, getPostComments } from '../api/comments';
 import { CommentMessage } from './CommentMessage';
 
 type Props = {
@@ -45,10 +45,19 @@ export const PostDetails: React.FC<Props> = ({
   useEffect(() => {
     if (comments.length > 0) {
       setNoComments(false);
-    } else {
-      setNoComments(true);
     }
   }, [comments]);
+
+  const handleDelete = (commentId: number) => {
+    deleteComment(commentId);
+    setComments((current: Comment[]) => {
+      return current.filter(comment => comment.id !== commentId);
+    });
+
+    if (comments.length) {
+      setNoComments(true);
+    }
+  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -91,7 +100,7 @@ export const PostDetails: React.FC<Props> = ({
                   name={comment.name}
                   email={comment.email}
                   body={comment.body}
-                  setComments={setComments}
+                  onDelete={handleDelete}
                 />
               ))}
             </>
