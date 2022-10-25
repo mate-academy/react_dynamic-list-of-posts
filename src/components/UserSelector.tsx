@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getUsers } from '../api/users';
 import { User } from '../types/User';
 
@@ -20,6 +20,23 @@ export const UserSelector: React.FC<Props> = ({
       .then(setUsers);
   }, []);
 
+  const userListDropdown = useRef<HTMLDivElement>(null);
+
+  const handleOnBlur = (event: MouseEvent) => {
+    if (userListDropdown.current
+      && !userListDropdown.current.contains(event.target as HTMLElement)) {
+      setOpenList(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleOnBlur);
+
+    return () => {
+      document.removeEventListener('click', handleOnBlur);
+    };
+  }, [openList]);
+
   const selectUser = (user: User) => {
     if (user.id !== selectedUserId) {
       setSelectedUserId(user.id);
@@ -36,6 +53,7 @@ export const UserSelector: React.FC<Props> = ({
         'dropdown',
         { 'is-active': openList },
       )}
+      ref={userListDropdown}
     >
       <div className="dropdown-trigger">
         <button
