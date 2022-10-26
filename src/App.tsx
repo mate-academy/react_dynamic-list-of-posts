@@ -12,34 +12,63 @@ import { getUserPosts } from './api/posts';
 import { Post } from './types/Post';
 import { Notification } from './components/Notification';
 import { NotificationType } from './types/NotificationType';
+import { ErrorMassege } from './types/ErrorMassege';
 
 export const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [post, setPost] = useState<Post | null>(null);
   const [noPosts, setNoPosts] = useState(false);
-  const [postsError, setPostsError] = useState(false);
+  const [error, setError] = useState<ErrorMassege>(ErrorMassege.NONE);
   const [loading, setLoading] = useState(false);
   const [newCommentForm, setNewCommentForm] = useState(false);
 
-  useEffect(() => {
-    if (selectedUserId) {
+  // useEffect(() => {
+  //   if (selectedUserId) {
+  //     setUserPosts([]);
+  //     setPost(null);
+  //     setNoPosts(false);
+  //     setError('');
+  //     setLoading(true);
+
+  //     getUserPosts(selectedUserId)
+  //       .then((res) => {
+  //         if (res.length === 0) {
+  //           setNoPosts(true);
+  //         } else {
+  //           setUserPosts(res);
+  //         }
+  //       })
+  //       .catch(() => setPostsError(true))
+  //       .finally(() => setLoading(false));
+  //   }
+  // }, [selectedUserId]);
+
+  const getPostList = async (userId: number) => {
+    try {
       setUserPosts([]);
       setPost(null);
       setNoPosts(false);
-      setPostsError(false);
+      setError(ErrorMassege.NONE);
       setLoading(true);
 
-      getUserPosts(selectedUserId)
-        .then((res) => {
-          if (res.length === 0) {
-            setNoPosts(true);
-          } else {
-            setUserPosts(res);
-          }
-        })
-        .catch(() => setPostsError(true))
-        .finally(() => setLoading(false));
+      const postList = await getUserPosts(userId);
+
+      if (!postList.length) {
+        setNoPosts(true);
+      }
+
+      setUserPosts(postList);
+    } catch {
+      setError(ErrorMassege.GET_POSTS);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedUserId) {
+      getPostList(selectedUserId);
     }
   }, [selectedUserId]);
 
@@ -53,6 +82,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   selectedUserId={selectedUserId}
                   setSelectedUserId={setSelectedUserId}
+                  onError={setError}
                 />
               </div>
 
@@ -65,10 +95,10 @@ export const App: React.FC = () => {
 
                 {loading && <Loader />}
 
-                {postsError && (
+                {error === ErrorMassege.GET_POSTS && (
                   <Notification
                     type={NotificationType.danger}
-                    massege="Something went wrong!"
+                    massege={ErrorMassege.GET_POSTS}
                     dataCy="PostsLoadingError"
                   />
                 )}
@@ -76,7 +106,7 @@ export const App: React.FC = () => {
                 {noPosts && (
                   <Notification
                     type={NotificationType.warning}
-                    massege="No posts yet"
+                    massege={ErrorMassege.NO_POSTS}
                     dataCy="NoPostsYet"
                   />
                 )}

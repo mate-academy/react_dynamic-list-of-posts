@@ -1,8 +1,9 @@
+import { ErrorMassege } from '../types/ErrorMassege';
 import { NotificationType } from '../types/NotificationType';
 
 type Props = {
   type: NotificationType;
-  massege: string;
+  massege: ErrorMassege;
   dataCy: string;
 };
 

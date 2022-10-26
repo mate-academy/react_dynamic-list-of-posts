@@ -1,23 +1,26 @@
 import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import { getUsers } from '../api/users';
+import { ErrorMassege } from '../types/ErrorMassege';
 import { User } from '../types/User';
 
 type Props = {
   selectedUserId: number;
   setSelectedUserId: (id: number) => void;
+  onError: (error: ErrorMassege) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
-  selectedUserId, setSelectedUserId,
+  selectedUserId, setSelectedUserId, onError,
 }) => {
   const [users, setUsers] = useState<User[]>([]);
-  const [openList, setOpenList] = useState(false);
   const [selectedUserName, setSelectedUserName] = useState('');
+  const [openList, setOpenList] = useState(false);
 
   useEffect(() => {
     getUsers()
-      .then(setUsers);
+      .then(setUsers)
+      .catch(() => onError(ErrorMassege.GET_USERS));
   }, []);
 
   const userListDropdown = useRef<HTMLDivElement>(null);
@@ -51,7 +54,7 @@ export const UserSelector: React.FC<Props> = ({
       data-cy="UserSelector"
       className={classNames(
         'dropdown',
-        { 'is-active': false },
+        { 'is-active': openList },
       )}
       ref={userListDropdown}
     >

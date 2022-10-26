@@ -7,6 +7,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { deleteComment, getPostComments } from '../api/comments';
 import { CommentMessage } from './CommentMessage';
+import { ErrorMassege } from '../types/ErrorMassege';
 
 type Props = {
   post: Post | null;
@@ -78,7 +79,7 @@ export const PostDetails: React.FC<Props> = ({
           {commentsError && (
             <Notification
               type={NotificationType.danger}
-              massege="Something went wrong"
+              massege={ErrorMassege.GET_COMMENTS}
               dataCy="CommentsError"
             />
           )}
