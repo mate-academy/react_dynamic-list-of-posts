@@ -6,8 +6,12 @@ import React, {
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-import { getPostsByUserId } from './api/post'
-import { Content } from './components/Content';
+import { getPostsByUserId } from './api/post';
+import { switchError } from './utils/switchError';
+import { UserSelector } from './components/UserSelector';
+import { ErrorNotification } from './components/ErrorNotification';
+import { PostsList } from './components/PostsList';
+import { Loader } from './components/Loader';
 import { Sidebar } from './components/Sidebar';
 import { Post } from './types/Post';
 import { Error } from './types/Error';
@@ -65,16 +69,54 @@ export const App: React.FC = () => {
     <main className="section">
       <div className="container">
         <div className="tile is-ancestor">
-          <Content
-            posts={posts}
-            postId={postId}
-            selectedUserId={selectedUserId}
-            error={error}
-            isLoading={isLoading}
-            onPost={handleOnPost}
-            onSelectUser={handleSelectUser}
-            onError={handleError}
-          />
+          <div className="tile is-parent">
+            <div className="tile is-child box is-success">
+              <div className="block">
+                <UserSelector
+                  selectedUserId={selectedUserId}
+                  onSelectUser={handleSelectUser}
+                  onError={handleError}
+                />
+              </div>
+              <div className="block" data-cy="MainContent">
+                {!selectedUserId
+                  && !error
+                  && (
+                    <p data-cy="NoSelectedUser">
+                      No user selected
+                    </p>
+                  )}
+
+                {error
+                  && switchError(error) === 'PostsLoadingError'
+                  && (
+                    <ErrorNotification
+                      error={error}
+                    />
+                  )}
+
+                {!posts?.length
+                  && selectedUserId
+                  && error === Error.NO_POSTS
+                  && (
+                    <ErrorNotification
+                      error={error}
+                    />
+                  )}
+
+                {isLoading
+                  ? <Loader />
+                  : posts.length > 0
+                    && (
+                      <PostsList
+                        posts={posts}
+                        postId={postId}
+                        onPost={handleOnPost}
+                      />
+                    )}
+              </div>
+            </div>
+          </div>
 
           <Sidebar
             posts={posts}

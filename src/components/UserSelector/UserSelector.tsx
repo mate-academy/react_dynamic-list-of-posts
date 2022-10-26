@@ -56,63 +56,59 @@ export const UserSelector: React.FC<Props> = ({
 
   return (
     <div
-      className="block"
+      data-cy="UserSelector"
+      className={classNames(
+        'dropdown',
+        { 'is-active': isDropdown },
+      )}
+      ref={userListDropdown}
     >
-      <div
-        data-cy="UserSelector"
-        className={classNames(
-          'dropdown',
-          { 'is-active': isDropdown },
-        )}
-        ref={userListDropdown}
-      >
-        <div className="dropdown-trigger">
-          <button
-            type="button"
-            className="button"
-            aria-haspopup="true"
-            aria-controls="dropdown-menu"
-            onClick={() => setIsDropdown(!isDropdown)}
-          >
-            <span>
-              {!selectedUserId
-                ? 'Choose a user'
-                : `${selectedUser}`}
-            </span>
-
-            <span className="icon is-small">
-              <i
-                className="fas fa-angle-down"
-                aria-hidden="true"
-              />
-            </span>
-          </button>
-        </div>
-
-        <div
-          className="dropdown-menu"
-          id="dropdown-menu"
-          role="menu"
+      <div className="dropdown-trigger">
+        <button
+          type="button"
+          className="button"
+          aria-haspopup="true"
+          aria-controls="dropdown-menu"
+          onClick={() => setIsDropdown(!isDropdown)}
         >
-          <div
-            className="dropdown-content"
-          >
-            {users.length > 0 && (
-              users.map(user => (
-                <a
-                  href={`#user-${user.id}`}
-                  className={classNames(
-                    'dropdown-item',
-                    { 'is-active': user.id === selectedUserId },
-                  )}
-                  key={user.id}
-                  onClick={() => handleSelectUser(user)}
-                >
-                  {user.name}
-                </a>
-              ))
-            )}
-          </div>
+          <span>
+            {!selectedUserId
+              ? 'Choose a user'
+              : `${selectedUser}`}
+          </span>
+
+          <span className="icon is-small">
+            <i
+              className="fas fa-angle-down"
+              aria-hidden="true"
+            />
+          </span>
+        </button>
+      </div>
+
+      <div
+        className="dropdown-menu"
+        id="dropdown-menu"
+        role="menu"
+      >
+        <div
+          className="dropdown-content"
+        >
+          {users.length > 0 && (
+            users.map(user => (
+              <a
+                href={`#user-${user.id}`}
+                className={classNames(
+                  'dropdown-item',
+                  { 'is-active': user.id === selectedUserId },
+                )}
+                key={user.id}
+                onClick={() => handleSelectUser(user)}
+              >
+                {user.name}
+              </a>
+            ))
+          )}
         </div>
       </div>
     </div>

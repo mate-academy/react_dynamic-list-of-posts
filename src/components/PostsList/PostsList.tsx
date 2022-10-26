@@ -25,14 +25,7 @@ export const PostsList: React.FC<Props> = ({
         Posts:
       </p>
 
-      <table
-        className="
-        table
-        is-fullwidth
-        is-striped
-        is-hoverable
-        is-narrow"
-      >
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
         <thead>
           <tr className="has-background-link-light">
             <th>#</th>
@@ -43,10 +36,7 @@ export const PostsList: React.FC<Props> = ({
 
         <tbody>
           {posts.map(post => (
-            <tr
-              data-cy="Post"
-              key={post.id}
-            >
+            <tr data-cy="Post" key={post.id}>
               <td data-cy="PostId">
                 {post.id}
               </td>

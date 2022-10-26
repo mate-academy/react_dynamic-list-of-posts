@@ -84,23 +84,12 @@ export const NewCommentForm: React.FC<Props> = ({
       data-cy="NewCommentForm"
       onSubmit={(event) => handleSubmit(event)}
     >
-      <div
-        className="field"
-        data-cy="NameField"
-      >
-        <label
-          className="label"
-          htmlFor="comment-author-name"
-        >
+      <div className="field" data-cy="NameField">
+        <label className="label" htmlFor="comment-author-name">
           Author Name
         </label>
 
-        <div
-          className="
-            control
-            has-icons-left
-            has-icons-right"
-        >
+        <div className="control has-icons-left has-icons-right">
           <input
             type="text"
             name="name"
