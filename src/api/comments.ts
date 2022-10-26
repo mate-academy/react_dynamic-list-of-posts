@@ -12,5 +12,5 @@ export const deleteComment = (commentId: number) => {
 export const addComment = (
   postId: number | undefined, newComment: CommentData,
 ) => {
-  return client.post<Comment>('1/comments', { ...newComment, postId });
+  return client.post<Comment>('/comments', { ...newComment, postId });
 };
