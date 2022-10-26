@@ -1,68 +1,57 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-
-import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
-import { getUserPosts } from './api/posts';
+import { getPostsByUserId } from './api/post'
+import { Content } from './components/Content';
+import { Sidebar } from './components/Sidebar';
 import { Post } from './types/Post';
-import { Notification } from './components/Notification';
-import { NotificationType } from './types/NotificationType';
-import { ErrorMassege } from './types/ErrorMassege';
+import { Error } from './types/Error';
 
 export const App: React.FC = () => {
-  const [selectedUserId, setSelectedUserId] = useState(0);
-  const [userPosts, setUserPosts] = useState<Post[]>([]);
-  const [post, setPost] = useState<Post | null>(null);
-  const [noPosts, setNoPosts] = useState(false);
-  const [error, setError] = useState<ErrorMassege>(ErrorMassege.NONE);
-  const [loading, setLoading] = useState(false);
-  const [newCommentForm, setNewCommentForm] = useState(false);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [postId, setPostId] = useState<number | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // useEffect(() => {
-  //   if (selectedUserId) {
-  //     setUserPosts([]);
-  //     setPost(null);
-  //     setNoPosts(false);
-  //     setError('');
-  //     setLoading(true);
+  const handleError = useCallback((errorType: Error | null) => {
+    setError(errorType);
+  }, []);
 
-  //     getUserPosts(selectedUserId)
-  //       .then((res) => {
-  //         if (res.length === 0) {
-  //           setNoPosts(true);
-  //         } else {
-  //           setUserPosts(res);
-  //         }
-  //       })
-  //       .catch(() => setPostsError(true))
-  //       .finally(() => setLoading(false));
-  //   }
-  // }, [selectedUserId]);
+  const handleOnPost = useCallback((id: number | null) => {
+    setPostId(id);
+  }, []);
+
+  const handleSelectUser = useCallback((userId: number) => {
+    setSelectedUserId(userId);
+    setPostId(null);
+  }, []);
 
   const getPostList = async (userId: number) => {
     try {
-      setUserPosts([]);
-      setPost(null);
-      setNoPosts(false);
-      setError(ErrorMassege.NONE);
-      setLoading(true);
+      setIsLoading(true);
+      setError(null);
 
-      const postList = await getUserPosts(userId);
-
-      if (!postList.length) {
-        setNoPosts(true);
+      if (!userId) {
+        return;
       }
 
-      setUserPosts(postList);
+      const postList = await getPostsByUserId(userId);
+
+      if (!postList.length) {
+        setError(Error.NO_POSTS);
+      }
+
+      setPosts(postList);
     } catch {
-      setError(ErrorMassege.GET_POSTS);
+      setError(Error.GET_POSTS);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -76,73 +65,23 @@ export const App: React.FC = () => {
     <main className="section">
       <div className="container">
         <div className="tile is-ancestor">
-          <div className="tile is-parent">
-            <div className="tile is-child box is-success">
-              <div className="block">
-                <UserSelector
-                  selectedUserId={selectedUserId}
-                  setSelectedUserId={setSelectedUserId}
-                  onError={setError}
-                />
-              </div>
+          <Content
+            posts={posts}
+            postId={postId}
+            selectedUserId={selectedUserId}
+            error={error}
+            isLoading={isLoading}
+            onPost={handleOnPost}
+            onSelectUser={handleSelectUser}
+            onError={handleError}
+          />
 
-              <div className="block" data-cy="MainContent">
-                {!selectedUserId && (
-                  <p data-cy="NoSelectedUser">
-                    No user selected
-                  </p>
-                )}
-
-                {loading && <Loader />}
-
-                {error === ErrorMassege.GET_POSTS && (
-                  <Notification
-                    type={NotificationType.danger}
-                    massege={ErrorMassege.GET_POSTS}
-                    dataCy="PostsLoadingError"
-                  />
-                )}
-
-                {noPosts && (
-                  <Notification
-                    type={NotificationType.warning}
-                    massege={ErrorMassege.NO_POSTS}
-                    dataCy="NoPostsYet"
-                  />
-                )}
-
-                {!userPosts.length || (
-                  <PostsList
-                    posts={userPosts}
-                    currentPost={post}
-                    setPost={setPost}
-                    setNewCommentForm={setNewCommentForm}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              { 'Sidebar--open': post },
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              {post && (
-                <PostDetails
-                  post={post}
-                  newCommentForm={newCommentForm}
-                  setNewCommentForm={setNewCommentForm}
-                />
-              )}
-            </div>
-          </div>
+          <Sidebar
+            posts={posts}
+            postId={postId}
+            error={error}
+            onError={handleError}
+          />
         </div>
       </div>
     </main>

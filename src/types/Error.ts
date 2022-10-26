@@ -1,5 +1,4 @@
-export enum ErrorMassege {
-  NONE,
+export enum Error {
   GET_USERS = 'Unable to get users',
   NO_POSTS = 'No posts yet',
   GET_POSTS = 'Something went wrong!',
@@ -7,3 +6,5 @@ export enum ErrorMassege {
   ADD_COMMENT = 'Unable to add comment',
   DELETE_COMMENT = 'Unable to delete comment',
 }
+
+export type ErrorType = 'NoPostsYet' | 'PostsLoadingError' | 'CommentsError';
