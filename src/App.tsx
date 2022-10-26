@@ -7,12 +7,12 @@ import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
+import { NoPostsNotification } from './components/NoPostsNotification';
 import { Loader } from './components/Loader';
 import { getUsers } from './api/users';
 import { getPosts } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { NoPostsNotification } from './components/NoPostsNotification';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -63,6 +63,16 @@ export const App: React.FC = () => {
     loadPosts();
   }, [selectedUser]);
 
+  const showNoPostsNotification
+    = !isLoading
+    && selectedUser
+    && posts.length === 0;
+
+  const showPostList
+  = !isLoading
+  && posts.length > 0
+  && selectedUser !== null;
+
   return (
     <main className="section">
       <div className="container">
@@ -95,9 +105,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!isLoading
-                  && posts.length > 0
-                  && selectedUser
+                {showPostList
                   && (
                     <PostsList
                       posts={posts}
@@ -105,9 +113,7 @@ export const App: React.FC = () => {
                       onPostSelect={setSelectedPost}
                     />
                   )}
-                {!isLoading
-                  && selectedUser !== null
-                  && posts.length === 0
+                {showNoPostsNotification
                   && <NoPostsNotification />}
               </div>
             </div>

@@ -2,17 +2,18 @@ import classnames from 'classnames';
 import React, {
   ChangeEvent, FormEvent, useState,
 } from 'react';
-import { CommentData } from '../types/Comment';
-import { ErrorMessages } from '../types/ErrorMessages';
+import { CommentData } from '../../types/Comment';
+import { ErrorMessages } from '../../types/ErrorMessages';
 
 type Props = {
   onAddComment: (newComment: CommentData) => void,
+  isLoading: boolean,
 };
 
-export const NewCommentForm: React.FC<Props> = ({
+export const NewCommentForm: React.FC<Props> = React.memo(({
   onAddComment,
+  isLoading,
 }) => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [
     newComment,
     setNewComment,
@@ -100,10 +101,8 @@ export const NewCommentForm: React.FC<Props> = ({
     event.preventDefault();
 
     if (!checkInputs()) {
-      setIsLoading(true);
       try {
         onAddComment(newComment);
-
         setNewComment(prev => {
           return {
             ...prev,
@@ -118,8 +117,6 @@ export const NewCommentForm: React.FC<Props> = ({
           };
         });
       }
-
-      setIsLoading(false);
     }
   };
 
@@ -270,9 +267,8 @@ export const NewCommentForm: React.FC<Props> = ({
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button
-            type="reset"
+            type="button"
             className="button is-link is-light"
             onClick={() => handleResetForm()}
           >
@@ -282,4 +278,4 @@ export const NewCommentForm: React.FC<Props> = ({
       </div>
     </form>
   );
-};
+});

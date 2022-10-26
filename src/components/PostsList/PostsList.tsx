@@ -1,6 +1,6 @@
 import React from 'react';
-import { Post } from '../types/Post';
-import { PostItem } from './PostItem';
+import { PostItem } from '../PostItem';
+import { Post } from '../../types/Post';
 
 type Props = {
   posts: Post[],

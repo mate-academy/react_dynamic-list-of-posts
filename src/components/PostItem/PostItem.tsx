@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { Post } from '../types/Post';
+import { Post } from '../../types/Post';
 
 type Props = {
   post: Post,

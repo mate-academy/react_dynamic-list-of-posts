@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { addComment, deleteComment, getComments } from '../api/comments';
-import { Comment, CommentData } from '../types/Comment';
-import { Post } from '../types/Post';
-import { Loader } from './Loader';
-import { NewCommentForm } from './NewCommentForm';
+import { CommentsList } from '../CommentsList';
+import { NewCommentForm } from '../NewCommentForm';
+import { Loader } from '../Loader';
+import { Post } from '../../types/Post';
+import { Comment, CommentData } from '../../types/Comment';
+import { addComment, deleteComment, getComments } from '../../api/comments';
 
 type Props = {
   post: Post | null,
 };
 
-export const PostDetails: React.FC<Props> = ({
+export const PostDetails: React.FC<Props> = React.memo(({
   post,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [
+    isLoadingAddButton,
+    setIsLoadingAddButton,
+  ] = useState<boolean>(false);
   const [openForm, setOpenForm] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
@@ -63,6 +68,7 @@ export const PostDetails: React.FC<Props> = ({
     newComment: CommentData,
   ) => {
     setError(false);
+    setIsLoadingAddButton(true);
 
     try {
       const response = await addComment(post?.id, newComment);
@@ -71,6 +77,8 @@ export const PostDetails: React.FC<Props> = ({
     } catch {
       setError(true);
     }
+
+    setIsLoadingAddButton(false);
   };
 
   return (
@@ -104,34 +112,13 @@ export const PostDetails: React.FC<Props> = ({
                   </p>
                 )}
 
-              {comments.length > 0 && <p className="title is-4">Comments:</p>}
-
-              {comments.map(comment => (
-                <article
-                  key={comment.id}
-                  className="message is-small"
-                  data-cy="Comment"
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${comment?.email}`} data-cy="CommentAuthor">
-                      {comment?.name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => handleDeleteComment(comment.id)}
-                    >
-                      delete button
-                    </button>
-                  </div>
-
-                  <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
-                  </div>
-                </article>
-              ))}
+              {comments.length > 0
+                && (
+                  <CommentsList
+                    comments={comments}
+                    onDelete={handleDeleteComment}
+                  />
+                )}
 
               {!openForm && (
                 <button
@@ -151,9 +138,10 @@ export const PostDetails: React.FC<Props> = ({
           && (
             <NewCommentForm
               onAddComment={handleAddComment}
+              isLoading={isLoadingAddButton}
             />
           )}
       </div>
     </div>
   );
-};
+});
