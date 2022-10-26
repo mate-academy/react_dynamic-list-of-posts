@@ -1,29 +1,32 @@
-import React from 'react';
 import classNames from 'classnames';
-import { Post } from '../../types/Post';
+import React from 'react';
+import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[];
-  postId: number | null;
-  onPost: (id: number | null) => void;
+  currentPost: Post | null;
+  setPost: (post: Post | null) => void;
+  setNewCommentForm: (value: boolean) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
-  postId,
-  onPost,
+  currentPost,
+  setPost,
+  setNewCommentForm,
 }) => {
-  const handleSetOpened = (id: number) => {
-    return (postId !== id)
-      ? onPost(id)
-      : onPost(null);
+  const handleClick = (post: Post) => {
+    setNewCommentForm(false);
+    if (currentPost?.id !== post.id) {
+      setPost(post);
+    } else {
+      setPost(null);
+    }
   };
 
   return (
     <div data-cy="PostsList">
-      <p className="title">
-        Posts:
-      </p>
+      <p className="title">Posts:</p>
 
       <table className="table is-fullwidth is-striped is-hoverable is-narrow">
         <thead>
@@ -37,9 +40,7 @@ export const PostsList: React.FC<Props> = ({
         <tbody>
           {posts.map(post => (
             <tr data-cy="Post" key={post.id}>
-              <td data-cy="PostId">
-                {post.id}
-              </td>
+              <td data-cy="PostId">{post.id}</td>
 
               <td data-cy="PostTitle">
                 {post.title}
@@ -52,13 +53,13 @@ export const PostsList: React.FC<Props> = ({
                   className={classNames(
                     'button',
                     'is-link',
-                    { 'is-light': !(postId && post.id === postId) },
+                    {
+                      'is-light': currentPost?.id !== post.id,
+                    },
                   )}
-                  onClick={() => handleSetOpened(post.id)}
+                  onClick={() => handleClick(post)}
                 >
-                  {postId && post.id === postId
-                    ? 'Close'
-                    : 'Open'}
+                  {currentPost?.id !== post.id ? 'Open' : 'Close'}
                 </button>
               </td>
             </tr>

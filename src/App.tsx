@@ -1,61 +1,68 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-import { getPostsByUserId } from './api/post';
-import { switchError } from './utils/switchError';
-import { UserSelector } from './components/UserSelector';
-import { ErrorNotification } from './components/ErrorNotification';
+
+import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
+import { PostDetails } from './components/PostDetails';
+import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { Sidebar } from './components/Sidebar';
+import { getUserPosts } from './api/posts';
 import { Post } from './types/Post';
-import { Error } from './types/Error';
+import { Notification } from './components/Notification';
+import { NotificationType } from './types/NotificationType';
+import { ErrorMassege } from './types/ErrorMassege';
 
 export const App: React.FC = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [postId, setPostId] = useState<number | null>(null);
-  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
+  const [post, setPost] = useState<Post | null>(null);
+  const [noPosts, setNoPosts] = useState(false);
+  const [error, setError] = useState<ErrorMassege>(ErrorMassege.NONE);
+  const [loading, setLoading] = useState(false);
+  const [newCommentForm, setNewCommentForm] = useState(false);
 
-  const handleError = useCallback((errorType: Error | null) => {
-    setError(errorType);
-  }, []);
+  // useEffect(() => {
+  //   if (selectedUserId) {
+  //     setUserPosts([]);
+  //     setPost(null);
+  //     setNoPosts(false);
+  //     setError('');
+  //     setLoading(true);
 
-  const handleOnPost = useCallback((id: number | null) => {
-    setPostId(id);
-  }, []);
-
-  const handleSelectUser = useCallback((userId: number) => {
-    setSelectedUserId(userId);
-    setPostId(null);
-  }, []);
+  //     getUserPosts(selectedUserId)
+  //       .then((res) => {
+  //         if (res.length === 0) {
+  //           setNoPosts(true);
+  //         } else {
+  //           setUserPosts(res);
+  //         }
+  //       })
+  //       .catch(() => setPostsError(true))
+  //       .finally(() => setLoading(false));
+  //   }
+  // }, [selectedUserId]);
 
   const getPostList = async (userId: number) => {
     try {
-      setIsLoading(true);
-      setError(null);
+      setUserPosts([]);
+      setPost(null);
+      setNoPosts(false);
+      setError(ErrorMassege.NONE);
+      setLoading(true);
 
-      if (!userId) {
-        return;
-      }
-
-      const postList = await getPostsByUserId(userId);
+      const postList = await getUserPosts(userId);
 
       if (!postList.length) {
-        setError(Error.NO_POSTS);
+        setNoPosts(true);
       }
 
-      setPosts(postList);
+      setUserPosts(postList);
     } catch {
-      setError(Error.GET_POSTS);
+      setError(ErrorMassege.GET_POSTS);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -74,56 +81,68 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   selectedUserId={selectedUserId}
-                  onSelectUser={handleSelectUser}
-                  onError={handleError}
+                  setSelectedUserId={setSelectedUserId}
+                  onError={setError}
                 />
               </div>
+
               <div className="block" data-cy="MainContent">
-                {!selectedUserId
-                  && !error
-                  && (
-                    <p data-cy="NoSelectedUser">
-                      No user selected
-                    </p>
-                  )}
+                {!selectedUserId && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                {error
-                  && switchError(error) === 'PostsLoadingError'
-                  && (
-                    <ErrorNotification
-                      error={error}
-                    />
-                  )}
+                {loading && <Loader />}
 
-                {!posts?.length
-                  && selectedUserId
-                  && error === Error.NO_POSTS
-                  && (
-                    <ErrorNotification
-                      error={error}
-                    />
-                  )}
+                {error === ErrorMassege.GET_POSTS && (
+                  <Notification
+                    type={NotificationType.danger}
+                    massege={ErrorMassege.GET_POSTS}
+                    dataCy="PostsLoadingError"
+                  />
+                )}
 
-                {isLoading
-                  ? <Loader />
-                  : posts.length > 0
-                    && (
-                      <PostsList
-                        posts={posts}
-                        postId={postId}
-                        onPost={handleOnPost}
-                      />
-                    )}
+                {noPosts && (
+                  <Notification
+                    type={NotificationType.warning}
+                    massege={ErrorMassege.NO_POSTS}
+                    dataCy="NoPostsYet"
+                  />
+                )}
+
+                {!userPosts.length || (
+                  <PostsList
+                    posts={userPosts}
+                    currentPost={post}
+                    setPost={setPost}
+                    setNewCommentForm={setNewCommentForm}
+                  />
+                )}
               </div>
             </div>
           </div>
 
-          <Sidebar
-            posts={posts}
-            postId={postId}
-            error={error}
-            onError={handleError}
-          />
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': post },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              {post && (
+                <PostDetails
+                  post={post}
+                  newCommentForm={newCommentForm}
+                  setNewCommentForm={setNewCommentForm}
+                />
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </main>
