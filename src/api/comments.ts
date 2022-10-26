@@ -12,5 +12,5 @@ export const addComment = async (commentData: CommentData) => {
 };
 
 export const deleteComment = async (commentId: number) => {
-  return client.delete(`/comments1/${commentId}`);
+  return client.delete(`/comments/${commentId}`);
 };

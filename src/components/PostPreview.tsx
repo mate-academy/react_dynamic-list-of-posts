@@ -3,8 +3,8 @@ import { Post } from '../types/Post';
 
 interface Props {
   post: Post;
-  setSelectedPost: React.Dispatch<React.SetStateAction<number | null>>;
-  selectedPost: number | null
+  setSelectedPost: React.Dispatch<React.SetStateAction<number>>;
+  selectedPost: number
 }
 
 export const PostPreview: FC<Props> = ({
@@ -22,7 +22,7 @@ export const PostPreview: FC<Props> = ({
   };
 
   const handleClosePost = () => {
-    setSelectedPost(null);
+    setSelectedPost(0);
   };
 
   return (

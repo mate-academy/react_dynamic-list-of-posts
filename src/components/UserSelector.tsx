@@ -5,13 +5,15 @@ import { getAllUsers } from '../api/Users';
 import { Loader } from './Loader';
 
 interface Props {
-  setSelectedUser: React.Dispatch<React.SetStateAction<number | null>>;
-  selectedUser: number | null;
+  setSelectedUser: React.Dispatch<React.SetStateAction<number>>;
+  selectedUser: number;
+  resetSelectedPost: () => void;
 }
 
 export const UserSelector: React.FC<Props> = ({
   setSelectedUser,
   selectedUser,
+  resetSelectedPost,
 }) => {
   const { data: users, isLoading, isError } = useQuery(['users'], getAllUsers);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -22,6 +24,7 @@ export const UserSelector: React.FC<Props> = ({
     event.preventDefault();
     setSelectedUser(Number(event.currentTarget.id));
     setIsDropdownOpen(false);
+    resetSelectedPost();
   };
 
   return (

@@ -9,8 +9,10 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 
 export const App: React.FC = () => {
-  const [selectedUser, setSelectedUser] = useState<number | null>(null);
-  const [selectedPost, setSelectedPost] = useState<number | null>(null);
+  const [selectedUser, setSelectedUser] = useState(0);
+  const [selectedPost, setSelectedPost] = useState(0);
+
+  const resetSelectedPost = () => setSelectedPost(0);
 
   return (
     <main className="section">
@@ -22,6 +24,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   setSelectedUser={setSelectedUser}
                   selectedUser={selectedUser}
+                  resetSelectedPost={resetSelectedPost}
                 />
               </div>
 

@@ -5,9 +5,9 @@ import { Loader } from './Loader';
 import { PostPreview } from './PostPreview';
 
 interface Props {
-  selectedUser: number | null;
-  setSelectedPost: React.Dispatch<React.SetStateAction<number | null>>;
-  selectedPost: number | null,
+  selectedUser: number;
+  setSelectedPost: React.Dispatch<React.SetStateAction<number>>;
+  selectedPost: number,
 }
 
 export const PostsList: FC<Props> = ({

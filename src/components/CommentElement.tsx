@@ -34,8 +34,8 @@ export const CommentElement: FC<Props> = ({ comment }) => {
             ['comments', postId],
             (prevComments) => {
               if (prevComments) {
-                return [...prevComments
-                  .filter((oneComment) => oneComment.id !== commentId)];
+                return prevComments
+                  .filter((oneComment) => oneComment.id !== commentId);
               }
 
               return prevComments;
