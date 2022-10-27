@@ -22,6 +22,8 @@ export const PostDetails: React.FC<Props> = ({
   const [notification, setNotification] = useState<NotificationMassege>(
     NotificationMassege.NONE,
   );
+  const hasError = notification !== NotificationMassege.NONE
+    && notification !== NotificationMassege.NO_COMMENTS;
 
   const getComments = async (postId: number) => {
     try {
@@ -115,19 +117,20 @@ export const PostDetails: React.FC<Props> = ({
             </>
           )}
 
-          {(!loading && !newCommentForm) && (
-            <button
-              data-cy="WriteCommentButton"
-              type="button"
-              className="button is-link"
-              onClick={() => setNewCommentForm(true)}
-            >
-              Write a comment
-            </button>
-          )}
+          {(!loading && !newCommentForm && !hasError)
+            && (
+              <button
+                data-cy="WriteCommentButton"
+                type="button"
+                className="button is-link"
+                onClick={() => setNewCommentForm(true)}
+              >
+                Write a comment
+              </button>
+            )}
         </div>
 
-        {(newCommentForm) && (
+        {(newCommentForm && !hasError) && (
           <NewCommentForm
             setComments={setPostComments}
             postId={post?.id || 0}
