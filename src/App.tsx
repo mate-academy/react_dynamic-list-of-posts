@@ -8,9 +8,9 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { User } from './types/User';
 import { getAllPosts, getAllUsers } from './utils/fetchClient';
 import { Post } from './types/Post';
+import { User } from './types/User';
 
 export const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -40,18 +40,21 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
-    setIsLoading(true);
+    const getAllUsersFromApi = async () => {
+      setIsLoading(true);
 
-    getAllUsers()
-      .then((result: User[]) => {
-        setAllUsers(result);
-      })
-      .catch(() => {
+      try {
+        const response = await getAllUsers();
+
+        setAllUsers(response);
+      } catch (e) {
         setPostsLoadingError(true);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      }
+
+      setIsLoading(false);
+    };
+
+    getAllUsersFromApi();
   }, []);
 
   return (

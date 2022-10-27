@@ -90,40 +90,38 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             <>
               <p className="title is-4">Comments:</p>
 
-              {comments.map(comment => {
-                return (
-                  <article
-                    className="message is-small"
-                    data-cy="Comment"
-                    key={comment.id}
-                  >
-                    <div className="message-header">
-                      <a
-                        href={`mailto:${comment.email}`}
-                        data-cy="CommentAuthor"
-                      >
-                        {comment.name}
-                      </a>
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
-                        onClick={() => onCommentDelete(comment)}
-                      >
-                        delete button
-                      </button>
-                    </div>
+              {comments.map(comment => (
+                <article
+                  className="message is-small"
+                  data-cy="Comment"
+                  key={comment.id}
+                >
+                  <div className="message-header">
+                    <a
+                      href={`mailto:${comment.email}`}
+                      data-cy="CommentAuthor"
+                    >
+                      {comment.name}
+                    </a>
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={() => onCommentDelete(comment)}
+                    >
+                      delete button
+                    </button>
+                  </div>
 
-                    <div className="message-body" data-cy="CommentBody">
-                      { DeletingComment?.id === comment.id
-                        ? (
-                          <Loader />
-                        ) : comment.body}
-                    </div>
-                  </article>
-                );
-              })}
+                  <div className="message-body" data-cy="CommentBody">
+                    { DeletingComment?.id === comment.id
+                      ? (
+                        <Loader />
+                      ) : comment.body}
+                  </div>
+                </article>
+              ))}
             </>
           )}
 
@@ -140,7 +138,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         {isFormOpened && post && (
           <NewCommentForm
             postId={post.id}
-            comments={comments}
             setComments={setComments}
           />
         )}
@@ -148,53 +145,3 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     </div>
   );
 };
-
-// <article className="message is-small" data-cy="Comment">
-//   <div className="message-header">
-//     <a
-//       href="mailto:misha@mate.academy"
-//       data-cy="CommentAuthor"
-//     >
-//       Misha Hrynko
-//     </a>
-//
-//     <button
-//       data-cy="CommentDelete"
-//       type="button"
-//       className="delete is-small"
-//       aria-label="delete"
-//     >
-//       delete button
-//     </button>
-//   </div>
-//   <div
-//     className="message-body"
-//     data-cy="CommentBody"
-//   >
-//     One more comment
-//   </div>
-// </article>
-//
-// <article className="message is-small" data-cy="Comment">
-//   <div className="message-header">
-//     <a
-//       href="mailto:misha@mate.academy"
-//       data-cy="CommentAuthor"
-//     >
-//       Misha Hrynko
-//     </a>
-//
-//     <button
-//       data-cy="CommentDelete"
-//       type="button"
-//       className="delete is-small"
-//       aria-label="delete"
-//     >
-//       delete button
-//     </button>
-//   </div>
-//
-//   <div className="message-body" data-cy="CommentBody">
-//     {'Multi\nline\ncomment'}
-//   </div>
-// </article>

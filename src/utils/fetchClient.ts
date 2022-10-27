@@ -61,6 +61,6 @@ export function deleteComment(commentId: number) {
   return client.delete(`/comments/${commentId}`);
 }
 
-export function addNewComment(commentData: Comment) {
+export function addNewComment(commentData: Omit<Comment, 'id'>) {
   return client.post<Comment>('/comments', commentData);
 }

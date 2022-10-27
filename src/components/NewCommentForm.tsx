@@ -5,13 +5,11 @@ import { Comment } from '../types/Comment';
 
 type Props = {
   postId: number,
-  comments: Comment[],
-  setComments: (newComments: Comment[]) => void,
+  setComments: (newComments: (prev: Comment[]) => Comment[]) => void,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   postId,
-  comments,
   setComments,
 }) => {
   const [commentName, setCommentName] = useState('');
@@ -46,16 +44,17 @@ export const NewCommentForm: React.FC<Props> = ({
 
     try {
       const newComment = {
-        id: 0,
         postId,
         name: commentName,
         email: commentEmail,
         body: commentBody,
       };
 
-      const result = await addNewComment(newComment);
+      const result: Comment = await addNewComment(newComment);
 
-      setComments([...comments, result]);
+      setComments((prevState: Comment[]) => (
+        [...prevState, result]
+      ));
     } catch (e) {
       setIsError(true);
     }
