@@ -73,6 +73,8 @@ export const App: React.FC = () => {
   && posts.length > 0
   && selectedUser !== null;
 
+  const noUserSelected = !isLoading && !selectedUser;
+
   return (
     <main className="section">
       <div className="container">
@@ -88,7 +90,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!isLoading && !selectedUser && (
+                {noUserSelected && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>

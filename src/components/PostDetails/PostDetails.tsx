@@ -5,6 +5,7 @@ import { Loader } from '../Loader';
 import { Post } from '../../types/Post';
 import { Comment, CommentData } from '../../types/Comment';
 import { addComment, deleteComment, getComments } from '../../api/comments';
+import { NoCommentsMessage } from '../NoCommentsMessage';
 
 type Props = {
   post: Post | null,
@@ -81,6 +82,10 @@ export const PostDetails: React.FC<Props> = React.memo(({
     setIsLoadingAddButton(false);
   };
 
+  const noComments = !isLoading
+    && comments.length === 0
+    && !error;
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -103,16 +108,11 @@ export const PostDetails: React.FC<Props> = React.memo(({
                 </div>
               )}
 
-              {!isLoading
-                && comments.length === 0
-                && !error
-                && (
-                  <p className="title is-4" data-cy="NoCommentsMessage">
-                    No comments yet
-                  </p>
-                )}
+              {noComments && (
+                <NoCommentsMessage />
+              )}
 
-              {comments.length > 0
+              {Boolean(comments.length)
                 && (
                   <CommentsList
                     comments={comments}
