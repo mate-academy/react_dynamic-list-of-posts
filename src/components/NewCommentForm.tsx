@@ -129,8 +129,9 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
+            required
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': error.email })}
