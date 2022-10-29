@@ -82,7 +82,10 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
   };
 
   return (
-    <form data-cy="NewCommentForm">
+    <form
+      data-cy="NewCommentForm"
+      onSubmit={() => changeForm}
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -132,6 +135,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
             type="email"
             name="email"
             required
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': error.email })}
@@ -196,7 +200,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
               'button', 'is-link',
               { 'is-loading': isLoadong },
             )}
-            onClick={changeForm}
+
           >
             Add
           </button>
