@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 
 type Props = {
   postId: number | undefined,
@@ -36,7 +36,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
     }
   };
 
-  const changeForm = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const changeForm = async (event: FormEvent) => {
     event.preventDefault();
     if (!name || !email || !body) {
       setError({
@@ -84,7 +84,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
   return (
     <form
       data-cy="NewCommentForm"
-      onSubmit={() => changeForm}
+      onSubmit={changeForm}
     >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">

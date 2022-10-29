@@ -70,7 +70,7 @@ export const App: React.FC = () => {
                 >
                   Something went wrong!
                 </div> */}
-                {selectedUser && userPosts.length === 0 && (
+                {selectedUser && !userPosts.length && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
