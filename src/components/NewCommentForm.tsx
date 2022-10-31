@@ -25,8 +25,11 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const validate = () => {
-    if (!commentName || !commentEmail || !commentBody) {
+    if (!commentName.trim() || !commentEmail || !commentBody.trim()) {
       setIsError(true);
+      setCommentName(prevState => prevState.trim());
+      setCommentEmail(prevState => prevState.trim());
+      setCommentBody(prevState => prevState.trim());
 
       return false;
     }

@@ -77,9 +77,7 @@ export const App: React.FC = () => {
                   {selectedUser ? selectedUser.name : 'No user selected'}
                 </p>
 
-                {isLoading && (
-                  <Loader />
-                )}
+                {isLoading && <Loader />}
 
                 {!isLoading && postsLoadingError && (
                   <div

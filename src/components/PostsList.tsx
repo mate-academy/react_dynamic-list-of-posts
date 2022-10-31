@@ -25,47 +25,45 @@ export const PostsList: React.FC<Props> = ({
       </thead>
 
       <tbody>
-        {posts.map(post => {
-          return (
-            <tr
-              data-cy="Post"
-              key={post.id}
-            >
-              <td data-cy="PostId">{post.id}</td>
+        {posts.map(post => (
+          <tr
+            data-cy="Post"
+            key={post.id}
+          >
+            <td data-cy="PostId">{post.id}</td>
 
-              <td data-cy="PostTitle">
-                {post.title}
-              </td>
+            <td data-cy="PostTitle">
+              {post.title}
+            </td>
 
-              <td className="has-text-right is-vcentered">
-                {selectedPost === post ? (
-                  <button
-                    type="button"
-                    data-cy="PostButton"
-                    className="button is-link"
-                    onClick={() => {
-                      onPostSelect(null);
-                    }}
-                  >
-                    Close
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    data-cy="PostButton"
-                    className="button is-link is-light"
-                    onClick={() => {
-                      onPostSelect(post);
-                    }}
-                  >
-                    Open
-                  </button>
-                )}
+            <td className="has-text-right is-vcentered">
+              {selectedPost === post ? (
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className="button is-link"
+                  onClick={() => {
+                    onPostSelect(null);
+                  }}
+                >
+                  Close
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className="button is-link is-light"
+                  onClick={() => {
+                    onPostSelect(post);
+                  }}
+                >
+                  Open
+                </button>
+              )}
 
-              </td>
-            </tr>
-          );
-        })}
+            </td>
+          </tr>
+        ))}
       </tbody>
     </table>
   </div>

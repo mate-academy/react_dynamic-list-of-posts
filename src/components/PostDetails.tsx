@@ -116,9 +116,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
                   <div className="message-body" data-cy="CommentBody">
                     { DeletingComment?.id === comment.id
-                      ? (
-                        <Loader />
-                      ) : comment.body}
+                      ? <Loader />
+                      : comment.body}
                   </div>
                 </article>
               ))}
