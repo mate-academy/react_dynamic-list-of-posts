@@ -65,8 +65,6 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
     addComment(data);
 
     setBody('');
-    setName('');
-    setEmail('');
     setIsLoading(false);
   };
 
