@@ -1,85 +1,67 @@
+import classNames from 'classnames';
 import React from 'react';
+import { Post } from '../types/Post';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+type Props = {
+  posts: Post[],
+  postId: Post | null,
+  setPost: (post: Post | null) => void,
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+};
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+export const PostsList: React.FC<Props> = ({ posts, postId, setPost }) => {
+  const handleSetPost = (post: Post) => {
+    if (postId?.id !== post.id) {
+      setPost(post);
+    } else {
+      setPost(null);
+    }
+  };
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            <th> </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {posts.map(post => (
+            <tr
+              data-cy="Post"
+              key={post.id}
             >
-              Open
-            </button>
-          </td>
-        </tr>
+              <td data-cy="PostId">{post.id}</td>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+              <td data-cy="PostTitle">
+                {post.title}
+              </td>
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className={classNames(
+                    'button', 'button is-link',
+                    { 'is-light': postId?.id !== post.id },
+                  )}
+                  onClick={() => handleSetPost(post)}
+                >
+                  {postId?.id === post.id ? 'Close' : 'Open' }
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
+                </button>
+              </td>
+            </tr>
+          ))}
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+        </tbody>
+      </table>
+    </div>
+  );
+};
