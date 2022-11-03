@@ -1,15 +1,59 @@
-import React from 'react';
-import 'bulma/bulma.sass';
-import '@fortawesome/fontawesome-free/css/all.css';
-import './App.scss';
-
+import React, { useContext, useEffect } from 'react';
 import classNames from 'classnames';
+import { DispatchContext, ReducerActions, StateContext } from './AppContext';
+
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 
+import { Post } from './types/Post';
+import { client } from './utils/fetchClient';
+
+import 'bulma/bulma.sass';
+import '@fortawesome/fontawesome-free/css/all.css';
+import './App.scss';
+
 export const App: React.FC = () => {
+  const dispatch = useContext(DispatchContext);
+
+  const {
+    selectedUser,
+    userPosts,
+    selectedPost,
+    isUserPostsLoading,
+    isUserPostsError,
+  } = useContext(StateContext);
+
+  const getUserPosts = async () => {
+    if (selectedUser) {
+      dispatch({
+        type: ReducerActions.setIsUserPostsLoading,
+        payload: true,
+      });
+
+      await client.get<Post[]>(`/posts?userId=${selectedUser.id}`)
+        .then(res => {
+          dispatch({
+            type: ReducerActions.setUserPosts,
+            payload: res,
+          });
+        })
+        .catch(() => dispatch({
+          type: ReducerActions.setIsUserPostsError,
+          payload: true,
+        }))
+        .finally(() => dispatch({
+          type: ReducerActions.setIsUserPostsLoading,
+          payload: false,
+        }));
+    }
+  };
+
+  useEffect(() => {
+    getUserPosts();
+  }, [selectedUser]);
+
   return (
     <main className="section">
       <div className="container">
@@ -21,28 +65,42 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {selectedUser === null && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isUserPostsLoading && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {isUserPostsError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {!isUserPostsLoading && !isUserPostsError && selectedUser
+                && userPosts?.length === 0 && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                )}
 
-                <PostsList />
+                {!isUserPostsLoading && !isUserPostsError && selectedUser
+                && userPosts?.length !== 0 && (
+                  <PostsList />
+                )}
               </div>
             </div>
           </div>
 
+          {/* {selectedPost && ( */}
           <div
             data-cy="Sidebar"
             className={classNames(
@@ -50,13 +108,14 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {selectedPost && <PostDetails />}
             </div>
           </div>
+          {/* )} */}
         </div>
       </div>
     </main>
