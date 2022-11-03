@@ -4,6 +4,7 @@ import { User } from './types/User';
 import { Comment } from './types/Comment';
 
 export enum ReducerActions {
+  setUsers = 'setUsers',
   setIsUsersLoaded = 'setIsUsersLoaded',
   setSelectedUser = 'setSelectedUser',
   setUserPosts = 'setUserPosts',
@@ -23,6 +24,7 @@ type Props = {
 type DispatchContextType = (action: DispatchActions) => void;
 
 interface State {
+  users: User[] | null;
   isUsersLoaded: boolean;
   selectedUser: User | null;
   userPosts: Post[] | null;
@@ -35,6 +37,7 @@ interface State {
   isWriteComment: boolean;
 }
 const initialState: State = {
+  users: null,
   isUsersLoaded: false,
   selectedUser: null,
   userPosts: null,
@@ -57,6 +60,12 @@ const reducerFn: Reducer<State, DispatchActions> = (state, action) => {
   const { type, payload } = action;
 
   switch (type) {
+    case ReducerActions.setUsers:
+      return {
+        ...state,
+        users: payload,
+      };
+
     case ReducerActions.setIsUsersLoaded:
       return {
         ...state,

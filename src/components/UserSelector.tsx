@@ -1,25 +1,43 @@
 import classNames from 'classnames';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { DispatchContext, ReducerActions, StateContext } from '../AppContext';
 import { User } from '../types/User';
 import { client } from '../utils/fetchClient';
 
-const users: User[] = [];
-
-client.get<User[]>('/users').then(res => users.push(...res));
-
 export const UserSelector: React.FC = () => {
-  const { selectedUser } = useContext(StateContext);
+  const { users, isUsersLoaded, selectedUser } = useContext(StateContext);
   const dispatch = useContext(DispatchContext);
 
   const [isListVisiable, setIsListVisiable] = useState(false);
   const btnText = selectedUser?.name || 'Choose a user';
 
+  const getUsersFromServer = async () => {
+    await client.get<User[]>('/users')
+      .then(res => {
+        dispatch({
+          type: ReducerActions.setUsers,
+          payload: res,
+        });
+      })
+      .catch(() => dispatch({
+        type: ReducerActions.setIsUsersLoaded,
+        payload: false,
+      }))
+      .finally(() => dispatch({
+        type: ReducerActions.setIsUsersLoaded,
+        payload: true,
+      }));
+  };
+
+  useEffect(() => {
+    getUsersFromServer();
+  }, []);
+
   return (
     <div
       data-cy="UserSelector"
       className={classNames('dropdown',
-        { 'is-active': isListVisiable })}
+        { 'is-active': isUsersLoaded && isListVisiable })}
     >
       <div className="dropdown-trigger">
         <button
@@ -37,10 +55,10 @@ export const UserSelector: React.FC = () => {
           </span>
         </button>
       </div>
-      {isListVisiable && (
+      {isUsersLoaded && isListVisiable && (
         <div className="dropdown-menu" id="dropdown-menu" role="menu">
           <div className="dropdown-content">
-            {users && users.map(user => (
+            {isUsersLoaded && users && users.map(user => (
               <a
                 key={user.id}
                 href={`#user-${user.id}`}

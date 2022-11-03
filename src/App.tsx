@@ -8,11 +8,11 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 
 import { Post } from './types/Post';
-import { client } from './utils/fetchClient';
 
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
+import { client } from './utils/fetchClient';
 
 export const App: React.FC = () => {
   const dispatch = useContext(DispatchContext);
