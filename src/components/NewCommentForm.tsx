@@ -1,6 +1,101 @@
-import React from 'react';
+import React, {
+  useState,
+  KeyboardEvent,
+  MouseEvent,
+  useContext,
+  useCallback,
+} from 'react';
+import classNames from 'classnames';
 
-export const NewCommentForm: React.FC = () => {
+import { Post } from '../types/Post';
+
+// api
+
+import { addComments } from '../api/api';
+import { Context } from './Context';
+
+type Props = {
+  selectedPost: Post
+};
+
+export const NewCommentForm: React.FC<Props> = ({
+  selectedPost,
+}) => {
+  const {
+    commentList,
+    setCommentList,
+    setCommentListError,
+  } = useContext(Context);
+
+  const [inputName, setInputName] = useState('');
+  const [inputEmail, setInputEmail] = useState('');
+  const [inputText, setInputText] = useState('');
+
+  // Dangers
+
+  const [inputNameDagers, setInputNameDagers] = useState(false);
+  const [inputEmailDagers, setInputEmailDagers] = useState(false);
+  const [inputTextDagers, setInputTextDagers] = useState(false);
+
+  // functions
+
+  const clearInputs = useCallback(() => {
+    setInputName('');
+    setInputEmail('');
+    setInputText('');
+  }, []);
+
+  const addComment = () => {
+    if (!inputName) {
+      setInputNameDagers(true);
+    }
+
+    if (!inputEmail) {
+      setInputEmailDagers(true);
+    }
+
+    if (!inputText) {
+      setInputTextDagers(true);
+    }
+
+    if (inputName && inputEmail && inputText) {
+      const randomId = Math.floor(Math.random() * 1000000);
+      const addCommentItem = {
+        id: randomId,
+        postId: selectedPost.id,
+        name: inputName,
+        email: inputEmail,
+        body: inputText,
+      };
+
+      addComments(addCommentItem)
+        .then(() => {
+          if (commentList) {
+            setCommentListError(false);
+            setCommentList([...commentList, addCommentItem]);
+            clearInputs();
+          }
+        })
+        .catch(() => {
+          setCommentListError(true);
+          clearInputs();
+        });
+    }
+  };
+
+  // eslint-disable-next-line max-len
+  const clickEnterInputs = useCallback((e: KeyboardEvent<HTMLInputElement> | KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.code === 'Enter') {
+      e.preventDefault();
+      addComment();
+    }
+  }, [inputName, inputEmail, inputText]);
+
+  const clickAddButton = useCallback((e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    addComment();
+  }, [inputName, inputEmail, inputText]);
+
   return (
     <form data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
@@ -14,24 +109,34 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            className={classNames('input', { 'is-danger': inputNameDagers })}
+            value={inputName}
+            onChange={(e) => {
+              setInputName(e.target.value);
+              setInputNameDagers(false);
+            }}
+            onKeyDown={clickEnterInputs}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {inputNameDagers && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
+        {inputNameDagers && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Name is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -45,24 +150,33 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            className={classNames('input', { 'is-danger': inputEmailDagers })}
+            value={inputEmail}
+            onChange={(e) => {
+              setInputEmail(e.target.value);
+            }}
+            onKeyDown={clickEnterInputs}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {inputEmailDagers && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
+        {inputEmailDagers && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -75,25 +189,44 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            className={classNames('input', { 'is-danger': inputTextDagers })}
+            value={inputText}
+            onChange={(e) => {
+              setInputText(e.target.value);
+            }}
+            onKeyDown={clickEnterInputs}
           />
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
+        {inputTextDagers && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Enter some text
+          </p>
+        )}
       </div>
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={classNames(
+              'button',
+              'is-link',
+              { 'is-loading': false },
+            )}
+            onClick={clickAddButton}
+          >
             Add
           </button>
         </div>
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={clearInputs}
+          >
             Clear
           </button>
         </div>

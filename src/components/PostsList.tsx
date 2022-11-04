@@ -1,85 +1,97 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import classNames from 'classnames';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+// Types
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+import { Post } from '../types/Post';
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+import { Context } from './Context';
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+// Api
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+import { getComments } from '../api';
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+type Props = {
+  postList: Post[] | undefined
+  setSelectedPost: (x: Post | null) => void
+  selectedPost: Post | null
+  setOpenForm: (x: boolean) => void
+};
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+export const PostsList: React.FC<Props> = ({
+  postList,
+  setSelectedPost,
+  selectedPost,
+  setOpenForm,
+}) => {
+  const { setCommentList, setCommentListError } = useContext(Context);
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            <th> </th>
+          </tr>
+        </thead>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+        <tbody>
+          {postList && postList.map((post) => {
+            const { id, title } = post;
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
+            return (
+              <tr data-cy="Post" key={id}>
+                <td data-cy="PostId">{id}</td>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+                <td data-cy="PostTitle">
+                  {title}
+                </td>
+
+                <td className="has-text-right is-vcentered">
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={classNames(
+                      'button',
+                      'is-link',
+                      { 'is-light': !(selectedPost && selectedPost.id === id) },
+                    )}
+                    onClick={() => {
+                      setSelectedPost(post);
+                      setOpenForm(false);
+
+                      if ((selectedPost && selectedPost.id === id)) {
+                        setSelectedPost(null);
+
+                        return;
+                      }
+
+                      setCommentList(undefined);
+
+                      getComments(id)
+                        .then((Comments) => {
+                          setCommentList(Comments);
+                          setCommentListError(false);
+                        })
+                        .catch(() => {
+                          setCommentList([]);
+                          setCommentListError(true);
+                        });
+                    }}
+                  >
+                    {(selectedPost
+                      && (selectedPost.id === id) ? 'Close' : 'Open')}
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+};
