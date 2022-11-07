@@ -38,40 +38,40 @@ export const App: React.FC = () => {
                     setOpenForm={setOpenForm}
                   />
                 </div>
+
                 <div className="block" data-cy="MainContent">
                   {
-                    !userSelect
+                    (!userSelect && (
+                      <p data-cy="NoSelectedUser">
+                        No user selected
+                      </p>
+                    )) || ((!postList && <Loader />)
+                    || (((postList && postList.length !== 0)
+                    && (
+                      <PostsList
+                        postList={postList}
+                        selectedPost={selectedPost}
+                        setSelectedPost={setSelectedPost}
+                        setOpenForm={setOpenForm}
+                      />
+                    )) || (!hasPostListError
                       ? (
-                        <p data-cy="NoSelectedUser">
-                          No user selected
-                        </p>
+                        <div
+                          className="notification is-warning"
+                          data-cy="NoPostsYet"
+                        >
+                          No posts yet
+                        </div>
                       )
-                      : (!postList && <Loader />)
-                      || (((postList && postList.length !== 0) && (
-                        <PostsList
-                          postList={postList}
-                          selectedPost={selectedPost}
-                          setSelectedPost={setSelectedPost}
-                          setOpenForm={setOpenForm}
-                        />
-                      )) || (!hasPostListError
-                        ? (
-                          <div
-                            className="notification is-warning"
-                            data-cy="NoPostsYet"
-                          >
-                            No posts yet
-                          </div>
-                        )
-                        : (
-                          <div
-                            className="notification is-danger"
-                            data-cy="PostsLoadingError"
-                          >
-                            Something went wrong!
-                          </div>
-                        )
-                      ))
+                      : (
+                        <div
+                          className="notification is-danger"
+                          data-cy="PostsLoadingError"
+                        >
+                          Something went wrong!
+                        </div>
+                      )
+                    )))
                   }
                 </div>
               </div>
@@ -87,6 +87,7 @@ export const App: React.FC = () => {
                   'Sidebar--open',
                 )}
               >
+
                 <div className="tile is-child box is-success ">
                   <PostDetails
                     selectedPost={selectedPost}

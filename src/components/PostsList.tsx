@@ -1,13 +1,9 @@
 import React, { useContext } from 'react';
 import classNames from 'classnames';
 
-// Types
-
 import { Post } from '../types/Post';
 
 import { Context } from './Context';
-
-// Api
 
 import { getComments } from '../api';
 

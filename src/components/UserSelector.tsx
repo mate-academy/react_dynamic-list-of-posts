@@ -23,31 +23,8 @@ export const UserSelector: React.FC<Props> = ({
   setPostListError,
   setOpenForm,
 }) => {
-  // State
   const [users, setUsers] = useState<User[]>([]);
   const [visibleList, setVisibleList] = useState(false);
-
-  // eslint-disable-next-line max-len
-  // function deleteItem(id: number, user: User | null) {
-  //   setVisibleList(false);
-
-  //   if (userSelect && userSelect.id === id) {
-  //     return;
-  //   }
-
-  //   setUserSelect(user);
-  //   setPostList(undefined);
-  //   getPosts(id)
-  //     .then((posts) => {
-  //       setPostList(posts);
-  //       setPostListError(false);
-  //     }).catch(() => {
-  //       setOpenForm(false);
-  //       setPostList([]);
-  //       setPostListError(true);
-  //     });
-
-  // }
 
   useEffect(() => {
     getUsers().then(setUsers);
