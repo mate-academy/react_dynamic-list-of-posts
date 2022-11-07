@@ -9,27 +9,21 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 
-// Context
-import { Provider } from './components/Context';
-
-// Types
+import { CommentsProvider } from './components/Context';
 
 import { Post } from './types/Post';
 import { User } from './types/User';
 
 export const App: React.FC = () => {
-  // State
   const [postList, setPostList] = useState<Post[] | undefined>(undefined);
   const [userSelect, setUserSelect] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [openForm, setOpenForm] = useState(false);
 
-  // Errors
-
-  const [postListError, setPostListError] = useState<boolean>(false);
+  const [hasPostListError, setHasPostListError] = useState(false);
 
   return (
-    <Provider>
+    <CommentsProvider>
       <main className="section">
         <div className="container">
           <div className="tile is-ancestor">
@@ -40,7 +34,7 @@ export const App: React.FC = () => {
                     setPostList={setPostList}
                     setUserSelect={setUserSelect}
                     userSelect={userSelect}
-                    setPostListError={setPostListError}
+                    setPostListError={setHasPostListError}
                     setOpenForm={setOpenForm}
                   />
                 </div>
@@ -60,7 +54,7 @@ export const App: React.FC = () => {
                           setSelectedPost={setSelectedPost}
                           setOpenForm={setOpenForm}
                         />
-                      )) || (!postListError
+                      )) || (!hasPostListError
                         ? (
                           <div
                             className="notification is-warning"
@@ -105,6 +99,6 @@ export const App: React.FC = () => {
           </div>
         </div>
       </main>
-    </Provider>
+    </CommentsProvider>
   );
 };

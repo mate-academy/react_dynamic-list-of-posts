@@ -22,7 +22,7 @@ type Props = {
   children: ReactNode
 };
 
-export const Provider: React.FC<Props> = ({ children }) => {
+export const CommentsProvider: React.FC<Props> = ({ children }) => {
   // eslint-disable-next-line max-len
   const [commentList, setCommentList] = useState<Comment[] | undefined>(undefined);
   const [commentListError, setCommentListError] = useState<boolean>(false);

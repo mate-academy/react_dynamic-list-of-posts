@@ -9,11 +9,11 @@ import { User } from '../types/User';
 import { Post } from '../types/Post';
 
 type Props = {
-  setPostList: (x: Post[] | undefined) => void
-  setUserSelect: (x: User | null) => void
+  setPostList: React.Dispatch<React.SetStateAction<Post[] | undefined>>
+  setUserSelect: React.Dispatch<React.SetStateAction<User | null>>
   userSelect: User | null
-  setPostListError: (x: boolean) => void
-  setOpenForm: (x: boolean) => void
+  setPostListError: React.Dispatch<React.SetStateAction<boolean>>
+  setOpenForm: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 export const UserSelector: React.FC<Props> = ({
@@ -24,13 +24,33 @@ export const UserSelector: React.FC<Props> = ({
   setOpenForm,
 }) => {
   // State
-  const [usersList, setUsersList] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [visibleList, setVisibleList] = useState(false);
 
+  // eslint-disable-next-line max-len
+  // function deleteItem(id: number, user: User | null) {
+  //   setVisibleList(false);
+
+  //   if (userSelect && userSelect.id === id) {
+  //     return;
+  //   }
+
+  //   setUserSelect(user);
+  //   setPostList(undefined);
+  //   getPosts(id)
+  //     .then((posts) => {
+  //       setPostList(posts);
+  //       setPostListError(false);
+  //     }).catch(() => {
+  //       setOpenForm(false);
+  //       setPostList([]);
+  //       setPostListError(true);
+  //     });
+
+  // }
+
   useEffect(() => {
-    getUsers().then((users) => {
-      setUsersList(users);
-    });
+    getUsers().then(setUsers);
   }, []);
 
   return (
@@ -68,32 +88,34 @@ export const UserSelector: React.FC<Props> = ({
         role="menu"
       >
         <div className="dropdown-content">
-          {usersList.map(user => {
+          {users.map(user => {
             const { id, name } = user;
+
+            const selectUser = () => {
+              setVisibleList(false);
+
+              if (userSelect && userSelect.id === id) {
+                return;
+              }
+
+              setUserSelect(user);
+              setPostList(undefined);
+              getPosts(id)
+                .then((posts) => {
+                  setPostList(posts);
+                  setPostListError(false);
+                }).catch(() => {
+                  setOpenForm(false);
+                  setPostList([]);
+                  setPostListError(true);
+                });
+            };
 
             return (
               <a
                 href={`#user-${id}`}
                 className="dropdown-item"
-                onClick={() => {
-                  setVisibleList(false);
-
-                  if (userSelect && userSelect.id === id) {
-                    return;
-                  }
-
-                  setUserSelect(user);
-                  setPostList(undefined);
-                  getPosts(id)
-                    .then((posts) => {
-                      setPostList(posts);
-                      setPostListError(false);
-                    }).catch(() => {
-                      setOpenForm(false);
-                      setPostList([]);
-                      setPostListError(true);
-                    });
-                }}
+                onClick={selectUser}
                 key={id}
               >
                 {name}

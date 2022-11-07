@@ -13,9 +13,9 @@ import { getComments } from '../api';
 
 type Props = {
   postList: Post[] | undefined
-  setSelectedPost: (x: Post | null) => void
+  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>
   selectedPost: Post | null
-  setOpenForm: (x: boolean) => void
+  setOpenForm: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 export const PostsList: React.FC<Props> = ({
@@ -43,6 +43,29 @@ export const PostsList: React.FC<Props> = ({
           {postList && postList.map((post) => {
             const { id, title } = post;
 
+            const openInfoOfPost = () => {
+              setSelectedPost(post);
+              setOpenForm(false);
+
+              if ((selectedPost && selectedPost.id === id)) {
+                setSelectedPost(null);
+
+                return;
+              }
+
+              setCommentList(undefined);
+
+              getComments(id)
+                .then((Comments) => {
+                  setCommentList(Comments);
+                  setCommentListError(false);
+                })
+                .catch(() => {
+                  setCommentList([]);
+                  setCommentListError(true);
+                });
+            };
+
             return (
               <tr data-cy="Post" key={id}>
                 <td data-cy="PostId">{id}</td>
@@ -60,28 +83,7 @@ export const PostsList: React.FC<Props> = ({
                       'is-link',
                       { 'is-light': !(selectedPost && selectedPost.id === id) },
                     )}
-                    onClick={() => {
-                      setSelectedPost(post);
-                      setOpenForm(false);
-
-                      if ((selectedPost && selectedPost.id === id)) {
-                        setSelectedPost(null);
-
-                        return;
-                      }
-
-                      setCommentList(undefined);
-
-                      getComments(id)
-                        .then((Comments) => {
-                          setCommentList(Comments);
-                          setCommentListError(false);
-                        })
-                        .catch(() => {
-                          setCommentList([]);
-                          setCommentListError(true);
-                        });
-                    }}
+                    onClick={openInfoOfPost}
                   >
                     {(selectedPost
                       && (selectedPost.id === id) ? 'Close' : 'Open')}
