@@ -1,6 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import classNames from 'classnames';
 
-export const UserSelector: React.FC = () => {
+// Api
+import { getUsers, getPosts } from '../api';
+
+// Types
+import { User } from '../types/User';
+import { Post } from '../types/Post';
+
+type Props = {
+  setPostList: React.Dispatch<React.SetStateAction<Post[] | undefined>>
+  setUserSelect: React.Dispatch<React.SetStateAction<User | null>>
+  userSelect: User | null
+  setPostListError: React.Dispatch<React.SetStateAction<boolean>>
+  setOpenForm: React.Dispatch<React.SetStateAction<boolean>>
+};
+
+export const UserSelector: React.FC<Props> = ({
+  setPostList,
+  setUserSelect,
+  userSelect,
+  setPostListError,
+  setOpenForm,
+}) => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [visibleList, setVisibleList] = useState(false);
+
+  useEffect(() => {
+    getUsers().then(setUsers);
+  }, []);
+
   return (
     <div
       data-cy="UserSelector"
@@ -12,8 +41,17 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => {
+            setVisibleList(!visibleList);
+          }}
         >
-          <span>Choose a user</span>
+          <span>
+            {
+              userSelect
+                ? userSelect.name
+                : 'Choose a user'
+            }
+          </span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -21,13 +59,46 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+      <div
+        className={classNames('dropdown-menu', { 'is-hidden': !visibleList })}
+        id="dropdown-menu"
+        role="menu"
+      >
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+          {users.map(user => {
+            const { id, name } = user;
+
+            const selectUser = () => {
+              setVisibleList(false);
+
+              if (userSelect && userSelect.id === id) {
+                return;
+              }
+
+              setUserSelect(user);
+              setPostList(undefined);
+              getPosts(id)
+                .then((posts) => {
+                  setPostList(posts);
+                  setPostListError(false);
+                }).catch(() => {
+                  setOpenForm(false);
+                  setPostList([]);
+                  setPostListError(true);
+                });
+            };
+
+            return (
+              <a
+                href={`#user-${id}`}
+                className="dropdown-item"
+                onClick={selectUser}
+                key={id}
+              >
+                {name}
+              </a>
+            );
+          })}
         </div>
       </div>
     </div>
