@@ -31,19 +31,13 @@ export const NewCommentForm: React.FC<Props> = ({
   const [inputEmail, setInputEmail] = useState('');
   const [inputText, setInputText] = useState('');
 
+  const [loadingButtonAdd, setLoadingButtonAdd] = useState(false);
+
   // Dangers
 
   const [inputNameDagers, setInputNameDagers] = useState(false);
   const [inputEmailDagers, setInputEmailDagers] = useState(false);
   const [inputTextDagers, setInputTextDagers] = useState(false);
-
-  // functions
-
-  const clearInputs = useCallback(() => {
-    setInputName('');
-    setInputEmail('');
-    setInputText('');
-  }, []);
 
   const addComment = () => {
     if (!inputName) {
@@ -68,17 +62,20 @@ export const NewCommentForm: React.FC<Props> = ({
         body: inputText,
       };
 
+      setLoadingButtonAdd(true);
       addComments(addCommentItem)
         .then(() => {
           if (commentList) {
             setCommentListError(false);
             setCommentList([...commentList, addCommentItem]);
-            clearInputs();
+            setInputText('');
+            setLoadingButtonAdd(false);
           }
         })
         .catch(() => {
           setCommentListError(true);
-          clearInputs();
+          setInputText('');
+          setLoadingButtonAdd(false);
         });
     }
   };
@@ -212,7 +209,7 @@ export const NewCommentForm: React.FC<Props> = ({
             className={classNames(
               'button',
               'is-link',
-              { 'is-loading': false },
+              { 'is-loading': loadingButtonAdd },
             )}
             onClick={clickAddButton}
           >
@@ -225,7 +222,9 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={clearInputs}
+            onClick={() => {
+              setInputText('');
+            }}
           >
             Clear
           </button>
