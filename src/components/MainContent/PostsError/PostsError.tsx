@@ -1,12 +1,14 @@
 import React from 'react';
 
-export const PostsError: React.FC = () => {
+type Props = React.HTMLAttributes<HTMLDivElement> & {
+  children: React.ReactNode;
+};
+export const PostsError: React.FC<Props> = ({ children, ...props }) => {
   return (
     <div
-      className="notification is-danger"
-      data-cy="PostsLoadingError"
+      {...props}
     >
-      Something went wrong!
+      {children}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import {
   FC, useContext,
 } from 'react';
-import { PostsContext } from '../PostsProvider';
+import { PostsContext } from '../../PostsProvider';
 import { PostItem } from './PostItem';
 
 export const PostsList: FC = () => {

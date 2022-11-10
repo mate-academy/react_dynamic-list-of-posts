@@ -1,8 +1,8 @@
 import {
   FC, createContext, useState, useContext, useCallback, useEffect,
 } from 'react';
-import { Comment } from '../../../types/Comment';
-import { getComments } from '../../Api/posts';
+import { Comment } from '../../types/Comment';
+import { getComments } from '../Api/posts';
 import { PostsContext } from '../PostsProvider';
 
 type Props = {
@@ -25,29 +25,31 @@ export const CommentsProvider: FC<Props> = ({ children }) => {
   const [comments, setComments] = useState<Comment[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const { selectedPostId } = useContext(PostsContext);
+  const { selectedPost } = useContext(PostsContext);
 
   const loadComments = useCallback(async () => {
     setIsError(false);
     setIsLoading(true);
 
-    try {
-      const commentsFromServer = await getComments(selectedPostId);
+    if (selectedPost) {
+      try {
+        const commentsFromServer = await getComments(selectedPost.id);
 
-      setComments(commentsFromServer);
-      setIsLoading(false);
-    } catch (error) {
-      setIsError(true);
-      setIsLoading(false);
-      throw new Error('Unable load post comments');
+        setComments(commentsFromServer);
+        setIsLoading(false);
+      } catch (error) {
+        setIsError(true);
+        setIsLoading(false);
+        throw new Error('Unable load post comments');
+      }
     }
-  }, [selectedPostId]);
+  }, [selectedPost]);
 
   useEffect(() => {
-    if (selectedPostId !== 0) {
+    if (selectedPost !== null) {
       loadComments();
     }
-  }, [selectedPostId]);
+  }, [selectedPost]);
 
   const contextValue = {
     comments,

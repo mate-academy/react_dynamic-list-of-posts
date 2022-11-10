@@ -3,7 +3,7 @@ import {
 } from 'react';
 import { Loader } from '../Loader';
 import { PostsList } from './PostsList/PostsList';
-import { PostsContext } from './PostsProvider';
+import { PostsContext } from '../PostsProvider';
 import { UsersContext } from '../UsersProvider';
 import { NoPostMessage } from './NoPostMessage';
 import { PostsError } from './PostsError';
@@ -33,7 +33,14 @@ export const MainContent: FC = () => {
 
       {isLoading && <Loader />}
 
-      {isError && <PostsError />}
+      {isError && (
+        <PostsError
+          className="notification is-danger"
+          data-cy="PostsLoadingError"
+        >
+          Something went wrong!
+        </PostsError>
+      )}
 
       {isNoPosts && <NoPostMessage />}
 

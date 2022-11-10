@@ -3,23 +3,23 @@ import {
 } from 'react';
 import classNames from 'classnames';
 import { Post } from '../../../../types/Post';
-import { PostsContext } from '../../PostsProvider';
+import { PostsContext } from '../../../PostsProvider';
 
 type Props = {
   post: Post;
 };
 
 export const PostItem: FC<Props> = ({ post }) => {
-  const { selectedPostId, handlePostSelection } = useContext(PostsContext);
+  const { selectedPost, handlePostSelection } = useContext(PostsContext);
   const { id, title } = post;
 
-  const isSelected = useMemo(() => id === selectedPostId, [selectedPostId]);
+  const isSelected = useMemo(() => id === selectedPost?.id, [selectedPost]);
 
   const handlePostView = () => {
-    if (selectedPostId === id) {
-      handlePostSelection(0);
+    if (selectedPost?.id === id) {
+      handlePostSelection(null);
     } else {
-      handlePostSelection(id);
+      handlePostSelection(post);
     }
   };
 

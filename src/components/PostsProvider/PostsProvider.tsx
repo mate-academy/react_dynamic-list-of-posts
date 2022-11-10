@@ -1,9 +1,9 @@
 import {
   FC, createContext, useState, useEffect, useCallback, useContext,
 } from 'react';
-import { Post } from '../../../types/Post';
-import { getPosts } from '../../Api/posts';
-import { UsersContext } from '../../UsersProvider';
+import { Post } from '../../types/Post';
+import { getPosts } from '../Api/posts';
+import { UsersContext } from '../UsersProvider';
 
 type Props = {
   children: React.ReactNode,
@@ -13,21 +13,21 @@ type Context = {
   userPosts: Post[] | null,
   isError: boolean,
   isLoading: boolean,
-  selectedPostId: number,
-  handlePostSelection: (id: number) => void,
+  selectedPost: Post | null,
+  handlePostSelection: (post: Post | null) => void,
 };
 
 export const PostsContext = createContext<Context>({
   userPosts: null,
   isError: false,
   isLoading: false,
-  selectedPostId: 0,
+  selectedPost: null,
   handlePostSelection: () => {},
 });
 
 export const PostsProvider: FC<Props> = ({ children }) => {
   const [userPosts, setUserPosts] = useState<Post[] | null>(null);
-  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const { selectedUserId } = useContext(UsersContext);
@@ -48,12 +48,19 @@ export const PostsProvider: FC<Props> = ({ children }) => {
     }
   }, [selectedUserId]);
 
-  const handlePostSelection = useCallback((id: number) => (
-    setSelectedPostId(id)
+  const handlePostSelection = useCallback((post: Post | null) => (
+    setSelectedPost(current => {
+      if (current && current.id === post?.id) {
+        return null;
+      }
+
+      return post;
+    })
   ), []);
 
   useEffect(() => {
     if (selectedUserId !== 0) {
+      setSelectedPost(null);
       loadPosts();
     }
   }, [selectedUserId]);
@@ -62,7 +69,7 @@ export const PostsProvider: FC<Props> = ({ children }) => {
     userPosts,
     isError,
     isLoading,
-    selectedPostId,
+    selectedPost,
     handlePostSelection,
   };
 
