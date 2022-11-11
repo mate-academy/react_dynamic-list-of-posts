@@ -5,6 +5,8 @@ import { Post } from '../../types/Post';
 import { getPosts } from '../Api/posts';
 import { UsersContext } from '../UsersProvider';
 
+// #region ---- TYPES ------
+
 type Props = {
   children: React.ReactNode,
 };
@@ -16,6 +18,8 @@ type Context = {
   selectedPost: Post | null,
   handlePostSelection: (post: Post | null) => void,
 };
+
+// #endregion
 
 export const PostsContext = createContext<Context>({
   userPosts: null,
@@ -32,6 +36,7 @@ export const PostsProvider: FC<Props> = ({ children }) => {
   const [isError, setIsError] = useState(false);
   const { selectedUserId } = useContext(UsersContext);
 
+  // load Posts from API server by selected user id
   const loadPosts = useCallback(async () => {
     setIsError(false);
     setIsLoading(true);
@@ -48,6 +53,7 @@ export const PostsProvider: FC<Props> = ({ children }) => {
     }
   }, [selectedUserId]);
 
+  // handler for open/close button
   const handlePostSelection = useCallback((post: Post | null) => (
     setSelectedPost(current => {
       if (current && current.id === post?.id) {
@@ -59,8 +65,10 @@ export const PostsProvider: FC<Props> = ({ children }) => {
   ), []);
 
   useEffect(() => {
+    setUserPosts(null);
+    setSelectedPost(null);
+
     if (selectedUserId !== 0) {
-      setSelectedPost(null);
       loadPosts();
     }
   }, [selectedUserId]);

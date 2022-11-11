@@ -19,7 +19,7 @@ export const MainContent: FC = () => {
     [userPosts, isLoading],
   );
   const isPosts = useMemo(
-    () => userPosts?.length !== 0 && !isUserSelected && !isLoading,
+    () => userPosts?.length !== 0 && !isUserSelected && !isLoading && userPosts,
     [userPosts, isLoading],
   );
 

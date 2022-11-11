@@ -1,10 +1,10 @@
 import {
-  FC, useContext, useMemo, useState, useEffect,
+  FC, useContext, useMemo, useState, useEffect, useCallback,
 } from 'react';
-import { CommentsContext } from '../../../../CommentsProvider';
-import { Loader } from '../../../../Loader';
-import { NewCommentForm } from '../../../../NewCommentForm';
-import { PostsError } from '../../../PostsError';
+import { CommentsContext } from '../../CommentsProvider';
+import { Loader } from '../../Loader';
+import { NewCommentForm } from '../../NewCommentForm/NewCommentForm';
+import { PostsError } from '../../MainContent/PostsError';
 import { PostComments } from './PostComments';
 import { PostHeader } from './PostHeader';
 
@@ -18,19 +18,20 @@ export const PostDetails: FC = () => {
     () => comments?.length !== 0 && !isLoading, [comments, isLoading],
   );
   const isButton = useMemo(
-    () => hasButton && comments && !isLoading, [hasButton, isLoading],
+    () => hasButton && !isLoading, [hasButton, isLoading],
   );
   const isForm = useMemo(
     () => !hasButton && !isLoading, [hasButton, isLoading],
   );
 
-  const handleFormShow = () => {
-    setHasButton(false);
-  };
+  // handle click on 'write a comment' button to make form active
+  const handleFormShow = useCallback(() => (
+    setHasButton(false)
+  ), []);
 
   useEffect(() => {
     setHasButton(true);
-  }, [comments]);
+  }, []);
 
   return (
     <div className="content" data-cy="PostDetails">

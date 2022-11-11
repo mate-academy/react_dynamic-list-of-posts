@@ -1,12 +1,10 @@
 import {
-  FC,
-  createContext,
-  useState,
-  useEffect,
-  useCallback,
+  FC, createContext, useState, useEffect, useCallback,
 } from 'react';
 import { User } from '../../types/User';
 import { getUsers } from '../Api/users';
+
+// #region ---- TYPES ------
 
 type Props = {
   children: React.ReactNode;
@@ -21,6 +19,8 @@ type Context = {
 type UpdateContext = {
   handleUserNameSelection: (name: string, id: number) => void,
 };
+
+// #endregion
 
 export const UsersContext = createContext<Context>({
   users: null,
@@ -37,6 +37,7 @@ export const UsersProvider: FC<Props> = ({ children }) => {
   const [selectedUserName, setSelectedUserName] = useState('Choose a user');
   const [selectedUserId, setSelectedUserId] = useState(0);
 
+  // loading users data from server
   const loadData = useCallback(async () => {
     try {
       const usersFromServer = await getUsers();
@@ -47,6 +48,7 @@ export const UsersProvider: FC<Props> = ({ children }) => {
     }
   }, []);
 
+  // handler for selection of user
   const handleUserNameSelection = useCallback(
     (name: string, id: number) => {
       setSelectedUserName(() => name);

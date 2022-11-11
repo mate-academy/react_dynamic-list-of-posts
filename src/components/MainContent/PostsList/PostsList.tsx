@@ -1,10 +1,10 @@
 import {
-  FC, useContext,
+  FC, useContext, memo,
 } from 'react';
 import { PostsContext } from '../../PostsProvider';
 import { PostItem } from './PostItem';
 
-export const PostsList: FC = () => {
+export const PostsList: FC = memo(() => {
   const { userPosts } = useContext(PostsContext);
 
   return (
@@ -28,4 +28,4 @@ export const PostsList: FC = () => {
       </table>
     </div>
   );
-};
+});

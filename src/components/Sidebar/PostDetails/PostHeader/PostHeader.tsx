@@ -1,7 +1,7 @@
-import { FC, useContext } from 'react';
-import { PostsContext } from '../../../../../PostsProvider';
+import { FC, useContext, memo } from 'react';
+import { PostsContext } from '../../../PostsProvider';
 
-export const PostHeader: FC = () => {
+export const PostHeader: FC = memo(() => {
   const { selectedPost } = useContext(PostsContext);
 
   return (
@@ -17,4 +17,4 @@ export const PostHeader: FC = () => {
       </p>
     </div>
   );
-};
+});

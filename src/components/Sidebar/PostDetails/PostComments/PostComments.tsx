@@ -1,8 +1,8 @@
-import { FC, useContext } from 'react';
-import { CommentsContext } from '../../../../../CommentsProvider';
+import { FC, useContext, memo } from 'react';
+import { CommentsContext } from '../../../CommentsProvider';
 
-export const PostComments: FC = () => {
-  const { comments } = useContext(CommentsContext);
+export const PostComments: FC = memo(() => {
+  const { comments, removeComment } = useContext(CommentsContext);
 
   return (
     <>
@@ -28,6 +28,7 @@ export const PostComments: FC = () => {
                 type="button"
                 className="delete is-small"
                 aria-label="delete"
+                onClick={() => removeComment(id)}
               >
                 delete button
               </button>
@@ -41,4 +42,4 @@ export const PostComments: FC = () => {
       })}
     </>
   );
-};
+});

@@ -1,6 +1,6 @@
 import { FC, useContext, useMemo } from 'react';
 import classNames from 'classnames';
-import { PostDetails } from '../MainContent/PostsList/PostItem/PostDetails';
+import { PostDetails } from './PostDetails';
 import { PostsContext } from '../PostsProvider';
 
 export const Sidebar: FC = () => {
@@ -21,7 +21,7 @@ export const Sidebar: FC = () => {
       )}
     >
       <div className="tile is-child box is-success ">
-        <PostDetails />
+        {shoudBeShown && <PostDetails />}
       </div>
     </div>
   );

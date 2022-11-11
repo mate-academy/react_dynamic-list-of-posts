@@ -1,5 +1,5 @@
 import {
-  FC, useContext, useMemo,
+  FC, useContext, useMemo, memo, useCallback,
 } from 'react';
 import classNames from 'classnames';
 import { Post } from '../../../../types/Post';
@@ -9,19 +9,20 @@ type Props = {
   post: Post;
 };
 
-export const PostItem: FC<Props> = ({ post }) => {
+export const PostItem: FC<Props> = memo(({ post }) => {
   const { selectedPost, handlePostSelection } = useContext(PostsContext);
   const { id, title } = post;
 
   const isSelected = useMemo(() => id === selectedPost?.id, [selectedPost]);
 
-  const handlePostView = () => {
+  // handler for open / close button to (not)show post details
+  const handlePostView = useCallback(() => {
     if (selectedPost?.id === id) {
       handlePostSelection(null);
     } else {
       handlePostSelection(post);
     }
-  };
+  }, [selectedPost]);
 
   return (
     <tr data-cy="Post">
@@ -48,4 +49,4 @@ export const PostItem: FC<Props> = ({ post }) => {
       </td>
     </tr>
   );
-};
+});
