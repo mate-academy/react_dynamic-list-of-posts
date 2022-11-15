@@ -22,13 +22,13 @@ export const PostDetails: React.FC<Props> = ({
   addNewComment,
   removeCommentFromList,
 }) => {
-  const [buttonHidden, setButtonHidden] = useState<boolean>(false);
+  const [isButtonHidden, setIsButtonHidden] = useState<boolean>(false);
 
   const buttonClickHandler = () => {
-    setButtonHidden(true);
+    setIsButtonHidden(true);
   };
 
-  useEffect(() => setButtonHidden(false), [post]);
+  useEffect(() => setIsButtonHidden(false), [post]);
 
   if (!post) {
     return null;
@@ -95,7 +95,7 @@ export const PostDetails: React.FC<Props> = ({
             </>
           )}
 
-          {!buttonHidden ? (
+          {!isButtonHidden ? (
             <button
               data-cy="WriteCommentButton"
               type="button"

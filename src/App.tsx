@@ -23,13 +23,14 @@ import { NewComment } from './types/NewComment';
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
-  const [userIsLoading, setUserIsLoading] = useState<boolean>(false);
+  const [isUserLoading, setIsUserLoading] = useState<boolean>(false);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [postsLoadingError, setPostsLoadingError] = useState<boolean>(false);
+  const [isPostsLoadingError, setIsPostsLoadingError]
+    = useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<Post | undefined>(undefined);
   const [comments, setComments] = useState<Comment[]>([]);
-  const [commentsError, setCommentsError] = useState<boolean>(false);
-  const [commentsAreLoading, setCommentsAreLoading] = useState(false);
+  const [isCommentsError, setIsCommentsError] = useState<boolean>(false);
+  const [areCommentsLoading, setAreCommentsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     getUsers().then((result) => setUsers(result));
@@ -41,14 +42,14 @@ export const App: React.FC = () => {
       setPosts([]);
     }
 
-    setUserIsLoading(true);
+    setIsUserLoading(true);
     setSelectedUser(user);
     setSelectedPost(undefined);
 
     getPosts(user.id)
       .then((result) => setPosts(result))
-      .catch(() => setPostsLoadingError(true))
-      .finally(() => setUserIsLoading(false));
+      .catch(() => setIsPostsLoadingError(true))
+      .finally(() => setIsUserLoading(false));
   };
 
   const getPostComments = (post: Post) => {
@@ -56,11 +57,11 @@ export const App: React.FC = () => {
       setSelectedPost(undefined);
     } else {
       setSelectedPost(post);
-      setCommentsAreLoading(true);
+      setAreCommentsLoading(true);
       getComments(post.id)
         .then((result) => setComments(result))
-        .catch(() => setCommentsError(true))
-        .finally(() => setCommentsAreLoading(false));
+        .catch(() => setIsCommentsError(true))
+        .finally(() => setAreCommentsLoading(false));
     }
   };
 
@@ -96,9 +97,9 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {userIsLoading && <Loader />}
+                {isUserLoading && <Loader />}
 
-                {postsLoadingError && (
+                {isPostsLoadingError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -115,7 +116,7 @@ export const App: React.FC = () => {
                   />
                 )}
 
-                {(selectedUser && !posts.length && !userIsLoading) && (
+                {(selectedUser && !posts.length && !isUserLoading) && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
@@ -138,8 +139,8 @@ export const App: React.FC = () => {
               <PostDetails
                 post={selectedPost}
                 comments={comments}
-                commentsError={commentsError}
-                commentsAreLoading={commentsAreLoading}
+                commentsError={isCommentsError}
+                commentsAreLoading={areCommentsLoading}
                 addNewComment={addNewComment}
                 removeCommentFromList={removeCommentFromList}
               />

@@ -19,6 +19,11 @@ export const UserSelector: React.FC<Props> = ({
     setContentIsVisible(!contentIsVisible);
   };
 
+  const chooseUser = (user: User) => {
+    selectUser(user);
+    setContentIsVisible(false);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -50,10 +55,7 @@ export const UserSelector: React.FC<Props> = ({
               href={`#user-${user.id}`}
               className="dropdown-item"
               key={user.id}
-              onClick={() => {
-                selectUser(user);
-                setContentIsVisible(false);
-              }}
+              onClick={() => chooseUser(user)}
             >
               {user.name}
             </a>

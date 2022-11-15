@@ -193,7 +193,6 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addNewComment }) => {
         <div className="control">
           <button
             type="submit"
-            // className="button is-link is-loading"
             className={classNames(
               'button',
               'is-link',
