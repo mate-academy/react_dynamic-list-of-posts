@@ -139,8 +139,8 @@ export const App: React.FC = () => {
               <PostDetails
                 post={selectedPost}
                 comments={comments}
-                commentsError={isCommentsError}
-                commentsAreLoading={areCommentsLoading}
+                isCommentsError={isCommentsError}
+                areCommentsLoading={areCommentsLoading}
                 addNewComment={addNewComment}
                 removeCommentFromList={removeCommentFromList}
               />

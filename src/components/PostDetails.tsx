@@ -8,8 +8,8 @@ import { NewCommentForm } from './NewCommentForm';
 interface Props {
   post: Post | undefined;
   comments: Comment[];
-  commentsError: boolean;
-  commentsAreLoading: boolean;
+  isCommentsError: boolean;
+  areCommentsLoading: boolean;
   addNewComment: (comment: NewComment, postId: number) => Promise<void>;
   removeCommentFromList: (commentId: number) => void;
 }
@@ -17,8 +17,8 @@ interface Props {
 export const PostDetails: React.FC<Props> = ({
   post,
   comments,
-  commentsError,
-  commentsAreLoading,
+  isCommentsError,
+  areCommentsLoading,
   addNewComment,
   removeCommentFromList,
 }) => {
@@ -48,21 +48,21 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {commentsAreLoading && <Loader />}
+          {areCommentsLoading && <Loader />}
 
-          {(!commentsAreLoading && commentsError) && (
+          {(!areCommentsLoading && isCommentsError) && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
           )}
 
-          {(!commentsAreLoading && !comments.length) && (
+          {(!areCommentsLoading && !comments.length) && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {(!commentsAreLoading && comments.length > 0) && (
+          {(!areCommentsLoading && comments.length > 0) && (
             <>
               <p className="title is-4">Comments:</p>
 
