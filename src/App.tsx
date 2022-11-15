@@ -19,14 +19,14 @@ export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
-  const [loadingPosts, setLoadingPosts] = useState(false);
-  const [loadingComments, setLoadingComments] = useState(false);
-  const [loadingNewComment, setLoadingNewComment] = useState(false);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(false);
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [isLoadingNewComment, setIsLoadingNewComment] = useState(false);
   const [
     deletingCommentsID, setDeletingCommentsID,
   ] = useState<number[]>([]);
-  const [postsLoadingError, setPostsLoadingError] = useState(false);
-  const [commentsLoadingError, setCommentsLoadingError] = useState(false);
+  const [isLoadingPostsError, setIsLoadingPostsError] = useState(false);
+  const [isLoadingCommentsError, setIsLoadingCommentsError] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [formIsVisible, setFormIsVisible] = useState(false);
@@ -43,32 +43,37 @@ export const App: React.FC = () => {
     fetchUsers();
   }, []);
 
+  const commentLoadingError = () => {
+    setIsLoadingCommentsError(true);
+    setTimeout(() => setIsLoadingCommentsError(false), 2000);
+  };
+
   const fetchPosts = async (userId: number) => {
-    setPostsLoadingError(false);
-    setLoadingPosts(false);
+    setIsLoadingPostsError(false);
+    setIsLoadingPosts(false);
     try {
       const loadedPosts = await getPosts(userId);
 
-      setLoadingPosts(true);
       setPosts(loadedPosts);
     } catch (e) {
-      setLoadingPosts(true);
-      setPostsLoadingError(true);
+      setIsLoadingPostsError(true);
+    } finally {
+      setIsLoadingPosts(true);
     }
   };
 
   const fetchComments = async (postId: number) => {
-    setCommentsLoadingError(false);
-    setLoadingComments(true);
+    setIsLoadingCommentsError(false);
+    setIsLoadingComments(true);
     try {
       const loadedComments = await getComments(postId);
 
       setComments(loadedComments);
     } catch {
-      setCommentsLoadingError(true);
+      setIsLoadingCommentsError(true);
     }
 
-    setLoadingComments(false);
+    setIsLoadingComments(false);
   };
 
   const selectUser = (user: User) => {
@@ -94,7 +99,7 @@ export const App: React.FC = () => {
   const createComment = async (
     name: string, email: string, commentText: string,
   ) => {
-    setLoadingNewComment(true);
+    setIsLoadingNewComment(true);
     const newComment = {
       postId: selectedPost ? selectedPost.id : 0,
       name,
@@ -104,6 +109,7 @@ export const App: React.FC = () => {
 
     try {
       const response = await addComment(newComment);
+
       const responseComment = JSON.parse(JSON.stringify(response));
 
       const addedComment = {
@@ -116,11 +122,10 @@ export const App: React.FC = () => {
 
       setComments(current => [...current, addedComment]);
     } catch {
-      setCommentsLoadingError(true);
-      setTimeout(() => setCommentsLoadingError(false), 2000);
+      commentLoadingError();
     }
 
-    setLoadingNewComment(false);
+    setIsLoadingNewComment(false);
   };
 
   const removeComment = async (commentId: number) => {
@@ -131,8 +136,7 @@ export const App: React.FC = () => {
         current => current.filter(comment => comment.id !== commentId),
       );
     } catch (e) {
-      setCommentsLoadingError(true);
-      setTimeout(() => setCommentsLoadingError(false), 2000);
+      commentLoadingError();
     }
 
     setDeletingCommentsID(current => current.filter(id => id !== commentId));
@@ -156,8 +160,8 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {selectedUser ? (
                   <>
-                    {!loadingPosts && <Loader />}
-                    {postsLoadingError ? (
+                    {!isLoadingPosts && <Loader />}
+                    {isLoadingPostsError ? (
                       <div
                         className="notification is-danger"
                         data-cy="PostsLoadingError"
@@ -166,7 +170,7 @@ export const App: React.FC = () => {
                       </div>
                     ) : (
                       <>
-                        {loadingPosts && (
+                        {isLoadingPosts && (
                           <>
                             {posts.length === 0 ? (
                               <div
@@ -211,12 +215,12 @@ export const App: React.FC = () => {
                 <PostDetails
                   post={selectedPost}
                   comments={comments}
-                  loadingComments={loadingComments}
-                  commentsLoadingError={commentsLoadingError}
+                  loadingComments={isLoadingComments}
+                  commentsLoadingError={isLoadingCommentsError}
                   formIsVisible={formIsVisible}
                   showForm={showForm}
                   createComment={createComment}
-                  loadingNewComment={loadingNewComment}
+                  loadingNewComment={isLoadingNewComment}
                   removeComment={removeComment}
                   deletingCommentsID={deletingCommentsID}
                 />

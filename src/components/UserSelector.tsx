@@ -12,7 +12,11 @@ type Props = {
 
 export const UserSelector: React.FC<Props> = (
   {
-    users, onSelect, selectedUser, fetchPosts, usersIsLoaded,
+    users,
+    onSelect,
+    selectedUser,
+    fetchPosts,
+    usersIsLoaded,
   },
 ) => {
   const [showUsers, setShowUsers] = useState(false);

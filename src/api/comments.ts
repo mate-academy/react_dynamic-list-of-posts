@@ -1,11 +1,11 @@
 import { client } from '../utils/fetchClient';
-import { Comment } from '../types/Comment';
+import { Comment, CommentData } from '../types/Comment';
 
 export const getComments = (postId: number) => {
   return client.get<Comment[]>(`/comments?postId=${postId}`);
 };
 
-export const addComment = (data: any) => {
+export const addComment = (data: CommentData) => {
   return client.post('/comments', data);
 };
 
