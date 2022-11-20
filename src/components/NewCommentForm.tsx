@@ -34,7 +34,6 @@ export const NewCommentForm: React.FC<Props> = ({ addComment, postId }) => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setIsWaiting(true);
 
     setHasErrors({
       name: !name,
@@ -46,6 +45,8 @@ export const NewCommentForm: React.FC<Props> = ({ addComment, postId }) => {
       if (!name || !email || !body) {
         return;
       }
+
+      setIsWaiting(true);
 
       await addComment(name, email, body, postId);
       setBody('');

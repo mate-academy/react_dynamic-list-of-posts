@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+/* eslint-disable consistent-return */
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 
@@ -14,9 +15,25 @@ export const UserSelector: React.FC<Props> = ({
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleOpening = async () => {
-    setIsOpen(!isOpen);
+  const toggleOpening = () => {
+    setIsOpen(current => !current);
   };
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleDocumentClick = () => {
+      setIsOpen(false);
+    };
+
+    document.addEventListener('click', handleDocumentClick);
+
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, [isOpen]);
 
   return (
     <div

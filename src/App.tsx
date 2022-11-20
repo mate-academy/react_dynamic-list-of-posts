@@ -122,7 +122,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !isLoadingPosts && (
+                {author && !isLoadingPosts && !hasError && (
                   posts.length === 0 ? (
                     <div
                       className="notification is-warning"
@@ -133,6 +133,7 @@ export const App: React.FC = () => {
                   ) : (
                     <PostsList
                       posts={posts}
+                      selectedPostId={selectedPost?.id}
                       selectPost={setSelectedPost}
                     />
                   ))}

@@ -6,11 +6,11 @@ export const getComments = (postId: number) => {
 };
 
 export const createComment = (
-  email: string, name: string, body: string, postId: number,
+  name: string, email: string, body: string, postId: number,
 ) => {
   return client.post<Comment>('/comments', {
-    email,
     name,
+    email,
     body,
     postId,
   });

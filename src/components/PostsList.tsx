@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[];
+  selectedPostId?: number;
   selectPost: React.Dispatch<React.SetStateAction<Post | null>>;
 };
 
 export const PostsList: React.FC<Props> = ({
-  posts, selectPost,
+  posts, selectedPostId = 0, selectPost,
 }) => {
-  const [selectedPostId, setSelectedPostId] = useState(0);
+  // const [selectedPostId, setSelectedPostId] = useState(0);
 
   return (
     <div data-cy="PostsList">
@@ -44,8 +45,7 @@ export const PostsList: React.FC<Props> = ({
                     className={classNames('button is-link',
                       { 'is-light': selectedPostId !== id })}
                     onClick={() => {
-                      setSelectedPostId(id);
-                      selectPost(post);
+                      selectPost(selectedPostId === id ? null : post);
                     }}
                   >
                     {selectedPostId === id ? 'Close' : 'Open'}

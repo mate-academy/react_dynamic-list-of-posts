@@ -63,7 +63,7 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {comments.length === 0 && (
+          {comments.length === 0 && !isLoading && !hasError && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -72,7 +72,7 @@ export const PostDetails: React.FC<Props> = ({
           {comments.length > 0
           && <Comments comments={comments} setComments={setComments} />}
 
-          {!isExistForm && (
+          {!isExistForm && !isLoading && !hasError && (
             <button
               data-cy="WriteCommentButton"
               type="button"
