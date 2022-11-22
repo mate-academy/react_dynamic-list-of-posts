@@ -15,7 +15,11 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({
-  post, comments, isLoading, hasError, setComments,
+  post,
+  comments,
+  isLoading,
+  hasError,
+  setComments,
 }) => {
   const { id, title } = post;
   const [isExistForm, setIsExistForm] = useState(false);
@@ -25,7 +29,10 @@ export const PostDetails: React.FC<Props> = ({
   }, [post]);
 
   const addComment = async (
-    name: string, email: string, body: string, postId: number,
+    name: string,
+    email: string,
+    body: string,
+    postId: number,
   ) => {
     try {
       const newComment = await createComment(
@@ -69,8 +76,9 @@ export const PostDetails: React.FC<Props> = ({
             </p>
           )}
 
-          {comments.length > 0
-          && <Comments comments={comments} setComments={setComments} />}
+          {comments.length > 0 && (
+            <Comments comments={comments} setComments={setComments} />
+          )}
 
           {!isExistForm && !isLoading && !hasError && (
             <button

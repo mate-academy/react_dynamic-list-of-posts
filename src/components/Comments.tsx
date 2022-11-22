@@ -8,6 +8,13 @@ type Props = {
 };
 
 export const Comments: React.FC<Props> = ({ comments, setComments }) => {
+  const deleteComment = async (commentId: number) => {
+    setComments(currentComments => currentComments.filter(
+      selectedComment => commentId !== selectedComment.id,
+    ));
+    await removeComment(commentId);
+  };
+
   return (
     <>
       <p className="title is-4">Comments:</p>
@@ -28,12 +35,7 @@ export const Comments: React.FC<Props> = ({ comments, setComments }) => {
                 type="button"
                 className="delete is-small"
                 aria-label="delete"
-                onClick={async () => {
-                  setComments(currentComments => currentComments.filter(
-                    selectedComment => id !== selectedComment.id,
-                  ));
-                  await removeComment(id);
-                }}
+                onClick={() => deleteComment(id)}
               >
                 delete button
               </button>

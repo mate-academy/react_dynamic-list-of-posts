@@ -10,7 +10,9 @@ type Props = {
 };
 
 export const UserSelector: React.FC<Props> = ({
-  user, users, chooseUser,
+  user,
+  users,
+  chooseUser,
 }) => {
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -34,6 +36,12 @@ export const UserSelector: React.FC<Props> = ({
       document.removeEventListener('click', handleDocumentClick);
     };
   }, [isOpen]);
+
+  const handleSelectedUser = (person: User, personId: number) => {
+    chooseUser(person);
+    setSelectedUserId(personId);
+    setIsOpen(false);
+  };
 
   return (
     <div
@@ -68,11 +76,7 @@ export const UserSelector: React.FC<Props> = ({
                 key={id}
                 className={classNames('dropdown-item',
                   { 'is-active': selectedUserId === id })}
-                onClick={() => {
-                  chooseUser(userFromServer);
-                  setSelectedUserId(id);
-                  setIsOpen(false);
-                }}
+                onClick={() => handleSelectedUser(userFromServer, id)}
               >
                 {name}
               </a>

@@ -1,12 +1,14 @@
 /* eslint-disable no-restricted-syntax */
 import classNames from 'classnames';
 import React, { useState } from 'react';
-// import { Comment } from '../types/Comment';
 
 type Props = {
   postId: number;
   addComment: (
-    name: string, email: string, body: string, postId: number
+    name: string,
+    email: string,
+    body: string,
+    postId: number
   ) => Promise<void>
 };
 

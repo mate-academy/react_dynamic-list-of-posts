@@ -11,8 +11,6 @@ type Props = {
 export const PostsList: React.FC<Props> = ({
   posts, selectedPostId = 0, selectPost,
 }) => {
-  // const [selectedPostId, setSelectedPostId] = useState(0);
-
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
