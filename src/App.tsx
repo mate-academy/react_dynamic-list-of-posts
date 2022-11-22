@@ -122,21 +122,14 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && !isLoadingPosts && !hasError && (
-                  posts.length === 0 ? (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  ) : (
-                    <PostsList
-                      posts={posts}
-                      selectedPostId={selectedPost?.id}
-                      selectPost={setSelectedPost}
-                    />
-                  ))}
+                <PostsList
+                  posts={posts}
+                  selectedPostId={selectedPost?.id}
+                  selectPost={setSelectedPost}
+                  existedUser={author}
+                  withoutLoader={false}
+                  withoutError={false}
+                />
 
               </div>
             </div>

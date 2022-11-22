@@ -66,12 +66,15 @@ export const NewCommentForm: React.FC<Props> = ({ addComment, postId }) => {
       case 'name':
         setName(event.target.value);
         break;
+
       case 'email':
         setEmail(event.target.value);
         break;
+
       case 'body':
         setBody(event.target.value);
         break;
+
       default:
         break;
     }
