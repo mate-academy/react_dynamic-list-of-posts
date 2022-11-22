@@ -8,8 +8,8 @@ type Props = {
   selectedPostId?: number;
   selectPost: React.Dispatch<React.SetStateAction<Post | null>>;
   existedUser: User | null;
-  withoutLoader: false;
-  withoutError: false;
+  withoutLoader: boolean;
+  withoutError: boolean;
 };
 
 export const PostsList: React.FC<Props> = ({

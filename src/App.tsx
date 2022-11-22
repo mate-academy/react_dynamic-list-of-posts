@@ -127,8 +127,8 @@ export const App: React.FC = () => {
                   selectedPostId={selectedPost?.id}
                   selectPost={setSelectedPost}
                   existedUser={author}
-                  withoutLoader={false}
-                  withoutError={false}
+                  withoutLoader={!isLoadingPosts}
+                  withoutError={!hasError}
                 />
 
               </div>

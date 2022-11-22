@@ -20,7 +20,9 @@ export const Comments: React.FC<Props> = ({ comments, setComments }) => {
       <p className="title is-4">Comments:</p>
 
       {comments.map(comment => {
-        const { name, id, email, body } = comment;
+        const {
+          name, id, email, body,
+        } = comment;
 
         return (
           <article className="message is-small" data-cy="Comment" key={id}>
