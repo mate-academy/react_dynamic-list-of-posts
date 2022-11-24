@@ -122,14 +122,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                <PostsList
-                  posts={posts}
-                  selectedPostId={selectedPost?.id}
-                  selectPost={setSelectedPost}
-                  existedUser={author}
-                  withoutLoader={!isLoadingPosts}
-                  withoutError={!hasError}
-                />
+                {author && !isLoadingPosts && !hasError && (
+                  <PostsList
+                    posts={posts}
+                    selectedPostId={selectedPost?.id}
+                    selectPost={setSelectedPost}
+                  />
+                )}
 
               </div>
             </div>
