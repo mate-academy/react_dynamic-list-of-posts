@@ -3,7 +3,6 @@ import { Post } from '../types/Post';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment } from '../types/Comment';
-import { getPostComments } from '../api/comments';
 import { client } from '../utils/fetchClient';
 
 type Props = {
@@ -22,7 +21,7 @@ export const PostDetails: React.FC<Props> = ({
     setLoading(true);
     setError(false);
     try {
-      const loadedComments = await getPostComments(postId);
+      const loadedComments = await client.get<Comment[]>(`/comments?postId=${postId}`);
 
       setComments(loadedComments);
     } catch (err) {
