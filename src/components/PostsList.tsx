@@ -1,85 +1,89 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { Post } from '../types/Post';
+import { User } from '../types/User';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+type Props = {
+  user: User | null,
+  posts: Post[],
+  isSidebar: boolean,
+  setIsSidebar: (value: boolean) => void,
+  selectedPost: Post | null,
+  setSelectedPost: (post: Post | null) => void,
+};
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+export const PostsList: React.FC<Props> = (
+  {
+    user,
+    posts,
+    isSidebar,
+    setIsSidebar,
+    selectedPost,
+    setSelectedPost,
+  },
+) => {
+  const handleSidebar = useCallback((post) => {
+    if (selectedPost && post.id === selectedPost.id) {
+      setSelectedPost(null);
+      setIsSidebar(false);
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+      return;
+    }
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+    setSelectedPost(post);
+    setIsSidebar(true);
+  }, [isSidebar, selectedPost]);
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+  return (
+    <>
+      {user && (
+        <div data-cy="PostsList">
+          <p className="title">Posts:</p>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+          <table
+            className="table is-fullwidth is-striped is-hoverable is-narrow"
+          >
+            <thead>
+              <tr className="has-background-link-light">
+                <th>#</th>
+                <th>Title</th>
+                <th> </th>
+              </tr>
+            </thead>
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+            <tbody>
+              {posts.map(post => {
+                return (
+                  <tr
+                    key={post.id}
+                    data-cy="Post"
+                  >
+                    <td data-cy="PostId">{post.id}</td>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
+                    <td data-cy="PostTitle">
+                      {post.title}
+                    </td>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+                    <td className="has-text-right is-vcentered">
+                      <button
+                        type="button"
+                        data-cy="PostButton"
+                        className="button is-link is-light"
+                        onClick={() => {
+                          handleSidebar(post);
+                        }}
+                      >
+                        {(selectedPost && selectedPost.id === post.id)
+                          ? 'Close'
+                          : 'Open' }
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </>
+  );
+};

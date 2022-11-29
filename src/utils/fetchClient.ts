@@ -1,4 +1,6 @@
-const BASE_URL = 'https://mate.academy/students-api';
+const BASE_URL = 'https://mate.academy/students-api/';
+// const BASE_URL = 'https://jsonplaceholder.typicode.com/';
+// const BASE_URL = 'http://localhost:3000/api/test/';
 
 // a promise resolved after a given delay
 function wait(delay: number) {
