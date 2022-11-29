@@ -24,9 +24,13 @@ export const App: React.FC = () => {
   const [error, setError] = useState(false);
 
   const loadUsers = async () => {
-    const loadedUsers = await getUsers();
+    try {
+      const loadedUsers = await getUsers();
 
-    setUsers(loadedUsers);
+      setUsers(loadedUsers);
+    } catch (err) {
+      setError(true);
+    }
   };
 
   useEffect(() => {
