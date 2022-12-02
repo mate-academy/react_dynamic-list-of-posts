@@ -21,7 +21,10 @@ export const Comments: React.FC<Props> = ({ comments, setComments }) => {
 
       {comments.map(comment => {
         const {
-          name, id, email, body,
+          name,
+          id,
+          email,
+          body,
         } = comment;
 
         return (
