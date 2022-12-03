@@ -62,6 +62,10 @@ export const App: React.FC = () => {
     setIsDropdownOpened(!isDropdownOpened);
   }, [isDropdownOpened]);
 
+  useEffect(() => {
+    setSelectedPostId(0);
+  }, [userId]);
+
   return (
     <main
       className="section"
@@ -143,7 +147,9 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (<PostDetails post={selectedPost} />)}
+              {selectedPost && (
+                <PostDetails post={selectedPost} />
+              )}
             </div>
           </div>
         </div>
