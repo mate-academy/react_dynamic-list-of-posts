@@ -11,13 +11,13 @@ type Props = {
 export const UserSelector: React.FC<Props> = ({
   users, selectedUser, setSelectedUser,
 }) => {
-  const [menuToggle, setMenuToggle] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const userSelector = React.useRef<HTMLDivElement>(null);
 
   const handleOnBlur = (event: MouseEvent) => {
     if (userSelector.current
       && !userSelector.current.contains(event.target as HTMLElement)) {
-      setMenuToggle(false);
+      setIsMenuOpen(false);
     }
   };
 
@@ -34,7 +34,7 @@ export const UserSelector: React.FC<Props> = ({
       data-cy="UserSelector"
       className={classNames(
         'dropdown',
-        { 'is-active': menuToggle },
+        { 'is-active': isMenuOpen },
       )}
       ref={userSelector}
     >
@@ -44,7 +44,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setMenuToggle(!menuToggle)}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
@@ -70,7 +70,7 @@ export const UserSelector: React.FC<Props> = ({
                 )}
                 onClick={() => {
                   setSelectedUser(user);
-                  setMenuToggle(!menuToggle);
+                  setIsMenuOpen(!isMenuOpen);
                 }}
                 key={user.id}
               >

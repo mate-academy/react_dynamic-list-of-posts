@@ -55,14 +55,9 @@ export const NewCommentForm: React.FC<Props> = ({
 
       setIsLoading(true);
 
-      let newComment: Comment;
-
       addComment(commentToAdd)
         .then(result => {
-          newComment = result;
-        })
-        .then(() => {
-          setComments(comments ? [...comments, newComment] : [newComment]);
+          setComments(comments ? [...comments, result] : [result]);
         })
         .catch(() => setError(Errors.AddComment))
         .finally(() => setIsLoading(false));
