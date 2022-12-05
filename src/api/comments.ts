@@ -2,7 +2,8 @@ import { client } from '../utils/fetchClient';
 import { Comment } from '../types/Comment';
 
 export const getPostComments = async (postId: number) => {
-  return Promise.resolve(await client.get<Comment[]>(`/comments?postId=${postId}`));
+  // eslint-disable-next-line @typescript-eslint/return-await
+  return await client.get<Comment[]>(`/comments?postId=${postId}`);
 };
 
 export const deleteComment = async (commentId: number) => {
