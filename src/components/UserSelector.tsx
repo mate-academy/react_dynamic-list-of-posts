@@ -1,10 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
+import classNames from 'classnames';
 
-export const UserSelector: React.FC = () => {
+import { User } from '../types/User';
+
+type Props = {
+  usersArray: User[] | [],
+  selectedUser: string,
+  setSelectedUser: (userId: string) => void,
+  setIsLoadingUserPosts: (load: boolean) => void,
+};
+
+export const UserSelector: React.FC<Props> = ({
+  usersArray,
+  selectedUser,
+  setSelectedUser,
+  setIsLoadingUserPosts,
+}) => {
+  const [dropDown, setDropDown] = useState(false);
+
+  const selectedUserName = selectedUser
+    ? usersArray[+selectedUser - 1].name
+    : 'Choose a user';
+
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={classNames('dropdown', {
+        'is-active': dropDown,
+      })}
     >
       <div className="dropdown-trigger">
         <button
@@ -12,8 +35,9 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setDropDown(!dropDown)}
         >
-          <span>Choose a user</span>
+          <span>{selectedUserName}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -23,11 +47,22 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+          {usersArray.map(user => (
+            <a
+              key={user.id}
+              href={`#user-${user.id}`}
+              className={classNames('dropdown-item', {
+                'is-active': +selectedUser === user.id,
+              })}
+              onClick={() => {
+                setIsLoadingUserPosts(true);
+                setSelectedUser(`${user.id}`);
+                setDropDown(false);
+              }}
+            >
+              {user.name}
+            </a>
+          ))}
         </div>
       </div>
     </div>

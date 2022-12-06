@@ -1,85 +1,109 @@
-import React from 'react';
+// import classNames from 'classnames';
+import React, {
+  useCallback, useEffect, useState,
+} from 'react';
+import { getPosts } from '../api/posts';
+import { Post } from '../types/Post';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+type Props = {
+  selectedUser: string,
+  openUserPost: boolean,
+  setOpenUserPost: (
+    isOpen: boolean) => void,
+  // selectedUserPosts: Post[],
+  setSelectedUserPost: (userPost: Post) => void,
+  selectedUserPostId: number,
+  setSelectedUserPostId: (postId: number) => void,
+  setIsLoadingComments: (load: boolean) => void,
+};
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+export const PostsList: React.FC<Props> = ({
+  selectedUser,
+  openUserPost,
+  setOpenUserPost,
+  // selectedUserPosts,
+  setSelectedUserPost,
+  selectedUserPostId,
+  setSelectedUserPostId,
+  setIsLoadingComments,
+}) => {
+  const [selectedUserPosts, setSelectedUserPosts] = useState<Post[] | []>([]);
+  // const [selectedUserPostId, setSelectedUserPostId] = useState(0);
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+  const loadUserPostsFromServer = useCallback(
+    async () => {
+      try {
+        const postsFromServer = await getPosts();
+        const filteredPosts = postsFromServer.filter(
+          post => post.userId === +selectedUser,
+        );
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+        setSelectedUserPosts(filteredPosts);
+      } catch (error) {
+        // eslint-disable-next-line
+        console.error(error);
+      }
+    }, [selectedUser],
+  );
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
+  useEffect(() => {
+    loadUserPostsFromServer();
+  }, [selectedUser]);
+
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
+
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            <th> </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {selectedUserPosts.map(post => (
+            <tr
+              data-cy="Post"
+              key={post.id}
             >
-              Open
-            </button>
-          </td>
-        </tr>
+              <td data-cy="PostId">{post.id}</td>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+              <td data-cy="PostTitle">
+                {post.title}
+              </td>
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className={`button is-link ${openUserPost && selectedUserPostId === post.id ? '' : 'is-light'} `}
+                  onClick={() => {
+                    if (openUserPost && selectedUserPostId !== post.id) {
+                      setOpenUserPost(true);
+                      setSelectedUserPostId(post.id);
+                      setSelectedUserPost(post);
+                      setIsLoadingComments(true);
+                    } else {
+                      setOpenUserPost(!openUserPost);
+                      setSelectedUserPostId(post.id);
+                      setSelectedUserPost(post);
+                      setIsLoadingComments(true);
+                    }
+                  }}
+                >
+                  {(openUserPost && selectedUserPostId === post.id)
+                    ? 'Close'
+                    : 'Open'}
+                </button>
+              </td>
+            </tr>
+          ))}
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+        </tbody>
+      </table>
+    </div>
+  );
+};
