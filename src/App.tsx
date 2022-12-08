@@ -45,7 +45,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     if (selectedUserId > -1) {
-      setisLoadingErorr(false)
+      setisLoadingErorr(false);
       setIsLoader(true);
       setArePostsLoaded(false);
 
