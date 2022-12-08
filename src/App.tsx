@@ -82,6 +82,7 @@ export const App: React.FC = () => {
                     users={users}
                     selectedUserId={selectedUserId}
                     setSelectedUserId={setSelectedUserId}
+                    setSelectedPost={setSelectedPost}
                   />
                 )}
               </div>

@@ -1,17 +1,20 @@
 import classNames from 'classnames';
 import { useEffect, useRef, useState } from 'react';
+import { Post } from '../types/Post';
 import { User } from '../types/User';
 
 type Props = {
   users: User[],
-  setSelectedUserId: (id: number) => void,
+  setSelectedUserId: React.Dispatch<React.SetStateAction<number>>,
   selectedUserId: number,
+  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>,
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   setSelectedUserId,
   selectedUserId,
+  setSelectedPost,
 }) => {
   const [isMenuDropped, setIsMenuDropped] = useState(false);
   const dropDownElement = useRef<HTMLDivElement | null>(null);
@@ -37,6 +40,11 @@ export const UserSelector: React.FC<Props> = ({
       document.removeEventListener('click', handleOnBlur);
     };
   });
+
+  const handleOnClick = (user: User) => {
+    selectUser(user);
+    setSelectedPost(null);
+  };
 
   return (
     <div
@@ -86,7 +94,7 @@ export const UserSelector: React.FC<Props> = ({
                   'dropdown-item',
                   { 'is-active': selectedUserId === user.id },
                 )}
-                onClick={() => selectUser(user)}
+                onClick={() => handleOnClick(user)}
               >
                 {user.name}
               </a>
