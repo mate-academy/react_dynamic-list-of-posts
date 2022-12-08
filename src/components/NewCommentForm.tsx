@@ -36,8 +36,6 @@ export const NewCommentForm: React.FC = (/* { setComments } */) => {
 
     if (checkIsEmpty(inputNameValue, inputEmailValue, inputCommentValue)) {
       setIsOnSubmitLoading(true);
-      // eslint-disable-next-line no-console
-      console.log('in if');
 
       try {
         await postComment(newComment);
