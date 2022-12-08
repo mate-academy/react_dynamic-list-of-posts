@@ -1,4 +1,4 @@
-export const NotSelected = () => {
+export const NoSelectedUser = () => {
   return (
     <p data-cy="NoSelectedUser">
       No user selected

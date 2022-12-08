@@ -24,6 +24,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const postId = selectedPost?.id;
 
   useEffect(() => {
+    setisLoadingErorr(false);
     setIsLoader(true);
     setIsCommentFormShown(false);
 
@@ -99,7 +100,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         </div>
 
         {isCommentFormShown && (
-          <NewCommentForm /* setComments={setComments} */ />
+          <NewCommentForm setComments={setComments} />
         )}
       </div>
     </div>

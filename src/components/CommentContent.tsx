@@ -16,7 +16,8 @@ export const CommentContent: FC<Props> = ({ comment, setComments }) => {
     try {
       await deleteComment(commentId);
 
-      setComments((prev) => prev.filter(el => el.id !== commentId));
+      setComments((prevComments) => prevComments
+        .filter(el => el.id !== commentId));
     } catch {
       throw new Error('unable to delete commment');
     }

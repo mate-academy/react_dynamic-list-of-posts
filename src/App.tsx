@@ -10,20 +10,24 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
-import { ErrorMessage } from './components/Notifications/ErrorMessage';
-import { NotSelected } from './components/Notifications/NotSelected';
+import { LoadingError } from './components/Notifications/LoadingError';
+import { NoSelectedUser } from './components/Notifications/NoSelectedUser';
 import { NoPostsYet } from './components/Notifications/NoPostsYet';
 import { Post } from './types/Post';
 import { getUsers, getPosts } from './utils/requests';
 
 export const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState(-1);
-  const [users, setUsers] = useState<User[] | null>(null);
-  const [posts, setPosts] = useState<Post[] | []>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [isLoader, setIsLoader] = useState(false);
   const [arePostsLoaded, setArePostsLoaded] = useState(false);
   const [isLoadingErorr, setisLoadingErorr] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  const noPostsCondition = arePostsLoaded
+  && !isLoadingErorr
+  && posts.length < 1;
 
   useEffect(() => {
     const fetchData = async (): Promise<void> => {
@@ -41,6 +45,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     if (selectedUserId > -1) {
+      setisLoadingErorr(false)
       setIsLoader(true);
       setArePostsLoaded(false);
 
@@ -83,7 +88,7 @@ export const App: React.FC = () => {
 
               <div className="block" data-cy="MainContent">
                 {selectedUserId < 0 && (
-                  <NotSelected />
+                  <NoSelectedUser />
                 )}
 
                 {isLoader && (
@@ -91,14 +96,14 @@ export const App: React.FC = () => {
                 )}
 
                 {isLoadingErorr && (
-                  <ErrorMessage />
+                  <LoadingError />
                 )}
 
-                {arePostsLoaded && posts.length < 1 && (
+                {noPostsCondition && (
                   <NoPostsYet />
                 )}
 
-                {arePostsLoaded && posts.length >= 1 && (
+                {posts.length >= 1 && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}

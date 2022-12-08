@@ -22,8 +22,10 @@ export const UserSelector: React.FC<Props> = ({
     }
   };
 
+  const selectedUserName = users.find(x => x.id === selectedUserId)?.name;
+
   const handleOnBlur = (event: MouseEvent) => {
-    if (!dropDownElement?.current?.contains(event.target as HTMLElement)) {
+    if (!dropDownElement.current?.contains(event.target as HTMLElement)) {
       setIsMenuDropped(false);
     }
   };
@@ -56,7 +58,12 @@ export const UserSelector: React.FC<Props> = ({
           onClick={() => setIsMenuDropped(prev => !prev)}
         >
 
-          <span>Choose a user</span>
+          <span>
+            {selectedUserId === -1
+              ? 'Choose a user'
+              : selectedUserName}
+
+          </span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
