@@ -1,8 +1,62 @@
-import React from 'react';
+import classNames from 'classnames';
+import React, { useState } from 'react';
+import { postComment } from '../utils/requests';
 
-export const NewCommentForm: React.FC = () => {
+// type Props = {
+//   setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
+// };
+
+// eslint-disable-next-line no-empty-pattern
+export const NewCommentForm: React.FC = (/* { setComments } */) => {
+  const [inputNameValue, setInputNameValue] = useState('');
+  const [inputEmailValue, setInputEmailValue] = useState('');
+  const [inputCommentValue, setInputCommentValue] = useState('');
+  const [isOnSubmitLoading, setIsOnSubmitLoading] = useState(false);
+
+  const newComment = {
+    id: +new Date(2023),
+    postId: +new Date(9999),
+    name: inputNameValue,
+    email: inputEmailValue,
+    body: inputCommentValue,
+  };
+
+  const handleResetForm = () => {
+    setInputNameValue('');
+    setInputEmailValue('');
+    setInputCommentValue('');
+  };
+
+  const checkIsEmpty = (a: string, b: string, c: string) => {
+    return a && b && c;
+  };
+
+  const handleOnSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (checkIsEmpty(inputNameValue, inputEmailValue, inputCommentValue)) {
+      setIsOnSubmitLoading(true);
+      // eslint-disable-next-line no-console
+      console.log('in if');
+
+      try {
+        await postComment(newComment);
+        // setComments((prev: Comment[]): Comment[] => [...prev, newComment])
+
+        setIsOnSubmitLoading(false);
+      } catch {
+        setIsOnSubmitLoading(false);
+      } finally {
+        setIsOnSubmitLoading(false);
+      }
+    }
+  };
+
   return (
-    <form data-cy="NewCommentForm">
+    <form
+      data-cy="NewCommentForm"
+      onSubmit={handleOnSubmit}
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -15,6 +69,8 @@ export const NewCommentForm: React.FC = () => {
             id="comment-author-name"
             placeholder="Name Surname"
             className="input is-danger"
+            value={inputNameValue}
+            onChange={event => setInputNameValue(event.target.value)}
           />
 
           <span className="icon is-small is-left">
@@ -46,6 +102,8 @@ export const NewCommentForm: React.FC = () => {
             id="comment-author-email"
             placeholder="email@test.com"
             className="input is-danger"
+            value={inputEmailValue}
+            onChange={event => setInputEmailValue(event.target.value)}
           />
 
           <span className="icon is-small is-left">
@@ -76,6 +134,8 @@ export const NewCommentForm: React.FC = () => {
             name="body"
             placeholder="Type comment here"
             className="textarea is-danger"
+            value={inputCommentValue}
+            onChange={event => setInputCommentValue(event.target.value)}
           />
         </div>
 
@@ -86,14 +146,25 @@ export const NewCommentForm: React.FC = () => {
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={classNames(
+              'button',
+              'is-link',
+              { 'is-loading': isOnSubmitLoading },
+            )}
+          >
             Add
           </button>
         </div>
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={handleResetForm}
+          >
             Clear
           </button>
         </div>

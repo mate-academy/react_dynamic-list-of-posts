@@ -1,6 +1,5 @@
-/* eslint-disable no-console */
 import classNames from 'classnames';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
 
 type Props = {
@@ -15,16 +14,27 @@ export const UserSelector: React.FC<Props> = ({
   selectedUserId,
 }) => {
   const [isMenuDropped, setIsMenuDropped] = useState(false);
+  const dropDownElement = useRef<HTMLDivElement | null>(null);
 
   const selectUser = (user: User) => {
-    console.log(user);
-
     if (user.id !== selectedUserId) {
       setSelectedUserId(user.id);
     }
   };
 
-  console.log(selectedUserId);
+  const handleOnBlur = (event: MouseEvent) => {
+    if (!dropDownElement?.current?.contains(event.target as HTMLElement)) {
+      setIsMenuDropped(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleOnBlur);
+
+    return () => {
+      document.removeEventListener('click', handleOnBlur);
+    };
+  });
 
   return (
     <div
@@ -34,14 +44,16 @@ export const UserSelector: React.FC<Props> = ({
         { 'is-active': isMenuDropped },
       )}
     >
-      <div className="dropdown-trigger">
+      <div
+        className="dropdown-trigger"
+        ref={dropDownElement}
+      >
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => setIsMenuDropped(prev => !prev)}
-          onBlur={() => setIsMenuDropped(false)}
         >
 
           <span>Choose a user</span>
@@ -52,7 +64,11 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+      <div
+        className="dropdown-menu"
+        id="dropdown-menu"
+        role="menu"
+      >
         <div className="dropdown-content">
           {users.map((user) => {
             return (
@@ -63,10 +79,7 @@ export const UserSelector: React.FC<Props> = ({
                   'dropdown-item',
                   { 'is-active': selectedUserId === user.id },
                 )}
-                onClick={() => {
-                  console.log(user);
-                  selectUser(user);
-                }}
+                onClick={() => selectUser(user)}
               >
                 {user.name}
               </a>

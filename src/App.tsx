@@ -9,27 +9,61 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { client } from './utils/fetchClient';
 import { User } from './types/User';
+import { ErrorMessage } from './components/Notifications/ErrorMessage';
+import { NotSelected } from './components/Notifications/NotSelected';
+import { NoPostsYet } from './components/Notifications/NoPostsYet';
+import { Post } from './types/Post';
+import { getUsers, getPosts } from './utils/requests';
 
 export const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState(-1);
   const [users, setUsers] = useState<User[] | null>(null);
-  const [isErrorShown, setIsErrorShown] = useState(false);
+  const [posts, setPosts] = useState<Post[] | []>([]);
+  const [isLoader, setIsLoader] = useState(false);
+  const [arePostsLoaded, setArePostsLoaded] = useState(false);
+  const [isLoadingErorr, setisLoadingErorr] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
-    const getUsers = async (): Promise<void> => {
+    const fetchData = async (): Promise<void> => {
       try {
-        const data: User[] = await client.get('/users');
+        const data: User[] = await getUsers();
 
         setUsers(data);
       } catch (error) {
-        setIsErrorShown(true);
+        setisLoadingErorr(true);
       }
     };
 
-    getUsers();
+    fetchData();
   }, []);
+
+  useEffect(() => {
+    if (selectedUserId > -1) {
+      setIsLoader(true);
+      setArePostsLoaded(false);
+
+      const fetchData = async (): Promise<void> => {
+        try {
+          const data: Post[] = await getPosts(selectedUserId);
+
+          setPosts(data);
+          setIsLoader(false);
+          setArePostsLoaded(true);
+        } catch (error) {
+          setisLoadingErorr(true);
+          setArePostsLoaded(true);
+          setIsLoader(false);
+        } finally {
+          setArePostsLoaded(true);
+          setIsLoader(false);
+        }
+      };
+
+      fetchData();
+    }
+  }, [selectedUserId]);
 
   return (
     <main className="section">
@@ -48,28 +82,29 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {selectedUserId !== -1 && (
-                  <p data-cy="NoSelectedUser">
-                    No user selected
-                  </p>
+                {selectedUserId < 0 && (
+                  <NotSelected />
                 )}
 
-                <Loader />
-
-                {isErrorShown && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
-                    Something went wrong!
-                  </div>
+                {isLoader && (
+                  <Loader />
                 )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {isLoadingErorr && (
+                  <ErrorMessage />
+                )}
 
-                <PostsList />
+                {arePostsLoaded && posts.length < 1 && (
+                  <NoPostsYet />
+                )}
+
+                {arePostsLoaded && posts.length >= 1 && (
+                  <PostsList
+                    posts={posts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -81,11 +116,13 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {selectedPost && (
+                <PostDetails selectedPost={selectedPost} />
+              )}
             </div>
           </div>
         </div>
