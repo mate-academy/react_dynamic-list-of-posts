@@ -3,10 +3,9 @@ import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 import { getComments } from '../utils/requests';
 import { CommentContent } from './CommentContent';
+import { HandleErrorsComponent } from './HandleErrorsComponent';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { ErrorLoadingComments } from './Notifications/ErrorLoadingComments';
-import { NoCommentsYet } from './Notifications/NoCommentsYet';
 
 type Props = {
   selectedPost: Post,
@@ -15,16 +14,21 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoader, setIsLoader] = useState(false);
-  const [isLoadingErorr, setisLoadingErorr] = useState(false);
+  const [isLoadingError, setisLoadingError] = useState(false);
   const [areCommentsLoaded, setAreCommentsLoaded] = useState(false);
   const [isCommentFormShown, setIsCommentFormShown] = useState(false);
+  const [isDeleteError, setIsDeleteError] = useState(false);
+  const [commentsBeforeFilter, setCommentsBeforeFilter] = useState(comments);
+  const [isAddingError, setIsAddingError] = useState(false);
+
   const isNoComments = areCommentsLoaded
   && comments
   && comments.length < 1;
   const postId = selectedPost?.id;
+  const isCommentContentRendered = !!comments.length && !isLoader;
 
   useEffect(() => {
-    setisLoadingErorr(false);
+    setisLoadingError(false);
     setIsLoader(true);
     setIsCommentFormShown(false);
 
@@ -35,7 +39,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         setComments(data);
         setAreCommentsLoaded(true);
       } catch (error) {
-        setisLoadingErorr(true);
+        setisLoadingError(true);
         setIsLoader(false);
         setAreCommentsLoaded(true);
       } finally {
@@ -67,24 +71,27 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             <Loader />
           )}
 
-          {isLoadingErorr && (
-            <ErrorLoadingComments />
-          )}
-
-          {isNoComments && !isLoader && (
-            <NoCommentsYet />
-          )}
+          <HandleErrorsComponent
+            isLoadingError={isLoadingError}
+            isDeleteError={isDeleteError}
+            isAddingError={isAddingError}
+            isNoComments={isNoComments}
+            isLoader={isLoader}
+          />
 
           {!isNoComments && !isLoader && (
             <p className="title is-4">Comments:</p>
           )}
 
-          {!!comments.length && !isLoader && comments.map((comment) => {
+          {isCommentContentRendered && comments.map((comment) => {
             return (
               <CommentContent
                 key={comment.id}
                 comment={comment}
                 setComments={setComments}
+                setIsDeleteError={setIsDeleteError}
+                commentsBeforeFilter={commentsBeforeFilter}
+                setCommentsBeforeFilter={setCommentsBeforeFilter}
               />
             );
           })}
@@ -100,7 +107,11 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         </div>
 
         {isCommentFormShown && (
-          <NewCommentForm setComments={setComments} />
+          <NewCommentForm
+            setComments={setComments}
+            setCommentsBeforeFilter={setCommentsBeforeFilter}
+            setIsAddingError={setIsAddingError}
+          />
         )}
       </div>
     </div>

@@ -9,9 +9,15 @@ import { SubmitButton } from './formFields/SubmitButton';
 
 type Props = {
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
+  setCommentsBeforeFilter: React.Dispatch<React.SetStateAction<Comment[]>>,
+  setIsAddingError: React.Dispatch<React.SetStateAction<boolean>>,
 };
 
-export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
+export const NewCommentForm: React.FC<Props> = ({
+  setComments,
+  setCommentsBeforeFilter,
+  setIsAddingError,
+}) => {
   const [inputNameValue, setInputNameValue] = useState('');
   const [inputEmailValue, setInputEmailValue] = useState('');
   const [inputCommentValue, setInputCommentValue] = useState('');
@@ -67,9 +73,13 @@ export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
       try {
         await postComment(newComment);
         setComments((prev: Comment[]): Comment[] => [...prev, newComment]);
+        setCommentsBeforeFilter(
+          (prev: Comment[]): Comment[] => [...prev, newComment],
+        );
 
         setIsOnSubmitLoading(false);
       } catch {
+        setIsAddingError(true);
         setIsOnSubmitLoading(false);
       } finally {
         setInputCommentValue('');
