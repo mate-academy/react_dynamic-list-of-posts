@@ -4,13 +4,13 @@ import { User } from '../types/User';
 import { UserContext } from './UserContext';
 
 type Props = {
-  activeUser: User | null;
-  setActiceUser: (user: User) => void;
+  selectedUser: User | null;
+  setSelectedUser: (user: User) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
-  activeUser,
-  setActiceUser,
+  selectedUser,
+  setSelectedUser,
 }) => {
   const users = useContext(UserContext);
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
@@ -42,7 +42,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={() => setIsOpenDropdown(!isOpenDropdown)}
         >
-          <span>{ activeUser?.name || 'Choose a user' }</span>
+          <span>{ selectedUser?.name || 'Choose a user' }</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -58,9 +58,9 @@ export const UserSelector: React.FC<Props> = ({
                 key={user.id}
                 href={`#user-#${user.id}`}
                 className={classNames('dropdown-item', {
-                  'is-active': user.id === activeUser?.id,
+                  'is-active': user.id === selectedUser?.id,
                 })}
-                onClick={() => setActiceUser(user)}
+                onClick={() => setSelectedUser(user)}
               >
                 {user.name}
               </a>

@@ -53,8 +53,8 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  activeUser={selectedUser}
-                  setActiceUser={setSelectedUser}
+                  selectedUser={selectedUser}
+                  setSelectedUser={setSelectedUser}
                 />
               </div>
 
@@ -85,8 +85,8 @@ export const App: React.FC = () => {
                 {thereArePosts && (
                   <PostsList
                     posts={posts}
-                    activePostID={selectedPost?.id}
-                    setActivePost={setSelectedPost}
+                    selectedPostID={selectedPost?.id}
+                    setSelectedPost={setSelectedPost}
                   />
                 ) }
               </div>

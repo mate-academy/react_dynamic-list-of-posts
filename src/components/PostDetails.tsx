@@ -27,13 +27,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setIsLoad(false);
     setIsShowForm(false);
     try {
-      await getComments(postID)
-        .then(data => setComments(data));
-    } catch (e) {
-      setIsError(true);
-    }
+      const commentsFromServer = await getComments(postID);
 
-    setIsLoad(true);
+      setComments(commentsFromServer);
+    } catch (error) {
+      setIsError(true);
+    } finally {
+      setIsLoad(true);
+    }
   };
 
   const deleteComment = async (commentID: number) => {
@@ -46,7 +47,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       if (isErrorDelete) {
         setIsErrorDelete(false);
       }
-    } catch (e) {
+    } catch (error) {
       setIsErrorDelete(true);
     }
   };
@@ -148,7 +149,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </>
           )}
 
-          {!isShowForm && isLoad && !isError && ( // TODO
+          {!isShowForm && isLoad && !isError && (
             <button
               data-cy="WriteCommentButton"
               type="button"
