@@ -14,32 +14,36 @@ import { getPosts } from './api/posts';
 
 export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [activePost, setActivePost] = useState<Post | null>(null);
-  const [activeUser, setActiveUser] = useState<User | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isLoad, setIsLoad] = useState(false);
   const [isError, setIsError] = useState(false);
 
   const loadPosts = async (userID: number) => {
     setIsLoad(false);
     try {
-      await getPosts(userID)
-        .then(data => setPosts(data));
-    } catch (e) {
-      setIsError(true);
-    }
+      const postsFromServer = await getPosts(userID);
 
-    setIsLoad(true);
+      setPosts(postsFromServer);
+    } catch (error) {
+      setIsError(true);
+    } finally {
+      setIsLoad(true);
+    }
   };
 
   useEffect(() => {
-    setActivePost(null);
+    setSelectedPost(null);
 
-    if (activeUser) {
-      loadPosts(activeUser.id);
+    if (selectedUser) {
+      loadPosts(selectedUser.id);
     } else {
       setPosts([]);
     }
-  }, [activeUser?.id]);
+  }, [selectedUser?.id]);
+
+  const noPosts = selectedUser && isLoad && !isError && posts.length === 0;
+  const thereArePosts = selectedUser && isLoad && !isError && posts.length > 0;
 
   return (
     <main className="section">
@@ -49,21 +53,21 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  activeUser={activeUser}
-                  setActiceUser={setActiveUser}
+                  activeUser={selectedUser}
+                  setActiceUser={setSelectedUser}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!activeUser && (
+                {!selectedUser && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                { activeUser && !isLoad && (<Loader />) }
+                { selectedUser && !isLoad && (<Loader />) }
 
-                { activeUser && isLoad && isError && (
+                { selectedUser && isLoad && isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -72,17 +76,17 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {activeUser && isLoad && !isError && posts.length === 0 && (
+                {noPosts && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 ) }
 
-                {activeUser && isLoad && !isError && posts.length > 0 && (
+                {thereArePosts && (
                   <PostsList
                     posts={posts}
-                    activePostID={activePost?.id}
-                    setActivePost={setActivePost}
+                    activePostID={selectedPost?.id}
+                    setActivePost={setSelectedPost}
                   />
                 ) }
               </div>
@@ -96,13 +100,13 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': activePost },
+              { 'Sidebar--open': selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">
 
-              {activePost && (
-                <PostDetails post={activePost} />
+              {selectedPost && (
+                <PostDetails post={selectedPost} />
               )}
 
             </div>

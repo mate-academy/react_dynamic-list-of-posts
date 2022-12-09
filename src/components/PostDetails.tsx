@@ -66,11 +66,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       if (isErrorAdding) {
         setIsErrorAdding(false);
       }
-    } catch (e) {
+    } catch (error) {
       setIsErrorAdding(true);
+    } finally {
+      setIsLoad(true);
     }
-
-    setIsLoad(true);
   };
 
   useEffect(() => {
