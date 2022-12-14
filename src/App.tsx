@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -19,18 +19,18 @@ export const App: React.FC = () => {
   const [userSelect, setUserSelect] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const [isPostError, setIsPostError] = useState<boolean>(false);
-  const [isPostsLoading, setIsPostsLoading] = useState<boolean>(false);
+  const [isPostError, setIsPostError] = useState(false);
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
   const [userPosts, setUserPosts] = useState<Post[]>([]);
 
   const [postIdComments, setPostIdComments] = useState<number | null>(null);
-  const [isCommentsLoading, setIsCommentsLoading] = useState<boolean>(false);
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [postComments, setPostComments] = useState<Comment[]>([]);
-  const [isCommentError, setIsCommentError] = useState<boolean>(false);
+  const [isCommentError, setIsCommentError] = useState(false);
 
-  const [isNewComment, setIsNewComment] = useState<boolean>(false);
+  const [isNewComment, setIsNewComment] = useState(false);
 
-  const fetchUsers = useCallback(async () => {
+  const fetchUsers = async () => {
     try {
       const usersFromServer = await getUsers();
 
@@ -38,9 +38,9 @@ export const App: React.FC = () => {
     } catch (error) {
       setIsPostError(true);
     }
-  }, [userSelect]);
+  };
 
-  const fetchPosts = useCallback(async (id: number) => {
+  const fetchPosts = async (id: number) => {
     try {
       const postsFromServer = await getPosts(id);
 
@@ -48,9 +48,9 @@ export const App: React.FC = () => {
     } catch (error) {
       setIsPostError(true);
     }
-  }, [userPosts]);
+  };
 
-  const fetchComments = useCallback(async (id: number) => {
+  const fetchComments = async (id: number) => {
     try {
       const commentsFromServer = await getComments(id);
 
@@ -58,7 +58,7 @@ export const App: React.FC = () => {
     } catch (error) {
       setIsCommentError(true);
     }
-  }, [postComments]);
+  };
 
   useEffect(() => {
     fetchUsers();
