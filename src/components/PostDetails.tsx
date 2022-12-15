@@ -115,6 +115,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             setComments={setComments}
             setCommentsBeforeFilter={setCommentsBeforeFilter}
             setIsAddingError={setIsAddingError}
+            selectedPost={selectedPost}
           />
         )}
       </div>

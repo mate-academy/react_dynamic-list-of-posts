@@ -6,17 +6,20 @@ import { NameField } from './formFields/NameField';
 import { EmailField } from './formFields/EmailField';
 import { CommentField } from './formFields/CommentField';
 import { SubmitButton } from './formFields/SubmitButton';
+import { Post } from '../types/Post';
 
 type Props = {
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
   setCommentsBeforeFilter: React.Dispatch<React.SetStateAction<Comment[]>>,
   setIsAddingError: React.Dispatch<React.SetStateAction<boolean>>,
+  selectedPost: Post,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   setComments,
   setCommentsBeforeFilter,
   setIsAddingError,
+  selectedPost,
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -28,7 +31,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const [isEmailValid, setIsEmailValid] = useState(true);
 
   const newComment = {
-    id: +new Date(),
+    id: selectedPost.id,
     postId: +new Date(),
     name,
     email,
