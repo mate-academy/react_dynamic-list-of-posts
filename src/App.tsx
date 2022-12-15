@@ -24,7 +24,7 @@ export const App: React.FC = () => {
   const [userPosts, setUserPosts] = useState<Post[]>([]);
 
   const [postIdComments, setPostIdComments] = useState<number | null>(null);
-  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
+  const [areCommentsLoading, setAreCommentsLoading] = useState(false);
   const [postComments, setPostComments] = useState<Comment[]>([]);
   const [isCommentError, setIsCommentError] = useState(false);
 
@@ -64,6 +64,8 @@ export const App: React.FC = () => {
     fetchUsers();
   }, []);
 
+  const postsReady = selectedUser && !isPostsLoading;
+
   return (
     <main className="section">
       <div className="container">
@@ -101,14 +103,14 @@ export const App: React.FC = () => {
                       <Loader />
                     )}
 
-                    {selectedUser && !isPostsLoading && (
+                    {postsReady && (
                       (userPosts.length > 0) ? (
                         <PostsList
                           userPosts={userPosts}
                           setPostIdComments={setPostIdComments}
                           postIdComments={postIdComments}
                           fetchComments={fetchComments}
-                          setIsCommentsLoading={setIsCommentsLoading}
+                          setIsCommentsLoading={setAreCommentsLoading}
                         />
                       ) : (
                         <div
@@ -143,7 +145,7 @@ export const App: React.FC = () => {
                   postIdComments={postIdComments}
                   userPosts={userPosts}
                   setPostComments={setPostComments}
-                  isCommentsLoading={isCommentsLoading}
+                  isCommentsLoading={areCommentsLoading}
                   setIsNewComment={setIsNewComment}
                   isNewComment={isNewComment}
                 />

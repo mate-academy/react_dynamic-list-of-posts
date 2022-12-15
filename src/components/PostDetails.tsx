@@ -36,6 +36,11 @@ export const PostDetails: React.FC<Props> = ({
   };
 
   const openedPost = userPosts.find(post => post.id === postIdComments);
+  const commentsReady
+  = !isCommentsLoading && !isCommentError && postComments.length > 0;
+  const thereIsNoComments
+  = !isCommentsLoading && !isCommentError && postComments.length < 1;
+  const responseTrouble = !isCommentsLoading && isCommentError;
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -55,13 +60,13 @@ export const PostDetails: React.FC<Props> = ({
             <Loader />
           )}
 
-          {!isCommentsLoading && isCommentError && (
+          {responseTrouble && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
           )}
 
-          {!isCommentsLoading && !isCommentError && postComments.length > 0 && (
+          {commentsReady && (
             <>
               <p className="title is-4">Comments:</p>
 
@@ -99,7 +104,7 @@ export const PostDetails: React.FC<Props> = ({
             </>
           )}
 
-          {!isCommentsLoading && !isCommentError && postComments.length < 1 && (
+          {thereIsNoComments && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>

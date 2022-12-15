@@ -21,10 +21,6 @@ export const UserSelector: React.FC<Props> = ({
 }) => {
   const [isSelectorActive, setIsSelectorActive] = useState(false);
 
-  // const handleSelectorBlur = () => {
-  //   setIsSelectorActive(false);
-  // };
-
   const handleDropdownClick
   = () => {
     setIsSelectorActive(!isSelectorActive);
@@ -54,7 +50,6 @@ export const UserSelector: React.FC<Props> = ({
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={handleDropdownClick}
-          // onBlur={handleSelectorBlur}
         >
           <span>
             {selectedUser ? (

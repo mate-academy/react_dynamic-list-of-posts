@@ -1,7 +1,7 @@
 import React, {
+  // ChangeEventHandler,
   Dispatch,
   SetStateAction,
-  useCallback,
   useState,
 } from 'react';
 import classNames from 'classnames';
@@ -19,26 +19,30 @@ export const NewCommentForm: React.FC<Props> = ({
   postComments,
   setPostComments,
 }) => {
-  const [nameQuery, setNameQuery] = useState('');
-  const [emailQuery, setEmailQuery] = useState('');
-  const [textQuery, setTextQuery] = useState('');
-  const [isNameError, setIsNameError] = useState(false);
-  const [isEmailError, setIsEmailError] = useState(false);
-  const [isTextError, setIsTextError] = useState(false);
   const [commentIsOnLoading, setCommentIsOnLoading] = useState(false);
+  const [query, setQuery] = useState({
+    name: '',
+    email: '',
+    text: '',
+    nameError: false,
+    emailError: false,
+    textError: false,
+  });
 
   const inputsValidation = async () => {
-    if (!nameQuery) {
-      setIsNameError(true);
+    if (!query.name) {
+      query.nameError = true;
     }
 
-    if (!emailQuery) {
-      setIsEmailError(true);
+    if (!query.text) {
+      query.textError = true;
     }
 
-    if (!textQuery) {
-      setIsTextError(true);
+    if (!query.email) {
+      query.emailError = true;
     }
+
+    setQuery({ ...query });
   };
 
   const doneIds: number[] = [];
@@ -54,6 +58,17 @@ export const NewCommentForm: React.FC<Props> = ({
     return result;
   };
 
+  const commentFormCleaning = async () => {
+    setQuery({
+      name: '',
+      email: '',
+      text: '',
+      nameError: false,
+      emailError: false,
+      textError: false,
+    });
+  };
+
   const handleAddComment = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     inputsValidation();
@@ -62,15 +77,15 @@ export const NewCommentForm: React.FC<Props> = ({
       setCommentIsOnLoading(true);
 
       if (postIdComments
-        && nameQuery
-        && emailQuery
-        && textQuery) {
+        && query.name
+        && query.email
+        && query.text) {
         const newComment: Comment = {
           id: 0,
           postId: postIdComments,
-          name: nameQuery,
-          email: emailQuery,
-          body: textQuery,
+          name: query.name,
+          email: query.email,
+          body: query.text,
         };
 
         await postComment(newComment);
@@ -80,6 +95,7 @@ export const NewCommentForm: React.FC<Props> = ({
         const commentsArray = [...postComments, newComment];
 
         setPostComments(commentsArray);
+        commentFormCleaning();
       }
     } catch (error) {
       throw new Error('trouble with adding a comment');
@@ -88,11 +104,26 @@ export const NewCommentForm: React.FC<Props> = ({
     }
   };
 
-  const handleClearForm = useCallback(async () => {
-    setNameQuery('');
-    setEmailQuery('');
-    setTextQuery('');
-  }, []);
+  const handleChange
+  = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputName = event.target.name;
+    const inputValue = event.target.value;
+
+    setQuery({
+      ...query,
+      [inputName]: inputValue,
+      [`${inputName}Error`]: false,
+    });
+  };
+
+  const handleTextareaChange
+  = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setQuery({
+      ...query,
+      text: event.target.value,
+      textError: false,
+    });
+  };
 
   return (
     <form data-cy="NewCommentForm">
@@ -109,13 +140,10 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Name Surname"
             className={classNames(
               'input',
-              ({ 'is-danger': isNameError }),
+              ({ 'is-danger': query.nameError }),
             )}
-            value={nameQuery}
-            onChange={(event) => {
-              setIsNameError(false);
-              setNameQuery(event.target.value);
-            }}
+            value={query.name}
+            onChange={handleChange}
             required
           />
 
@@ -123,7 +151,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-user" />
           </span>
 
-          {isNameError && (
+          {query.nameError && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -133,7 +161,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {isNameError && (
+        {query.nameError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -153,13 +181,10 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="email@test.com"
             className={classNames(
               'input',
-              ({ 'is-danger': isEmailError }),
+              ({ 'is-danger': query.emailError }),
             )}
-            value={emailQuery}
-            onChange={(event) => {
-              setIsEmailError(false);
-              setEmailQuery(event.target.value);
-            }}
+            value={query.email}
+            onChange={handleChange}
             required
           />
 
@@ -167,7 +192,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-envelope" />
           </span>
 
-          {isEmailError && (
+          {query.emailError && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -177,7 +202,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {isEmailError && (
+        {query.emailError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -196,18 +221,15 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Type comment here"
             className={classNames(
               'textarea',
-              ({ 'is-danger': isTextError }),
+              ({ 'is-danger': query.textError }),
             )}
-            value={textQuery}
-            onChange={(event) => {
-              setIsTextError(false);
-              setTextQuery(event.target.value);
-            }}
+            value={query.text}
+            onChange={handleTextareaChange}
             required
           />
         </div>
 
-        {isTextError && (
+        {query.textError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -234,7 +256,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={handleClearForm}
+            onClick={commentFormCleaning}
           >
             Clear
           </button>
