@@ -3,24 +3,24 @@ import { FC } from 'react';
 import { ErrorIcon } from '../Notifications/ErrorIcon';
 
 type Props = {
-  inputEmailValue: string,
+  email: string,
   isEmailEmptyError: boolean,
   isEmailValid: boolean,
-  setInputEmailValue: React.Dispatch<React.SetStateAction<string>>
+  setEmail: React.Dispatch<React.SetStateAction<string>>
   setIsEmailEmptyError: React.Dispatch<React.SetStateAction<boolean>>,
   setIsEmailValid: React.Dispatch<React.SetStateAction<boolean>>,
 };
 
 export const EmailField: FC<Props> = ({
-  inputEmailValue,
+  email,
   isEmailEmptyError,
   isEmailValid,
-  setInputEmailValue,
+  setEmail,
   setIsEmailEmptyError,
   setIsEmailValid,
 }) => {
   const onEmailChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputEmailValue(event.target.value);
+    setEmail(event.target.value);
     setIsEmailEmptyError(false);
     setIsEmailValid(true);
   };
@@ -41,7 +41,7 @@ export const EmailField: FC<Props> = ({
             'input',
             { 'is-danger': isEmailEmptyError || !isEmailValid },
           )}
-          value={inputEmailValue}
+          value={email}
           onChange={onEmailChangeHandler}
         />
 

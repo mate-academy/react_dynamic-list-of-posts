@@ -18,9 +18,9 @@ export const NewCommentForm: React.FC<Props> = ({
   setCommentsBeforeFilter,
   setIsAddingError,
 }) => {
-  const [inputNameValue, setInputNameValue] = useState('');
-  const [inputEmailValue, setInputEmailValue] = useState('');
-  const [inputCommentValue, setInputCommentValue] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [comment, setComment] = useState('');
   const [isOnSubmitLoading, setIsOnSubmitLoading] = useState(false);
   const [isNameEmptyError, setIsNameEmptyError] = useState(false);
   const [isEmailEmptyError, setIsEmailEmptyError] = useState(false);
@@ -30,15 +30,15 @@ export const NewCommentForm: React.FC<Props> = ({
   const newComment = {
     id: +new Date(),
     postId: +new Date(),
-    name: inputNameValue,
-    email: inputEmailValue,
-    body: inputCommentValue,
+    name,
+    email,
+    body: comment,
   };
 
   const handleResetForm = () => {
-    setInputNameValue('');
-    setInputEmailValue('');
-    setInputCommentValue('');
+    setName('');
+    setEmail('');
+    setComment('');
   };
 
   const checkIsError = (a: string, b: string, c: string) => {
@@ -57,17 +57,17 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleOnSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setErrorIfEmpty(inputNameValue, setIsNameEmptyError);
-    setErrorIfEmpty(inputEmailValue, setIsEmailEmptyError);
-    setErrorIfEmpty(inputCommentValue, setIsCommentEmptyError);
+    setErrorIfEmpty(name, setIsNameEmptyError);
+    setErrorIfEmpty(email, setIsEmailEmptyError);
+    setErrorIfEmpty(comment, setIsCommentEmptyError);
 
-    if (!validateEmail(inputEmailValue)) {
+    if (!validateEmail(email)) {
       setIsEmailValid(false);
 
       return;
     }
 
-    if (checkIsError(inputNameValue, inputEmailValue, inputCommentValue)) {
+    if (checkIsError(name, email, comment)) {
       setIsOnSubmitLoading(true);
 
       try {
@@ -82,7 +82,7 @@ export const NewCommentForm: React.FC<Props> = ({
         setIsAddingError(true);
         setIsOnSubmitLoading(false);
       } finally {
-        setInputCommentValue('');
+        setComment('');
         setIsOnSubmitLoading(false);
       }
     }
@@ -96,23 +96,23 @@ export const NewCommentForm: React.FC<Props> = ({
       <NameField
         isNameEmptyError={isNameEmptyError}
         setIsNameEmptyError={setIsNameEmptyError}
-        inputNameValue={inputNameValue}
-        setInputNameValue={setInputNameValue}
+        name={name}
+        setName={setName}
       />
 
       <EmailField
         isEmailValid={isEmailValid}
         setIsEmailValid={setIsEmailValid}
         setIsEmailEmptyError={setIsEmailEmptyError}
-        setInputEmailValue={setInputEmailValue}
+        setEmail={setEmail}
         isEmailEmptyError={isEmailEmptyError}
-        inputEmailValue={inputEmailValue}
+        email={email}
       />
 
       <CommentField
         isCommentEmptyError={isCommentEmptyError}
-        inputCommentValue={inputCommentValue}
-        setInputCommentValue={setInputCommentValue}
+        comment={comment}
+        setComment={setComment}
         setIsCommentEmptyError={setIsCommentEmptyError}
       />
 

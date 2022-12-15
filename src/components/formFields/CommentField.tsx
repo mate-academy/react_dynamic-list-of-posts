@@ -3,20 +3,20 @@ import { FC } from 'react';
 
 type Props = {
   isCommentEmptyError: boolean,
-  setInputCommentValue: React.Dispatch<React.SetStateAction<string>>,
-  inputCommentValue: string,
+  setComment: React.Dispatch<React.SetStateAction<string>>,
+  comment: string,
   setIsCommentEmptyError: React.Dispatch<React.SetStateAction<boolean>>,
 };
 
 export const CommentField: FC<Props> = ({
   isCommentEmptyError,
-  inputCommentValue,
-  setInputCommentValue,
+  comment,
+  setComment,
   setIsCommentEmptyError,
 }) => {
   const onCommentChangeHandler
   = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInputCommentValue(event.target.value);
+    setComment(event.target.value);
     setIsCommentEmptyError(false);
   };
 
@@ -35,7 +35,7 @@ export const CommentField: FC<Props> = ({
             'textarea',
             { 'is-danger': isCommentEmptyError },
           )}
-          value={inputCommentValue}
+          value={comment}
           onChange={onCommentChangeHandler}
         />
       </div>

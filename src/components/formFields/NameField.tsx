@@ -5,18 +5,18 @@ import { ErrorIcon } from '../Notifications/ErrorIcon';
 type Props = {
   isNameEmptyError: boolean,
   setIsNameEmptyError: React.Dispatch<React.SetStateAction<boolean>>,
-  inputNameValue: string,
-  setInputNameValue: React.Dispatch<React.SetStateAction<string>>,
+  name: string,
+  setName: React.Dispatch<React.SetStateAction<string>>,
 };
 
 export const NameField: FC<Props> = ({
   isNameEmptyError,
   setIsNameEmptyError,
-  inputNameValue,
-  setInputNameValue,
+  name,
+  setName,
 }) => {
   const onNameChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputNameValue(event.target.value);
+    setName(event.target.value);
     setIsNameEmptyError(false);
   };
 
@@ -36,7 +36,7 @@ export const NameField: FC<Props> = ({
             'input',
             { 'is-danger': isNameEmptyError },
           )}
-          value={inputNameValue}
+          value={name}
           onChange={onNameChangeHandler}
         />
 
