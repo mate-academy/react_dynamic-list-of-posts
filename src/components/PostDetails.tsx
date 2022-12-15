@@ -7,28 +7,6 @@ import { deleteComment, getPostComments, postComment } from '../api/api';
 import { ErrorType } from '../types/ErrorType';
 import { ErrorMessage } from './ErrorMessage';
 
-class CommentInfo implements Comment {
-  id: number;
-
-  postId: number;
-
-  name: string;
-
-  email: string;
-
-  body: string;
-
-  constructor({
-    id, postId, name, email, body,
-  }: Comment) {
-    this.id = id || 0;
-    this.postId = postId;
-    this.name = name;
-    this.email = email;
-    this.body = body;
-  }
-}
-
 type Props = {
   post: Post;
   onError: (error: ErrorType | null) => void;
@@ -61,11 +39,8 @@ export const PostDetails: React.FC<Props> = ({ post, onError, errorType }) => {
   const loadComments = async () => {
     try {
       const commentsFromServer = await getPostComments(post.id);
-      const commentsInfo = commentsFromServer.map(
-        comment => new CommentInfo(comment),
-      );
 
-      setComments(commentsInfo);
+      setComments(commentsFromServer);
     } catch {
       onError(ErrorType.COMMENTS);
     } finally {

@@ -1,4 +1,3 @@
-/* eslint-disable max-classes-per-file */
 import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -14,44 +13,6 @@ import { Post } from './types/Post';
 import { Loader } from './components/Loader';
 import { ErrorType } from './types/ErrorType';
 import { ErrorMessage } from './components/ErrorMessage';
-
-class UserInfo implements User {
-  id: number;
-
-  name: string;
-
-  email: string;
-
-  phone: string;
-
-  constructor({
-    id, name, email, phone,
-  }: User) {
-    this.id = id;
-    this.name = name;
-    this.email = email;
-    this.phone = phone;
-  }
-}
-
-class PostInfo implements Post {
-  id: number;
-
-  title: string;
-
-  body: string;
-
-  userId: number;
-
-  constructor({
-    id, title, body, userId,
-  }: Post) {
-    this.id = id;
-    this.title = title;
-    this.body = body;
-    this.userId = userId;
-  }
-}
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -77,9 +38,8 @@ export const App: React.FC = () => {
   const loadUsers = async () => {
     try {
       const usersFromServer = await getUsers();
-      const usersInfo = usersFromServer.map((user) => new UserInfo(user));
 
-      setUsers(usersInfo);
+      setUsers(usersFromServer);
     } catch {
       setErrorType(ErrorType.USERS);
     }
@@ -92,9 +52,8 @@ export const App: React.FC = () => {
 
     try {
       const postsFromServer = await getUserPosts(selectedUser.id);
-      const postsInfo = postsFromServer.map((post) => new PostInfo(post));
 
-      setUserPosts(postsInfo);
+      setUserPosts(postsFromServer);
     } catch {
       setErrorType(ErrorType.POSTS);
     } finally {
