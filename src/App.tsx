@@ -21,52 +21,52 @@ export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoader, setIsLoader] = useState(false);
-  const [arePostsLoaded, setArePostsLoaded] = useState(false);
+  const [isLoadingCompleted, setIsLoadingCompleted] = useState(false);
   const [isLoadingErorr, setisLoadingErorr] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  const noPostsCondition = arePostsLoaded
+  const noPostsCondition = isLoadingCompleted
   && !isLoadingErorr
   && posts.length < 1;
 
+  const fetchUsers = async (): Promise<void> => {
+    try {
+      const data: User[] = await getUsers();
+
+      setUsers(data);
+    } catch (error) {
+      setisLoadingErorr(true);
+    }
+  };
+
+  const fetchPosts = async (): Promise<void> => {
+    try {
+      const data: Post[] = await getPosts(selectedUserId);
+
+      setPosts(data);
+      setIsLoader(false);
+      setIsLoadingCompleted(true);
+    } catch (error) {
+      setisLoadingErorr(true);
+      setIsLoadingCompleted(true);
+      setIsLoader(false);
+    } finally {
+      setIsLoadingCompleted(true);
+      setIsLoader(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async (): Promise<void> => {
-      try {
-        const data: User[] = await getUsers();
-
-        setUsers(data);
-      } catch (error) {
-        setisLoadingErorr(true);
-      }
-    };
-
-    fetchData();
+    fetchUsers();
   }, []);
 
   useEffect(() => {
     if (selectedUserId > -1) {
       setisLoadingErorr(false);
       setIsLoader(true);
-      setArePostsLoaded(false);
+      setIsLoadingCompleted(false);
 
-      const fetchData = async (): Promise<void> => {
-        try {
-          const data: Post[] = await getPosts(selectedUserId);
-
-          setPosts(data);
-          setIsLoader(false);
-          setArePostsLoaded(true);
-        } catch (error) {
-          setisLoadingErorr(true);
-          setArePostsLoaded(true);
-          setIsLoader(false);
-        } finally {
-          setArePostsLoaded(true);
-          setIsLoader(false);
-        }
-      };
-
-      fetchData();
+      fetchPosts();
     }
   }, [selectedUserId]);
 
@@ -104,7 +104,7 @@ export const App: React.FC = () => {
                   <NoPostsYet />
                 )}
 
-                {posts.length >= 1 && (
+                {!!posts.length && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}

@@ -12,8 +12,6 @@ type Props = {
   isLoader: boolean,
 };
 
-type ErrorPairs = (boolean | JSX.Element)[][];
-
 export const HandleErrorsComponent: FC<Props> = ({
   isLoadingError,
   isDeleteError,
@@ -24,20 +22,28 @@ export const HandleErrorsComponent: FC<Props> = ({
   const isCommentsError = isNoComments && !isLoader;
 
   const errorPairs = [
-    [isLoadingError, <ErrorLoadingComments key={1} />],
-    [isDeleteError, <DeleteError key={2} />],
-    [isAddingError, <AddingError key={3} />],
-    [isCommentsError, <NoCommentsYet key={4} />],
+    {
+      condition: isLoadingError,
+      errorComponent: <ErrorLoadingComments key={1} />,
+    },
+    {
+      condition: isDeleteError,
+      errorComponent: <DeleteError key={2} />,
+    },
+    {
+      condition: isAddingError,
+      errorComponent: <AddingError key={3} />,
+    },
+    {
+      condition: isCommentsError,
+      errorComponent: <NoCommentsYet key={4} />,
+    },
   ];
-
-  const renderErrors = (
-    (arrayOfErrorPairs: ErrorPairs) => {
-      return arrayOfErrorPairs.map(errorPair => errorPair[0] && errorPair[1]);
-    });
 
   return (
     <>
-      {renderErrors(errorPairs).map(errorElement => errorElement)}
+      {errorPairs
+        .map(errorPair => errorPair.condition && errorPair.errorComponent)}
     </>
   );
 };

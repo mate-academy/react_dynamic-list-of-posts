@@ -66,45 +66,49 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
           </p>
         </div>
 
-        <div className="block">
-          {isLoader && (
-            <Loader />
-          )}
+        <HandleErrorsComponent
+          isLoadingError={isLoadingError}
+          isDeleteError={isDeleteError}
+          isAddingError={isAddingError}
+          isNoComments={isNoComments}
+          isLoader={isLoader}
+        />
 
-          <HandleErrorsComponent
-            isLoadingError={isLoadingError}
-            isDeleteError={isDeleteError}
-            isAddingError={isAddingError}
-            isNoComments={isNoComments}
-            isLoader={isLoader}
-          />
+        {!isLoadingError && (
+          <div className="block">
+            {isLoader && (
+              <Loader />
+            )}
 
-          {!isNoComments && !isLoader && (
-            <p className="title is-4">Comments:</p>
-          )}
+            {!isNoComments && !isLoader && (
+              <p className="title is-4">Comments:</p>
+            )}
 
-          {isCommentContentRendered && comments.map((comment) => {
-            return (
-              <CommentContent
-                key={comment.id}
-                comment={comment}
-                setComments={setComments}
-                setIsDeleteError={setIsDeleteError}
-                commentsBeforeFilter={commentsBeforeFilter}
-                setCommentsBeforeFilter={setCommentsBeforeFilter}
-              />
-            );
-          })}
+            {isCommentContentRendered && comments.map((comment) => {
+              return (
+                <CommentContent
+                  key={comment.id}
+                  comment={comment}
+                  setComments={setComments}
+                  setIsDeleteError={setIsDeleteError}
+                  commentsBeforeFilter={commentsBeforeFilter}
+                  setCommentsBeforeFilter={setCommentsBeforeFilter}
+                />
+              );
+            })}
 
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-            onClick={() => setIsCommentFormShown(true)}
-          >
-            Write a comment
-          </button>
-        </div>
+            {!isLoader && !isCommentFormShown && (
+              <button
+                data-cy="WriteCommentButton"
+                type="button"
+                className="button is-link"
+                onClick={() => setIsCommentFormShown(true)}
+              >
+                Write a comment
+              </button>
+            )}
+          </div>
+        )}
 
         {isCommentFormShown && (
           <NewCommentForm
