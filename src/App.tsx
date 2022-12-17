@@ -17,24 +17,25 @@ import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const [usersArray, setUsersArray] = useState<User[] | []>([]);
-  const [selectedUser, setSelectedUser] = useState('');
+  const [selectedUserId, setSelectedUser] = useState('');
   const [isLoadingUserPosts, setIsLoadingUserPosts] = useState(false);
   const [openUserPost, setOpenUserPost] = useState(false);
   const [selectedUserPost, setSelectedUserPost] = useState<Post>();
   const [selectedUserPostId, setSelectedUserPostId] = useState(0);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [selectedUserPosts, setSelectedUserPosts] = useState<Post[] | []>([]);
+  const [failedToFetch, setFailedToFetch] = useState(false);
+  const [writeComment, setWriteComment] = useState(false);
 
   const loadUsersFromServer = useCallback(
     async () => {
       try {
+        setFailedToFetch(false);
         const todosFromServer = await getUsers();
 
         setUsersArray(todosFromServer);
       } catch (error) {
-        // eslint-disable-next-line
-        console.log(error);
-      } finally {
-        setIsLoadingUserPosts(false);
+        setFailedToFetch(true);
       }
     }, [],
   );
@@ -42,12 +43,6 @@ export const App: React.FC = () => {
   useEffect(() => {
     loadUsersFromServer();
   }, []);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoadingUserPosts(false);
-    }, 500);
-  }, [selectedUser]);
 
   return (
     <main className="section">
@@ -58,14 +53,16 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   usersArray={usersArray}
-                  selectedUser={selectedUser}
+                  selectedUserId={selectedUserId}
                   setIsLoadingUserPosts={setIsLoadingUserPosts}
                   setSelectedUser={setSelectedUser}
+                  setOpenUserPost={setOpenUserPost}
+                  setWriteComment={setWriteComment}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUser && (
+                {!selectedUserId && !failedToFetch && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
@@ -73,65 +70,71 @@ export const App: React.FC = () => {
 
                 {isLoadingUserPosts && <Loader />}
 
-                {/* {selectedUser && !isLoadingUserPosts && (
-                  <>
-                    <div
-                      className="notification is-danger"
-                      data-cy="PostsLoadingError"
-                    >
-                      Something went wrong!
-                    </div>
+                {failedToFetch && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  </>
-                )} */}
+                {selectedUserId && !isLoadingUserPosts
+                  && selectedUserPosts.length === 0 && !failedToFetch && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                )}
 
-                {selectedUser && !isLoadingUserPosts && (
+                {selectedUserId && (
                   <PostsList
-                    selectedUser={selectedUser}
+                    selectedUserId={selectedUserId}
                     openUserPost={openUserPost}
                     setOpenUserPost={setOpenUserPost}
-                    // selectedUserPosts={selectedUserPosts}
                     setSelectedUserPost={setSelectedUserPost}
                     selectedUserPostId={selectedUserPostId}
                     setSelectedUserPostId={setSelectedUserPostId}
                     setIsLoadingComments={setIsLoadingComments}
+                    setWriteComment={setWriteComment}
+                    selectedUserPosts={selectedUserPosts}
+                    setSelectedUserPosts={setSelectedUserPosts}
+                    isLoadingUserPosts={isLoadingUserPosts}
+                    setIsLoadingUserPosts={setIsLoadingUserPosts}
+                    setFailedToFetch={setFailedToFetch}
+                    failedToFetch={failedToFetch}
                   />
                 )}
               </div>
             </div>
           </div>
 
-          {selectedUser && (
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                { 'Sidebar--open': openUserPost },
-              )}
-            >
-              {openUserPost && selectedUserPost && (
-                <div className="tile is-child box is-success ">
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': openUserPost },
+            )}
+          >
+            {selectedUserId && openUserPost && selectedUserPost && (
+              <div className="tile is-child box is-success ">
 
-                  <PostDetails
-                    selectedUserPost={selectedUserPost}
-                    selectedUserPostId={selectedUserPostId}
-                    isLoadingComments={isLoadingComments}
-                    setIsLoadingComments={setIsLoadingComments}
-                  />
-
-                </div>
-              )}
-            </div>
-          )}
+                <PostDetails
+                  selectedUserPost={selectedUserPost}
+                  selectedUserPostId={selectedUserPostId}
+                  isLoadingComments={isLoadingComments}
+                  setIsLoadingComments={setIsLoadingComments}
+                  writeComment={writeComment}
+                  setWriteComment={setWriteComment}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </main>

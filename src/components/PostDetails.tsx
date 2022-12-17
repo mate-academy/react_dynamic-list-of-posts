@@ -3,7 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment } from '../types/Comment';
 
-import { getComments } from '../api/comments';
+import { getComments, deleteComment } from '../api/comments';
 import { Post } from '../types/Post';
 
 type Props = {
@@ -11,6 +11,8 @@ type Props = {
   selectedUserPostId: number,
   isLoadingComments: boolean,
   setIsLoadingComments: (load: boolean) => void,
+  writeComment: boolean,
+  setWriteComment: (load: boolean) => void,
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -18,23 +20,24 @@ export const PostDetails: React.FC<Props> = ({
   selectedUserPostId,
   isLoadingComments,
   setIsLoadingComments,
+  writeComment,
+  setWriteComment,
+
 }) => {
   const [userComments, setUserComments] = useState<Comment[] | []>([]);
-  const [writeComment, setWriteComment] = useState(false);
-  const [addComment, setAddComment] = useState(false);
+  const [isLoadingComment, setIsLoadingComment] = useState(false);
+  const [failedToFetchComments, setFailedToFetchComments] = useState(false);
 
   const loadUserCommentsFromServer = useCallback(
     async () => {
       try {
-        const commentsFromServer = await getComments();
-        const filteredComments = commentsFromServer.filter(
-          comment => comment.postId === selectedUserPostId,
-        );
+        setFailedToFetchComments(false);
+        setIsLoadingComment(false);
+        const commentsFromServer = await getComments(selectedUserPostId);
 
-        setUserComments(filteredComments);
+        setUserComments(commentsFromServer);
       } catch (error) {
-        // eslint-disable-next-line
-        console.log(error);
+        setFailedToFetchComments(true);
       } finally {
         setIsLoadingComments(false);
       }
@@ -42,15 +45,25 @@ export const PostDetails: React.FC<Props> = ({
   );
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsLoadingComments(false);
-    }, 500);
-  }, [userComments]);
-
-  useEffect(() => {
     loadUserCommentsFromServer();
-    setAddComment(false);
-  }, [selectedUserPostId, addComment]);
+  }, [selectedUserPostId]);
+
+  const deleteCommentOnServer = useCallback(
+    async (commentId) => {
+      try {
+        setFailedToFetchComments(false);
+        await deleteComment(commentId);
+      } catch (error) {
+        setFailedToFetchComments(true);
+      } finally {
+        loadUserCommentsFromServer();
+      }
+    }, [],
+  );
+
+  const handleDeleteComent = (commentId: number) => {
+    deleteCommentOnServer(commentId);
+  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -70,49 +83,58 @@ export const PostDetails: React.FC<Props> = ({
             ? <Loader />
             : (
               <>
-                {/* <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div> */}
+                {failedToFetchComments && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="CommentsError"
+                  >
+                    Something went wrong
+                  </div>
+                )}
                 {userComments.length === 0
-                  ? (
+                  && !failedToFetchComments
+                  && (
                     <p className="title is-4" data-cy="NoCommentsMessage">
                       No comments yet
                     </p>
-                  ) : (
-                    <>
-                      <p className="title is-4">Comments:</p>
-
-                      {userComments.map(comment => (
-                        <article
-                          className="message is-small"
-                          data-cy="Comment"
-                          key={comment.id}
-                        >
-                          <div className="message-header">
-                            <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                              {comment.name}
-                            </a>
-                            <button
-                              data-cy="CommentDelete"
-                              type="button"
-                              className="delete is-small"
-                              aria-label="delete"
-                            >
-                              delete button
-                            </button>
-                          </div>
-
-                          <div className="message-body" data-cy="CommentBody">
-                            {comment.body}
-                          </div>
-                        </article>
-                      ))}
-                    </>
                   )}
+
+                {userComments.length > 0 && !failedToFetchComments && (
+                  <>
+                    <p className="title is-4">Comments:</p>
+
+                    {userComments.map(comment => (
+                      <article
+                        className="message is-small"
+                        data-cy="Comment"
+                        key={comment.id}
+                      >
+                        <div className="message-header">
+                          <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                            {comment.name}
+                          </a>
+                          <button
+                            data-cy="CommentDelete"
+                            type="button"
+                            className="delete is-small"
+                            aria-label="delete"
+                            onClick={() => handleDeleteComent(comment.id)}
+                          >
+                            delete button
+                          </button>
+                        </div>
+
+                        <div className="message-body" data-cy="CommentBody">
+                          {comment.body}
+                        </div>
+                      </article>
+                    ))}
+                  </>
+                )}
               </>
             )}
 
-          {!writeComment && (
+          {!writeComment && !isLoadingComments && !failedToFetchComments && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -124,10 +146,13 @@ export const PostDetails: React.FC<Props> = ({
           )}
         </div>
 
-        {writeComment && (
+        {writeComment && !failedToFetchComments && (
           <NewCommentForm
             selectedUserPostId={selectedUserPostId}
-            setAddComment={setAddComment}
+            setIsLoadingComment={setIsLoadingComment}
+            isLoadingComment={isLoadingComment}
+            loadUserCommentsFromServer={loadUserCommentsFromServer}
+            setFailedToFetchComments={setFailedToFetchComments}
           />
         )}
       </div>

@@ -1,15 +1,22 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
-import { createComments } from '../api/comments';
+import React, { useState, useCallback } from 'react';
+import { createComment } from '../api/comments';
 
 type Props = {
   selectedUserPostId: number,
-  setAddComment: (load: boolean) => void,
+  // setAddComment: (load: boolean) => void,
+  setIsLoadingComment: (load: boolean) => void,
+  isLoadingComment: boolean,
+  loadUserCommentsFromServer: () => void,
+  setFailedToFetchComments: (loadData: boolean) => void,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   selectedUserPostId,
-  setAddComment,
+  setIsLoadingComment,
+  isLoadingComment,
+  loadUserCommentsFromServer,
+  setFailedToFetchComments,
 }) => {
   const [inputAuthorName, setInputAuthorName] = useState('');
   const [isEmptyInputAuthorName, setIsEmptyInputAuthorName] = useState(false);
@@ -17,6 +24,24 @@ export const NewCommentForm: React.FC<Props> = ({
   const [isEmptyInputAuthorEmail, setIsEmptyInputAuthorEmail] = useState(false);
   const [inputCommentText, setInputCommentText] = useState('');
   const [isEmptyInputCommentText, setIsEmptyInputCommentText] = useState(false);
+
+  const loadCommentOnServer = useCallback(
+    async (userPostId, authorName, authorEmail, commentText) => {
+      try {
+        setFailedToFetchComments(false);
+        await createComment(
+          userPostId,
+          authorName,
+          authorEmail,
+          commentText,
+        );
+      } catch (error) {
+        setFailedToFetchComments(true);
+      } finally {
+        loadUserCommentsFromServer();
+      }
+    }, [],
+  );
 
   const handleChangeAutorName = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -62,12 +87,12 @@ export const NewCommentForm: React.FC<Props> = ({
     }
 
     if (isAllDataFilled) {
-      createComments(
+      setIsLoadingComment(true);
+      setInputCommentText('');
+      // setAddComment(true);
+      loadCommentOnServer(
         selectedUserPostId, inputAuthorName, inputAuthorEmail, inputCommentText,
       );
-
-      setInputCommentText('');
-      setAddComment(true);
     }
   };
 
@@ -75,6 +100,9 @@ export const NewCommentForm: React.FC<Props> = ({
     setInputAuthorName('');
     setInputAuthorEmail('');
     setInputCommentText('');
+    setIsEmptyInputAuthorName(false);
+    setIsEmptyInputAuthorEmail(false);
+    setIsEmptyInputCommentText(false);
   };
 
   return (
@@ -189,7 +217,10 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control">
           <button
             type="submit"
-            className="button is-link"
+            className={classNames(
+              'button is-link',
+              { 'is-loading': isLoadingComment },
+            )}
             onClick={handleAddComment}
           >
             Add

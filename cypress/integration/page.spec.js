@@ -91,7 +91,7 @@ const userSelector = {
   el: () => cy.byDataCy('UserSelector'),
   button: () => userSelector.el().find('button'),
   users: () => userSelector.el().find('a.dropdown-item'),
-  selectedUser: () => userSelector.el().find('a.dropdown-item.is-active'),
+  selectedUserId: () => userSelector.el().find('a.dropdown-item.is-active'),
 
   select: index => {
     userSelector.button().click();
@@ -241,7 +241,7 @@ describe('Page by default', () => {
 })
 
 describe('UserSelector', () => {
-  const { el, button, users, selectedUser } = userSelector;
+  const { el, button, users, selectedUserId } = userSelector;
 
   describe('', () => {
     it('should have all the loaded users', () => {
@@ -287,7 +287,7 @@ describe('UserSelector', () => {
     });
 
     it('should not have a hightlighted user by default', () => {
-      selectedUser().should('not.exist');
+      selectedUserId().should('not.exist');
     });
 
     it('should show users on button click', () => {
@@ -324,7 +324,7 @@ describe('UserSelector', () => {
       users().eq(3).click();
 
       users().eq(3).should('have.class', 'is-active');
-      selectedUser().should('have.length', 1);
+      selectedUserId().should('have.length', 1);
     });
 
     it('should highlight only one user', () => {
@@ -335,7 +335,7 @@ describe('UserSelector', () => {
       users().eq(0).click();
 
       users().eq(0).should('have.class', 'is-active');
-      selectedUser().should('have.length', 1);
+      selectedUserId().should('have.length', 1);
     });
 
     it('should close dropdown on selected user click', () => {

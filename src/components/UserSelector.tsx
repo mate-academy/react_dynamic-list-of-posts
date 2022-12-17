@@ -5,22 +5,37 @@ import { User } from '../types/User';
 
 type Props = {
   usersArray: User[] | [],
-  selectedUser: string,
+  selectedUserId: string,
   setSelectedUser: (userId: string) => void,
   setIsLoadingUserPosts: (load: boolean) => void,
+  setOpenUserPost: (
+    isOpen: boolean) => void,
+  setWriteComment: (load: boolean) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
   usersArray,
-  selectedUser,
+  selectedUserId,
   setSelectedUser,
   setIsLoadingUserPosts,
+  setOpenUserPost,
+  setWriteComment,
 }) => {
   const [dropDown, setDropDown] = useState(false);
 
-  const selectedUserName = selectedUser
-    ? usersArray[+selectedUser - 1].name
+  const selectedUserName = selectedUserId
+    ? usersArray.find(user => +selectedUserId === user.id)?.name
     : 'Choose a user';
+
+  const handleUserSelected = (userId: number) => {
+    if (+selectedUserId !== userId) {
+      setIsLoadingUserPosts(true);
+      setSelectedUser(`${userId}`);
+      setOpenUserPost(false);
+    }
+
+    setDropDown(false);
+  };
 
   return (
     <div
@@ -36,6 +51,11 @@ export const UserSelector: React.FC<Props> = ({
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => setDropDown(!dropDown)}
+          onBlur={(event) => {
+            if (!event.nativeEvent.relatedTarget) {
+              setDropDown(false);
+            }
+          }}
         >
           <span>{selectedUserName}</span>
 
@@ -52,12 +72,11 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               className={classNames('dropdown-item', {
-                'is-active': +selectedUser === user.id,
+                'is-active': +selectedUserId === user.id,
               })}
               onClick={() => {
-                setIsLoadingUserPosts(true);
-                setSelectedUser(`${user.id}`);
-                setDropDown(false);
+                handleUserSelected(user.id);
+                setWriteComment(false);
               }}
             >
               {user.name}

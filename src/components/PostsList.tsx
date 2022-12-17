@@ -1,109 +1,123 @@
-// import classNames from 'classnames';
-import React, {
-  useCallback, useEffect, useState,
-} from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { getPosts } from '../api/posts';
 import { Post } from '../types/Post';
 
 type Props = {
-  selectedUser: string,
+  selectedUserId: string,
+  selectedUserPostId: number,
+  setSelectedUserPostId: (postId: number) => void,
   openUserPost: boolean,
   setOpenUserPost: (
     isOpen: boolean) => void,
-  // selectedUserPosts: Post[],
+  selectedUserPosts: Post[],
+  setSelectedUserPosts: (userPosts: Post[]) => void,
   setSelectedUserPost: (userPost: Post) => void,
-  selectedUserPostId: number,
-  setSelectedUserPostId: (postId: number) => void,
   setIsLoadingComments: (load: boolean) => void,
+  setWriteComment: (load: boolean) => void,
+  isLoadingUserPosts: boolean,
+  setIsLoadingUserPosts: (load: boolean) => void,
+  failedToFetch: boolean,
+  setFailedToFetch: (loadData: boolean) => void,
 };
 
 export const PostsList: React.FC<Props> = ({
-  selectedUser,
+  selectedUserId,
   openUserPost,
   setOpenUserPost,
-  // selectedUserPosts,
+  selectedUserPosts,
   setSelectedUserPost,
   selectedUserPostId,
   setSelectedUserPostId,
   setIsLoadingComments,
+  setWriteComment,
+  setSelectedUserPosts,
+  isLoadingUserPosts,
+  setIsLoadingUserPosts,
+  failedToFetch,
+  setFailedToFetch,
 }) => {
-  const [selectedUserPosts, setSelectedUserPosts] = useState<Post[] | []>([]);
-  // const [selectedUserPostId, setSelectedUserPostId] = useState(0);
-
   const loadUserPostsFromServer = useCallback(
     async () => {
       try {
-        const postsFromServer = await getPosts();
-        const filteredPosts = postsFromServer.filter(
-          post => post.userId === +selectedUser,
-        );
+        setFailedToFetch(false);
+        const postsFromServer = await getPosts(selectedUserId);
 
-        setSelectedUserPosts(filteredPosts);
+        setSelectedUserPosts(postsFromServer);
       } catch (error) {
-        // eslint-disable-next-line
-        console.error(error);
+        setFailedToFetch(true);
+      } finally {
+        setIsLoadingUserPosts(false);
       }
-    }, [selectedUser],
+    }, [selectedUserId],
   );
 
   useEffect(() => {
     loadUserPostsFromServer();
-  }, [selectedUser]);
+  }, [selectedUserId]);
+
+  const handleLoaderComments = (post: Post) => {
+    if (openUserPost && selectedUserPostId !== post.id) {
+      setOpenUserPost(true);
+    } else {
+      setOpenUserPost(!openUserPost);
+    }
+
+    setWriteComment(false);
+    setSelectedUserPostId(post.id);
+    setSelectedUserPost(post);
+    setIsLoadingComments(true);
+  };
 
   return (
-    <div data-cy="PostsList">
-      <p className="title">Posts:</p>
-
-      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-        <thead>
-          <tr className="has-background-link-light">
-            <th>#</th>
-            <th>Title</th>
-            <th> </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {selectedUserPosts.map(post => (
-            <tr
-              data-cy="Post"
-              key={post.id}
+    <>
+      {
+        selectedUserPosts.length > 0
+        && !isLoadingUserPosts && !failedToFetch && (
+          <div data-cy="PostsList">
+            <p className="title">Posts:</p>
+            <table
+              className="table is-fullwidth is-striped is-hoverable is-narrow"
             >
-              <td data-cy="PostId">{post.id}</td>
+              <thead>
+                <tr className="has-background-link-light">
+                  <th>#</th>
+                  <th>Title</th>
+                  <th> </th>
+                </tr>
+              </thead>
 
-              <td data-cy="PostTitle">
-                {post.title}
-              </td>
+              <tbody>
+                {selectedUserPosts.map(post => (
+                  <tr
+                    data-cy="Post"
+                    key={post.id}
+                  >
+                    <td data-cy="PostId">{post.id}</td>
 
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={`button is-link ${openUserPost && selectedUserPostId === post.id ? '' : 'is-light'} `}
-                  onClick={() => {
-                    if (openUserPost && selectedUserPostId !== post.id) {
-                      setOpenUserPost(true);
-                      setSelectedUserPostId(post.id);
-                      setSelectedUserPost(post);
-                      setIsLoadingComments(true);
-                    } else {
-                      setOpenUserPost(!openUserPost);
-                      setSelectedUserPostId(post.id);
-                      setSelectedUserPost(post);
-                      setIsLoadingComments(true);
-                    }
-                  }}
-                >
-                  {(openUserPost && selectedUserPostId === post.id)
-                    ? 'Close'
-                    : 'Open'}
-                </button>
-              </td>
-            </tr>
-          ))}
+                    <td data-cy="PostTitle">
+                      {post.title}
+                    </td>
 
-        </tbody>
-      </table>
-    </div>
+                    <td className="has-text-right is-vcentered">
+                      <button
+                        type="button"
+                        data-cy="PostButton"
+                        className={`button is-link ${openUserPost && selectedUserPostId === post.id ? '' : 'is-light'} `}
+                        onClick={() => handleLoaderComments(post)}
+                      >
+                        {(openUserPost && selectedUserPostId === post.id)
+                          ? 'Close'
+                          : 'Open'}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+
+              </tbody>
+            </table>
+          </div>
+        )
+      }
+    </>
   );
 };
