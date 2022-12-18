@@ -44,7 +44,7 @@ export const NewCommentForm: React.FC<Props> = ({
     setComment('');
   };
 
-  const checkIsError = (a: string, b: string, c: string) => {
+  const checkIfError = (a: string, b: string, c: string) => {
     return a && b && c;
   };
 
@@ -70,7 +70,7 @@ export const NewCommentForm: React.FC<Props> = ({
       return;
     }
 
-    if (checkIsError(name, email, comment)) {
+    if (checkIfError(name, email, comment)) {
       setIsOnSubmitLoading(true);
 
       try {

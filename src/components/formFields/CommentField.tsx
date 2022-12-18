@@ -14,8 +14,9 @@ export const CommentField: FC<Props> = ({
   setComment,
   setIsCommentEmptyError,
 }) => {
-  const onCommentChangeHandler
-  = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const onCommentChangeHandler = (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     setComment(event.target.value);
     setIsCommentEmptyError(false);
   };

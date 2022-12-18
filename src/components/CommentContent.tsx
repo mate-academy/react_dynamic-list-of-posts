@@ -18,7 +18,10 @@ export const CommentContent: FC<Props> = ({
   setCommentsBeforeFilter,
 }) => {
   const {
-    email, body, name, id,
+    email,
+    body,
+    name,
+    id,
   } = comment;
 
   const handleDeleteComment = async (commentId: number) => {
