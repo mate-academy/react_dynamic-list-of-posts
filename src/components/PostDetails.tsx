@@ -56,7 +56,6 @@ export const PostDetails: React.FC<Props> = ({
       } catch (error) {
         setFailedToFetch(ErrorType.commentDelete);
       } finally {
-        loadUserCommentsFromServer();
         setIsLoadingComment(false);
       }
     }, [userComments],
@@ -65,7 +64,6 @@ export const PostDetails: React.FC<Props> = ({
   const loadCommentOnServer = async (comment: CommentData) => {
     setIsLoadingComment(true);
     try {
-      setUserComments((prevComments) => ([...prevComments, comment]));
       await createComment({ ...comment });
     } catch (error) {
       setFailedToFetch(ErrorType.commentAdd);
