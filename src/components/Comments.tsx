@@ -66,7 +66,7 @@ export const Comments: React.FC<Props> = ({ selectedPost }) => {
         />
       )}
 
-      {(!isLoading && comments.length !== 0) ? (
+      {(!isLoading && comments.length) ? (
         <CommentsList
           onCommentDelete={onCommentDelete}
           comments={comments}

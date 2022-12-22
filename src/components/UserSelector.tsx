@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getUsers } from '../api';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
@@ -22,6 +22,7 @@ export const UserSelector: React.FC<Props> = ({
   const [users, setUsers] = useState<User[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const dropdownRef = useRef<any>(null);
 
   const loadUsers = async () => {
     setIsLoading(true);
@@ -38,8 +39,20 @@ export const UserSelector: React.FC<Props> = ({
     }
   };
 
+  const useOutsideClick = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setShowMenu(false);
+    }
+  };
+
   useEffect(() => {
     loadUsers();
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('click', useOutsideClick);
+
+    return () => document.removeEventListener('click', useOutsideClick);
   }, []);
 
   const handlerSelectUser = (user: User) => {
@@ -50,6 +63,7 @@ export const UserSelector: React.FC<Props> = ({
 
   return (
     <div
+      ref={dropdownRef}
       data-cy="UserSelector"
       className="dropdown is-active"
     >
@@ -82,7 +96,9 @@ export const UserSelector: React.FC<Props> = ({
             {users.map(user => (
               <a
                 href="#user-1"
-                className="dropdown-item"
+                className={classNames('dropdown-item', {
+                  'is-active': user.id === selectedUser?.id,
+                })}
                 key={user.id}
                 onClick={() => handlerSelectUser(user)}
               >
