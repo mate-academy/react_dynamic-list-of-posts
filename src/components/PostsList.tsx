@@ -1,85 +1,126 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { getPosts } from '../api/posts';
+import { Post } from '../types/Post';
+import { ErrorType } from '../types/ErrorType';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+type Props = {
+  selectedUserId: string,
+  selectedUserPostId: number,
+  setSelectedUserPostId: (postId: number) => void,
+  openUserPost: boolean,
+  setOpenUserPost: (
+    isOpen: boolean) => void,
+  selectedUserPosts: Post[],
+  setSelectedUserPosts: (userPosts: Post[]) => void,
+  setSelectedUserPost: (userPost: Post) => void,
+  setIsLoadingComments: (load: boolean) => void,
+  setWriteComment: (load: boolean) => void,
+  isLoadingUserPosts: boolean,
+  setIsLoadingUserPosts: (load: boolean) => void,
+  failedToFetch: ErrorType | null,
+  setFailedToFetch: (loadData: ErrorType | null) => void,
+};
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+export const PostsList: React.FC<Props> = ({
+  selectedUserId,
+  openUserPost,
+  setOpenUserPost,
+  selectedUserPosts,
+  setSelectedUserPost,
+  selectedUserPostId,
+  setSelectedUserPostId,
+  setIsLoadingComments,
+  setWriteComment,
+  setSelectedUserPosts,
+  isLoadingUserPosts,
+  setIsLoadingUserPosts,
+  failedToFetch,
+  setFailedToFetch,
+}) => {
+  const loadUserPostsFromServer = useCallback(
+    async () => {
+      try {
+        const postsFromServer = await getPosts(selectedUserId);
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+        setSelectedUserPosts(postsFromServer);
+      } catch (error) {
+        setFailedToFetch(ErrorType.userPosts);
+      } finally {
+        setIsLoadingUserPosts(false);
+      }
+    }, [selectedUserId],
+  );
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+  useEffect(() => {
+    loadUserPostsFromServer();
+  }, [selectedUserId]);
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
+  const handleLoaderComments = (post: Post) => {
+    if (openUserPost && selectedUserPostId !== post.id) {
+      setOpenUserPost(true);
+    } else {
+      setOpenUserPost(!openUserPost);
+    }
+
+    setWriteComment(false);
+    setSelectedUserPostId(post.id);
+    setSelectedUserPost(post);
+    setIsLoadingComments(true);
+  };
+
+  const isPostsLoad = selectedUserPosts.length > 0
+  && !isLoadingUserPosts
+  && failedToFetch !== ErrorType.userPosts;
+
+  return (
+    <>
+      {
+        isPostsLoad && (
+          <div data-cy="PostsList">
+            <p className="title">Posts:</p>
+            <table
+              className="table is-fullwidth is-striped is-hoverable is-narrow"
             >
-              Open
-            </button>
-          </td>
-        </tr>
+              <thead>
+                <tr className="has-background-link-light">
+                  <th>#</th>
+                  <th>Title</th>
+                  <th> </th>
+                </tr>
+              </thead>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+              <tbody>
+                {selectedUserPosts.map(post => (
+                  <tr
+                    data-cy="Post"
+                    key={post.id}
+                  >
+                    <td data-cy="PostId">{post.id}</td>
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+                    <td data-cy="PostTitle">
+                      {post.title}
+                    </td>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
+                    <td className="has-text-right is-vcentered">
+                      <button
+                        type="button"
+                        data-cy="PostButton"
+                        className={`button is-link ${openUserPost && selectedUserPostId === post.id ? '' : 'is-light'} `}
+                        onClick={() => handleLoaderComments(post)}
+                      >
+                        {(openUserPost && selectedUserPostId === post.id)
+                          ? 'Close'
+                          : 'Open'}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+              </tbody>
+            </table>
+          </div>
+        )
+      }
+    </>
+  );
+};
