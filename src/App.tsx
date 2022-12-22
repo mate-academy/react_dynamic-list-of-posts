@@ -34,7 +34,7 @@ export const App: React.FC = () => {
 
         setUsersArray(todosFromServer);
       } catch (error) {
-        setFailedToFetch(ErrorType.errorUsersLoad);
+        setFailedToFetch(ErrorType.usersLoad);
       }
     }, [],
   );
@@ -44,7 +44,7 @@ export const App: React.FC = () => {
   }, []);
 
   const errorMessage = failedToFetch === ErrorType.usersLoad
-    || failedToFetch === ErrorType.errorUserPosts;
+    || failedToFetch === ErrorType.userPosts;
 
   const isLoadUserPosts = !!selectedUserId && !isLoadingUserPosts
    && !failedToFetch;

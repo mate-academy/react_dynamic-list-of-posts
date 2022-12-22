@@ -44,7 +44,7 @@ export const PostsList: React.FC<Props> = ({
 
         setSelectedUserPosts(postsFromServer);
       } catch (error) {
-        setFailedToFetch(ErrorType.errorUserPosts);
+        setFailedToFetch(ErrorType.userPosts);
       } finally {
         setIsLoadingUserPosts(false);
       }
@@ -70,7 +70,7 @@ export const PostsList: React.FC<Props> = ({
 
   const isPostsLoad = selectedUserPosts.length > 0
   && !isLoadingUserPosts
-  && failedToFetch !== ErrorType.errorUserPosts;
+  && failedToFetch !== ErrorType.userPosts;
 
   return (
     <>

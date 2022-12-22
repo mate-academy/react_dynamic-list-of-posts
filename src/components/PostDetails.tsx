@@ -40,7 +40,7 @@ export const PostDetails: React.FC<Props> = ({
         setIsLoadingComments(false);
         setIsLoadingComment(false);
       } catch (error) {
-        setFailedToFetch(ErrorType.errorPostComments);
+        setFailedToFetch(ErrorType.postComments);
       }
     }, [selectedUserPostId, userComments],
   );
@@ -54,7 +54,7 @@ export const PostDetails: React.FC<Props> = ({
       try {
         await deleteComment(commentId);
       } catch (error) {
-        setFailedToFetch(ErrorType.errorCommentDelete);
+        setFailedToFetch(ErrorType.commentDelete);
       } finally {
         loadUserCommentsFromServer();
         setIsLoadingComment(false);
@@ -68,7 +68,7 @@ export const PostDetails: React.FC<Props> = ({
       setUserComments((prevComments) => ([...prevComments, comment]));
       await createComment({ ...comment });
     } catch (error) {
-      setFailedToFetch(ErrorType.errorCommentAdd);
+      setFailedToFetch(ErrorType.commentAdd);
     } finally {
       loadUserCommentsFromServer();
     }
@@ -79,9 +79,9 @@ export const PostDetails: React.FC<Props> = ({
     deleteCommentOnServer(commentId);
   };
 
-  const errorMessage = failedToFetch === ErrorType.errorPostComments
-   || failedToFetch === ErrorType.errorCommentDelete
-   || failedToFetch === ErrorType.errorCommentAdd;
+  const errorMessage = failedToFetch === ErrorType.postComments
+   || failedToFetch === ErrorType.commentDelete
+   || failedToFetch === ErrorType.commentAdd;
 
   const isLoadComments = !failedToFetch && !isLoadingComments;
 
