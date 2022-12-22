@@ -1,63 +1,35 @@
-import React from 'react';
+import { FC } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
+import { PostsProvider } from './context/PostsContext';
+import { MainContent } from './components/MainContent';
+import { CommentsProvider } from './context/CommentsContext';
+import { Sidebar } from './components/Sidebar';
 
-export const App: React.FC = () => {
+export const App: FC = () => {
   return (
     <main className="section">
       <div className="container">
-        <div className="tile is-ancestor">
-          <div className="tile is-parent">
-            <div className="tile is-child box is-success">
-              <div className="block">
-                <UserSelector />
-              </div>
-
-              <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
-
-                <Loader />
-
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
+        <PostsProvider>
+          <div className="tile is-ancestor">
+            <div className="tile is-parent">
+              <div className="tile is-child box is-success">
+                <div className="block">
+                  <UserSelector />
                 </div>
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                <MainContent />
               </div>
             </div>
-          </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
+            <CommentsProvider>
+              <Sidebar />
+            </CommentsProvider>
           </div>
-        </div>
+        </PostsProvider>
       </div>
     </main>
   );
