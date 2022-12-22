@@ -7,8 +7,8 @@ import {
 
 import { Loader } from '../Loader';
 import { PostsList } from './PostsList';
-import { PostsContext } from '../PostsContext';
-import { UsersContext } from '../UsersContext';
+import { PostsContext } from '../../context/PostsContext';
+import { UsersContext } from '../../context/UsersContext';
 
 export const MainContent: FC = memo(() => {
   const { selectedUserName } = useContext(UsersContext);

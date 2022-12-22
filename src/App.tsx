@@ -4,9 +4,9 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import { UserSelector } from './components/UserSelector';
-import { PostsProvider } from './components/PostsContext';
+import { PostsProvider } from './context/PostsContext';
 import { MainContent } from './components/MainContent';
-import { CommentsProvider } from './components/CommentsContext';
+import { CommentsProvider } from './context/CommentsContext';
 import { Sidebar } from './components/Sidebar';
 
 export const App: FC = () => {

@@ -4,7 +4,7 @@ import {
   memo,
 } from 'react';
 
-import { CommentsContext } from '../../CommentsContext';
+import { CommentsContext } from '../../../context/CommentsContext';
 
 export const PostComments: FC = memo(() => {
   const { comments, removeCommentFromServer } = useContext(CommentsContext);

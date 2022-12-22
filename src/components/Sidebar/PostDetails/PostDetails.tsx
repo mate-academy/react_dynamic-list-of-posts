@@ -8,10 +8,10 @@ import {
   memo,
 } from 'react';
 
-import { CommentsContext } from '../../CommentsContext';
+import { CommentsContext } from '../../../context/CommentsContext';
 import { Loader } from '../../Loader';
 import { NewCommentForm } from '../../NewCommentForm';
-import { PostsContext } from '../../PostsContext';
+import { PostsContext } from '../../../context/PostsContext';
 import { PostComments } from '../PostComments';
 
 export const PostDetails: FC = memo(() => {

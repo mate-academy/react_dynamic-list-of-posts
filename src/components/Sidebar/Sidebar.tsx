@@ -6,7 +6,7 @@ import {
 } from 'react';
 
 import classNames from 'classnames';
-import { PostsContext } from '../PostsContext';
+import { PostsContext } from '../../context/PostsContext';
 import { PostDetails } from './PostDetails';
 
 export const Sidebar: FC = memo(() => {

@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom';
 import { App } from './App';
-import { UsersProvider } from './components/UsersContext';
+import { UsersProvider } from './context/UsersContext';
 
 ReactDOM.render(
   <UsersProvider>

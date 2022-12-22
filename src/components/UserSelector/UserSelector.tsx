@@ -9,7 +9,7 @@ import {
 
 import { DropDownList } from './DropDownList';
 import { DropDownTrigger } from './DropDownTrigger';
-import { UsersContext, UsersUpdateContext } from '../UsersContext';
+import { UsersContext, UsersUpdateContext } from '../../context/UsersContext';
 
 export const UserSelector: FC = memo(() => {
   const { users, selectedUserName } = useContext(UsersContext);

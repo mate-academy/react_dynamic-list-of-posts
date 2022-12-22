@@ -8,7 +8,7 @@ import {
 
 import classNames from 'classnames';
 import { Post } from '../../../../types/Post';
-import { PostsContext } from '../../../PostsContext';
+import { PostsContext } from '../../../../context/PostsContext';
 
 type Props = {
   post: Post;

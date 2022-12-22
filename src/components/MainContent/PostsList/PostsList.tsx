@@ -4,7 +4,7 @@ import {
   useContext,
 } from 'react';
 
-import { PostsContext } from '../../PostsContext';
+import { PostsContext } from '../../../context/PostsContext';
 import { PostItem } from './PostItem';
 
 export const PostsList: FC = memo(() => {

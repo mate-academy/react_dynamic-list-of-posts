@@ -7,8 +7,8 @@ import {
 } from 'react';
 
 import { Comment } from '../../types/Comment';
-import { CommentsContext } from '../CommentsContext';
-import { PostsContext } from '../PostsContext';
+import { CommentsContext } from '../../context/CommentsContext';
+import { PostsContext } from '../../context/PostsContext';
 import { BodyField } from './BodyField';
 import { EmailInput } from './EmailInput';
 import { FormButtons } from './FormButtons';
