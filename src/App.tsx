@@ -23,8 +23,7 @@ export const App: React.FC = () => {
   const [selectedUserPostId, setSelectedUserPostId] = useState(0);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [selectedUserPosts, setSelectedUserPosts] = useState<Post[] | []>([]);
-  const [failedToFetch, setFailedToFetch]
-    = useState<ErrorType | null>(null);
+  const [failedToFetch, setFailedToFetch] = useState<ErrorType | null>(null);
   const [writeComment, setWriteComment] = useState(false);
 
   const loadUsersFromServer = useCallback(
@@ -36,7 +35,8 @@ export const App: React.FC = () => {
       } catch (error) {
         setFailedToFetch(ErrorType.usersLoad);
       }
-    }, [],
+    },
+    [],
   );
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export const App: React.FC = () => {
     || failedToFetch === ErrorType.userPosts;
 
   const isLoadUserPosts = !!selectedUserId && !isLoadingUserPosts
-   && !failedToFetch;
+    && !failedToFetch;
 
   const isOpenUserPost = !!selectedUserId && openUserPost && !!selectedUserPost;
 

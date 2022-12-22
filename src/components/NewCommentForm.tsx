@@ -23,8 +23,10 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleChangeAutorName = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setInputAuthorName(event.target.value);
-    if (event.target.value) {
+    const { value } = event.target;
+
+    setInputAuthorName(value);
+    if (value) {
       setIsEmptyInputAuthorName(false);
     }
   };
@@ -32,8 +34,10 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleChangeAutorEmail = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setInputAuthorEmail(event.target.value);
-    if (event.target.value) {
+    const { value } = event.target;
+
+    setInputAuthorEmail(value);
+    if (value) {
       setIsEmptyInputAuthorEmail(false);
     }
   };
@@ -41,8 +45,10 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleChangeCommentText = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
-    setInputCommentText(event.target.value);
-    if (event.target.value) {
+    const { value } = event.target;
+
+    setInputCommentText(value);
+    if (value) {
       setIsEmptyInputCommentText(false);
     }
   };
