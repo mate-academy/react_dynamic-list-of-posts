@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import { getPosts } from '../api/posts';
 import { Post } from '../types/Post';
+import { ErrorType } from '../types/ErrorType';
 
 type Props = {
   selectedUserId: string,
@@ -16,8 +17,8 @@ type Props = {
   setWriteComment: (load: boolean) => void,
   isLoadingUserPosts: boolean,
   setIsLoadingUserPosts: (load: boolean) => void,
-  failedToFetch: boolean,
-  setFailedToFetch: (loadData: boolean) => void,
+  failedToFetch: ErrorType | null,
+  setFailedToFetch: (loadData: ErrorType | null) => void,
 };
 
 export const PostsList: React.FC<Props> = ({
@@ -39,12 +40,11 @@ export const PostsList: React.FC<Props> = ({
   const loadUserPostsFromServer = useCallback(
     async () => {
       try {
-        setFailedToFetch(false);
         const postsFromServer = await getPosts(selectedUserId);
 
         setSelectedUserPosts(postsFromServer);
       } catch (error) {
-        setFailedToFetch(true);
+        setFailedToFetch(ErrorType.errorUserPosts);
       } finally {
         setIsLoadingUserPosts(false);
       }
@@ -68,11 +68,14 @@ export const PostsList: React.FC<Props> = ({
     setIsLoadingComments(true);
   };
 
+  const isPostsLoad = selectedUserPosts.length > 0
+  && !isLoadingUserPosts
+  && failedToFetch !== ErrorType.errorUserPosts;
+
   return (
     <>
       {
-        selectedUserPosts.length > 0
-        && !isLoadingUserPosts && !failedToFetch && (
+        isPostsLoad && (
           <div data-cy="PostsList">
             <p className="title">Posts:</p>
             <table

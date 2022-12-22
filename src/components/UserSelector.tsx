@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-
 import { User } from '../types/User';
 
 type Props = {
@@ -35,6 +34,7 @@ export const UserSelector: React.FC<Props> = ({
     }
 
     setDropDown(false);
+    setWriteComment(false);
   };
 
   return (
@@ -74,10 +74,7 @@ export const UserSelector: React.FC<Props> = ({
               className={classNames('dropdown-item', {
                 'is-active': +selectedUserId === user.id,
               })}
-              onClick={() => {
-                handleUserSelected(user.id);
-                setWriteComment(false);
-              }}
+              onClick={() => handleUserSelected(user.id)}
             >
               {user.name}
             </a>

@@ -5,15 +5,14 @@ import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 import classNames from 'classnames';
-
 import { getUsers } from './api/users';
-
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { ErrorType } from './types/ErrorType';
 
 export const App: React.FC = () => {
   const [usersArray, setUsersArray] = useState<User[] | []>([]);
@@ -24,18 +23,18 @@ export const App: React.FC = () => {
   const [selectedUserPostId, setSelectedUserPostId] = useState(0);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [selectedUserPosts, setSelectedUserPosts] = useState<Post[] | []>([]);
-  const [failedToFetch, setFailedToFetch] = useState(false);
+  const [failedToFetch, setFailedToFetch]
+    = useState<ErrorType | null>(null);
   const [writeComment, setWriteComment] = useState(false);
 
   const loadUsersFromServer = useCallback(
     async () => {
       try {
-        setFailedToFetch(false);
         const todosFromServer = await getUsers();
 
         setUsersArray(todosFromServer);
       } catch (error) {
-        setFailedToFetch(true);
+        setFailedToFetch(ErrorType.errorUsersLoad);
       }
     }, [],
   );
@@ -43,6 +42,14 @@ export const App: React.FC = () => {
   useEffect(() => {
     loadUsersFromServer();
   }, []);
+
+  const errorMessage = failedToFetch === ErrorType.usersLoad
+    || failedToFetch === ErrorType.errorUserPosts;
+
+  const isLoadUserPosts = !!selectedUserId && !isLoadingUserPosts
+   && !failedToFetch;
+
+  const isOpenUserPost = !!selectedUserId && openUserPost && !!selectedUserPost;
 
   return (
     <main className="section">
@@ -70,17 +77,16 @@ export const App: React.FC = () => {
 
                 {isLoadingUserPosts && <Loader />}
 
-                {failedToFetch && (
+                {errorMessage && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    Something went wrong!
+                    {failedToFetch}
                   </div>
                 )}
 
-                {selectedUserId && !isLoadingUserPosts
-                  && selectedUserPosts.length === 0 && !failedToFetch && (
+                {isLoadUserPosts && selectedUserPosts.length === 0 && (
                   <div
                     className="notification is-warning"
                     data-cy="NoPostsYet"
@@ -121,7 +127,7 @@ export const App: React.FC = () => {
               { 'Sidebar--open': openUserPost },
             )}
           >
-            {selectedUserId && openUserPost && selectedUserPost && (
+            {isOpenUserPost && (
               <div className="tile is-child box is-success ">
 
                 <PostDetails
@@ -131,6 +137,8 @@ export const App: React.FC = () => {
                   setIsLoadingComments={setIsLoadingComments}
                   writeComment={writeComment}
                   setWriteComment={setWriteComment}
+                  setFailedToFetch={setFailedToFetch}
+                  failedToFetch={failedToFetch}
                 />
               </div>
             )}
