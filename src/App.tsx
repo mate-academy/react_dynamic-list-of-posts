@@ -11,6 +11,7 @@ import { User } from './types/User';
 import { Post } from './types/Post';
 import { Notification } from './components/Notification';
 import { Sidebar } from './components/Sidebar';
+import { Error } from './types/Error';
 
 export const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -18,7 +19,7 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [usersAreLoaded, setUsersAreLoaded] = useState(false);
   const [postsAreLoaded, setPostsAreLoaded] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [error, setError] = useState<Error | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const loadUserPosts = async (userId: number) => {
@@ -28,9 +29,16 @@ export const App: React.FC = () => {
       const response = await getUsersPosts(userId);
 
       setPostsAreLoaded(true);
+
       setPosts(response);
     } catch {
-      setErrorMessage('Unable to load users posts');
+      const newError = {
+        message: 'Unable to load users posts',
+        type: 'PostsLoadingError',
+        isDanger: true,
+      };
+
+      setError(newError);
     } finally {
       setIsLoading(false);
     }
@@ -54,7 +62,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   setSelectedUser={setSelectedUser}
                   selectedUser={selectedUser}
-                  setErrorMessage={setErrorMessage}
+                  setError={setError}
                   setUsersAreLoaded={setUsersAreLoaded}
                   setSelectedPost={setSelectedPost}
                 />
@@ -77,11 +85,10 @@ export const App: React.FC = () => {
 
                 {isLoading && <Loader />}
 
-                {errorMessage && (
+                {error && (
                   <Notification
-                    isDanger
-                    message={errorMessage}
-                    setErrorMessage={setErrorMessage}
+                    error={error}
+                    setError={setError}
                   />
                 )}
               </div>

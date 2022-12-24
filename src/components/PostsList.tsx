@@ -45,7 +45,13 @@ export const PostsList: React.FC<Props> = ({
             </table>
           </div>
         ) : (
-          <Notification isWarning message="No posts yet!" />
+          <Notification
+            error={{
+              message: 'No posts yet!',
+              type: 'NoPostsYet',
+              isWarning: true,
+            }}
+          />
         )}
     </>
   );

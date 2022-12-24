@@ -1,22 +1,26 @@
 import classNames from 'classnames';
 import React, { useEffect } from 'react';
+import { Error } from '../types/Error';
 
 type Props = {
-  isDanger?: boolean,
-  isWarning?: boolean,
-  message: string,
-  setErrorMessage?: (error: string) => void,
+  error: Error,
+  setError?: (error: Error | null) => void,
 };
 
 export const Notification: React.FC<Props> = ({
-  isDanger,
-  isWarning,
-  message,
-  setErrorMessage,
+  error,
+  setError,
 }) => {
+  const {
+    message,
+    type,
+    isDanger,
+    isWarning,
+  } = error;
+
   useEffect(() => {
-    if (isDanger && setErrorMessage) {
-      setTimeout(() => setErrorMessage(''), 5000);
+    if (isDanger && setError) {
+      setTimeout(() => setError(null), 5000);
     }
   }, []);
 
@@ -26,7 +30,7 @@ export const Notification: React.FC<Props> = ({
         'is-danger': isDanger,
         'is-warning': isWarning,
       })}
-      data-cy="PostsLoadingError"
+      data-cy={type}
     >
       {message}
     </div>

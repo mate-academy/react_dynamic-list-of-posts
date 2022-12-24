@@ -1,13 +1,14 @@
 import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import { getUsers } from '../api';
+import { Error } from '../types/Error';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 
 type Props = {
   selectedUser: User | null,
   setSelectedUser: (user: User) => void,
-  setErrorMessage: (error: string) => void,
+  setError: (error: Error | null) => void,
   setUsersAreLoaded: (b: boolean) => void,
   setSelectedPost: (post: Post | null) => void,
 };
@@ -15,14 +16,14 @@ type Props = {
 export const UserSelector: React.FC<Props> = ({
   selectedUser,
   setSelectedUser,
-  setErrorMessage,
+  setError,
   setUsersAreLoaded,
   setSelectedPost,
 }) => {
   const [users, setUsers] = useState<User[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const dropdownRef = useRef<any>(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const loadUsers = async () => {
     setIsLoading(true);
@@ -33,14 +34,22 @@ export const UserSelector: React.FC<Props> = ({
       setUsers(response);
       setUsersAreLoaded(true);
     } catch {
-      setErrorMessage('Unable to load users!');
+      const newError = {
+        message: 'Unable to load users!',
+        type: 'LoadingUsersError',
+        isDanger: true,
+      };
+
+      setError(newError);
     } finally {
       setIsLoading(false);
     }
   };
 
   const useOutsideClick = (event: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+    const dropdown = dropdownRef.current;
+
+    if (dropdown && !dropdown.contains(event.target as Node)) {
       setShowMenu(false);
     }
   };
@@ -65,7 +74,9 @@ export const UserSelector: React.FC<Props> = ({
     <div
       ref={dropdownRef}
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={classNames('dropdown', {
+        'is-active': showMenu,
+      })}
     >
       <div className="dropdown-trigger">
         <button
@@ -90,24 +101,23 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      {(showMenu && users) && (
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          <div className="dropdown-content">
-            {users.map(user => (
-              <a
-                href="#user-1"
-                className={classNames('dropdown-item', {
-                  'is-active': user.id === selectedUser?.id,
-                })}
-                key={user.id}
-                onClick={() => handlerSelectUser(user)}
-              >
-                {user.name}
-              </a>
-            ))}
-          </div>
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        <div className="dropdown-content">
+          {users?.map(user => (
+            <a
+              href="#user-1"
+              className={classNames('dropdown-item', {
+                'is-active': user.id === selectedUser?.id,
+              })}
+              key={user.id}
+              onClick={() => handlerSelectUser(user)}
+            >
+              {user.name}
+            </a>
+          ))}
         </div>
-      )}
+      </div>
+
     </div>
   );
 };

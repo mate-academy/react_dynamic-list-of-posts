@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { deleteComment, getPostComments } from '../api';
 import { Comment } from '../types/Comment';
+import { Error } from '../types/Error';
 import { Post } from '../types/Post';
 import { CommentsList } from './CommentsList';
 import { Loader } from './Loader';
@@ -12,9 +13,9 @@ type Props = {
 };
 
 export const Comments: React.FC<Props> = ({ selectedPost }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<Comment[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [error, setError] = useState<Error | null>(null);
   const [newCommentFormVisible, setNewCommentFormVisible] = useState(false);
 
   const loadComments = async () => {
@@ -25,26 +26,52 @@ export const Comments: React.FC<Props> = ({ selectedPost }) => {
 
       setComments(response);
     } catch {
-      setErrorMessage('Unable to load comments');
+      const newError = {
+        message: 'Unable to load comments',
+        type: 'LoadingCommentsError',
+        isDanger: true,
+      };
+
+      setError(newError);
     } finally {
       setIsLoading(false);
     }
   };
 
   const onCommentAdd = (newComment: Comment) => {
-    setComments(prev => [...prev, newComment]);
+    setComments(prev => {
+      if (prev) {
+        return [...prev, newComment];
+      }
+
+      return null;
+    });
   };
 
   const onCommentDelete = async (id: number) => {
-    const savedComments = [...comments];
+    if (comments) {
+      const savedComments = [...comments];
 
-    setComments(prev => prev.filter(comment => comment.id !== id));
+      setComments(prev => {
+        if (prev) {
+          return prev.filter(comment => comment.id !== id);
+        }
 
-    try {
-      await deleteComment(id);
-    } catch {
-      setErrorMessage('Unable to delete a comment!');
-      setComments([...savedComments]);
+        return null;
+      });
+
+      try {
+        await deleteComment(id);
+      } catch {
+        const newError = {
+          message: 'Unable to delete a comment!',
+          type: 'DeleteingCommentError',
+          isDanger: true,
+        };
+
+        setError(newError);
+        setComments([...savedComments]);
+      }
     }
   };
 
@@ -58,26 +85,27 @@ export const Comments: React.FC<Props> = ({ selectedPost }) => {
     <div className="block">
       {isLoading && <Loader />}
 
-      {errorMessage && (
+      {error && (
         <Notification
-          isDanger
-          message={errorMessage}
-          setErrorMessage={setErrorMessage}
+          error={error}
+          setError={setError}
         />
       )}
 
-      {(!isLoading && comments.length) ? (
+      {(comments && comments.length) && (
         <CommentsList
           onCommentDelete={onCommentDelete}
           comments={comments}
         />
-      ) : (
+      )}
+
+      {(comments && !comments.length) && (
         <p className="title is-4" data-cy="NoCommentsMessage">
           No comments yet
         </p>
       )}
 
-      {(!newCommentFormVisible && !isLoading) && (
+      {(!newCommentFormVisible && comments) && (
         <button
           data-cy="WriteCommentButton"
           type="button"

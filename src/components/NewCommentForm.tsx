@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import { addComment } from '../api';
 import { Comment } from '../types/Comment';
+import { Error } from '../types/Error';
 import { Notification } from './Notification';
 
 type Props = {
@@ -17,7 +18,7 @@ export const NewCommentForm: React.FC<Props> = ({ onCommentAdd, postId }) => {
   const [body, setBody] = useState('');
   const [bodyIsValid, setBodyIsValid] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [error, setError] = useState<Error | null>(null);
 
   const handlerClearFields = () => {
     setName('');
@@ -81,7 +82,13 @@ export const NewCommentForm: React.FC<Props> = ({ onCommentAdd, postId }) => {
       onCommentAdd(newComment);
       setBody('');
     } catch {
-      setErrorMessage('Unable to add a comment');
+      const newError = {
+        message: 'Unable to add a comment',
+        type: 'AddingCommentError',
+        isDanger: true,
+      };
+
+      setError(newError);
     } finally {
       setIsProcessing(false);
     }
@@ -222,11 +229,10 @@ export const NewCommentForm: React.FC<Props> = ({ onCommentAdd, postId }) => {
         </div>
       </div>
 
-      {errorMessage && (
+      {error && (
         <Notification
-          isDanger
-          message={errorMessage}
-          setErrorMessage={setErrorMessage}
+          error={error}
+          setError={setError}
         />
       )}
     </form>
