@@ -44,8 +44,6 @@ export const PostDetails: React.FC<Props> = ({
       setComments(prev => [...prev, commentData]);
       getComments(targetPost.id);
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
       setShowError(true);
     } finally {
       setIsAdding(false);

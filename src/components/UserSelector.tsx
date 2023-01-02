@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User } from '../types/User';
+import { client } from '../utils/fetchClient';
 
 type Props = {
   setShowError: (val: boolean) => void,
@@ -15,12 +16,11 @@ export const UserSelector: React.FC<Props> = ({
   const [targetUser, setTargetUser] = useState<User | null>(null);
 
   async function getUser() {
-    const BASE_URL = 'https://mate.academy/students-api/users';
-
-    const allUsers = await fetch(BASE_URL)
-      .then(resp => resp.json());
+    const url = '/users';
 
     try {
+      const allUsers: User[] = await client.get(url);
+
       setUsers(allUsers);
       setShowError(false);
     } catch (error) {

@@ -13,7 +13,7 @@ import { client } from './utils/fetchClient';
 
 export const App: React.FC = () => {
   const [showError, setShowError] = useState<boolean>(false);
-  const [targetUserId, setTrgetUserId] = useState<number | null>(null);
+  const [targetUserId, setTargetUserId] = useState<number | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -55,7 +55,7 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   setShowError={setShowError}
-                  setTrgetUserId={setTrgetUserId}
+                  setTrgetUserId={setTargetUserId}
                 />
               </div>
 

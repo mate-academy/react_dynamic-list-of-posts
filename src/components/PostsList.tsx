@@ -34,32 +34,34 @@ export const PostsList: React.FC<Props> = ({
           </tr>
         </thead>
 
-        <tbody>
-          {posts && posts.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
+        {posts && (
+          <tbody>
+            {posts.map(post => (
+              <tr key={post.id} data-cy="Post">
+                <td data-cy="PostId">{post.id}</td>
 
-              <td data-cy="PostTitle">
-                {post.title}
-              </td>
+                <td data-cy="PostTitle">
+                  {post.title}
+                </td>
 
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={
-                    (isOpen && targetPost && targetPost.id === post.id)
-                      ? 'button is-link'
-                      : 'button is-link is-light'
-                  }
-                  onClick={() => hendleClick(post)}
-                >
-                  {targetPost && targetPost.id === post.id ? 'Close' : 'Open'}
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+                <td className="has-text-right is-vcentered">
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={
+                      (isOpen && targetPost && targetPost.id === post.id)
+                        ? 'button is-link'
+                        : 'button is-link is-light'
+                    }
+                    onClick={() => hendleClick(post)}
+                  >
+                    {targetPost && targetPost.id === post.id ? 'Close' : 'Open'}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        )}
       </table>
     </div>
   );
