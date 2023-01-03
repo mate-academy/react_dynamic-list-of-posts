@@ -29,8 +29,6 @@ export const PostDetails: React.FC<Props> = ({
       setComments(allComments);
     } catch (error) {
       setShowError(true);
-      // eslint-disable-next-line no-console
-      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -92,7 +90,7 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {!comments.length && (
+          {!isLoading && !comments.length && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -102,35 +100,44 @@ export const PostDetails: React.FC<Props> = ({
             <p className="title is-4">Comments:</p>
           )}
 
-          {comments.map(comment => (
-            <article
-              key={comment.id}
-              className="message is-small"
-              data-cy="Comment"
-            >
-              <div className="message-header">
-                <a
-                  href={`mailto:${comment.email}`}
-                  data-cy="CommentAuthor"
-                >
-                  {comment.name}
-                </a>
-                <button
-                  data-cy="CommentDelete"
-                  type="button"
-                  className="delete is-small"
-                  aria-label="delete"
-                  onClick={() => deleteComment(comment.id)}
-                >
-                  delete button
-                </button>
-              </div>
+          {!isLoading && comments.map(comment => {
+            const {
+              id,
+              email,
+              body,
+              name,
+            } = comment;
 
-              <div className="message-body" data-cy="CommentBody">
-                {comment.body}
-              </div>
-            </article>
-          ))}
+            return (
+              <article
+                key={id}
+                className="message is-small"
+                data-cy="Comment"
+              >
+                <div className="message-header">
+                  <a
+                    href={`mailto:${email}`}
+                    data-cy="CommentAuthor"
+                  >
+                    {name}
+                  </a>
+                  <button
+                    data-cy="CommentDelete"
+                    type="button"
+                    className="delete is-small"
+                    aria-label="delete"
+                    onClick={() => deleteComment(id)}
+                  >
+                    delete button
+                  </button>
+                </div>
+
+                <div className="message-body" data-cy="CommentBody">
+                  {body}
+                </div>
+              </article>
+            );
+          })}
 
           {(!isLoading && !isOpenForm) && (
             <button

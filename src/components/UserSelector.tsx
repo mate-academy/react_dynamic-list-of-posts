@@ -62,12 +62,9 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={() => setShowUsers(!showUsers)}
         >
-          {targetUser
-            ? (
-              <span>{targetUser.name}</span>
-            ) : (
-              <span>Choose a user</span>
-            )}
+          <span>
+            {targetUser ? targetUser.name : 'Choose a user'}
+          </span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -78,16 +75,20 @@ export const UserSelector: React.FC<Props> = ({
       {showUsers && (
         <div className="dropdown-menu" id="dropdown-menu" role="menu">
           <div className="dropdown-content">
-            {users.map((user) => (
-              <a
-                key={user.id}
-                href={`#user-${user.id}`}
-                className="dropdown-item"
-                onClick={(e) => selectedUser(e, user)}
-              >
-                {user.name}
-              </a>
-            ))}
+            {users.map((user) => {
+              const { id, name } = user;
+
+              return (
+                <a
+                  key={id}
+                  href={`#user-${id}`}
+                  className="dropdown-item"
+                  onClick={(e) => selectedUser(e, user)}
+                >
+                  {name}
+                </a>
+              );
+            })}
           </div>
         </div>
       )}

@@ -5,7 +5,7 @@ type Props = {
   posts: Post[] | null;
   targetPost: Post | null;
   isOpen: boolean;
-  setTargetPost: (post: Post) => void;
+  setTargetPost: (post: Post | null) => void;
   setIsOpen: (val: boolean) => void;
 };
 
@@ -17,9 +17,24 @@ export const PostsList: React.FC<Props> = ({
   setIsOpen,
 }) => {
   const hendleClick = (post: Post) => {
+    if (!targetPost) {
+      setTargetPost(post);
+      setIsOpen(true);
+
+      return;
+    }
+
+    if (targetPost.id === post.id) {
+      setTargetPost(null);
+      setIsOpen(false);
+
+      return;
+    }
+
     setTargetPost(post);
-    setIsOpen(!isOpen);
   };
+
+  const booleanValue = isOpen && targetPost;
 
   return (
     <div data-cy="PostsList">
@@ -34,14 +49,16 @@ export const PostsList: React.FC<Props> = ({
           </tr>
         </thead>
 
-        {posts && (
-          <tbody>
-            {posts.map(post => (
-              <tr key={post.id} data-cy="Post">
-                <td data-cy="PostId">{post.id}</td>
+        <tbody>
+          {posts?.map(post => {
+            const { id, title } = post;
+
+            return (
+              <tr key={id} data-cy="Post">
+                <td data-cy="PostId">{id}</td>
 
                 <td data-cy="PostTitle">
-                  {post.title}
+                  {title}
                 </td>
 
                 <td className="has-text-right is-vcentered">
@@ -49,19 +66,22 @@ export const PostsList: React.FC<Props> = ({
                     type="button"
                     data-cy="PostButton"
                     className={
-                      (isOpen && targetPost && targetPost.id === post.id)
+                      (booleanValue && targetPost.id === post.id)
                         ? 'button is-link'
                         : 'button is-link is-light'
                     }
                     onClick={() => hendleClick(post)}
                   >
-                    {targetPost && targetPost.id === post.id ? 'Close' : 'Open'}
+                    {
+                      booleanValue && targetPost.id === post.id
+                        ? 'Close' : 'Open'
+                    }
                   </button>
                 </td>
               </tr>
-            ))}
-          </tbody>
-        )}
+            );
+          })}
+        </tbody>
       </table>
     </div>
   );
