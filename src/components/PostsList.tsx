@@ -1,85 +1,88 @@
 import React from 'react';
+import { Post } from '../types/Post';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+type Props = {
+  posts: Post[] | null;
+  targetPost: Post | null;
+  isOpen: boolean;
+  setTargetPost: (post: Post | null) => void;
+  setIsOpen: (val: boolean) => void;
+};
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+export const PostsList: React.FC<Props> = ({
+  posts,
+  targetPost,
+  isOpen,
+  setTargetPost,
+  setIsOpen,
+}) => {
+  const hendleClick = (post: Post) => {
+    if (!targetPost) {
+      setTargetPost(post);
+      setIsOpen(true);
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+      return;
+    }
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+    if (targetPost.id === post.id) {
+      setTargetPost(null);
+      setIsOpen(false);
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+      return;
+    }
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+    setTargetPost(post);
+  };
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+  const booleanValue = isOpen && targetPost;
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            <th> </th>
+          </tr>
+        </thead>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+        <tbody>
+          {posts?.map(post => {
+            const { id, title } = post;
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
+            return (
+              <tr key={id} data-cy="Post">
+                <td data-cy="PostId">{id}</td>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+                <td data-cy="PostTitle">
+                  {title}
+                </td>
+
+                <td className="has-text-right is-vcentered">
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={
+                      (booleanValue && targetPost.id === post.id)
+                        ? 'button is-link'
+                        : 'button is-link is-light'
+                    }
+                    onClick={() => hendleClick(post)}
+                  >
+                    {
+                      booleanValue && targetPost.id === post.id
+                        ? 'Close' : 'Open'
+                    }
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+};
