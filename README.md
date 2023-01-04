@@ -43,7 +43,7 @@ https://sapnachoudhary06.github.io/react_dynamic-list-of-posts/
 Clone the project
 
 ```bash
-  git clone https://github.com/sapnachoudhary06/react_people-table-basics.git
+  git clone https://github.com/sapnachoudhary06/react_dynamic-list-of-posts.git
 ```
 
 Go to the project directory
