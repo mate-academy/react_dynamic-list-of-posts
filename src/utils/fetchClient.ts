@@ -1,4 +1,5 @@
 const BASE_URL = 'https://mate.academy/students-api';
+// const BASE_URL = 'https://jsonplaceholder.typicode.com';
 
 // a promise resolved after a given delay
 function wait(delay: number) {
@@ -13,6 +14,7 @@ type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 function request<T>(
   url: string,
   method: RequestMethod = 'GET',
+  // eslint-disable-next-line
   data: any = null, // we can send any data to the server
 ): Promise<T> {
   const options: RequestInit = { method };
@@ -28,12 +30,20 @@ function request<T>(
   // for a demo purpose we emulate a delay to see if Loaders work
   return wait(300)
     .then(() => fetch(BASE_URL + url, options))
-    .then(response => response.json());
+    .then(response => {
+      if (!response.ok) {
+        throw new Error();
+      }
+
+      return response.json();
+    });
 }
 
 export const client = {
   get: <T>(url: string) => request<T>(url),
+  // eslint-disable-next-line
   post: <T>(url: string, data: any) => request<T>(url, 'POST', data),
+  // eslint-disable-next-line
   patch: <T>(url: string, data: any) => request<T>(url, 'PATCH', data),
   delete: (url: string) => request(url, 'DELETE'),
 };
