@@ -1,117 +1,130 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getComments, sendComment, deleteComment } from '../api/comments';
+import { Post } from '../types/Post';
+import { Comment, CommentData } from '../types/Comment';
+
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { CommentList } from './CommentsList';
 
-export const PostDetails: React.FC = () => {
+export type Props = {
+  post: Post,
+};
+
+export const PostDetails: React.FC<Props> = ({ post }) => {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [hasError, setHasError] = useState(false);
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [isWillNewComment, setIsWillNewComment] = useState(false);
+
+  const [newComment, setNewComment] = useState<CommentData | null>();
+  const [isLoadingNewComment, setIsLoadingNewComment] = useState(false);
+
+  async function loadComments() {
+    setIsLoadingComments(true);
+
+    try {
+      const commentsFromServer = await getComments(post.id);
+
+      setComments(commentsFromServer);
+    } catch {
+      setHasError(true);
+    } finally {
+      setIsLoadingComments(false);
+    }
+  }
+
+  useEffect(() => {
+    setComments([]);
+    loadComments();
+    setIsWillNewComment(false);
+  }, [post]);
+
+  async function sendNewCommentToServer(comment: CommentData) {
+    setIsLoadingNewComment(true);
+
+    try {
+      const commentToServer: Omit<Comment, 'id'> = {
+        ...comment,
+        postId: post.id,
+      };
+
+      const sendedComment = await sendComment(commentToServer);
+
+      setComments([
+        ...comments,
+        sendedComment,
+      ]);
+    } catch {
+      throw new Error('can not load new comment from server');
+    } finally {
+      setIsLoadingNewComment(false);
+    }
+  }
+
+  useEffect(() => {
+    if (newComment) {
+      sendNewCommentToServer(newComment);
+    }
+  }, [newComment]);
+
+  const onDeleteComment = async (commentId: number) => {
+    try {
+      await deleteComment(commentId);
+
+      setComments(comments.filter(comment => comment.id !== commentId));
+    } catch {
+      throw new Error('can not delete comment');
+    }
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {`#${post.id}: ${post.title}`}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            {post.body}
           </p>
         </div>
 
         <div className="block">
-          <Loader />
+          {isLoadingComments && <Loader />}
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
+          {comments && !isLoadingComments && (
+            <CommentList
+              comments={comments}
+              onDeleteComment={onDeleteComment}
+            />
+          )}
 
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
+          {hasError && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
             </div>
+          )}
 
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
+          {!isWillNewComment && !isLoadingComments && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setIsWillNewComment(true)}
             >
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
+        {isWillNewComment && (
+          <NewCommentForm
+            onChangeComment={setNewComment}
+            isLoading={isLoadingNewComment}
+          />
+        )}
       </div>
     </div>
   );
