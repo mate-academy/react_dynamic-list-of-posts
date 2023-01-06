@@ -21,9 +21,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [isLoadingNewComment, setIsLoadingNewComment] = useState(false);
 
   async function loadComments() {
-    try {
-      setIsLoadingComments(true);
+    setIsLoadingComments(true);
 
+    try {
       const commentsFromServer = await getComments(post.id);
 
       setComments(commentsFromServer);
