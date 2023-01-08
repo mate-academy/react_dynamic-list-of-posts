@@ -1,117 +1,167 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { deleteComment, getCommentsOfPost, postComment } from '../api/api';
+import { Post } from '../types/Post';
 import { Loader } from './Loader';
+import { Errors } from '../types/Errors';
+import { Comment, CommentData } from '../types/Comment';
 import { NewCommentForm } from './NewCommentForm';
 
-export const PostDetails: React.FC = () => {
+type Props = {
+  selectedPost: Post | null,
+  error: Errors,
+  setError: (error: Errors) => void,
+  isLoadingComments: boolean,
+  setIsLoadingComments: (isLoad: boolean) => void,
+};
+
+export const PostDetails: React.FC<Props> = ({
+  selectedPost, error, setError, isLoadingComments, setIsLoadingComments,
+}) => {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [isFormSubmiting, setIsFormSubmiting] = useState(false);
+
+  const isVisibleError = (
+    error === Errors.COMMENTS
+    || error === Errors.COMMENT_ADD
+    || error === Errors.COMMENT_DELETE
+  );
+
+  const loadComments = async () => {
+    if (selectedPost) {
+      try {
+        const commentsFromServer = await getCommentsOfPost(selectedPost.id);
+
+        setComments(commentsFromServer);
+      } catch {
+        setError(Errors.COMMENTS);
+      } finally {
+        setIsLoadingComments(false);
+      }
+    }
+  };
+
+  const sendNewComment = async (data: CommentData) => {
+    if (selectedPost) {
+      try {
+        setIsFormSubmiting(true);
+        const newComment = await postComment({
+          ...data,
+          postId: selectedPost.id,
+        });
+
+        setComments([
+          ...comments,
+          newComment,
+        ]);
+      } catch {
+        setError(Errors.COMMENT_ADD);
+      } finally {
+        setIsFormSubmiting(false);
+      }
+    }
+  };
+
+  const removeComment = async (commentId?: number) => {
+    if (commentId) {
+      deleteComment(commentId);
+
+      setComments(comments.filter(comment => comment.id !== commentId));
+    }
+  };
+
+  useEffect(() => {
+    loadComments();
+    setIsFormVisible(false);
+  }, [selectedPost]);
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {`#${selectedPost?.id}: ${selectedPost?.title}`}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            {selectedPost?.body}
           </p>
         </div>
 
         <div className="block">
-          <Loader />
+          {isLoadingComments
+            ? <Loader />
+            : (
+              <>
+                {isVisibleError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="CommentsError"
+                  >
+                    {error}
+                  </div>
+                )}
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
+                {!comments.length
+                && error !== Errors.COMMENTS
+                && (
+                  <p className="title is-4" data-cy="NoCommentsMessage">
+                    No comments yet
+                  </p>
+                )}
 
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
+                {comments.length > 0 && (
+                  <>
+                    <p className="title is-4">Comments:</p>
 
-          <p className="title is-4">Comments:</p>
+                    {comments.map(comment => (
+                      <article className="message is-small" data-cy="Comment">
+                        <div className="message-header">
+                          <a
+                            href={`mailto:${comment.email}`}
+                            data-cy="CommentAuthor"
+                          >
+                            {comment.name}
+                          </a>
+                          <button
+                            data-cy="CommentDelete"
+                            type="button"
+                            className="delete is-small"
+                            aria-label="delete"
+                            onClick={() => removeComment(comment.id)}
+                          >
+                            delete button
+                          </button>
+                        </div>
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
+                        <div className="message-body" data-cy="CommentBody">
+                          {comment.body}
+                        </div>
+                      </article>
+                    ))}
+                  </>
+                )}
 
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
-            >
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+                {!isFormVisible && (
+                  <button
+                    data-cy="WriteCommentButton"
+                    type="button"
+                    className="button is-link"
+                    onClick={() => setIsFormVisible(true)}
+                  >
+                    Write a comment
+                  </button>
+                )}
+              </>
+            )}
         </div>
 
-        <NewCommentForm />
+        {isFormVisible && (
+          <NewCommentForm
+            sendNewComment={sendNewComment}
+            isFormSubmiting={isFormSubmiting}
+          />
+        )}
       </div>
     </div>
   );
