@@ -5,10 +5,16 @@ import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[];
+  selectedPost: Post | null;
+  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
 };
 
 export const PostsList: React.FC<Props> = (props) => {
-  const { posts } = props;
+  const {
+    posts,
+    selectedPost,
+    setSelectedPost,
+  } = props;
 
   return (
     <div data-cy="PostsList">
@@ -25,26 +31,13 @@ export const PostsList: React.FC<Props> = (props) => {
 
         <tbody>
           {posts.map(post => (
-            <PostItem post={post} key={post.id} />
+            <PostItem
+              post={post}
+              key={post.id}
+              selectedPost={selectedPost}
+              setSelectedPost={setSelectedPost}
+            />
           ))}
-
-          {/* <tr data-cy="Post">
-            <td data-cy="PostId">18</td>
-
-            <td data-cy="PostTitle">
-              voluptate et itaque vero tempora molestiae
-            </td>
-
-            <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className="button is-link"
-              >
-                Close
-              </button>
-            </td>
-          </tr> */}
         </tbody>
       </table>
     </div>

@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-// import classNames from 'classnames';
+import cn from 'classnames';
 
 import { PostsList } from './components/PostsList';
-// import { PostDetails } from './components/PostDetails';
+import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 
@@ -21,6 +21,7 @@ export const App: React.FC = () => {
   const [isPostsLoading, setIsPostsLoading] = useState(false);
   const [isLoadingPostsFinish, setIsLoadingPostsFinish] = useState(false);
   const [isErrorOnPostsLoading, setIsErrorOnPostsLoading] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const loadUsers = async () => {
     try {
@@ -108,26 +109,35 @@ export const App: React.FC = () => {
                   )}
 
                 {posts.length > 0 && isLoadingPostsFinish && (
-                  <PostsList posts={posts} />
+                  <PostsList
+                    posts={posts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
+                  />
                 )}
               </div>
             </div>
           </div>
 
-          {/* <div
+          <div
             data-cy="Sidebar"
-            className={classNames(
+            className={cn(
               'tile',
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              {
+                'Sidebar--open': selectedPost && selectedUser
+                  && selectedPost.userId === selectedUser.id,
+              },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
-          </div> */}
+            {selectedPost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails post={selectedPost} />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </main>
