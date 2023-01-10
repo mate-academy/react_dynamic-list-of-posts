@@ -25,22 +25,6 @@ export const NewCommentForm: React.FC<Props> = (props) => {
     return Boolean(value.trim());
   };
 
-  const isInputsValid = () => {
-    if (!isValidValue(author)) {
-      setIsErrorOnAuthor(true);
-    }
-
-    if (!isValidValue(email)) {
-      setIsErrorOnEmail(true);
-    }
-
-    if (!isValidValue(comment)) {
-      setIsErrorOnComment(true);
-    }
-
-    return isErrorOnAuthor && isErrorOnComment && isErrorOnEmail;
-  };
-
   const addNewComment = async (newComment: Omit<Comment, 'id'>) => {
     try {
       setIsLoading(true);
@@ -61,18 +45,32 @@ export const NewCommentForm: React.FC<Props> = (props) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (isInputsValid()) {
+    if (!isValidValue(author)) {
+      setIsErrorOnAuthor(true);
+    }
+
+    if (!isValidValue(email)) {
+      setIsErrorOnEmail(true);
+    }
+
+    if (!isValidValue(comment)) {
+      setIsErrorOnComment(true);
+    }
+
+    if (isErrorOnAuthor || isErrorOnEmail || isErrorOnComment) {
       return;
     }
 
-    addNewComment({
-      postId: post.id,
-      name: author,
-      email,
-      body: comment,
-    });
+    if (!isErrorOnAuthor && !isErrorOnEmail && !isErrorOnComment) {
+      addNewComment({
+        postId: post.id,
+        name: author,
+        email,
+        body: comment,
+      });
 
-    setComment('');
+      setComment('');
+    }
   };
 
   const handleClear = () => {
