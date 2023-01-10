@@ -57,20 +57,21 @@ export const NewCommentForm: React.FC<Props> = (props) => {
       setIsErrorOnComment(true);
     }
 
-    if (isErrorOnAuthor || isErrorOnEmail || isErrorOnComment) {
+    if (!isValidValue(author)
+      || !isValidValue(email)
+      || !isValidValue(comment)
+    ) {
       return;
     }
 
-    if (!isErrorOnAuthor && !isErrorOnEmail && !isErrorOnComment) {
-      addNewComment({
-        postId: post.id,
-        name: author,
-        email,
-        body: comment,
-      });
+    addNewComment({
+      postId: post.id,
+      name: author,
+      email,
+      body: comment,
+    });
 
-      setComment('');
-    }
+    setComment('');
   };
 
   const handleClear = () => {
