@@ -35,14 +35,14 @@ export const PostDetails: React.FC<Props> = ({
       setHasComments(false);
 
       client.get<Comment[]>(`/comments?postId=${currentPost.id}`)
-        .then(response => {
+        .then(commentsItems => {
           setIsLoading(false);
 
-          if (!response.length) {
+          if (!commentsItems.length) {
             setHasComments(true);
           }
 
-          setComments(response);
+          setComments(commentsItems);
         })
         .catch(handleError);
     }

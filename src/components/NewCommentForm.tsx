@@ -63,10 +63,10 @@ export const NewCommentForm: React.FC<Props> = ({
         body: textAreaValue,
       },
     )
-      .then(response => {
+      .then(comment => {
         setComments(currentComments => [
           ...currentComments,
-          response,
+          comment,
         ]);
         reset();
       })

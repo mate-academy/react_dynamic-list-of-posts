@@ -15,7 +15,7 @@ export const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<null | User>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
-  const [postsUser, setPostsUser] = useState<Post[]>([]);
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [hasError, setHasError] = useState(false);
   const [isNoPosts, setIsNoPosts] = useState(false);
   const [isSideBar, setIsSideBar] = useState(false);
@@ -24,8 +24,8 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     client.get<User[]>('/users')
-      .then(response => {
-        setUsers(response);
+      .then(usersItems => {
+        setUsers(usersItems);
       })
       .catch(() => setHasError(true));
   }, []);
@@ -37,12 +37,12 @@ export const App: React.FC = () => {
       setIsSideBar(false);
 
       client.get<Post[]>(`/posts?userId=${selectedUser.id}`)
-        .then(response => {
-          if (response.length === 0) {
+        .then(posts => {
+          if (posts.length === 0) {
             setIsNoPosts(true);
           }
 
-          setPostsUser(response);
+          setUserPosts(posts);
         })
         .catch(() => setHasError(true))
         .finally(() => setIsLoading(false));
@@ -86,7 +86,7 @@ export const App: React.FC = () => {
                   <PostsList
                     isSideBar={isSideBar}
                     setIsSideBar={setIsSideBar}
-                    postsUser={postsUser}
+                    userPosts={userPosts}
                     currentPost={currentPost}
                     setCurrentPost={setCurrentPost}
                     setHasCommentForm={setHasCommentForm}

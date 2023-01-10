@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { Post } from '../types/Post';
 
 type Props = {
-  postsUser: Post[];
+  userPosts: Post[];
   setIsSideBar: React.Dispatch<React.SetStateAction<boolean>>,
   isSideBar: boolean,
   currentPost: Post | null,
@@ -12,14 +12,14 @@ type Props = {
 };
 
 export const PostsList: React.FC<Props> = ({
-  postsUser,
+  userPosts,
   setIsSideBar,
   isSideBar,
   currentPost,
   setCurrentPost,
   setHasCommentForm,
 }) => {
-  if (postsUser.length === 0) {
+  if (userPosts.length === 0) {
     return null;
   }
 
@@ -53,7 +53,7 @@ export const PostsList: React.FC<Props> = ({
         </thead>
 
         <tbody>
-          {postsUser.map(post => (
+          {userPosts.map(post => (
             <tr
               key={post.id}
               data-cy="Post"
