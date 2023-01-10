@@ -39,7 +39,9 @@ export const PostDetails: React.FC<Props> = (props) => {
 
   useEffect(() => {
     loadComments();
+    setComments([]);
     setIsLoadingFinish(false);
+    setIsButtonClicked(false);
   }, [post]);
 
   return (
@@ -98,7 +100,12 @@ export const PostDetails: React.FC<Props> = (props) => {
           )}
         </div>
 
-        {isButtonClicked && <NewCommentForm />}
+        {isButtonClicked && (
+          <NewCommentForm
+            setComments={setComments}
+            post={post}
+          />
+        )}
       </div>
     </div>
   );
