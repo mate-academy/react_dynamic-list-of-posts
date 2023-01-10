@@ -1,13 +1,22 @@
 import React from 'react';
 
 import { Comment } from '../types/Comment';
+import { deleteComment } from '../api/comments';
 
 type Props = {
   comment: Comment;
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
 };
 
 export const CommentItem: React.FC<Props> = (props) => {
-  const { comment } = props;
+  const { comment, setComments } = props;
+
+  const removeComment = (commentId: number) => {
+    deleteComment(commentId);
+    setComments(currentComments => currentComments.filter(item => {
+      return item.id !== commentId;
+    }));
+  };
 
   return (
     <article className="message is-small" data-cy="Comment">
@@ -23,6 +32,7 @@ export const CommentItem: React.FC<Props> = (props) => {
           type="button"
           className="delete is-small"
           aria-label="delete"
+          onClick={() => removeComment(comment.id)}
         >
           delete button
         </button>

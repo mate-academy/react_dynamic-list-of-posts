@@ -83,7 +83,11 @@ export const PostDetails: React.FC<Props> = (props) => {
               <p className="title is-4">Comments:</p>
 
               {comments.map(comment => (
-                <CommentItem comment={comment} key={comment.id} />
+                <CommentItem
+                  comment={comment}
+                  key={comment.id}
+                  setComments={setComments}
+                />
               ))}
             </>
           )}

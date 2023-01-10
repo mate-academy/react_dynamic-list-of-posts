@@ -8,3 +8,7 @@ export const getComments = async (postId: number) => {
 export const addComment = async (newComment: Omit<Comment, 'id'>) => {
   return client.post<Comment>('/comments', newComment);
 };
+
+export const deleteComment = async (commentId: number) => {
+  return client.delete(`/comments/${commentId}`);
+};
