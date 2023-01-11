@@ -1,6 +1,8 @@
-export interface User {
+interface User {
   id: number;
   name: string;
   email: string;
   phone: string;
 }
+
+export default User;
