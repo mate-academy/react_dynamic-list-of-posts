@@ -1,15 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-
 import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { User } from './types/User';
+import { client } from './utils/fetchClient';
+import { Post } from './types/Post';
 
 export const App: React.FC = () => {
+  const [selectedUser, setSelectedUser] = useState<null | User>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
+  const [hasError, setHasError] = useState(false);
+  const [isNoPosts, setIsNoPosts] = useState(false);
+  const [isSideBar, setIsSideBar] = useState(false);
+  const [currentPost, setCurrentPost] = useState<Post | null>(null);
+  const [hasCommentForm, setHasCommentForm] = useState(false);
+
+  useEffect(() => {
+    client.get<User[]>('/users')
+      .then(setUsers)
+      .catch(() => setHasError(true));
+  }, []);
+
+  useEffect(() => {
+    if (selectedUser) {
+      setIsLoading(true);
+      setIsNoPosts(false);
+      setIsSideBar(false);
+
+      client.get<Post[]>(`/posts?userId=${selectedUser.id}`)
+        .then(posts => {
+          if (posts.length === 0) {
+            setIsNoPosts(true);
+          }
+
+          setUserPosts(posts);
+        })
+        .catch(() => setHasError(true))
+        .finally(() => setIsLoading(false));
+    }
+  }, [selectedUser]);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,28 +54,42 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  users={users}
+                  setSelectedUser={setSelectedUser}
+                  selectedUser={selectedUser}
+                />
               </div>
-
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
-
-                <Loader />
-
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
-
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
+                {isLoading && <Loader />}
+                {hasError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
+                {isNoPosts && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
+                {!isLoading && (
+                  <PostsList
+                    isSideBar={isSideBar}
+                    setIsSideBar={setIsSideBar}
+                    userPosts={userPosts}
+                    currentPost={currentPost}
+                    setCurrentPost={setCurrentPost}
+                    setHasCommentForm={setHasCommentForm}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -50,11 +101,15 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': isSideBar },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              <PostDetails
+                currentPost={currentPost}
+                hasCommentForm={hasCommentForm}
+                setHasCommentForm={setHasCommentForm}
+              />
             </div>
           </div>
         </div>
