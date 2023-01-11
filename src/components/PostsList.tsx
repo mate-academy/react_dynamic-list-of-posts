@@ -5,8 +5,8 @@ import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[];
-  selectedPost: Post | null;
-  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
+  selectedPost: Post | undefined;
+  setSelectedPost: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
 export const PostsList: React.FC<Props> = (props) => {

@@ -5,8 +5,8 @@ import { User } from '../types/User';
 
 type Props = {
   users: User[];
-  selectedUser: User | null;
-  onSelect: React.Dispatch<React.SetStateAction<User | null>>;
+  selectedUser: User | undefined;
+  onSelect: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
 export const UserSelector: React.FC<Props> = (props) => {
@@ -76,7 +76,7 @@ export const UserSelector: React.FC<Props> = (props) => {
                 { 'is-active': selectedUser?.id === user.id },
               )}
               onClick={() => {
-                onSelect(user);
+                onSelect(user.id);
                 setIsDropdownOpened(false);
               }}
             >

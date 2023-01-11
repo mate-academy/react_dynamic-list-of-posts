@@ -17,11 +17,11 @@ import { Post } from './types/Post';
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [isPostsLoading, setIsPostsLoading] = useState(false);
   const [isLoadingPostsFinish, setIsLoadingPostsFinish] = useState(false);
   const [isErrorOnPostsLoading, setIsErrorOnPostsLoading] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
 
   const loadUsers = async () => {
     try {
@@ -56,11 +56,15 @@ export const App: React.FC = () => {
     }
   };
 
+  const selectedUser = users.find(user => user.id === selectedUserId);
+
   useEffect(() => {
     if (selectedUser) {
       loadPosts(selectedUser.id);
     }
   }, [selectedUser]);
+
+  const selectedPost = posts.find(post => post.id === selectedPostId);
 
   return (
     <main className="section">
@@ -72,7 +76,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   users={users}
                   selectedUser={selectedUser}
-                  onSelect={setSelectedUser}
+                  onSelect={setSelectedUserId}
                 />
               </div>
 
@@ -112,7 +116,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}
-                    setSelectedPost={setSelectedPost}
+                    setSelectedPost={setSelectedPostId}
                   />
                 )}
               </div>
