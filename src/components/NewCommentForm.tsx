@@ -36,6 +36,14 @@ export const NewCommentForm: React.FC<Props> = ({
     e: React.ChangeEvent<HTMLInputElement>,
   ) => setNameValue(e.currentTarget.value);
 
+  const reset = () => {
+    setNameValue('');
+    setEmailValue('');
+    setTextAreaValue('');
+    setIsClickSubmit(false);
+    setIsLoading(false);
+  };
+
   const handleClickAddComment = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
@@ -47,12 +55,6 @@ export const NewCommentForm: React.FC<Props> = ({
     }
 
     setIsLoading(true);
-
-    const reset = () => {
-      setTextAreaValue('');
-      setIsClickSubmit(false);
-      setIsLoading(false);
-    };
 
     client.post<Comment>(
       '/comments',

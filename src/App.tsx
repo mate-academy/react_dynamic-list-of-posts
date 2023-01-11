@@ -24,9 +24,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     client.get<User[]>('/users')
-      .then(usersItems => {
-        setUsers(usersItems);
-      })
+      .then(setUsers)
       .catch(() => setHasError(true));
   }, []);
 
