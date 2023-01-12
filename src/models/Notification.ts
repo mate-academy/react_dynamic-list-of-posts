@@ -1,7 +1,9 @@
+import { SnackbarKey, SharedProps } from 'notistack';
+
 interface Notification {
-  key: string;
+  key: SnackbarKey;
   message: string;
-  options?: any;
+  options?: SharedProps;
   dismissed?: boolean;
 }
 

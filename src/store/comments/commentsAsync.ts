@@ -5,7 +5,6 @@ import { client } from 'utilities/axiosClient';
 const endpoint = '/comments';
 
 const CommentsAsync = {
-  // Fetch comments
   fetchComments: createAsyncThunk(
     'comments/fetchComments',
     async (postId: number) => {
@@ -14,7 +13,6 @@ const CommentsAsync = {
       return comments;
     },
   ),
-  // Create comment
   createComment: createAsyncThunk(
     'comments/createComment',
     async (commentData: Omit<Comment, 'id'>) => {
@@ -23,7 +21,6 @@ const CommentsAsync = {
       return data as Comment;
     },
   ),
-  // Delete comment
   deleteComment: createAsyncThunk(
     'comments/deleteComment',
     async (commentId: number) => {

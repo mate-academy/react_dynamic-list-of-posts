@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { useAppDispatch } from 'hooks/useRedux';
 import Comment from 'models/Comment';
 import CommentsAsync from 'store/comments/commentsAsync';
-import { UiActions } from 'store/ui/uiSlice';
+import { uiActions } from 'store/ui/uiSlice';
 
 type Props = {
   comment: Comment;
@@ -18,7 +18,7 @@ const CommentItem:FC<Props> = ({ comment }) => {
     dispatch(CommentsAsync.deleteComment(comment.id))
       .unwrap()
       .then(() => {
-        dispatch(UiActions.enqueueSnackbar({
+        dispatch(uiActions.enqueueSnackbar({
           message: 'Comment has been removed',
         }));
       })
@@ -26,7 +26,7 @@ const CommentItem:FC<Props> = ({ comment }) => {
   };
 
   return (
-    <article
+    <section
       className="message is-small"
       data-cy="Comment"
     >
@@ -50,7 +50,7 @@ const CommentItem:FC<Props> = ({ comment }) => {
       <div className="message-body" data-cy="CommentBody">
         {comment.body}
       </div>
-    </article>
+    </section>
   );
 };
 

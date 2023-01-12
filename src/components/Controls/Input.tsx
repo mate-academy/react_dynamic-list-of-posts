@@ -12,8 +12,13 @@ type Props = {
 };
 
 const Input:FC<Props> = ({
-  label, placeholder = '', value, onChange,
-  error = false, errorText = '', required = false,
+  label,
+  placeholder = '',
+  value,
+  onChange,
+  error = false,
+  errorText = '',
+  required = false,
 }) => {
   return (
     <div className="field" data-cy="NameField">

@@ -4,7 +4,7 @@ import StorageService from 'services/StorageService';
 import { Controller, useForm } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from 'hooks/useRedux';
 import CommentsAsync from 'store/comments/commentsAsync';
-import { UiActions } from 'store/ui/uiSlice';
+import { uiActions } from 'store/ui/uiSlice';
 import { selectSelectedPost } from 'store/posts/postsSelectors';
 import { isEmailValid, isFieldRequired, isLength } from 'utilities/Validation';
 import Input from 'components/Controls/Input';
@@ -54,7 +54,7 @@ export const NewCommentForm: React.FC = () => {
     dispatch(CommentsAsync.createComment(nexData))
       .unwrap()
       .then(() => {
-        dispatch(UiActions.enqueueSnackbar({
+        dispatch(uiActions.enqueueSnackbar({
           message: 'Comment has been added',
         }));
         StorageService.setUser({ name, email });

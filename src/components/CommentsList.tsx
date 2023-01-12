@@ -20,13 +20,13 @@ const CommentsList:FC = () => {
   }
 
   return (
-    <>
+    <article style={{ marginBottom: '1.5rem' }}>
       <p className="title is-4">Comments:</p>
 
       {comments.map(comment => (
         <CommentItem key={comment.id} comment={comment} />
       ))}
-    </>
+    </article>
   );
 };
 

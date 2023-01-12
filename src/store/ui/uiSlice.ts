@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import Notification from 'models/Notification';
+import { SnackbarKey } from 'notistack';
 import { v4 as uuid } from 'uuid';
 
 export interface State {
@@ -26,7 +27,7 @@ const uiSlice = createSlice({
     },
     closeSnackbar: (
       state:State,
-      action:PayloadAction<{ key:string, dismissAll:boolean }>,
+      action:PayloadAction<{ key:SnackbarKey, dismissAll:boolean }>,
     ) => {
       state.notifications = state.notifications
         .map((notification:Notification) => (
@@ -35,7 +36,7 @@ const uiSlice = createSlice({
             : notification
         ));
     },
-    removeSnackbar: (state, action:PayloadAction<string>) => {
+    removeSnackbar: (state, action:PayloadAction<SnackbarKey>) => {
       state.notifications = state.notifications
         .filter((notification:Notification) => (
           notification.key !== action.payload
@@ -44,6 +45,6 @@ const uiSlice = createSlice({
   },
 });
 
-export const UiActions = uiSlice.actions;
+export const uiActions = uiSlice.actions;
 
 export default uiSlice.reducer;

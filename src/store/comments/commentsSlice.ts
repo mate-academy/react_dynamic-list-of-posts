@@ -22,14 +22,12 @@ export const commentsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch comments
       .addCase(
         CommentsAsync.fetchComments.fulfilled,
         (state: State, action: PayloadAction<Comment[]>) => {
           state.comments = action.payload;
         },
       )
-      // Create comment
       .addCase(
         CommentsAsync.createComment.fulfilled,
         (state: State, action:PayloadAction<Comment>) => {
@@ -38,7 +36,6 @@ export const commentsSlice = createSlice({
             : [action.payload];
         },
       )
-      // Delete comment
       .addCase(
         CommentsAsync.deleteComment.fulfilled,
         (state: State, action) => {

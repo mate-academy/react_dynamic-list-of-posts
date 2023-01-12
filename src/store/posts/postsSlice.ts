@@ -27,7 +27,6 @@ export const postsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch posts
       .addCase(
         PostsAsync.fetchPosts.fulfilled,
         (state: State, action: PayloadAction<Post[]>) => {

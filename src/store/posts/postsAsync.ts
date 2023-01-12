@@ -5,7 +5,6 @@ import { client } from 'utilities/axiosClient';
 const endpoint = '/posts';
 
 const PostsAsync = {
-  // Fetch posts
   fetchPosts: createAsyncThunk('posts/fetchPosts', async (userId: number) => {
     const posts: Post[] = await client.get(`${endpoint}?userId=${userId}`);
 

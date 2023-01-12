@@ -4,7 +4,7 @@ import NotificationStatus from 'types/NotificationStatus';
 import PostsAsync from 'store/posts/postsAsync';
 import { selectPosts } from 'store/posts/postsSelectors';
 import { postsActions } from 'store/posts/postsSlice';
-import { UiActions } from 'store/ui/uiSlice';
+import { uiActions } from 'store/ui/uiSlice';
 import PostItem from './PostItem';
 import Loader from './Loader';
 
@@ -23,7 +23,7 @@ export const PostsList: React.FC<Props> = ({ authorId }) => {
     dispatch(PostsAsync.fetchPosts(authorId))
       .unwrap()
       .catch((e) => {
-        dispatch(UiActions.enqueueSnackbar({
+        dispatch(uiActions.enqueueSnackbar({
           message: e.message,
           options: { variant: NotificationStatus.Error },
         }));
