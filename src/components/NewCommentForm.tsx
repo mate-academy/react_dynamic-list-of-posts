@@ -1,99 +1,146 @@
-import React from 'react';
+import React, { useState } from 'react';
+import classNames from 'classnames';
+import StorageService from 'services/StorageService';
+import { Controller, useForm } from 'react-hook-form';
+import { useAppDispatch, useAppSelector } from 'hooks/useRedux';
+import CommentsAsync from 'store/comments/commentsAsync';
+import { uiActions } from 'store/ui/uiSlice';
+import { selectSelectedPost } from 'store/posts/postsSelectors';
+import { isEmailValid, isFieldRequired, isLength } from 'utilities/Validation';
+import Input from 'components/Controls/Input';
+import Textarea from './Controls/Textarea';
+
+interface Form {
+  name: string,
+  email: string,
+  body: string,
+}
 
 export const NewCommentForm: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  const selectedPost = useAppSelector(selectSelectedPost);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const {
+    handleSubmit, control, reset,
+    formState: { errors },
+  } = useForm<Form>({
+    defaultValues: {
+      name: StorageService.getUser().name || '',
+      email: StorageService.getUser().email || '',
+      body: '',
+    },
+  });
+
+  const handleReset = () => {
+    reset({
+      name: StorageService.getUser().name || '',
+      email: StorageService.getUser().email || '',
+      body: '',
+    });
+  };
+
+  const onSubmit = handleSubmit((data: Form) => {
+    if (!selectedPost) {
+      return;
+    }
+
+    const { name, email } = data;
+
+    setLoading(true);
+    const nexData = { ...data, postId: selectedPost?.id };
+
+    dispatch(CommentsAsync.createComment(nexData))
+      .unwrap()
+      .then(() => {
+        dispatch(uiActions.enqueueSnackbar({
+          message: 'Comment has been added',
+        }));
+        StorageService.setUser({ name, email });
+      })
+      .then(() => handleReset())
+      .finally(() => setLoading(false));
+  });
+
   return (
-    <form data-cy="NewCommentForm">
-      <div className="field" data-cy="NameField">
-        <label className="label" htmlFor="comment-author-name">
-          Author Name
-        </label>
-
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="name"
-            id="comment-author-name"
+    <form
+      onSubmit={onSubmit}
+      noValidate
+      data-cy="NewCommentForm"
+    >
+      <Controller
+        control={control}
+        name="name"
+        rules={{ required: isFieldRequired }}
+        render={({ field: { onChange, value } }) => (
+          <Input
+            label="Author Name"
             placeholder="Name Surname"
-            className="input is-danger"
+            value={value}
+            onChange={onChange}
+            required
+            error={!!errors.name}
+            errorText={errors.name?.message || ''}
           />
-
-          <span className="icon is-small is-left">
-            <i className="fas fa-user" />
-          </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
-      </div>
-
-      <div className="field" data-cy="EmailField">
-        <label className="label" htmlFor="comment-author-email">
-          Author Email
-        </label>
-
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="email"
-            id="comment-author-email"
+        )}
+      />
+      <Controller
+        control={control}
+        name="email"
+        rules={{ required: isFieldRequired, pattern: isEmailValid }}
+        render={({ field: { onChange, value } }) => (
+          <Input
+            label="Author Email"
             placeholder="email@test.com"
-            className="input is-danger"
+            value={value}
+            onChange={onChange}
+            required
+            error={!!errors.email}
+            errorText={errors.email?.message || ''}
           />
-
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
-          </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
-      </div>
-
-      <div className="field" data-cy="BodyField">
-        <label className="label" htmlFor="comment-body">
-          Comment Text
-        </label>
-
-        <div className="control">
-          <textarea
-            id="comment-body"
-            name="body"
+        )}
+      />
+      <Controller
+        control={control}
+        name="body"
+        rules={{
+          required: isFieldRequired,
+          validate: {
+            minLength: (value) => isLength(value, 12),
+          },
+        }}
+        render={({ field: { onChange, value } }) => (
+          <Textarea
+            label="Comment Text"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            value={value}
+            onChange={onChange}
+            required
+            error={!!errors.body}
+            errorText={errors.body?.message || ''}
           />
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
-      </div>
+        )}
+      />
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={classNames('button', 'is-link', {
+              'is-loading': loading,
+            })}
+          >
             Add
           </button>
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="button"
+            onClick={handleReset}
+            className="button is-link is-light"
+          >
             Clear
           </button>
         </div>

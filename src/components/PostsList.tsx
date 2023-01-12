@@ -1,85 +1,75 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from 'hooks/useRedux';
+import NotificationStatus from 'types/NotificationStatus';
+import PostsAsync from 'store/posts/postsAsync';
+import { selectPosts } from 'store/posts/postsSelectors';
+import { postsActions } from 'store/posts/postsSlice';
+import { uiActions } from 'store/ui/uiSlice';
+import PostItem from './PostItem';
+import Loader from './Loader';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+type Props = {
+  authorId: number;
+};
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+export const PostsList: React.FC<Props> = ({ authorId }) => {
+  const dispatch = useAppDispatch();
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+  const posts = useAppSelector(selectPosts);
+  const [loading, setLoading] = useState<boolean>(false);
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+  useEffect(() => {
+    setLoading(true);
+    dispatch(PostsAsync.fetchPosts(authorId))
+      .unwrap()
+      .catch((e) => {
+        dispatch(uiActions.enqueueSnackbar({
+          message: e.message,
+          options: { variant: NotificationStatus.Error },
+        }));
+      })
+      .finally(() => setLoading(false));
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+    return () => {
+      dispatch(postsActions.setInitialField('posts'));
+    };
+  }, [authorId]);
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+  if (loading) {
+    return <Loader />;
+  }
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+  if (!posts) {
+    return null;
+  }
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
+  if (!posts.length) {
+    return (
+      <div className="notification is-warning" data-cy="NoPostsYet">
+        No posts yet
+      </div>
+    );
+  }
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            <th> </th>
+          </tr>
+        </thead>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+        <tbody>
+          {posts.map(post => (
+            <PostItem key={post.id} post={post} />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};

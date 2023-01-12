@@ -1,10 +1,10 @@
-.Loader {
+.loader {
   display: flex;
   width: 100%;
   justify-content: center;
   align-items: center;
 
-  &__content {
+  &-content {
     border-radius: 50%;
     width: 2em;
     height: 2em;
