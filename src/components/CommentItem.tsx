@@ -26,7 +26,7 @@ const CommentItem:FC<Props> = ({ comment }) => {
   };
 
   return (
-    <section
+    <li
       className="message is-small"
       data-cy="Comment"
     >
@@ -50,7 +50,7 @@ const CommentItem:FC<Props> = ({ comment }) => {
       <div className="message-body" data-cy="CommentBody">
         {comment.body}
       </div>
-    </section>
+    </li>
   );
 };
 
