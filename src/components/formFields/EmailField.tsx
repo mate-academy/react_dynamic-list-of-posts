@@ -19,7 +19,7 @@ export const EmailField: FC<Props> = ({
   setIsEmailEmptyError,
   setIsEmailValid,
 }) => {
-  const onEmailChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
     setIsEmailEmptyError(false);
     setIsEmailValid(true);
@@ -42,7 +42,7 @@ export const EmailField: FC<Props> = ({
             { 'is-danger': isEmailEmptyError || !isEmailValid },
           )}
           value={email}
-          onChange={onEmailChangeHandler}
+          onChange={handleEmailChange}
         />
 
         <span className="icon is-small is-left">

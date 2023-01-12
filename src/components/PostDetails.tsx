@@ -22,8 +22,8 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const [isAddingError, setIsAddingError] = useState(false);
 
   const isNoComments = areCommentsLoaded
-  && comments
-  && comments.length < 1;
+    && comments
+    && comments.length < 1;
   const postId = selectedPost?.id;
   const isCommentContentRendered = !!comments.length && !isLoader;
 
@@ -85,9 +85,13 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             )}
 
             {isCommentContentRendered && comments.map((comment) => {
+              const generateKey = (pre: string) => {
+                return `${pre}_${new Date().getTime()}`;
+              };
+
               return (
                 <CommentContent
-                  key={comment.id}
+                  key={generateKey(comment.name)}
                   comment={comment}
                   setComments={setComments}
                   setIsDeleteError={setIsDeleteError}

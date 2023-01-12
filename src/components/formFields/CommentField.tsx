@@ -14,7 +14,7 @@ export const CommentField: FC<Props> = ({
   setComment,
   setIsCommentEmptyError,
 }) => {
-  const onCommentChangeHandler = (
+  const handleCommentChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     setComment(event.target.value);
@@ -37,7 +37,7 @@ export const CommentField: FC<Props> = ({
             { 'is-danger': isCommentEmptyError },
           )}
           value={comment}
-          onChange={onCommentChangeHandler}
+          onChange={handleCommentChange}
         />
       </div>
 

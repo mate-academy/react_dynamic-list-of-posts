@@ -26,8 +26,8 @@ export const App: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const noPostsCondition = isLoadingCompleted
-  && !isLoadingErorr
-  && posts.length < 1;
+    && !isLoadingErorr
+    && posts.length < 1;
 
   const fetchUsers = async (): Promise<void> => {
     try {

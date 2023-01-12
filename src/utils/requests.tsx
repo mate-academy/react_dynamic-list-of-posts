@@ -1,4 +1,4 @@
-import { Comment } from '../types/Comment';
+import { Comment, NewComment } from '../types/Comment';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 import { client } from './fetchClient';
@@ -15,7 +15,7 @@ export const getComments = (postId: number): Promise<Comment[]> => {
   return client.get(`/comments?postId=${postId}`);
 };
 
-export const postComment = async (newComment: Comment) => {
+export const postComment = (newComment: NewComment): Promise<Comment> => {
   return client.post('/comments', newComment);
 };
 

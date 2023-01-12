@@ -70,7 +70,6 @@ export const UserSelector: React.FC<Props> = ({
             {selectedUserId === -1
               ? 'Choose a user'
               : selectedUserName}
-
           </span>
 
           <span className="icon is-small">

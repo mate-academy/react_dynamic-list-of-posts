@@ -26,11 +26,10 @@ export const CommentContent: FC<Props> = ({
 
   const handleDeleteComment = async (commentId: number) => {
     try {
-      setComments((prevComments) => prevComments
-        .filter(el => el.id !== commentId));
-
       await deleteComment(commentId);
 
+      setComments((prevComments) => prevComments
+        .filter(el => el.id !== commentId));
       setCommentsBeforeFilter((prevComments) => prevComments
         .filter(el => el.id !== commentId));
     } catch {

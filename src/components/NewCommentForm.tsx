@@ -31,8 +31,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const [isEmailValid, setIsEmailValid] = useState(true);
 
   const newComment = {
-    id: selectedPost.id,
-    postId: +new Date(),
+    postId: selectedPost.id,
     name,
     email,
     body: comment,
@@ -74,10 +73,11 @@ export const NewCommentForm: React.FC<Props> = ({
       setIsOnSubmitLoading(true);
 
       try {
-        await postComment(newComment);
-        setComments((prev: Comment[]): Comment[] => [...prev, newComment]);
+        const postedComment: Comment = await postComment(newComment);
+
+        setComments((prev) => [...prev, postedComment]);
         setCommentsBeforeFilter(
-          (prev: Comment[]): Comment[] => [...prev, newComment],
+          (prev) => [...prev, postedComment],
         );
 
         setIsOnSubmitLoading(false);
