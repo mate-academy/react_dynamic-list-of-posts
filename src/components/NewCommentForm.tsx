@@ -1,99 +1,134 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { postComment } from '../utils/requests';
+import { Comment } from '../types/Comment';
+import { validateEmail } from '../utils/validateEmail';
+import { NameField } from './formFields/NameField';
+import { EmailField } from './formFields/EmailField';
+import { CommentField } from './formFields/CommentField';
+import { SubmitButton } from './formFields/SubmitButton';
+import { Post } from '../types/Post';
 
-export const NewCommentForm: React.FC = () => {
+type Props = {
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
+  setCommentsBeforeFilter: React.Dispatch<React.SetStateAction<Comment[]>>,
+  setIsAddingError: React.Dispatch<React.SetStateAction<boolean>>,
+  selectedPost: Post,
+};
+
+export const NewCommentForm: React.FC<Props> = ({
+  setComments,
+  setCommentsBeforeFilter,
+  setIsAddingError,
+  selectedPost,
+}) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [comment, setComment] = useState('');
+  const [isOnSubmitLoading, setIsOnSubmitLoading] = useState(false);
+  const [isNameEmptyError, setIsNameEmptyError] = useState(false);
+  const [isEmailEmptyError, setIsEmailEmptyError] = useState(false);
+  const [isCommentEmptyError, setIsCommentEmptyError] = useState(false);
+  const [isEmailValid, setIsEmailValid] = useState(true);
+
+  const newComment = {
+    postId: selectedPost.id,
+    name,
+    email,
+    body: comment,
+  };
+
+  const handleResetForm = () => {
+    setName('');
+    setEmail('');
+    setComment('');
+  };
+
+  const checkIfError = (a: string, b: string, c: string) => {
+    return a && b && c;
+  };
+
+  const setErrorIfEmpty = (
+    value: string,
+    setter: React.Dispatch<React.SetStateAction<boolean>>,
+  ) => {
+    if (!value) {
+      setter(true);
+    }
+  };
+
+  const handleOnSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    setErrorIfEmpty(name, setIsNameEmptyError);
+    setErrorIfEmpty(email, setIsEmailEmptyError);
+    setErrorIfEmpty(comment, setIsCommentEmptyError);
+
+    if (!validateEmail(email)) {
+      setIsEmailValid(false);
+
+      return;
+    }
+
+    if (checkIfError(name, email, comment)) {
+      setIsOnSubmitLoading(true);
+
+      try {
+        const postedComment: Comment = await postComment(newComment);
+
+        setComments((prev) => [...prev, postedComment]);
+        setCommentsBeforeFilter(
+          (prev) => [...prev, postedComment],
+        );
+
+        setIsOnSubmitLoading(false);
+      } catch {
+        setIsAddingError(true);
+        setIsOnSubmitLoading(false);
+      } finally {
+        setComment('');
+        setIsOnSubmitLoading(false);
+      }
+    }
+  };
+
   return (
-    <form data-cy="NewCommentForm">
-      <div className="field" data-cy="NameField">
-        <label className="label" htmlFor="comment-author-name">
-          Author Name
-        </label>
+    <form
+      data-cy="NewCommentForm"
+      onSubmit={handleOnSubmit}
+    >
+      <NameField
+        isNameEmptyError={isNameEmptyError}
+        setIsNameEmptyError={setIsNameEmptyError}
+        name={name}
+        setName={setName}
+      />
 
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="name"
-            id="comment-author-name"
-            placeholder="Name Surname"
-            className="input is-danger"
-          />
+      <EmailField
+        isEmailValid={isEmailValid}
+        setIsEmailValid={setIsEmailValid}
+        setIsEmailEmptyError={setIsEmailEmptyError}
+        setEmail={setEmail}
+        isEmailEmptyError={isEmailEmptyError}
+        email={email}
+      />
 
-          <span className="icon is-small is-left">
-            <i className="fas fa-user" />
-          </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
-      </div>
-
-      <div className="field" data-cy="EmailField">
-        <label className="label" htmlFor="comment-author-email">
-          Author Email
-        </label>
-
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="email"
-            id="comment-author-email"
-            placeholder="email@test.com"
-            className="input is-danger"
-          />
-
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
-          </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
-      </div>
-
-      <div className="field" data-cy="BodyField">
-        <label className="label" htmlFor="comment-body">
-          Comment Text
-        </label>
-
-        <div className="control">
-          <textarea
-            id="comment-body"
-            name="body"
-            placeholder="Type comment here"
-            className="textarea is-danger"
-          />
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
-      </div>
+      <CommentField
+        isCommentEmptyError={isCommentEmptyError}
+        comment={comment}
+        setComment={setComment}
+        setIsCommentEmptyError={setIsCommentEmptyError}
+      />
 
       <div className="field is-grouped">
-        <div className="control">
-          <button type="submit" className="button is-link is-loading">
-            Add
-          </button>
-        </div>
+        <SubmitButton isOnSubmitLoading={isOnSubmitLoading} />
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={handleResetForm}
+          >
             Clear
           </button>
         </div>
