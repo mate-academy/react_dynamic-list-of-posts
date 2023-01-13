@@ -6,23 +6,23 @@ import { Post } from '../types/Post';
 type Props = {
   post: Post;
   selectedPost: Post | undefined;
-  setSelectedPost: React.Dispatch<React.SetStateAction<number | null>>;
+  setSelectedPostId: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
 export const PostItem: React.FC<Props> = (props) => {
   const {
     post,
     selectedPost,
-    setSelectedPost,
+    setSelectedPostId,
   } = props;
 
   const handleClick = (postClicked: Post) => {
     const isFirstClick = post.id !== selectedPost?.id;
 
     if (isFirstClick) {
-      setSelectedPost(postClicked.id);
+      setSelectedPostId(postClicked.id);
     } else {
-      setSelectedPost(null);
+      setSelectedPostId(null);
     }
   };
 

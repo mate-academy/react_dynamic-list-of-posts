@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { PostItem } from './PostItem';
 import { Post } from '../types/Post';
@@ -6,15 +6,19 @@ import { Post } from '../types/Post';
 type Props = {
   posts: Post[];
   selectedPost: Post | undefined;
-  setSelectedPost: React.Dispatch<React.SetStateAction<number | null>>;
+  setSelectedPostId: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
 export const PostsList: React.FC<Props> = (props) => {
   const {
     posts,
     selectedPost,
-    setSelectedPost,
+    setSelectedPostId,
   } = props;
+
+  useEffect(() => {
+    setSelectedPostId(null);
+  }, []);
 
   return (
     <div data-cy="PostsList">
@@ -35,7 +39,7 @@ export const PostsList: React.FC<Props> = (props) => {
               post={post}
               key={post.id}
               selectedPost={selectedPost}
-              setSelectedPost={setSelectedPost}
+              setSelectedPostId={setSelectedPostId}
             />
           ))}
         </tbody>

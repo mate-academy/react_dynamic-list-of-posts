@@ -116,7 +116,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}
-                    setSelectedPost={setSelectedPostId}
+                    setSelectedPostId={setSelectedPostId}
                   />
                 )}
               </div>
