@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import cn from 'classnames';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -30,10 +30,23 @@ export const App: React.FC = () => {
       .then(setUsers);
   }, []);
 
-  const selectUserId = (userId: number) => {
+  const selectUserId = useCallback((userId: number) => {
     setSelectedUserId(userId);
     setIsLoading(true);
-  };
+  }, []);
+
+  const selectPostId = useCallback((postId: number) => {
+    setSelectedPostId(prev => (prev !== postId ? postId : 0));
+    setIsNewCommentFormOpened(false);
+  }, []);
+
+  const resetSelectedPostId = useCallback((postId: number) => {
+    setSelectedPostId(postId);
+  }, []);
+
+  const openNewCommentForm = useCallback(() => {
+    setIsNewCommentFormOpened(true);
+  }, []);
 
   useEffect(() => {
     if (isLoading) {
@@ -75,7 +88,7 @@ export const App: React.FC = () => {
                   users={users}
                   selectedUserId={selectedUserId}
                   onSelectUserId={selectUserId}
-                  onResetPostId={setSelectedPostId}
+                  onResetPostId={resetSelectedPostId}
                 />
               </div>
 
@@ -96,8 +109,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPostId}
-                    onSelectPostId={setSelectedPostId}
-                    onCloseNewCommentForm={setIsNewCommentFormOpened}
+                    onSelectPostId={selectPostId}
                   />
                 )}
 
@@ -128,7 +140,7 @@ export const App: React.FC = () => {
                 <PostDetails
                   postDetails={selectedPost}
                   isNewCommentFormOpened={isNewCommentFormOpened}
-                  onSetIsNewCommentFormOpened={setIsNewCommentFormOpened}
+                  onOpenNewCommentForm={openNewCommentForm}
                 />
               </div>
             )}
