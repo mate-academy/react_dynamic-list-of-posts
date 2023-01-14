@@ -17,14 +17,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   } = post;
 
   const [comments, setComments] = useState<Comment[]>([]);
-  const [hasLoaded, setHasLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isErrorDeleting, setIsErrorDeleting] = useState(false);
   const [isErrorAdding, setIsErrorAdding] = useState(false);
   const [isShowForm, setIsShowForm] = useState(false);
 
   const loadComments = async (postID: number) => {
-    setHasLoaded(false);
+    setIsLoading(true);
     setIsShowForm(false);
     try {
       const commentsFromServer = await getComments(postID);
@@ -33,15 +33,15 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     } catch (error) {
       setIsError(true);
     } finally {
-      setHasLoaded(true);
+      setIsLoading(false);
     }
   };
 
   const deleteComment = async (commentID: number) => {
     try {
-      setComments(current => {
-        return current.filter(comment => comment.id !== commentID);
-      });
+      setComments(
+        current => current.filter(comment => comment.id !== commentID),
+      );
       removeComment(commentID);
 
       if (isErrorDeleting) {
@@ -53,7 +53,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   };
 
   const addNewComment = async (commentData: CommentData) => {
-    setHasLoaded(false);
+    setIsLoading(true);
     try {
       const newComment = await addComment({
         postId: id,
@@ -70,7 +70,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     } catch (error) {
       setIsErrorAdding(true);
     } finally {
-      setHasLoaded(true);
+      setIsLoading(false);
     }
   };
 
@@ -92,21 +92,21 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         </div>
 
         <div className="block">
-          { !hasLoaded && (<Loader />) }
+          { isLoading && (<Loader />) }
 
-          { hasLoaded && isError && (
+          { !isLoading && isError && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
           )}
 
-          { hasLoaded && !isError && comments.length === 0 && (
+          { !isLoading && !isError && comments.length === 0 && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {hasLoaded && !isError && comments.length > 0 && (
+          {!isLoading && !isError && comments.length > 0 && (
             <>
               <p className="title is-4">Comments:</p>
 
@@ -149,7 +149,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </>
           )}
 
-          {!isShowForm && hasLoaded && !isError && (
+          {!isShowForm && !isLoading && !isError && (
             <button
               data-cy="WriteCommentButton"
               type="button"

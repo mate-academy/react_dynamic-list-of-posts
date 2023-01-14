@@ -16,11 +16,11 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [hasLoaded, setHadLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
   const loadPosts = async (userID: number) => {
-    setHadLoaded(false);
+    setIsLoading(true);
     try {
       const postsFromServer = await getPosts(userID);
 
@@ -28,7 +28,7 @@ export const App: React.FC = () => {
     } catch (error) {
       setIsError(true);
     } finally {
-      setHadLoaded(true);
+      setIsLoading(false);
     }
   };
 
@@ -43,12 +43,16 @@ export const App: React.FC = () => {
   }, [selectedUser?.id]);
 
   const postsSuccess = useMemo(
-    () => selectedUser && hasLoaded && !isError, [
-      selectedUser, hasLoaded, isError],
+    () => selectedUser && !isLoading && !isError, [
+      selectedUser, !isLoading, isError],
   );
 
-  const noPosts = postsSuccess && posts.length === 0;
-  const thereArePosts = postsSuccess && posts.length > 0;
+  const noPosts = useMemo(
+    () => postsSuccess && posts.length === 0, [postsSuccess, posts],
+  );
+  const thereArePosts = useMemo(
+    () => postsSuccess && posts.length > 0, [postsSuccess, posts],
+  );
 
   return (
     <main className="section">
@@ -64,15 +68,15 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUser && (
+                { !selectedUser && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                { selectedUser && !hasLoaded && (<Loader />) }
+                { selectedUser && isLoading && (<Loader />) }
 
-                { selectedUser && hasLoaded && isError && (
+                { selectedUser && !isLoading && isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -90,7 +94,7 @@ export const App: React.FC = () => {
                 {thereArePosts && (
                   <PostsList
                     posts={posts}
-                    selectedPostID={selectedPost?.id}
+                    selectedPostId={selectedPost?.id}
                     setSelectedPost={setSelectedPost}
                   />
                 ) }

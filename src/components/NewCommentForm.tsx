@@ -48,7 +48,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     } else {
       setIsSubmit(true);
       await onSubmit(value);
-      await setValue(current => ({ ...current, body: '' }));
+      setValue(current => ({ ...current, body: '' }));
       setIsSubmit(false);
     }
   };
@@ -102,7 +102,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             <i className="fas fa-user" />
           </span>
 
-          { nameError && (
+          {nameError && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -113,7 +113,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
         </div>
 
-        { nameError && (
+        {nameError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -176,7 +176,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           />
         </div>
 
-        { bodyError && (
+        {bodyError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>

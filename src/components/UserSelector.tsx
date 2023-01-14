@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { useContext, useState, useEffect } from 'react';
 import { User } from '../types/User';
-import { UserContext } from './UserContext';
+import { UserContext } from '../context/UserContext';
 
 type Props = {
   selectedUser: User | null;
