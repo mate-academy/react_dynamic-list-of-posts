@@ -15,18 +15,14 @@ export const UserSelector: React.FC<Props> = ({
   const users = useContext(UserContext);
   const [isOpenDropdown, setIsOpenDropdown] = useState(false);
 
+  const handlePageClick = () => {
+    if (isOpenDropdown) {
+      setIsOpenDropdown(false);
+    }
+  };
+
   useEffect(() => {
-    const handlePageClick = () => {
-      if (isOpenDropdown) {
-        setIsOpenDropdown(false);
-      }
-    };
-
     document.addEventListener('click', handlePageClick);
-
-    return () => {
-      document.removeEventListener('click', handlePageClick);
-    };
   }, [isOpenDropdown]);
 
   return (

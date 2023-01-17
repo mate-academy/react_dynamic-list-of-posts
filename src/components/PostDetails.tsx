@@ -161,7 +161,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           )}
 
         </div>
-        { isShowForm && (
+        {isShowForm && (
           <NewCommentForm onSubmit={addNewComment} />
         )}
 
