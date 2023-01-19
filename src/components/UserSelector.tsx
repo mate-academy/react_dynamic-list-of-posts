@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import cn from 'classnames';
 
 import { User } from '../types/User';
@@ -6,14 +6,14 @@ import { User } from '../types/User';
 type Props = {
   users: User[];
   selectedUser: User | undefined;
-  onSelect: React.Dispatch<React.SetStateAction<number | null>>;
+  onUserSelect: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
-export const UserSelector: React.FC<Props> = (props) => {
+export const UserSelector: React.FC<Props> = memo((props) => {
   const {
     users,
     selectedUser,
-    onSelect,
+    onUserSelect,
   } = props;
 
   const [isDropdownOpened, setIsDropdownOpened] = useState(false);
@@ -76,7 +76,7 @@ export const UserSelector: React.FC<Props> = (props) => {
                 { 'is-active': selectedUser?.id === user.id },
               )}
               onClick={() => {
-                onSelect(user.id);
+                onUserSelect(user.id);
                 setIsDropdownOpened(false);
               }}
             >
@@ -87,4 +87,4 @@ export const UserSelector: React.FC<Props> = (props) => {
       </div>
     </div>
   );
-};
+});

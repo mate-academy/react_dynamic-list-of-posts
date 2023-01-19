@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
@@ -11,9 +11,7 @@ type Props = {
   post: Post;
 };
 
-export const PostDetails: React.FC<Props> = (props) => {
-  const { post } = props;
-
+export const PostDetails: React.FC<Props> = memo(({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isErrorOnLoading, setIsErrorOnLoading] = useState(false);
   const [isLoadingFinish, setIsLoadingFinish] = useState(false);
@@ -113,4 +111,4 @@ export const PostDetails: React.FC<Props> = (props) => {
       </div>
     </div>
   );
-};
+});

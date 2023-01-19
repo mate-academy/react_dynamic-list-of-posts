@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import cn from 'classnames';
 
 import { Post } from '../types/Post';
@@ -10,7 +10,7 @@ type Props = {
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
 };
 
-export const NewCommentForm: React.FC<Props> = (props) => {
+export const NewCommentForm: React.FC<Props> = memo((props) => {
   const { post, setComments } = props;
 
   const [author, setAuthor] = useState('');
@@ -74,7 +74,7 @@ export const NewCommentForm: React.FC<Props> = (props) => {
     setComment('');
   };
 
-  const handleClear = () => {
+  const handleClearAll = () => {
     setAuthor('');
     setEmail('');
     setComment('');
@@ -221,7 +221,7 @@ export const NewCommentForm: React.FC<Props> = (props) => {
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={() => handleClear()}
+            onClick={() => handleClearAll()}
           >
             Clear
           </button>
@@ -229,4 +229,4 @@ export const NewCommentForm: React.FC<Props> = (props) => {
       </div>
     </form>
   );
-};
+});

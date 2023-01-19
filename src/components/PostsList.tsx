@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 
 import { PostItem } from './PostItem';
 import { Post } from '../types/Post';
@@ -9,7 +9,7 @@ type Props = {
   setSelectedPostId: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
-export const PostsList: React.FC<Props> = (props) => {
+export const PostsList: React.FC<Props> = memo((props) => {
   const {
     posts,
     selectedPost,
@@ -46,4 +46,4 @@ export const PostsList: React.FC<Props> = (props) => {
       </table>
     </div>
   );
-};
+});

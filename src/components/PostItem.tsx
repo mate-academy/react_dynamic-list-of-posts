@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import cn from 'classnames';
 
 import { Post } from '../types/Post';
@@ -9,7 +9,7 @@ type Props = {
   setSelectedPostId: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
-export const PostItem: React.FC<Props> = (props) => {
+export const PostItem: React.FC<Props> = memo((props) => {
   const {
     post,
     selectedPost,
@@ -51,4 +51,4 @@ export const PostItem: React.FC<Props> = (props) => {
       </td>
     </tr>
   );
-};
+});

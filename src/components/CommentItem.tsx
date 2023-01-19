@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 
 import { Comment } from '../types/Comment';
 import { deleteComment } from '../api/comments';
@@ -8,7 +8,7 @@ type Props = {
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
 };
 
-export const CommentItem: React.FC<Props> = (props) => {
+export const CommentItem: React.FC<Props> = memo((props) => {
   const { comment, setComments } = props;
 
   const removeComment = (commentId: number) => {
@@ -43,4 +43,4 @@ export const CommentItem: React.FC<Props> = (props) => {
       </div>
     </article>
   );
-};
+});

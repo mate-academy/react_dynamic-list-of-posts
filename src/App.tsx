@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -56,7 +56,9 @@ export const App: React.FC = () => {
     }
   };
 
-  const selectedUser = users.find(user => user.id === selectedUserId);
+  const selectedUser = useMemo(() => (
+    users.find(user => user.id === selectedUserId)
+  ), [selectedUserId]);
 
   useEffect(() => {
     if (selectedUser) {
@@ -64,7 +66,9 @@ export const App: React.FC = () => {
     }
   }, [selectedUser]);
 
-  const selectedPost = posts.find(post => post.id === selectedPostId);
+  const selectedPost = useMemo(() => (
+    posts.find(post => post.id === selectedPostId)
+  ), [selectedPostId]);
 
   return (
     <main className="section">
@@ -76,7 +80,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   users={users}
                   selectedUser={selectedUser}
-                  onSelect={setSelectedUserId}
+                  onUserSelect={setSelectedUserId}
                 />
               </div>
 
