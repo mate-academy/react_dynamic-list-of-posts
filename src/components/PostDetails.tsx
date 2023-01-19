@@ -44,7 +44,7 @@ export const PostDetails: React.FC<Props> = ({
 
   const handleCommentAddition = (newComment: Comment) => {
     setComments(prevState => {
-      if (prevState) {
+      if (prevState.length) {
         return [
           ...prevState,
           newComment,
