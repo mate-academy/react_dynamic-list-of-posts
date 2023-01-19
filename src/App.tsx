@@ -37,13 +37,13 @@ export const App: React.FC = () => {
 
   const getPostsList = async (user: User) => {
     try {
-      setSelectedUser(user);
       setIsProcessing(true);
       setIsLoadingError(false);
-      setPosts(null);
+      setSelectedUser(null);
 
       const postsFromServer = await getPosts(user.id);
 
+      setSelectedUser(user);
       setPosts(postsFromServer);
       setIsProcessing(false);
     } catch (error) {
@@ -57,11 +57,7 @@ export const App: React.FC = () => {
       setSelectedPost(posts.find(post => post.id === postId) || null);
     }
 
-    if (postId === 0) {
-      setIsSidebarOpen(false);
-    } else {
-      setIsSidebarOpen(true);
-    }
+    setIsSidebarOpen(postId !== 0);
   };
 
   useEffect(() => {
@@ -77,13 +73,12 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  value={selectedUser}
                   onChange={getPostsList}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {(!selectedUser && !isLoadingError) && (
+                {(!selectedUser && !isLoadingError && !isProcessing) && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
@@ -100,8 +95,8 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {posts && (
-                  posts.length === 0 ? (
+                {selectedUser && (
+                  !posts?.length ? (
                     <div
                       className="notification is-warning"
                       data-cy="NoPostsYet"
@@ -113,9 +108,7 @@ export const App: React.FC = () => {
                       posts={posts}
                       handlePostInfo={handlePostInfo}
                     />
-                  )
-                )}
-
+                  ))}
               </div>
             </div>
           </div>

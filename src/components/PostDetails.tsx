@@ -16,7 +16,7 @@ export const PostDetails: React.FC<Props> = ({
     body,
   },
 }) => {
-  const [comments, setComments] = useState<Comment[] | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingError, setIsLoadingError] = useState(false);
   const [isButtonHidden, setIsButtonHidden] = useState(false);
@@ -26,7 +26,6 @@ export const PostDetails: React.FC<Props> = ({
     try {
       setIsLoading(true);
       setIsLoadingError(false);
-      setComments(null);
       setIsButtonHidden(false);
 
       const commentsFromServer = await getComments(id);
@@ -62,7 +61,7 @@ export const PostDetails: React.FC<Props> = ({
         return prevState.filter(comment => comment.id !== commentId);
       }
 
-      return null;
+      return [];
     });
   };
 
@@ -106,8 +105,8 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {comments && (
-            comments.length === 0 ? (
+          {!isLoading && !isLoadingError && (
+            !comments.length ? (
               <>
                 <p className="title is-4" data-cy="NoCommentsMessage">
                   No comments yet
@@ -138,6 +137,7 @@ export const PostDetails: React.FC<Props> = ({
                       <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                         {comment.name}
                       </a>
+
                       <button
                         data-cy="CommentDelete"
                         type="button"

@@ -4,17 +4,15 @@ import { User } from '../types/User';
 
 type Props = {
   users: User[];
-  value: User | null;
   onChange: (user: User) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   onChange,
-  value,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState(0);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   const handleOpen = () => {
     setIsOpen(true);
@@ -35,7 +33,7 @@ export const UserSelector: React.FC<Props> = ({
     event.preventDefault();
     onChange(user);
     toggleDropdown();
-    setCurrentUserId(user.id);
+    setCurrentUser(user);
   };
 
   const handleDropdownClick = (event: React.MouseEvent) => {
@@ -68,7 +66,7 @@ export const UserSelector: React.FC<Props> = ({
           onMouseDown={toggleDropdown}
         >
           <span>
-            { value ? value.name : 'Choose a user' }
+            { currentUser ? currentUser.name : 'Choose a user' }
           </span>
 
           <span className="icon is-small">
@@ -84,7 +82,7 @@ export const UserSelector: React.FC<Props> = ({
               href={`#user-${user.id}`}
               className={classNames(
                 'dropdown-item',
-                { 'is-active': user.id === currentUserId },
+                { 'is-active': user.id === currentUser?.id },
               )}
               key={user.id}
               onClick={(event) => handleUserSelection(event, user)}

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Post } from '../types/Post';
 
 type Props = {
-  posts: Post[];
+  posts: Post[] | null;
   handlePostInfo: (postId: number) => void;
 };
 
@@ -41,7 +41,7 @@ export const PostsList: React.FC<Props> = ({
         </thead>
 
         <tbody>
-          {posts.map(post => (
+          {posts && posts.map(post => (
             <tr data-cy="Post" key={post.id}>
               <td data-cy="PostId">{post.id}</td>
 
