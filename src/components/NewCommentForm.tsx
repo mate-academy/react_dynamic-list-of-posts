@@ -86,7 +86,7 @@ export const NewCommentForm: React.FC<Props> = memo((props) => {
   return (
     <form
       data-cy="NewCommentForm"
-      onSubmit={(event) => handleSubmit(event)}
+      onSubmit={handleSubmit}
     >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
@@ -221,7 +221,7 @@ export const NewCommentForm: React.FC<Props> = memo((props) => {
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={() => handleClearAll()}
+            onClick={handleClearAll}
           >
             Clear
           </button>
