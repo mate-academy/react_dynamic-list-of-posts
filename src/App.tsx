@@ -45,9 +45,6 @@ export const App: React.FC = () => {
       const loadedPosts = await getPosts(userId);
 
       setPosts(loadedPosts);
-
-      setIsPostsLoading(false);
-      setIsLoadingPostsFinish(true);
     } catch (error) {
       setIsErrorOnPostsLoading(true);
     } finally {
