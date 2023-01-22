@@ -44,7 +44,7 @@ export const PostsList: React.FC<Props> = ({
                   { 'is-light': post?.id !== postFromList.id },
                 )}
                 onClick={() => (post?.id !== postFromList.id
-                  ? setPost(post)
+                  ? setPost(postFromList)
                   : setPost(null))}
               >
                 {post?.id !== postFromList.id ? 'Open' : 'Close'}

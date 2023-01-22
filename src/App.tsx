@@ -37,6 +37,8 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
+    setPost(null);
+
     if (user) {
       loadApiPosts(user);
     }
@@ -65,7 +67,7 @@ export const App: React.FC = () => {
 
                 {isLoading && <Loader />}
 
-                { error === 'Something went wrong!' && (
+                {error === 'Something went wrong!' && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -74,7 +76,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                { !posts.length && user !== 0 && (
+                {!posts.length && user !== 0 && !isLoading && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
@@ -99,11 +101,17 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': post },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {post && (
+                <PostDetails
+                  post={post}
+                  setError={setError}
+                  error={error}
+                />
+              )}
             </div>
           </div>
         </div>
