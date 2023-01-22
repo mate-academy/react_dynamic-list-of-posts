@@ -1,85 +1,49 @@
-import React from 'react';
+import React, { memo, useEffect } from 'react';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+import { PostItem } from './PostItem';
+import { Post } from '../types/Post';
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+type Props = {
+  posts: Post[];
+  selectedPost: Post | undefined;
+  setSelectedPostId: React.Dispatch<React.SetStateAction<number | null>>;
+};
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+export const PostsList: React.FC<Props> = memo((props) => {
+  const {
+    posts,
+    selectedPost,
+    setSelectedPostId,
+  } = props;
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+  useEffect(() => {
+    setSelectedPostId(null);
+  }, []);
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            <th> </th>
+          </tr>
+        </thead>
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+        <tbody>
+          {posts.map(post => (
+            <PostItem
+              post={post}
+              key={post.id}
+              selectedPost={selectedPost}
+              setSelectedPostId={setSelectedPostId}
+            />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+});
