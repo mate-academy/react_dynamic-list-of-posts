@@ -6,7 +6,7 @@ type Props = {
   users: User[];
   selectedUserId: number;
   onSelectUserId: (userId: number) => void;
-  onResetPostId: (postId: number) => void;
+  onResetPostId: () => void;
 };
 
 export const UserSelector: FC<Props> = React.memo(
@@ -42,7 +42,7 @@ export const UserSelector: FC<Props> = React.memo(
     const handleClickSelectUser = (userId: number) => {
       onSelectUserId(userId);
       handleClickToggleUsersList();
-      onResetPostId(0);
+      onResetPostId();
     };
 
     return (

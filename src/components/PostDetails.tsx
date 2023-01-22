@@ -48,7 +48,7 @@ export const PostDetails: React.FC<Props> = React.memo(
         .finally(() => setIsLoading(false));
     }, [id]);
 
-    const addNewComment = (comment: Omit<Comment, 'id'>) => {
+    const addNewComment = useCallback((comment: Omit<Comment, 'id'>) => {
       setIsAddingComment(true);
 
       addComment(comment)
@@ -56,7 +56,7 @@ export const PostDetails: React.FC<Props> = React.memo(
           setComments(prevComments => [...prevComments, addedComment])
         ))
         .finally(() => setIsAddingComment(false));
-    };
+    }, []);
 
     const deleteSelectedComment = useCallback((commentId: number) => {
       deleteComment(commentId);

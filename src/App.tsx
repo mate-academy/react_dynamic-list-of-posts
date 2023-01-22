@@ -40,8 +40,8 @@ export const App: React.FC = () => {
     setIsNewCommentFormOpened(false);
   }, []);
 
-  const resetSelectedPostId = useCallback((postId: number) => {
-    setSelectedPostId(postId);
+  const resetSelectedPostId = useCallback(() => {
+    setSelectedPostId(0);
   }, []);
 
   const openNewCommentForm = useCallback(() => {
