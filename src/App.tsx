@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +8,40 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { Post } from './types/Post';
+
+import { getPosts } from './api/posts';
 
 export const App: React.FC = () => {
+  const [user, setUser] = useState(0);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [post, setPost] = useState<Post | null>(null);
+
+  const loadApiPosts = async (userId: number) => {
+    try {
+      setIsLoading(true);
+      const data = await getPosts(userId);
+
+      if (!data.length) {
+        setError('No posts yet');
+      }
+
+      setPosts(data);
+    } catch {
+      setError('Something went wrong!');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      loadApiPosts(user);
+    }
+  }, [user]);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,28 +49,45 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  user={user}
+                  setUser={setUser}
+                  setError={setError}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!user && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isLoading && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                { error === 'Something went wrong!' && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                { !posts.length && user !== 0 && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                <PostsList />
+                {posts.length > 0 && (
+                  <PostsList
+                    posts={posts}
+                    post={post}
+                    setPost={setPost}
+                  />
+                )}
+
               </div>
             </div>
           </div>
