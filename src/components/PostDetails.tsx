@@ -1,4 +1,9 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  memo,
+  useMemo,
+} from 'react';
 
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
@@ -16,7 +21,8 @@ export const PostDetails: React.FC<Props> = memo(({ post }) => {
   const [isErrorOnLoading, setIsErrorOnLoading] = useState(false);
   const [isLoadingFinish, setIsLoadingFinish] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isButtonClicked, setIsButtonClicked] = useState(false);
+  const [isWriteCommentButtonClicked,
+    setIsWriteCommentButtonClicked] = useState(false);
 
   const loadComments = async () => {
     try {
@@ -25,12 +31,11 @@ export const PostDetails: React.FC<Props> = memo(({ post }) => {
 
       const loadedComments = await getComments(post.id);
 
-      setIsLoading(false);
       setComments(loadedComments);
     } catch (error) {
       setIsErrorOnLoading(true);
-      setIsLoading(false);
     } finally {
+      setIsLoading(false);
       setIsLoadingFinish(true);
     }
   };
@@ -39,8 +44,16 @@ export const PostDetails: React.FC<Props> = memo(({ post }) => {
     loadComments();
     setComments([]);
     setIsLoadingFinish(false);
-    setIsButtonClicked(false);
+    setIsWriteCommentButtonClicked(false);
   }, [post]);
+
+  const isNoCommentsYet = useMemo(() => (
+    !isLoading && !isErrorOnLoading && comments.length === 0
+  ), [isLoading, isErrorOnLoading, comments]);
+
+  const isWriteCommentButtonVisible = useMemo(() => (
+    isLoadingFinish && !isErrorOnLoading && !isWriteCommentButtonClicked
+  ), [isLoadingFinish, isErrorOnLoading, isWriteCommentButtonClicked]);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -67,14 +80,11 @@ export const PostDetails: React.FC<Props> = memo(({ post }) => {
             </div>
           )}
 
-          {!isLoading
-            && !isErrorOnLoading
-            && comments.length === 0
-            && (
-              <p className="title is-4" data-cy="NoCommentsMessage">
-                No comments yet
-              </p>
-            )}
+          {isNoCommentsYet && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
 
           {comments.length > 0 && (
             <>
@@ -90,19 +100,19 @@ export const PostDetails: React.FC<Props> = memo(({ post }) => {
             </>
           )}
 
-          {isLoadingFinish && !isErrorOnLoading && !isButtonClicked && (
+          {isWriteCommentButtonVisible && (
             <button
               data-cy="WriteCommentButton"
               type="button"
               className="button is-link"
-              onClick={() => setIsButtonClicked(true)}
+              onClick={() => setIsWriteCommentButtonClicked(true)}
             >
               Write a comment
             </button>
           )}
         </div>
 
-        {isButtonClicked && (
+        {isWriteCommentButtonClicked && (
           <NewCommentForm
             setComments={setComments}
             post={post}

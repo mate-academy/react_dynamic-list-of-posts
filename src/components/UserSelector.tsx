@@ -1,18 +1,23 @@
-import React, { useState, useEffect, memo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  memo,
+  useMemo,
+} from 'react';
 import cn from 'classnames';
 
 import { User } from '../types/User';
 
 type Props = {
   users: User[];
-  selectedUser: User | undefined;
+  selectedUserId: number | null;
   onUserSelect: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
 export const UserSelector: React.FC<Props> = memo((props) => {
   const {
     users,
-    selectedUser,
+    selectedUserId,
     onUserSelect,
   } = props;
 
@@ -34,6 +39,10 @@ export const UserSelector: React.FC<Props> = memo((props) => {
       document.removeEventListener('click', handleDocumentClick);
     };
   }, [isDropdownOpened]);
+
+  const selectedUser = useMemo(() => (
+    users.find(user => user.id === selectedUserId)
+  ), [selectedUserId]);
 
   return (
     <div

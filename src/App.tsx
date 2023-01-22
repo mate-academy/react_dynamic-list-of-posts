@@ -39,6 +39,7 @@ export const App: React.FC = () => {
 
   const loadPosts = async (userId: number) => {
     try {
+      setIsErrorOnPostsLoading(false);
       setIsPostsLoading(true);
       setIsLoadingPostsFinish(false);
 
@@ -53,19 +54,27 @@ export const App: React.FC = () => {
     }
   };
 
-  const selectedUser = useMemo(() => (
-    users.find(user => user.id === selectedUserId)
-  ), [selectedUserId]);
-
   useEffect(() => {
-    if (selectedUser) {
-      loadPosts(selectedUser.id);
+    if (selectedUserId) {
+      loadPosts(selectedUserId);
     }
-  }, [selectedUser]);
+  }, [selectedUserId]);
 
   const selectedPost = useMemo(() => (
     posts.find(post => post.id === selectedPostId)
   ), [selectedPostId]);
+
+  const isNoPostsYet = useMemo(() => (
+    isLoadingPostsFinish && !isErrorOnPostsLoading && posts.length === 0
+  ), [posts, isLoadingPostsFinish, isErrorOnPostsLoading]);
+
+  const isSidebarOpened = useMemo(() => (
+    selectedPost && selectedUserId && selectedPost.userId === selectedUserId
+  ), [selectedPost, selectedUserId]);
+
+  const isPostsVisible = useMemo(() => (
+    posts.length > 0 && isLoadingPostsFinish
+  ), [posts, isLoadingPostsFinish]);
 
   return (
     <main className="section">
@@ -76,13 +85,13 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  selectedUser={selectedUser}
+                  selectedUserId={selectedUserId}
                   onUserSelect={setSelectedUserId}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUser && (
+                {!selectedUserId && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
@@ -90,30 +99,25 @@ export const App: React.FC = () => {
 
                 {isPostsLoading && <Loader />}
 
-                {isErrorOnPostsLoading
-                  && isLoadingPostsFinish
-                  && (
-                    <div
-                      className="notification is-danger"
-                      data-cy="PostsLoadingError"
-                    >
-                      Something went wrong!
-                    </div>
-                  )}
+                {isErrorOnPostsLoading && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                {isLoadingPostsFinish
-                  && !isErrorOnPostsLoading
-                  && posts.length === 0
-                  && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )}
+                {isNoPostsYet && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                )}
 
-                {posts.length > 0 && isLoadingPostsFinish && (
+                {isPostsVisible && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}
@@ -132,8 +136,7 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': selectedPost && selectedUser
-                  && selectedPost.userId === selectedUser.id,
+                'Sidebar--open': isSidebarOpened,
               },
             )}
           >

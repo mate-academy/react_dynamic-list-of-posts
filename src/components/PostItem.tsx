@@ -16,7 +16,7 @@ export const PostItem: React.FC<Props> = memo((props) => {
     setSelectedPostId,
   } = props;
 
-  const handleClick = (postClicked: Post) => {
+  const handleSelectPost = (postClicked: Post) => {
     const isFirstClick = post.id !== selectedPost?.id;
 
     if (isFirstClick) {
@@ -42,7 +42,7 @@ export const PostItem: React.FC<Props> = memo((props) => {
             'button is-link',
             { 'is-light': selectedPost?.id !== post.id },
           )}
-          onClick={() => handleClick(post)}
+          onClick={() => handleSelectPost(post)}
         >
           {selectedPost?.id === post.id
             ? 'Close'
