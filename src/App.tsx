@@ -1,4 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import cn from 'classnames';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -75,7 +80,9 @@ export const App: React.FC = () => {
 
   const isLoadedError = !isLoading && isPostsLoadingError;
 
-  const selectedPost = posts.find(post => post.id === selectedPostId);
+  const selectedPost = useMemo(() => (
+    posts.find(post => post.id === selectedPostId)
+  ), [posts, selectedPostId]);
 
   return (
     <main className="section">
