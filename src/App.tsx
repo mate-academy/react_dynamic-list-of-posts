@@ -43,6 +43,7 @@ export const App: React.FC = () => {
                   selectedUser={selectedUser}
                   setSelectedUser={setSelectedUser}
                   setPostsError={setError}
+                  setSelectedPost={setSelectedPost}
                 />
               </div>
 
