@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import classNames from 'classnames';
 import React, { useState, SetStateAction, ChangeEvent } from 'react';
 import { addComment } from '../api/comments';
@@ -67,34 +66,40 @@ export const NewCommentForm: React.FC<Props> = ({
   const fieldChangeName = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    inputErrors.name
-      ? setInputErrors(comment => ({
+    if (inputErrors.name) {
+      setInputErrors(comment => ({
         ...comment,
         name: false,
-      }))
-      : setName(event.target.value);
+      }));
+    }
+
+    setName(event.target.value);
   };
 
   const fieldChangeEmail = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    inputErrors.email
-      ? setInputErrors(comment => ({
+    if (inputErrors.email) {
+      setInputErrors(comment => ({
         ...comment,
         email: false,
-      }))
-      : setEmail(event.target.value);
+      }));
+    }
+
+    setEmail(event.target.value);
   };
 
   const fieldChangeBody = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    inputErrors.body
-      ? setInputErrors(comment => ({
+    if (inputErrors.body) {
+      setInputErrors(comment => ({
         ...comment,
         body: false,
-      }))
-      : setBody(event.target.value);
+      }));
+    }
+
+    setBody(event.target.value);
   };
 
   return (

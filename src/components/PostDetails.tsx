@@ -25,13 +25,10 @@ export const PostDetails: React.FC<Props> = ({
       setIsLoading(true);
       const data = await getComments(postId);
 
-      if (!data.length) {
-        setError('No comments yet');
-      }
-
+      setError('');
       setComments(data);
     } catch {
-      setError('Unable to get comments');
+      setError('Something went wrong!');
     } finally {
       setIsLoading(false);
     }
@@ -41,8 +38,10 @@ export const PostDetails: React.FC<Props> = ({
     if (post?.id) {
       loadApiComments(post.id);
       setError('');
+      setIsNewComment(false);
+      setComments([]);
     }
-  }, [post]);
+  }, [post?.id]);
 
   const handleDelete = (commentId: number) => {
     deleteComment(commentId);
@@ -67,19 +66,27 @@ export const PostDetails: React.FC<Props> = ({
         <div className="block">
           {isLoading && (<Loader />)}
 
-          { error === 'Something went wrong!' && (
+          {error !== '' && error !== 'No comments yet' && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
           )}
 
-          {!comments.length && !isLoading && (
-            <p className="title is-4" data-cy="NoCommentsMessage">
+          { !comments.length && !isLoading && (
+            <p
+              className="title is-4"
+              data-cy="NoCommentsMessage"
+              style={{
+                visibility: error !== ''
+                  ? 'hidden'
+                  : 'visible',
+              }}
+            >
               No comments yet
             </p>
           )}
 
-          {comments.length > 0 && !isLoading && (
+          {comments.length > 0 && (
             <>
               <p className="title is-4">Comments:</p>
               {comments.map(comment => (
@@ -122,7 +129,7 @@ export const PostDetails: React.FC<Props> = ({
             </button>
           )}
         </div>
-        {isNewComment && (
+        {isNewComment && error === '' && (
           <NewCommentForm
             setComments={setComments}
             postId={post?.id || 0}
