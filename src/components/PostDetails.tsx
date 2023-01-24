@@ -107,7 +107,7 @@ export const PostDetails: React.FC<Props> = (
                   data-cy="Comment"
                 >
                   <div className="message-header">
-                    <a href={comment.email} data-cy="CommentAuthor">
+                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                       {comment.name}
                     </a>
                     <button
