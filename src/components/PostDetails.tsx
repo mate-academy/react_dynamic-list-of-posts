@@ -123,7 +123,11 @@ export const PostDetails: React.FC<Props> = ({
           )}
         </div>
         {isNewComment && (
-          <NewCommentForm />
+          <NewCommentForm
+            setComments={setComments}
+            postId={post?.id || 0}
+            setError={setError}
+          />
         )}
       </div>
     </div>
