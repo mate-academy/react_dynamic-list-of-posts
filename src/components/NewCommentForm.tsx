@@ -6,12 +6,14 @@ import { Comment } from '../types/Comment';
 type Props = {
   postId: number;
   setComments: Dispatch<SetStateAction<Comment[]>>;
+  setAddError: Dispatch<SetStateAction<boolean>>;
 };
 
 export const NewCommentForm: React.FC<Props> = (
   {
     postId,
     setComments,
+    setAddError,
   },
 ) => {
   const [name, setName] = useState('');
@@ -37,6 +39,7 @@ export const NewCommentForm: React.FC<Props> = (
 
   const handleSubmit = () => {
     resetWarnings();
+    setAddError(false);
 
     if (!name.trim()) {
       setNoName(true);
@@ -65,6 +68,7 @@ export const NewCommentForm: React.FC<Props> = (
       body,
     })
       .then(result => setComments(prevValue => [...prevValue, result]))
+      .catch(() => setAddError(true))
       .finally(() => {
         setIsSubmiting(false);
         setBody('');

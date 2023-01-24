@@ -17,16 +17,17 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState(false);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(false);
+  const [postsError, setPostsError] = useState(false);
+  const [addError, setAddError] = useState(false);
+  const [deleteError, setDeleteError] = useState(false);
 
   const noPostsWarning
-    = (!error && posts.length === 0 && selectedUser && !isProcessing);
+    = (!postsError && posts.length === 0 && selectedUser && !isLoadingPosts);
 
   useEffect(() => {
     getUsers()
-      .then(setUsers)
-      .catch(() => setError(true));
+      .then(setUsers);
   }, []);
 
   return (
@@ -39,10 +40,10 @@ export const App: React.FC = () => {
                 <UserSelector
                   users={users}
                   setPosts={setPosts}
-                  setIsProcessing={setIsProcessing}
+                  setIsLoadingPosts={setIsLoadingPosts}
                   selectedUser={selectedUser}
                   setSelectedUser={setSelectedUser}
-                  setPostsError={setError}
+                  setPostsError={setPostsError}
                   setSelectedPost={setSelectedPost}
                 />
               </div>
@@ -54,9 +55,9 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {isProcessing && (<Loader />)}
+                {isLoadingPosts && (<Loader />)}
 
-                {error && (
+                {postsError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -70,6 +71,8 @@ export const App: React.FC = () => {
                     posts={posts}
                     selectedPost={selectedPost}
                     setSelectedPost={setSelectedPost}
+                    setDeleteError={setDeleteError}
+                    setAddError={setAddError}
                   />
                 )}
 
@@ -101,6 +104,10 @@ export const App: React.FC = () => {
               {selectedPost && (
                 <PostDetails
                   selectedPost={selectedPost}
+                  addError={addError}
+                  setAddError={setAddError}
+                  deleteError={deleteError}
+                  setDeleteError={setDeleteError}
                 />
               )}
             </div>

@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  Dispatch, SetStateAction, useEffect, useState,
+} from 'react';
 import { deleteComment, getComments } from '../api/api';
 import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
@@ -7,9 +9,21 @@ import { NewCommentForm } from './NewCommentForm';
 
 type Props = {
   selectedPost: Post;
+  addError: boolean;
+  setAddError: Dispatch<SetStateAction<boolean>>;
+  deleteError: boolean;
+  setDeleteError: Dispatch<SetStateAction<boolean>>;
 };
 
-export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
+export const PostDetails: React.FC<Props> = (
+  {
+    selectedPost,
+    addError,
+    setAddError,
+    deleteError,
+    setDeleteError,
+  },
+) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [commentsError, setCommentsError] = useState(false);
@@ -27,11 +41,13 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   }, [selectedPost]);
 
   const handleDelete = (id: number) => {
+    setDeleteError(false);
     setComments(
       prevValue => prevValue.filter(comment => comment.id !== id),
     );
 
-    deleteComment(id);
+    deleteComment(id)
+      .catch(() => setDeleteError(true));
   };
 
   return (
@@ -66,6 +82,22 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
                 </p>
               ) : (
                 <p className="title is-4">Comments:</p>
+              )}
+
+              {addError && (
+                <div
+                  className="notification is-danger"
+                >
+                  Unable add comment!
+                </div>
+              )}
+
+              {deleteError && (
+                <div
+                  className="notification is-danger"
+                >
+                  Unable delete comment!
+                </div>
               )}
 
               {comments.map(comment => (
@@ -113,6 +145,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
           <NewCommentForm
             postId={selectedPost.id}
             setComments={setComments}
+            setAddError={setAddError}
           />
         )}
       </div>

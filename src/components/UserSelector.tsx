@@ -7,7 +7,7 @@ import { User } from '../types/User';
 type Props = {
   users: User[];
   setPosts: Dispatch<SetStateAction<Post[]>>;
-  setIsProcessing: Dispatch<SetStateAction<boolean>>;
+  setIsLoadingPosts: Dispatch<SetStateAction<boolean>>;
   selectedUser: User | null;
   setSelectedUser: Dispatch<SetStateAction<User | null>>;
   setPostsError: Dispatch<SetStateAction<boolean>>;
@@ -18,7 +18,7 @@ export const UserSelector: React.FC<Props> = (
   {
     users,
     setPosts,
-    setIsProcessing,
+    setIsLoadingPosts,
     selectedUser,
     setSelectedUser,
     setPostsError,
@@ -37,13 +37,13 @@ export const UserSelector: React.FC<Props> = (
     setSelectedPost(null);
     setPostsError(false);
     handleDropdown();
-    setIsProcessing(true);
+    setIsLoadingPosts(true);
 
     getPosts(id)
       .then(setPosts)
       .catch(() => setPostsError(true))
       .finally(() => {
-        setIsProcessing(false);
+        setIsLoadingPosts(false);
       });
   };
 

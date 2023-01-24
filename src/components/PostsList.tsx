@@ -6,6 +6,8 @@ type Props = {
   posts: Post[];
   selectedPost: Post | null;
   setSelectedPost: Dispatch<SetStateAction<Post | null>>;
+  setAddError: Dispatch<SetStateAction<boolean>>;
+  setDeleteError: Dispatch<SetStateAction<boolean>>;
 };
 
 export const PostsList: React.FC<Props> = (
@@ -13,9 +15,14 @@ export const PostsList: React.FC<Props> = (
     posts,
     selectedPost,
     setSelectedPost,
+    setAddError,
+    setDeleteError,
   },
 ) => {
   const handlePostSelect = (post: Post) => {
+    setAddError(false);
+    setDeleteError(false);
+
     if (post.id === selectedPost?.id) {
       setSelectedPost(null);
 
