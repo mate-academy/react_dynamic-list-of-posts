@@ -34,6 +34,8 @@ export const NewCommentForm: React.FC<Props> = ({
         email: !email,
         body: !body,
       });
+
+      return;
     }
 
     setIsLoading(true);
