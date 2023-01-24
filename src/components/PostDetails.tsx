@@ -88,7 +88,7 @@ export const PostDetails: React.FC<Props> = (
                 <div
                   className="notification is-danger"
                 >
-                  Unable add comment!
+                  Unable to add comment!
                 </div>
               )}
 
@@ -96,7 +96,7 @@ export const PostDetails: React.FC<Props> = (
                 <div
                   className="notification is-danger"
                 >
-                  Unable delete comment!
+                  Unable to delete comment!
                 </div>
               )}
 

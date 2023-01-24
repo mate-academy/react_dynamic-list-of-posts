@@ -27,6 +27,18 @@ export const UserSelector: React.FC<Props> = (
 ) => {
   const [dropdownActive, setDropdownActive] = useState(false);
 
+  document.addEventListener('click', (event) => {
+    const dropdown = document.querySelector('.dropdown');
+
+    const userSelector = event.target as Node;
+
+    if (dropdown?.contains(userSelector)) {
+      return;
+    }
+
+    setDropdownActive(false);
+  });
+
   const handleDropdown = () => {
     setDropdownActive(
       (prevValue) => !prevValue,
