@@ -1,6 +1,11 @@
 import React from 'react';
+import { Post } from '../types/Post';
 
-export const PostsList: React.FC = () => (
+type Props = {
+  posts: Post[]
+};
+
+export const PostsList: React.FC<Props> = () => (
   <div data-cy="PostsList">
     <p className="title">Posts:</p>
 
