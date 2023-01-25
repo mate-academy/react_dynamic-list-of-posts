@@ -62,9 +62,9 @@ export const NewCommentForm: FC<Props> = memo(({ onSubmit }) => {
     setIsLoading(true);
 
     onSubmit({
-      name: authorName,
-      email: authorEmail,
-      body: commentBody,
+      name: trimedAuthorName,
+      email: trimedAuthorEmail,
+      body: trimedCommentBody,
     })
       .then((response) => {
         if (response) {
