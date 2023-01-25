@@ -1,6 +1,4 @@
-import { Comment } from '../types/Comment';
-import { Post } from '../types/Post';
-import { User } from '../types/User';
+import { Comment, Post, User } from '../types';
 import { client } from './fetchClient';
 
 export const getUsers = (): Promise<User[]> => {
@@ -15,8 +13,8 @@ export const getComments = (postId: number): Promise<Comment[]> => {
   return client.get(`/comments?postId=${postId}`);
 };
 
-export const postComment = (data: Comment) => {
-  return client.post('/comments', data);
+export const postComment = (data: Comment): Promise<Comment> => {
+  return client.post(`/comments?postId=${data.postId}`, data);
 };
 
 export const deleteComment = (commentId: number) => {

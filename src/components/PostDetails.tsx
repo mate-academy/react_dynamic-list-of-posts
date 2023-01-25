@@ -1,8 +1,7 @@
 /* eslint-disable func-names */
-import React, { useEffect, useState } from 'react';
-import { Post } from '../types/Post';
-import { Comment } from '../types/Comment';
-import { getComments, deleteComment } from '../utils/api';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Comment, Post, Error } from '../types';
+import { deleteComment, getComments } from '../utils/api';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -13,13 +12,23 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasError, setHasError] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [error, setError] = useState(Error.None);
+
   const { id, title, body } = selectedPost || {};
 
   const isListVisible = comments.length > 0 && !isLoading;
-  const isErrorVisible = hasError && !isLoading;
   const isListEmpty = comments.length === 0 && !isLoading;
+  const hasError = (error === Error.Add || error === Error.Delete);
+
+  const updateComments = useCallback(
+    (updatedComments: Comment[]) => {
+      setComments(updatedComments);
+    },
+    [],
+  );
+
+  const handleAddError = useCallback(() => setError(Error.Add), []);
 
   useEffect(() => {
     if (id) {
@@ -27,8 +36,8 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       (async function () {
         try {
           setComments(await getComments(id));
-        } catch (error) {
-          setHasError(true);
+        } catch {
+          setError(Error.Load);
         } finally {
           setIsLoading(false);
         }
@@ -42,7 +51,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
 
     deleteComment(commentId)
     // eslint-disable-next-line no-console
-      .catch((error) => console.error(error));
+      .catch(() => setError(Error.Delete));
     setComments(filteredComments);
   };
 
@@ -62,7 +71,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         <div className="block">
           {isLoading && <Loader />}
 
-          {isErrorVisible && (
+          {error === Error.Load && (
             <div
               className="notification is-danger"
               data-cy="CommentsError"
@@ -117,6 +126,17 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             </>
           )}
 
+          {hasError && (
+            <div
+              className="notification is-danger"
+              data-cy="PostsLoadingError"
+            >
+              {`Could not ${error === Error.Add
+                ? 'add'
+                : 'delete'} comment`}
+            </div>
+          )}
+
           {!isLoading && !isFormOpen && (
             <button
               data-cy="WriteCommentButton"
@@ -129,7 +149,14 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
           )}
         </div>
 
-        {isFormOpen && <NewCommentForm />}
+        {isFormOpen && (
+          <NewCommentForm
+            postId={id || 0}
+            setComments={updateComments}
+            comments={comments}
+            setError={handleAddError}
+          />
+        )}
       </div>
     </div>
   );

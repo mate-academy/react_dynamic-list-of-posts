@@ -4,15 +4,14 @@ import 'bulma/bulma.sass';
 import './App.scss';
 
 import React, { useCallback, useEffect, useState } from 'react';
-
 import cn from 'classnames';
+
 import { Loader } from './components/Loader';
 import { PostDetails } from './components/PostDetails';
 import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
-import { User } from './types/User';
 import { getPosts, getUsers } from './utils/api';
-import { Post } from './types/Post';
+import { User, Post } from './types';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);

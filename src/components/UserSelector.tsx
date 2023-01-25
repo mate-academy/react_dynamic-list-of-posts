@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { User } from '../types/User';
+import { User } from '../types';
 
 type Props = {
   users: User[]
