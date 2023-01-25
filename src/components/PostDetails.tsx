@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { NewComment } from './NewComment';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
 import { deleteComment, getComments } from '../api/comments';
@@ -54,9 +55,11 @@ export const PostDetails: React.FC<Props> = ({
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">
-            {`#${post?.id}: ${post?.title}`}
-          </h2>
+          {post && (
+            <h2 data-cy="PostTitle">
+              {`#${post?.id}: ${post?.title}`}
+            </h2>
+          )}
 
           <p data-cy="PostBody">
             {post?.body}
@@ -72,7 +75,7 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          { !comments.length && !isLoading && (
+          {!comments.length && !isLoading && (
             <p
               className="title is-4"
               data-cy="NoCommentsMessage"
@@ -86,34 +89,18 @@ export const PostDetails: React.FC<Props> = ({
             </p>
           )}
 
-          {comments.length > 0 && (
+          {!comments.length || (
             <>
               <p className="title is-4">Comments:</p>
               {comments.map(comment => (
-                <article
-                  className="message is-small"
-                  data-cy="Comment"
+                <NewComment
                   key={comment.id}
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                      {comment.name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => handleDelete(comment.id)}
-                    >
-                      delete button
-                    </button>
-                  </div>
-
-                  <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
-                  </div>
-                </article>
+                  id={comment.id}
+                  name={comment.name}
+                  email={comment.email}
+                  body={comment.body}
+                  onDelete={handleDelete}
+                />
               ))}
             </>
           )}
