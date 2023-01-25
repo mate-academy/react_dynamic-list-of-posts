@@ -47,10 +47,14 @@ export const NewCommentForm: FC<Props> = memo(({ onSubmit }) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!authorName || !authorEmail || !commentBody) {
-      setNameErrorMessage(authorName ? '' : 'Name is required');
-      setEmailErrorMessage(authorEmail ? '' : 'Email is required');
-      setCommentBodyErrorMessage(commentBody ? '' : 'Enter some text');
+    const trimedAuthorName = authorName.trim();
+    const trimedAuthorEmail = authorEmail.trim();
+    const trimedCommentBody = commentBody.trim();
+
+    if (!trimedAuthorName || !trimedAuthorEmail || !trimedCommentBody) {
+      setNameErrorMessage(trimedAuthorName ? '' : 'Name is required');
+      setEmailErrorMessage(trimedAuthorEmail ? '' : 'Email is required');
+      setCommentBodyErrorMessage(trimedCommentBody ? '' : 'Enter some text');
 
       return;
     }
