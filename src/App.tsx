@@ -115,14 +115,14 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': post },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails
-                selectedPost={post}
-              />
-            </div>
+            {post && (
+              <div className="tile is-child box is-success ">
+                <PostDetails selectedPost={post} />
+              </div>
+            )}
           </div>
         </div>
       </div>

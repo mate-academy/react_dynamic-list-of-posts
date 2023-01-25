@@ -1,5 +1,8 @@
-import React from 'react';
+/* eslint-disable func-names */
+import React, { useEffect, useState } from 'react';
 import { Post } from '../types/Post';
+import { Comment } from '../types/Comment';
+import { getComments, deleteComment } from '../utils/api';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -7,117 +10,126 @@ type Props = {
   selectedPost: Post | null
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const { id, title, body } = selectedPost || {};
+
+  const isListVisible = comments.length > 0 && !isLoading;
+  const isErrorVisible = hasError && !isLoading;
+  const isListEmpty = comments.length === 0 && !isLoading;
+
+  useEffect(() => {
+    if (id) {
+      setIsLoading(true);
+      (async function () {
+        try {
+          setComments(await getComments(id));
+        } catch (error) {
+          setHasError(true);
+        } finally {
+          setIsLoading(false);
+        }
+      }());
+    }
+  }, [selectedPost]);
+
+  const onDelete = (commentId: number) => async () => {
+    const filteredComments = comments
+      .filter(comment => comment.id !== commentId);
+
+    deleteComment(commentId)
+    // eslint-disable-next-line no-console
+      .catch((error) => console.error(error));
+    setComments(filteredComments);
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {`#${id}: ${title}`}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            {body}
           </p>
         </div>
 
         <div className="block">
-          <Loader />
+          {isLoading && <Loader />}
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
+          {isErrorVisible && (
             <div
-              className="message-body"
-              data-cy="CommentBody"
+              className="notification is-danger"
+              data-cy="CommentsError"
             >
-              One more comment
+              Something went wrong
             </div>
-          </article>
+          )}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
+          {isListEmpty && (
+            <p
+              className="title is-4"
+              data-cy="NoCommentsMessage"
+            >
+              No comments yet
+            </p>
+          )}
 
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
+          {isListVisible && (
+            <>
+              <p className="title is-4">Comments:</p>
 
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
+              {comments.map(comment => (
+                <article
+                  key={comment.id}
+                  className="message is-small"
+                  data-cy="Comment"
+                >
+                  <div className="message-header">
+                    <a
+                      href={`mailto:${comment.email}`}
+                      data-cy="CommentAuthor"
+                    >
+                      {comment.name}
+                    </a>
 
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={onDelete(comment.id)}
+                    >
+                      delete button
+                    </button>
+                  </div>
+
+                  <div className="message-body" data-cy="CommentBody">
+                    {comment.body}
+                  </div>
+                </article>
+              ))}
+            </>
+          )}
+
+          {!isLoading && !isFormOpen && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setIsFormOpen(true)}
+            >
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
+        {isFormOpen && <NewCommentForm />}
       </div>
     </div>
   );
