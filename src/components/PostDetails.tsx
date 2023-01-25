@@ -1,5 +1,5 @@
 import {
-  FC, memo, useEffect, useState,
+  FC, memo, useCallback, useEffect, useState,
 } from 'react';
 import {
   addComment, deleteComment, getCommentsByPostId,
@@ -36,7 +36,7 @@ export const PostDetails: FC<Props> = memo(({ post }) => {
     }
   };
 
-  const handleCommentAdd = async (commentData: CommentData) => {
+  const handleCommentAdd = useCallback(async (commentData: CommentData) => {
     try {
       setErrorMessage('');
 
@@ -50,7 +50,7 @@ export const PostDetails: FC<Props> = memo(({ post }) => {
 
       return false;
     }
-  };
+  }, []);
 
   useEffect(() => {
     setErrorMessage('');

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -18,7 +18,7 @@ export const App: React.FC = () => {
   const [selectedPostId, setSelectedPostId] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSelectedUserChange = (userId: number) => {
+  const handleSelectedUserChange = useCallback((userId: number) => {
     setErrorMessage('');
     setSelectedUserId(userId);
     setIsLoading(true);
@@ -29,7 +29,7 @@ export const App: React.FC = () => {
       })
       .catch(() => setErrorMessage("Can't load todos"))
       .finally(() => setIsLoading(false));
-  };
+  }, []);
 
   const selectedPost = useMemo(() => (
     posts.find(post => post.id === selectedPostId) ?? null
@@ -43,7 +43,7 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  selectedId={selectedUserId}
+                  selectedUserId={selectedUserId}
                   onSelect={handleSelectedUserChange}
                   onErrorCatch={setErrorMessage}
                 />

@@ -1,24 +1,24 @@
 import {
-  FC, memo, useEffect, useState,
+  FC, memo, useEffect, useMemo, useState,
 } from 'react';
 import { getAllUsers } from '../api/users';
 import { User } from '../types/User';
 
 type Props = {
-  selectedId: number,
+  selectedUserId: number,
   onSelect: (id: number) => unknown
   onErrorCatch: (message: string) => unknown
 
 };
 
 export const UserSelector: FC<Props> = memo(({
-  selectedId, onSelect, onErrorCatch,
+  selectedUserId, onSelect, onErrorCatch,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
 
   const handleSelect = (id: number) => {
-    if (selectedId !== id) {
+    if (selectedUserId !== id) {
       onSelect(id);
     }
 
@@ -35,8 +35,10 @@ export const UserSelector: FC<Props> = memo(({
       });
   }, []);
 
-  const selectetUserName = users
-    .find(user => user.id === selectedId)?.name ?? 'Choose a user';
+  const selectetUserName = useMemo(() => {
+    return users
+      .find(user => user.id === selectedUserId)?.name ?? 'Choose a user';
+  }, [selectedUserId]);
 
   return (
     <div data-cy="UserSelector" className="dropdown is-active">
