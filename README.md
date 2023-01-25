@@ -12,6 +12,12 @@ form to add new comments.
     - implement the `UserSelector` as a dropdown using the given markup;
 1. When a user is selected load the user's posts form [the API](https://mate-academy.github.io/fe-students-api/) and show them using a table in the main content clock;
     - show the `<Loader>` while waiting for the API response;
+
+
+
+
+
+
     - show an error notification if `posts` loading fails;
     - if the user has no posts show the `No posts yet` notification.
 1. Add the `Sidebar--open` class to the sidebar when a post is selected;
