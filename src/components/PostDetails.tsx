@@ -1,8 +1,14 @@
 import React from 'react';
+import { Post } from '../types/Post';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-export const PostDetails: React.FC = () => {
+type Props = {
+  selectedPost: Post | null
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">

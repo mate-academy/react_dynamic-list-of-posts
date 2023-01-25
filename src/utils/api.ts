@@ -8,13 +8,17 @@ export const getUsers = (): Promise<User[]> => {
 };
 
 export const getPosts = (userId: number): Promise<Post[]> => {
-  return client.get(`/users/${userId}`);
+  return client.get(`/posts?userId=${userId}`);
 };
 
-export const postComment = (post: Post, data: Comment) => {
-  return client.post(`/users/${post.userId}/posts/${post.id}`, data);
+export const getComments = (postId: number): Promise<Comment[]> => {
+  return client.get(`/comments?postId=${postId}`);
+};
+
+export const postComment = (data: Comment) => {
+  return client.post('/comments', data);
 };
 
 export const deleteComment = (comment: Comment) => {
-  return client.delete(`/post-${comment.postId}/comment-${comment.id}`);
+  return client.delete(`/comments/${comment.id}`);
 };

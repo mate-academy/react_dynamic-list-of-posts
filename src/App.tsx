@@ -3,7 +3,7 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import 'bulma/bulma.sass';
 import './App.scss';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import cn from 'classnames';
 import { Loader } from './components/Loader';
@@ -18,20 +18,43 @@ export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [user, setUser] = useState<User | null>(null);
+  const [post, setPost] = useState<Post | null>(null);
+  const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const setSelectedUser = (selectedUser: User) => setUser(selectedUser);
-  const getData = async (userId?: number) => (
-    userId
-      ? setPosts(await getPosts(userId))
-      : setUsers(await getUsers())
+  const isListVisible = !isLoading && Boolean(posts.length);
+  const isWarningVisible = !isLoading && user && !isListVisible;
+
+  const setSelectedUser = useCallback(
+    (selectedUser: User) => setUser(selectedUser),
+    [],
+  );
+
+  const setSelectedPost = useCallback(
+    (newPost: Post | null) => setPost(newPost),
+    [],
   );
 
   useEffect(() => {
-    getData();
+    (async function () {
+      try {
+        setUsers(await getUsers());
+      } catch {
+        setHasError(true);
+      }
+    }());
   }, []);
 
   useEffect(() => {
-    getData(user?.id);
+    (async function () {
+      try {
+        setPosts(await getPosts(user?.id || 0));
+      } catch {
+        setHasError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    }());
   }, [user]);
 
   return (
@@ -45,28 +68,42 @@ export const App: React.FC = () => {
                   users={users}
                   selectedUser={user}
                   setSelectedUser={setSelectedUser}
+                  setIsLoading={setIsLoading}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
                 <p data-cy="NoSelectedUser">
-                  {`${user?.name || 'No user selected'}`}
+                  {!user && 'No user selected'}
                 </p>
 
-                <Loader />
+                {hasError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {isWarningVisible && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {isLoading && <Loader />}
 
-                <PostsList posts={posts} />
+                {isListVisible && (
+                  <PostsList
+                    posts={posts}
+                    selectedPostId={post?.id || 0}
+                    setSelectedPost={setSelectedPost}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -82,7 +119,9 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              <PostDetails
+                selectedPost={post}
+              />
             </div>
           </div>
         </div>

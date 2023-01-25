@@ -7,18 +7,21 @@ type Props = {
   users: User[]
   selectedUser: User | null
   setSelectedUser: (user: User) => void
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   selectedUser,
   setSelectedUser,
+  setIsLoading,
 }) => {
   const [isActive, setIsActive] = useState(false);
   const toggleDropdown = () => setIsActive(!isActive);
   const onSelect = (user: User) => () => {
     setSelectedUser(user);
     toggleDropdown();
+    setIsLoading(true);
   };
 
   return (
