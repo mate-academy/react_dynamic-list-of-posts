@@ -33,18 +33,15 @@ export const UserSelector: React.FC<Props> = ({
     setIsListOpen(false);
   };
 
+  const handleDocumentClick = () => {
+    setIsListOpen(!isListOpen);
+  };
+
   useEffect(() => {
-    if (!isListOpen) {
-      return;
+    if (isListOpen) {
+      document.addEventListener('click', handleDocumentClick);
     }
 
-    const handleDocumentClick = () => {
-      setIsListOpen(false);
-    };
-
-    document.addEventListener('click', handleDocumentClick);
-
-    // eslint-disable-next-line consistent-return
     return () => {
       document.removeEventListener('click', handleDocumentClick);
     };

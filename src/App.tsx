@@ -59,7 +59,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!user && (
+                {!user && !isLoading && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
@@ -82,7 +82,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {posts.length > 0 && (
+                {posts.length > 0 && !isLoading && (
                   <PostsList
                     posts={posts}
                     post={post}
