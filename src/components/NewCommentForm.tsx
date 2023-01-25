@@ -9,13 +9,11 @@ type Props = {
   setAddError: Dispatch<SetStateAction<boolean>>;
 };
 
-export const NewCommentForm: React.FC<Props> = (
-  {
-    postId,
-    setComments,
-    setAddError,
-  },
-) => {
+export const NewCommentForm: React.FC<Props> = ({
+  postId,
+  setComments,
+  setAddError,
+}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');

@@ -14,17 +14,15 @@ type Props = {
   setSelectedPost: Dispatch<SetStateAction<Post | null>>;
 };
 
-export const UserSelector: React.FC<Props> = (
-  {
-    users,
-    setPosts,
-    setIsLoadingPosts,
-    selectedUser,
-    setSelectedUser,
-    setPostsError,
-    setSelectedPost,
-  },
-) => {
+export const UserSelector: React.FC<Props> = ({
+  users,
+  setPosts,
+  setIsLoadingPosts,
+  selectedUser,
+  setSelectedUser,
+  setPostsError,
+  setSelectedPost,
+}) => {
   const [dropdownActive, setDropdownActive] = useState(false);
 
   document.addEventListener('click', (event) => {
@@ -45,13 +43,14 @@ export const UserSelector: React.FC<Props> = (
     );
   };
 
-  const handlePostsLoad = (id: number) => {
+  const handlePostsLoad = (user: User) => {
+    setSelectedUser(user);
     setSelectedPost(null);
     setPostsError(false);
     handleDropdown();
     setIsLoadingPosts(true);
 
-    getPosts(id)
+    getPosts(user.id)
       .then(setPosts)
       .catch(() => setPostsError(true))
       .finally(() => {
@@ -92,10 +91,7 @@ export const UserSelector: React.FC<Props> = (
                   'is-active': user.id === selectedUser?.id,
                 },
               )}
-              onClick={() => {
-                setSelectedUser(user);
-                handlePostsLoad(user.id);
-              }}
+              onClick={() => handlePostsLoad(user)}
             >
               {user.name}
             </a>

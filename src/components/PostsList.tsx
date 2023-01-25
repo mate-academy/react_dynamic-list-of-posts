@@ -1,6 +1,6 @@
-import classNames from 'classnames';
 import React, { Dispatch, SetStateAction } from 'react';
 import { Post } from '../types/Post';
+import { PostItem } from './PostItem';
 
 type Props = {
   posts: Post[];
@@ -10,15 +10,13 @@ type Props = {
   setDeleteError: Dispatch<SetStateAction<boolean>>;
 };
 
-export const PostsList: React.FC<Props> = (
-  {
-    posts,
-    selectedPost,
-    setSelectedPost,
-    setAddError,
-    setDeleteError,
-  },
-) => {
+export const PostsList: React.FC<Props> = ({
+  posts,
+  selectedPost,
+  setSelectedPost,
+  setAddError,
+  setDeleteError,
+}) => {
   const handlePostSelect = (post: Post) => {
     setAddError(false);
     setDeleteError(false);
@@ -47,30 +45,12 @@ export const PostsList: React.FC<Props> = (
 
         <tbody>
           {posts.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-
-              <td data-cy="PostTitle">
-                {post.title}
-              </td>
-
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  onClick={() => handlePostSelect(post)}
-                  className={classNames(
-                    'button is-link',
-                    {
-                      'is-light': post.id !== selectedPost?.id,
-
-                    },
-                  )}
-                >
-                  {post.id !== selectedPost?.id ? ('Open') : ('Close')}
-                </button>
-              </td>
-            </tr>
+            <PostItem
+              key={post.id}
+              post={post}
+              selectedPostId={!selectedPost ? 0 : selectedPost.id}
+              handlePostSelect={handlePostSelect}
+            />
           ))}
         </tbody>
       </table>

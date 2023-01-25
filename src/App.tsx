@@ -23,7 +23,7 @@ export const App: React.FC = () => {
   const [deleteError, setDeleteError] = useState(false);
 
   const noPostsWarning
-    = (!postsError && posts.length === 0 && selectedUser && !isLoadingPosts);
+    = !postsError && !posts.length && selectedUser && !isLoadingPosts;
 
   useEffect(() => {
     getUsers()

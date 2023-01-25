@@ -4,6 +4,7 @@ import React, {
 import { deleteComment, getComments } from '../api/api';
 import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
+import { CommentsList } from './CommentsList';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -15,15 +16,13 @@ type Props = {
   setDeleteError: Dispatch<SetStateAction<boolean>>;
 };
 
-export const PostDetails: React.FC<Props> = (
-  {
-    selectedPost,
-    addError,
-    setAddError,
-    deleteError,
-    setDeleteError,
-  },
-) => {
+export const PostDetails: React.FC<Props> = ({
+  selectedPost,
+  addError,
+  setAddError,
+  deleteError,
+  setDeleteError,
+}) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [commentsError, setCommentsError] = useState(false);
@@ -42,11 +41,11 @@ export const PostDetails: React.FC<Props> = (
 
   const handleDelete = (id: number) => {
     setDeleteError(false);
-    setComments(
-      prevValue => prevValue.filter(comment => comment.id !== id),
-    );
 
     deleteComment(id)
+      .then(() => setComments(
+        prevValue => prevValue.filter(comment => comment.id !== id),
+      ))
       .catch(() => setDeleteError(true));
   };
 
@@ -76,7 +75,7 @@ export const PostDetails: React.FC<Props> = (
 
           {!isProcessing && (
             <>
-              {comments.length === 0 ? (
+              {!comments.length ? (
                 <p className="title is-4" data-cy="NoCommentsMessage">
                   No comments yet
                 </p>
@@ -100,32 +99,10 @@ export const PostDetails: React.FC<Props> = (
                 </div>
               )}
 
-              {comments.map(comment => (
-                <article
-                  key={comment.id}
-                  className="message is-small"
-                  data-cy="Comment"
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                      {comment.name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => handleDelete(comment.id)}
-                    >
-                      delete button
-                    </button>
-                  </div>
-
-                  <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
-                  </div>
-                </article>
-              ))}
+              <CommentsList
+                comments={comments}
+                handleDelete={handleDelete}
+              />
 
               {!formIsOpen && (
                 <button
