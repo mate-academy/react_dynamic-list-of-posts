@@ -8,7 +8,7 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getPostsByUser } from './api/posts';
+import { getPostsByUserId } from './api/posts';
 import { Post } from './types/Post';
 
 export const App: React.FC = () => {
@@ -23,7 +23,7 @@ export const App: React.FC = () => {
     setSelectedUserId(userId);
     setIsLoading(true);
 
-    getPostsByUser(userId)
+    getPostsByUserId(userId)
       .then(loadedPosts => {
         setPosts(loadedPosts);
       })
