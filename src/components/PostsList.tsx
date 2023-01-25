@@ -6,15 +6,18 @@ type Props = {
   posts: Post[]
   setSelectedPost: (post: Post | null) => void
   selectedPostId: number
+  closeForm: () => void
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
   selectedPostId = 0,
   setSelectedPost,
+  closeForm,
 }) => {
   const handlePost = (post: Post) => () => {
     setSelectedPost(selectedPostId === post.id ? null : post);
+    closeForm();
   };
 
   return (

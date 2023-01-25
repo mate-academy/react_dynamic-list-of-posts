@@ -29,7 +29,7 @@ export const NewCommentForm: React.FC<Props> = ({
     email,
     body,
     postId,
-    id: Infinity, // Date.now(),
+    id: Date.now(),
   };
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -41,16 +41,14 @@ export const NewCommentForm: React.FC<Props> = ({
     if (name && email && body) {
       setIsLoading(true);
 
-      try {
-        await postComment(comment);
-        setComments([...comments, comment]);
-      } catch {
-        setError();
-      } finally {
-        setIsLoading(false);
-        setIsBodyOk(true);
-        setBody('');
-      }
+      await postComment(comment)
+        .then(() => setComments([...comments, comment]))
+        .then(() => {
+          setIsLoading(false);
+          setIsBodyOk(true);
+          setBody('');
+        })
+        .catch(() => setError());
     }
   };
 

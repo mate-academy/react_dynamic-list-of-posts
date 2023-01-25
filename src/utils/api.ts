@@ -14,7 +14,7 @@ export const getComments = (postId: number): Promise<Comment[]> => {
 };
 
 export const postComment = (data: Comment): Promise<Comment> => {
-  return client.post(`/comments?postId=${data.postId}`, data);
+  return client.post('/comments', data);
 };
 
 export const deleteComment = (commentId: number) => {

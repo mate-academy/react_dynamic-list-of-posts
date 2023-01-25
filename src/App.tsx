@@ -3,15 +3,15 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import 'bulma/bulma.sass';
 import './App.scss';
 
-import React, { useCallback, useEffect, useState } from 'react';
 import cn from 'classnames';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { Loader } from './components/Loader';
 import { PostDetails } from './components/PostDetails';
 import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
+import { Post, User } from './types';
 import { getPosts, getUsers } from './utils/api';
-import { User, Post } from './types';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -20,6 +20,7 @@ export const App: React.FC = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const isListVisible = !isLoading && Boolean(posts.length);
   const isWarningVisible = !isLoading && user && !isListVisible;
@@ -33,6 +34,10 @@ export const App: React.FC = () => {
     (newPost: Post | null) => setPost(newPost),
     [],
   );
+
+  const startLoading = useCallback(() => setIsLoading(true), []);
+  const closeForm = useCallback(() => setIsFormOpen(false), []);
+  const openForm = useCallback(() => setIsFormOpen(true), []);
 
   useEffect(() => {
     (async function () {
@@ -67,7 +72,7 @@ export const App: React.FC = () => {
                   users={users}
                   selectedUser={user}
                   setSelectedUser={setSelectedUser}
-                  setIsLoading={setIsLoading}
+                  startLoading={startLoading}
                 />
               </div>
 
@@ -101,6 +106,7 @@ export const App: React.FC = () => {
                     posts={posts}
                     selectedPostId={post?.id || 0}
                     setSelectedPost={setSelectedPost}
+                    closeForm={closeForm}
                   />
                 )}
               </div>
@@ -119,7 +125,11 @@ export const App: React.FC = () => {
           >
             {post && (
               <div className="tile is-child box is-success ">
-                <PostDetails selectedPost={post} />
+                <PostDetails
+                  selectedPost={post}
+                  isFormOpen={isFormOpen}
+                  openForm={openForm}
+                />
               </div>
             )}
           </div>

@@ -7,19 +7,22 @@ import { NewCommentForm } from './NewCommentForm';
 
 type Props = {
   selectedPost: Post | null
+  isFormOpen: boolean
+  openForm: () => void
 };
 
-export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
+export const PostDetails: React.FC<Props> = ({
+  selectedPost, isFormOpen, openForm,
+}) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isFormOpen, setIsFormOpen] = useState(false);
   const [error, setError] = useState(Error.None);
 
   const { id, title, body } = selectedPost || {};
 
+  const hasError = (error === Error.Add || error === Error.Delete);
   const isListVisible = comments.length > 0 && !isLoading;
   const isListEmpty = comments.length === 0 && !isLoading;
-  const hasError = (error === Error.Add || error === Error.Delete);
 
   const updateComments = useCallback(
     (updatedComments: Comment[]) => {
@@ -31,8 +34,8 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const handleAddError = useCallback(() => setError(Error.Add), []);
 
   useEffect(() => {
+    setIsLoading(true);
     if (id) {
-      setIsLoading(true);
       (async function () {
         try {
           setComments(await getComments(id));
@@ -49,10 +52,13 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
     const filteredComments = comments
       .filter(comment => comment.id !== commentId);
 
-    deleteComment(commentId)
-    // eslint-disable-next-line no-console
-      .catch(() => setError(Error.Delete));
     setComments(filteredComments);
+    await deleteComment(commentId);
+
+    if (filteredComments.length === comments.length) {
+      setError(Error.Delete);
+      setComments(comments);
+    }
   };
 
   return (
@@ -127,10 +133,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
           )}
 
           {hasError && (
-            <div
-              className="notification is-danger"
-              data-cy="PostsLoadingError"
-            >
+            <div className="notification is-danger">
               {`Could not ${error === Error.Add
                 ? 'add'
                 : 'delete'} comment`}
@@ -142,14 +145,14 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
               data-cy="WriteCommentButton"
               type="button"
               className="button is-link"
-              onClick={() => setIsFormOpen(true)}
+              onClick={openForm}
             >
               Write a comment
             </button>
           )}
         </div>
 
-        {isFormOpen && (
+        {isFormOpen && !isLoading && (
           <NewCommentForm
             postId={id || 0}
             setComments={updateComments}

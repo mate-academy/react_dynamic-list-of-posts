@@ -1,27 +1,28 @@
-import cn from 'classnames';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import cn from 'classnames';
 import { User } from '../types';
 
 type Props = {
   users: User[]
   selectedUser: User | null
   setSelectedUser: (user: User) => void
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  startLoading: () => void
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   selectedUser,
   setSelectedUser,
-  setIsLoading,
+  startLoading,
 }) => {
   const [isActive, setIsActive] = useState(false);
   const toggleDropdown = () => setIsActive(!isActive);
+
   const onSelect = (user: User) => () => {
     setSelectedUser(user);
     toggleDropdown();
-    setIsLoading(true);
+    startLoading();
   };
 
   return (
@@ -45,7 +46,11 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+      <div
+        className="dropdown-menu"
+        id="dropdown-menu"
+        role="menu"
+      >
         <div className="dropdown-content">
           {users.map(user => (
             <Link
