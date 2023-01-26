@@ -1,39 +1,37 @@
 import { FC } from 'react';
-import { NewCommentForm } from '../Comments/NewCommentForm';
 import { CommentsList } from '../Comments/CommentsList';
+import { usePostStore } from '../../store/postStore';
+import { usePost } from '../../hooks/usePost';
+import { Loader } from '../Loader';
 
 export const PostDetails: FC = () => {
+  const selectedPost = usePostStore((state) => state.selectedPost);
+  const { data: post, isLoading, isError } = usePost(selectedPost?.id || 0);
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (isError) {
+    return (
+      <div className="notification is-danger" data-cy="PostsLoadingError">
+        Something went wrong!
+      </div>
+    );
+  }
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
-          </h2>
+          <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
 
-          <p data-cy="PostBody">
-            eveniet quo quis laborum totam consequatur non dolor ut et est
-            repudiandae est voluptatem vel debitis et magnam
-          </p>
+          <p data-cy="PostBody">{post.body}</p>
         </div>
 
         <div className="block">
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-
           <CommentsList />
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
         </div>
-
-        <NewCommentForm />
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import './App.scss';
 
 import { PostsList } from './components/Posts/PostsList';
 import { UserSelector } from './components/UserSelector';
+import { Sidebar } from './components/Sidebar';
 
 export const App: FC = () => {
   return (
@@ -23,7 +24,7 @@ export const App: FC = () => {
             </div>
           </div>
 
-          {/* <Sidebar /> */}
+          <Sidebar />
         </div>
       </div>
     </main>
