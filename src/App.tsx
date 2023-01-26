@@ -21,13 +21,15 @@ export const App: React.FC = () => {
   const [postsError, setPostsError] = useState(false);
   const [addError, setAddError] = useState(false);
   const [deleteError, setDeleteError] = useState(false);
+  const [usersError, setUsersError] = useState(false);
 
   const noPostsWarning
     = !postsError && !posts.length && selectedUser && !isLoadingPosts;
 
   useEffect(() => {
     getUsers()
-      .then(setUsers);
+      .then(setUsers)
+      .catch(setUsersError);
   }, []);
 
   return (
@@ -49,10 +51,18 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUser && (
+                {(!selectedUser && !usersError) && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
+                )}
+
+                {usersError && (
+                  <div
+                    className="notification is-danger"
+                  >
+                    Unable to load users!
+                  </div>
                 )}
 
                 {isLoadingPosts && (<Loader />)}
