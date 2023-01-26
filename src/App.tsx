@@ -37,9 +37,10 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
-    setPost(null);
-
     if (user) {
+      setPosts([]);
+      setPost(null);
+      setError('');
       loadApiPosts(user);
     }
   }, [user]);
@@ -83,7 +84,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {posts.length > 0 && !isLoading && (
+                {posts && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     post={post}
