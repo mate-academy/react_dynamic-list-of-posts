@@ -1,10 +1,14 @@
-export const PostItem = () => (
-  <tr data-cy="Post">
-    <td data-cy="PostId">17</td>
+import { FC } from 'react';
+import { Post } from '../../types/Post';
 
-    <td data-cy="PostTitle">
-      fugit voluptas sed molestias voluptatem provident
-    </td>
+type Props = {
+  post: Post;
+};
+export const PostItem: FC<Props> = ({ post: { id, title } }) => (
+  <tr data-cy="Post">
+    <td data-cy="PostId">{id}</td>
+
+    <td data-cy="PostTitle">{title}</td>
 
     <td className="has-text-right is-vcentered">
       <button
