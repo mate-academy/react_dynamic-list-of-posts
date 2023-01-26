@@ -50,7 +50,6 @@ export const PostsList: FC = () => {
           {posts.map((post) => (
             <PostItem key={post.id} post={post} />
           ))}
-          {' '}
         </tbody>
       </table>
     </div>

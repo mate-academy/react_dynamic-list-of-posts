@@ -1,12 +1,14 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import cn from 'classnames';
 import { useUsers } from '../hooks/useUsers';
 import { User } from '../types/User';
 import { useUserStore } from '../store/userStore';
+import { useUiStore } from '../store/uiStore';
 
 export const UserSelector: FC = () => {
   const { data: users, isError, isLoading } = useUsers();
-  const [isVisible, setIsVisible] = useState(false);
+  const isVisible = useUiStore((state) => state.isSelectVisible);
+  const setIsVisible = useUiStore((state) => state.setSelectVisibility);
   const user = useUserStore((state) => state.selectedUser);
   const selectUser = useUserStore((state) => state.selectUser);
 
@@ -32,7 +34,7 @@ export const UserSelector: FC = () => {
               className="button"
               aria-haspopup="true"
               aria-controls="dropdown-menu"
-              onClick={() => setIsVisible((prevState) => !prevState)}
+              onClick={() => setIsVisible(!isVisible)}
             >
               {user ? <span>{user?.name}</span> : <span>Choose a user</span>}
 
