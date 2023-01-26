@@ -2,7 +2,7 @@ import { FC } from 'react';
 
 export const NewCommentForm: FC = () => {
   return (
-    <form data-cy="NewCommentForm">
+    <form data-cy="NewCommentForm is-hidden">
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
