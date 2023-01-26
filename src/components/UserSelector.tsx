@@ -1,10 +1,57 @@
-import React from 'react';
+import classNames from 'classnames';
+import React, { useEffect, useState } from 'react';
+import { getUsers } from '../api/users';
+import { User } from '../types/User';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  user: number;
+  setUser: (id: number) => void;
+  setError: (message: string) => void;
+};
+
+export const UserSelector: React.FC<Props> = ({
+  user,
+  setUser,
+  setError,
+}) => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [userName, setUserName] = useState('');
+  const [isListOpen, setIsListOpen] = useState(false);
+
+  useEffect(() => {
+    getUsers()
+      .then(setUsers)
+      .catch(() => setError('Unable to get users'));
+  }, []);
+
+  const selectUser = (chosenUser: User) => {
+    if (chosenUser.id !== user) {
+      setUser(chosenUser.id);
+      setUserName(chosenUser.name);
+    }
+
+    setIsListOpen(false);
+  };
+
+  const handleDocumentClick = () => {
+    setIsListOpen(!isListOpen);
+  };
+
+  useEffect(() => {
+    if (isListOpen) {
+      document.addEventListener('click', handleDocumentClick);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, [isListOpen]);
+
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={classNames('dropdown',
+        { 'is-active': isListOpen })}
     >
       <div className="dropdown-trigger">
         <button
@@ -12,8 +59,9 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setIsListOpen(current => !current)}
         >
-          <span>Choose a user</span>
+          <span>{userName || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -23,11 +71,17 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+          {users.map(userFromList => (
+            <a
+              key={userFromList.id}
+              href={`#user-${userFromList.id}`}
+              className={classNames('dropdown-item',
+                { 'is-active': userFromList.id === user })}
+              onClick={() => selectUser(userFromList)}
+            >
+              {userFromList.name}
+            </a>
+          ))}
         </div>
       </div>
     </div>

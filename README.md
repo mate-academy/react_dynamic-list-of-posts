@@ -4,7 +4,7 @@ Implement the App with ability to show posts of a selected user. Each post can
 be opened in the sidebar with its comments. There should delete a comment and a
 form to add new comments.
 
-> Here is [the working version](https://mate-academy.github.io/react_dynamic-list-of-posts/)
+> Here is [the working version](https://oleksii-bieliaiev.github.io/react_dynamic-list-of-posts/)
 
 1. Learn the `utils/fetchClient.ts` and use it to interact with the API (tests expect that you each API request is sent after 300 ms delay);
 1. Initially the `App` shows the `UserSelector` and a paragraph `No user selected` in the main content block.
