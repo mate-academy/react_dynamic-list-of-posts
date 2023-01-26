@@ -1,14 +1,12 @@
-import React from 'react';
+import { FC } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import { PostsList } from './components/PostsList';
+import { PostsList } from './components/Posts/PostsList';
 import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
-import { Sidebar } from './components/Sidebar';
 
-export const App: React.FC = () => {
+export const App: FC = () => {
   return (
     <main className="section">
       <div className="container">
@@ -21,8 +19,6 @@ export const App: React.FC = () => {
 
               <div className="block" data-cy="MainContent">
                 <p data-cy="NoSelectedUser">No user selected</p>
-
-                <Loader />
 
                 <div
                   className="notification is-danger"
@@ -40,7 +36,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          <Sidebar />
+          {/* <Sidebar /> */}
         </div>
       </div>
     </main>

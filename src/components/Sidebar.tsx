@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { PostDetails } from './PostDetails';
+import { PostDetails } from './Posts/PostDetails';
 
 export const Sidebar = () => {
   return (

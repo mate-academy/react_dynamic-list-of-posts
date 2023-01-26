@@ -1,6 +1,6 @@
-import React from 'react';
+import { FC } from 'react';
 
-export const NewCommentForm: React.FC = () => {
+export const NewCommentForm: FC = () => {
   return (
     <form data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
