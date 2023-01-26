@@ -26,6 +26,7 @@ export const PostDetails: React.FC<Props> = ({
   const { id, title, body } = selectedPost || {};
   const savedComments = comments;
   const hasError = (error === IError.Add || error === IError.Delete);
+  const isButtonVisible = !isLoading && !isFormOpen && !error;
 
   const updateComments = useCallback(
     (updatedComments: Comment[]) => {
@@ -94,7 +95,7 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {!isLoading && (
+          {!isLoading && !error && (
             comments.length === 0
               ? (
                 <p
@@ -149,7 +150,7 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {!isLoading && !isFormOpen && (
+          {isButtonVisible && (
             <button
               data-cy="WriteCommentButton"
               type="button"

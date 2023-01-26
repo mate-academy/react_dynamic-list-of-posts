@@ -22,9 +22,12 @@ export const UserSelector: React.FC<Props> = ({
   const toggleDropdown = () => setIsActive(!isActive);
 
   const onSelect = (user: User) => () => {
-    setSelectedUser(user);
+    if (user.id !== selectedUser?.id) {
+      setSelectedUser(user);
+      startLoading();
+    }
+
     toggleDropdown();
-    startLoading();
     closePost();
   };
 
@@ -40,6 +43,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={toggleDropdown}
+          onBlur={() => setIsActive(false)}
         >
           <span>{`${selectedUser?.name || 'Choose a user'}`}</span>
 
@@ -59,7 +63,7 @@ export const UserSelector: React.FC<Props> = ({
             <Link
               key={user.id}
               to={`/user-${user.id}`}
-              onClick={onSelect(user)}
+              onMouseDown={onSelect(user)}
               className={cn('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}

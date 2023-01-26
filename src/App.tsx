@@ -58,12 +58,14 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     (async function () {
-      try {
-        setPosts(await getPosts(user?.id || 0));
-      } catch {
-        setHasError(true);
-      } finally {
-        setIsLoading(false);
+      if (user) {
+        try {
+          setPosts(await getPosts(user.id));
+        } catch {
+          setHasError(true);
+        } finally {
+          setIsLoading(false);
+        }
       }
     }());
   }, [user]);
@@ -101,7 +103,7 @@ export const App: React.FC = () => {
                 {isLoading
                   ? <Loader />
                   : ((
-                    user && (
+                    user && !hasError && (
                       (posts.length === 0 && (
                         <div
                           className="notification is-warning"

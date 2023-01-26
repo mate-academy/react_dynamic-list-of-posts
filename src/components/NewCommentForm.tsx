@@ -25,13 +25,9 @@ export const NewCommentForm: React.FC<Props> = ({
   const isNameEmpty = !name && !isNameOk;
   const isEmailEmpty = !email && !isEmailOk;
   const isBodyEmpty = !body && !isBodyOk;
-  const id = Math.max(...comments.map(comm => comm.id + 1));
+  const id = Math.max(...comments.map(comm => comm.id + 1), 1);
 
   const postComment = async () => {
-    setIsNameOk(false);
-    setIsEmailOk(false);
-    setIsBodyOk(false);
-
     if (name && email && body) {
       setIsLoading(true);
       setError(IError.None);
@@ -47,6 +43,7 @@ export const NewCommentForm: React.FC<Props> = ({
       try {
         await createComment(comment);
         setComments([...comments, comment]);
+        setIsLoading(false);
       } catch {
         setError(IError.Add);
       } finally {
@@ -54,6 +51,10 @@ export const NewCommentForm: React.FC<Props> = ({
         setIsBodyOk(true);
         setBody('');
       }
+    } else {
+      setIsNameOk(false);
+      setIsEmailOk(false);
+      setIsBodyOk(false);
     }
   };
 
