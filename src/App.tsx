@@ -21,9 +21,10 @@ export const App: React.FC = () => {
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
 
   const isListVisible = !isLoading && Boolean(posts.length);
-  const isWarningVisible = !isLoading && user && !isListVisible;
+  const isWarningVisible = !isLoading && user && !posts.length;
 
   const setSelectedUser = useCallback(
     (selectedUser: User) => setUser(selectedUser),
@@ -35,6 +36,17 @@ export const App: React.FC = () => {
     [],
   );
 
+  const toggleIsLoadingDetails = useCallback(
+    (param: boolean) => setIsLoadingDetails(param),
+    [],
+  );
+
+  const startLoadingDetails = useCallback(
+    () => setIsLoadingDetails(true),
+    [],
+  );
+
+  const closePost = useCallback(() => setPost(null), []);
   const startLoading = useCallback(() => setIsLoading(true), []);
   const closeForm = useCallback(() => setIsFormOpen(false), []);
   const openForm = useCallback(() => setIsFormOpen(true), []);
@@ -73,6 +85,7 @@ export const App: React.FC = () => {
                   selectedUser={user}
                   setSelectedUser={setSelectedUser}
                   startLoading={startLoading}
+                  closePost={closePost}
                 />
               </div>
 
@@ -107,6 +120,7 @@ export const App: React.FC = () => {
                     selectedPostId={post?.id || 0}
                     setSelectedPost={setSelectedPost}
                     closeForm={closeForm}
+                    startLoading={startLoadingDetails}
                   />
                 )}
               </div>
@@ -129,6 +143,8 @@ export const App: React.FC = () => {
                   selectedPost={post}
                   isFormOpen={isFormOpen}
                   openForm={openForm}
+                  isLoading={isLoadingDetails}
+                  setIsLoading={toggleIsLoadingDetails}
                 />
               </div>
             )}

@@ -8,6 +8,7 @@ type Props = {
   selectedUser: User | null
   setSelectedUser: (user: User) => void
   startLoading: () => void
+  closePost: () => void
 };
 
 export const UserSelector: React.FC<Props> = ({
@@ -15,6 +16,7 @@ export const UserSelector: React.FC<Props> = ({
   selectedUser,
   setSelectedUser,
   startLoading,
+  closePost,
 }) => {
   const [isActive, setIsActive] = useState(false);
   const toggleDropdown = () => setIsActive(!isActive);
@@ -23,6 +25,7 @@ export const UserSelector: React.FC<Props> = ({
     setSelectedUser(user);
     toggleDropdown();
     startLoading();
+    closePost();
   };
 
   return (

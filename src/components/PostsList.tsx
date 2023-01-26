@@ -7,6 +7,7 @@ type Props = {
   setSelectedPost: (post: Post | null) => void
   selectedPostId: number
   closeForm: () => void
+  startLoading: () => void
 };
 
 export const PostsList: React.FC<Props> = ({
@@ -14,10 +15,12 @@ export const PostsList: React.FC<Props> = ({
   selectedPostId = 0,
   setSelectedPost,
   closeForm,
+  startLoading,
 }) => {
   const handlePost = (post: Post) => () => {
     setSelectedPost(selectedPostId === post.id ? null : post);
     closeForm();
+    startLoading();
   };
 
   return (

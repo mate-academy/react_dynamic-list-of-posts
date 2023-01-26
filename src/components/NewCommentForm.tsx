@@ -1,13 +1,13 @@
-import React, { FormEvent, useState } from 'react';
 import cn from 'classnames';
-import { postComment } from '../utils/api';
-import { Comment } from '../types';
+import React, { useState } from 'react';
+import { Comment, IError } from '../types';
+import { createComment } from '../utils/api';
 
 type Props = {
   postId: number
   setComments: (updatedComments: Comment[]) => void
   comments: Comment[]
-  setError: () => void
+  setError: (error: IError) => void
 };
 
 export const NewCommentForm: React.FC<Props> = ({
@@ -16,39 +16,43 @@ export const NewCommentForm: React.FC<Props> = ({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(false);
   const [isNameOk, setIsNameOk] = useState(true);
   const [isEmailOk, setIsEmailOk] = useState(true);
   const [isBodyOk, setIsBodyOk] = useState(true);
 
   const isRequired = (part: string, isOk: boolean) => !part && !isOk;
+  const id = Math.max(...comments.map(comm => comm.id + 1));
 
-  const comment: Comment = {
-    name,
-    email,
-    body,
-    postId,
-    id: Date.now(),
-  };
-
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const postComment = async () => {
     setIsNameOk(false);
     setIsEmailOk(false);
     setIsBodyOk(false);
 
     if (name && email && body) {
       setIsLoading(true);
+      setError(IError.None);
 
-      await postComment(comment)
-        .then(() => setComments([...comments, comment]))
-        .then(() => {
-          setIsLoading(false);
-          setIsBodyOk(true);
-          setBody('');
-        })
-        .catch(() => setError());
+      const comment: Comment = {
+        name,
+        email,
+        body,
+        postId,
+        id,
+      };
+
+      try {
+        const newComment = await createComment(comment);
+
+        setComments([...comments, newComment]);
+      } catch {
+        setError(IError.Add);
+      } finally {
+        setIsLoading(false);
+        setIsBodyOk(true);
+        setBody('');
+      }
     }
   };
 
@@ -59,12 +63,16 @@ export const NewCommentForm: React.FC<Props> = ({
     setIsNameOk(true);
     setIsEmailOk(true);
     setIsBodyOk(true);
+    setError(IError.None);
   };
 
   return (
     <form
       data-cy="NewCommentForm"
-      onSubmit={onSubmit}
+      onSubmit={(event) => {
+        event.preventDefault();
+        postComment();
+      }}
     >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">

@@ -1,6 +1,6 @@
 /* eslint-disable func-names */
 import React, { useCallback, useEffect, useState } from 'react';
-import { Comment, Post, Error } from '../types';
+import { Comment, Post, IError } from '../types';
 import { deleteComment, getComments } from '../utils/api';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
@@ -9,20 +9,23 @@ type Props = {
   selectedPost: Post | null
   isFormOpen: boolean
   openForm: () => void
+  isLoading: boolean
+  setIsLoading: (param: boolean) => void
 };
 
 export const PostDetails: React.FC<Props> = ({
-  selectedPost, isFormOpen, openForm,
+  selectedPost,
+  isFormOpen,
+  openForm,
+  isLoading,
+  setIsLoading,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(Error.None);
+  const [error, setError] = useState(IError.None);
+  const savedComments = comments;
 
   const { id, title, body } = selectedPost || {};
-
-  const hasError = (error === Error.Add || error === Error.Delete);
-  const isListVisible = comments.length > 0 && !isLoading;
-  const isListEmpty = comments.length === 0 && !isLoading;
+  const hasError = (error === IError.Add || error === IError.Delete);
 
   const updateComments = useCallback(
     (updatedComments: Comment[]) => {
@@ -31,16 +34,22 @@ export const PostDetails: React.FC<Props> = ({
     [],
   );
 
-  const handleAddError = useCallback(() => setError(Error.Add), []);
+  const handleError = useCallback((err: IError) => setError(err), []);
 
   useEffect(() => {
     setIsLoading(true);
     if (id) {
       (async function () {
+        const commentsFromServer = await getComments(id);
+
         try {
-          setComments(await getComments(id));
+          if (!commentsFromServer) {
+            throw new Error();
+          } else {
+            setComments(commentsFromServer);
+          }
         } catch {
-          setError(Error.Load);
+          setError(IError.Load);
         } finally {
           setIsLoading(false);
         }
@@ -48,16 +57,22 @@ export const PostDetails: React.FC<Props> = ({
     }
   }, [selectedPost]);
 
+  useEffect(() => {
+    setError(IError.None);
+  }, [comments]);
+
   const onDelete = (commentId: number) => async () => {
     const filteredComments = comments
       .filter(comment => comment.id !== commentId);
 
+    setError(IError.None);
     setComments(filteredComments);
-    await deleteComment(commentId);
 
-    if (filteredComments.length === comments.length) {
-      setError(Error.Delete);
-      setComments(comments);
+    try {
+      await deleteComment(commentId);
+    } catch {
+      setComments(savedComments);
+      setError(IError.Delete);
     }
   };
 
@@ -77,7 +92,7 @@ export const PostDetails: React.FC<Props> = ({
         <div className="block">
           {isLoading && <Loader />}
 
-          {error === Error.Load && (
+          {error === IError.Load && (
             <div
               className="notification is-danger"
               data-cy="CommentsError"
@@ -86,55 +101,56 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {isListEmpty && (
-            <p
-              className="title is-4"
-              data-cy="NoCommentsMessage"
-            >
-              No comments yet
-            </p>
-          )}
-
-          {isListVisible && (
-            <>
-              <p className="title is-4">Comments:</p>
-
-              {comments.map(comment => (
-                <article
-                  key={comment.id}
-                  className="message is-small"
-                  data-cy="Comment"
+          {!isLoading && (
+            comments.length === 0
+              ? (
+                <p
+                  className="title is-4"
+                  data-cy="NoCommentsMessage"
                 >
-                  <div className="message-header">
-                    <a
-                      href={`mailto:${comment.email}`}
-                      data-cy="CommentAuthor"
-                    >
-                      {comment.name}
-                    </a>
+                  No comments yet
+                </p>
+              )
+              : (
+                <>
+                  <p className="title is-4">Comments:</p>
 
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={onDelete(comment.id)}
+                  {comments.map(comment => (
+                    <article
+                      key={comment.id}
+                      className="message is-small"
+                      data-cy="Comment"
                     >
-                      delete button
-                    </button>
-                  </div>
+                      <div className="message-header">
+                        <a
+                          href={`mailto:${comment.email}`}
+                          data-cy="CommentAuthor"
+                        >
+                          {comment.name}
+                        </a>
 
-                  <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
-                  </div>
-                </article>
+                        <button
+                          data-cy="CommentDelete"
+                          type="button"
+                          className="delete is-small"
+                          aria-label="delete"
+                          onClick={onDelete(comment.id)}
+                        >
+                          delete button
+                        </button>
+                      </div>
+
+                      <div className="message-body" data-cy="CommentBody">
+                        {comment.body}
+                      </div>
+                    </article>
+                  ))}
+                </>
               ))}
-            </>
-          )}
 
           {hasError && (
             <div className="notification is-danger">
-              {`Could not ${error === Error.Add
+              {`Could not ${error === IError.Add
                 ? 'add'
                 : 'delete'} comment`}
             </div>
@@ -154,10 +170,10 @@ export const PostDetails: React.FC<Props> = ({
 
         {isFormOpen && !isLoading && (
           <NewCommentForm
-            postId={id || 0}
+            postId={id as number}
             setComments={updateComments}
             comments={comments}
-            setError={handleAddError}
+            setError={handleError}
           />
         )}
       </div>

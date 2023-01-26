@@ -1,4 +1,4 @@
-export enum Error {
+export enum IError {
   None,
   Add,
   Delete,
