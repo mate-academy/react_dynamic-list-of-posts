@@ -30,7 +30,7 @@ export const PostDetails: FC = () => {
         </div>
 
         <div className="block">
-          <CommentsList />
+          <CommentsList postId={post.id} />
         </div>
       </div>
     </div>

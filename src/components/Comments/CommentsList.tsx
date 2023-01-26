@@ -1,26 +1,52 @@
+import { FC } from 'react';
 import { CommentItem } from './CommentItem';
 import { NewCommentForm } from './NewCommentForm';
+import { useComments } from '../../hooks/useComments';
+import { Loader } from '../Loader';
 
-export const CommentsList = () => (
-  <>
-    <p className="title is-4" data-cy="NoCommentsMessage">
-      No comments yet
-    </p>
+type Props = {
+  postId: number;
+};
 
-    <div className="notification is-danger" data-cy="CommentsError">
-      Something went wrong
-    </div>
-    <p className="title is-4">Comments:</p>
+export const CommentsList: FC<Props> = ({ postId }) => {
+  const { data: comments, isLoading, isError } = useComments(postId);
 
-    <CommentItem />
+  if (isLoading) {
+    return <Loader />;
+  }
 
-    <button
-      data-cy="WriteCommentButton"
-      type="button"
-      className="button is-link"
-    >
-      Write a comment
-    </button>
-    <NewCommentForm />
-  </>
-);
+  if (isError) {
+    return (
+      <div className="notification is-danger" data-cy="CommentsError">
+        Something went wrong
+      </div>
+    );
+  }
+
+  if (comments.length === 0) {
+    return (
+      <p className="title is-4" data-cy="NoCommentsMessage">
+        No comments yet
+      </p>
+    );
+  }
+
+  return (
+    <>
+      <p className="title is-4">Comments:</p>
+
+      {comments.map((comment) => (
+        <CommentItem key={comment.id} comment={comment} />
+      ))}
+
+      <button
+        data-cy="WriteCommentButton"
+        type="button"
+        className="button is-link"
+      >
+        Write a comment
+      </button>
+      <NewCommentForm />
+    </>
+  );
+};

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import cn from 'classnames';
 import { PostDetails } from './Posts/PostDetails';
 import { useUiStore } from '../store/uiStore';
 
@@ -8,7 +8,7 @@ export const Sidebar = () => {
   return (
     <div
       data-cy="Sidebar"
-      className={classNames('tile', 'is-parent', 'is-8-desktop', 'Sidebar', {
+      className={cn('tile', 'is-parent', 'is-8-desktop', 'Sidebar', {
         'Sidebar--open': isOpen,
       })}
     >

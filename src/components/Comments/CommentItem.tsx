@@ -1,8 +1,14 @@
-export const CommentItem = () => (
+import { FC } from 'react';
+import { Comment } from '../../types/Comment';
+
+type Props = {
+  comment: Comment;
+};
+export const CommentItem: FC<Props> = ({ comment }) => (
   <article className="message is-small" data-cy="Comment">
     <div className="message-header">
-      <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-        Misha Hrynko
+      <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+        {comment.name}
       </a>
       <button
         data-cy="CommentDelete"
@@ -15,7 +21,7 @@ export const CommentItem = () => (
     </div>
 
     <div className="message-body" data-cy="CommentBody">
-      Some comment
+      {comment.body}
     </div>
   </article>
 );
