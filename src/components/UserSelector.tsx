@@ -1,14 +1,12 @@
-import React, { FC } from 'react';
+import { FC, MouseEvent, useState } from 'react';
 import cn from 'classnames';
 import { useUsers } from '../hooks/useUsers';
 import { User } from '../types/User';
 import { useUserStore } from '../store/userStore';
-import { useUiStore } from '../store/uiStore';
 
 export const UserSelector: FC = () => {
   const { data: users, isError, isLoading } = useUsers();
-  const isVisible = useUiStore((state) => state.isSelectVisible);
-  const setIsVisible = useUiStore((state) => state.setSelectVisibility);
+  const [isVisible, setIsVisible] = useState(false);
   const user = useUserStore((state) => state.selectedUser);
   const selectUser = useUserStore((state) => state.selectUser);
 
@@ -26,7 +24,7 @@ export const UserSelector: FC = () => {
     >
       {isError && <p>Something went wrong</p>}
       {users?.length === 0 && <p>No user to select</p>}
-      {users?.length !== 0 && !isError && !isLoading && (
+      {users?.length !== 0 && !isError && (
         <>
           <div className="dropdown-trigger">
             <button
@@ -34,7 +32,8 @@ export const UserSelector: FC = () => {
               className="button"
               aria-haspopup="true"
               aria-controls="dropdown-menu"
-              onClick={() => setIsVisible(!isVisible)}
+              onClick={() => setIsVisible((prevState) => !prevState)}
+              onBlur={() => setIsVisible(false)}
             >
               {user ? <span>{user?.name}</span> : <span>Choose a user</span>}
 
@@ -44,23 +43,25 @@ export const UserSelector: FC = () => {
             </button>
           </div>
 
-          <div className="dropdown-menu" id="dropdown-menu" role="menu">
-            <div className="dropdown-content">
-              {users.map((u) => (
-                <a
-                  key={u.id}
-                  href={`#/${String(u.id)}`}
-                  className="dropdown-item"
-                  onClick={(e: React.MouseEvent) => {
-                    e.preventDefault();
-                    onUserSelect(u);
-                  }}
-                >
-                  {u.name}
-                </a>
-              ))}
+          {!isLoading && (
+            <div className="dropdown-menu" id="dropdown-menu" role="menu">
+              <div className="dropdown-content">
+                {users.map((u) => (
+                  <a
+                    key={u.id}
+                    href={`#/${String(u.id)}`}
+                    className="dropdown-item"
+                    onMouseDown={(e: MouseEvent) => {
+                      e.preventDefault();
+                      onUserSelect(u);
+                    }}
+                  >
+                    {u.name}
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </>
       )}
     </div>
