@@ -28,37 +28,34 @@ export const NewCommentForm: React.FC<Props> = ({
   const isBodyEmpty = !body && !isBodyOk;
   const id = Math.max(...comments.map(comm => comm.id + 1), 1);
 
-  const postComment = () => {
-    (async function () {
-      if (name && email && body) {
-        setIsLoading(true);
-        setError(IError.None);
+  const postComment = async () => {
+    if (name && email && body) {
+      setIsLoading(true);
+      setError(IError.None);
 
-        const comment: Comment = {
-          name,
-          email,
-          body,
-          postId,
-          id,
-        };
+      const comment: Comment = {
+        name,
+        email,
+        body,
+        postId,
+        id,
+      };
 
-        try {
-          await createComment(comment);
-          setComments([...comments, comment]);
-          setIsLoading(false);
-        } catch {
-          setError(IError.Add);
-        } finally {
-          setIsLoading(false);
-          setIsBodyOk(true);
-          setBody('');
-        }
-      } else {
-        setIsNameOk(false);
-        setIsEmailOk(false);
-        setIsBodyOk(false);
+      try {
+        await createComment(comment);
+        setComments([...comments, comment]);
+      } catch {
+        setError(IError.Add);
+      } finally {
+        setIsLoading(false);
+        setIsBodyOk(true);
+        setBody('');
       }
-    }());
+    } else {
+      setIsNameOk(false);
+      setIsEmailOk(false);
+      setIsBodyOk(false);
+    }
   };
 
   const clearForm = () => {
