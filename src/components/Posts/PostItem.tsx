@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import cn from 'classnames';
 import { Post } from '../../types/Post';
 import { useUiStore } from '../../store/uiStore';
 import { usePostStore } from '../../store/postStore';
@@ -10,11 +9,20 @@ type Props = {
 export const PostItem: FC<Props> = ({ post }) => {
   const setIsSidebarOpen = useUiStore((state) => state.setIsSidebarOpen);
   const isSidebarOpen = useUiStore((state) => state.isSidebarOpen);
-  const selectPost = usePostStore(state => state.selectPost);
+  const selectPost = usePostStore((state) => state.selectPost);
+  const selectedPost = usePostStore((state) => state.selectedPost);
 
-  const onClick = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-    selectPost(post);
+  const onClose = () => {
+    setIsSidebarOpen(false);
+  };
+
+  const onOpen = () => {
+    if (isSidebarOpen) {
+      selectPost(post);
+    } else {
+      setIsSidebarOpen(true);
+      selectPost(post);
+    }
   };
 
   return (
@@ -24,16 +32,25 @@ export const PostItem: FC<Props> = ({ post }) => {
       <td data-cy="PostTitle">{post.title}</td>
 
       <td className="has-text-right is-vcentered">
-        <button
-          type="button"
-          data-cy="PostButton"
-          className={cn('button is-link', {
-            'is-light': !isSidebarOpen,
-          })}
-          onClick={onClick}
-        >
-          {isSidebarOpen ? 'Close' : 'Open'}
-        </button>
+        {isSidebarOpen && selectedPost?.id === post.id ? (
+          <button
+            type="button"
+            data-cy="PostButton"
+            className="button is-link"
+            onClick={onClose}
+          >
+            Close
+          </button>
+        ) : (
+          <button
+            type="button"
+            data-cy="PostButton"
+            className="button is-link is-light"
+            onClick={onOpen}
+          >
+            Open
+          </button>
+        )}
       </td>
     </tr>
   );
