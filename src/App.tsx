@@ -67,7 +67,7 @@ export const App: React.FC = () => {
 
                 {isLoading && <Loader />}
 
-                {error === 'Something went wrong!' && (
+                {error === 'Something went wrong!' && !posts.length && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -76,7 +76,8 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!posts.length && user !== 0 && !isLoading && (
+                {!posts.length && user !== 0 && !isLoading
+                && error !== 'Something went wrong!' && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
