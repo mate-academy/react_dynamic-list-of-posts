@@ -5,6 +5,8 @@ import { immer } from 'zustand/middleware/immer';
 interface UiStore {
   isSidebarOpen: boolean;
   setIsSidebarOpen: (status: boolean) => void;
+  isCommentOpen: boolean;
+  setIsCommentOpen: (status: boolean) => void;
 }
 
 export const useUiStore = create<UiStore>()(
@@ -12,6 +14,8 @@ export const useUiStore = create<UiStore>()(
     devtools((set) => ({
       isSidebarOpen: false,
       setIsSidebarOpen: (status) => set({ isSidebarOpen: status }),
+      isCommentOpen: false,
+      setIsCommentOpen: (status) => set({ isCommentOpen: status }),
     })),
   ),
 );
