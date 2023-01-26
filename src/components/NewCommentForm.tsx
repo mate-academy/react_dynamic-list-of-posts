@@ -22,7 +22,9 @@ export const NewCommentForm: React.FC<Props> = ({
   const [isEmailOk, setIsEmailOk] = useState(true);
   const [isBodyOk, setIsBodyOk] = useState(true);
 
-  const isRequired = (part: string, isOk: boolean) => !part && !isOk;
+  const isNameEmpty = !name && !isNameOk;
+  const isEmailEmpty = !email && !isEmailOk;
+  const isBodyEmpty = !body && !isBodyOk;
   const id = Math.max(...comments.map(comm => comm.id + 1));
 
   const postComment = async () => {
@@ -43,9 +45,8 @@ export const NewCommentForm: React.FC<Props> = ({
       };
 
       try {
-        const newComment = await createComment(comment);
-
-        setComments([...comments, newComment]);
+        await createComment(comment);
+        setComments([...comments, comment]);
       } catch {
         setError(IError.Add);
       } finally {
@@ -91,7 +92,7 @@ export const NewCommentForm: React.FC<Props> = ({
               setIsNameOk(true);
             }}
             className={cn('input', {
-              'is-danger': isRequired(name, isNameOk),
+              'is-danger': isNameEmpty,
             })}
           />
 
@@ -99,7 +100,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-user" />
           </span>
 
-          {isRequired(name, isNameOk) && (
+          {isNameEmpty && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -109,7 +110,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {isRequired(name, isNameOk) && (
+        {isNameEmpty && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -133,7 +134,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-email"
             placeholder="email@test.com"
             className={cn('input', {
-              'is-danger': isRequired(email, isEmailOk),
+              'is-danger': isEmailEmpty,
             })}
           />
 
@@ -141,7 +142,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-envelope" />
           </span>
 
-          {isRequired(email, isEmailOk) && (
+          {isEmailEmpty && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -151,7 +152,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {isRequired(email, isEmailOk) && (
+        {isEmailEmpty && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -174,12 +175,12 @@ export const NewCommentForm: React.FC<Props> = ({
             }}
             placeholder="Type comment here"
             className={cn('textarea', {
-              'is-danger': isRequired(body, isBodyOk),
+              'is-danger': isBodyEmpty,
             })}
           />
         </div>
 
-        {isRequired(body, isBodyOk) && (
+        {isBodyEmpty && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>

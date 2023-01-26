@@ -1,26 +1,26 @@
-import React from 'react';
 import cn from 'classnames';
+import React from 'react';
 import { Post } from '../types';
 
 type Props = {
   posts: Post[]
   setSelectedPost: (post: Post | null) => void
   selectedPostId: number
-  closeForm: () => void
-  startLoading: () => void
+  setIsFormOpen: (param: boolean) => void
+  setLoading: (param: boolean) => void
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
   selectedPostId = 0,
   setSelectedPost,
-  closeForm,
-  startLoading,
+  setIsFormOpen,
+  setLoading,
 }) => {
   const handlePost = (post: Post) => () => {
     setSelectedPost(selectedPostId === post.id ? null : post);
-    closeForm();
-    startLoading();
+    setIsFormOpen(false);
+    setLoading(true);
   };
 
   return (

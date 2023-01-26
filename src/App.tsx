@@ -21,10 +21,7 @@ export const App: React.FC = () => {
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
-
-  const isListVisible = !isLoading && Boolean(posts.length);
-  const isWarningVisible = !isLoading && user && !posts.length;
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
 
   const setSelectedUser = useCallback(
     (selectedUser: User) => setUser(selectedUser),
@@ -36,20 +33,18 @@ export const App: React.FC = () => {
     [],
   );
 
-  const toggleIsLoadingDetails = useCallback(
-    (param: boolean) => setIsLoadingDetails(param),
+  const toggleIsLoading = useCallback(
+    (param: boolean) => setIsLoadingComments(param),
     [],
   );
 
-  const startLoadingDetails = useCallback(
-    () => setIsLoadingDetails(true),
+  const toggleFormOpen = useCallback(
+    (param: boolean) => setIsFormOpen(param),
     [],
   );
 
   const closePost = useCallback(() => setPost(null), []);
   const startLoading = useCallback(() => setIsLoading(true), []);
-  const closeForm = useCallback(() => setIsFormOpen(false), []);
-  const openForm = useCallback(() => setIsFormOpen(true), []);
 
   useEffect(() => {
     (async function () {
@@ -103,26 +98,30 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {isWarningVisible && (
-                  <div
-                    className="notification is-warning"
-                    data-cy="NoPostsYet"
-                  >
-                    No posts yet
-                  </div>
-                )}
-
-                {isLoading && <Loader />}
-
-                {isListVisible && (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={post?.id || 0}
-                    setSelectedPost={setSelectedPost}
-                    closeForm={closeForm}
-                    startLoading={startLoadingDetails}
-                  />
-                )}
+                {isLoading
+                  ? <Loader />
+                  : ((
+                    user && (
+                      (posts.length === 0 && (
+                        <div
+                          className="notification is-warning"
+                          data-cy="NoPostsYet"
+                        >
+                          No posts yet
+                        </div>
+                      ))
+                    || (
+                      posts.length > 0 && (
+                        <PostsList
+                          posts={posts}
+                          selectedPostId={post?.id as number}
+                          setSelectedPost={setSelectedPost}
+                          setIsFormOpen={toggleFormOpen}
+                          setLoading={toggleIsLoading}
+                        />
+                      )
+                    ))
+                  ))}
               </div>
             </div>
           </div>
@@ -142,9 +141,9 @@ export const App: React.FC = () => {
                 <PostDetails
                   selectedPost={post}
                   isFormOpen={isFormOpen}
-                  openForm={openForm}
-                  isLoading={isLoadingDetails}
-                  setIsLoading={toggleIsLoadingDetails}
+                  setIsFormOpen={toggleFormOpen}
+                  setIsLoading={toggleIsLoading}
+                  isLoading={isLoadingComments}
                 />
               </div>
             )}

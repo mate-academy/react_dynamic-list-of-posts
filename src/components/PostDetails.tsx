@@ -8,23 +8,23 @@ import { NewCommentForm } from './NewCommentForm';
 type Props = {
   selectedPost: Post | null
   isFormOpen: boolean
-  openForm: () => void
   isLoading: boolean
+  setIsFormOpen: (param: boolean) => void
   setIsLoading: (param: boolean) => void
 };
 
 export const PostDetails: React.FC<Props> = ({
   selectedPost,
   isFormOpen,
-  openForm,
   isLoading,
+  setIsFormOpen,
   setIsLoading,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [error, setError] = useState(IError.None);
-  const savedComments = comments;
 
   const { id, title, body } = selectedPost || {};
+  const savedComments = comments;
   const hasError = (error === IError.Add || error === IError.Delete);
 
   const updateComments = useCallback(
@@ -37,39 +37,32 @@ export const PostDetails: React.FC<Props> = ({
   const handleError = useCallback((err: IError) => setError(err), []);
 
   useEffect(() => {
-    setIsLoading(true);
-    if (id) {
-      (async function () {
-        const commentsFromServer = await getComments(id);
-
+    (async function () {
+      if (id) {
+        setIsLoading(true);
         try {
-          if (!commentsFromServer) {
-            throw new Error();
-          } else {
-            setComments(commentsFromServer);
-          }
+          setComments(await getComments(id));
         } catch {
           setError(IError.Load);
         } finally {
           setIsLoading(false);
         }
-      }());
-    }
+      }
+    }());
   }, [selectedPost]);
 
   useEffect(() => {
     setError(IError.None);
   }, [comments]);
 
-  const onDelete = (commentId: number) => async () => {
+  const onDelete = (commentId: number) => () => {
     const filteredComments = comments
       .filter(comment => comment.id !== commentId);
 
-    setError(IError.None);
     setComments(filteredComments);
 
     try {
-      await deleteComment(commentId);
+      deleteComment(commentId);
     } catch {
       setComments(savedComments);
       setError(IError.Delete);
@@ -161,7 +154,7 @@ export const PostDetails: React.FC<Props> = ({
               data-cy="WriteCommentButton"
               type="button"
               className="button is-link"
-              onClick={openForm}
+              onClick={() => setIsFormOpen(true)}
             >
               Write a comment
             </button>
