@@ -3,16 +3,19 @@ import cn from 'classnames';
 import { useUsers } from '../hooks/useUsers';
 import { User } from '../types/User';
 import { useUserStore } from '../store/userStore';
+import { useUiStore } from '../store/uiStore';
 
 export const UserSelector: FC = () => {
   const { data: users, isError, isLoading } = useUsers();
   const [isVisible, setIsVisible] = useState(false);
   const user = useUserStore((state) => state.selectedUser);
   const selectUser = useUserStore((state) => state.selectUser);
+  const openSidebar = useUiStore((state) => state.setIsSidebarOpen);
 
   const onUserSelect = (usr: User) => {
     selectUser(usr);
     setIsVisible(false);
+    openSidebar(false);
   };
 
   return (

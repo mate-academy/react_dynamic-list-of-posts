@@ -8,6 +8,10 @@ type Props = {
 export const CommentItem: FC<Props> = ({ comment }) => {
   const { mutate } = useDeleteComment();
 
+  const onDelete = () => {
+    mutate(comment);
+  };
+
   return (
     <article className="message is-small" data-cy="Comment">
       <div className="message-header">
@@ -19,7 +23,7 @@ export const CommentItem: FC<Props> = ({ comment }) => {
           type="button"
           className="delete is-small"
           aria-label="delete"
-          onClick={() => mutate(comment.id)}
+          onClick={onDelete}
         >
           delete button
         </button>
