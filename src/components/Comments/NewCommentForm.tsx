@@ -1,5 +1,9 @@
 import {
-  ChangeEvent, FC, FormEvent, useCallback, useState,
+  ChangeEvent,
+  FC,
+  FormEvent,
+  useCallback,
+  useState,
 } from 'react';
 import cn from 'classnames';
 import { useCreateComment } from '../../hooks/useCreateComment';
@@ -33,6 +37,10 @@ export const NewCommentForm: FC<Props> = ({ postId }) => {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!isAllFilled) {
+      setIsNameError(Boolean(!name));
+      setIsEmailError(Boolean(!email));
+      setIsTextError(Boolean(!text));
+
       return;
     }
 
@@ -49,7 +57,10 @@ export const NewCommentForm: FC<Props> = ({ postId }) => {
       return;
     }
 
-    onReset();
+    setText('');
+    setIsNameError(false);
+    setIsEmailError(false);
+    setIsTextError(false);
   };
 
   const onNameChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -65,24 +76,6 @@ export const NewCommentForm: FC<Props> = ({ postId }) => {
   const onTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setIsTextError(false);
     setText(e.target.value);
-  };
-
-  const onNameBlur = () => {
-    if (name === '') {
-      setIsNameError(true);
-    }
-  };
-
-  const onEmailBlur = () => {
-    if (email === '') {
-      setIsEmailError(true);
-    }
-  };
-
-  const onTextBlur = () => {
-    if (text === '') {
-      setIsTextError(true);
-    }
   };
 
   return (
@@ -103,7 +96,6 @@ export const NewCommentForm: FC<Props> = ({ postId }) => {
             })}
             value={name}
             onChange={onNameChange}
-            onBlur={onNameBlur}
           />
 
           <span className="icon is-small is-left">
@@ -142,7 +134,6 @@ export const NewCommentForm: FC<Props> = ({ postId }) => {
             })}
             value={email}
             onChange={onEmailChange}
-            onBlur={onEmailBlur}
           />
 
           <span className="icon is-small is-left">
@@ -181,7 +172,6 @@ export const NewCommentForm: FC<Props> = ({ postId }) => {
             })}
             value={text}
             onChange={onTextChange}
-            onBlur={onTextBlur}
           />
         </div>
 

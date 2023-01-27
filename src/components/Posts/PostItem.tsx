@@ -11,9 +11,11 @@ export const PostItem: FC<Props> = ({ post }) => {
   const isSidebarOpen = useUiStore((state) => state.isSidebarOpen);
   const selectPost = usePostStore((state) => state.selectPost);
   const selectedPost = usePostStore((state) => state.selectedPost);
+  const setOpenForm = useUiStore((state) => state.setIsCommentOpen);
 
   const onClose = () => {
     setIsSidebarOpen(false);
+    setOpenForm(false);
   };
 
   const onOpen = () => {
@@ -23,6 +25,8 @@ export const PostItem: FC<Props> = ({ post }) => {
       setIsSidebarOpen(true);
       selectPost(post);
     }
+
+    setOpenForm(false);
   };
 
   return (

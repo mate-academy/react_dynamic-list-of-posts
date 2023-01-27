@@ -28,7 +28,7 @@ export const CommentsList: FC<Props> = ({ postId }) => {
 
   return (
     <>
-      <p className="title is-4">Comments:</p>
+      {comments.length > 0 && <p className="title is-4">Comments:</p>}
 
       {comments.length > 0 ? (
         comments.map((comment) => (

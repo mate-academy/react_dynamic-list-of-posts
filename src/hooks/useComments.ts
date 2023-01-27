@@ -4,6 +4,6 @@ import { getByPostId } from '../api/comments';
 export const useComments = (postId: number) => {
   return useQuery(['comments', postId], {
     queryFn: () => getByPostId(postId),
-    enabled: !!postId,
+    enabled: Boolean(postId),
   });
 };
