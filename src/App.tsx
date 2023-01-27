@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC, useContext } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +8,12 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { PostsContext } from './components/PostsContext';
+import { CommentsProvider } from './components/CommentsContext';
 
-export const App: React.FC = () => {
+export const App: FC = () => {
+  const { currently, post } = useContext(PostsContext);
+
   return (
     <main className="section">
       <div className="container">
@@ -21,24 +25,37 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                { currently === 'noUser' && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                { currently === 'loading' && (
+                  <Loader />
+                )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                { currently === 'serverError' && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                { currently === 'noPosts' && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                )}
 
-                <PostsList />
+                {currently === 'active' && (
+                  <PostsList />
+                )}
               </div>
             </div>
           </div>
@@ -50,12 +67,16 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': !!post },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
+            {currently === 'active' && post && (
+              <div className="tile is-child box is-success ">
+                <CommentsProvider>
+                  <PostDetails />
+                </CommentsProvider>
+              </div>
+            )}
           </div>
         </div>
       </div>
