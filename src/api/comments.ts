@@ -8,3 +8,7 @@ export const getByPostId = (postId: number): Promise<Comment[]> => {
 export const deleteById = (id: number) => {
   return client.delete(`/comments/${id}`);
 };
+
+export const createNew = (comment: Omit<Comment, 'id'>) => {
+  return client.post('/comments', comment);
+};

@@ -1,21 +1,55 @@
-import { ChangeEvent, FC, useState } from 'react';
+import {
+  ChangeEvent, FC, FormEvent, useCallback, useState,
+} from 'react';
 import cn from 'classnames';
+import { useCreateComment } from '../../hooks/useCreateComment';
+import { Comment } from '../../types/Comment';
 
-export const NewCommentForm: FC = () => {
+type Props = {
+  postId: number;
+};
+
+export const NewCommentForm: FC<Props> = ({ postId }) => {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [text, setText] = useState<string>('');
   const [isNameError, setIsNameError] = useState<boolean>(false);
   const [isEmailError, setIsEmailError] = useState<boolean>(false);
   const [isTextError, setIsTextError] = useState<boolean>(false);
+  const { mutateAsync, isLoading } = useCreateComment();
 
-  const onReset = () => {
+  const isAllFilled = name && email && text;
+  const isOneFilled = name || email || text;
+
+  const onReset = useCallback(() => {
     setName('');
     setIsNameError(false);
     setEmail('');
     setIsEmailError(false);
     setText('');
     setIsTextError(false);
+  }, []);
+
+  const onSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!isAllFilled) {
+      return;
+    }
+
+    const newComment: Omit<Comment, 'id'> = {
+      postId,
+      name,
+      email,
+      body: text,
+    };
+
+    try {
+      await mutateAsync(newComment);
+    } catch {
+      return;
+    }
+
+    onReset();
   };
 
   const onNameChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -52,7 +86,7 @@ export const NewCommentForm: FC = () => {
   };
 
   return (
-    <form data-cy="NewCommentForm">
+    <form data-cy="NewCommentForm" onSubmit={onSubmit}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -160,20 +194,27 @@ export const NewCommentForm: FC = () => {
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={cn('button is-link', {
+              'is-loading': isLoading,
+            })}
+          >
             Add
           </button>
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
-          <button
-            type="reset"
-            className="button is-link is-light"
-            onClick={onReset}
-          >
-            Clear
-          </button>
+          {isOneFilled && (
+            /* eslint-disable-next-line react/button-has-type */
+            <button
+              type="reset"
+              className="button is-link is-light"
+              onClick={onReset}
+            >
+              Clear
+            </button>
+          )}
         </div>
       </div>
     </form>

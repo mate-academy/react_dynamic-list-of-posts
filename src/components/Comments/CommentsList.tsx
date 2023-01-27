@@ -49,7 +49,7 @@ export const CommentsList: FC<Props> = ({ postId }) => {
           Write a comment
         </button>
       )}
-      {isFormOpen && <NewCommentForm />}
+      {isFormOpen && <NewCommentForm postId={postId} />}
     </>
   );
 };
