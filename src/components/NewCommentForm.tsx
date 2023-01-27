@@ -1,13 +1,12 @@
-/* eslint-disable func-names */
 import cn from 'classnames';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Comment, IError } from '../types';
 import { createComment } from '../utils/api';
 
 type Props = {
   postId: number
-  setComments: (updatedComments: Comment[]) => void
   comments: Comment[]
+  setComments: (updatedComments: Comment[]) => void
   setError: (error: IError) => void
 };
 
@@ -18,7 +17,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [isNameOk, setIsNameOk] = useState(true);
   const [isEmailOk, setIsEmailOk] = useState(true);
   const [isBodyOk, setIsBodyOk] = useState(true);
@@ -26,28 +25,28 @@ export const NewCommentForm: React.FC<Props> = ({
   const isNameEmpty = !name && !isNameOk;
   const isEmailEmpty = !email && !isEmailOk;
   const isBodyEmpty = !body && !isBodyOk;
-  const id = Math.max(...comments.map(comm => comm.id + 1), 1);
+  const areFieldsValid = name && email && body;
 
   const postComment = async () => {
-    if (name && email && body) {
-      setIsLoading(true);
+    if (areFieldsValid) {
+      setLoading(true);
       setError(IError.None);
 
-      const comment: Comment = {
+      const comment: Omit<Comment, 'id'> = {
         name,
         email,
         body,
         postId,
-        id,
       };
 
       try {
-        await createComment(comment);
-        setComments([...comments, comment]);
+        const newComment = await createComment(comment);
+
+        setComments([...comments, newComment]);
       } catch {
         setError(IError.Add);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
         setIsBodyOk(true);
         setBody('');
       }

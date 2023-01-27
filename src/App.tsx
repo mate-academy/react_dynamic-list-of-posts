@@ -3,48 +3,23 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import 'bulma/bulma.sass';
 import './App.scss';
 
-import cn from 'classnames';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
+import { AppContext } from './components/Context/AppContext';
 import { Loader } from './components/Loader';
-import { PostDetails } from './components/PostDetails';
 import { PostsList } from './components/PostsList';
+import { Sidebar } from './components/Sidebar';
 import { UserSelector } from './components/UserSelector';
-import { Post, User } from './types';
+import { IPost, User } from './types';
 import { getPosts, getUsers } from './utils/api';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [user, setUser] = useState<User | null>(null);
-  const [post, setPost] = useState<Post | null>(null);
+  const [posts, setPosts] = useState<IPost[]>([]);
   const [hasError, setHasError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [isLoadingPosts, setLoadingPosts] = useState(false);
 
-  const setSelectedUser = useCallback(
-    (selectedUser: User) => setUser(selectedUser),
-    [],
-  );
-
-  const setSelectedPost = useCallback(
-    (newPost: Post | null) => setPost(newPost),
-    [],
-  );
-
-  const toggleIsLoading = useCallback(
-    (param: boolean) => setIsLoadingComments(param),
-    [],
-  );
-
-  const toggleFormOpen = useCallback(
-    (param: boolean) => setIsFormOpen(param),
-    [],
-  );
-
-  const closePost = useCallback(() => setPost(null), []);
-  const startLoading = useCallback(() => setIsLoading(true), []);
+  const { selectedUser } = useContext(AppContext);
 
   useEffect(() => {
     (async function () {
@@ -58,17 +33,17 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     (async function () {
-      if (user) {
+      if (selectedUser) {
         try {
-          setPosts(await getPosts(user.id));
+          setPosts(await getPosts(selectedUser.id));
         } catch {
           setHasError(true);
         } finally {
-          setIsLoading(false);
+          setLoadingPosts(false);
         }
       }
     }());
-  }, [user]);
+  }, [selectedUser]);
 
   return (
     <main className="section">
@@ -79,16 +54,13 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  selectedUser={user}
-                  setSelectedUser={setSelectedUser}
-                  startLoading={startLoading}
-                  closePost={closePost}
+                  setLoading={setLoadingPosts}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
                 <p data-cy="NoSelectedUser">
-                  {!user && 'No user selected'}
+                  {!selectedUser && 'No user selected'}
                 </p>
 
                 {hasError && (
@@ -100,10 +72,10 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {isLoading
+                {isLoadingPosts
                   ? <Loader />
                   : ((
-                    user && !hasError && (
+                    selectedUser && !hasError && (
                       (posts.length === 0 && (
                         <div
                           className="notification is-warning"
@@ -114,13 +86,7 @@ export const App: React.FC = () => {
                       ))
                     || (
                       posts.length > 0 && (
-                        <PostsList
-                          posts={posts}
-                          selectedPostId={post?.id as number}
-                          setSelectedPost={setSelectedPost}
-                          setIsFormOpen={toggleFormOpen}
-                          setLoading={toggleIsLoading}
-                        />
+                        <PostsList posts={posts} />
                       )
                     ))
                   ))}
@@ -128,28 +94,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={cn(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              { 'Sidebar--open': post },
-            )}
-          >
-            {post && (
-              <div className="tile is-child box is-success ">
-                <PostDetails
-                  selectedPost={post}
-                  isFormOpen={isFormOpen}
-                  setIsFormOpen={toggleFormOpen}
-                  setIsLoading={toggleIsLoading}
-                  isLoading={isLoadingComments}
-                />
-              </div>
-            )}
-          </div>
+          <Sidebar />
         </div>
       </div>
     </main>

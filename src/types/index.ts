@@ -13,8 +13,6 @@ export interface Comment {
   body: string;
 }
 
-export type CommentData = Pick<Comment, 'name' | 'email' | 'body'>;
-
 export interface User {
   id: number;
   name: string;
@@ -22,7 +20,7 @@ export interface User {
   phone: string;
 }
 
-export interface Post {
+export interface IPost {
   id: number;
   userId: number;
   title: string;

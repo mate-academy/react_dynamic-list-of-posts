@@ -1,34 +1,36 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import cn from 'classnames';
 import { User } from '../types';
+import { AppContext } from './Context/AppContext';
 
 type Props = {
   users: User[]
-  selectedUser: User | null
-  setSelectedUser: (user: User) => void
-  startLoading: () => void
-  closePost: () => void
+  setLoading: (param: boolean) => void
 };
 
-export const UserSelector: React.FC<Props> = ({
-  users,
-  selectedUser,
-  setSelectedUser,
-  startLoading,
-  closePost,
-}) => {
+export const UserSelector: React.FC<Props> = ({ users, setLoading }) => {
   const [isActive, setIsActive] = useState(false);
   const toggleDropdown = () => setIsActive(!isActive);
 
+  const {
+    setFormOpen,
+    setUser,
+    setPost,
+    selectedUser,
+  } = useContext(AppContext);
+
+  const { id, name } = selectedUser || {};
+
   const onSelect = (user: User) => () => {
-    if (user.id !== selectedUser?.id) {
-      setSelectedUser(user);
-      startLoading();
+    if (user.id !== id) {
+      setUser(user);
+      setLoading(true);
+      setPost(null);
     }
 
     toggleDropdown();
-    closePost();
+    setFormOpen(false);
   };
 
   return (
@@ -45,7 +47,7 @@ export const UserSelector: React.FC<Props> = ({
           onClick={toggleDropdown}
           onBlur={() => setIsActive(false)}
         >
-          <span>{`${selectedUser?.name || 'Choose a user'}`}</span>
+          <span>{`${name || 'Choose a user'}`}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -65,7 +67,7 @@ export const UserSelector: React.FC<Props> = ({
               to={`/user-${user.id}`}
               onMouseDown={onSelect(user)}
               className={cn('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user.id === id,
               })}
             >
               {user.name}

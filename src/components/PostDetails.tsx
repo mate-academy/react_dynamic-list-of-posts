@@ -1,56 +1,51 @@
 /* eslint-disable func-names */
-import React, { useCallback, useEffect, useState } from 'react';
-import { Comment, Post, IError } from '../types';
+import { useContext, useEffect, useState } from 'react';
+import { Comment, IPost, IError } from '../types';
 import { deleteComment, getComments } from '../utils/api';
+import { AppContext } from './Context/AppContext';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 type Props = {
-  selectedPost: Post | null
-  isFormOpen: boolean
-  isLoading: boolean
-  setIsFormOpen: (param: boolean) => void
-  setIsLoading: (param: boolean) => void
+  post: IPost | null
 };
 
-export const PostDetails: React.FC<Props> = ({
-  selectedPost,
-  isFormOpen,
-  isLoading,
-  setIsFormOpen,
-  setIsLoading,
-}) => {
+export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [error, setError] = useState(IError.None);
 
-  const { id, title, body } = selectedPost || {};
+  const {
+    isFormOpen,
+    isLoadingComments: isLoading,
+    setFormOpen,
+    setLoading,
+  } = useContext(AppContext);
+
+  const { id, title, body } = post || {};
   const savedComments = comments;
   const hasError = (error === IError.Add || error === IError.Delete);
   const isButtonVisible = !isLoading && !isFormOpen && !error;
 
-  const updateComments = useCallback(
-    (updatedComments: Comment[]) => {
-      setComments(updatedComments);
-    },
-    [],
-  );
+  const updateComments = (updatedComments: Comment[]) => {
+    setComments(updatedComments);
+  };
 
-  const handleError = useCallback((err: IError) => setError(err), []);
+  const handleError = (err: IError) => setError(err);
 
   useEffect(() => {
     (async function () {
       if (id) {
-        setIsLoading(true);
+        setLoading(true);
         try {
           setComments(await getComments(id));
         } catch {
           setError(IError.Load);
         } finally {
-          setIsLoading(false);
+          setLoading(false);
         }
       }
     }());
-  }, [selectedPost]);
+  }, [post]);
 
   useEffect(() => {
     setError(IError.None);
@@ -155,7 +150,7 @@ export const PostDetails: React.FC<Props> = ({
               data-cy="WriteCommentButton"
               type="button"
               className="button is-link"
-              onClick={() => setIsFormOpen(true)}
+              onClick={() => setFormOpen(true)}
             >
               Write a comment
             </button>
