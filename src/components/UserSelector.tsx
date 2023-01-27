@@ -1,35 +1,72 @@
-import React from 'react';
+import { FC, MouseEvent, useState } from 'react';
+import cn from 'classnames';
+import { useUsers } from '../hooks/useUsers';
+import { User } from '../types/User';
+import { useUserStore } from '../store/userStore';
+import { useUiStore } from '../store/uiStore';
 
-export const UserSelector: React.FC = () => {
+export const UserSelector: FC = () => {
+  const { data: users, isError, isLoading } = useUsers();
+  const [isVisible, setIsVisible] = useState(false);
+  const user = useUserStore((state) => state.selectedUser);
+  const selectUser = useUserStore((state) => state.selectUser);
+  const openSidebar = useUiStore((state) => state.setIsSidebarOpen);
+
+  const onUserSelect = (usr: User) => {
+    selectUser(usr);
+    setIsVisible(false);
+    openSidebar(false);
+  };
+
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={cn('dropdown', {
+        'is-active': isVisible,
+      })}
     >
-      <div className="dropdown-trigger">
-        <button
-          type="button"
-          className="button"
-          aria-haspopup="true"
-          aria-controls="dropdown-menu"
-        >
-          <span>Choose a user</span>
+      {isError && <p>Something went wrong</p>}
+      {users?.length === 0 && <p>No user to select</p>}
+      {users?.length !== 0 && !isError && (
+        <>
+          <div className="dropdown-trigger">
+            <button
+              type="button"
+              className="button"
+              aria-haspopup="true"
+              aria-controls="dropdown-menu"
+              onClick={() => setIsVisible((prevState) => !prevState)}
+              onBlur={() => setIsVisible(false)}
+            >
+              {user ? <span>{user?.name}</span> : <span>Choose a user</span>}
 
-          <span className="icon is-small">
-            <i className="fas fa-angle-down" aria-hidden="true" />
-          </span>
-        </button>
-      </div>
+              <span className="icon is-small">
+                <i className="fas fa-angle-down" aria-hidden="true" />
+              </span>
+            </button>
+          </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
-        </div>
-      </div>
+          {!isLoading && (
+            <div className="dropdown-menu" id="dropdown-menu" role="menu">
+              <div className="dropdown-content">
+                {users.map((u) => (
+                  <a
+                    key={u.id}
+                    href={`#/${String(u.id)}`}
+                    className="dropdown-item"
+                    onMouseDown={(e: MouseEvent) => {
+                      e.preventDefault();
+                      onUserSelect(u);
+                    }}
+                  >
+                    {u.name}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };
