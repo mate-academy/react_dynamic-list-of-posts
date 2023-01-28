@@ -2,7 +2,7 @@ import { Comment, IPost, User } from '../types';
 import { client } from './fetchClient';
 
 export const getUsers = () => {
-  return client.get<User[]>('/users?limit=20');
+  return client.get<User[]>('/users');
 };
 
 export const getPosts = (userId: number) => {
