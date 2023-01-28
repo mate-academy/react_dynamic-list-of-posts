@@ -1,6 +1,6 @@
-import { useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
 import cn from 'classnames';
+import { useContext, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { User } from '../types';
 import { AppContext } from './Context/AppContext';
 
@@ -11,15 +11,14 @@ type Props = {
 
 export const UserSelector: React.FC<Props> = ({ users, setLoading }) => {
   const [isActive, setIsActive] = useState(false);
-  const toggleDropdown = () => setIsActive(!isActive);
 
   const {
-    setFormOpen,
-    setUser,
-    setPost,
-    selectedUser,
+    formState: [,setFormOpen],
+    postState: [,setPost],
+    userState: [selectedUser, setUser],
   } = useContext(AppContext);
 
+  const toggleDropdown = () => setIsActive(!isActive);
   const { id, name } = selectedUser || {};
 
   const onSelect = (user: User) => () => {

@@ -19,7 +19,7 @@ export const App: React.FC = () => {
   const [hasError, setHasError] = useState(false);
   const [isLoadingPosts, setLoadingPosts] = useState(false);
 
-  const { selectedUser } = useContext(AppContext);
+  const { userState: [selectedUser] } = useContext(AppContext);
 
   useEffect(() => {
     (async function () {

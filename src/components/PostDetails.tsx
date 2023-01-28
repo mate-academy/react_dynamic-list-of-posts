@@ -1,6 +1,6 @@
 /* eslint-disable func-names */
 import { useContext, useEffect, useState } from 'react';
-import { Comment, IPost, IError } from '../types';
+import { Comment, IError, IPost } from '../types';
 import { deleteComment, getComments } from '../utils/api';
 import { AppContext } from './Context/AppContext';
 import { Loader } from './Loader';
@@ -15,10 +15,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [error, setError] = useState(IError.None);
 
   const {
-    isFormOpen,
-    isLoadingComments: isLoading,
-    setFormOpen,
-    setLoading,
+    formState: [isFormOpen, setFormOpen],
+    loadingState: [isLoading, setLoading],
   } = useContext(AppContext);
 
   const { id, title, body } = post || {};

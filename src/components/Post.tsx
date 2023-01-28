@@ -9,10 +9,9 @@ type Props = {
 
 export const Post = ({ post }: Props) => {
   const {
-    setPost,
-    setLoading,
-    setFormOpen,
-    selectedPost,
+    loadingState: [,setLoading],
+    formState: [,setFormOpen],
+    postState: [selectedPost, setPost],
   } = useContext(AppContext);
 
   const { id } = selectedPost || {};

@@ -4,7 +4,7 @@ import { AppContext } from './Context/AppContext';
 import { PostDetails } from './PostDetails';
 
 export const Sidebar = () => {
-  const { selectedPost: post } = useContext(AppContext);
+  const { postState: [post] } = useContext(AppContext);
 
   return (
     <div
