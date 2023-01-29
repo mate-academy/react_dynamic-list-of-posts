@@ -1,0 +1,23 @@
+.notification {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.button-retry {
+  margin: 0 auto;
+  padding: 5px;
+  width: 60px;
+  font-size: 10px;
+  outline: none;
+}
+
+.button-retry:hover {
+  background-color: #b0b0b0;
+  border: none;
+}
+
+.button-retry:active {
+  background-color: #b0b0b0;
+}

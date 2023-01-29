@@ -1,5 +1,6 @@
-import classNames from 'classnames';
 import React, { useState } from 'react';
+import classNames from 'classnames';
+
 import { User } from '../types/User';
 
 type Props = {
@@ -13,14 +14,14 @@ export const UserSelector: React.FC<Props> = ({
   activeUser,
   onOpeningPosts,
 }) => {
-  const [visibility, setVisibility] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
   const handleDropDownBlur = (event: React.FocusEvent<HTMLButtonElement>) => {
     const parentContainer = event.currentTarget.parentElement?.parentElement;
 
     requestAnimationFrame(() => {
       if (!parentContainer?.contains(document.activeElement)) {
-        setVisibility(false);
+        setIsActive(false);
       }
     });
   };
@@ -28,7 +29,12 @@ export const UserSelector: React.FC<Props> = ({
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={classNames(
+        'dropdown',
+        {
+          'is-active': isActive,
+        },
+      )}
     >
       <div className="dropdown-trigger">
         <button
@@ -36,7 +42,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setVisibility(!visibility)}
+          onClick={() => setIsActive(!isActive)}
           onBlur={handleDropDownBlur}
         >
           <span>{activeUser ? activeUser.name : 'Choose a user'}</span>
@@ -47,32 +53,30 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      {visibility && users.length > 0 && (
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          <div className="dropdown-content">
-            {users.map(user => {
-              return (
-                <a
-                  href={`#user-${user.id}`}
-                  className={classNames(
-                    'dropdown-item',
-                    {
-                      'is-active': activeUser && (activeUser.id === user.id),
-                    },
-                  )}
-                  key={user.id}
-                  onClick={() => {
-                    onOpeningPosts(user);
-                    setVisibility(false);
-                  }}
-                >
-                  {user.name}
-                </a>
-              );
-            })}
-          </div>
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        <div className="dropdown-content">
+          {users.map(user => {
+            return (
+              <a
+                key={user.id}
+                href={`#user-${user.id}`}
+                className={classNames(
+                  'dropdown-item',
+                  {
+                    'is-active': activeUser && (activeUser.id === user.id),
+                  },
+                )}
+                onClick={() => {
+                  onOpeningPosts(user);
+                  setIsActive(false);
+                }}
+              >
+                {user.name}
+              </a>
+            );
+          })}
         </div>
-      )}
+      </div>
     </div>
   );
 };

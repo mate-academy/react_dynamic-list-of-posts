@@ -1,6 +1,4 @@
-/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
-
 import '@fortawesome/fontawesome-free/css/all.css';
 import classNames from 'classnames';
 import 'bulma/bulma.sass';
@@ -16,22 +14,20 @@ import { getPosts } from './api/post';
 import { getUsers } from './api/user';
 
 import { FormField } from './types/FormField';
-import { Errors } from './types/enums/Errors';
+import { ServerErrors } from './types/enums/Errors';
 import { Comment } from './types/Comment';
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { NewCommentForm } from './components/NewCommentForm';
 
 export const App: React.FC = () => {
   const [activeUser, setActiveUser] = useState<User | null>(null);
   const [activePost, setActivePost] = useState<Post | null>(null);
-  const [errorPosts, setErrorPosts] = useState<Errors | null>(null);
-  const [errorComments, setErrorComments] = useState<Errors | null>(null);
-
+  const [error, setError] = useState<ServerErrors | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
 
-  // const [visibility, setVisibility] = useState(false);
   const [isPostLoading, setIsPostLoading] = useState(false);
   const [isFormRequested, setIsFormRequested] = useState(false);
   const [AreCommentsLoading, setAreCommentsLoading] = useState(false);
@@ -63,52 +59,49 @@ export const App: React.FC = () => {
   const [commentToAdd, setCommentToAdd] = useState<Comment>(initialComment);
   const [commentIdOnDelete, setCommentIdOnDelete] = useState(0);
 
-  const hideErrorPost = () => {
-    setTimeout(() => setErrorPosts(null), 3000);
-  };
-
-  const hideErrorComment = () => {
-    setTimeout(() => setErrorComments(null));
-  };
+  const userOrPostError = (
+    error === ServerErrors.Users || error === ServerErrors.Posts
+  );
 
   const fetchUsers = async () => {
+    setError(null);
+
     try {
       const usersFromServer = await getUsers();
 
       setUsers(usersFromServer);
     } catch {
-      setErrorPosts(Errors.Users);
-      hideErrorPost();
+      setError(ServerErrors.Users);
     }
   };
 
   const fetchPosts = async (id: number) => {
     setIsPostLoading(true);
+    setError(null);
 
     try {
       const postsFromServer: Post[] = await getPosts(id);
 
       setPosts(postsFromServer);
     } catch {
-      setErrorPosts(Errors.Posts);
+      setError(ServerErrors.Posts);
     } finally {
       setIsPostLoading(false);
-      hideErrorPost();
     }
   };
 
   const fetchCommentsByPostId = async (id: number) => {
     setAreCommentsLoading(true);
+    setError(null);
 
     try {
       const commentsFromServer: Comment[] = await getComments(id);
 
       setComments(commentsFromServer);
     } catch {
-      setErrorComments(Errors.Comments);
+      setError(ServerErrors.Comments);
     } finally {
       setAreCommentsLoading(false);
-      hideErrorPost();
     }
   };
 
@@ -121,7 +114,7 @@ export const App: React.FC = () => {
       setComments([...comments, newComment]);
       setBody(initialFormField);
     } catch {
-      setErrorComments(Errors.NewComment);
+      setError(ServerErrors.NewComment);
     } finally {
       setIsFormLoading(false);
       setIsRetryLoading(false);
@@ -134,7 +127,7 @@ export const App: React.FC = () => {
 
       await removeComment(id);
     } catch {
-      setErrorComments(Errors.CommentDeletion);
+      setError(ServerErrors.CommentDeletion);
       setComments(comments);
     } finally {
       setIsRetryLoading(false);
@@ -230,7 +223,7 @@ export const App: React.FC = () => {
       postComment(newComment);
 
       setCommentToAdd(newComment);
-      setErrorComments(null);
+      setError(null);
     }
   };
 
@@ -249,14 +242,14 @@ export const App: React.FC = () => {
   };
 
   const handleRetryAddOrDelete = () => {
-    if (errorComments === Errors.NewComment) {
+    setIsRetryLoading(true);
+    setError(null);
+
+    if (error === ServerErrors.NewComment) {
       postComment(commentToAdd);
-    } else if (errorComments === Errors.CommentDeletion) {
+    } else if (error === ServerErrors.CommentDeletion) {
       deleteComment(commentIdOnDelete);
     }
-
-    setIsRetryLoading(true);
-    setErrorComments(null);
   };
 
   useEffect(() => {
@@ -286,17 +279,20 @@ export const App: React.FC = () => {
 
                 {isPostLoading && <Loader />}
 
-                {errorPosts && (
+                {(error && userOrPostError) && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    {errorPosts}
+                    {error}
                   </div>
                 )}
 
-                {(activeUser && !posts.length && !isPostLoading) && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
+                {(activeUser && !posts.length && !isPostLoading && !error) && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
                     No posts yet
                   </div>
                 )}
@@ -325,27 +321,37 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
+
               {activePost && (
-                <PostDetails
-                  activePost={activePost}
-                  comments={comments}
-                  AreCommentsLoading={AreCommentsLoading}
-                  errorComments={errorComments}
-                  isFormRequested={isFormRequested}
-                  name={name}
-                  email={email}
-                  body={body}
-                  isFormLoading={isFormLoading}
-                  isRetryLoading={isRetryLoading}
-                  onFormRequest={setIsFormRequested}
-                  onNameChange={handleInputContacts}
-                  onTextAreaChange={handleInputTextArea}
-                  onFormSubmit={handleFormSubmit}
-                  onReset={resetFormFields}
-                  onDelete={handleCommentDeletion}
-                  onRetry={handleRetryAddOrDelete}
-                  onCommentHide={hideErrorComment}
-                />
+                <div className="content" data-cy="PostDetails">
+                  <div className="content" data-cy="PostDetails">
+                    <PostDetails
+                      activePost={activePost}
+                      comments={comments}
+                      error={error}
+                      AreCommentsLoading={AreCommentsLoading}
+                      isFormRequested={isFormRequested}
+                      isRetryLoading={isRetryLoading}
+                      onFormRequest={setIsFormRequested}
+                      onDelete={handleCommentDeletion}
+                      onRetry={handleRetryAddOrDelete}
+                      setError={setError}
+                    />
+
+                    {isFormRequested && (
+                      <NewCommentForm
+                        name={name}
+                        email={email}
+                        body={body}
+                        isFormLoading={isFormLoading}
+                        onNameChange={handleInputContacts}
+                        onTextAreaChange={handleInputTextArea}
+                        onSubmit={handleFormSubmit}
+                        onReset={resetFormFields}
+                      />
+                    )}
+                  </div>
+                </div>
               )}
             </div>
           </div>

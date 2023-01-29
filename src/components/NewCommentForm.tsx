@@ -1,6 +1,7 @@
-import classNames from 'classnames';
 import React from 'react';
-import { Errors } from '../types/enums/Errors';
+import classNames from 'classnames';
+
+import { FormErrors } from '../types/enums/Errors';
 import { FormField } from '../types/FormField';
 
 type Props = {
@@ -10,7 +11,7 @@ type Props = {
   isFormLoading: boolean,
   onNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
   onTextAreaChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void,
-  onFormSubmit: (event: React.FormEvent) => void,
+  onSubmit: (event: React.FormEvent) => void,
   onReset: (event: React.FormEvent) => void,
 };
 
@@ -21,7 +22,7 @@ export const NewCommentForm: React.FC<Props> = ({
   isFormLoading,
   onNameChange,
   onTextAreaChange,
-  onFormSubmit,
+  onSubmit,
   onReset,
 }) => {
   const validateError = (value: FormField) => {
@@ -73,7 +74,7 @@ export const NewCommentForm: React.FC<Props> = ({
           {name.error && errorTriangle}
         </div>
 
-        {name.error && errorMessage(Errors.Name)}
+        {name.error && errorMessage(FormErrors.Name)}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -99,7 +100,7 @@ export const NewCommentForm: React.FC<Props> = ({
           {email.error && errorTriangle}
         </div>
 
-        {email.error && errorMessage(Errors.Email)}
+        {email.error && errorMessage(FormErrors.Email)}
 
       </div>
 
@@ -119,7 +120,7 @@ export const NewCommentForm: React.FC<Props> = ({
           />
         </div>
 
-        {body.error && errorMessage(Errors.TextArea)}
+        {body.error && errorMessage(FormErrors.TextArea)}
       </div>
 
       <div className="field is-grouped">
@@ -132,7 +133,7 @@ export const NewCommentForm: React.FC<Props> = ({
                 'is-loading': isFormLoading,
               },
             )}
-            onClick={onFormSubmit}
+            onClick={onSubmit}
           >
             Add
           </button>
