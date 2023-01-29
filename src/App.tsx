@@ -14,13 +14,18 @@ import { User } from './types/User';
 import { Post } from './types/Post';
 import { getPosts } from './api/posts';
 import { ErrorType } from './types/ErrorType';
+import { Loading } from './types/Loading';
+import { Comment } from './types/Comment';
+import { getComments } from './api/comments';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [error, setError] = useState(ErrorType.None);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(Loading.None);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   useEffect(() => {
     getUsers()
@@ -29,7 +34,7 @@ export const App: React.FC = () => {
 
   const loadPosts = async () => {
     if (selectedUser) {
-      setLoading(true);
+      setLoading(Loading.Posts);
       try {
         const loadedPosts = await getPosts(selectedUser.id);
 
@@ -37,7 +42,7 @@ export const App: React.FC = () => {
       } catch (err) {
         setError(ErrorType.PostsLoading);
       } finally {
-        setLoading(false);
+        setLoading(Loading.None);
       }
     }
   };
@@ -45,6 +50,25 @@ export const App: React.FC = () => {
   useEffect(() => {
     loadPosts();
   }, [selectedUser]);
+
+  const loadComments = async () => {
+    if (selectedPost) {
+      setLoading(Loading.Comments);
+      try {
+        const loadedComments = await getComments(selectedPost.id);
+
+        setComments(loadedComments);
+      } catch (err) {
+        setError(ErrorType.CommentsLoading);
+      } finally {
+        setLoading(Loading.None);
+      }
+    }
+  };
+
+  useEffect(() => {
+    loadComments();
+  }, [selectedPost]);
 
   const hasNoPosts = !posts.length
   && selectedUser
@@ -72,7 +96,7 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {isLoading && <Loader />}
+                {isLoading === Loading.Posts && <Loader />}
 
                 {hasNoPosts && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
@@ -89,12 +113,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUser && posts.length
-                  ? (
-                    <PostsList
-                      posts={posts}
-                    />
-                  ) : (null)}
+                {selectedUser && posts.length > 0 && (
+                  <PostsList
+                    posts={posts}
+                    setSelectedPost={setSelectedPost}
+                    selectedPost={selectedPost}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -106,13 +131,20 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              <PostDetails
+                selectedPost={selectedPost}
+                error={error}
+                isLoading={isLoading}
+                comments={comments}
+                setComments={setComments}
+              />
             </div>
           </div>
+
         </div>
       </div>
     </main>

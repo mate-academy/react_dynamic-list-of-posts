@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { Post } from '../types/Post';
 
 type Props = {
-  posts: Post[]
+  posts: Post[];
+  selectedPost: Post | null;
+  setSelectedPost: Dispatch<SetStateAction<Post | null>>
 };
 
-export const PostsList: React.FC<Props> = ({ posts }) => (
+export const PostsList: React.FC<Props> = ({
+  posts,
+  setSelectedPost,
+  selectedPost,
+}) => (
   <div data-cy="PostsList">
     <p className="title">Posts:</p>
 
@@ -31,20 +37,26 @@ export const PostsList: React.FC<Props> = ({ posts }) => (
             </td>
 
             <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className="button is-link is-light"
-              >
-                Open
-              </button>
-              <button
-                type="button"
-                data-cy="PostButton"
-                className="button is-link"
-              >
-                Close
-              </button>
+              {selectedPost?.id === post.id ? (
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className="button is-link"
+                  onClick={() => setSelectedPost(null)}
+                >
+                  Close
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className="button is-link is-light"
+                  onClick={() => setSelectedPost(post)}
+                >
+                  Open
+                </button>
+              )}
+
             </td>
           </tr>
         ))}
