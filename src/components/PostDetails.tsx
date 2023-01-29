@@ -5,7 +5,7 @@ import { Loading } from '../types/Loading';
 import { Post } from '../types/Post';
 import { CommentsList } from './CommentsList';
 import { Loader } from './Loader';
-// import { NewCommentForm } from './NewCommentForm';
+import { NewCommentForm } from './NewCommentForm';
 
 type Props = {
   selectedPost: Post | null;
@@ -13,6 +13,8 @@ type Props = {
   isLoading: Loading;
   comments: Comment[];
   setComments:Dispatch<SetStateAction<Comment[]>>
+  isFormOpen: boolean;
+  setFormOpen:Dispatch<SetStateAction<boolean>>
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -21,6 +23,8 @@ export const PostDetails: React.FC<Props> = ({
   isLoading,
   comments,
   setComments,
+  isFormOpen,
+  setFormOpen,
 }) => {
   const hasNoComments = !comments.length
   && selectedPost
@@ -67,16 +71,22 @@ export const PostDetails: React.FC<Props> = ({
             />
           )}
 
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+          {isFormOpen ? (
+            <NewCommentForm
+              setComments={setComments}
+            />
+          ) : (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setFormOpen(true)}
+            >
+              Write a comment
+            </button>
+          )}
         </div>
 
-        {/* <NewCommentForm /> */}
       </div>
     </div>
   );

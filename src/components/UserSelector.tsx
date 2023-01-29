@@ -1,28 +1,21 @@
 import cn from 'classnames';
 import React, {
-  Dispatch,
-  SetStateAction,
   useState,
 } from 'react';
 import { User } from '../types/User';
 
 type Props = {
   users: User[];
-  setSelectedUser: Dispatch<SetStateAction<User | null>>
+  onSelect: (user: User) => void
   selectedUser: User | null;
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   selectedUser,
-  setSelectedUser,
+  onSelect,
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
-  const handleSelectUser = (user: User) => {
-    setSelectedUser(user);
-    setDropdownOpen(false);
-  };
 
   return (
     <div
@@ -58,7 +51,10 @@ export const UserSelector: React.FC<Props> = ({
               key={user.id}
               href={`#user-${user.id}`}
               className="dropdown-item"
-              onClick={() => handleSelectUser(user)}
+              onClick={() => {
+                onSelect(user);
+                setDropdownOpen(false);
+              }}
             >
               {user.name}
             </a>

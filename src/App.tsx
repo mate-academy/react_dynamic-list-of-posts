@@ -26,6 +26,7 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
+  const [isFormOpen, setFormOpen] = useState(false);
 
   useEffect(() => {
     getUsers()
@@ -70,6 +71,15 @@ export const App: React.FC = () => {
     loadComments();
   }, [selectedPost]);
 
+  const handleSelectUser = (user: User) => {
+    setSelectedUser(user);
+    setSelectedPost(null);
+  };
+
+  useEffect(() => {
+    setFormOpen(false);
+  }, [selectedPost, selectedUser]);
+
   const hasNoPosts = !posts.length
   && selectedUser
   && !error
@@ -84,8 +94,8 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  setSelectedUser={setSelectedUser}
                   selectedUser={selectedUser}
+                  onSelect={handleSelectUser}
                 />
               </div>
 
@@ -141,6 +151,8 @@ export const App: React.FC = () => {
                 isLoading={isLoading}
                 comments={comments}
                 setComments={setComments}
+                isFormOpen={isFormOpen}
+                setFormOpen={setFormOpen}
               />
             </div>
           </div>
