@@ -1,117 +1,162 @@
-import React from 'react';
+/* eslint-disable no-console */
+import React, { Dispatch, SetStateAction } from 'react';
+import { Comment } from '../types/Comment';
+import { Errors } from '../types/enums/Errors';
+import { FormField } from '../types/FormField';
+import { Post } from '../types/Post';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import '../stylesExtra/extraErrors.scss';
 
-export const PostDetails: React.FC = () => {
+type Props = {
+  activePost: Post | null,
+  comments: Comment[],
+  AreCommentsLoading: boolean,
+  errorComments: Errors | null,
+  isFormRequested: boolean
+  name: FormField,
+  email: FormField,
+  body: FormField,
+  isFormLoading: boolean,
+  isRetryLoading: boolean,
+  onFormRequest: Dispatch<SetStateAction<boolean>>,
+  onNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+  onTextAreaChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void,
+  onFormSubmit: (event: React.FormEvent) => void
+  onReset: (event: React.FormEvent) => void
+  onDelete: (id: number) => void,
+  onRetry: () => void,
+  onCommentHide: () => void,
+};
+
+export const PostDetails: React.FC<Props> = ({
+  activePost,
+  comments,
+  AreCommentsLoading,
+  errorComments,
+  isFormRequested,
+  name,
+  email,
+  body,
+  isFormLoading,
+  isRetryLoading,
+  onFormRequest,
+  onNameChange,
+  onTextAreaChange,
+  onFormSubmit,
+  onReset,
+  onDelete,
+  onRetry,
+  onCommentHide,
+}) => {
+  const { id, title } = activePost as Post;
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {`#${id}: ${title}`}
           </h2>
 
-          <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
-          </p>
+          <p data-cy="PostBody">{activePost?.body}</p>
         </div>
 
         <div className="block">
-          <Loader />
+          {(AreCommentsLoading) && <Loader /> }
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
+          {errorComments && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              {errorComments}
               <button
-                data-cy="CommentDelete"
+                type="button"
+                className="button button-retry"
+                onClick={onRetry}
+              >
+                Try again
+              </button>
+
+              <button
                 type="button"
                 className="delete is-small"
                 aria-label="delete"
+                onClick={onCommentHide}
               >
                 delete button
               </button>
             </div>
+          )}
 
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
+          {isRetryLoading && <Loader />}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
+          {!AreCommentsLoading && (
+            !comments.length ? (
+              <p className="title is-4" data-cy="NoCommentsMessage">
+                No comments yet
+              </p>
+            ) : (
+              <>
+                <p className="title is-4">Comments:</p>
 
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
+                {comments.map(commentator => {
+                  return (
+                    <article
+                      className="message is-small"
+                      data-cy="Comment"
+                      key={commentator.id}
+                    >
+                      <div className="message-header">
+                        <a
+                          href={`mailto:${commentator.email}`}
+                          data-cy="CommentAuthor"
+                        >
+                          {commentator.name}
+                        </a>
+                        <button
+                          data-cy="CommentDelete"
+                          type="button"
+                          className="delete is-small"
+                          aria-label="delete"
+                          onClick={() => onDelete(commentator.id)}
+                        >
+                          delete button
+                        </button>
+                      </div>
+
+                      <div className="message-body" data-cy="CommentBody">
+                        {commentator.body}
+                      </div>
+                    </article>
+                  );
+                })}
+              </>
+            )
+          )}
+
+          {(!AreCommentsLoading && !isFormRequested) && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => onFormRequest(true)}
             >
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
+        {isFormRequested && (
+          <NewCommentForm
+            name={name}
+            email={email}
+            body={body}
+            isFormLoading={isFormLoading}
+            onNameChange={onNameChange}
+            onTextAreaChange={onTextAreaChange}
+            onFormSubmit={onFormSubmit}
+            onReset={onReset}
+          />
+        )}
       </div>
     </div>
   );
