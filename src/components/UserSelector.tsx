@@ -59,7 +59,6 @@ export const UserSelector: React.FC<Props> = ({
               {user.name}
             </a>
           ))}
-
         </div>
       </div>
     </div>

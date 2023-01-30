@@ -74,6 +74,7 @@ export const PostDetails: React.FC<Props> = ({
           {isFormOpen ? (
             <NewCommentForm
               setComments={setComments}
+              selectedPost={selectedPost}
             />
           ) : (
             <button

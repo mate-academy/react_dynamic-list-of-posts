@@ -3,16 +3,22 @@ import cn from 'classnames';
 import React, { Dispatch, SetStateAction, useState } from 'react';
 import { postComment } from '../api/comments';
 import { Comment, CommentData } from '../types/Comment';
+import { Post } from '../types/Post';
 
 type Props = {
   setComments: Dispatch<SetStateAction<Comment[]>>
+  selectedPost: Post | null
 };
 
-export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
+export const NewCommentForm: React.FC<Props> = ({
+  setComments,
+  selectedPost,
+}) => {
   const defaultComment = {
     name: '',
     email: '',
     body: '',
+    postId: selectedPost?.id,
   };
   const defaultFormError = {
     name: false,
