@@ -18,7 +18,7 @@ export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
     name: false,
     email: false,
     body: false,
-    submitting: false,
+    submittingError: false,
   };
 
   const [commentData, setCommentData] = useState<CommentData>(defaultComment);
@@ -50,7 +50,7 @@ export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
     } catch {
       setFormError(prev => ({
         ...prev,
-        submitting: true,
+        submittingError: true,
       }));
     } finally {
       setSubmiting(false);
@@ -221,7 +221,7 @@ export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
           </button>
         </div>
       </div>
-      {formErrors.submitting && (
+      {formErrors.submittingError && (
         <div
           className="notification is-danger"
           data-cy="CommentsError"
