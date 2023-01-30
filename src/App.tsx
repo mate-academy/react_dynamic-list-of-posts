@@ -13,7 +13,6 @@ import { addComment, getComments, removeComment } from './api/comment';
 import { getPosts } from './api/post';
 import { getUsers } from './api/user';
 
-import { FormField } from './types/FormField';
 import { ServerErrors } from './types/enums/Errors';
 import { Comment } from './types/Comment';
 import { User } from './types/User';
@@ -30,23 +29,9 @@ export const App: React.FC = () => {
 
   const [isPostLoading, setIsPostLoading] = useState(false);
   const [isFormRequested, setIsFormRequested] = useState(false);
-  const [AreCommentsLoading, setAreCommentsLoading] = useState(false);
+  const [areCommentsLoading, setAreCommentsLoading] = useState(false);
   const [isFormLoading, setIsFormLoading] = useState(false);
   const [isRetryLoading, setIsRetryLoading] = useState(false);
-
-  const initialFormField = {
-    content: '',
-    error: false,
-  };
-
-  const errorFormField = {
-    content: '',
-    error: true,
-  };
-
-  const [name, setName] = useState<FormField>(initialFormField);
-  const [email, setEmail] = useState<FormField>(initialFormField);
-  const [body, setBody] = useState<FormField>(initialFormField);
 
   const initialComment = {
     id: 0,
@@ -107,12 +92,14 @@ export const App: React.FC = () => {
 
   const postComment = async (comment: Comment) => {
     setIsFormLoading(true);
+    setError(null);
 
     try {
+      setCommentToAdd(comment);
+
       const newComment = await addComment(comment);
 
       setComments([...comments, newComment]);
-      setBody(initialFormField);
     } catch {
       setError(ServerErrors.NewComment);
     } finally {
@@ -156,83 +143,6 @@ export const App: React.FC = () => {
 
     setActivePost(post);
     setIsFormRequested(false);
-    setName(initialFormField);
-    setEmail(initialFormField);
-  };
-
-  const handleInputContacts = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputName = event.target.name;
-    const inputValue = event.target.value;
-
-    const updatedData = {
-      content: inputValue,
-      error: false,
-    };
-
-    switch (inputName) {
-      case 'name':
-        setName(updatedData);
-
-        break;
-
-      case 'email':
-        setEmail(updatedData);
-        break;
-
-      default: break;
-    }
-  };
-
-  const handleInputTextArea = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
-    setBody({
-      content: event.target.value,
-      error: false,
-    });
-  };
-
-  const handleFormSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-
-    if (!name.content) {
-      setName(errorFormField);
-    }
-
-    if (!email.content) {
-      setEmail(errorFormField);
-    }
-
-    if (!body.content) {
-      setBody(errorFormField);
-    }
-
-    if (!name.content || !email.content || !body.content) {
-      return;
-    }
-
-    if (activePost) {
-      const newComment = {
-        id: 0,
-        postId: activePost.id,
-        name: name.content,
-        email: email.content,
-        body: body.content,
-      };
-
-      postComment(newComment);
-
-      setCommentToAdd(newComment);
-      setError(null);
-    }
-  };
-
-  const resetFormFields = (event: React.FormEvent<Element>) => {
-    event.preventDefault();
-
-    setName(initialFormField);
-    setEmail(initialFormField);
-    setBody(initialFormField);
   };
 
   const handleCommentDeletion = (commentID: number) => {
@@ -329,7 +239,7 @@ export const App: React.FC = () => {
                       activePost={activePost}
                       comments={comments}
                       error={error}
-                      AreCommentsLoading={AreCommentsLoading}
+                      areCommentsLoading={areCommentsLoading}
                       isFormRequested={isFormRequested}
                       isRetryLoading={isRetryLoading}
                       onFormRequest={setIsFormRequested}
@@ -340,14 +250,9 @@ export const App: React.FC = () => {
 
                     {isFormRequested && (
                       <NewCommentForm
-                        name={name}
-                        email={email}
-                        body={body}
+                        activePost={activePost}
                         isFormLoading={isFormLoading}
-                        onNameChange={handleInputContacts}
-                        onTextAreaChange={handleInputTextArea}
-                        onSubmit={handleFormSubmit}
-                        onReset={resetFormFields}
+                        postComment={postComment}
                       />
                     )}
                   </div>

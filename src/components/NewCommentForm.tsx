@@ -1,30 +1,107 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 
 import { FormErrors } from '../types/enums/Errors';
 import { FormField } from '../types/FormField';
+import { Post } from '../types/Post';
+import { Comment } from '../types/Comment';
 
 type Props = {
-  name: FormField,
-  email: FormField,
-  body: FormField,
+  activePost: Post,
   isFormLoading: boolean,
-  onNameChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
-  onTextAreaChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void,
-  onSubmit: (event: React.FormEvent) => void,
-  onReset: (event: React.FormEvent) => void,
+  postComment: (comment: Comment) => Promise<void>,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
-  name,
-  email,
-  body,
+  activePost,
   isFormLoading,
-  onNameChange,
-  onTextAreaChange,
-  onSubmit,
-  onReset,
+  postComment,
 }) => {
+  const initialFormField = {
+    content: '',
+    error: false,
+  };
+
+  const errorFormField = {
+    content: '',
+    error: true,
+  };
+
+  const [name, setName] = useState<FormField>(initialFormField);
+  const [email, setEmail] = useState<FormField>(initialFormField);
+  const [body, setBody] = useState<FormField>(initialFormField);
+
+  const handleInputContacts = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputName = event.target.name;
+    const inputValue = event.target.value;
+
+    const updatedData = {
+      content: inputValue,
+      error: false,
+    };
+
+    switch (inputName) {
+      case 'name':
+        setName(updatedData);
+
+        break;
+
+      case 'email':
+        setEmail(updatedData);
+        break;
+
+      default: break;
+    }
+  };
+
+  const handleInputTextArea = (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    setBody({
+      content: event.target.value,
+      error: false,
+    });
+  };
+
+  const resetFormFields = (event: React.FormEvent<Element>) => {
+    event.preventDefault();
+
+    setName(initialFormField);
+    setEmail(initialFormField);
+    setBody(initialFormField);
+  };
+
+  const handleFormSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (!name.content) {
+      setName(errorFormField);
+    }
+
+    if (!email.content) {
+      setEmail(errorFormField);
+    }
+
+    if (!body.content) {
+      setBody(errorFormField);
+    }
+
+    if (!name.content || !email.content || !body.content) {
+      return;
+    }
+
+    const newComment = {
+      id: 0,
+      postId: activePost.id,
+      name: name.content,
+      email: email.content,
+      body: body.content,
+    };
+
+    postComment(newComment);
+    setBody(initialFormField);
+  };
+
   const validateError = (value: FormField) => {
     return classNames(
       'input',
@@ -64,7 +141,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Name Surname"
             value={name.content}
             className={validateError(name)}
-            onChange={onNameChange}
+            onChange={handleInputContacts}
           />
 
           <span className="icon is-small is-left">
@@ -90,7 +167,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="email@test.com"
             value={email.content}
             className={validateError(email)}
-            onChange={onNameChange}
+            onChange={handleInputContacts}
           />
 
           <span className="icon is-small is-left">
@@ -116,7 +193,7 @@ export const NewCommentForm: React.FC<Props> = ({
             value={body.content}
             placeholder="Type comment here"
             className={validateError(body)}
-            onChange={onTextAreaChange}
+            onChange={handleInputTextArea}
           />
         </div>
 
@@ -133,7 +210,7 @@ export const NewCommentForm: React.FC<Props> = ({
                 'is-loading': isFormLoading,
               },
             )}
-            onClick={onSubmit}
+            onClick={handleFormSubmit}
           >
             Add
           </button>
@@ -144,7 +221,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={onReset}
+            onClick={resetFormFields}
           >
             Clear
           </button>

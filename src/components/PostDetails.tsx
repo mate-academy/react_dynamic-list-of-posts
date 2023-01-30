@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import '../stylesExtra/extraErrors.scss';
+import '../stylesExtra/extra.scss';
 
 import { Loader } from './Loader';
 
@@ -11,7 +11,7 @@ type Props = {
   activePost: Post | null,
   comments: Comment[],
   error: ServerErrors | null,
-  AreCommentsLoading: boolean,
+  areCommentsLoading: boolean,
   isFormRequested: boolean
   isRetryLoading: boolean,
   onFormRequest: Dispatch<SetStateAction<boolean>>,
@@ -23,7 +23,7 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({
   activePost,
   comments,
-  AreCommentsLoading,
+  areCommentsLoading,
   error,
   isFormRequested,
   isRetryLoading,
@@ -32,8 +32,8 @@ export const PostDetails: React.FC<Props> = ({
   onRetry,
   setError,
 }) => {
-  const { id, title } = activePost as Post;
-  const successfulLoad = !AreCommentsLoading && !error;
+  const { id, title, body } = activePost as Post;
+  const successfulLoad = !areCommentsLoading && !error;
 
   return (
     <>
@@ -42,11 +42,11 @@ export const PostDetails: React.FC<Props> = ({
           {`#${id}: ${title}`}
         </h2>
 
-        <p data-cy="PostBody">{activePost?.body}</p>
+        <p data-cy="PostBody">{body}</p>
       </div>
 
       <div className="block">
-        {AreCommentsLoading && <Loader /> }
+        {areCommentsLoading && <Loader /> }
 
         {error && (
           <div
@@ -87,37 +87,45 @@ export const PostDetails: React.FC<Props> = ({
             <>
               <p className="title is-4">Comments:</p>
 
-              {comments.map(commentator => {
-                return (
-                  <article
-                    className="message is-small"
-                    data-cy="Comment"
-                    key={commentator.id}
-                  >
-                    <div className="message-header">
-                      <a
-                        href={`mailto:${commentator.email}`}
-                        data-cy="CommentAuthor"
-                      >
-                        {commentator.name}
-                      </a>
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
-                        onClick={() => onDelete(commentator.id)}
-                      >
-                        delete button
-                      </button>
-                    </div>
+              <ul id="comment-list">
+                {comments.map(commentator => {
+                  const {
+                    id: CommentatorId,
+                    email: CommentatorEmail,
+                    name: CommentatorName,
+                    body: CommentatorBody,
+                  } = commentator;
 
-                    <div className="message-body" data-cy="CommentBody">
-                      {commentator.body}
-                    </div>
-                  </article>
-                );
-              })}
+                  return (
+                    <li
+                      key={CommentatorId}
+                      className="message is-small"
+                      data-cy="Comment"
+                    >
+                      <div className="message-header">
+                        <a
+                          href={`mailto:${CommentatorEmail}`}
+                          data-cy="CommentAuthor"
+                        >
+                          {CommentatorName}
+                        </a>
+                        <button
+                          data-cy="CommentDelete"
+                          type="button"
+                          className="delete is-small"
+                          aria-label="delete"
+                          onClick={() => onDelete(CommentatorId)}
+                        >
+                          delete button
+                        </button>
+                      </div>
+                      <div className="message-body" data-cy="CommentBody">
+                        {CommentatorBody}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
             </>
           )
         )}
