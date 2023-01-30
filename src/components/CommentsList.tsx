@@ -15,13 +15,13 @@ export const CommentsList:React.FC<Props> = ({
   const [deletingId, setDeletingId] = useState(0);
 
   const handleDelete = async (commentId: number) => {
-    try {
-      setDeletingId(commentId);
-      await deleteComment(commentId);
+    setComments(current => current.filter(
+      ({ id }) => id !== commentId,
+    ));
 
-      setComments(current => current.filter(
-        ({ id }) => id !== commentId,
-      ));
+    setDeletingId(commentId);
+    try {
+      await deleteComment(commentId);
     } catch {
       setDeletingError(true);
     }
@@ -37,7 +37,7 @@ export const CommentsList:React.FC<Props> = ({
           data-cy="Comment"
         >
           <div className="message-header">
-            <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
+            <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
               {comment.name}
             </a>
             <button

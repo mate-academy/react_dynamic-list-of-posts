@@ -1,7 +1,5 @@
 import cn from 'classnames';
-import React, {
-  useState,
-} from 'react';
+import React, { useState } from 'react';
 import { User } from '../types/User';
 
 type Props = {
@@ -24,13 +22,16 @@ export const UserSelector: React.FC<Props> = ({
         'is-active': dropdownOpen,
       })}
     >
-      <div className="dropdown-trigger">
+      <div
+        className="dropdown-trigger"
+      >
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setDropdownOpen(!dropdownOpen)}
+          onClick={() => setDropdownOpen(prev => !prev)}
+          onBlur={() => setDropdownOpen(false)}
         >
           <span>
             {selectedUser
@@ -44,16 +45,23 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
+      <div
+        className="dropdown-menu"
+        id="dropdown-menu"
+        role="menu"
+      >
+        <div
+          className="dropdown-content"
+        >
           {users.map(user => (
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              className="dropdown-item"
-              onClick={() => {
+              className={cn('dropdown-item', {
+                'is-active': selectedUser?.id === user.id,
+              })}
+              onMouseDown={() => {
                 onSelect(user);
-                setDropdownOpen(false);
               }}
             >
               {user.name}

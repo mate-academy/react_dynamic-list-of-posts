@@ -31,12 +31,14 @@ export const PostDetails: React.FC<Props> = ({
   && !error
   && !isLoading;
 
+  const isButtonVisible = !isLoading && !isFormOpen && !error;
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {selectedPost?.title}
+            {`#${selectedPost?.id}: ${selectedPost?.title}`}
           </h2>
 
           <p data-cy="PostBody">
@@ -71,12 +73,14 @@ export const PostDetails: React.FC<Props> = ({
             />
           )}
 
-          {isFormOpen ? (
+          {isFormOpen && (
             <NewCommentForm
               setComments={setComments}
               selectedPost={selectedPost}
             />
-          ) : (
+          )}
+
+          { isButtonVisible && (
             <button
               data-cy="WriteCommentButton"
               type="button"

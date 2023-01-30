@@ -123,7 +123,9 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUser && posts.length > 0 && (
+                {posts.length > 0
+                && !isLoading
+                && (
                   <PostsList
                     posts={posts}
                     setSelectedPost={setSelectedPost}
@@ -144,17 +146,19 @@ export const App: React.FC = () => {
               { 'Sidebar--open': selectedPost },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails
-                selectedPost={selectedPost}
-                error={error}
-                isLoading={isLoading}
-                comments={comments}
-                setComments={setComments}
-                isFormOpen={isFormOpen}
-                setFormOpen={setFormOpen}
-              />
-            </div>
+            {selectedPost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails
+                  selectedPost={selectedPost}
+                  error={error}
+                  isLoading={isLoading}
+                  comments={comments}
+                  setComments={setComments}
+                  isFormOpen={isFormOpen}
+                  setFormOpen={setFormOpen}
+                />
+              </div>
+            )}
           </div>
 
         </div>
