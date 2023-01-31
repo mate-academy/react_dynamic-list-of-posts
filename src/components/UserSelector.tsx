@@ -6,14 +6,12 @@ type Props = {
   users: User[];
   onSelect: (user: User) => void
   selectedUser: User | null;
-  loadMoreUsers: () => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   selectedUser,
   onSelect,
-  loadMoreUsers,
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -69,17 +67,6 @@ export const UserSelector: React.FC<Props> = ({
               {user.name}
             </a>
           ))}
-          <a
-            href="#loadmore"
-            className="dropdown-item button is-outlined is-info"
-            onMouseDown={(event) => {
-              event.preventDefault();
-              loadMoreUsers();
-              setDropdownOpen(true);
-            }}
-          >
-            Load More +
-          </a>
         </div>
       </div>
     </div>

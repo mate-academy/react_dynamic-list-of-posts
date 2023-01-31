@@ -27,16 +27,11 @@ export const App: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [isFormOpen, setFormOpen] = useState(false);
-  const [usersLimit, setUsersLimit] = useState(10);
 
   useEffect(() => {
-    getUsers(usersLimit)
-      .then(setUsers);
-  }, [usersLimit]);
-
-  const loadMoreUsers = () => {
-    setUsersLimit(current => current + 10);
-  };
+    getUsers()
+      .then(response => setUsers(response));
+  }, []);
 
   const loadPosts = async () => {
     if (selectedUser) {
@@ -101,7 +96,6 @@ export const App: React.FC = () => {
                   users={users}
                   selectedUser={selectedUser}
                   onSelect={handleSelectUser}
-                  loadMoreUsers={loadMoreUsers}
                 />
               </div>
 
