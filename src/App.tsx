@@ -28,8 +28,7 @@ export const App: React.FC = () => {
   const [isAddingNewComment, setIsAddingNewComment] = useState(false);
 
   useEffect(() => {
-    getUsers()
-      .then(res => setUsers(res));
+    getUsers().then(setUsers);
   }, []);
 
   const selectUser = (user: User) => {
@@ -44,7 +43,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (selectedUser) {
       getPosts(selectedUser.id)
-        .then(postsFromServer => setPosts(postsFromServer))
+        .then(setPosts)
         .catch(() => setPostsLoadingError(true))
         .finally(() => setIsLoadingPosts(false));
     }
@@ -56,7 +55,7 @@ export const App: React.FC = () => {
       setIsAddingNewComment(false);
 
       getComments(selectedPost.id)
-        .then(commentsFromServer => setComments(commentsFromServer))
+        .then(setComments)
         .catch(() => setCommentsLoadingError(true))
         .finally(() => setIsLoadingComments(false));
     }
