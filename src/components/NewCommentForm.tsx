@@ -4,6 +4,7 @@ import React, { Dispatch, SetStateAction, useState } from 'react';
 import { postComment } from '../api/comments';
 import { Comment, CommentData } from '../types/Comment';
 import { Post } from '../types/Post';
+import { emailRegex } from '../utils/emailRegex';
 
 type Props = {
   setComments: Dispatch<SetStateAction<Comment[]>>
@@ -23,6 +24,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const defaultFormError = {
     name: false,
     email: false,
+    inValidEmail: false,
     body: false,
     submittingError: false,
   };
@@ -74,6 +76,12 @@ export const NewCommentForm: React.FC<Props> = ({
 
     if (!email) {
       setFormError(prev => ({ ...prev, email: true }));
+      hasError = true;
+    }
+
+    if (!emailRegex.test(email)) {
+      setFormError(prev => ({ ...prev, inValidEmail: true }));
+      setCommentData(prev => ({ ...prev, email: '' }));
       hasError = true;
     }
 
@@ -153,7 +161,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-email"
             placeholder="email@test.com"
             className={cn('input', {
-              'is-danger': formErrors.email,
+              'is-danger': formErrors.email || formErrors.inValidEmail,
             })}
             value={email}
             onChange={handleChange}
@@ -176,6 +184,12 @@ export const NewCommentForm: React.FC<Props> = ({
         {formErrors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
+          </p>
+        )}
+
+        {formErrors.inValidEmail && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Please enter a valid Email
           </p>
         )}
       </div>
