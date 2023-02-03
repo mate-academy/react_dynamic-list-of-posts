@@ -33,6 +33,9 @@ export const NewCommentForm: React.FC<Props> = ({
     !nameError
     && !emailError
     && !textError
+    && authorName
+    && authorEmail
+    && commentBody
   );
 
   const newComment = {
