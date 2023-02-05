@@ -8,29 +8,46 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUsers } from './api/api';
-import { User } from './types/User';
+import { getUserPosts } from './api/posts';
 import { Post } from './types/Post';
+import { Notification } from './components/Notification';
+import { NotificationType } from './types/NotificationType';
+import { NotificationMessage } from './types/NotificationMessage';
 
 export const App: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [isLoadingPosts, setIsLoadingPosts] = useState(false);
-  const [postsError, setPostsError] = useState(false);
-  const [addError, setAddError] = useState(false);
-  const [deleteError, setDeleteError] = useState(false);
-  const [usersError, setUsersError] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
+  const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState<NotificationMessage>(
+    NotificationMessage.NONE,
+  );
 
-  const noPostsWarning
-    = !postsError && !posts.length && selectedUser && !isLoadingPosts;
+  const getPosts = async (userId: number) => {
+    try {
+      setLoading(true);
+      const posts = await getUserPosts(userId);
+
+      if (!posts.length) {
+        setNotification(NotificationMessage.NO_POSTS);
+      }
+
+      setUserPosts(posts);
+    } catch {
+      setNotification(NotificationMessage.GET_POSTS);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    getUsers()
-      .then(setUsers)
-      .catch(setUsersError);
-  }, []);
+    if (selectedUserId) {
+      setUserPosts([]);
+      setPost(null);
+      setNotification(NotificationMessage.NONE);
+      getPosts(selectedUserId);
+    }
+  }, [selectedUserId]);
 
   return (
     <main className="section">
@@ -40,59 +57,43 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  users={users}
-                  setPosts={setPosts}
-                  setIsLoadingPosts={setIsLoadingPosts}
-                  selectedUser={selectedUser}
-                  setSelectedUser={setSelectedUser}
-                  setPostsError={setPostsError}
-                  setSelectedPost={setSelectedPost}
+                  selectedUserId={selectedUserId}
+                  setSelectedUserId={setSelectedUserId}
+                  onError={setNotification}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {(!selectedUser && !usersError) && (
+                {!selectedUserId && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {usersError && (
-                  <div
-                    className="notification is-danger"
-                  >
-                    Unable to load users!
-                  </div>
-                )}
+                {loading && <Loader />}
 
-                {isLoadingPosts && (<Loader />)}
-
-                {postsError && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
-                    Something went wrong!
-                  </div>
-                )}
-
-                {posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPost={selectedPost}
-                    setSelectedPost={setSelectedPost}
-                    setDeleteError={setDeleteError}
-                    setAddError={setAddError}
+                {notification === NotificationMessage.GET_POSTS && (
+                  <Notification
+                    type={NotificationType.danger}
+                    massege={notification}
+                    dataCy="PostsLoadingError"
                   />
                 )}
 
-                {noPostsWarning && (
-                  <div
-                    className="notification is-warning"
-                    data-cy="NoPostsYet"
-                  >
-                    No posts yet
-                  </div>
+                {notification === NotificationMessage.NO_POSTS && (
+                  <Notification
+                    type={NotificationType.warning}
+                    massege={notification}
+                    dataCy="NoPostsYet"
+                  />
+                )}
+
+                {!userPosts.length || (
+                  <PostsList
+                    posts={userPosts}
+                    currentPost={post}
+                    setPost={setPost}
+                  />
                 )}
               </div>
             </div>
@@ -105,19 +106,13 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              {
-                'Sidebar--open': selectedPost?.id,
-              },
+              { 'Sidebar--open': post },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
+              {post && (
                 <PostDetails
-                  selectedPost={selectedPost}
-                  addError={addError}
-                  setAddError={setAddError}
-                  deleteError={deleteError}
-                  setDeleteError={setDeleteError}
+                  post={post}
                 />
               )}
             </div>

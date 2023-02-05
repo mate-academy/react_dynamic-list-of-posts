@@ -1,80 +1,114 @@
 import classNames from 'classnames';
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import { addComment } from '../api/api';
+import React, {
+  ChangeEvent, FormEvent, SetStateAction, useState,
+} from 'react';
+import { addComment } from '../api/comments';
 import { Comment } from '../types/Comment';
+import { NotificationMessage } from '../types/NotificationMessage';
 
 type Props = {
   postId: number;
-  setComments: Dispatch<SetStateAction<Comment[]>>;
-  setAddError: Dispatch<SetStateAction<boolean>>;
+  setComments: (comment: SetStateAction<Comment[]>) => void;
+  onNotification: (massege: NotificationMessage) => void;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
-  postId,
-  setComments,
-  setAddError,
+  postId, setComments, onNotification,
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
-  const [noName, setNoName] = useState(false);
-  const [noEmail, setNoEmail] = useState(false);
-  const [noBody, setNoBody] = useState(false);
-  const [isSubmiting, setIsSubmiting] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({
+    name: false,
+    email: false,
+    body: false,
+  });
 
-  const resetWarnings = () => {
-    setNoName(false);
-    setNoEmail(false);
-    setNoBody(false);
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!name || !email || !body) {
+      setErrors({
+        name: !name,
+        email: !email,
+        body: !body,
+      });
+
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const newComment = await addComment(postId, name, email, body);
+
+      setComments(current => [...current, newComment]);
+    } catch {
+      onNotification(NotificationMessage.ADD_COMMENT);
+      setComments([]);
+    } finally {
+      setLoading(false);
+      setBody('');
+    }
+  };
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    switch (e.target.name) {
+      case 'name':
+        if (errors.name) {
+          setErrors(current => ({
+            ...current,
+            name: false,
+          }));
+        }
+
+        setName(e.target.value);
+        break;
+
+      case 'email':
+        if (errors.email) {
+          setErrors(current => ({
+            ...current,
+            email: false,
+          }));
+        }
+
+        setEmail(e.target.value);
+        break;
+
+      case 'body':
+        if (errors.body) {
+          setErrors(current => ({
+            ...current,
+            body: false,
+          }));
+        }
+
+        setBody(e.target.value);
+        break;
+
+      default:
+        break;
+    }
   };
 
   const clearFields = () => {
     setName('');
     setEmail('');
     setBody('');
-    resetWarnings();
-  };
 
-  const handleSubmit = () => {
-    resetWarnings();
-    setAddError(false);
-
-    if (!name.trim()) {
-      setNoName(true);
-    }
-
-    if (!email.trim()) {
-      setNoEmail(true);
-    }
-
-    if (!body.trim()) {
-      setNoBody(true);
-    }
-
-    if (!name.trim() || !email.trim() || !body.trim()) {
-      setIsSubmiting(false);
-
-      return;
-    }
-
-    setIsSubmiting(true);
-
-    addComment({
-      postId,
-      name,
-      email,
-      body,
-    })
-      .then(result => setComments(prevValue => [...prevValue, result]))
-      .catch(() => setAddError(true))
-      .finally(() => {
-        setIsSubmiting(false);
-        setBody('');
-      });
+    setErrors({
+      name: false,
+      email: false,
+      body: false,
+    });
   };
 
   return (
-    <form data-cy="NewCommentForm" onSubmit={e => e.preventDefault()}>
+    <form data-cy="NewCommentForm" onSubmit={handleSubmit}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -86,16 +120,19 @@ export const NewCommentForm: React.FC<Props> = ({
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': noName })}
+            className={classNames(
+              'input',
+              { 'is-danger': errors.name },
+            )}
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={handleChange}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {noName && (
+          {errors.name && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -105,7 +142,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {noName && (
+        {errors.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -123,16 +160,19 @@ export const NewCommentForm: React.FC<Props> = ({
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': noEmail })}
+            className={classNames(
+              'input',
+              { 'is-danger': errors.email },
+            )}
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={handleChange}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {noEmail && (
+          {errors.email && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -142,7 +182,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {noEmail && (
+        {errors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -159,13 +199,16 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': noEmail })}
+            className={classNames(
+              'textarea',
+              { 'is-danger': errors.body },
+            )}
             value={body}
-            onChange={e => setBody(e.target.value)}
+            onChange={handleChange}
           />
         </div>
 
-        {noBody && (
+        {errors.body && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -177,12 +220,10 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="submit"
             className={classNames(
-              'button is-link',
-              {
-                'is-loading': isSubmiting,
-              },
+              'button',
+              'is-link',
+              { 'is-loading': loading },
             )}
-            onClick={handleSubmit}
           >
             Add
           </button>
@@ -192,8 +233,7 @@ export const NewCommentForm: React.FC<Props> = ({
           {/* eslint-disable-next-line react/button-has-type */}
           <button
             type="reset"
-            className="button is-link
-            is-light"
+            className="button is-link is-light"
             onClick={clearFields}
           >
             Clear

@@ -1,33 +1,24 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import classNames from 'classnames';
+import React from 'react';
 import { Post } from '../types/Post';
-import { PostItem } from './PostItem';
 
 type Props = {
   posts: Post[];
-  selectedPost: Post | null;
-  setSelectedPost: Dispatch<SetStateAction<Post | null>>;
-  setAddError: Dispatch<SetStateAction<boolean>>;
-  setDeleteError: Dispatch<SetStateAction<boolean>>;
+  currentPost: Post | null;
+  setPost: (post: Post | null) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
-  selectedPost,
-  setSelectedPost,
-  setAddError,
-  setDeleteError,
+  currentPost,
+  setPost,
 }) => {
-  const handlePostSelect = (post: Post) => {
-    setAddError(false);
-    setDeleteError(false);
-
-    if (post.id === selectedPost?.id) {
-      setSelectedPost(null);
-
-      return;
+  const handleClick = (post: Post) => {
+    if (currentPost?.id !== post.id) {
+      setPost(post);
+    } else {
+      setPost(null);
     }
-
-    setSelectedPost(post);
   };
 
   return (
@@ -45,12 +36,30 @@ export const PostsList: React.FC<Props> = ({
 
         <tbody>
           {posts.map(post => (
-            <PostItem
-              key={post.id}
-              post={post}
-              selectedPostId={!selectedPost ? 0 : selectedPost.id}
-              handlePostSelect={handlePostSelect}
-            />
+            <tr data-cy="Post" key={post.id}>
+              <td data-cy="PostId">{post.id}</td>
+
+              <td data-cy="PostTitle">
+                {post.title}
+              </td>
+
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className={classNames(
+                    'button',
+                    'is-link',
+                    {
+                      'is-light': currentPost?.id !== post.id,
+                    },
+                  )}
+                  onClick={() => handleClick(post)}
+                >
+                  {currentPost?.id !== post.id ? 'Open' : 'Close'}
+                </button>
+              </td>
+            </tr>
           ))}
         </tbody>
       </table>

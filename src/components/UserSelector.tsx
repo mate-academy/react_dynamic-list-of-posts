@@ -1,67 +1,61 @@
 import classNames from 'classnames';
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import { getPosts } from '../api/api';
-import { Post } from '../types/Post';
+import React, { useEffect, useRef, useState } from 'react';
+import { getUsers } from '../api/users';
+import { NotificationMessage } from '../types/NotificationMessage';
 import { User } from '../types/User';
 
 type Props = {
-  users: User[];
-  setPosts: Dispatch<SetStateAction<Post[]>>;
-  setIsLoadingPosts: Dispatch<SetStateAction<boolean>>;
-  selectedUser: User | null;
-  setSelectedUser: Dispatch<SetStateAction<User | null>>;
-  setPostsError: Dispatch<SetStateAction<boolean>>;
-  setSelectedPost: Dispatch<SetStateAction<Post | null>>;
+  selectedUserId: number;
+  setSelectedUserId: (id: number) => void;
+  onError: (massege: NotificationMessage) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
-  users,
-  setPosts,
-  setIsLoadingPosts,
-  selectedUser,
-  setSelectedUser,
-  setPostsError,
-  setSelectedPost,
+  selectedUserId, setSelectedUserId, onError,
 }) => {
-  const [dropdownActive, setDropdownActive] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectedUserName, setSelectedUserName] = useState('');
+  const [openList, setOpenList] = useState(false);
+  const dropdown = useRef<HTMLDivElement>(null);
 
-  document.addEventListener('click', (event) => {
-    const dropdown = document.querySelector('.dropdown');
+  useEffect(() => {
+    getUsers()
+      .then(setUsers)
+      .catch(() => onError(NotificationMessage.GET_USERS));
+  }, []);
 
-    const userSelector = event.target as Node;
-
-    if (dropdown?.contains(userSelector)) {
-      return;
+  const handleOnBlur = (event: MouseEvent) => {
+    if (dropdown.current
+      && !dropdown.current.contains(event.target as HTMLElement)) {
+      setOpenList(false);
     }
-
-    setDropdownActive(false);
-  });
-
-  const handleDropdown = () => {
-    setDropdownActive(
-      (prevValue) => !prevValue,
-    );
   };
 
-  const handlePostsLoad = (user: User) => {
-    setSelectedUser(user);
-    setSelectedPost(null);
-    setPostsError(false);
-    handleDropdown();
-    setIsLoadingPosts(true);
+  useEffect(() => {
+    document.addEventListener('click', handleOnBlur);
 
-    getPosts(user.id)
-      .then(setPosts)
-      .catch(() => setPostsError(true))
-      .finally(() => {
-        setIsLoadingPosts(false);
-      });
+    return () => {
+      document.removeEventListener('click', handleOnBlur);
+    };
+  }, [openList]);
+
+  const selectUser = (user: User) => {
+    if (user.id !== selectedUserId) {
+      setSelectedUserId(user.id);
+      setSelectedUserName(user.name);
+    }
+
+    setOpenList(false);
   };
 
   return (
     <div
       data-cy="UserSelector"
-      className={classNames('dropdown', { 'is-active': dropdownActive })}
+      className={classNames(
+        'dropdown',
+        { 'is-active': openList },
+      )}
+      ref={dropdown}
     >
       <div className="dropdown-trigger">
         <button
@@ -69,9 +63,9 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={handleDropdown}
+          onClick={() => setOpenList(current => !current)}
         >
-          <span>{selectedUser ? (selectedUser.name) : ('Choose a user')}</span>
+          <span>{selectedUserName || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -87,11 +81,9 @@ export const UserSelector: React.FC<Props> = ({
               href={`#user-${user.id}`}
               className={classNames(
                 'dropdown-item',
-                {
-                  'is-active': user.id === selectedUser?.id,
-                },
+                { 'is-active': user.id === selectedUserId },
               )}
-              onClick={() => handlePostsLoad(user)}
+              onClick={() => selectUser(user)}
             >
               {user.name}
             </a>

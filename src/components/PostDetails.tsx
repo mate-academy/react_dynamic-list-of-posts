@@ -1,52 +1,71 @@
-import React, {
-  Dispatch, SetStateAction, useEffect, useState,
-} from 'react';
-import { deleteComment, getComments } from '../api/api';
+import React, { useEffect, useState } from 'react';
+import { Notification } from './Notification';
+import { NotificationType } from '../types/NotificationType';
 import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
-import { CommentsList } from './CommentsList';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { deleteComment, getPostComments } from '../api/comments';
+import { CommentMessage } from './CommentMessage';
+import { NotificationMessage } from '../types/NotificationMessage';
 
 type Props = {
-  selectedPost: Post;
-  addError: boolean;
-  setAddError: Dispatch<SetStateAction<boolean>>;
-  deleteError: boolean;
-  setDeleteError: Dispatch<SetStateAction<boolean>>;
+  post: Post | null;
 };
 
 export const PostDetails: React.FC<Props> = ({
-  selectedPost,
-  addError,
-  setAddError,
-  deleteError,
-  setDeleteError,
+  post,
 }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [commentsError, setCommentsError] = useState(false);
-  const [formIsOpen, setFormIsOpen] = useState(false);
+  const [postComments, setPostComments] = useState<Comment[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [newCommentForm, setNewCommentForm] = useState(false);
+  const [notification, setNotification] = useState<NotificationMessage>(
+    NotificationMessage.NONE,
+  );
+  const hasError = notification !== NotificationMessage.NONE
+    && notification !== NotificationMessage.NO_COMMENTS;
+
+  const getComments = async (postId: number) => {
+    try {
+      setLoading(true);
+      const comments = await getPostComments(postId);
+
+      if (!comments.length) {
+        setNotification(NotificationMessage.NO_COMMENTS);
+      }
+
+      setPostComments(comments);
+    } catch {
+      setNotification(NotificationMessage.GET_COMMENTS);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    setCommentsError(false);
-    setIsProcessing(true);
-    setFormIsOpen(false);
+    if (post?.id) {
+      setPostComments([]);
+      setNewCommentForm(false);
+      setNotification(NotificationMessage.NONE);
+      getComments(post.id);
+    }
+  }, [post]);
 
-    getComments(selectedPost.id)
-      .then(setComments)
-      .catch(() => setCommentsError(true))
-      .finally(() => setIsProcessing(false));
-  }, [selectedPost]);
+  useEffect(() => {
+    if (postComments.length > 0) {
+      setNotification(NotificationMessage.NONE);
+    }
+  }, [postComments]);
 
-  const handleDelete = (id: number) => {
-    setDeleteError(false);
+  const handleDelete = (commentId: number) => {
+    deleteComment(commentId);
+    setPostComments((current: Comment[]) => {
+      return current.filter(comment => comment.id !== commentId);
+    });
 
-    deleteComment(id)
-      .then(() => setComments(
-        prevValue => prevValue.filter(comment => comment.id !== id),
-      ))
-      .catch(() => setDeleteError(true));
+    if (postComments.length) {
+      setNotification(NotificationMessage.NO_COMMENTS);
+    }
   };
 
   return (
@@ -54,75 +73,68 @@ export const PostDetails: React.FC<Props> = ({
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {`#${selectedPost.id}: ${selectedPost.title}`}
+            {`#${post?.id}: ${post?.title}`}
           </h2>
 
           <p data-cy="PostBody">
-            {selectedPost.body}
+            {post?.body}
           </p>
         </div>
 
         <div className="block">
-          {isProcessing && (
-            <Loader />
-          )}
+          {loading && <Loader />}
 
-          {commentsError && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
-            </div>
-          )}
-
-          {!isProcessing && (
-            <>
-              {!comments.length ? (
-                <p className="title is-4" data-cy="NoCommentsMessage">
-                  No comments yet
-                </p>
-              ) : (
-                <p className="title is-4">Comments:</p>
-              )}
-
-              {addError && (
-                <div
-                  className="notification is-danger"
-                >
-                  Unable to add comment!
-                </div>
-              )}
-
-              {deleteError && (
-                <div
-                  className="notification is-danger"
-                >
-                  Unable to delete comment!
-                </div>
-              )}
-
-              <CommentsList
-                comments={comments}
-                handleDelete={handleDelete}
+          {(notification !== NotificationMessage.NONE)
+            && (notification !== NotificationMessage.NO_COMMENTS)
+            && (
+              <Notification
+                type={NotificationType.danger}
+                massege={notification}
+                dataCy="CommentsError"
               />
+            )}
 
-              {!formIsOpen && (
-                <button
-                  data-cy="WriteCommentButton"
-                  type="button"
-                  className="button is-link"
-                  onClick={() => setFormIsOpen(prevValue => !prevValue)}
-                >
-                  Write a comment
-                </button>
-              )}
+          {notification === NotificationMessage.NO_COMMENTS && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              {NotificationMessage.NO_COMMENTS}
+            </p>
+          )}
+
+          {!postComments.length || (
+            <>
+              <p className="title is-4">Comments:</p>
+
+              {postComments.map(comment => (
+                <CommentMessage
+                  key={comment.id}
+                  id={comment.id}
+                  name={comment.name}
+                  email={comment.email}
+                  body={comment.body}
+                  onDelete={handleDelete}
+                />
+              ))}
             </>
           )}
+
+          {(!loading && !newCommentForm && !hasError)
+            && (
+              <button
+                data-cy="WriteCommentButton"
+                type="button"
+                className="button is-link"
+                onClick={() => setNewCommentForm(true)}
+              >
+                Write a comment
+              </button>
+            )}
         </div>
 
-        {formIsOpen && (
+        {(newCommentForm && !hasError) && (
           <NewCommentForm
-            postId={selectedPost.id}
-            setComments={setComments}
-            setAddError={setAddError}
+            setComments={setPostComments}
+            postId={post?.id || 0}
+            onNotification={setNotification}
           />
         )}
       </div>
