@@ -88,7 +88,7 @@ export const App: React.FC = () => {
                   />
                 )}
 
-                {!userPosts.length || (
+                {userPosts.length > 0 && (
                   <PostsList
                     posts={userPosts}
                     currentPost={post}
