@@ -1,15 +1,40 @@
-import React from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
+import cn from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { getPostsByUserId } from './api/posts';
+import { Post } from './types/Post';
 
 export const App: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSelectedUserChange = useCallback((userId: number) => {
+    setErrorMessage('');
+    setSelectedUserId(userId);
+    setIsLoading(true);
+
+    getPostsByUserId(userId)
+      .then(loadedPosts => {
+        setPosts(loadedPosts);
+      })
+      .catch(() => setErrorMessage("Can't load todos"))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  const selectedPost = useMemo(() => (
+    posts.find(post => post.id === selectedPostId) ?? null
+  ), [selectedPostId]);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,44 +42,64 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  selectedUserId={selectedUserId}
+                  onSelect={handleSelectedUserChange}
+                  onErrorCatch={setErrorMessage}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {selectedUserId === 0 && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isLoading && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {errorMessage && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    {errorMessage}
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {selectedUserId !== 0 && posts.length === 0 && !isLoading && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                <PostsList />
+                {posts.length > 0 && (
+                  <PostsList
+                    posts={posts}
+                    onPostBtnClick={setSelectedPostId}
+                    selectedPostId={selectedPostId}
+                  />
+                )}
               </div>
             </div>
           </div>
 
           <div
             data-cy="Sidebar"
-            className={classNames(
+            className={cn(
               'tile',
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPostId !== 0 },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {selectedPost && (
+                <PostDetails
+                  post={selectedPost}
+                />
+              )}
             </div>
           </div>
         </div>
