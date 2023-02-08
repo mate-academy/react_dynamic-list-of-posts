@@ -49,7 +49,10 @@ export const App: React.FC = () => {
   useEffect(() => {
     setPosts([]);
     setSelectedPost(null);
-    setIsLoader(true);
+    if (selectedUser !== null) {
+      setIsLoader(true);
+    }
+
     const timeout: NodeJS.Timeout = setTimeout(() => {
       postsFromServer();
     }, 500);
@@ -94,7 +97,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(posts.length === 0 && !isLoader) && (
+                {(posts.length === 0 && !isLoader && selectedUser) && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
@@ -110,7 +113,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {selectedPost !== null && (
+          {selectedPost && (
             <div
               data-cy="Sidebar"
               className={classNames(

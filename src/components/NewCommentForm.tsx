@@ -37,15 +37,15 @@ export const NewCommentForm: React.FC<Props> = ({
     }
 
     switch (true) {
-      case name.length === 0:
+      case name === '':
         setIsNameDanger(true);
         break;
 
-      case email.length === 0:
+      case email === '':
         setIsEmailDanger(true);
         break;
 
-      case text.length === 0:
+      case text === '':
         setIsTextDanger(true);
         break;
 
@@ -75,15 +75,15 @@ export const NewCommentForm: React.FC<Props> = ({
   }, [isLoadingComment]);
 
   useEffect(() => {
-    if (name.length > 0) {
+    if (name !== '') {
       setIsNameDanger(false);
     }
 
-    if (email.length > 0) {
+    if (email !== '') {
       setIsEmailDanger(false);
     }
 
-    if (text.length > 0) {
+    if (text !== '') {
       setIsTextDanger(false);
     }
   }, [name, email, text]);
