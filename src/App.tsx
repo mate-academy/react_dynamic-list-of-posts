@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -9,7 +9,70 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 
+import { getUsers } from './api/user';
+import { getPosts } from './api/post';
+import { getComments } from './api/comment';
+
+import { User } from './types/User';
+import { Post } from './types/Post';
+import { Comment } from './types/Comment';
+
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isError, setIsError] = useState(false);
+  const [isErrorSide, setIsErrorSide] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingSidebar, setIsLoadingSidebar] = useState(false);
+  const [posts, setPosts] = useState<Post[] | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [openedPost, setOpenedPost] = useState<Post | null>(null);
+  const [isVisibleForm, setIsVisibleForm] = useState(false);
+
+  const setUsersList = useMemo(() => () => {
+    getUsers()
+      .then((data) => {
+        setUsers(data);
+        setIsError('error' in data);
+      })
+      .catch(() => setIsError(true));
+  }, []);
+
+  const setUsersPost = (user: User) => {
+    if (user) {
+      setIsLoading(true);
+      setPosts(null);
+
+      getPosts(user.id)
+        .then((data) => {
+          setPosts(data);
+          setIsError('error' in data);
+        })
+        .catch(() => setIsError(true))
+        .finally(() => setIsLoading(false));
+    }
+  };
+
+  const setCommentsList = (postId: number) => {
+    if (openedPost?.id === postId) {
+      return;
+    }
+
+    setIsLoadingSidebar(true);
+    getComments(postId)
+      .then((data) => {
+        setComments(data);
+        setIsErrorSide('error' in data);
+      })
+      .catch(() => setIsErrorSide(true))
+      .finally(() => setIsLoadingSidebar(false));
+  };
+
+  useEffect(() => {
+    setUsersList();
+  }, []);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,28 +80,50 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  selectedUser={selectedUser}
+                  setSelectedUser={setSelectedUser}
+                  users={users}
+                  setUsersPost={setUsersPost}
+                  setOpenedPost={setOpenedPost}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isLoading && (
+                  <Loader />
+                )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {isError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {posts?.length === 0 && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                <PostsList />
+                {(posts ? posts.length > 0 : null) && (
+                  <PostsList
+                    openedPost={openedPost}
+                    setOpenedPost={setOpenedPost}
+                    posts={posts}
+                    setCommentsList={setCommentsList}
+                    setIsVisibleForm={setIsVisibleForm}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -50,13 +135,23 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              `Sidebar--${openedPost ? 'open' : 'close'}`,
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              <PostDetails
+                setIsErrorSide={setIsErrorSide}
+                openedPost={openedPost}
+                isErrorSide={isErrorSide}
+                isLoadingSidebar={isLoadingSidebar}
+                comments={comments}
+                setComments={setComments}
+                isVisibleForm={isVisibleForm}
+                setIsVisibleForm={setIsVisibleForm}
+              />
             </div>
           </div>
+
         </div>
       </div>
     </main>
