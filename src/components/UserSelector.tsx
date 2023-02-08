@@ -1,7 +1,8 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { Post } from '../types/Post';
+import { useDetectClickOutside } from 'react-detect-click-outside';
 
+import { Post } from '../types/Post';
 import { User } from '../types/User';
 
 type Props = {
@@ -20,6 +21,12 @@ export const UserSelector: React.FC<Props> = ({
   setOpenedPost,
 }) => {
   const [isActiveButton, setIsActivebutton] = useState(false);
+  const closeDropDown = () => {
+    setIsActivebutton(false);
+  };
+
+  const ref = useDetectClickOutside({ onTriggered: closeDropDown });
+
   const setUserAndPosts = (user: User) => {
     if (selectedUser === user) {
       return;
@@ -37,6 +44,7 @@ export const UserSelector: React.FC<Props> = ({
         'dropdown',
         { 'is-active': isActiveButton },
       )}
+      ref={ref}
     >
       <div className="dropdown-trigger">
         <button
