@@ -36,20 +36,16 @@ export const NewCommentForm: React.FC<Props> = ({
       setIsLoadingComment(true);
     }
 
-    switch (true) {
-      case name === '':
-        setIsNameDanger(true);
-        break;
+    if (name === '') {
+      setIsNameDanger(true);
+    }
 
-      case email === '':
-        setIsEmailDanger(true);
-        break;
+    if (email === '') {
+      setIsEmailDanger(true);
+    }
 
-      case text === '':
-        setIsTextDanger(true);
-        break;
-
-      default:
+    if (text === '') {
+      setIsTextDanger(true);
     }
   };
 
