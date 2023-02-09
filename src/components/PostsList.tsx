@@ -3,7 +3,7 @@ import React from 'react';
 import { Post } from '../types/Post';
 
 type Props = {
-  posts: Post[] | null,
+  posts: Post[],
   openedPost: Post | null,
   setOpenedPost: (arg: Post | null) => void,
   setCommentsList: (arg: number) => void,

@@ -30,7 +30,6 @@ export const PostDetails: React.FC<Props> = ({
     deleteComment(commentId)
       .then(() => {
         setComments(comments.filter((element) => element.id !== commentId));
-        // console.log(data);
       })
       .catch(() => setIsErrorSide(true));
   };

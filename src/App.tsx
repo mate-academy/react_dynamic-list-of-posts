@@ -25,7 +25,7 @@ export const App: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingSidebar, setIsLoadingSidebar] = useState(false);
-  const [posts, setPosts] = useState<Post[] | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
   const [openedPost, setOpenedPost] = useState<Post | null>(null);
   const [isVisibleForm, setIsVisibleForm] = useState(false);
@@ -42,7 +42,7 @@ export const App: React.FC = () => {
   const setUsersPost = (user: User) => {
     if (user) {
       setIsLoading(true);
-      setPosts(null);
+      setPosts([]);
 
       getPosts(user.id)
         .then((data) => {
@@ -115,7 +115,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(posts ? posts.length > 0 : null) && (
+                {posts.length > 0 && (
                   <PostsList
                     openedPost={openedPost}
                     setOpenedPost={setOpenedPost}
