@@ -1,10 +1,43 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { User } from '../types/User';
+import { Post } from '../types/Post';
 
-export const UserSelector: React.FC = () => {
+type PropsTypes = {
+  users: User[];
+  setSelectedUser: (user: User) => void;
+  selectedUser: User | null,
+  setSelectedPost: (post: Post | null) => void;
+};
+
+export const UserSelector: React.FC<PropsTypes> = ({
+  users,
+  setSelectedUser,
+  selectedUser,
+  setSelectedPost,
+}) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleDocumentClick = (event: MouseEvent) => {
+      if (menuRef.current
+        && !menuRef.current.contains(event.target as HTMLElement)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleDocumentClick);
+
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, []);
+
   return (
     <div
       data-cy="UserSelector"
       className="dropdown is-active"
+      ref={menuRef}
     >
       <div className="dropdown-trigger">
         <button
@@ -12,8 +45,15 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => {
+            setOpen(status => !status);
+          }}
         >
-          <span>Choose a user</span>
+          <span>
+            {selectedUser
+              ? selectedUser.name
+              : 'Choose a user'}
+          </span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -22,13 +62,26 @@ export const UserSelector: React.FC = () => {
       </div>
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
-        </div>
+        {open && (
+          <div
+            className="dropdown-content"
+          >
+            {users.map((user) => (
+              <a
+                key={user.id}
+                href={`#user-${user.id}`}
+                className="dropdown-item"
+                onClick={() => {
+                  setOpen(false);
+                  setSelectedUser(user);
+                  setSelectedPost(null);
+                }}
+              >
+                {user.name}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
