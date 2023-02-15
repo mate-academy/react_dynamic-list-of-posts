@@ -1,19 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
+// import { Post } from '../types/Post';
+import { User } from '../types/User';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  users:User[],
+  setUser: (value: User)=> void,
+  setPosts:(value: any)=> void,
+  getDataFromApi: any,
+  setDetailsSeen: (value: boolean)=> void,
+  setIsLoading: (value: boolean)=> void,
+};
+
+export const UserSelector: React.FC<Props> = ({
+  users, setUser, setPosts, getDataFromApi, setDetailsSeen, setIsLoading,
+}) => {
+  const [dropdownValue, setDropdownValue] = useState('Choose a user');
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+
+  const getUserPosts = async (event: any, user: User) => {
+    event.preventDefault();
+    setIsDropdownVisible(false);
+
+    if (user.name === dropdownValue) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    setDetailsSeen(false);
+
+    await getDataFromApi('/posts', setPosts);
+    setDropdownValue(user.name);
+    setUser(user);
+  };
+
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={`dropdown ${isDropdownVisible && 'is-active'}`}
     >
-      <div className="dropdown-trigger">
+      <div
+        className="dropdown-trigger"
+        onClick={() => {
+          setIsDropdownVisible(!isDropdownVisible);
+        }}
+        aria-hidden
+      >
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
         >
-          <span>Choose a user</span>
+          <span>{dropdownValue}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -21,13 +60,29 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+      <div
+        // style={{ visibility: isDropdownVisible ? 'visible' : 'hidden' }}
+        className="dropdown-menu"
+        id="dropdown-menu"
+        role="menu"
+      >
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+          {
+            users.map((user: any) => {
+              return (
+                <a
+                  href={user.id}
+                  className="dropdown-item"
+                  onClick={(event) => {
+                    getUserPosts(event, user);
+                  }}
+                  key={user.id}
+                >
+                  {user.name}
+                </a>
+              );
+            })
+          }
         </div>
       </div>
     </div>
