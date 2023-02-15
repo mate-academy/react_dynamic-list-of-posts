@@ -57,6 +57,7 @@ export const NewCommentForm: React.FC<Props> = ({
         })
         .finally(() => {
           setIsFormSubmitting(false);
+          setHasErrorOnSubmit(false);
         });
     } else if (hasFormError) {
       setHasErrorOnSubmit(true);
