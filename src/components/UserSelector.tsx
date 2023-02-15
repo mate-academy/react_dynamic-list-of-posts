@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { User } from '../types/User';
 
 type Props = {
+  selectedUser:User,
   users:User[],
   setUser: (value: User)=> void,
   setPosts:(value: any)=> void,
@@ -12,7 +13,8 @@ type Props = {
 };
 
 export const UserSelector: React.FC<Props> = ({
-  users, setUser, setPosts, getDataFromApi, setDetailsSeen, setIsLoading,
+  selectedUser, users, setUser,
+  setPosts, getDataFromApi, setDetailsSeen, setIsLoading,
 }) => {
   const [dropdownValue, setDropdownValue] = useState('Choose a user');
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -39,18 +41,20 @@ export const UserSelector: React.FC<Props> = ({
       data-cy="UserSelector"
       className={`dropdown ${isDropdownVisible && 'is-active'}`}
     >
-      <div
-        className="dropdown-trigger"
-        onClick={() => {
-          setIsDropdownVisible(!isDropdownVisible);
-        }}
-        aria-hidden
-      >
+      <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => {
+            setIsDropdownVisible(!isDropdownVisible);
+          }}
+          onBlur={() => {
+            setTimeout(() => {
+              setIsDropdownVisible(false);
+            }, 500);
+          }}
         >
           <span>{dropdownValue}</span>
 
@@ -61,7 +65,6 @@ export const UserSelector: React.FC<Props> = ({
       </div>
 
       <div
-        // style={{ visibility: isDropdownVisible ? 'visible' : 'hidden' }}
         className="dropdown-menu"
         id="dropdown-menu"
         role="menu"
@@ -72,7 +75,7 @@ export const UserSelector: React.FC<Props> = ({
               return (
                 <a
                   href={user.id}
-                  className="dropdown-item"
+                  className={`dropdown-item ${selectedUser && selectedUser.id === user.id && 'is-active'}`}
                   onClick={(event) => {
                     getUserPosts(event, user);
                   }}

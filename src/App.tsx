@@ -33,10 +33,8 @@ export const App: React.FC = () => {
       const usersResult = await usersResponse;
 
       setData(usersResult);
-      setIsLoading(false);
     } catch (error) {
       setIsError(true);
-      setIsLoading(false);
       throw new Error('An error occured');
     }
   };
@@ -44,6 +42,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     setIsLoading(true);
     getDataFromApi('/users', setUsers);
+    setIsLoading(false);
   }, []);
 
   useEffect(() => {
@@ -52,6 +51,7 @@ export const App: React.FC = () => {
     }
 
     setUserPosts(posts.filter((p: any) => p.userId === user.id));
+    setIsLoading(false);
   }, [user]);
 
   return (
@@ -62,6 +62,7 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
+                  selectedUser={user}
                   users={users}
                   setUser={setUser}
                   getDataFromApi={getDataFromApi}
@@ -80,6 +81,11 @@ export const App: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
+                {user && userPosts.length === 0 && !isLoading && !isError && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
                 {user && !isError && userPosts.length > 0 && !isLoading && (
                   <PostsList
                     post={post}
@@ -92,13 +98,6 @@ export const App: React.FC = () => {
                     setPostComments={setPostComments}
                   />
                 )}
-
-                {user && userPosts.length === 0 && !isLoading && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
-
                 {!user && !isError && !isLoading && (
                   <p data-cy="NoSelectedUser">
                     No user selected
