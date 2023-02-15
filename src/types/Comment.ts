@@ -1,5 +1,4 @@
 export interface Comment {
-  filter(arg0: (comment: any) => boolean): import("react").SetStateAction<never[]>;
   id: number;
   postId: number;
   name: string;

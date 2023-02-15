@@ -10,19 +10,22 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 
 import { client } from './utils/fetchClient';
+import { User } from './types/User';
+import { Post } from './types/Post';
+import { Comment } from './types/Comment';
 
 export const App: React.FC = () => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [users, setUsers] = useState([]);
-  const [post, setPost] = useState<any>(undefined);
-  const [posts, setPosts] = useState([]);
+  const [post, setPost] = useState<Post | undefined>(undefined);
+  const [posts, setPosts] = useState<Post[] | any>([]);
   const [userPosts, setUserPosts] = useState([]);
-  const [comments, setComments] = useState<any>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [detailsSeen, setDetailsSeen] = useState(false);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
-  const [postComments, setPostComments] = useState([]);
+  const [postComments, setPostComments] = useState<Comment[]>([]);
 
   const getDataFromApi = async (
     pathname: string,
@@ -50,7 +53,7 @@ export const App: React.FC = () => {
       return;
     }
 
-    setUserPosts(posts.filter((p: any) => p.userId === user.id));
+    setUserPosts(posts.filter((p: Post) => p.userId === user.id));
     setIsLoading(false);
   }, [user]);
 
@@ -94,7 +97,6 @@ export const App: React.FC = () => {
                     detailsSeen={detailsSeen}
                     setDetailsSeen={setDetailsSeen}
                     setIsLoadingComments={setIsLoadingComments}
-                    postComments={postComments}
                     setPostComments={setPostComments}
                   />
                 )}

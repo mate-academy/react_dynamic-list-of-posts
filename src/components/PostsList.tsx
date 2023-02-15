@@ -1,28 +1,31 @@
 import React from 'react';
+import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 import { client } from '../utils/fetchClient';
-// import { User } from '../types/User';
 
 type Props = {
   post: Post | undefined,
-  setPost: any,
+  setPost: (value: Post) => void,
   userPosts: Post[],
   detailsSeen: boolean,
-  setDetailsSeen: any,
-  postComments: Comment[],
-  setPostComments: any,
-  setIsLoadingComments: any,
+  setDetailsSeen: (value: boolean) => void,
+  setPostComments: (value: Comment[]) => void,
+  setIsLoadingComments: (value: boolean) => void,
 };
 
 export const PostsList: React.FC<Props> = ({
   post, setPost, userPosts, detailsSeen, setDetailsSeen,
   setIsLoadingComments, setPostComments,
-}: any) => {
+}) => {
   const textInButton = (singlePost: Post) => {
+    if (!post) {
+      return 'Open';
+    }
+
     return detailsSeen && post.id === singlePost.id ? 'Close' : 'Open';
   };
 
-  const getPost = async (singlePost: any) => {
+  const getPost = async (singlePost: Post) => {
     setIsLoadingComments(true);
     try {
       const usersResponse = client.get('/comments');
@@ -30,7 +33,7 @@ export const PostsList: React.FC<Props> = ({
 
       if (Array.isArray(usersResult) && usersResult) {
         await setPostComments(usersResult.filter(
-          (comment: any) => comment.postId === singlePost.id,
+          (comment: Comment) => comment.postId === singlePost.id,
         ));
       }
     } catch (error) {
@@ -42,7 +45,7 @@ export const PostsList: React.FC<Props> = ({
     setPost(singlePost);
     setDetailsSeen(true);
 
-    if (detailsSeen && post.id === singlePost.id) {
+    if (post && detailsSeen && post.id === singlePost.id) {
       setDetailsSeen(false);
     }
   };

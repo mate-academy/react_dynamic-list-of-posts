@@ -9,10 +9,10 @@ import { NewCommentForm } from './NewCommentForm';
 type Props = {
   post: Post,
   comments: Comment[],
-  setComments: (value: Comment[])=> void,
-  postComments: any,
+  postComments: Comment[],
   isLoadingComments: boolean,
-  setPostComments: any,
+  setComments: (value: Comment[])=> void,
+  setPostComments: (value: Comment[])=> void,
 };
 
 export const PostDetails: React.FC<Props> = ({

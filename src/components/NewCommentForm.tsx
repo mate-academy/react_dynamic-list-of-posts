@@ -6,8 +6,8 @@ import { client } from '../utils/fetchClient';
 type Props = {
   post: Post,
   comments: Comment[],
-  setComments: (value: any)=> void,
-  setPostComments: any,
+  setComments: (value: Comment[] | any)=> void,
+  setPostComments: (value: Comment[] | any)=> void,
   postComments: Comment[],
 };
 

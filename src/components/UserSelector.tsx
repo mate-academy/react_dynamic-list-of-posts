@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-// import { Post } from '../types/Post';
+import { Post } from '../types/Post';
 import { User } from '../types/User';
 
 type Props = {
-  selectedUser:User,
+  selectedUser:User | null,
   users:User[],
   setUser: (value: User)=> void,
-  setPosts:(value: any)=> void,
-  getDataFromApi: any,
+  setPosts:(value: Post[])=> void,
+  getDataFromApi: (value1: string, value2:(value: Post[])=> void) => void,
   setDetailsSeen: (value: boolean)=> void,
   setIsLoading: (value: boolean)=> void,
 };
@@ -19,7 +19,9 @@ export const UserSelector: React.FC<Props> = ({
   const [dropdownValue, setDropdownValue] = useState('Choose a user');
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
-  const getUserPosts = async (event: any, user: User) => {
+  const getUserPosts = async (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, user: User,
+  ) => {
     event.preventDefault();
     setIsDropdownVisible(false);
 
@@ -71,10 +73,10 @@ export const UserSelector: React.FC<Props> = ({
       >
         <div className="dropdown-content">
           {
-            users.map((user: any) => {
+            users.map((user: User) => {
               return (
                 <a
-                  href={user.id}
+                  href={String(user.id)}
                   className={`dropdown-item ${selectedUser && selectedUser.id === user.id && 'is-active'}`}
                   onClick={(event) => {
                     getUserPosts(event, user);
