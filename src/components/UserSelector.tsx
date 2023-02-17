@@ -1,26 +1,62 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types';
+import { getUsers } from '../api';
 
 type Props = {
-  users: User[],
   selectedUser: User | null,
   onSelect: (user: User) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
-  users,
   selectedUser,
   onSelect,
 }) => {
+  const [users, setUsers] = useState<User[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasLoaded, setHasLoaded] = useState(false);
 
-  const toggleDropDown = () => setIsOpen(!isOpen);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const usersFromServer = await getUsers();
 
-  const handleSelect = (user: User) => {
+        setUsers(usersFromServer);
+        setHasLoaded(true);
+      } catch {
+        setHasError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  const toggleDropDown = useCallback(() => {
+    setIsOpen(currIsOpen => !currIsOpen);
+  }, []);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return undefined; // fix for eslint error
+    }
+
+    const closeDropdown = () => setIsOpen(false);
+
+    document.addEventListener('click', closeDropdown);
+
+    return () => {
+      document.removeEventListener('click', closeDropdown);
+    };
+  }, [isOpen]);
+
+  const handleSelect = useCallback((user: User) => {
     setIsOpen(false);
     onSelect(user);
-  };
+  }, []);
 
   return (
     <div
@@ -31,6 +67,7 @@ export const UserSelector: React.FC<Props> = ({
       )}
     >
       <div className="dropdown-trigger">
+
         <button
           type="button"
           className="button"
@@ -39,13 +76,23 @@ export const UserSelector: React.FC<Props> = ({
           onClick={toggleDropDown}
         >
           <span>
-            {selectedUser
-              ? selectedUser.name
-              : 'Choose a user'}
+            {isLoading && 'Loading...'}
+            {hasError && 'Unable to load users'}
+            {hasLoaded && (
+              selectedUser ? selectedUser.name : 'Choose a user'
+            )}
           </span>
 
           <span className="icon is-small">
-            <i className="fas fa-angle-down" aria-hidden="true" />
+            <i
+              className={classNames('fas',
+                {
+                  'fa-angle-down': !isLoading,
+                  'fa-spinner': isLoading,
+                  'fa-exclamation-triangle': hasError,
+                })}
+              aria-hidden="true"
+            />
           </span>
         </button>
       </div>

@@ -8,19 +8,10 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Post, User } from './types';
-import { getUsers } from './api/users';
 
 export const App: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  useEffect(() => {
-    getUsers()
-      .then((usersFromServer) => {
-        setUsers(usersFromServer);
-      });
-  }, []);
 
   useEffect(() => setSelectedPost(null), [selectedUser]);
 
@@ -32,7 +23,6 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  users={users}
                   selectedUser={selectedUser}
                   onSelect={setSelectedUser}
                 />

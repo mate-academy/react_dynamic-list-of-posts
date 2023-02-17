@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, {FormEvent, useCallback, useState} from 'react';
 import classNames from 'classnames';
 import { CommentData } from '../types';
 
@@ -22,25 +22,25 @@ export const NewCommentForm: React.FC<Props> = ({ onAdd }) => {
     setHasBodyError(!body);
   };
 
-  const clearErrors = () => {
+  const clearErrors = useCallback(() => {
     setHasNameError(false);
     setHasEmailError(false);
     setHasBodyError(false);
-  };
+  }, []);
 
-  const handleSuccessfulSubmit = () => {
+  const handleSuccessfulSubmit = useCallback(() => {
     setBody('');
     clearErrors();
-  };
+  }, []);
 
-  const clearForm = () => {
+  const clearForm = useCallback(() => {
     clearErrors();
     setName('');
     setEmail('');
     setBody('');
-  };
+  }, []);
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     if (!name || !email || !body) {
@@ -56,11 +56,13 @@ export const NewCommentForm: React.FC<Props> = ({ onAdd }) => {
     };
 
     setIsButtonDisabled(true);
-    onAdd(newCommentData)
-      .then(() => handleSuccessfulSubmit())
-      .finally(() => {
-        setIsButtonDisabled(false);
-      });
+
+    try {
+      await onAdd(newCommentData);
+      handleSuccessfulSubmit();
+    } finally {
+      setIsButtonDisabled(false);
+    }
   };
 
   return (
@@ -165,7 +167,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAdd }) => {
             placeholder="Type comment here"
             className={classNames(
               'textarea',
-              { 'is-danger': hasNameError },
+              { 'is-danger': hasBodyError },
             )}
             value={body}
             onChange={({ target }) => {

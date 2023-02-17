@@ -19,17 +19,25 @@ export const PostsList: React.FC<Props> = ({
   const [hasError, setHasError] = useState(false);
   const [hasLoadedData, setHasLoadedData] = useState(false);
 
-  const isNoPostsVisible = !posts.length && hasLoadedData;
+  const hasLoadedEmptyList = !posts.length && hasLoadedData;
 
   useEffect(() => {
-    setIsLoading(true);
-    getPostsByUserId(userId)
-      .then(userPosts => {
+    const fetchPosts = async () => {
+      setIsLoading(true);
+
+      try {
+        const userPosts = await getPostsByUserId(userId);
+
         setHasLoadedData(true);
         setPosts(userPosts);
-      })
-      .catch(() => setHasError(true))
-      .finally(() => setIsLoading(false));
+      } catch {
+        setHasError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPosts();
   }, [userId]);
 
   if (isLoading) {
@@ -47,7 +55,7 @@ export const PostsList: React.FC<Props> = ({
     );
   }
 
-  if (isNoPostsVisible) {
+  if (hasLoadedEmptyList) {
     return (
       <div
         className="notification is-warning"

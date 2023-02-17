@@ -19,41 +19,52 @@ export const CommentsList: React.FC<Props> = ({ postId }) => {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
-    getCommentsByPostId(postId)
-      .then(postComments => {
-        // setHasLoadedData(true);
+    const fetchComments = async () => {
+      setIsLoading(true);
+
+      try {
+        const postComments = await getCommentsByPostId(postId);
+
         setComments(postComments);
-      })
-      .catch(() => setHasError(true))
-      .finally(() => setIsLoading(false));
+      } catch {
+        setHasError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchComments();
   }, [postId]);
 
   useEffect(() => setIsFormVisible(false), [postId]);
 
-  const handleDeleteComment = (commentId: number) => {
+  const handleDeleteComment = async (commentId: number) => {
     const preDeleteComments = [...comments];
 
     setComments(prev => (
       prev.filter(comment => comment.id !== commentId)
     ));
-    deleteCommentById(commentId)
-      .catch(() => {
-        setComments(preDeleteComments);
-      });
+
+    try {
+      await deleteCommentById(commentId);
+    } catch {
+      setComments(preDeleteComments);
+    }
   };
 
-  const handlePostComment = (commentData: CommentData) => {
+  const handlePostComment = async (commentData: CommentData) => {
     const newComment = {
-      id: 0,
       postId,
       ...commentData,
     };
 
-    return postComment(newComment)
-      .then(postedComment => {
-        setComments(prev => [...prev, postedComment]);
-      });
+    try {
+      const postedComment = await postComment(newComment);
+
+      setComments(prev => [...prev, postedComment]);
+    } catch {
+      setHasError(true);
+    }
   };
 
   if (isLoading) {
