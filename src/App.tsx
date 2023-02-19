@@ -13,19 +13,20 @@ import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [hasError, setError] = useState(false);
 
   const [author, setAuthor] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const isPostsShown = author && isLoading && !hasError;
 
   function loadUserPosts(userId: number) {
-    setLoaded(false);
+    setIsLoading(false);
 
     getUserPosts(userId)
       .then(setPosts)
       .catch(() => setError(true))
-      .finally(() => setLoaded(true));
+      .finally(() => setIsLoading(true));
   }
 
   useEffect(() => {
@@ -60,11 +61,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {author && !loaded && (
+                {author && !isLoading && (
                   <Loader />
                 )}
 
-                {author && loaded && hasError && (
+                {author && isLoading && hasError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -73,7 +74,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length === 0 && (
+                {isPostsShown && posts.length === 0 && (
                   <div
                     className="notification is-warning"
                     data-cy="NoPostsYet"
@@ -82,7 +83,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {author && loaded && !hasError && posts.length > 0 && (
+                {isPostsShown && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectedPostId={selectedPost?.id}
@@ -93,12 +94,11 @@ export const App: React.FC = () => {
             </div>
           </div>
           {
-            posts.map(post => post.id === selectedPost?.id && (
+            selectedPost?.id && (
               <div
                 data-cy="Sidebar"
-                className={cn('tile', 'is-parent', 'is-8-desktop', {
-                  Sidebar: selectedPost,
-                  'Sidebar--open': selectedPost,
+                className={cn('tile', 'is-parent', 'is-8-desktop', 'Sidebar', {
+                  'Sidebar--open': selectedPost.id,
                 })}
               >
                 <div className="tile is-child box is-success ">
@@ -109,7 +109,7 @@ export const App: React.FC = () => {
                   )}
                 </div>
               </div>
-            ))
+            )
           }
         </div>
       </div>

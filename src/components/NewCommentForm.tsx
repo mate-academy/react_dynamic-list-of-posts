@@ -15,7 +15,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [touchedEmail, setTouchedEmail] = useState(false);
   const [touchedBody, setTouchedBody] = useState(false);
 
-  const isValid = Boolean(name && email && body);
+  const isValid = name && email && body;
 
   const clearForm = () => {
     setName('');
@@ -30,6 +30,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     event.preventDefault();
 
     if (!isValid) {
+      setTouchedName(true);
+      setTouchedEmail(true);
+      setTouchedBody(true);
+
       return;
     }
 
@@ -116,17 +120,17 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
                   <i className="fas fa-envelope" />
                 </span>
                 {!email && (
-                  <span
-                    className="icon is-small is-right has-text-danger"
-                    data-cy="ErrorIcon"
-                  >
-                    <i className="fas fa-exclamation-triangle" />
-                  </span>
-                )}
-                {!email && (
-                  <p className="help is-danger" data-cy="ErrorMessage">
-                    Email is required
-                  </p>
+                  <>
+                    <span
+                      className="icon is-small is-right has-text-danger"
+                      data-cy="ErrorIcon"
+                    >
+                      <i className="fas fa-exclamation-triangle" />
+                    </span>
+                    <p className="help is-danger" data-cy="ErrorMessage">
+                      Email is required
+                    </p>
+                  </>
                 )}
               </>
             )
@@ -151,14 +155,10 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         </div>
 
         {
-          touchedBody && (
-            <>
-              {!body && (
-                <p className="help is-danger" data-cy="BodyField">
-                  Enter some text
-                </p>
-              )}
-            </>
+          touchedBody && !body && (
+            <p className="help is-danger" data-cy="BodyField">
+              Enter some text
+            </p>
           )
         }
       </div>
