@@ -16,27 +16,29 @@ import { Comment } from './types/Comment';
 
 export const App: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [users, setUsers] = useState([]);
-  const [post, setPost] = useState<Post | undefined>(undefined);
-  const [posts, setPosts] = useState<Post[] | any>([]);
-  const [userPosts, setUserPosts] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [post, setPost] = useState<Post | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [detailsSeen, setDetailsSeen] = useState(false);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [postComments, setPostComments] = useState<Comment[]>([]);
-
   const getDataFromApi = async (
     pathname: string,
-    setData: (value: any) => void,
+    setData: (value: Post[] | User[] | any) => void,
   ) => {
     try {
-      const usersResponse = client.get(pathname);
-      const usersResult = await usersResponse;
+      const response = client.get(pathname);
+      const result = await response as User[];
 
-      setData(usersResult);
+      setData(result);
+
+      setIsError(false);
     } catch (error) {
+      setIsLoading(false);
       setIsError(true);
       throw new Error('An error occured');
     }
@@ -53,7 +55,9 @@ export const App: React.FC = () => {
       return;
     }
 
-    setUserPosts(posts.filter((p: Post) => p.userId === user.id));
+    const filteredPosts = posts.filter((p: Post) => p.userId === user.id);
+
+    setUserPosts(filteredPosts);
     setIsLoading(false);
   }, [user]);
 
@@ -98,6 +102,7 @@ export const App: React.FC = () => {
                     setDetailsSeen={setDetailsSeen}
                     setIsLoadingComments={setIsLoadingComments}
                     setPostComments={setPostComments}
+                    setIsError={setIsError}
                   />
                 )}
                 {!user && !isError && !isLoading && (
@@ -109,33 +114,31 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {post
-            && (
-              <div
-                data-cy="Sidebar"
-                className={classNames(
-                  'tile',
-                  'is-parent',
-                  'is-8-desktop',
-                  'Sidebar',
-                  'Sidebar--open',
-                )}
-              >
-                {detailsSeen
-                  && (
-                    <div className="tile is-child box is-success ">
-                      <PostDetails
-                        post={post}
-                        comments={comments}
-                        setComments={setComments}
-                        isLoadingComments={isLoadingComments}
-                        postComments={postComments}
-                        setPostComments={setPostComments}
-                      />
-                    </div>
-                  )}
-              </div>
-            )}
+          {post && (
+            <div
+              data-cy="Sidebar"
+              className={classNames(
+                'tile',
+                'is-parent',
+                'is-8-desktop',
+                'Sidebar',
+                'Sidebar--open',
+              )}
+            >
+              {detailsSeen && (
+                <div className="tile is-child box is-success ">
+                  <PostDetails
+                    post={post}
+                    comments={comments}
+                    setComments={setComments}
+                    isLoadingComments={isLoadingComments}
+                    postComments={postComments}
+                    setPostComments={setPostComments}
+                  />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </main>

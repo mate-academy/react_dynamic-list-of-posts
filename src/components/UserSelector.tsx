@@ -7,7 +7,8 @@ type Props = {
   users:User[],
   setUser: (value: User)=> void,
   setPosts:(value: Post[])=> void,
-  getDataFromApi: (value1: string, value2:(value: Post[])=> void) => void,
+  getDataFromApi: (value1: string, value2:(value: Post[]) => void)
+  => void,
   setDetailsSeen: (value: boolean)=> void,
   setIsLoading: (value: boolean)=> void,
 };
@@ -38,6 +39,16 @@ export const UserSelector: React.FC<Props> = ({
     setUser(user);
   };
 
+  const hideDropdown = () => {
+    const timeoutID = setTimeout(() => {
+      setIsDropdownVisible(false);
+    }, 500);
+
+    return () => {
+      clearTimeout(timeoutID);
+    };
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -52,11 +63,7 @@ export const UserSelector: React.FC<Props> = ({
           onClick={() => {
             setIsDropdownVisible(!isDropdownVisible);
           }}
-          onBlur={() => {
-            setTimeout(() => {
-              setIsDropdownVisible(false);
-            }, 500);
-          }}
+          onBlur={hideDropdown}
         >
           <span>{dropdownValue}</span>
 

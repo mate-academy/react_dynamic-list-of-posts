@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 import { client } from '../utils/fetchClient';
@@ -6,8 +6,8 @@ import { client } from '../utils/fetchClient';
 type Props = {
   post: Post,
   comments: Comment[],
-  setComments: (value: Comment[] | any)=> void,
-  setPostComments: (value: Comment[] | any)=> void,
+  setComments: (value: Comment[]) => void,
+  setPostComments: (value: Comment[])=> void,
   postComments: Comment[],
 };
 
@@ -53,12 +53,21 @@ export const NewCommentForm: React.FC<Props> = ({
       email: authorEmail,
       body: commentBody,
     });
-    const commentResult = await commentResponse;
+    const commentResult = await commentResponse as Comment;
 
     setComments([...comments, commentResult]);
     setPostComments([...postComments, commentResult]);
     setCommentBody('');
     setIsLoadingButton(false);
+  };
+
+  const setInputValue = (
+    event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
+    setNoValue: (value: boolean)=> void,
+    setAuthorValue:(value: string)=> void,
+  ) => {
+    setNoValue(false);
+    setAuthorValue(event.target.value);
   };
 
   return (
@@ -67,7 +76,6 @@ export const NewCommentForm: React.FC<Props> = ({
         <label className="label" htmlFor="comment-author-name">
           Author Name
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
@@ -77,8 +85,7 @@ export const NewCommentForm: React.FC<Props> = ({
             className={`input ${noName && 'is-danger'}`}
             value={authorName}
             onChange={(e) => {
-              setNoName(false);
-              setAuthorName(e.target.value);
+              setInputValue(e, setNoName, setAuthorName);
             }}
           />
           <span className="icon is-small is-left">
@@ -96,7 +103,6 @@ export const NewCommentForm: React.FC<Props> = ({
           )
           }
         </div>
-
         {noName
           && (
             <p className="help is-danger" data-cy="ErrorMessage">
@@ -119,16 +125,14 @@ export const NewCommentForm: React.FC<Props> = ({
             className={`input ${noEmail && 'is-danger'}`}
             value={authorEmail}
             onChange={(e) => {
-              setNoEmail(false);
-              setAuthorEmail(e.target.value);
+              setInputValue(e, setNoEmail, setAuthorEmail);
             }}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
-          {noEmail
-          && (
+          {noEmail && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -138,8 +142,7 @@ export const NewCommentForm: React.FC<Props> = ({
           ) }
         </div>
 
-        {noEmail
-        && (
+        {noEmail && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -150,7 +153,6 @@ export const NewCommentForm: React.FC<Props> = ({
         <label className="label" htmlFor="comment-body">
           Comment Text
         </label>
-
         <div className="control">
           <textarea
             id="comment-body"
@@ -159,13 +161,11 @@ export const NewCommentForm: React.FC<Props> = ({
             className={`textarea ${noBody && 'is-danger'}`}
             value={commentBody}
             onChange={(e) => {
-              setNoBody(false);
-              setCommentBody(e.target.value);
+              setInputValue(e, setNoBody, setCommentBody);
             }}
           />
         </div>
-        {noBody
-        && (
+        {noBody && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>

@@ -4,18 +4,19 @@ import { Post } from '../types/Post';
 import { client } from '../utils/fetchClient';
 
 type Props = {
-  post: Post | undefined,
+  post: Post | null,
   setPost: (value: Post) => void,
   userPosts: Post[],
   detailsSeen: boolean,
   setDetailsSeen: (value: boolean) => void,
   setPostComments: (value: Comment[]) => void,
   setIsLoadingComments: (value: boolean) => void,
+  setIsError: (value: boolean) => void,
 };
 
 export const PostsList: React.FC<Props> = ({
   post, setPost, userPosts, detailsSeen, setDetailsSeen,
-  setIsLoadingComments, setPostComments,
+  setIsLoadingComments, setPostComments, setIsError,
 }) => {
   const textInButton = (singlePost: Post) => {
     if (!post) {
@@ -37,6 +38,7 @@ export const PostsList: React.FC<Props> = ({
         ));
       }
     } catch (error) {
+      setIsError(true);
       throw Error('An error occured');
     }
 
