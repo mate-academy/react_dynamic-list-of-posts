@@ -42,9 +42,9 @@ export const PostDetails: React.FC<Props> = ({
   }, [id]);
 
   const removeComment = async (commentId: number) => {
-    setComments(currentComments => currentComments.filter(
-      com => com.id !== commentId,
-    ));
+    const filteredComents = comments.filter(c => c.id !== commentId);
+
+    setComments(filteredComents);
 
     try {
       await deleteComments(commentId);
@@ -56,8 +56,9 @@ export const PostDetails: React.FC<Props> = ({
   const onAddComment = async (newComment: Omit<Comment, 'id'>) => {
     try {
       const addedComment = await addComments(newComment);
+      const newComents = [...comments, addedComment];
 
-      setComments(prevComments => [...prevComments, addedComment]);
+      setComments(newComents);
     } catch {
       throw new Error('Don\'t add comment');
     }

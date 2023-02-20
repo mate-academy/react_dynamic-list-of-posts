@@ -15,13 +15,9 @@ export const PostItem: React.FC<Props> = ({
   setSelectedPostId,
 }) => {
   const handleSelectPost = (clickedPost: Post) => {
-    const onFirstClick = post.id !== selectedPost?.id;
+    const isSamePost = post.id !== selectedPost?.id;
 
-    if (onFirstClick) {
-      setSelectedPostId(clickedPost.id);
-    } else {
-      setSelectedPostId(null);
-    }
+    setSelectedPostId(isSamePost ? clickedPost.id : null);
   };
 
   return (

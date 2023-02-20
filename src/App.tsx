@@ -2,6 +2,7 @@ import React, {
   useState,
   useCallback,
   useEffect,
+  useMemo,
 } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -54,19 +55,25 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!selectedUserId) {
+      return;
+    }
+
     loadPosts(selectedUserId);
   }, [selectedUserId]);
 
-  const selectUserId = useCallback((userId: number) => {
+  const handleSelectUserId = (userId: number) => {
     setSelectedUserId(userId);
-  }, []);
+  };
 
-  const selectedPost = posts.find(post => post.id === selectedPostId);
+  const selectedPost = useMemo(() => (
+    posts.find(post => post.id === selectedPostId)
+  ), [selectedPostId]);
 
-  const selectPostId = useCallback((postId: number | null) => {
-    setSelectedPostId(prev => (prev !== postId ? postId : 0));
+  const selectPostId = (postId: number | null) => {
+    setSelectedPostId(postId || null);
     setIsNewCommentFormOpened(false);
-  }, []);
+  };
 
   const isNoPostYet = selectedUserId !== 0 && posts.length === 0 && !isLoading;
   const isVisiblePost = selectedUserId !== 0 && posts.length > 0;
@@ -86,7 +93,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   users={users}
                   selectedUserId={selectedUserId}
-                  onSelectUserId={selectUserId}
+                  onSelectUserId={handleSelectUserId}
                 />
               </div>
 
