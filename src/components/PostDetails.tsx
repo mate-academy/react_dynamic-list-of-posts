@@ -22,17 +22,18 @@ export const PostDetails: React.FC<Props> = ({
   const [comments, setComments] = useState<Comment[]>([]);
   const [isErrOnLoadCom, setIsErrOnLoadCom] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingComent, setIsLoadingComent] = useState(false);
 
   const loadComments = async () => {
     try {
       setIsLoading(true);
       const loadedComments = await getComments(id);
 
+      setIsErrOnLoadCom('error' in loadedComments);
       setComments(loadedComments);
     } catch {
       setIsErrOnLoadCom(true);
     } finally {
-      setIsErrOnLoadCom(false);
       setIsLoading(false);
     }
   };
@@ -55,12 +56,15 @@ export const PostDetails: React.FC<Props> = ({
 
   const onAddComment = async (newComment: Omit<Comment, 'id'>) => {
     try {
+      setIsLoadingComent(true);
       const addedComment = await addComments(newComment);
       const newComents = [...comments, addedComment];
 
       setComments(newComents);
     } catch {
       throw new Error('Don\'t add comment');
+    } finally {
+      setIsLoadingComent(false);
     }
   };
 
@@ -125,7 +129,7 @@ export const PostDetails: React.FC<Props> = ({
 
         {isNewCommentFormOpened && (
           <NewCommentForm
-            isLoading={isLoading}
+            isLoadingComent={isLoadingComent}
             postId={selectedPost.id}
             onAddComment={onAddComment}
           />

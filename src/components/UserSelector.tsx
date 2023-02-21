@@ -24,7 +24,11 @@ export const UserSelector: React.FC<Props> = ({
     setOnOpenListUser(prev => !prev);
   };
 
-  const dropdown = useDetectClickOutside({ onTriggered: toggleUserList });
+  const closeDropdown = () => {
+    setOnOpenListUser(false);
+  };
+
+  const dropdown = useDetectClickOutside({ onTriggered: closeDropdown });
 
   const onSelectUser = (userId: number | null) => {
     onSelectUserId(userId);

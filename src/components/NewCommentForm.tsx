@@ -3,14 +3,14 @@ import React, { useState } from 'react';
 import { Comment } from '../types/Comment';
 
 type Props = {
-  isLoading: boolean;
+  isLoadingComent: boolean;
   postId: number;
   onAddComment: (newComment: Omit<Comment, 'id'>) => void;
 };
 
 export const NewCommentForm: React.FC<Props> = (
   {
-    isLoading,
+    isLoadingComent,
     postId,
     onAddComment,
   },
@@ -46,25 +46,25 @@ export const NewCommentForm: React.FC<Props> = (
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (
-      !authorName || !authorEmail || !newCommentText
-    ) {
+    if (authorName && authorEmail && newCommentText) {
+      const newComment = {
+        postId,
+        name: authorName,
+        email: authorEmail,
+        body: newCommentText,
+      };
+
+      setErrEmptyAuthorEmail(false);
+      setErrEmptyAuthorName(false);
+      setErrEmptyNewCommentText(false);
+
+      onAddComment(newComment);
+      setNewCommentText('');
+    } else {
       setErrEmptyAuthorEmail(!authorEmail);
       setErrEmptyAuthorName(!authorName);
       setErrEmptyNewCommentText(!newCommentText);
-
-      return;
     }
-
-    const newComment = {
-      postId,
-      name: authorName,
-      email: authorEmail,
-      body: newCommentText,
-    };
-
-    onAddComment(newComment);
-    setNewCommentText('');
   };
 
   const onClickCleanBtn = () => {
@@ -94,7 +94,6 @@ export const NewCommentForm: React.FC<Props> = (
             )}
             value={authorName}
             onChange={onChangeAuthorName}
-            required
           />
 
           <span className="icon is-small is-left">
@@ -136,7 +135,6 @@ export const NewCommentForm: React.FC<Props> = (
             )}
             value={authorEmail}
             onChange={onChangeAuthorEmail}
-            required
           />
 
           <span className="icon is-small is-left">
@@ -175,7 +173,6 @@ export const NewCommentForm: React.FC<Props> = (
             )}
             value={newCommentText}
             onChange={onChangeCommentText}
-            required
           />
         </div>
 
@@ -193,7 +190,7 @@ export const NewCommentForm: React.FC<Props> = (
             className={classNames(
               'button',
               'is-link',
-              { 'is-loading': isLoading },
+              { 'is-loading': isLoadingComent },
             )}
           >
             Add
