@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -30,13 +30,13 @@ export const App: React.FC = () => {
     onLoadGetUsers();
   }, []);
 
-  const handleSelectedUser = (user: User | null) => {
+  const handleSelectUser = useCallback((user: User | null) => {
     setSelectedUser(user);
-  };
+  }, []);
 
-  const handleSelectPost = (post: Post | null) => {
+  const handleSelectPost = useCallback((post: Post | null) => {
     setSelectedPost(post);
-  };
+  }, []);
 
   return (
     <main className="section">
@@ -48,7 +48,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   users={users}
                   selectedUser={selectedUser}
-                  onSelectedUser={handleSelectedUser}
+                  onSelectUser={handleSelectUser}
                 />
               </div>
 

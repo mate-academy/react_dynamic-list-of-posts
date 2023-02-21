@@ -1,7 +1,7 @@
 import { Comment, CommentData } from '../types/Comment';
 import { client } from '../utils/fetchClient';
 
-export const fetchPostComments = (postId: number) => {
+export const getCommentsByPostId = (postId: number) => {
   return client.get<Comment[]>(`/comments?postId=${postId}`);
 };
 

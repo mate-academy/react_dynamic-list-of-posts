@@ -9,24 +9,20 @@ import { User } from '../types/User';
 type Props = {
   users: User[],
   selectedUser: User | null,
-  onSelectedUser: (user: User | null) => void,
+  onSelectUser: (user: User | null) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   selectedUser,
-  onSelectedUser,
+  onSelectUser,
 }) => {
   const [isListOpen, setIsListOpen] = useState(false);
   const selectionRef = useRef<HTMLButtonElement>(null);
 
-  const toggleUsersList = (isOpen: boolean) => {
-    setIsListOpen(isOpen);
-  };
-
   const handleChooseUser = (user: User) => {
-    onSelectedUser(user);
-    toggleUsersList(false);
+    onSelectUser(user);
+    setIsListOpen(false);
   };
 
   useEffect(() => {
@@ -64,7 +60,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => toggleUsersList(!isListOpen)}
+          onClick={() => setIsListOpen(prevState => !prevState)}
         >
           <span>
             {!selectedUser

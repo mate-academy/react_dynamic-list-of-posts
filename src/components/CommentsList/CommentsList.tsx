@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   addComment,
   deleteComment,
-  fetchPostComments,
+  getCommentsByPostId,
 } from '../../api/comments';
 import { Comment, CommentData } from '../../types/Comment';
 import { Loader } from '../Loader';
@@ -16,16 +16,12 @@ export const CommentsList: React.FC<Props> = ({ postId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
-  const [hasEditForm, setHasEditForm] = useState(false);
-
-  const toggleEditForm = (hasForm: boolean) => {
-    setHasEditForm(hasForm);
-  };
+  const [isFormVisible, setIsFormVisible] = useState(false);
 
   const getPostComments = async () => {
     try {
       setIsLoading(true);
-      const allComments = await fetchPostComments(postId);
+      const allComments = await getCommentsByPostId(postId);
 
       setComments(allComments);
     } catch (error) {
@@ -39,11 +35,11 @@ export const CommentsList: React.FC<Props> = ({ postId }) => {
     getPostComments();
 
     return () => {
-      toggleEditForm(false);
+      setIsFormVisible(false);
     };
   }, [postId]);
 
-  const handleAddComment = async (comment: CommentData) => {
+  const handleAddComment = useCallback(async (comment: CommentData) => {
     const newComment = {
       postId,
       ...comment,
@@ -57,7 +53,7 @@ export const CommentsList: React.FC<Props> = ({ postId }) => {
       setHasError(true);
       throw Error('Unable to add comment');
     }
-  };
+  }, []);
 
   const handleDeleteComment = async (commentId: number) => {
     const tempComments = [...comments];
@@ -125,13 +121,13 @@ export const CommentsList: React.FC<Props> = ({ postId }) => {
             ))}
           </>
         )}
-      {!hasEditForm
+      {!isFormVisible
         ? (
           <button
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => toggleEditForm(true)}
+            onClick={() => setIsFormVisible(true)}
           >
             Write a comment
           </button>

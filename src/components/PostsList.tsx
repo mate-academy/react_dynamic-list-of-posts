@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getPosts } from '../api/posts';
+import { getPostsByUserId } from '../api/posts';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 import { Loader } from './Loader';
@@ -12,8 +12,8 @@ type Props = {
 
 export const PostsList: React.FC<Props> = ({
   selectedUser,
-  onSelectPost,
   selectedPost,
+  onSelectPost,
 }) => {
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +25,7 @@ export const PostsList: React.FC<Props> = ({
       onSelectPost(null);
 
       try {
-        const allPosts = await getPosts(selectedUser.id);
+        const allPosts = await getPostsByUserId(selectedUser.id);
 
         setUserPosts(allPosts);
       } catch (error) {
@@ -90,7 +90,7 @@ export const PostsList: React.FC<Props> = ({
               </td>
 
               <td className="has-text-right is-vcentered">
-                {selectedPost?.id === post.id
+                {selectedPost === post
                   ? (
                     <button
                       type="button"
