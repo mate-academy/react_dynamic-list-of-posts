@@ -20,10 +20,10 @@ import { getPosts } from './api/posts';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedPostId, setSelectedPostId] = useState<number | null>(0);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [isErorrPostLoading, setIsErorrPostLoading] = useState(false);
   const [isNewCommentFormOpened, setIsNewCommentFormOpened] = useState(false);
 
@@ -51,6 +51,7 @@ export const App: React.FC = () => {
       setIsErorrPostLoading(true);
     } finally {
       setIsLoading(false);
+      setIsErorrPostLoading(false);
     }
   };
 
@@ -62,7 +63,7 @@ export const App: React.FC = () => {
     loadPosts(selectedUserId);
   }, [selectedUserId]);
 
-  const handleSelectUserId = (userId: number) => {
+  const handleSelectUserId = (userId: number | null) => {
     setSelectedUserId(userId);
   };
 
@@ -75,8 +76,10 @@ export const App: React.FC = () => {
     setIsNewCommentFormOpened(false);
   };
 
-  const isNoPostYet = selectedUserId !== 0 && posts.length === 0 && !isLoading;
-  const isVisiblePost = selectedUserId !== 0 && posts.length > 0;
+  const isNoPostYet = selectedUserId && posts.length === 0 && !isLoading
+  && !isErorrPostLoading;
+
+  const isVisiblePost = selectedUserId && posts.length > 0;
   const isVisibleSidebar = selectedPost?.userId === selectedUserId;
 
   const onNewCommentFormOpened = useCallback(() => {

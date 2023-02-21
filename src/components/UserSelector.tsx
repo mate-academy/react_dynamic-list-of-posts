@@ -1,11 +1,12 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
+import { useDetectClickOutside } from 'react-detect-click-outside';
 import { User } from '../types/User';
 
 type Props = {
   users: User[];
-  selectedUserId: number;
-  onSelectUserId: (userId: number) => void;
+  selectedUserId: number | null;
+  onSelectUserId: (userId: number | null) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
@@ -23,7 +24,9 @@ export const UserSelector: React.FC<Props> = ({
     setOnOpenListUser(prev => !prev);
   };
 
-  const onSelectUser = (userId: number) => {
+  const dropdown = useDetectClickOutside({ onTriggered: toggleUserList });
+
+  const onSelectUser = (userId: number | null) => {
     onSelectUserId(userId);
     toggleUserList();
   };
@@ -32,6 +35,7 @@ export const UserSelector: React.FC<Props> = ({
     <div
       data-cy="UserSelector"
       className={classNames('dropdown', { 'is-active': onOpenListUser })}
+      ref={dropdown}
     >
       <div className="dropdown-trigger">
         <button
@@ -51,13 +55,21 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+      <div
+        className="dropdown-menu"
+        id="dropdown-menu"
+        role="menu"
+      >
         <div className="dropdown-content">
           {users.map(user => (
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              className="dropdown-item"
+              className={
+                classNames('dropdown-item', {
+                  'is-active': selectedUser?.id === user.id,
+                })
+              }
               onClick={() => onSelectUser(user.id)}
             >
               {user.name}
