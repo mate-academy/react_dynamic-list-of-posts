@@ -90,7 +90,8 @@ export const NewCommentForm: React.FC<Props> = (
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames(
-              'input', { 'is-danger': errEmptyAuthorName },
+              'input',
+              { 'is-danger': errEmptyAuthorName },
             )}
             value={authorName}
             onChange={onChangeAuthorName}
@@ -100,14 +101,12 @@ export const NewCommentForm: React.FC<Props> = (
             <i className="fas fa-user" />
           </span>
           {errEmptyAuthorName && (
-            <>
-              <span
-                className="icon is-small is-right has-text-danger"
-                data-cy="ErrorIcon"
-              >
-                <i className="fas fa-exclamation-triangle" />
-              </span>
-            </>
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
           )}
         </div>
 
@@ -125,7 +124,7 @@ export const NewCommentForm: React.FC<Props> = (
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="emeil"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"

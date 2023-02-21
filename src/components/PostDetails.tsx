@@ -21,15 +21,14 @@ export const PostDetails: React.FC<Props> = ({
 
   const [comments, setComments] = useState<Comment[]>([]);
   const [isErrOnLoadCom, setIsErrOnLoadCom] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingComent, setIsLoadingComent] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoadingComent, setIsLoadingComent] = useState<boolean>(false);
 
   const loadComments = async () => {
     try {
       setIsLoading(true);
       const loadedComments = await getComments(id);
 
-      setIsErrOnLoadCom('error' in loadedComments);
       setComments(loadedComments);
     } catch {
       setIsErrOnLoadCom(true);
@@ -43,14 +42,16 @@ export const PostDetails: React.FC<Props> = ({
   }, [id]);
 
   const removeComment = async (commentId: number) => {
-    const filteredComents = comments.filter(c => c.id !== commentId);
+    const filteredComents = comments.filter(
+      comment => comment.id !== commentId,
+    );
 
     setComments(filteredComents);
 
     try {
       await deleteComments(commentId);
     } catch {
-      throw new Error('Don\'t delete comment');
+      throw new Error('Error while deleting');
     }
   };
 
@@ -62,7 +63,7 @@ export const PostDetails: React.FC<Props> = ({
 
       setComments(newComents);
     } catch {
-      throw new Error('Don\'t add comment');
+      throw new Error('Error adding comment');
     } finally {
       setIsLoadingComent(false);
     }
@@ -130,7 +131,7 @@ export const PostDetails: React.FC<Props> = ({
         {isNewCommentFormOpened && (
           <NewCommentForm
             isLoadingComent={isLoadingComent}
-            postId={selectedPost.id}
+            postId={id}
             onAddComment={onAddComment}
           />
         )}

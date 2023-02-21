@@ -33,7 +33,7 @@ export const App: React.FC = () => {
 
       setUsers(loadedUsers);
     } catch {
-      throw new Error('Can\'t load users');
+      throw new Error('Error loading users');
     }
   };
 
@@ -47,7 +47,6 @@ export const App: React.FC = () => {
       setIsLoading(true);
       const loadedPosts = await getPosts(userId);
 
-      setIsErorrPostLoading('error' in loadedPosts);
       setPosts(loadedPosts);
     } catch {
       setIsErorrPostLoading(true);
@@ -80,10 +79,10 @@ export const App: React.FC = () => {
   const isNoPostYet = selectedUserId && posts.length === 0 && !isLoading
   && !isErorrPostLoading;
 
-  const isVisiblePost = selectedUserId && posts.length > 0 && !isLoading;
+  const isVisiblePosts = selectedUserId && posts.length > 0 && !isLoading;
   const isVisibleSidebar = selectedPost?.userId === selectedUserId;
 
-  const onNewCommentFormOpened = useCallback(() => {
+  const onNewCommentFormOpene = useCallback(() => {
     setIsNewCommentFormOpened(true);
   }, []);
 
@@ -125,7 +124,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {isVisiblePost && (
+                {isVisiblePosts && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}
@@ -151,12 +150,11 @@ export const App: React.FC = () => {
                 <PostDetails
                   selectedPost={selectedPost}
                   isNewCommentFormOpened={isNewCommentFormOpened}
-                  onNewCommentFormOpened={onNewCommentFormOpened}
+                  onNewCommentFormOpened={onNewCommentFormOpene}
                 />
               </div>
             )}
           </div>
-
         </div>
       </div>
     </main>
