@@ -38,7 +38,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     getUsersList()
       .then(response => setUsers(response))
-      .catch(error => window.alert(error));
+      .catch(() => setIsWrongPostResponse(true));
   }, []);
 
   const handleSelectButton = () => {
