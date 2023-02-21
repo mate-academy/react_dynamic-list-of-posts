@@ -43,15 +43,16 @@ export const App: React.FC = () => {
 
   const loadPosts = async (userId: number) => {
     try {
+      setIsErorrPostLoading(false);
       setIsLoading(true);
       const loadedPosts = await getPosts(userId);
 
+      setIsErorrPostLoading('error' in loadedPosts);
       setPosts(loadedPosts);
     } catch {
       setIsErorrPostLoading(true);
     } finally {
       setIsLoading(false);
-      setIsErorrPostLoading(false);
     }
   };
 
@@ -79,7 +80,7 @@ export const App: React.FC = () => {
   const isNoPostYet = selectedUserId && posts.length === 0 && !isLoading
   && !isErorrPostLoading;
 
-  const isVisiblePost = selectedUserId && posts.length > 0;
+  const isVisiblePost = selectedUserId && posts.length > 0 && !isLoading;
   const isVisibleSidebar = selectedPost?.userId === selectedUserId;
 
   const onNewCommentFormOpened = useCallback(() => {
