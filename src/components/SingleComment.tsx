@@ -38,11 +38,14 @@ export const SingleComment:React.FC<Props> = ({
 
         return;
       }
-    } catch (err) {
+    } catch (error) {
       setIsError(true);
       setTimeout(() => {
         setIsError(false);
       }, 3000);
+      if (error) {
+        throw new Error(String(error));
+      }
     }
   };
 

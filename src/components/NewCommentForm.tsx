@@ -91,31 +91,25 @@ export const NewCommentForm: React.FC<Props> = ({
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
-          {
-            noName
-          && (
+          {noName && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
             >
               <i className="fas fa-exclamation-triangle" />
             </span>
-          )
-          }
-        </div>
-        {noName
-          && (
-            <p className="help is-danger" data-cy="ErrorMessage">
-              Name is required
-            </p>
           )}
+        </div>
+        {noName && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Name is required
+          </p>
+        )}
       </div>
-
       <div className="field" data-cy="EmailField">
         <label className="label" htmlFor="comment-author-email">
           Author Email
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
@@ -128,7 +122,6 @@ export const NewCommentForm: React.FC<Props> = ({
               setInputValue(e, setNoEmail, setAuthorEmail);
             }}
           />
-
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
@@ -141,14 +134,12 @@ export const NewCommentForm: React.FC<Props> = ({
             </span>
           ) }
         </div>
-
         {noEmail && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
         )}
       </div>
-
       <div className="field" data-cy="BodyField">
         <label className="label" htmlFor="comment-body">
           Comment Text
@@ -175,9 +166,7 @@ export const NewCommentForm: React.FC<Props> = ({
       <div className="field is-grouped">
         <div className="control">
           <button
-            onClick={() => {
-              addComment();
-            }}
+            onClick={addComment}
             type="button"
             className={`button is-link ${isLoadingButton && 'is-loading'}`}
           >

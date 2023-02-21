@@ -26,27 +26,33 @@ export const App: React.FC = () => {
   const [detailsSeen, setDetailsSeen] = useState(false);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [postComments, setPostComments] = useState<Comment[]>([]);
-  const getDataFromApi = async (
+  const noPostsYet = user && !userPosts.length && !isLoading && !isError;
+  const userHasPosts = !isError && userPosts.length > 0 && !isLoading;
+
+  const getUsersFromApi = async (
     pathname: string,
-    setData: (value: Post[] | User[] | any) => void,
+    setData: (value: User[]) => void,
   ) => {
     try {
-      const response = client.get(pathname);
-      const result = await response as User[];
+      const response = await client.get(pathname);
 
-      setData(result);
+      if (Array.isArray(response)) {
+        setData(response);
+      }
 
       setIsError(false);
     } catch (error) {
       setIsLoading(false);
       setIsError(true);
-      throw new Error('An error occured');
+      if (error) {
+        throw new Error(String(error));
+      }
     }
   };
 
   useEffect(() => {
     setIsLoading(true);
-    getDataFromApi('/users', setUsers);
+    getUsersFromApi('/users', setUsers);
     setIsLoading(false);
   }, []);
 
@@ -72,14 +78,19 @@ export const App: React.FC = () => {
                   selectedUser={user}
                   users={users}
                   setUser={setUser}
-                  getDataFromApi={getDataFromApi}
                   setPosts={setPosts}
                   setDetailsSeen={setDetailsSeen}
                   setIsLoading={setIsLoading}
+                  setIsError={setIsError}
                 />
               </div>
               <div className="block" data-cy="MainContent">
                 {isLoading && <Loader />}
+                {!user && !isError && !isLoading && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
                 {isError && (
                   <div
                     className="notification is-danger"
@@ -88,12 +99,12 @@ export const App: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-                {user && userPosts.length === 0 && !isLoading && !isError && (
+                {noPostsYet && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
-                {user && !isError && userPosts.length > 0 && !isLoading && (
+                {userHasPosts && (
                   <PostsList
                     post={post}
                     setPost={setPost}
@@ -104,11 +115,6 @@ export const App: React.FC = () => {
                     setPostComments={setPostComments}
                     setIsError={setIsError}
                   />
-                )}
-                {!user && !isError && !isLoading && (
-                  <p data-cy="NoSelectedUser">
-                    No user selected
-                  </p>
                 )}
               </div>
             </div>

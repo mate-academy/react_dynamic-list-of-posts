@@ -28,6 +28,8 @@ export const PostsList: React.FC<Props> = ({
 
   const getPost = async (singlePost: Post) => {
     setIsLoadingComments(true);
+    setDetailsSeen(true);
+    setPost(singlePost);
     try {
       const usersResponse = client.get('/comments');
       const usersResult = await usersResponse;
@@ -38,14 +40,14 @@ export const PostsList: React.FC<Props> = ({
         ));
       }
     } catch (error) {
+      setIsLoadingComments(false);
       setIsError(true);
-      throw Error('An error occured');
+      if (error) {
+        throw new Error(String(error));
+      }
     }
 
     setIsLoadingComments(false);
-
-    setPost(singlePost);
-    setDetailsSeen(true);
 
     if (post && detailsSeen && post.id === singlePost.id) {
       setDetailsSeen(false);
@@ -55,7 +57,6 @@ export const PostsList: React.FC<Props> = ({
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
-
       <table className="table is-fullwidth is-striped is-hoverable is-narrow">
         <thead>
           <tr className="has-background-link-light">
@@ -64,34 +65,30 @@ export const PostsList: React.FC<Props> = ({
             <th> </th>
           </tr>
         </thead>
-
         <tbody>
-          {
-            userPosts.map((singlePost: Post) => {
-              return (
-                <tr data-cy="Post" key={singlePost.id}>
-                  <td data-cy="PostId">{singlePost.id}</td>
-                  <td data-cy="PostTitle">
-                    {singlePost.title}
-                  </td>
-                  <td className="has-text-right is-vcentered">
-                    <button
-                      type="button"
-                      data-cy="PostButton"
-                      className={`button is-link 
+          {userPosts.map((singlePost: Post) => {
+            return (
+              <tr data-cy="Post" key={singlePost.id}>
+                <td data-cy="PostId">{singlePost.id}</td>
+                <td data-cy="PostTitle">
+                  {singlePost.title}
+                </td>
+                <td className="has-text-right is-vcentered">
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={`button is-link 
                       ${textInButton(singlePost) === 'Open' && 'is-light'}`}
-                      onClick={() => {
-                        getPost(singlePost);
-                      }}
-                    >
-                      {textInButton(singlePost)}
-                    </button>
-                  </td>
-                </tr>
-              );
-            })
-
-          }
+                    onClick={() => {
+                      getPost(singlePost);
+                    }}
+                  >
+                    {textInButton(singlePost)}
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

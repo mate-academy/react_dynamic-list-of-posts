@@ -1,24 +1,42 @@
 import React, { useState } from 'react';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
+import { client } from '../utils/fetchClient';
 
 type Props = {
   selectedUser:User | null,
   users:User[],
   setUser: (value: User)=> void,
   setPosts:(value: Post[])=> void,
-  getDataFromApi: (value1: string, value2:(value: Post[]) => void)
-  => void,
   setDetailsSeen: (value: boolean)=> void,
   setIsLoading: (value: boolean)=> void,
+  setIsError: (value: boolean)=> void,
 };
 
 export const UserSelector: React.FC<Props> = ({
-  selectedUser, users, setUser,
-  setPosts, getDataFromApi, setDetailsSeen, setIsLoading,
+  selectedUser, users, setUser, setIsError,
+  setPosts, setDetailsSeen, setIsLoading,
 }) => {
   const [dropdownValue, setDropdownValue] = useState('Choose a user');
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+
+  const getPostsFromApi = async () => {
+    try {
+      const response = await client.get('/posts');
+
+      if (Array.isArray(response)) {
+        await setPosts(response);
+      }
+
+      setIsError(false);
+    } catch (error) {
+      setIsLoading(false);
+      setIsError(true);
+      if (error) {
+        throw new Error(String(error));
+      }
+    }
+  };
 
   const getUserPosts = async (
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, user: User,
@@ -31,10 +49,8 @@ export const UserSelector: React.FC<Props> = ({
     }
 
     setIsLoading(true);
-
     setDetailsSeen(false);
-
-    await getDataFromApi('/posts', setPosts);
+    await getPostsFromApi();
     setDropdownValue(user.name);
     setUser(user);
   };

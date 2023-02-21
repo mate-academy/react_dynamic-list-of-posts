@@ -31,66 +31,66 @@ export const PostDetails: React.FC<Props> = ({
   }, [post]);
 
   return (
-    <div className="content" data-cy="PostDetails">
+    <>
+      {post && <div>aasassasa</div>}
       <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 data-cy="PostTitle">
-            {`# ${id}: ${title}`}
-          </h2>
-          <p data-cy="PostBody">
-            {body}
-          </p>
-        </div>
-
-        {isLoadingComments && <Loader />}
-        {!isLoadingComments && (
+        <div className="content" data-cy="PostDetails">
           <div className="block">
-            {isError && (
-              <div className="notification is-danger" data-cy="CommentsError">
-                Something went wrong
-              </div>
-            )}
-
-            {postComments.length > 0 && (
-              <>
-                <p className="title is-4">Comments:</p>
-                {postComments.map((comment: Comment) => {
-                  return (
-                    <SingleComment
-                      comment={comment}
-                      comments={comments}
-                      setComments={setComments}
-                      postComments={postComments}
-                      setPostComments={setPostComments}
-                      setIsError={setIsError}
-                    />
-                  );
-                })}
-              </>
-            )}
-
-            {postComments.length === 0 && (
-              <p className="title is-4" data-cy="NoCommentsMessage">
-                No comments yet
-              </p>
-            )}
-            {!isSeen
-            && (
-              <button
-                data-cy="WriteCommentButton"
-                type="button"
-                className="button is-link"
-                onClick={() => {
-                  setIsSeen(true);
-                }}
-              >
-                Write a comment
-              </button>
-            )}
+            <h2 data-cy="PostTitle">
+              {`# ${id}: ${title}`}
+            </h2>
+            <p data-cy="PostBody">
+              {body}
+            </p>
           </div>
-        )}
-        {
-          isSeen && (
+
+          {isLoadingComments && <Loader />}
+          {!isLoadingComments && (
+            <div className="block">
+              {isError && (
+                <div className="notification is-danger" data-cy="CommentsError">
+                  Something went wrong
+                </div>
+              )}
+
+              {postComments.length > 0 && (
+                <>
+                  <p className="title is-4">Comments:</p>
+                  {postComments.map((comment: Comment) => {
+                    return (
+                      <SingleComment
+                        comment={comment}
+                        comments={comments}
+                        setComments={setComments}
+                        postComments={postComments}
+                        setPostComments={setPostComments}
+                        setIsError={setIsError}
+                      />
+                    );
+                  })}
+                </>
+              )}
+
+              {postComments.length === 0 && (
+                <p className="title is-4" data-cy="NoCommentsMessage">
+                  No comments yet
+                </p>
+              )}
+              {!isSeen && (
+                <button
+                  data-cy="WriteCommentButton"
+                  type="button"
+                  className="button is-link"
+                  onClick={() => {
+                    setIsSeen(true);
+                  }}
+                >
+                  Write a comment
+                </button>
+              )}
+            </div>
+          )}
+          {isSeen && (
             <NewCommentForm
               post={post}
               comments={comments}
@@ -98,9 +98,9 @@ export const PostDetails: React.FC<Props> = ({
               setPostComments={setPostComments}
               postComments={postComments}
             />
-          )
-        }
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
