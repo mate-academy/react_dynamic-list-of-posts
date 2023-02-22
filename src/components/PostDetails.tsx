@@ -97,6 +97,7 @@ export const PostDetails: React.FC<Props> = ({
               setComments={setComments}
               setPostComments={setPostComments}
               postComments={postComments}
+              setIsError={setIsError}
             />
           )}
         </div>

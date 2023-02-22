@@ -7,12 +7,13 @@ type Props = {
   post: Post,
   comments: Comment[],
   setComments: (value: Comment[]) => void,
-  setPostComments: (value: Comment[])=> void,
+  setPostComments: (value: Comment[]) => void,
   postComments: Comment[],
+  setIsError: (value: boolean) => void,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
-  post, comments, setComments, setPostComments, postComments,
+  post, comments, setComments, setPostComments, postComments, setIsError,
 }) => {
   const [authorName, setAuthorName] = useState('');
   const [authorEmail, setAuthorEmail] = useState('');
@@ -47,24 +48,34 @@ export const NewCommentForm: React.FC<Props> = ({
     }
 
     setIsLoadingButton(true);
-    const commentResponse = client.post('/comments', {
-      postId: post.id,
-      name: authorName,
-      email: authorEmail,
-      body: commentBody,
-    });
-    const commentResult = await commentResponse as Comment;
+    setIsError(true);
+    try {
+      const commentResponse = client.post('/comments', {
+        postId: post.id,
+        name: authorName,
+        email: authorEmail,
+        body: commentBody,
+      });
+      const commentResult = await commentResponse as Comment;
 
-    setComments([...comments, commentResult]);
-    setPostComments([...postComments, commentResult]);
-    setCommentBody('');
-    setIsLoadingButton(false);
+      setComments([...comments, commentResult]);
+      setPostComments([...postComments, commentResult]);
+      setCommentBody('');
+      setIsLoadingButton(false);
+      setIsError(false);
+    } catch (error) {
+      setIsLoadingButton(false);
+      setTimeout(() => {
+        setIsError(false);
+      }, 3000);
+      throw new Error(String(error));
+    }
   };
 
   const setInputValue = (
     event: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
-    setNoValue: (value: boolean)=> void,
-    setAuthorValue:(value: string)=> void,
+    setNoValue: (value: boolean) => void,
+    setAuthorValue: (value: string) => void,
   ) => {
     setNoValue(false);
     setAuthorValue(event.target.value);
@@ -132,7 +143,7 @@ export const NewCommentForm: React.FC<Props> = ({
             >
               <i className="fas fa-exclamation-triangle" />
             </span>
-          ) }
+          )}
         </div>
         {noEmail && (
           <p className="help is-danger" data-cy="ErrorMessage">
@@ -160,7 +171,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
-        ) }
+        )}
       </div>
 
       <div className="field is-grouped">
