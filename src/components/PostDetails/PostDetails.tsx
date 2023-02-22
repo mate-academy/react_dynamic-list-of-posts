@@ -17,21 +17,18 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingFinish, setIsLoadingFinish] = useState(false);
   const [isReadyToAddComment, setIsReadyToAddComment] = useState(false);
 
   const hasNoComments = comments.length === 0;
 
   const loadComments = async () => {
     setIsLoading(true);
-    setIsLoadingFinish(false);
 
     try {
       const loadedComments = await getCommentsByPostId(post?.id);
 
       setComments(loadedComments);
       setIsLoading(false);
-      setIsLoadingFinish(true);
     } catch {
       setIsError(true);
     }
@@ -96,7 +93,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         </div>
 
         <div className="block">
-          {(isLoading && !isLoadingFinish) && (
+          {isLoading && (
             <Loader />
           )}
 
