@@ -9,7 +9,7 @@ type Props = {
   activePost: Post;
 };
 
-export const PostDetails: React.FC<Props> = React.memo(({ activePost }) => {
+export const PostDetails: React.FC<Props> = ({ activePost }) => {
   const { id, title, body } = activePost;
   const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -126,7 +126,7 @@ export const PostDetails: React.FC<Props> = React.memo(({ activePost }) => {
               </>
             ))}
 
-          {!addNewComment && (
+          {!addNewComment && !isCommentsLoading && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -146,4 +146,4 @@ export const PostDetails: React.FC<Props> = React.memo(({ activePost }) => {
       </div>
     </div>
   );
-});
+};

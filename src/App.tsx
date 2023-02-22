@@ -85,24 +85,24 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {selectedPost && (
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                {
-                  'Sidebar--open': selectedPost,
-                },
-              )}
-            >
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              {
+                'Sidebar--open': selectedPost,
+              },
+            )}
+          >
+            {selectedPost && (
               <div className="tile is-child box is-success ">
                 <PostDetails activePost={selectedPost} />
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </main>

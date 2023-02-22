@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import { getUsers } from '../api/users';
 import { User } from '../types/User';
@@ -13,6 +14,8 @@ export const UserSelector: React.FC<Props> = ({ onSelect, selectedUser }) => {
 
   useEffect(() => {
     getUsers().then(setUsers);
+
+    return () => setUsers(null);
   }, []);
 
   const handleUserSelect = (user: User) => {
@@ -23,7 +26,9 @@ export const UserSelector: React.FC<Props> = ({ onSelect, selectedUser }) => {
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={classNames('dropdown', {
+        'is-active': showList,
+      })}
     >
       <div className="dropdown-trigger">
         <button
@@ -53,7 +58,9 @@ export const UserSelector: React.FC<Props> = ({ onSelect, selectedUser }) => {
                 <a
                   href={`#user-${id}`}
                   key={id}
-                  className="dropdown-item"
+                  className={classNames('dropdown-item', {
+                    'is-active': selectedUser?.id === id,
+                  })}
                   onClick={() => handleUserSelect(user)}
                 >
                   {name}
