@@ -52,12 +52,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }
 
   const handleRemoveComment = async (commentId: number) => {
+    setComments(currentComments => (
+      currentComments.filter(comment => comment.id !== commentId)
+    ));
+
     try {
       await removeComment(commentId);
-
-      setComments(currentComments => (
-        currentComments.filter(comment => comment.id !== commentId)
-      ));
     } catch {
       setIsError(true);
     }
@@ -78,6 +78,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     }
   };
 
+  const isAddButtonVisible = (!isLoading && !isReadyToAddComment);
+  const isCommentsVisible = (!hasNoComments && !isLoading);
+  const isNoComments = (hasNoComments && !isLoading);
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -96,13 +100,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             <Loader />
           )}
 
-          {(hasNoComments && !isLoading) && (
+          {isNoComments && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {(!hasNoComments && !isLoading) && (
+          {isCommentsVisible && (
             <>
               <p className="title is-4">Comments:</p>
 
@@ -138,7 +142,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </>
           )}
 
-          {(!isLoading && !isReadyToAddComment) && (
+          {isAddButtonVisible && (
             <button
               data-cy="WriteCommentButton"
               type="button"

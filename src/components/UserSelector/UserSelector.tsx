@@ -34,9 +34,7 @@ export const UserSelector: React.FC<Props> = ({
   const selectedUser = getUserById(users, selectedUserId);
 
   const handleDropMenu = () => {
-    setIsOpen(prevState => {
-      return !prevState;
-    });
+    setIsOpen(prevState => !prevState);
   };
 
   if (isError) {

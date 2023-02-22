@@ -17,7 +17,6 @@ export const PostsList: React.FC<Props> = ({
   const [posts, setPosts] = useState<Post[]>([]);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingFinish, setIsLoadingFinish] = useState(false);
 
   const hasNoPosts = posts.length === 0;
 
@@ -32,7 +31,6 @@ export const PostsList: React.FC<Props> = ({
       setIsError(true);
     } finally {
       setIsLoading(false);
-      setIsLoadingFinish(true);
     }
   };
 
@@ -55,7 +53,7 @@ export const PostsList: React.FC<Props> = ({
     );
   }
 
-  if (hasNoPosts && isLoadingFinish && selectedUserId) {
+  if (hasNoPosts && !isLoading && selectedUserId) {
     return (
       <div className="notification is-warning" data-cy="NoPostsYet">
         No posts yet
@@ -65,7 +63,7 @@ export const PostsList: React.FC<Props> = ({
 
   return (
     <div data-cy="PostsList">
-      {(isLoadingFinish && !!selectedUserId) && (
+      {(!isLoading && !!selectedUserId) && (
         <>
           <p className="title">Posts:</p>
 
