@@ -25,7 +25,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setIsLoading(true);
 
     try {
-      const loadedComments = await getCommentsByPostId(post?.id);
+      const loadedComments = await getCommentsByPostId(post.id);
 
       setComments(loadedComments);
       setIsLoading(false);
@@ -38,7 +38,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setComments([]);
     loadComments();
     setIsReadyToAddComment(false);
-  }, [post?.id]);
+  }, [post.id]);
 
   if (isError) {
     return (
