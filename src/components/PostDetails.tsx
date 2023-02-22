@@ -69,8 +69,7 @@ export const PostDetails: React.FC<Props> = ({
     }
   };
 
-  const isNoCommentYet = !comments.length && !isLoading
-      && !isErrOnLoadCom;
+  const hasComment = !isLoading && !isErrOnLoadCom && !comments.length;
   const isWriteBtnVisible = !isErrOnLoadCom
     && !isLoading && !isNewCommentFormOpened;
 
@@ -96,12 +95,12 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {isNoCommentYet && (
-
+          {hasComment && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
+
           { comments.length > 0 && !isLoading && (
             <>
               <p className="title is-4">Comments:</p>
