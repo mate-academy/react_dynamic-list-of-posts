@@ -10,7 +10,7 @@ import {
 } from '../../api/loadData';
 
 type Props = {
-  post: Post | null,
+  post: Post,
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {

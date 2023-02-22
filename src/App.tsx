@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -13,13 +13,13 @@ export const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  const selectUser = (userId: number) => {
+  const selectUser = useCallback((userId: number) => {
     setSelectedUserId(userId);
-  };
+  }, [selectedUserId]);
 
-  const selectPost = (post: Post | null) => {
+  const selectPost = useCallback((post: Post | null) => {
     setSelectedPost(post);
-  };
+  }, [selectedPost]);
 
   useEffect(() => {
     setSelectedPost(null);
