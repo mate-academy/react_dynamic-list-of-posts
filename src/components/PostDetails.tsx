@@ -1,118 +1,107 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { SingleComment } from './SingleComment';
 
-export const PostDetails: React.FC = () => {
+type Props = {
+  post: Post,
+  comments: Comment[],
+  postComments: Comment[],
+  isLoadingComments: boolean,
+  setComments: (value: Comment[])=> void,
+  setPostComments: (value: Comment[])=> void,
+};
+
+export const PostDetails: React.FC<Props> = ({
+  post,
+  comments,
+  setComments,
+  isLoadingComments,
+  postComments,
+  setPostComments,
+}) => {
+  const { id, title, body } = post;
+  const [isSeen, setIsSeen] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    setIsSeen(false);
+  }, [post]);
+
   return (
-    <div className="content" data-cy="PostDetails">
+    <>
+      {post && <div>aasassasa</div>}
       <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
-          </h2>
-
-          <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
-          </p>
-        </div>
-
-        <div className="block">
-          <Loader />
-
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
+        <div className="content" data-cy="PostDetails">
+          <div className="block">
+            <h2 data-cy="PostTitle">
+              {`# ${id}: ${title}`}
+            </h2>
+            <p data-cy="PostBody">
+              {body}
+            </p>
           </div>
 
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
+          {isLoadingComments && <Loader />}
+          {!isLoadingComments && (
+            <div className="block">
+              {isError && (
+                <div className="notification is-danger" data-cy="CommentsError">
+                  Something went wrong
+                </div>
+              )}
 
-          <p className="title is-4">Comments:</p>
+              {postComments.length > 0 && (
+                <>
+                  <p className="title is-4">Comments:</p>
+                  {postComments.map((comment: Comment) => {
+                    return (
+                      <SingleComment
+                        comment={comment}
+                        comments={comments}
+                        setComments={setComments}
+                        postComments={postComments}
+                        setPostComments={setPostComments}
+                        setIsError={setIsError}
+                      />
+                    );
+                  })}
+                </>
+              )}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
+              {postComments.length === 0 && (
+                <p className="title is-4" data-cy="NoCommentsMessage">
+                  No comments yet
+                </p>
+              )}
+              {!isSeen && (
+                <button
+                  data-cy="WriteCommentButton"
+                  type="button"
+                  className="button is-link"
+                  onClick={() => {
+                    setIsSeen(true);
+                  }}
+                >
+                  Write a comment
+                </button>
+              )}
             </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
-            >
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+          )}
+          {isSeen && (
+            <NewCommentForm
+              post={post}
+              comments={comments}
+              setComments={setComments}
+              setPostComments={setPostComments}
+              postComments={postComments}
+              setIsError={setIsError}
+            />
+          )}
         </div>
-
-        <NewCommentForm />
       </div>
-    </div>
+    </>
   );
 };

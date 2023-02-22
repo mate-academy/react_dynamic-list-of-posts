@@ -1,85 +1,96 @@
 import React from 'react';
+import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
+import { client } from '../utils/fetchClient';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+type Props = {
+  post: Post | null,
+  setPost: (value: Post) => void,
+  userPosts: Post[],
+  detailsSeen: boolean,
+  setDetailsSeen: (value: boolean) => void,
+  setPostComments: (value: Comment[]) => void,
+  setIsLoadingComments: (value: boolean) => void,
+  setIsError: (value: boolean) => void,
+};
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+export const PostsList: React.FC<Props> = ({
+  post, setPost, userPosts, detailsSeen, setDetailsSeen,
+  setIsLoadingComments, setPostComments, setIsError,
+}) => {
+  const textInButton = (singlePost: Post) => {
+    if (!post) {
+      return 'Open';
+    }
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+    return detailsSeen && post.id === singlePost.id ? 'Close' : 'Open';
+  };
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+  const getPost = async (singlePost: Post) => {
+    setIsLoadingComments(true);
+    setDetailsSeen(true);
+    setPost(singlePost);
+    try {
+      const usersResponse = client.get('/comments');
+      const usersResult = await usersResponse;
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+      if (Array.isArray(usersResult) && usersResult) {
+        await setPostComments(usersResult.filter(
+          (comment: Comment) => comment.postId === singlePost.id,
+        ));
+      }
+    } catch (error) {
+      setIsLoadingComments(false);
+      setIsError(true);
+      if (error) {
+        throw new Error(String(error));
+      }
+    }
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+    setIsLoadingComments(false);
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+    if (post && detailsSeen && post.id === singlePost.id) {
+      setDetailsSeen(false);
+    }
+  };
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            <th> </th>
+          </tr>
+        </thead>
+        <tbody>
+          {userPosts.map((singlePost: Post) => {
+            return (
+              <tr data-cy="Post" key={singlePost.id}>
+                <td data-cy="PostId">{singlePost.id}</td>
+                <td data-cy="PostTitle">
+                  {singlePost.title}
+                </td>
+                <td className="has-text-right is-vcentered">
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={`button is-link 
+                      ${textInButton(singlePost) === 'Open' && 'is-light'}`}
+                    onClick={() => {
+                      getPost(singlePost);
+                    }}
+                  >
+                    {textInButton(singlePost)}
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+};
