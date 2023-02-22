@@ -13,9 +13,9 @@ type Props = {
   handleCommentAdd: (author: string, email: string, comment: string) => void,
   isCommentAdding: boolean,
   handleCommentDelete: (commentId: number) => void,
-  commentsLoadingError: boolean,
-  commentAddError: boolean,
-  commentDeleteError: boolean,
+  isCommentsLoadingError: boolean,
+  isCommentAddError: boolean,
+  isCommentDeleteError: boolean,
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -27,9 +27,9 @@ export const PostDetails: React.FC<Props> = ({
   handleCommentAdd,
   isCommentAdding,
   handleCommentDelete,
-  commentsLoadingError,
-  commentAddError,
-  commentDeleteError,
+  isCommentsLoadingError,
+  isCommentAddError,
+  isCommentDeleteError,
 }) => {
   const { id, body, title } = post;
 
@@ -52,7 +52,7 @@ export const PostDetails: React.FC<Props> = ({
 
         {isLoader && <Loader />}
 
-        {commentsLoadingError && (
+        {isCommentsLoadingError && (
           <div
             className="notification is-danger"
             data-cy="CommentsError"
@@ -61,7 +61,7 @@ export const PostDetails: React.FC<Props> = ({
           </div>
         )}
 
-        {commentAddError && (
+        {isCommentAddError && (
           <div
             className="notification is-danger"
             data-cy="CommentsError"
@@ -70,7 +70,7 @@ export const PostDetails: React.FC<Props> = ({
           </div>
         )}
 
-        {commentDeleteError && (
+        {isCommentDeleteError && (
           <div
             className="notification is-danger"
             data-cy="CommentsError"
@@ -148,8 +148,6 @@ export const PostDetails: React.FC<Props> = ({
           />
         )}
       </div>
-
-      {/* <NewCommentForm /> */}
     </div>
   );
 };

@@ -19,13 +19,12 @@ export const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoader, setLoader] = useState(false);
-  // const [selectedPost, setSelectedPost] = useState<Post>();
   const [selectedPostId, setSelectedPostId] = useState(0);
   const [comments, setComments] = useState<Comment []>([]);
   const [postLoadingError, setPostLoadingError] = useState(false);
-  const [commentsLoadingError, setCommentsLoadingError] = useState(false);
-  const [commentAddError, setCommentAddError] = useState(false);
-  const [commentDeleteError, setCommentDeleteError] = useState(false);
+  const [isCommentsLoadingError, setCommentsLoadingError] = useState(false);
+  const [isCommentAddError, setCommentAddError] = useState(false);
+  const [isCommentDeleteError, setCommentDeleteError] = useState(false);
   const [isCommentsLoader, setCommentsLoader] = useState(false);
   const [isFormVisible, setFormVisability] = useState(false);
   const [isCommentAdding, setCommentAdding] = useState(false);
@@ -188,9 +187,9 @@ export const App: React.FC = () => {
                   handleCommentAdd={handleCommentAdd}
                   isCommentAdding={isCommentAdding}
                   handleCommentDelete={handleCommentDelete}
-                  commentsLoadingError={commentsLoadingError}
-                  commentAddError={commentAddError}
-                  commentDeleteError={commentDeleteError}
+                  isCommentsLoadingError={isCommentsLoadingError}
+                  isCommentAddError={isCommentAddError}
+                  isCommentDeleteError={isCommentDeleteError}
                 />
               </div>
             )}
