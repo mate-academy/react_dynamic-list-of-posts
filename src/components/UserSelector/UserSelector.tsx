@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import cn from 'classnames';
 import { User } from '../../types/User';
 
@@ -12,20 +12,33 @@ export const UserSelector: React.FC<Props> = React.memo(({
   selectedUserId,
   handleSelectUser,
 }) => {
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const selectedUser = users.find(user => user.id === selectedUserId);
 
-  const handleClick = (
-    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    userId: number,
-  ) => {
-    event.preventDefault();
+  const handleClick = (userId: number) => {
     handleSelectUser(userId);
     setIsDropdownOpen(false);
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current
+      && !dropdownRef.current.contains(event.target as Node)) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div
+      ref={dropdownRef}
       data-cy="UserSelector"
       className={cn('dropdown', {
         'is-active': isDropdownOpen,
@@ -61,8 +74,8 @@ export const UserSelector: React.FC<Props> = React.memo(({
               href={`/#user-${user.id}`}
               className={cn('dropdown-item',
                 { 'is-active': selectedUserId === user.id })}
-              onClick={(event) => {
-                handleClick(event, user.id);
+              onClick={() => {
+                handleClick(user.id);
               }}
             >
               {user.name}

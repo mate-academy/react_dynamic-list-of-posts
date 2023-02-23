@@ -1,5 +1,4 @@
 import React from 'react';
-import cn from 'classnames';
 import { Post } from '../../types/Post';
 
 type Props = {
@@ -34,18 +33,31 @@ export const PostsList: React.FC<Props> = ({
             </td>
 
             <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className={cn('button is-link', {
-                  'is-light': post.id !== selectedPostId,
-                })}
-                onClick={() => {
-                  handleSelectedPostId(post.id);
-                }}
-              >
-                Open
-              </button>
+              {selectedPostId !== post.id
+                ? (
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className="button is-link is-light"
+                    onClick={() => {
+                      handleSelectedPostId(post.id);
+                    }}
+                  >
+                    Open
+                  </button>
+                )
+                : (
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className="button is-link"
+                    onClick={() => {
+                      handleSelectedPostId(0);
+                    }}
+                  >
+                    Close
+                  </button>
+                )}
             </td>
           </tr>
         ))}

@@ -17,9 +17,15 @@ export const PostDetails: React.FC<Props> = ({
   const [comments, setComments] = useState<cm[]>([]);
   const [commentsLoadingError, setCommentsLoadingError] = useState(false);
   const [isCommentsLoading, setIsCommentsLoading] = useState(false);
-  const [isComment, setIsComment] = useState(false);
+  const [isCommentSectionShow, setIsCommentSectionShow] = useState(false);
   const [commentsLoaded, setCommentLoaded] = useState(false);
   const [isDeletionError, setIsDeletionError] = useState(false);
+  const isCommentsButtonShow = !isCommentSectionShow
+    && !commentsLoadingError
+    && !isCommentsLoading;
+  const isCommentsLoaded = commentsLoaded && !commentsLoadingError;
+  const isLoadingSuccessful = isCommentsLoading && !commentsLoadingError;
+
   const getCommentsFromServer = async () => {
     setComments([]);
     try {
@@ -43,14 +49,15 @@ export const PostDetails: React.FC<Props> = ({
   }, [post]);
 
   useEffect(() => {
-    if (isComment) {
-      setIsComment(false);
+    if (isCommentSectionShow) {
+      setIsCommentSectionShow(false);
     }
   }, [selectedPostId]);
 
   const handleDeleteComment = async (commentId: number) => {
     setComments(prevComments => prevComments
       .filter(comment => comment.id !== commentId));
+    setIsCommentSectionShow(false);
     try {
       await deleteComment(commentId);
     } catch {
@@ -63,109 +70,112 @@ export const PostDetails: React.FC<Props> = ({
   };
 
   return (
-    <div className="content" data-cy="PostDetails">
+    <>
       {post && (
         <div className="content" data-cy="PostDetails">
-          <div className="block">
-            <h2 data-cy="PostTitle">
-              {post.title}
-            </h2>
+          <div className="content" data-cy="PostDetails">
+            <div className="block">
+              <h2 data-cy="PostTitle">
+                {`#${post.id}: ${post.title}`}
+              </h2>
 
-            <p data-cy="PostBody">
-              {post.body}
-            </p>
-          </div>
+              <p data-cy="PostBody">
+                {post.body}
+              </p>
+            </div>
 
-          <div className="block">
-            {isCommentsLoading && <Loader />}
+            <div className="block">
+              {isLoadingSuccessful && <Loader />}
 
-            {commentsLoadingError && (
-              <div className="notification is-danger" data-cy="CommentsError">
-                Something went wrong
-              </div>
-            )}
+              {commentsLoadingError && (
+                <div className="notification is-danger" data-cy="CommentsError">
+                  Something went wrong
+                </div>
+              )}
 
-            {commentsLoaded && (
-              !comments.length
-                ? (
-                  <p className="title is-4" data-cy="NoCommentsMessage">
-                    No comments yet
-                  </p>
-                )
-                : (
-                  <>
-                    <p className="title is-4">Comments:</p>
+              {isCommentsLoaded && (
+                !comments.length
+                  ? (
+                    <p className="title is-4" data-cy="NoCommentsMessage">
+                      No comments yet
+                    </p>
+                  )
+                  : (
+                    <>
+                      <p className="title is-4">Comments:</p>
 
-                    {comments.map(comment => (
-                      <article
-                        key={comment.id}
-                        className="message is-small"
-                        data-cy="Comment"
-                      >
-                        <div className="message-header">
-                          <a
-                            href={`mailto:${comment.email}`}
-                            data-cy="CommentAuthor"
-                          >
-                            {comment.name}
-                          </a>
-                          <button
-                            data-cy="CommentDelete"
-                            type="button"
-                            className="delete is-small"
-                            aria-label="delete"
-                            onClick={() => {
-                              handleDeleteComment(comment.id);
-                            }}
-                          >
-                            delete button
-                          </button>
-                        </div>
-
-                        <div className="message-body" data-cy="CommentBody">
-                          {comment.body}
-                        </div>
-                        {isDeletionError && (
-                          <div className="notification is-danger">
+                      {comments.map(comment => (
+                        <article
+                          key={comment.id}
+                          className="message is-small"
+                          data-cy="Comment"
+                        >
+                          <div className="message-header">
+                            <a
+                              href={`mailto:${comment.email}`}
+                              data-cy="CommentAuthor"
+                            >
+                              {comment.name}
+                            </a>
                             <button
+                              data-cy="CommentDelete"
                               type="button"
-                              aria-label="delete-comment-button"
-                              className="delete"
+                              className="delete is-small"
+                              aria-label="delete"
                               onClick={() => {
-                                setIsDeletionError(false);
+                                handleDeleteComment(comment.id);
                               }}
-                            />
-                            Can`t delete comment
+                            >
+                              delete button
+                            </button>
                           </div>
-                        )}
-                      </article>
-                    ))}
-                  </>
-                ))}
 
-            {!isComment && (
+                          <div className="message-body" data-cy="CommentBody">
+                            {comment.body}
+                          </div>
+                          {isDeletionError && (
+                            <div className="notification is-danger">
+                              <button
+                                type="button"
+                                aria-label="delete-comment-button"
+                                className="delete"
+                                onClick={() => {
+                                  setIsDeletionError(false);
+                                }}
+                              />
+                              Can`t delete comment
+                            </div>
+                          )}
+                        </article>
+                      ))}
+                    </>
+                  ))}
+            </div>
+
+            {isCommentsButtonShow && (
               <button
                 data-cy="WriteCommentButton"
                 type="button"
                 className="button is-link"
                 onClick={() => {
-                  setIsComment(prevState => !prevState);
+                  setIsCommentSectionShow(prevState => !prevState);
                 }}
               >
                 Write a comment
               </button>
             )}
-          </div>
 
-          {isComment
+            {isCommentSectionShow
             && (
               <NewCommentForm
                 selectedPostId={selectedPostId}
                 handleAddCommentToState={handleAddCommentToState}
               />
             )}
+          </div>
+
         </div>
       )}
-    </div>
+    </>
   );
 };

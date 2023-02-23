@@ -34,6 +34,7 @@ export const App: React.FC = () => {
   };
 
   const getUserPostsFromServer = async () => {
+    setPosts([]);
     try {
       setIsPostLoading(true);
       setPostsLoaded(false);
@@ -52,9 +53,14 @@ export const App: React.FC = () => {
     getUsersFromServer();
   }, []);
 
+  useEffect(() => {
+    if (selectedUserId !== 0) {
+      getUserPostsFromServer();
+    }
+  }, [selectedUserId]);
+
   const handleSelectUser = (userId: number) => {
     setSelectedUserId(userId);
-    getUserPostsFromServer();
     setSelectedPostId(0);
   };
 
@@ -83,7 +89,7 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {isPostLoading && <Loader /> }
+                {(isPostLoading && !isError) && <Loader /> }
 
                 {postsLoaded && (
                   <>
