@@ -8,12 +8,10 @@ import { PostsList } from './components/PostList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { User } from './types/User';
-import { getUserPosts, getUsers } from './api/posts';
+import { getUserPosts } from './api/posts';
 import { Post } from './types/Post';
 
 export const App: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isError, setIsError] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(0);
@@ -22,16 +20,6 @@ export const App: React.FC = () => {
   const [postsLoaded, setPostsLoaded] = useState(false);
 
   const selectedPost = posts.find(post => post.id === selectedPostId) || null;
-
-  const getUsersFromServer = async () => {
-    try {
-      const usersFromServer = await getUsers();
-
-      setUsers(usersFromServer);
-    } catch (error) {
-      setIsError(true);
-    }
-  };
 
   const getUserPostsFromServer = async () => {
     setPosts([]);
@@ -48,10 +36,6 @@ export const App: React.FC = () => {
       setIsError(true);
     }
   };
-
-  useEffect(() => {
-    getUsersFromServer();
-  }, []);
 
   useEffect(() => {
     if (selectedUserId !== 0) {
@@ -76,7 +60,6 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  users={users}
                   selectedUserId={selectedUserId}
                   handleSelectUser={handleSelectUser}
                 />
@@ -138,7 +121,6 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <PostDetails
                 post={selectedPost}
-                selectedPostId={selectedPostId}
               />
             </div>
           </div>

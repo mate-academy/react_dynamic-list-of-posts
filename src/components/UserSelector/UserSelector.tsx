@@ -1,20 +1,35 @@
 import React, { useEffect, useRef, useState } from 'react';
 import cn from 'classnames';
 import { User } from '../../types/User';
+import { getUsers } from '../../api/posts';
 
 type Props = {
-  users: User[];
   selectedUserId: number;
   handleSelectUser: (userId: number) => void;
 };
 export const UserSelector: React.FC<Props> = React.memo(({
-  users,
   selectedUserId,
   handleSelectUser,
 }) => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [isUsersLoadingError, setIsUsersLoadingError] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const selectedUser = users.find(user => user.id === selectedUserId);
+
+  const getUsersFromServer = async () => {
+    try {
+      const usersFromServer = await getUsers();
+
+      setUsers(usersFromServer);
+    } catch (error) {
+      setIsUsersLoadingError(true);
+    }
+  };
+
+  useEffect(() => {
+    getUsersFromServer();
+  }, []);
 
   const handleClick = (userId: number) => {
     handleSelectUser(userId);
@@ -67,21 +82,32 @@ export const UserSelector: React.FC<Props> = React.memo(({
       </div>
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          {users.map(user => (
-            <a
-              key={user.id}
-              href={`/#user-${user.id}`}
-              className={cn('dropdown-item',
-                { 'is-active': selectedUserId === user.id })}
-              onClick={() => {
-                handleClick(user.id);
-              }}
+        {isUsersLoadingError
+          ? (
+            <div
+              className="notification is-danger"
+              data-cy="PostsLoadingError"
             >
-              {user.name}
-            </a>
-          ))}
-        </div>
+              Something went wrong!
+            </div>
+          )
+          : (
+            <div className="dropdown-content">
+              { users.map(user => (
+                <a
+                  key={user.id}
+                  href={`#user-${user.id}`}
+                  className={cn('dropdown-item',
+                    { 'is-active': selectedUserId === user.id })}
+                  onClick={() => {
+                    handleClick(user.id);
+                  }}
+                >
+                  {user.name}
+                </a>
+              ))}
+            </div>
+          )}
       </div>
     </div>
   );

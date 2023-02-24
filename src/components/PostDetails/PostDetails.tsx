@@ -7,13 +7,9 @@ import cm from '../../types/Comment';
 
 type Props = {
   post: Post | null;
-  selectedPostId: number;
 };
 
-export const PostDetails: React.FC<Props> = ({
-  post,
-  selectedPostId,
-}) => {
+export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<cm[]>([]);
   const [commentsLoadingError, setCommentsLoadingError] = useState(false);
   const [isCommentsLoading, setIsCommentsLoading] = useState(false);
@@ -52,9 +48,11 @@ export const PostDetails: React.FC<Props> = ({
     if (isCommentSectionShow) {
       setIsCommentSectionShow(false);
     }
-  }, [selectedPostId]);
+  }, [post?.id]);
 
   const handleDeleteComment = async (commentId: number) => {
+    const commentToDelete = comments.find(comment => comment.id === commentId);
+
     setComments(prevComments => prevComments
       .filter(comment => comment.id !== commentId));
     setIsCommentSectionShow(false);
@@ -62,6 +60,11 @@ export const PostDetails: React.FC<Props> = ({
       await deleteComment(commentId);
     } catch {
       setIsDeletionError(true);
+      if (commentToDelete) {
+        setComments(prevComments => (
+          [...prevComments, commentToDelete]
+        ));
+      }
     }
   };
 
@@ -168,7 +171,7 @@ export const PostDetails: React.FC<Props> = ({
             {isCommentSectionShow
             && (
               <NewCommentForm
-                selectedPostId={selectedPostId}
+                selectedPostId={post.id}
                 handleAddCommentToState={handleAddCommentToState}
               />
             )}
