@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +8,57 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { User } from './types/User';
+import { getUsers } from './utils/users';
+import { Post } from './types/Post';
+import { getUserPosts } from './utils/posts';
 
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[] | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [isError, setIsError] = useState(false);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(false);
+  const [isProcessed, setIsProcessed] = useState(false);
+
+  useEffect(() => {
+    setIsError(false);
+
+    getUsers()
+      .then(usersFromServer => {
+        const validNames = usersFromServer
+          .filter(user => /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/gm.test(user.name));
+
+        setUsers(validNames);
+      })
+      .catch(() => setIsError(true));
+  }, []);
+
+  const loadPosts = async () => {
+    if (!selectedUserId) {
+      return;
+    }
+
+    setIsLoadingPosts(true);
+    setIsProcessed(false);
+
+    try {
+      const postFromServer = await getUserPosts(selectedUserId);
+
+      setPosts(postFromServer);
+    } catch {
+      setIsError(true);
+    } finally {
+      setIsLoadingPosts(false);
+      setIsProcessed(true);
+    }
+  };
+
+  useEffect(() => {
+    loadPosts();
+  }, [selectedUserId]);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,28 +66,50 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  users={users}
+                  selectedUserId={selectedUserId}
+                  setSelectedUserId={setSelectedUserId}
+                  setSelectedPostId={setSelectedPostId}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectedUserId && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isLoadingPosts && (
+                  <Loader />
+                )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {isError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Unable to load posts!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {posts.length > 0 && !isLoadingPosts && (
+                  <PostsList
+                    posts={posts}
+                    selectedPostId={selectedPostId}
+                    setSelectedPostId={setSelectedPostId}
+                  />
+                )}
 
-                <PostsList />
+                {!posts.length && isProcessed && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -50,12 +121,16 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPostId },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
+            {selectedPostId && (
+              <div className="tile is-child box is-success ">
+                <PostDetails
+                  selectedPostId={selectedPostId}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
