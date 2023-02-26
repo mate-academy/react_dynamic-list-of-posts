@@ -33,15 +33,13 @@ export const App: React.FC = () => {
   const handleChoosePost = (choosePost: Post) => {
     if (choosePost.id === post?.id) {
       setPost(null);
-      setComments([]);
-
-      return;
     }
 
     setPost(choosePost);
   };
 
   useEffect(() => {
+    setComments([]);
     if (post) {
       const onLoadGetComments = async () => {
         try {

@@ -64,7 +64,7 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {!comments.length ? (
+          {!isLoaderComments && !isHasError && (!comments.length ? (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -96,14 +96,14 @@ export const PostDetails: React.FC<Props> = ({
                   </div>
 
                   <div className="message-body" data-cy="CommentBody">
-                    Some comment
+                    {comment.body}
                   </div>
                 </article>
               ))}
             </>
-          )}
+          ))}
 
-          {!isWriteComment && (
+          {!isLoaderComments && !isHasError && !isWriteComment && (
             <button
               data-cy="WriteCommentButton"
               type="button"
