@@ -13,13 +13,14 @@ import { getPosts } from './utils/serverHelper';
 
 export const App: React.FC = () => {
   const [userSelectedId, setUserSelectedId] = useState(0);
-  const [isVisibleComments, setIsVisibleComments] = useState(false);
+  const [postSelected, setPostSelected] = useState<Post | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isVisibleLoader, setIsVisibleLoader] = useState(false);
   const [isVisiblePosts, setIsVisiblePosts] = useState(false);
   const [isVisiblePostError, setIsVisiblePostError] = useState(false);
   const [isVisibleEmptyPostMessage,
     setIsVisibleEmptyPostMessage] = useState(false);
+
   const loadPosts = async () => {
     if (userSelectedId === 0) {
       return;
@@ -50,8 +51,12 @@ export const App: React.FC = () => {
     loadPosts();
   }, [userSelectedId]);
 
-  const handlesetIsVisibleComments = (value: boolean) => {
-    setIsVisibleComments(value);
+  const handleSelectPost = (post: Post) => {
+    if (postSelected?.id === post.id) {
+      setPostSelected(null);
+    } else {
+      setPostSelected(post);
+    }
   };
 
   return (
@@ -81,15 +86,6 @@ export const App: React.FC = () => {
                     data-cy="PostsLoadingError"
                   >
                     Something went wrong!
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handlesetIsVisibleComments(false);
-                      }}
-                    >
-                      click
-                    </button>
                   </div>
                 )}
 
@@ -102,29 +98,31 @@ export const App: React.FC = () => {
                 )}
 
                 {isVisiblePosts && (
-                  <PostsList posts={posts} />
+                  <PostsList
+                    posts={posts}
+                    postSelected={postSelected}
+                    handleSelectPost={handleSelectPost}
+                  />
                 )}
 
               </div>
             </div>
           </div>
 
-          {isVisibleComments && (
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                'Sidebar--open',
-              )}
-            >
-              <div className="tile is-child box is-success ">
-                <PostDetails />
-              </div>
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': postSelected !== null },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              <PostDetails post={postSelected} />
             </div>
-          )}
+          </div>
         </div>
       </div>
     </main>
