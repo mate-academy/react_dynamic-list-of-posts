@@ -53,20 +53,10 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!commentName) {
-      setErrorName(true);
-
-      return;
-    }
-
-    if (!email) {
-      setErrorEmail(true);
-
-      return;
-    }
-
-    if (!body) {
-      setErrorBody(true);
+    if (!commentName || !email || !body) {
+      setErrorName(!commentName);
+      setErrorEmail(!email);
+      setErrorBody(!body);
 
       return;
     }
