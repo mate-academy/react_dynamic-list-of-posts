@@ -23,16 +23,14 @@ export const App: React.FC = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoader, setIsLoader] = useState(false);
-  const [isLoaderComments, setIsLoaderComments] = useState(false);
-  const [isHasError, setIsHasError] = useState(false);
-
-  const handleChooseUser = (chooseUser: User) => {
-    setUser(chooseUser);
-  };
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const handleChoosePost = (choosePost: Post) => {
     if (choosePost.id === post?.id) {
       setPost(null);
+
+      return;
     }
 
     setPost(choosePost);
@@ -43,15 +41,15 @@ export const App: React.FC = () => {
     if (post) {
       const onLoadGetComments = async () => {
         try {
-          setIsLoaderComments(true);
+          setIsCommentsLoading(true);
           const commentsData = await getComments(post.id);
 
           setComments(prevComments => [...prevComments, ...commentsData]);
         } catch (error) {
-          setIsHasError(true);
-          warningTimer(setIsHasError, false, 3000);
+          setIsError(true);
+          warningTimer(setIsError, false, 3000);
         } finally {
-          setIsLoaderComments(false);
+          setIsCommentsLoading(false);
         }
       };
 
@@ -68,8 +66,8 @@ export const App: React.FC = () => {
 
           setPosts(postsData);
         } catch (error) {
-          setIsHasError(true);
-          warningTimer(setIsHasError, false, 3000);
+          setIsError(true);
+          warningTimer(setIsError, false, 3000);
         } finally {
           setIsLoader(false);
         }
@@ -86,8 +84,8 @@ export const App: React.FC = () => {
 
         setUsers(usersData);
       } catch (error) {
-        setIsHasError(true);
-        warningTimer(setIsHasError, false, 3000);
+        setIsError(true);
+        warningTimer(setIsError, false, 3000);
       }
     };
 
@@ -104,7 +102,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   users={users}
                   user={user}
-                  handleChooseUser={handleChooseUser}
+                  onSetUser={setUser}
                 />
               </div>
 
@@ -117,7 +115,7 @@ export const App: React.FC = () => {
 
                 {isLoader && <Loader />}
 
-                {isHasError && (
+                {isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -126,24 +124,20 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!isHasError && user && !isLoader && (
-                  <>
-                    {!posts.length ? (
-                      <div
-                        className="notification is-warning"
-                        data-cy="NoPostsYet"
-                      >
-                        No posts yet
-                      </div>
-                    ) : (
-                      <PostsList
-                        posts={posts}
-                        openPost={post}
-                        handleChoosePost={handleChoosePost}
-                      />
-                    )}
-                  </>
-                )}
+                {!isError && user && !isLoader && (!posts.length ? (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                ) : (
+                  <PostsList
+                    posts={posts}
+                    openPost={post}
+                    handleChoosePost={handleChoosePost}
+                  />
+                ))}
               </div>
             </div>
           </div>
@@ -164,7 +158,7 @@ export const App: React.FC = () => {
                   post={post}
                   comments={comments}
                   setComments={setComments}
-                  isLoaderComments={isLoaderComments}
+                  isLoaderComments={isCommentsLoading}
                 />
               </div>
             </div>

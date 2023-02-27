@@ -27,11 +27,11 @@ export const PostDetails: React.FC<Props> = ({
   const [isWriteComment, setIsWriteComment] = useState(false);
   const [isHasError, setIsHasError] = useState(false);
 
-  const removeComment = async (commentRemove: Comment) => {
+  const removeComment = async (commentRemoveId: number) => {
     try {
-      await deleteComment(commentRemove.id);
+      await deleteComment(commentRemoveId);
       setComments(prevComments => prevComments
-        .filter(({ id }) => id !== commentRemove.id));
+        .filter(({ id }) => id !== commentRemoveId));
     } catch {
       setIsHasError(true);
       warningTimer(setIsHasError, false, 3000);
@@ -71,35 +71,44 @@ export const PostDetails: React.FC<Props> = ({
           ) : (
             <>
               <p className="title is-4">Comments:</p>
-              {comments.map(comment => (
-                <article
-                  className="message is-small"
-                  data-cy="Comment"
-                  key={comment.id}
-                >
-                  <div className="message-header">
-                    <a
-                      href={`mailto:${comment.email}`}
-                      data-cy="CommentAuthor"
-                    >
-                      {comment.name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => removeComment(comment)}
-                    >
-                      delete button
-                    </button>
-                  </div>
+              {comments.map(comment => {
+                const {
+                  id,
+                  email,
+                  name,
+                  body,
+                } = comment;
 
-                  <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
-                  </div>
-                </article>
-              ))}
+                return (
+                  <article
+                    className="message is-small"
+                    data-cy="Comment"
+                    key={id}
+                  >
+                    <div className="message-header">
+                      <a
+                        href={`mailto:${email}`}
+                        data-cy="CommentAuthor"
+                      >
+                        {name}
+                      </a>
+                      <button
+                        data-cy="CommentDelete"
+                        type="button"
+                        className="delete is-small"
+                        aria-label="delete"
+                        onClick={() => removeComment(id)}
+                      >
+                        delete button
+                      </button>
+                    </div>
+
+                    <div className="message-body" data-cy="CommentBody">
+                      {body}
+                    </div>
+                  </article>
+                );
+              })}
             </>
           ))}
 

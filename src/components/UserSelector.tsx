@@ -5,13 +5,13 @@ import { User } from '../types/User';
 type Props = {
   users: User[];
   user: User | null;
-  handleChooseUser: (user: User) => void;
+  onSetUser: (user: User) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   user: chooseUser,
-  handleChooseUser,
+  onSetUser,
 }) => {
   const [isActive, setIsActive] = useState(false);
 
@@ -47,7 +47,7 @@ export const UserSelector: React.FC<Props> = ({
                 href={`#user-${user.id}`}
                 className="dropdown-item"
                 onClick={() => {
-                  handleChooseUser(user);
+                  onSetUser(user);
                   setIsActive(false);
                 }}
               >

@@ -15,16 +15,18 @@ export const NewCommentForm: React.FC<Props> = ({
   setComments,
   setIsHasError,
 }) => {
-  const [isLoader, setIsLoader] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [errorName, setErrorName] = useState(false);
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorBody, setErrorBody] = useState(false);
-  const [newComment, setNewComment] = useState<CommentData>({
+
+  const DefaultNewComment = {
     postId: postId || 0,
     name: '',
     email: '',
     body: '',
-  });
+  };
+  const [newComment, setNewComment] = useState<CommentData>(DefaultNewComment);
 
   const { name: commentName, email, body } = newComment;
 
@@ -62,7 +64,7 @@ export const NewCommentForm: React.FC<Props> = ({
     }
 
     try {
-      setIsLoader(true);
+      setIsLoading(true);
       const commentData = await createComment(newComment);
 
       setComments(prevComments => [...prevComments, commentData]);
@@ -70,7 +72,7 @@ export const NewCommentForm: React.FC<Props> = ({
       setIsHasError(true);
       warningTimer(setIsHasError, false, 3000);
     } finally {
-      setIsLoader(false);
+      setIsLoading(false);
       const bodyDelete = 'body';
 
       setNewComment({
@@ -83,12 +85,11 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleReset = (e: React.FormEvent) => {
     e.preventDefault();
 
-    setNewComment({
-      postId: postId || 0,
-      name: '',
-      email: '',
-      body: '',
-    });
+    setNewComment(DefaultNewComment);
+
+    setErrorName(false);
+    setErrorEmail(false);
+    setErrorBody(false);
   };
 
   return (
@@ -209,7 +210,7 @@ export const NewCommentForm: React.FC<Props> = ({
             type="submit"
             className={classNames(
               'button is-link',
-              { 'is-loading': isLoader },
+              { 'is-loading': isLoading },
             )}
           >
             Add
