@@ -1,5 +1,5 @@
 import { Post } from '../types/Post';
-import { Comment } from '../types/Comment';
+import { Comment, CommentData } from '../types/Comment';
 import { User } from '../types/User';
 import { client } from './fetchClient';
 
@@ -23,6 +23,12 @@ export const getComments = async (postId: number) => {
 
 export const deleteComment = async (commentId: number) => {
   const response = await client.delete(`/comments/${commentId}`);
+
+  return response;
+};
+
+export const addComment = async (comment: CommentData) => {
+  const response = await client.post<Comment>('/comments', comment);
 
   return response;
 };

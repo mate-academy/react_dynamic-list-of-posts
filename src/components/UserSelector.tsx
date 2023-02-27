@@ -1,6 +1,5 @@
 import React, {
   useEffect,
-  // useMemo,
   useRef,
   useState,
 } from 'react';
@@ -11,13 +10,18 @@ import { getUsers } from '../utils/serverHelper';
 type Props = {
   setUserSelectedId: (id: number) => void,
   userSelectedId: number,
+  setIsVisiblePostDetails: (value: boolean) => void,
+  setIsVisibleSideBar: (value: boolean) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
   setUserSelectedId,
   userSelectedId,
+  setIsVisiblePostDetails,
+  setIsVisibleSideBar,
 }) => {
   const [users, setUsers] = useState<User[]>([]);
+  const [isError, setIsError] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -26,9 +30,8 @@ export const UserSelector: React.FC<Props> = ({
       const usersFromServer = await getUsers();
 
       setUsers(usersFromServer);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
+    } catch {
+      setIsError(true);
     }
   };
 
@@ -58,9 +61,21 @@ export const UserSelector: React.FC<Props> = ({
   const handleSelectUser = (newUserId: number) => {
     setShowUsers(false);
     setUserSelectedId(newUserId);
+    setIsVisiblePostDetails(false);
+    setIsVisibleSideBar(false);
   };
 
   const selectedUser = users.find(user => user.id === userSelectedId)?.name;
+
+  if (isError) {
+    return (
+      <div
+        className="notification is-danger"
+      >
+        Something went wrong!
+      </div>
+    );
+  }
 
   return (
     <div
@@ -98,7 +113,9 @@ export const UserSelector: React.FC<Props> = ({
           {users.map(user => (
             <a
               href={`#user-${user.id}`}
-              className="dropdown-item"
+              // className="dropdown-item"
+              className={classNames('dropdown-item',
+                { 'is-active': userSelectedId === user.id })}
               key={user.id}
               onClick={() => {
                 handleSelectUser(user.id);

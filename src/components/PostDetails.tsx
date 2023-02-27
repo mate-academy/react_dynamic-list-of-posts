@@ -1,24 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { Comment } from '../types/Comment';
+import { Comment, CommentData } from '../types/Comment';
 import { Post } from '../types/Post';
-import { deleteComment, getComments } from '../utils/serverHelper';
+import { addComment, deleteComment, getComments } from '../utils/serverHelper';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 type Props = {
   post: Post | null,
+  skipAllErrors: boolean;
 };
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
+export const PostDetails: React.FC<Props> = ({
+  post,
+  skipAllErrors,
+}) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isVisibleLoader, setIsVisibleLoader] = useState(false);
   const [isVisibleComments, setIsVisibleComments] = useState(false);
+  const [isVisibleNewForm, setIsVisibleNewForm] = useState(false);
+  const [isVisibleWriteComment, setIsVisibleWriteComment] = useState(false);
   const [isVisibleCommentError, setIsVisibleCommentError] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const [isVisibleEmptyCommentMessage,
     setIsVisibleEmptyCommentMessage] = useState(false);
+  const [isLoadingNewComment, setIsLoadingNewComment] = useState(false);
 
   const loadComments = async () => {
-    // setComments([]);
     if (post === null) {
       return;
     }
@@ -32,6 +39,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
       setComments(commentsFromServer);
       setIsVisibleCommentError(false);
+      setIsVisibleWriteComment(true);
       if (commentsFromServer.length === 0) {
         setIsVisibleEmptyCommentMessage(true);
       } else {
@@ -44,36 +52,65 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     }
   };
 
-  // useEffect(() => {
-  //   loadComments();
-  // }, [post]);
-
   useEffect(() => {
     loadComments();
+    setIsVisibleNewForm(false);
   }, [post]);
 
-  const handleOnDelete = async (id: number) => {
+  const handleOnDelete = (id: number) => {
     if (post === null) {
       return;
     }
 
     try {
-      await deleteComment(id);
+      deleteComment(id);
       const preparedComments = comments.filter(comment => comment.id !== id);
 
       if (preparedComments.length === 0) {
         setIsVisibleEmptyCommentMessage(true);
         setIsVisibleComments(false);
+      } else {
+        setIsVisibleComments(true);
+        setIsVisibleEmptyCommentMessage(false);
       }
 
       setComments(preparedComments);
-
-      // await getPosts(post.id);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error);
+    } catch {
+      setHasError(true);
     }
   };
+
+  const handleOnAdd = async (newComment: CommentData) => {
+    const preparedComment = { ...newComment, postId: post?.id };
+
+    setIsLoadingNewComment(true);
+
+    try {
+      const comment = await addComment(preparedComment);
+
+      setComments(prev => [...prev, comment]);
+      setIsVisibleEmptyCommentMessage(false);
+    } catch {
+      setHasError(true);
+    } finally {
+      setIsLoadingNewComment(false);
+    }
+  };
+
+  const handleShowNewForm = () => {
+    setIsVisibleNewForm(true);
+  };
+
+  if (hasError) {
+    return (
+      <div
+        className="notification is-danger"
+        data-cy="CommentsError"
+      >
+        Something went wrong
+      </div>
+    );
+  }
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -142,9 +179,26 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </>
           )}
 
+          {isVisibleNewForm && (
+            <NewCommentForm
+              handleOnAdd={handleOnAdd}
+              isLoadingNewComment={isLoadingNewComment}
+              skipAllErrors={skipAllErrors}
+            />
+          )}
+
+          {(isVisibleWriteComment && !isVisibleNewForm) && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={handleShowNewForm}
+            >
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
       </div>
     </div>
   );

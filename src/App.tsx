@@ -17,9 +17,12 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isVisibleLoader, setIsVisibleLoader] = useState(false);
   const [isVisiblePosts, setIsVisiblePosts] = useState(false);
+  const [isVisiblePostDetails, setIsVisiblePostDetails] = useState(false);
+  const [isVisibleSideBar, setIsVisibleSideBar] = useState(false);
   const [isVisiblePostError, setIsVisiblePostError] = useState(false);
   const [isVisibleEmptyPostMessage,
     setIsVisibleEmptyPostMessage] = useState(false);
+  let skipAllErrors = true;
 
   const loadPosts = async () => {
     if (userSelectedId === 0) {
@@ -53,9 +56,14 @@ export const App: React.FC = () => {
 
   const handleSelectPost = (post: Post) => {
     if (postSelected?.id === post.id) {
+      setIsVisibleSideBar(false);
+      setIsVisiblePostDetails(false);
       setPostSelected(null);
     } else {
       setPostSelected(post);
+      skipAllErrors = true;
+      setIsVisibleSideBar(true);
+      setIsVisiblePostDetails(true);
     }
   };
 
@@ -69,6 +77,8 @@ export const App: React.FC = () => {
                 <UserSelector
                   setUserSelectedId={setUserSelectedId}
                   userSelectedId={userSelectedId}
+                  setIsVisiblePostDetails={setIsVisiblePostDetails}
+                  setIsVisibleSideBar={setIsVisibleSideBar}
                 />
               </div>
 
@@ -116,13 +126,20 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': postSelected !== null },
+              { 'Sidebar--open': isVisibleSideBar },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails post={postSelected} />
-            </div>
+
+            {isVisiblePostDetails && (
+              <div className="tile is-child box is-success ">
+                <PostDetails
+                  post={postSelected}
+                  skipAllErrors={skipAllErrors}
+                />
+              </div>
+            )}
           </div>
+
         </div>
       </div>
     </main>
