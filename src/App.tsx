@@ -41,14 +41,12 @@ export const App: React.FC = () => {
   }, []);
 
   const handleSelectedUser = async (userId: number) => {
-    setSelectedUserId(userId);
     setLoader(true);
+    setSelectedUserId(userId);
     setSelectedPostId(0);
 
     try {
-      const postsFromServer = await getPosts(userId);
-
-      setPosts(postsFromServer);
+      getPosts(userId).then(setPosts);
     } catch {
       setPostLoadingError(true);
     } finally {
@@ -56,14 +54,12 @@ export const App: React.FC = () => {
     }
   };
 
-  const handleSelectedPost = async (postId: number) => {
+  const handleSelectedPost = (postId: number) => {
     setFormVisability(false);
     setCommentsLoader(true);
     setSelectedPostId(postId);
     try {
-      const commentsFromServer = await getComments(postId);
-
-      setComments(commentsFromServer);
+      getComments(postId).then(setComments);
     } catch {
       setCommentsLoadingError(true);
     } finally {
@@ -75,7 +71,7 @@ export const App: React.FC = () => {
     setFormVisability(boolean);
   };
 
-  const handleCommentAdd = async (
+  const handleCommentAdd = (
     author: string,
     email: string,
     comment: string,
@@ -90,7 +86,7 @@ export const App: React.FC = () => {
     };
 
     try {
-      await addComment(selectedPostId, newComment);
+      addComment(selectedPostId, newComment);
       setComments((currentComments) => [...currentComments, newComment]);
     } catch {
       setCommentAddError(true);
@@ -99,12 +95,12 @@ export const App: React.FC = () => {
     }
   };
 
-  const handleCommentDelete = async (commentId: number) => {
+  const handleCommentDelete = (commentId: number) => {
     try {
       setComments((currentComments) => (
         currentComments.filter((comment) => comment.id !== commentId)
       ));
-      await deleteComment(commentId);
+      deleteComment(commentId);
     } catch {
       setCommentDeleteError(true);
     }
