@@ -42,29 +42,25 @@ export const App: React.FC = () => {
 
   const handleSelectedUser = async (userId: number) => {
     setLoader(true);
+
     setSelectedUserId(userId);
     setSelectedPostId(0);
 
-    try {
-      getPosts(userId).then(setPosts);
-    } catch {
-      setPostLoadingError(true);
-    } finally {
-      setLoader(false);
-    }
+    getPosts(userId)
+      .then(setPosts)
+      .catch(() => setPostLoadingError(true))
+      .finally(() => setLoader(false));
   };
 
   const handleSelectedPost = (postId: number) => {
     setFormVisability(false);
     setCommentsLoader(true);
     setSelectedPostId(postId);
-    try {
-      getComments(postId).then(setComments);
-    } catch {
-      setCommentsLoadingError(true);
-    } finally {
-      setCommentsLoader(false);
-    }
+
+    getComments(postId)
+      .then(setComments)
+      .catch(() => setCommentsLoadingError(true))
+      .finally(() => setCommentsLoader(false));
   };
 
   const handleFormVisability = (boolean: boolean) => {
@@ -76,7 +72,6 @@ export const App: React.FC = () => {
     email: string,
     comment: string,
   ) => {
-    setCommentAdding(true);
     const newComment = {
       id: 0,
       postId: selectedPostId,
@@ -85,25 +80,24 @@ export const App: React.FC = () => {
       body: comment,
     };
 
-    try {
-      addComment(selectedPostId, newComment);
-      setComments((currentComments) => [...currentComments, newComment]);
-    } catch {
-      setCommentAddError(true);
-    } finally {
-      setCommentAdding(false);
-    }
+    setCommentAdding(true);
+
+    addComment(selectedPostId, newComment)
+      .then(() => {
+        setComments((currentComments) => [...currentComments, newComment]);
+      })
+      .catch(() => setCommentAddError(true))
+      .finally(() => setCommentAdding(false));
   };
 
   const handleCommentDelete = (commentId: number) => {
-    try {
-      setComments((currentComments) => (
-        currentComments.filter((comment) => comment.id !== commentId)
-      ));
-      deleteComment(commentId);
-    } catch {
-      setCommentDeleteError(true);
-    }
+    deleteComment(commentId)
+      .then(() => {
+        setComments((currentComments) => (
+          currentComments.filter((comment) => comment.id !== commentId)
+        ));
+      })
+      .catch(() => setCommentDeleteError(true));
   };
 
   return (
