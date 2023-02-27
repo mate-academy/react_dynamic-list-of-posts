@@ -22,7 +22,7 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
-  const [isLoader, setIsLoader] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
@@ -39,57 +39,52 @@ export const App: React.FC = () => {
   useEffect(() => {
     setComments([]);
     if (post) {
-      const onLoadGetComments = async () => {
+      (async () => {
         try {
           setIsCommentsLoading(true);
           const commentsData = await getComments(post.id);
 
           setComments(prevComments => [...prevComments, ...commentsData]);
-        } catch (error) {
+        } catch {
           setIsError(true);
           warningTimer(setIsError, false, 3000);
         } finally {
           setIsCommentsLoading(false);
         }
-      };
-
-      onLoadGetComments();
+      })();
     }
   }, [post]);
 
   useEffect(() => {
+    setPost(null);
     if (user) {
-      const onLoadGetPosts = async () => {
+      (async () => {
         try {
-          setIsLoader(true);
+          setIsLoading(true);
           const postsData = await getPosts(user.id);
 
           setPosts(postsData);
-        } catch (error) {
+        } catch {
           setIsError(true);
           warningTimer(setIsError, false, 3000);
         } finally {
-          setIsLoader(false);
+          setIsLoading(false);
         }
-      };
-
-      onLoadGetPosts();
+      })();
     }
   }, [user]);
 
   useEffect(() => {
-    const onLoadGetUsers = async () => {
+    (async () => {
       try {
         const usersData = await getUsers();
 
         setUsers(usersData);
-      } catch (error) {
+      } catch {
         setIsError(true);
         warningTimer(setIsError, false, 3000);
       }
-    };
-
-    onLoadGetUsers();
+    })();
   }, []);
 
   return (
@@ -113,7 +108,7 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {isLoader && <Loader />}
+                {isLoading && <Loader />}
 
                 {isError && (
                   <div
@@ -124,7 +119,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!isError && user && !isLoader && (!posts.length ? (
+                {!isError && user && !isLoading && (!posts.length ? (
                   <div
                     className="notification is-warning"
                     data-cy="NoPostsYet"

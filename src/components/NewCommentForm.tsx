@@ -16,9 +16,16 @@ export const NewCommentForm: React.FC<Props> = ({
   setIsHasError,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [errorName, setErrorName] = useState(false);
-  const [errorEmail, setErrorEmail] = useState(false);
-  const [errorBody, setErrorBody] = useState(false);
+  const DefaultError = {
+    errorName: false,
+    errorEmail: false,
+    errorBody: false,
+  };
+  const nameError = 'errorName';
+  const emailError = 'errorEmail';
+  const bodyError = 'errorBody';
+  const [isError, setIsError] = useState(DefaultError);
+  const { errorName, errorBody, errorEmail } = isError;
 
   const DefaultNewComment = {
     postId: postId || 0,
@@ -36,15 +43,24 @@ export const NewCommentForm: React.FC<Props> = ({
     const { name, value } = e.target;
 
     if (commentName) {
-      setErrorName(false);
+      setIsError({
+        ...isError,
+        [nameError]: false,
+      });
     }
 
     if (email) {
-      setErrorEmail(false);
+      setIsError({
+        ...isError,
+        [emailError]: false,
+      });
     }
 
     if (body) {
-      setErrorBody(false);
+      setIsError({
+        ...isError,
+        [bodyError]: false,
+      });
     }
 
     setNewComment({
@@ -56,9 +72,12 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!commentName || !email || !body) {
-      setErrorName(!commentName);
-      setErrorEmail(!email);
-      setErrorBody(!body);
+      setIsError({
+        ...isError,
+        [nameError]: !commentName,
+        [emailError]: !email,
+        [bodyError]: !body,
+      });
 
       return;
     }
@@ -68,7 +87,7 @@ export const NewCommentForm: React.FC<Props> = ({
       const commentData = await createComment(newComment);
 
       setComments(prevComments => [...prevComments, commentData]);
-    } catch (error) {
+    } catch {
       setIsHasError(true);
       warningTimer(setIsHasError, false, 3000);
     } finally {
@@ -87,9 +106,12 @@ export const NewCommentForm: React.FC<Props> = ({
 
     setNewComment(DefaultNewComment);
 
-    setErrorName(false);
-    setErrorEmail(false);
-    setErrorBody(false);
+    setIsError({
+      ...isError,
+      [nameError]: false,
+      [emailError]: false,
+      [bodyError]: false,
+    });
   };
 
   return (

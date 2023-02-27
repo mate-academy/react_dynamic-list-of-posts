@@ -25,7 +25,7 @@ export const PostDetails: React.FC<Props> = ({
   isLoaderComments,
 }) => {
   const [isWriteComment, setIsWriteComment] = useState(false);
-  const [isHasError, setIsHasError] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const removeComment = async (commentRemoveId: number) => {
     try {
@@ -33,8 +33,8 @@ export const PostDetails: React.FC<Props> = ({
       setComments(prevComments => prevComments
         .filter(({ id }) => id !== commentRemoveId));
     } catch {
-      setIsHasError(true);
-      warningTimer(setIsHasError, false, 3000);
+      setIsError(true);
+      warningTimer(setIsError, false, 3000);
     }
   };
 
@@ -58,61 +58,57 @@ export const PostDetails: React.FC<Props> = ({
         <div className="block">
           {isLoaderComments && <Loader />}
 
-          {isHasError && (
+          {isError && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
           )}
 
-          {!isLoaderComments && !isHasError && (!comments.length ? (
+          {!isLoaderComments && !isError && (!comments.length ? (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           ) : (
             <>
               <p className="title is-4">Comments:</p>
-              {comments.map(comment => {
-                const {
-                  id,
-                  email,
-                  name,
-                  body,
-                } = comment;
+              {comments.map(({
+                id,
+                email,
+                name,
+                body,
+              }) => (
+                <article
+                  className="message is-small"
+                  data-cy="Comment"
+                  key={id}
+                >
+                  <div className="message-header">
+                    <a
+                      href={`mailto:${email}`}
+                      data-cy="CommentAuthor"
+                    >
+                      {name}
+                    </a>
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={() => removeComment(id)}
+                    >
+                      delete button
+                    </button>
+                  </div>
 
-                return (
-                  <article
-                    className="message is-small"
-                    data-cy="Comment"
-                    key={id}
-                  >
-                    <div className="message-header">
-                      <a
-                        href={`mailto:${email}`}
-                        data-cy="CommentAuthor"
-                      >
-                        {name}
-                      </a>
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
-                        onClick={() => removeComment(id)}
-                      >
-                        delete button
-                      </button>
-                    </div>
-
-                    <div className="message-body" data-cy="CommentBody">
-                      {body}
-                    </div>
-                  </article>
-                );
-              })}
+                  <div className="message-body" data-cy="CommentBody">
+                    {body}
+                  </div>
+                </article>
+              ))}
             </>
           ))}
 
-          {!isLoaderComments && !isHasError && !isWriteComment && (
+          {!isLoaderComments && !isError && !isWriteComment && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -128,7 +124,7 @@ export const PostDetails: React.FC<Props> = ({
           <NewCommentForm
             postId={post?.id}
             setComments={setComments}
-            setIsHasError={setIsHasError}
+            setIsHasError={setIsError}
           />
         )}
       </div>
