@@ -82,41 +82,42 @@ export const PostDetails: React.FC<Props> = ({
         {hasComments && (
           <div className="block">
             <p className="title is-4">Comments:</p>
-
-            {comments.map((comment) => (
-              <article
-                className="message is-small"
-                key={comment.id}
-                data-cy="Comment"
-              >
-                <div className="message-header">
-                  <a
-                    href="mailto:misha@mate.academy"
-                    data-cy="CommentAuthor"
-                  >
-                    {comment.name}
-                  </a>
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                    onClick={() => {
-                      handleCommentDelete(comment.id);
-                    }}
-                  >
-                    delete button
-                  </button>
-                </div>
-
-                <div
-                  className="message-body"
-                  data-cy="CommentBody"
+            <ul id="comments">
+              {comments.map((comment) => (
+                <li
+                  className="message is-small"
+                  key={comment.id}
+                  data-cy="Comment"
                 >
-                  {comment.body}
-                </div>
-              </article>
-            ))}
+                  <div className="message-header">
+                    <a
+                      href="mailto:misha@mate.academy"
+                      data-cy="CommentAuthor"
+                    >
+                      {comment.name}
+                    </a>
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={() => {
+                        handleCommentDelete(comment.id);
+                      }}
+                    >
+                      delete button
+                    </button>
+                  </div>
+
+                  <div
+                    className="message-body"
+                    data-cy="CommentBody"
+                  >
+                    {comment.body}
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 
