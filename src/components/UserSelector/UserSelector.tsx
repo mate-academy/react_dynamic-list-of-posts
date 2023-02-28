@@ -7,14 +7,16 @@ type Props = {
   selectedUserId: number;
   handleSelectUser: (userId: number) => void;
 };
+
 export const UserSelector: React.FC<Props> = React.memo(({
   selectedUserId,
   handleSelectUser,
 }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [isUsersLoadingError, setIsUsersLoadingError] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const selectedUser = users.find(user => user.id === selectedUserId);
 
   const getUsersFromServer = async () => {

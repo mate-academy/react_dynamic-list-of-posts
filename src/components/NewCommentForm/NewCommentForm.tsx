@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import cn from 'classnames';
 import { createComment } from '../../api/posts';
-import cm from '../../types/Comment';
+import { Comment } from '../../types/Comment';
 
 type Props = {
   selectedPostId: number;
-  handleAddCommentToState: (comment: cm) => void;
+  handleAddCommentToState: (comment: Comment) => void;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
@@ -27,7 +27,7 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const postComment = async () => {
-    const newPost = {
+    const newComment = {
       postId: selectedPostId,
       name,
       email,
@@ -37,7 +37,7 @@ export const NewCommentForm: React.FC<Props> = ({
     try {
       setIsCommentPosted(false);
 
-      const commentFromServer = await createComment(newPost);
+      const commentFromServer = await createComment(newComment);
 
       handleAddCommentToState(commentFromServer);
 

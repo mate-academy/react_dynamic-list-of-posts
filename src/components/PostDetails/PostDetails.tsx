@@ -3,14 +3,14 @@ import { Loader } from '../Loader';
 import { NewCommentForm } from '../NewCommentForm';
 import { Post } from '../../types/Post';
 import { deleteComment, getPostComments } from '../../api/posts';
-import cm from '../../types/Comment';
+import { Comment } from '../../types/Comment';
 
 type Props = {
-  post: Post | null;
+  post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<cm[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [commentsLoadingError, setCommentsLoadingError] = useState(false);
   const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [isCommentSectionShow, setIsCommentSectionShow] = useState(false);
@@ -25,23 +25,23 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const getCommentsFromServer = async () => {
     setComments([]);
     try {
-      if (post) {
-        setCommentLoaded(false);
-        setIsCommentsLoading(true);
+      setCommentLoaded(false);
+      setIsCommentsLoading(true);
 
-        const commentsFromServer = await getPostComments(post.id);
+      const commentsFromServer = await getPostComments(post.id);
 
-        setComments(commentsFromServer);
-        setIsCommentsLoading(false);
-        setCommentLoaded(true);
-      }
+      setComments(commentsFromServer);
+      setIsCommentsLoading(false);
+      setCommentLoaded(true);
     } catch {
       setCommentsLoadingError(true);
     }
   };
 
   useEffect(() => {
-    getCommentsFromServer();
+    if (post) {
+      getCommentsFromServer();
+    }
   }, [post]);
 
   useEffect(() => {
@@ -55,7 +55,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
     setComments(prevComments => prevComments
       .filter(comment => comment.id !== commentId));
-    setIsCommentSectionShow(false);
     try {
       await deleteComment(commentId);
     } catch {
@@ -68,117 +67,113 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     }
   };
 
-  const handleAddCommentToState = (comment: cm) => {
+  const handleAddCommentToState = (comment: Comment) => {
     setComments(prevComments => [...prevComments, comment]);
   };
 
   return (
-    <>
-      {post && (
-        <div className="content" data-cy="PostDetails">
-          <div className="content" data-cy="PostDetails">
-            <div className="block">
-              <h2 data-cy="PostTitle">
-                {`#${post.id}: ${post.title}`}
-              </h2>
+    <div className="content" data-cy="PostDetails">
+      <div className="content" data-cy="PostDetails">
+        <div className="block">
+          <h2 data-cy="PostTitle">
+            {`#${post.id}: ${post.title}`}
+          </h2>
 
-              <p data-cy="PostBody">
-                {post.body}
-              </p>
+          <p data-cy="PostBody">
+            {post.body}
+          </p>
+        </div>
+
+        <div className="block">
+          {isLoadingSuccessful && <Loader />}
+
+          {commentsLoadingError && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
             </div>
+          )}
 
-            <div className="block">
-              {isLoadingSuccessful && <Loader />}
+          {isCommentsLoaded && (
+            !comments.length
+              ? (
+                <p className="title is-4" data-cy="NoCommentsMessage">
+                  No comments yet
+                </p>
+              )
+              : (
+                <>
+                  <p className="title is-4">Comments:</p>
 
-              {commentsLoadingError && (
-                <div className="notification is-danger" data-cy="CommentsError">
-                  Something went wrong
-                </div>
-              )}
-
-              {isCommentsLoaded && (
-                !comments.length
-                  ? (
-                    <p className="title is-4" data-cy="NoCommentsMessage">
-                      No comments yet
-                    </p>
-                  )
-                  : (
-                    <>
-                      <p className="title is-4">Comments:</p>
-
-                      {comments.map(comment => (
-                        <article
-                          key={comment.id}
-                          className="message is-small"
-                          data-cy="Comment"
+                  {comments.map(comment => (
+                    <article
+                      key={comment.id}
+                      className="message is-small"
+                      data-cy="Comment"
+                    >
+                      <div className="message-header">
+                        <a
+                          href={`mailto:${comment.email}`}
+                          data-cy="CommentAuthor"
                         >
-                          <div className="message-header">
-                            <a
-                              href={`mailto:${comment.email}`}
-                              data-cy="CommentAuthor"
-                            >
-                              {comment.name}
-                            </a>
-                            <button
-                              data-cy="CommentDelete"
-                              type="button"
-                              className="delete is-small"
-                              aria-label="delete"
-                              onClick={() => {
-                                handleDeleteComment(comment.id);
-                              }}
-                            >
-                              delete button
-                            </button>
-                          </div>
+                          {comment.name}
+                        </a>
+                        <button
+                          data-cy="CommentDelete"
+                          type="button"
+                          className="delete is-small"
+                          aria-label="delete"
+                          onClick={() => {
+                            handleDeleteComment(comment.id);
+                          }}
+                        >
+                          delete button
+                        </button>
+                      </div>
 
-                          <div className="message-body" data-cy="CommentBody">
-                            {comment.body}
-                          </div>
-                          {isDeletionError && (
-                            <div className="notification is-danger">
-                              <button
-                                type="button"
-                                aria-label="delete-comment-button"
-                                className="delete"
-                                onClick={() => {
-                                  setIsDeletionError(false);
-                                }}
-                              />
-                              Can`t delete comment
-                            </div>
-                          )}
-                        </article>
-                      ))}
-                    </>
+                      <div className="message-body" data-cy="CommentBody">
+                        {comment.body}
+                      </div>
+                      {isDeletionError && (
+                        <div className="notification is-danger">
+                          <button
+                            type="button"
+                            aria-label="delete-comment-button"
+                            className="delete"
+                            onClick={() => {
+                              setIsDeletionError(false);
+                            }}
+                          />
+                          Can`t delete comment
+                        </div>
+                      )}
+                    </article>
                   ))}
-            </div>
+                </>
+              ))}
+        </div>
 
-            {isCommentsButtonShow && (
-              <button
-                data-cy="WriteCommentButton"
-                type="button"
-                className="button is-link"
-                onClick={() => {
-                  setIsCommentSectionShow(prevState => !prevState);
-                }}
-              >
-                Write a comment
-              </button>
-            )}
+        {isCommentsButtonShow && (
+          <button
+            data-cy="WriteCommentButton"
+            type="button"
+            className="button is-link"
+            onClick={() => {
+              setIsCommentSectionShow(prevState => !prevState);
+            }}
+          >
+            Write a comment
+          </button>
+        )}
 
-            {isCommentSectionShow
+        {isCommentSectionShow
             && (
               <NewCommentForm
                 selectedPostId={post.id}
                 handleAddCommentToState={handleAddCommentToState}
               />
             )}
-          </div>
+      </div>
 
-        </div>
-      )}
-    </>
+    </div>
   );
 };
