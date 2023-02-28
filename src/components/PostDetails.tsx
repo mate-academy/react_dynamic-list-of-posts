@@ -15,14 +15,14 @@ type Props = {
   post: Post | null;
   comments: Comment[];
   setComments: Dispatch<SetStateAction<Comment[]>>;
-  isLoaderComments: boolean,
+  isCommentsLoading: boolean,
 };
 
 export const PostDetails: React.FC<Props> = ({
   post,
   comments,
   setComments,
-  isLoaderComments,
+  isCommentsLoading,
 }) => {
   const [isWriteComment, setIsWriteComment] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -56,7 +56,7 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {isLoaderComments && <Loader />}
+          {isCommentsLoading && <Loader />}
 
           {isError && (
             <div className="notification is-danger" data-cy="CommentsError">
@@ -64,7 +64,7 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {!isLoaderComments && !isError && (!comments.length ? (
+          {!isCommentsLoading && !isError && (!comments.length ? (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -108,7 +108,7 @@ export const PostDetails: React.FC<Props> = ({
             </>
           ))}
 
-          {!isLoaderComments && !isError && !isWriteComment && (
+          {!isCommentsLoading && !isError && !isWriteComment && (
             <button
               data-cy="WriteCommentButton"
               type="button"

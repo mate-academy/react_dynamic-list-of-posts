@@ -5,13 +5,13 @@ import { Post } from '../types/Post';
 type Props = {
   posts: Post[] | [];
   openPost: Post | null;
-  handleChoosePost: (post: Post) => void;
+  onChoosePost: (post: Post) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
   openPost,
-  handleChoosePost,
+  onChoosePost,
 }) => {
   return (
     <div data-cy="PostsList">
@@ -46,7 +46,7 @@ export const PostsList: React.FC<Props> = ({
                       'button is-link',
                       { 'is-light': openPost?.id !== id },
                     )}
-                    onClick={() => handleChoosePost(post)}
+                    onClick={() => onChoosePost(post)}
                   >
                     {openPost?.id !== id ? 'Open' : 'Close'}
                   </button>

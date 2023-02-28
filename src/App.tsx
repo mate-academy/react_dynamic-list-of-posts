@@ -130,7 +130,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     openPost={post}
-                    handleChoosePost={handleChoosePost}
+                    onChoosePost={handleChoosePost}
                   />
                 ))}
               </div>
@@ -153,7 +153,7 @@ export const App: React.FC = () => {
                   post={post}
                   comments={comments}
                   setComments={setComments}
-                  isLoaderComments={isCommentsLoading}
+                  isCommentsLoading={isCommentsLoading}
                 />
               </div>
             </div>

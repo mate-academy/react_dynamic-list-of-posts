@@ -3,6 +3,9 @@ import classNames from 'classnames';
 import { Comment, CommentData } from '../types/Comment';
 import { createComment } from '../api/comments';
 import { warningTimer } from '../utils/warningTimer';
+import { ErrorKeys } from '../types/errorKeys';
+import { DefaultErrors } from '../utils/DefaultErrors';
+import { DefaultNewComment } from '../utils/DefaultNewComment';
 
 type Props = {
   postId: number | undefined;
@@ -16,23 +19,9 @@ export const NewCommentForm: React.FC<Props> = ({
   setIsHasError,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const DefaultError = {
-    errorName: false,
-    errorEmail: false,
-    errorBody: false,
-  };
-  const nameError = 'errorName';
-  const emailError = 'errorEmail';
-  const bodyError = 'errorBody';
-  const [isError, setIsError] = useState(DefaultError);
-  const { errorName, errorBody, errorEmail } = isError;
+  const [errors, setErrors] = useState(DefaultErrors);
+  const { errorName, errorBody, errorEmail } = errors;
 
-  const DefaultNewComment = {
-    postId: postId || 0,
-    name: '',
-    email: '',
-    body: '',
-  };
   const [newComment, setNewComment] = useState<CommentData>(DefaultNewComment);
 
   const { name: commentName, email, body } = newComment;
@@ -43,24 +32,24 @@ export const NewCommentForm: React.FC<Props> = ({
     const { name, value } = e.target;
 
     if (commentName) {
-      setIsError({
-        ...isError,
-        [nameError]: false,
-      });
+      setErrors(currentErrors => ({
+        ...currentErrors,
+        [ErrorKeys.NameError]: false,
+      }));
     }
 
     if (email) {
-      setIsError({
-        ...isError,
-        [emailError]: false,
-      });
+      setErrors(currentErrors => ({
+        ...currentErrors,
+        [ErrorKeys.EmailError]: false,
+      }));
     }
 
     if (body) {
-      setIsError({
-        ...isError,
-        [bodyError]: false,
-      });
+      setErrors(currentErrors => ({
+        ...currentErrors,
+        [ErrorKeys.BodyError]: false,
+      }));
     }
 
     setNewComment({
@@ -71,13 +60,20 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!commentName || !email || !body) {
-      setIsError({
-        ...isError,
-        [nameError]: !commentName,
-        [emailError]: !email,
-        [bodyError]: !body,
+    if (postId) {
+      setNewComment({
+        ...newComment,
+        postId,
       });
+    }
+
+    if (!commentName || !email || !body) {
+      setErrors(currentErrors => ({
+        ...currentErrors,
+        [ErrorKeys.NameError]: !commentName,
+        [ErrorKeys.EmailError]: !email,
+        [ErrorKeys.BodyError]: !body,
+      }));
 
       return;
     }
@@ -106,11 +102,10 @@ export const NewCommentForm: React.FC<Props> = ({
 
     setNewComment(DefaultNewComment);
 
-    setIsError({
-      ...isError,
-      [nameError]: false,
-      [emailError]: false,
-      [bodyError]: false,
+    setErrors({
+      [ErrorKeys.NameError]: false,
+      [ErrorKeys.EmailError]: false,
+      [ErrorKeys.BodyError]: false,
     });
   };
 
