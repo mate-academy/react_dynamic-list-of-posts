@@ -22,13 +22,9 @@ export const App: React.FC = () => {
   const [isVisiblePostError, setIsVisiblePostError] = useState(false);
   const [isVisibleEmptyPostMessage,
     setIsVisibleEmptyPostMessage] = useState(false);
-  let skipAllErrors = true;
+  // let skipAllErrors = true;
 
   const loadPosts = async () => {
-    if (userSelectedId === 0) {
-      return;
-    }
-
     setIsVisibleLoader(true);
     setIsVisibleEmptyPostMessage(false);
     setIsVisiblePosts(false);
@@ -51,7 +47,9 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
-    loadPosts();
+    if (userSelectedId) {
+      loadPosts();
+    }
   }, [userSelectedId]);
 
   const handleSelectPost = (post: Post) => {
@@ -61,7 +59,7 @@ export const App: React.FC = () => {
       setPostSelected(null);
     } else {
       setPostSelected(post);
-      skipAllErrors = true;
+      // skipAllErrors = true;
       setIsVisibleSideBar(true);
       setIsVisiblePostDetails(true);
     }
@@ -77,6 +75,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   setUserSelectedId={setUserSelectedId}
                   userSelectedId={userSelectedId}
+                  setPostSelected={setPostSelected}
                   setIsVisiblePostDetails={setIsVisiblePostDetails}
                   setIsVisibleSideBar={setIsVisibleSideBar}
                 />
@@ -134,7 +133,7 @@ export const App: React.FC = () => {
               <div className="tile is-child box is-success ">
                 <PostDetails
                   post={postSelected}
-                  skipAllErrors={skipAllErrors}
+                  postSelected={postSelected}
                 />
               </div>
             )}

@@ -7,12 +7,12 @@ import { NewCommentForm } from './NewCommentForm';
 
 type Props = {
   post: Post | null,
-  skipAllErrors: boolean;
+  postSelected: Post | null,
 };
 
 export const PostDetails: React.FC<Props> = ({
   post,
-  skipAllErrors,
+  postSelected,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isVisibleLoader, setIsVisibleLoader] = useState(false);
@@ -25,17 +25,13 @@ export const PostDetails: React.FC<Props> = ({
     setIsVisibleEmptyCommentMessage] = useState(false);
   const [isLoadingNewComment, setIsLoadingNewComment] = useState(false);
 
-  const loadComments = async () => {
-    if (post === null) {
-      return;
-    }
-
+  const loadComments = async (selectedPost: Post) => {
     setIsVisibleLoader(true);
     setIsVisibleEmptyCommentMessage(false);
     setIsVisibleComments(false);
 
     try {
-      const commentsFromServer = await getComments(post.id);
+      const commentsFromServer = await getComments(selectedPost.id);
 
       setComments(commentsFromServer);
       setIsVisibleCommentError(false);
@@ -53,8 +49,10 @@ export const PostDetails: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    loadComments();
-    setIsVisibleNewForm(false);
+    if (post !== null) {
+      loadComments(post);
+      setIsVisibleNewForm(false);
+    }
   }, [post]);
 
   const handleOnDelete = (id: number) => {
@@ -183,7 +181,8 @@ export const PostDetails: React.FC<Props> = ({
             <NewCommentForm
               handleOnAdd={handleOnAdd}
               isLoadingNewComment={isLoadingNewComment}
-              skipAllErrors={skipAllErrors}
+              // skipAllErrors={skipAllErrors}
+              postSelected={postSelected}
             />
           )}
 

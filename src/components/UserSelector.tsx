@@ -6,10 +6,12 @@ import React, {
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { getUsers } from '../utils/serverHelper';
+import { Post } from '../types/Post';
 
 type Props = {
   setUserSelectedId: (id: number) => void,
   userSelectedId: number,
+  setPostSelected: (value: Post | null) => void,
   setIsVisiblePostDetails: (value: boolean) => void,
   setIsVisibleSideBar: (value: boolean) => void,
 };
@@ -17,6 +19,7 @@ type Props = {
 export const UserSelector: React.FC<Props> = ({
   setUserSelectedId,
   userSelectedId,
+  setPostSelected,
   setIsVisiblePostDetails,
   setIsVisibleSideBar,
 }) => {
@@ -61,6 +64,7 @@ export const UserSelector: React.FC<Props> = ({
   const handleSelectUser = (newUserId: number) => {
     setShowUsers(false);
     setUserSelectedId(newUserId);
+    setPostSelected(null);
     setIsVisiblePostDetails(false);
     setIsVisibleSideBar(false);
   };
@@ -69,9 +73,7 @@ export const UserSelector: React.FC<Props> = ({
 
   if (isError) {
     return (
-      <div
-        className="notification is-danger"
-      >
+      <div className="notification is-danger">
         Something went wrong!
       </div>
     );
@@ -96,7 +98,7 @@ export const UserSelector: React.FC<Props> = ({
         >
           <span>
             {
-              userSelectedId !== 0
+              userSelectedId
                 ? selectedUser
                 : 'Choose a user'
             }
@@ -113,7 +115,6 @@ export const UserSelector: React.FC<Props> = ({
           {users.map(user => (
             <a
               href={`#user-${user.id}`}
-              // className="dropdown-item"
               className={classNames('dropdown-item',
                 { 'is-active': userSelectedId === user.id })}
               key={user.id}

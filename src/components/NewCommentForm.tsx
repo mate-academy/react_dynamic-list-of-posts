@@ -1,23 +1,18 @@
 import classNames from 'classnames';
 import React, { FormEvent, useEffect, useState } from 'react';
 import { CommentData } from '../types/Comment';
+import { Post } from '../types/Post';
 
 type Props = {
   handleOnAdd: (newComment: CommentData) => void,
   isLoadingNewComment: boolean,
-  // isNameError: boolean,
-  // isEmailError: boolean,
-  // isBodyError: boolean,
-  skipAllErrors: boolean,
+  postSelected: Post | null,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   handleOnAdd,
   isLoadingNewComment,
-  // isNameError,
-  // isEmailError,
-  // isBodyError,
-  skipAllErrors,
+  postSelected,
 }) => {
   const [name, setName] = useState('');
   const [isNameError, setIsNameError] = useState(false);
@@ -37,7 +32,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
   useEffect(() => {
     handleReset();
-  }, [skipAllErrors]);
+  }, [postSelected]);
 
   const handleAdd = (event: FormEvent) => {
     event.preventDefault();
