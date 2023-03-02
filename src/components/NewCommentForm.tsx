@@ -50,7 +50,7 @@ export const NewCommentForm: React.FC<Props> = ({
     setIsSubmit(true);
     checkFormData();
 
-    if (!(name && validateEmail(email) && text.trim())) {
+    if (!(name.trim() && validateEmail(email) && text.trim())) {
       return;
     }
 
@@ -67,6 +67,32 @@ export const NewCommentForm: React.FC<Props> = ({
     setIsSubmit(false);
   };
 
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const inputName = e.currentTarget.name;
+    const inputValue = e.currentTarget.value;
+
+    switch (inputName) {
+      case 'name':
+        setName(inputValue);
+        setIsNameError(false);
+        break;
+
+      case 'email':
+        setEmail(inputValue);
+        setIsEmailError(false);
+        break;
+
+      case 'body':
+        setText(inputValue);
+        setIsTextError(false);
+        break;
+      default:
+        throw new Error('Uknown input name');
+    }
+  };
+
   const handleClear = useCallback(() => {
     setEmail('');
     setName('');
@@ -76,6 +102,8 @@ export const NewCommentForm: React.FC<Props> = ({
     setIsTextError(false);
     setIsSubmit(false);
   }, [isSubmit]);
+
+  const isEmailValidError = isSubmit && !isEmailError && !validateEmail(email);
 
   return (
     <form data-cy="NewCommentForm" onSubmit={handleSubmit}>
@@ -95,10 +123,7 @@ export const NewCommentForm: React.FC<Props> = ({
               { 'is-danger': isNameError },
             )}
             value={name}
-            onChange={(e) => {
-              setName(e.currentTarget.value);
-              setIsNameError(false);
-            }}
+            onChange={handleChange}
           />
 
           <span className="icon is-small is-left">
@@ -138,10 +163,7 @@ export const NewCommentForm: React.FC<Props> = ({
               { 'is-danger': isEmailError },
             )}
             value={email}
-            onChange={e => {
-              setEmail(e.currentTarget.value);
-              setIsEmailError(false);
-            }}
+            onChange={handleChange}
           />
 
           <span className="icon is-small is-left">
@@ -163,7 +185,7 @@ export const NewCommentForm: React.FC<Props> = ({
             Email is required
           </p>
         )}
-        {(!validateEmail(email) && isSubmit) && (
+        {isEmailValidError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Invalid email
           </p>
@@ -185,10 +207,7 @@ export const NewCommentForm: React.FC<Props> = ({
               { 'is-danger': isTextError },
             )}
             value={text}
-            onChange={e => {
-              setText(e.currentTarget.value);
-              setIsTextError(false);
-            }}
+            onChange={handleChange}
           />
         </div>
 

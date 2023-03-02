@@ -22,17 +22,21 @@ export const App: React.FC = () => {
   const [isLoadingPosts, setIsLoadingPosts] = useState(false);
   const [isProcessed, setIsProcessed] = useState(false);
 
-  useEffect(() => {
+  const loadUsers = async () => {
     setIsError(false);
+    try {
+      const usersFromServer = await getUsers();
+      const validUserNames = usersFromServer
+        .filter(user => /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/gm.test(user.name));
 
-    getUsers()
-      .then(usersFromServer => {
-        const validNames = usersFromServer
-          .filter(user => /\b([A-ZÀ-ÿ][-,a-z. ']+[ ]*)+/gm.test(user.name));
+      setUsers(validUserNames);
+    } catch {
+      setIsError(true);
+    }
+  };
 
-        setUsers(validNames);
-      })
-      .catch(() => setIsError(true));
+  useEffect(() => {
+    loadUsers();
   }, []);
 
   const loadPosts = async () => {
@@ -121,10 +125,10 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': selectedPostId },
+              { 'Sidebar--open': !!selectedPostId },
             )}
           >
-            {selectedPostId && (
+            {!!selectedPostId && (
               <div className="tile is-child box is-success ">
                 <PostDetails
                   selectedPostId={selectedPostId}
