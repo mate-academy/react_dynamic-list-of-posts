@@ -9,7 +9,7 @@ function wait(delay: number) {
 
 // To have autocompletion and avoid mistypes
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 function request<T>(
   url: string,
   method: RequestMethod = 'GET',

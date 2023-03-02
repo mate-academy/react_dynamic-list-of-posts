@@ -1,118 +1,141 @@
-import React from 'react';
-import { Loader } from './Loader';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
+import { deleteComment, getPostComments, sendComment } from '../utils/comments';
+import { getPost } from '../utils/posts';
+import { CommentsList } from './CommentsList';
 import { NewCommentForm } from './NewCommentForm';
 
-export const PostDetails: React.FC = () => {
+type Props = {
+  selectedPostId: number;
+};
+
+export const PostDetails: React.FC<Props> = ({
+  selectedPostId,
+}) => {
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isProcessed, setIsProcessed] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isCommentSending, setIsCommentSending] = useState(false);
+
+  useEffect(() => {
+    const loadPost = async () => {
+      try {
+        const {
+          id,
+          body,
+          title,
+          userId,
+        } = await getPost(selectedPostId);
+
+        setSelectedPost({
+          id,
+          body,
+          title,
+          userId,
+        });
+      } catch {
+        setIsError(true);
+      }
+    };
+
+    loadPost();
+  }, [selectedPostId]);
+
+  useEffect(() => {
+    const loadComments = async () => {
+      setIsProcessed(false);
+      setIsLoading(true);
+      setIsError(false);
+      try {
+        const serverData = await getPostComments(selectedPostId);
+
+        setComments(serverData);
+      } catch {
+        setIsError(true);
+      } finally {
+        setIsLoading(false);
+        setIsProcessed(true);
+      }
+    };
+
+    loadComments();
+  }, [selectedPostId]);
+
+  const handleDelete = async (id: number) => {
+    setComments(comments.filter(comment => comment.id !== id));
+    try {
+      await deleteComment(id);
+    } catch {
+      setIsError(true);
+    }
+  };
+
+  const handleFormOpen = useCallback(() => setIsFormOpen(true), [isFormOpen]);
+
+  const addNewComment = async (comment: Comment) => {
+    setIsCommentSending(true);
+    try {
+      const serverResp = await sendComment(comment);
+      const {
+        id,
+        email,
+        name,
+        body,
+      } = serverResp;
+
+      const newComment = [...comments, {
+        id,
+        email,
+        name,
+        body,
+        postId: comment.postId,
+      }];
+
+      setComments(newComment);
+    } catch {
+      setIsError(true);
+    } finally {
+      setIsCommentSending(false);
+    }
+  };
+
+  useEffect(() => {
+    setIsFormOpen(false);
+  }, [selectedPostId]);
+
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
-          </h2>
+      <div className="block">
+        <h2 data-cy="PostTitle">
+          {`#${selectedPost?.id}: ${selectedPost?.title}`}
+        </h2>
 
-          <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
-          </p>
-        </div>
-
-        <div className="block">
-          <Loader />
-
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
-            >
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
-        </div>
-
-        <NewCommentForm />
+        <p data-cy="PostBody">
+          {selectedPost?.body}
+        </p>
       </div>
+
+      <CommentsList
+        isFormOpen={isFormOpen}
+        onOpen={handleFormOpen}
+        comments={comments}
+        isLoading={isLoading}
+        isProcessed={isProcessed}
+        isError={isError}
+        handleDelete={handleDelete}
+      />
+
+      {isFormOpen && (
+        <NewCommentForm
+          postId={selectedPostId}
+          addNewComment={addNewComment}
+          isCommentSending={isCommentSending}
+        />
+      )}
     </div>
   );
 };
