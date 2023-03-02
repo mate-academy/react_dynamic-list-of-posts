@@ -1,4 +1,5 @@
 import { Comment } from '../types/Comment';
+import { CommentItem } from './CommentItem';
 import { Loader } from './Loader';
 
 type Props = {
@@ -7,13 +8,13 @@ type Props = {
   isLoading: boolean;
   isProcessed: boolean;
   isError: boolean;
-  setIsFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  onOpen: () => void;
   handleDelete: (id: number) => Promise<void>;
 };
 
 export const CommentsList: React.FC<Props> = ({
   isFormOpen,
-  setIsFormOpen,
+  onOpen,
   comments,
   isError,
   isLoading,
@@ -41,38 +42,18 @@ export const CommentsList: React.FC<Props> = ({
           {comments.length > 0 && (
             <>
               <p className="title is-4">Comments:</p>
-              {comments.map((
-                {
-                  id,
-                  email,
-                  name,
-                  body,
-                },
-              ) => {
+              {comments.map((comment) => {
                 return (
                   <article
-                    key={id}
+                    key={comment.id}
                     className="message is-small"
                     data-cy="Comment"
                   >
-                    <div className="message-header">
-                      <a href={`mailto:${email}`} data-cy="CommentAuthor">
-                        {name}
-                      </a>
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
-                        onClick={() => handleDelete(id)}
-                      >
-                        delete button
-                      </button>
-                    </div>
+                    <CommentItem
+                      comment={comment}
+                      handleDelete={handleDelete}
+                    />
 
-                    <div className="message-body" data-cy="CommentBody">
-                      {body}
-                    </div>
                   </article>
                 );
               })}
@@ -83,8 +64,8 @@ export const CommentsList: React.FC<Props> = ({
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            style={isFormOpen ? { display: 'none' } : { display: 'block' }}
-            onClick={() => setIsFormOpen(true)}
+            style={{ display: isFormOpen ? 'none' : 'block' }}
+            onClick={onOpen}
           >
             Write a comment
           </button>

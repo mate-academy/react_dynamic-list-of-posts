@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 import { deleteComment, getPostComments, sendComment } from '../utils/comments';
@@ -74,6 +74,8 @@ export const PostDetails: React.FC<Props> = ({
     }
   };
 
+  const handleFormOpen = useCallback(() => setIsFormOpen(true), [isFormOpen]);
+
   const addNewComment = async (comment: Comment) => {
     setIsCommentSending(true);
     try {
@@ -85,15 +87,15 @@ export const PostDetails: React.FC<Props> = ({
         body,
       } = serverResp;
 
-      setComments([...comments,
-        {
-          id,
-          email,
-          name,
-          body,
-          postId: comment.postId,
-        },
-      ]);
+      const newComment = [...comments, {
+        id,
+        email,
+        name,
+        body,
+        postId: comment.postId,
+      }];
+
+      setComments(newComment);
     } catch {
       setIsError(true);
     } finally {
@@ -119,7 +121,7 @@ export const PostDetails: React.FC<Props> = ({
 
       <CommentsList
         isFormOpen={isFormOpen}
-        setIsFormOpen={setIsFormOpen}
+        onOpen={handleFormOpen}
         comments={comments}
         isLoading={isLoading}
         isProcessed={isProcessed}

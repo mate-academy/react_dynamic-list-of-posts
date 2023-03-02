@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import React, { useCallback, useState } from 'react';
+import { InputName } from '../enums/InputName';
 import { Comment } from '../types/Comment';
 
 type Props = {
@@ -74,17 +75,17 @@ export const NewCommentForm: React.FC<Props> = ({
     const inputValue = e.currentTarget.value;
 
     switch (inputName) {
-      case 'name':
+      case InputName.NAME:
         setName(inputValue);
         setIsNameError(false);
         break;
 
-      case 'email':
+      case InputName.EMAIL:
         setEmail(inputValue);
         setIsEmailError(false);
         break;
 
-      case 'body':
+      case InputName.BODY:
         setText(inputValue);
         setIsTextError(false);
         break;
