@@ -15,43 +15,33 @@ export const PostDetails: React.FC<Props> = ({
   postSelected,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [isVisibleLoader, setIsVisibleLoader] = useState(false);
-  const [isVisibleComments, setIsVisibleComments] = useState(false);
-  const [isVisibleNewForm, setIsVisibleNewForm] = useState(false);
-  const [isVisibleWriteComment, setIsVisibleWriteComment] = useState(false);
-  const [isVisibleCommentError, setIsVisibleCommentError] = useState(false);
+  const [isLoaderVisible, setIsLoaderVisible] = useState(false);
+  const [isNewFormVisible, setIsNewFormVisible] = useState(false);
+  const [isWriteCommentVisible, setIsWriteCommentVisible] = useState(false);
+  const [isCommentErrorVisible, setIsCommentErrorVisible] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [isVisibleEmptyCommentMessage,
-    setIsVisibleEmptyCommentMessage] = useState(false);
-  const [isLoadingNewComment, setIsLoadingNewComment] = useState(false);
+  const [isNewCommentLoading, setIsNewCommentLoading] = useState(false);
 
   const loadComments = async (selectedPost: Post) => {
-    setIsVisibleLoader(true);
-    setIsVisibleEmptyCommentMessage(false);
-    setIsVisibleComments(false);
+    setIsLoaderVisible(true);
 
     try {
       const commentsFromServer = await getComments(selectedPost.id);
 
       setComments(commentsFromServer);
-      setIsVisibleCommentError(false);
-      setIsVisibleWriteComment(true);
-      if (commentsFromServer.length === 0) {
-        setIsVisibleEmptyCommentMessage(true);
-      } else {
-        setIsVisibleComments(true);
-      }
+      setIsCommentErrorVisible(false);
+      setIsWriteCommentVisible(true);
     } catch {
-      setIsVisibleCommentError(true);
+      setIsCommentErrorVisible(true);
     } finally {
-      setIsVisibleLoader(false);
+      setIsLoaderVisible(false);
     }
   };
 
   useEffect(() => {
     if (post !== null) {
       loadComments(post);
-      setIsVisibleNewForm(false);
+      setIsNewFormVisible(false);
     }
   }, [post]);
 
@@ -64,14 +54,6 @@ export const PostDetails: React.FC<Props> = ({
       deleteComment(id);
       const preparedComments = comments.filter(comment => comment.id !== id);
 
-      if (preparedComments.length === 0) {
-        setIsVisibleEmptyCommentMessage(true);
-        setIsVisibleComments(false);
-      } else {
-        setIsVisibleComments(true);
-        setIsVisibleEmptyCommentMessage(false);
-      }
-
       setComments(preparedComments);
     } catch {
       setHasError(true);
@@ -81,22 +63,21 @@ export const PostDetails: React.FC<Props> = ({
   const handleOnAdd = async (newComment: CommentData) => {
     const preparedComment = { ...newComment, postId: post?.id };
 
-    setIsLoadingNewComment(true);
+    setIsNewCommentLoading(true);
 
     try {
       const comment = await addComment(preparedComment);
 
       setComments(prev => [...prev, comment]);
-      setIsVisibleEmptyCommentMessage(false);
     } catch {
       setHasError(true);
     } finally {
-      setIsLoadingNewComment(false);
+      setIsNewCommentLoading(false);
     }
   };
 
   const handleShowNewForm = () => {
-    setIsVisibleNewForm(true);
+    setIsNewFormVisible(true);
   };
 
   if (hasError) {
@@ -109,6 +90,10 @@ export const PostDetails: React.FC<Props> = ({
       </div>
     );
   }
+
+  const isCommentsVisible = (comments.length > 0 && !isLoaderVisible);
+  const isNoComments = comments.length === 0
+    && !isLoaderVisible && !isCommentErrorVisible;
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -124,9 +109,9 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {isVisibleLoader && <Loader />}
+          {isLoaderVisible && <Loader />}
 
-          {isVisibleCommentError && (
+          {isCommentErrorVisible && (
             <div
               className="notification is-danger"
               data-cy="CommentsError"
@@ -135,13 +120,13 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {isVisibleEmptyCommentMessage && (
+          {isNoComments && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {isVisibleComments && (
+          {isCommentsVisible && (
             <>
               <p className="title is-4">Comments:</p>
               {comments.map(comment => (
@@ -173,20 +158,18 @@ export const PostDetails: React.FC<Props> = ({
 
                 </article>
               ))}
-
             </>
           )}
 
-          {isVisibleNewForm && (
+          {isNewFormVisible && (
             <NewCommentForm
               handleOnAdd={handleOnAdd}
-              isLoadingNewComment={isLoadingNewComment}
-              // skipAllErrors={skipAllErrors}
+              isNewCommentLoading={isNewCommentLoading}
               postSelected={postSelected}
             />
           )}
 
-          {(isVisibleWriteComment && !isVisibleNewForm) && (
+          {(isWriteCommentVisible && !isNewFormVisible) && (
             <button
               data-cy="WriteCommentButton"
               type="button"

@@ -12,57 +12,62 @@ import { Post } from './types/Post';
 import { getPosts } from './utils/serverHelper';
 
 export const App: React.FC = () => {
-  const [userSelectedId, setUserSelectedId] = useState(0);
+  const [selectedUserId, setSelectedUserId] = useState(0);
   const [postSelected, setPostSelected] = useState<Post | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [isVisibleLoader, setIsVisibleLoader] = useState(false);
-  const [isVisiblePosts, setIsVisiblePosts] = useState(false);
-  const [isVisiblePostDetails, setIsVisiblePostDetails] = useState(false);
-  const [isVisibleSideBar, setIsVisibleSideBar] = useState(false);
-  const [isVisiblePostError, setIsVisiblePostError] = useState(false);
-  const [isVisibleEmptyPostMessage,
-    setIsVisibleEmptyPostMessage] = useState(false);
-  // let skipAllErrors = true;
+  const [isLoaderVisible, setIsLoaderVisible] = useState(false);
+  const [isPostsVisible, setIsPostsVisible] = useState(false);
+  const [isPostDetailsVisible, setIsPostDetailsVisible] = useState(false);
+  const [isSideBarVisible, setIsSideBarVisible] = useState(false);
+  const [isPostErrorVisible, setIsPostErrorVisible] = useState(false);
+  const [isEmptyPostMessageVisible,
+    setIsEmptyPostMessageVisible] = useState(false);
 
   const loadPosts = async () => {
-    setIsVisibleLoader(true);
-    setIsVisibleEmptyPostMessage(false);
-    setIsVisiblePosts(false);
+    setIsLoaderVisible(true);
+    setIsEmptyPostMessageVisible(false);
+    setIsPostsVisible(false);
 
     try {
-      const postsFromServer = await getPosts(userSelectedId);
+      const postsFromServer = await getPosts(selectedUserId);
 
       setPosts(postsFromServer);
-      setIsVisiblePostError(false);
+      setIsPostErrorVisible(false);
       if (postsFromServer.length === 0) {
-        setIsVisibleEmptyPostMessage(true);
+        setIsEmptyPostMessageVisible(true);
       } else {
-        setIsVisiblePosts(true);
+        setIsPostsVisible(true);
       }
     } catch {
-      setIsVisiblePostError(true);
+      setIsPostErrorVisible(true);
     } finally {
-      setIsVisibleLoader(false);
+      setIsLoaderVisible(false);
     }
   };
 
   useEffect(() => {
-    if (userSelectedId) {
+    if (selectedUserId) {
       loadPosts();
     }
-  }, [userSelectedId]);
+  }, [selectedUserId]);
 
   const handleSelectPost = (post: Post) => {
     if (postSelected?.id === post.id) {
-      setIsVisibleSideBar(false);
-      setIsVisiblePostDetails(false);
+      setIsSideBarVisible(false);
+      setIsPostDetailsVisible(false);
       setPostSelected(null);
     } else {
       setPostSelected(post);
-      // skipAllErrors = true;
-      setIsVisibleSideBar(true);
-      setIsVisiblePostDetails(true);
+      setIsSideBarVisible(true);
+      setIsPostDetailsVisible(true);
     }
+  };
+
+  const handleSelectUser = (newUserId: number) => {
+    setSelectedUserId(newUserId);
+    setPostSelected(null);
+    setIsPostDetailsVisible(false);
+    setIsSideBarVisible(false);
   };
 
   return (
@@ -73,23 +78,20 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  setUserSelectedId={setUserSelectedId}
-                  userSelectedId={userSelectedId}
-                  setPostSelected={setPostSelected}
-                  setIsVisiblePostDetails={setIsVisiblePostDetails}
-                  setIsVisibleSideBar={setIsVisibleSideBar}
+                  handleSelectUser={handleSelectUser}
+                  selectedUserId={selectedUserId}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
 
-                {userSelectedId === 0 && (
+                {selectedUserId === 0 && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {isVisiblePostError && (
+                {isPostErrorVisible && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -98,15 +100,15 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {isVisibleLoader && <Loader />}
+                {isLoaderVisible && <Loader />}
 
-                {isVisibleEmptyPostMessage && (
+                {isEmptyPostMessageVisible && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {isVisiblePosts && (
+                {isPostsVisible && (
                   <PostsList
                     posts={posts}
                     postSelected={postSelected}
@@ -125,11 +127,11 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': isVisibleSideBar },
+              { 'Sidebar--open': isSideBarVisible },
             )}
           >
 
-            {isVisiblePostDetails && (
+            {isPostDetailsVisible && (
               <div className="tile is-child box is-success ">
                 <PostDetails
                   post={postSelected}

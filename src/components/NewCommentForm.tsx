@@ -5,13 +5,13 @@ import { Post } from '../types/Post';
 
 type Props = {
   handleOnAdd: (newComment: CommentData) => void,
-  isLoadingNewComment: boolean,
+  isNewCommentLoading: boolean,
   postSelected: Post | null,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   handleOnAdd,
-  isLoadingNewComment,
+  isNewCommentLoading,
   postSelected,
 }) => {
   const [name, setName] = useState('');
@@ -60,7 +60,7 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   return (
-    <form data-cy="NewCommentForm" onSubmit={(e) => handleAdd(e)}>
+    <form data-cy="NewCommentForm" onSubmit={handleAdd}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -77,7 +77,7 @@ export const NewCommentForm: React.FC<Props> = ({
             })}
             value={name}
             onChange={({ target }) => {
-              setName(target.value);
+              setName(target.value.trimStart());
               setIsNameError(false);
             }}
           />
@@ -120,7 +120,7 @@ export const NewCommentForm: React.FC<Props> = ({
             })}
             value={email}
             onChange={({ target }) => {
-              setEmail(target.value);
+              setEmail(target.value.trimStart());
               setIsEmailError(false);
             }}
           />
@@ -161,7 +161,7 @@ export const NewCommentForm: React.FC<Props> = ({
             })}
             value={body}
             onChange={({ target }) => {
-              setBody(target.value);
+              setBody(target.value.trimStart());
               setIsBodyError(false);
             }}
           />
@@ -179,7 +179,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="submit"
             className={classNames('button is-link', {
-              'is-loading': isLoadingNewComment,
+              'is-loading': isNewCommentLoading,
             })}
           >
             Add

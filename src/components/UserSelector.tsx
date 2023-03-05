@@ -1,4 +1,5 @@
 import React, {
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -6,37 +7,30 @@ import React, {
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { getUsers } from '../utils/serverHelper';
-import { Post } from '../types/Post';
 
 type Props = {
-  setUserSelectedId: (id: number) => void,
-  userSelectedId: number,
-  setPostSelected: (value: Post | null) => void,
-  setIsVisiblePostDetails: (value: boolean) => void,
-  setIsVisibleSideBar: (value: boolean) => void,
+  handleSelectUser: (id: number) => void,
+  selectedUserId: number,
 };
 
 export const UserSelector: React.FC<Props> = ({
-  setUserSelectedId,
-  userSelectedId,
-  setPostSelected,
-  setIsVisiblePostDetails,
-  setIsVisibleSideBar,
+  handleSelectUser,
+  selectedUserId,
 }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [isError, setIsError] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const loadUsers = async () => {
+  const loadUsers = useCallback(async () => {
     try {
       const usersFromServer = await getUsers();
 
-      setUsers(usersFromServer);
+      return setUsers(usersFromServer);
     } catch {
-      setIsError(true);
+      return setIsError(true);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadUsers();
@@ -61,15 +55,12 @@ export const UserSelector: React.FC<Props> = ({
     document.addEventListener('mousedown', handleClickOutside);
   }, [wrapperRef]);
 
-  const handleSelectUser = (newUserId: number) => {
+  const handleChangeUser = (newUserId: number) => {
     setShowUsers(false);
-    setUserSelectedId(newUserId);
-    setPostSelected(null);
-    setIsVisiblePostDetails(false);
-    setIsVisibleSideBar(false);
+    handleSelectUser(newUserId);
   };
 
-  const selectedUser = users.find(user => user.id === userSelectedId)?.name;
+  const selectedUserName = users.find(user => user.id === selectedUserId)?.name;
 
   if (isError) {
     return (
@@ -98,8 +89,8 @@ export const UserSelector: React.FC<Props> = ({
         >
           <span>
             {
-              userSelectedId
-                ? selectedUser
+              selectedUserId
+                ? selectedUserName
                 : 'Choose a user'
             }
           </span>
@@ -116,10 +107,10 @@ export const UserSelector: React.FC<Props> = ({
             <a
               href={`#user-${user.id}`}
               className={classNames('dropdown-item',
-                { 'is-active': userSelectedId === user.id })}
+                { 'is-active': selectedUserId === user.id })}
               key={user.id}
               onClick={() => {
-                handleSelectUser(user.id);
+                handleChangeUser(user.id);
               }}
             >
               {user.name}
