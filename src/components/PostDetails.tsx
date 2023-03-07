@@ -19,24 +19,23 @@ export const PostDetails: React.FC<PropTypes> = ({
   const { id: postId, title, body } = selectedPost;
 
   const [comments, setComments] = useState<Comment[]>([]);
-  const [,setIsError] = useState<boolean>(false);
   const [isInputUpdating, setInputIsUpdating] = useState<boolean>(false);
-  const [isReceiving, setIsReceiving] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
 
   useEffect(() => setIsFormVisible(false), [postId]);
 
   useEffect(() => {
-    setIsReceiving(true);
+    setIsLoading(true);
     getCommentsByPostId(postId)
       .then(receivedComments => {
         setComments(receivedComments);
       })
       .catch(() => {
-        setIsError(true);
+        throw new Error('123');
       })
       .finally(() => {
-        setIsReceiving(false);
+        setIsLoading(false);
       });
   }, [postId]);
 
@@ -53,7 +52,7 @@ export const PostDetails: React.FC<PropTypes> = ({
         setComments(prev => [...prev, postedComment]);
       })
       .catch(() => {
-        setIsError(true);
+        throw new Error('123');
       })
       .finally(() => {
         setInputIsUpdating(false);
@@ -66,7 +65,7 @@ export const PostDetails: React.FC<PropTypes> = ({
     ));
     deleteCommentById(commentId)
       .catch(() => {
-        setIsError(true);
+        throw new Error('123');
       });
   };
 
@@ -82,7 +81,7 @@ export const PostDetails: React.FC<PropTypes> = ({
           </p>
         </div>
 
-        {isReceiving
+        {isLoading
           ? (<Loader />)
           : (
             <div className="block">

@@ -1,4 +1,8 @@
-import React, { FormEvent, useState, useCallback } from 'react';
+import React, {
+  FormEvent,
+  useState,
+  useCallback,
+} from 'react';
 import classNames from 'classnames';
 import { CommentData } from '../types/Comment';
 
@@ -18,23 +22,17 @@ export const NewCommentForm: React.FC<PropsTypes> = ({
   const [emailError, setEmailError] = useState<boolean>(false);
   const [bodyError, setBodyError] = useState<boolean>(false);
 
-  const setErrorsOnIputs = useCallback(() => {
-    setBodyError(true);
-    setNameError(true);
-    setEmailError(true);
+  const updateErrorsOnIputs = useCallback((value: boolean) => {
+    setBodyError(value);
+    setNameError(value);
+    setEmailError(value);
   }, []);
-
-  const clearErrors = () => {
-    setBodyError(false);
-    setNameError(false);
-    setEmailError(false);
-  };
 
   const clearInputs = () => {
     setEmailValue('');
     setBodyValue('');
     setNameValue('');
-    clearErrors();
+    updateErrorsOnIputs(false);
   };
 
   const getDefaultSettings = () => {
@@ -45,7 +43,7 @@ export const NewCommentForm: React.FC<PropsTypes> = ({
     event.preventDefault();
 
     if (!name || !body || !email) {
-      setErrorsOnIputs();
+      updateErrorsOnIputs(true);
 
       return;
     }
@@ -58,8 +56,30 @@ export const NewCommentForm: React.FC<PropsTypes> = ({
 
     addComment(newComment);
     getDefaultSettings();
-    clearErrors();
+    updateErrorsOnIputs(false);
   };
+
+  const onInputChangeHandler = useCallback(
+    (value: string,
+      setting: string) => {
+      switch (setting) {
+        case 'name':
+          setNameValue(value);
+          break;
+
+        case 'email':
+          setEmailValue(value);
+          break;
+
+        case 'body':
+          setBodyValue(value);
+          break;
+
+        default:
+          break;
+      }
+    }, [],
+  );
 
   return (
     <form
@@ -84,7 +104,9 @@ export const NewCommentForm: React.FC<PropsTypes> = ({
               },
             )}
             value={name}
-            onChange={({ target }) => setNameValue(target.value)}
+            onChange={({
+              target,
+            }) => onInputChangeHandler(target.value, 'name')}
           />
 
           <span className="icon is-small is-left">
@@ -130,7 +152,9 @@ export const NewCommentForm: React.FC<PropsTypes> = ({
               },
             )}
             value={email}
-            onChange={({ target }) => setEmailValue(target.value)}
+            onChange={({
+              target,
+            }) => onInputChangeHandler(target.value, 'email')}
           />
 
           <span className="icon is-small is-left">
@@ -175,7 +199,9 @@ export const NewCommentForm: React.FC<PropsTypes> = ({
               },
             )}
             value={body}
-            onChange={({ target }) => setBodyValue(target.value)}
+            onChange={({
+              target,
+            }) => onInputChangeHandler(target.value, 'body')}
           />
         </div>
 

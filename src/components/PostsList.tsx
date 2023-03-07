@@ -24,6 +24,7 @@ export const PostsList: React.FC<PropsTypes> = ({
     getPostsByUserId(userId)
       .then(receivedPosts => {
         setPosts(receivedPosts);
+        setIsReceiving(true);
       })
       .catch(() => {
         setIsError(true);
@@ -59,6 +60,10 @@ export const PostsList: React.FC<PropsTypes> = ({
     );
   }
 
+  const handleClick = (value: Post | null) => {
+    setSelectedPost(value);
+  };
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -92,9 +97,7 @@ export const PostsList: React.FC<PropsTypes> = ({
                           type="button"
                           data-cy="PostButton"
                           className="button is-link"
-                          onClick={() => {
-                            setSelectedPost(null);
-                          }}
+                          onClick={() => handleClick(null)}
                         >
                           Close
                         </button>
@@ -104,7 +107,7 @@ export const PostsList: React.FC<PropsTypes> = ({
                           data-cy="PostButton"
                           className="button is-link is-light"
                           onClick={() => {
-                            setSelectedPost(post);
+                            handleClick(post);
                           }}
                         >
                           Open
