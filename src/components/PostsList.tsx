@@ -17,7 +17,7 @@ export const PostsList: React.FC<PropsTypes> = ({
 }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isReceiving, setIsReceiving] = useState<boolean>(true);
-  const [isError, setIsError] = useState<boolean>(false);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     setIsReceiving(true);
@@ -106,9 +106,7 @@ export const PostsList: React.FC<PropsTypes> = ({
                           type="button"
                           data-cy="PostButton"
                           className="button is-link is-light"
-                          onClick={() => {
-                            handleClick(post);
-                          }}
+                          onClick={() => handleClick(post)}
                         >
                           Open
                         </button>

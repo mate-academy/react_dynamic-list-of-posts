@@ -15,12 +15,16 @@ export const NewCommentForm: React.FC<PropsTypes> = ({
   addComment,
   isInputUpdating,
 }) => {
-  const [name, setNameValue] = useState('');
-  const [email, setEmailValue] = useState('');
-  const [body, setBodyValue] = useState('');
-  const [nameError, setNameError] = useState<boolean>(false);
-  const [emailError, setEmailError] = useState<boolean>(false);
-  const [bodyError, setBodyError] = useState<boolean>(false);
+  const [fields, setFields] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
+  const [nameError, setNameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [bodyError, setBodyError] = useState(false);
+
+  const { name, email, body } = fields;
 
   const updateErrorsOnIputs = useCallback((value: boolean) => {
     setBodyError(value);
@@ -29,14 +33,16 @@ export const NewCommentForm: React.FC<PropsTypes> = ({
   }, []);
 
   const clearInputs = () => {
-    setEmailValue('');
-    setBodyValue('');
-    setNameValue('');
+    setFields({
+      name: '',
+      email: '',
+      body: '',
+    });
     updateErrorsOnIputs(false);
   };
 
   const getDefaultSettings = () => {
-    setBodyValue('');
+    setFields(prev => ({ ...prev, body: '' }));
   };
 
   const handleSubmit = (event: FormEvent) => {
@@ -62,22 +68,7 @@ export const NewCommentForm: React.FC<PropsTypes> = ({
   const onInputChangeHandler = useCallback(
     (value: string,
       setting: string) => {
-      switch (setting) {
-        case 'name':
-          setNameValue(value);
-          break;
-
-        case 'email':
-          setEmailValue(value);
-          break;
-
-        case 'body':
-          setBodyValue(value);
-          break;
-
-        default:
-          break;
-      }
+      setFields(prev => ({ ...prev, [setting]: value }));
     }, [],
   );
 

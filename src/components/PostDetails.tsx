@@ -8,6 +8,7 @@ import {
   postComment,
   deleteCommentById,
 } from '../api/comments';
+import { CommentItem } from './Comment';
 
 type PropTypes = {
   selectedPost: Post;
@@ -19,9 +20,9 @@ export const PostDetails: React.FC<PropTypes> = ({
   const { id: postId, title, body } = selectedPost;
 
   const [comments, setComments] = useState<Comment[]>([]);
-  const [isInputUpdating, setInputIsUpdating] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
+  const [isInputUpdating, setInputIsUpdating] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isFormVisible, setIsFormVisible] = useState(false);
 
   useEffect(() => setIsFormVisible(false), [postId]);
 
@@ -93,39 +94,13 @@ export const PostDetails: React.FC<PropTypes> = ({
                 ) : (
                   <>
                     <p className="title is-4">Comments:</p>
-                    {comments.map(comment => {
-                      const {
-                        name,
-                        email,
-                        body: commentBody,
-                        id,
-                      } = comment;
-
-                      return (
-                        <article className="message is-small" data-cy="Comment">
-                          <div className="message-header">
-                            <a href={`mailto:${email}`} data-cy="CommentAuthor">
-                              {name}
-                            </a>
-                            <button
-                              data-cy="CommentDelete"
-                              type="button"
-                              className="delete is-small"
-                              aria-label="delete"
-                              onClick={() => {
-                                deleteComment(id);
-                              }}
-                            >
-                              delete button
-                            </button>
-                          </div>
-
-                          <div className="message-body" data-cy="CommentBody">
-                            {commentBody}
-                          </div>
-                        </article>
-                      );
-                    })}
+                    {comments.map(comment => (
+                      <CommentItem
+                        comment={comment}
+                        deleteComment={deleteComment}
+                        key={comment.id}
+                      />
+                    ))}
                   </>
                 )}
 
