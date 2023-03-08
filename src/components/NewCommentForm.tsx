@@ -1,103 +1,143 @@
-import React from 'react';
+import React, { useState } from 'react';
+import classNames from 'classnames';
 
-export const NewCommentForm: React.FC = () => {
+import { Comment } from '../types/Comment';
+import { TypeError } from '../types/TypeError';
+import { FieldType } from '../types/FieldType';
+import { createComment } from '../api/comments';
+import { InputField } from './InputField';
+
+type Props = {
+  addingComment: (comment: Comment) => Promise<void>,
+  postId: number,
+  isError: string,
+  setIsError: React.Dispatch<React.SetStateAction<string>>,
+};
+
+export const NewCommentForm: React.FC<Props> = ({
+  addingComment,
+  postId,
+  isError,
+  setIsError,
+}) => {
+  const [isProcessed, setIsProcessed] = useState(false);
+  const [newComment, setNewComment] = useState({
+    postId,
+    name: '',
+    email: '',
+    body: '',
+  });
+  const [isErrorEmptyName, setIsErrorEmptyName] = useState(false);
+  const [isErrorEmptyEmail, setIsErrorEmptyEmail] = useState(false);
+  const [isErrorEmptyText, setIsErrorEmptyText] = useState(false);
+
+  const addCommentHandler = (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+    setIsError('');
+    if (newComment.name.trim()
+      && newComment.email.trim()
+      && newComment.body.trim()) {
+      setIsProcessed(true);
+      createComment(newComment)
+        .then((addedComment) => {
+          addingComment(addedComment);
+          setNewComment({
+            ...newComment,
+            body: '',
+          });
+        })
+        .catch(() => {
+          setIsError(TypeError.AddComment);
+        })
+        .finally(() => setIsProcessed(false));
+    } else {
+      if (!newComment.name.trim()) {
+        setIsErrorEmptyName(true);
+      }
+
+      if (!newComment.email.trim()) {
+        setIsErrorEmptyEmail(true);
+      }
+
+      if (!newComment.body.trim()) {
+        setIsErrorEmptyText(true);
+      }
+    }
+  };
+
+  const clearFormHandler = () => {
+    setIsError('');
+    setNewComment({
+      postId,
+      name: '',
+      email: '',
+      body: '',
+    });
+    setIsErrorEmptyName(false);
+    setIsErrorEmptyEmail(false);
+    setIsErrorEmptyText(false);
+  };
+
   return (
-    <form data-cy="NewCommentForm">
-      <div className="field" data-cy="NameField">
-        <label className="label" htmlFor="comment-author-name">
-          Author Name
-        </label>
-
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="name"
-            id="comment-author-name"
-            placeholder="Name Surname"
-            className="input is-danger"
-          />
-
-          <span className="icon is-small is-left">
-            <i className="fas fa-user" />
-          </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
-      </div>
-
-      <div className="field" data-cy="EmailField">
-        <label className="label" htmlFor="comment-author-email">
-          Author Email
-        </label>
-
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="email"
-            id="comment-author-email"
-            placeholder="email@test.com"
-            className="input is-danger"
-          />
-
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
-          </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
-      </div>
-
-      <div className="field" data-cy="BodyField">
-        <label className="label" htmlFor="comment-body">
-          Comment Text
-        </label>
-
-        <div className="control">
-          <textarea
-            id="comment-body"
-            name="body"
-            placeholder="Type comment here"
-            className="textarea is-danger"
-          />
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
-      </div>
+    <form
+      data-cy="NewCommentForm"
+      onSubmit={addCommentHandler}
+    >
+      <InputField
+        inputType={FieldType.Name}
+        newComment={newComment}
+        onChange={setNewComment}
+        emptyValueError={isErrorEmptyName}
+        setEmptyValueError={setIsErrorEmptyName}
+      />
+      <InputField
+        inputType={FieldType.Email}
+        newComment={newComment}
+        onChange={setNewComment}
+        emptyValueError={isErrorEmptyEmail}
+        setEmptyValueError={setIsErrorEmptyEmail}
+      />
+      <InputField
+        inputType={FieldType.Text}
+        newComment={newComment}
+        onChange={setNewComment}
+        emptyValueError={isErrorEmptyText}
+        setEmptyValueError={setIsErrorEmptyText}
+      />
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={classNames(
+              'button',
+              'is-link',
+              { 'is-loading': isProcessed },
+            )}
+          >
             Add
           </button>
         </div>
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={clearFormHandler}
+          >
             Clear
           </button>
         </div>
       </div>
+
+      {isError === TypeError.AddComment && (
+        <div className="notification is-danger">
+          {TypeError.AddComment}
+        </div>
+      )}
     </form>
   );
 };
