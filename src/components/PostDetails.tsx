@@ -38,7 +38,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       .catch(() => {
         setComments(currentComments);
         setCommentIdWithError(commentId);
-        setIsError(TypeError.Delete);
+        setIsError(TypeError.DeleteComment);
       });
   };
 
@@ -49,7 +49,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setIsError('');
     getComments(post.id)
       .then((loadedComments) => setComments(loadedComments))
-      .catch(() => setIsError(TypeError.Unexpected))
+      .catch(() => setIsError(TypeError.LoadComments))
       .finally(() => setIsLoading(false));
   }, [post]);
 
@@ -69,19 +69,19 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         <div className="block">
           {isLoading && <Loader />}
 
-          {isError === TypeError.Unexpected && (
+          {isError === TypeError.LoadComments && (
             <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
+              {TypeError.LoadComments}
             </div>
           )}
 
-          {comments.length === 0 && (
+          {!comments.length && !isLoading && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {comments.length > 0 && (
+          {!!comments.length && (
             <>
               <p className="title is-4">Comments:</p>
 
@@ -91,17 +91,20 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   data-cy="Comment"
                   key={comment.id}
                 >
-                  {isError === TypeError.Delete
+                  {isError === TypeError.DeleteComment
                   && commentIdWithError === comment.id
                   && (
                     <div>
                       <p className="help is-danger">
-                        {TypeError.Delete}
+                        {TypeError.DeleteComment}
                       </p>
                     </div>
                   )}
                   <div className="message-header">
-                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                    <a
+                      href={`mailto:${comment.email}`}
+                      data-cy="CommentAuthor"
+                    >
                       {comment.name}
                     </a>
                     <button

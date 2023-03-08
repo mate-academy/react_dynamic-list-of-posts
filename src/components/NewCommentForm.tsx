@@ -3,13 +3,9 @@ import classNames from 'classnames';
 
 import { Comment } from '../types/Comment';
 import { TypeError } from '../types/TypeError';
+import { FieldType } from '../types/FieldType';
 import { createComment } from '../api/comments';
-
-enum TypeInput {
-  Name,
-  Email,
-  Text,
-}
+import { InputField } from './InputField';
 
 type Props = {
   addingComment: (comment: Comment) => Promise<void>,
@@ -25,97 +21,63 @@ export const NewCommentForm: React.FC<Props> = ({
   setIsError,
 }) => {
   const [isProcessed, setIsProcessed] = useState(false);
-  const [authorName, setAuthorName] = useState('');
-  const [authorEmail, setAuthorEmail] = useState('');
-  const [commentText, setCommentText] = useState('');
-  const [emptyName, setEmptyName] = useState(false);
-  const [emptyEmail, setEmptyEmail] = useState(false);
-  const [emptyText, setEmptyText] = useState(false);
+  const [newComment, setNewComment] = useState({
+    postId,
+    name: '',
+    email: '',
+    body: '',
+  });
+  const [isErrorEmptyName, setIsErrorEmptyName] = useState(false);
+  const [isErrorEmptyEmail, setIsErrorEmptyEmail] = useState(false);
+  const [isErrorEmptyText, setIsErrorEmptyText] = useState(false);
 
-  const inputHandler = (inputName: TypeInput) => {
-    return (
-      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    ) => {
-      let typeEmptyInput;
-      let setEmptyInput;
-      let setValueInput;
-
-      switch (inputName) {
-        case TypeInput.Name:
-          typeEmptyInput = emptyName;
-          setEmptyInput = setEmptyName;
-          setValueInput = setAuthorName;
-          break;
-
-        case TypeInput.Email:
-          typeEmptyInput = emptyEmail;
-          setEmptyInput = setEmptyEmail;
-          setValueInput = setAuthorEmail;
-          break;
-
-        default:
-          typeEmptyInput = emptyText;
-          setEmptyInput = setEmptyText;
-          setValueInput = setCommentText;
-          break;
-      }
-
-      if (typeEmptyInput) {
-        setEmptyInput(false);
-      }
-
-      if (isError) {
-        setIsError('');
-      }
-
-      setValueInput(event.target.value);
-    };
-  };
-
-  const addCommentHandler = async (event: React.FormEvent<HTMLFormElement>) => {
+  const addCommentHandler = (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
     setIsError('');
-    if (authorName && authorEmail && commentText) {
+    if (newComment.name.trim()
+      && newComment.email.trim()
+      && newComment.body.trim()) {
       setIsProcessed(true);
-      const newComment = {
-        postId,
-        name: authorName,
-        email: authorEmail,
-        body: commentText,
-      };
-
       createComment(newComment)
         .then((addedComment) => {
           addingComment(addedComment);
-          setCommentText('');
+          setNewComment({
+            ...newComment,
+            body: '',
+          });
         })
         .catch(() => {
-          setIsError(TypeError.Add);
+          setIsError(TypeError.AddComment);
         })
         .finally(() => setIsProcessed(false));
     } else {
-      if (!authorName.trim()) {
-        setEmptyName(true);
+      if (!newComment.name.trim()) {
+        setIsErrorEmptyName(true);
       }
 
-      if (!authorEmail.trim()) {
-        setEmptyEmail(true);
+      if (!newComment.email.trim()) {
+        setIsErrorEmptyEmail(true);
       }
 
-      if (!commentText.trim()) {
-        setEmptyText(true);
+      if (!newComment.body.trim()) {
+        setIsErrorEmptyText(true);
       }
     }
   };
 
   const clearFormHandler = () => {
     setIsError('');
-    setEmptyName(false);
-    setAuthorName('');
-    setEmptyEmail(false);
-    setAuthorEmail('');
-    setEmptyText(false);
-    setCommentText('');
+    setNewComment({
+      postId,
+      name: '',
+      email: '',
+      body: '',
+    });
+    setIsErrorEmptyName(false);
+    setIsErrorEmptyEmail(false);
+    setIsErrorEmptyText(false);
   };
 
   return (
@@ -123,111 +85,27 @@ export const NewCommentForm: React.FC<Props> = ({
       data-cy="NewCommentForm"
       onSubmit={addCommentHandler}
     >
-      <div className="field" data-cy="NameField">
-        <label className="label" htmlFor="comment-author-name">
-          Author Name
-        </label>
-
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="name"
-            id="comment-author-name"
-            placeholder="Name Surname"
-            className={classNames(
-              'input',
-              { 'is-danger': emptyName },
-            )}
-            value={authorName}
-            onChange={inputHandler(TypeInput.Name)}
-          />
-
-          <span className="icon is-small is-left">
-            <i className="fas fa-user" />
-          </span>
-
-          {emptyName && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
-              <i className="fas fa-exclamation-triangle" />
-            </span>
-          )}
-        </div>
-
-        {emptyName && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Name is required
-          </p>
-        )}
-      </div>
-
-      <div className="field" data-cy="EmailField">
-        <label className="label" htmlFor="comment-author-email">
-          Author Email
-        </label>
-
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="email"
-            id="comment-author-email"
-            placeholder="email@test.com"
-            className={classNames(
-              'input',
-              { 'is-danger': emptyEmail },
-            )}
-            value={authorEmail}
-            onChange={inputHandler(TypeInput.Email)}
-          />
-
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
-          </span>
-
-          {emptyEmail && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
-              <i className="fas fa-exclamation-triangle" />
-            </span>
-          )}
-        </div>
-
-        {emptyEmail && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
-          </p>
-        )}
-      </div>
-
-      <div className="field" data-cy="BodyField">
-        <label className="label" htmlFor="comment-body">
-          Comment Text
-        </label>
-
-        <div className="control">
-          <textarea
-            id="comment-body"
-            name="body"
-            placeholder="Type comment here"
-            className={classNames(
-              'textarea',
-              { 'is-danger': emptyText },
-            )}
-            value={commentText}
-            onChange={inputHandler(TypeInput.Text)}
-          />
-        </div>
-
-        {emptyText && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Enter some text
-          </p>
-        )}
-      </div>
+      <InputField
+        inputType={FieldType.Name}
+        newComment={newComment}
+        onChange={setNewComment}
+        emptyValueError={isErrorEmptyName}
+        setEmptyValueError={setIsErrorEmptyName}
+      />
+      <InputField
+        inputType={FieldType.Email}
+        newComment={newComment}
+        onChange={setNewComment}
+        emptyValueError={isErrorEmptyEmail}
+        setEmptyValueError={setIsErrorEmptyEmail}
+      />
+      <InputField
+        inputType={FieldType.Text}
+        newComment={newComment}
+        onChange={setNewComment}
+        emptyValueError={isErrorEmptyText}
+        setEmptyValueError={setIsErrorEmptyText}
+      />
 
       <div className="field is-grouped">
         <div className="control">
@@ -255,9 +133,9 @@ export const NewCommentForm: React.FC<Props> = ({
         </div>
       </div>
 
-      {isError === TypeError.Add && (
+      {isError === TypeError.AddComment && (
         <div className="notification is-danger">
-          {TypeError.Add}
+          {TypeError.AddComment}
         </div>
       )}
     </form>

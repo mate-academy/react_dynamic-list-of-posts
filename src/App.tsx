@@ -10,6 +10,7 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUsers } from './api/users';
 import { getPosts } from './api/posts';
+import { TypeError } from './types/TypeError';
 import { User } from './types/User';
 import { Post } from './types/Post';
 
@@ -25,7 +26,7 @@ export const App: React.FC = () => {
     getUsers()
       .then(uploadedUsers => setUsers(uploadedUsers))
       .catch(() => {
-        throw new Error('unable to load users');
+        throw new Error(TypeError.LoadUsers);
       });
   }, []);
 
@@ -39,7 +40,7 @@ export const App: React.FC = () => {
       .catch(() => setIsError(true))
       .finally(() => setIsLoading(false));
 
-    if (posts && posts.length > 0) {
+    if (posts && posts.length) {
       setVisiblePosts(posts);
     }
   };
