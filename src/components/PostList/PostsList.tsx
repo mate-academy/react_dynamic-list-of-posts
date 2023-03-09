@@ -1,15 +1,73 @@
-import { FunctionComponent } from 'react';
+import {
+  FunctionComponent,
+  useEffect,
+  useState,
+} from 'react';
 import classNames from 'classnames';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { closePost, openPost } from '../../features/selectedPostSlice';
+import { IUser } from '../../types/IUser';
+import { IPost } from '../../types/IPost';
+import { getUserPosts } from '../../api/posts';
+import { Loader } from '../Loader';
 
-type Props = {
-  selectedPostId: number | undefined,
-};
+interface PostsListProps {
+  selectedUser: IUser;
+  selectedPost: IPost | null;
+  handleSelectPost: (post: IPost | null) => void;
+}
 
-export const PostsList: FunctionComponent<Props> = ({ selectedPostId }) => {
-  const dispatch = useAppDispatch();
-  const posts = useAppSelector(state => state.posts.items);
+export const PostsList: FunctionComponent<PostsListProps> = ({
+  selectedUser,
+  selectedPost,
+  handleSelectPost,
+}) => {
+  const [posts, setPosts] = useState<IPost[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    const getPostsFromServer = async () => {
+      setIsLoading(true);
+      handleSelectPost(null);
+
+      try {
+        const loadPosts = await getUserPosts(selectedUser.id);
+
+        setPosts(loadPosts);
+      } catch (err) {
+        setHasError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    getPostsFromServer();
+  }, [selectedUser]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (hasError) {
+    return (
+      <div
+        className="notification is-danger"
+        data-cy="PostsLoadingError"
+      >
+        Something went wrong!
+      </div>
+    );
+  }
+
+  if (!posts.length) {
+    return (
+      <div
+        className="notification is-warning"
+        data-cy="NoPostsYet"
+      >
+        No posts yet
+      </div>
+    );
+  }
 
   return (
     <div data-cy="PostsList">
@@ -27,8 +85,12 @@ export const PostsList: FunctionComponent<Props> = ({ selectedPostId }) => {
         <tbody>
           {posts.map(post => (
             <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
-              <td data-cy="PostTitle">{post.title}</td>
+              <td data-cy="PostId">
+                {post.id}
+              </td>
+              <td data-cy="PostTitle">
+                {post.title}
+              </td>
               <td className="has-text-right is-vcentered">
                 <button
                   type="button"
@@ -37,14 +99,16 @@ export const PostsList: FunctionComponent<Props> = ({ selectedPostId }) => {
                     'button',
                     'is-link',
                     {
-                      'is-light': post.id !== selectedPostId,
+                      'is-light': post.id !== selectedPost?.id,
                     },
                   )}
-                  onClick={() => dispatch(post.id === selectedPostId
-                    ? closePost()
-                    : openPost(post))}
+                  onClick={() => {
+                    handleSelectPost(
+                      post.id === selectedPost?.id ? null : post,
+                    );
+                  }}
                 >
-                  {post.id === selectedPostId ? 'Close' : 'Open'}
+                  {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

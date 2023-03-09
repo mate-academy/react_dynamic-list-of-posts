@@ -4,14 +4,19 @@ import {
   useState,
 } from 'react';
 import classNames from 'classnames';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { setAuthor } from '../../features/authorSlice';
+import { IUser } from '../../types/IUser';
 
-export const UserSelector: FunctionComponent = () => {
-  const dispatch = useAppDispatch();
-  const users = useAppSelector(state => state.users.users);
-  const selectedUser = useAppSelector(state => state.author.author);
+interface UserSelectorProps {
+  users: IUser[];
+  selectedUser: IUser | null;
+  handleSelectUser: (user: IUser | null) => void;
+}
 
+export const UserSelector: FunctionComponent<UserSelectorProps> = ({
+  users,
+  selectedUser,
+  handleSelectUser,
+}) => {
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -47,7 +52,9 @@ export const UserSelector: FunctionComponent = () => {
           }}
         >
           <span>
-            {selectedUser?.name || 'Choose a user'}
+            {!selectedUser
+              ? 'Choose a user'
+              : selectedUser.name}
           </span>
 
           <span className="icon is-small">
@@ -62,9 +69,9 @@ export const UserSelector: FunctionComponent = () => {
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              onClick={() => dispatch(setAuthor(user))}
+              onClick={() => handleSelectUser(user)}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
+                'is-active': user === selectedUser,
               })}
             >
               {user.name}

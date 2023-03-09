@@ -4,14 +4,12 @@ import React, {
 } from 'react';
 import classNames from 'classnames';
 import { CommentData } from '../../types/IComment';
-import { useAppDispatch } from '../../app/hooks';
-import { fetchNewComment } from '../../app/thunks';
 
-type Props = {
-  postId: number;
-};
+interface NewCommentFormProps {
+  handleAddComment: (data: CommentData) => Promise<void>;
+}
 
-const initialState: CommentData = {
+const initialState = {
   name: '',
   email: '',
   body: '',
@@ -20,8 +18,9 @@ const initialState: CommentData = {
 // eslint-disable-next-line max-len
 const pattern = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
 
-export const NewCommentForm: FunctionComponent<Props> = ({ postId }) => {
-  const dispatch = useAppDispatch();
+export const NewCommentForm: FunctionComponent<NewCommentFormProps> = ({
+  handleAddComment,
+}) => {
   const [submitting, setSubmitting] = useState(false);
 
   const [errors, setErrors] = useState({
@@ -76,11 +75,11 @@ export const NewCommentForm: FunctionComponent<Props> = ({ postId }) => {
       return;
     }
 
-    if (name && email && body && postId) {
+    if (name && email && body) {
       setSubmitting(true);
-      dispatch(fetchNewComment({
-        name, email, body, postId,
-      }));
+
+      await handleAddComment({ name, email, body });
+
       setSubmitting(false);
       setValues(cur => ({ ...cur, body: '' }));
     }
