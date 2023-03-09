@@ -1,19 +1,27 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { User } from '../types/User';
+
+// import { getUser } from '../helpers';
 
 type Props = {
   users: User[],
   selectUserId: (value: number) => void,
+  userId: number,
 };
 
 export const UserSelector: React.FC<Props> = React.memo(
-  ({ users, selectUserId }) => {
+  ({ users, selectUserId, userId }) => {
     const [isDropDownOpen, setIsDropDownOpen] = useState(false);
 
     const dropDownChange = () => {
       setIsDropDownOpen(!isDropDownOpen);
     };
+
+    const userData = useMemo(
+      () => users[userId - 1],
+      [userId],
+    );
 
     return (
       <div
@@ -28,7 +36,12 @@ export const UserSelector: React.FC<Props> = React.memo(
             aria-controls="dropdown-menu"
             onClick={dropDownChange}
           >
-            <span>Choose a user</span>
+
+            {!userData ? (
+              <span>Choose a user</span>
+            ) : (
+              <p>{userData.name}</p>
+            )}
 
             <span className="icon is-small">
               <i className="fas fa-angle-down" aria-hidden="true" />

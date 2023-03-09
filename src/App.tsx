@@ -47,8 +47,9 @@ export const App: React.FC = () => {
 
       setIsLoading(false);
       setUserPosts(postsData);
-    } catch (error) {
+    } catch {
       setIsError(true);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -71,6 +72,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   users={users}
                   selectUserId={selectedUserHandleChange}
+                  userId={selectedUserId}
                 />
               </div>
 
@@ -94,13 +96,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUserId !== -1 && !userPosts.length && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
+                {selectedUserId !== -1 && !userPosts.length && !isLoading && (
+                  <p className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
-                  </div>
+                  </p>
                 )}
 
-                {!!userPosts.length && (
+                {!!userPosts.length && !isLoading && (
                   <PostsList
                     posts={userPosts}
                     selectPost={selectedPostHandleChange}

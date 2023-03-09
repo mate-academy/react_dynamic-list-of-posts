@@ -16,7 +16,7 @@ export const PostDetails: React.FC<Props> = React.memo(
   ({ postId }) => {
     const [comments, setCommnets] = useState<Comment[]>([]);
     const [post, setPost] = useState<Post | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
     const [isWriteComment, setIsWriteComment] = useState(false);
 
@@ -26,7 +26,9 @@ export const PostDetails: React.FC<Props> = React.memo(
 
         setCommnets(commentsData);
       } catch {
-        setIsError(true);
+        if (post !== null) {
+          setIsError(true);
+        }
       }
     };
 

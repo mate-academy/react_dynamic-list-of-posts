@@ -19,28 +19,29 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setIsError }) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleFieldChange = useCallback(
-    (f:(value: string) => void, event: React.ChangeEvent<HTMLInputElement>
-    | React.ChangeEvent<HTMLTextAreaElement>) => {
-      const { value } = event.target;
+  const handleFieldChange = useCallback((
+    func:(value: string) => void,
+    event: React.ChangeEvent<HTMLInputElement>
+    | React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    const { value } = event.target;
 
-      if (name) {
-        setIsNameError(false);
-      }
+    if (name) {
+      setIsNameError(false);
+    }
 
-      if (email) {
-        setIsEmailError(false);
-      }
+    if (email) {
+      setIsEmailError(false);
+    }
 
-      if (text) {
-        setIsTextError(false);
-      }
+    if (text) {
+      setIsTextError(false);
+    }
 
-      if (value !== ' ') {
-        f(value);
-      }
-    }, [email, name, text],
-  );
+    if (value !== ' ') {
+      func(value);
+    }
+  }, [email, name, text]);
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -69,9 +70,10 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setIsError }) => {
 
       try {
         await addPostComment(postId, newComment);
-        setIsLoading(false);
       } catch (error) {
         setIsError(true);
+      } finally {
+        setIsLoading(false);
       }
     }
 
