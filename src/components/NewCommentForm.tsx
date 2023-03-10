@@ -1,99 +1,119 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
+import { addComment } from '../api';
+import { GlobalContext } from '../reducer';
+import { Comment } from '../types/Comment';
+import { Error } from '../types/Error';
+import { Field } from './Field';
 
-export const NewCommentForm: React.FC = () => {
+type Props = {
+  getComments: (id:number) => void
+};
+
+export const NewCommentForm: React.FC<Props> = ({ getComments }) => {
+  const [state, dispatch] = useContext(GlobalContext);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [text, setText] = useState('');
+  const [valideFrom, setValidForm] = useState(
+    { name: true, email: true, text: true },
+  );
+
+  const clearForm = () => {
+    setName('');
+    setEmail('');
+    setText('');
+    setValidForm({ name: true, email: true, text: true });
+  };
+
+  const addCommentSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const valid = { ...valideFrom };
+
+    if (!name) {
+      valid.name = false;
+    }
+
+    if (!email) {
+      valid.email = false;
+    }
+
+    if (!text) {
+      valid.text = false;
+    } else if (state.selectedPost && state.selectedUser) {
+      addComment({
+        id: 0,
+        postId: state.selectedPost.id,
+        name,
+        email,
+        body: text,
+      }).then((request: Comment | Error) => {
+        if ('message' in request) {
+          dispatch({
+            type: 'error',
+            error: { ...request, type: 'comments' },
+          });
+        }
+
+        if (state.selectedPost) {
+          getComments(state.selectedPost.id);
+          clearForm();
+        }
+      });
+    }
+
+    setValidForm(valid);
+  };
+
   return (
-    <form data-cy="NewCommentForm">
-      <div className="field" data-cy="NameField">
-        <label className="label" htmlFor="comment-author-name">
-          Author Name
-        </label>
-
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="name"
-            id="comment-author-name"
-            placeholder="Name Surname"
-            className="input is-danger"
-          />
-
-          <span className="icon is-small is-left">
-            <i className="fas fa-user" />
-          </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
-      </div>
-
-      <div className="field" data-cy="EmailField">
-        <label className="label" htmlFor="comment-author-email">
-          Author Email
-        </label>
-
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="email"
-            id="comment-author-email"
-            placeholder="email@test.com"
-            className="input is-danger"
-          />
-
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
-          </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
-      </div>
-
-      <div className="field" data-cy="BodyField">
-        <label className="label" htmlFor="comment-body">
-          Comment Text
-        </label>
-
-        <div className="control">
-          <textarea
-            id="comment-body"
-            name="body"
-            placeholder="Type comment here"
-            className="textarea is-danger"
-          />
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
-      </div>
+    <form data-cy="NewCommentForm" onSubmit={addCommentSubmit}>
+      <Field
+        value={name}
+        setValue={setName}
+        error={valideFrom.name}
+        textError="Name is required"
+        title="Author Name"
+        valideFrom={valideFrom}
+        setValidForm={setValidForm}
+        type="name"
+        placeholder="Name Surname"
+      />
+      <Field
+        value={email}
+        setValue={setEmail}
+        error={valideFrom.email}
+        textError="Email is required"
+        title="Author Email"
+        valideFrom={valideFrom}
+        setValidForm={setValidForm}
+        type="email"
+        placeholder="email@test.com"
+      />
+      <Field
+        value={text}
+        setValue={setText}
+        error={valideFrom.text}
+        textError="Enter some text"
+        title="Comment Text"
+        valideFrom={valideFrom}
+        setValidForm={setValidForm}
+        type="text"
+        placeholder="Type comment here"
+      />
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button type="submit" className="button is-link">
             Add
           </button>
         </div>
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={clearForm}
+          >
             Clear
           </button>
         </div>

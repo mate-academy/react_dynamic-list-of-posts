@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -7,9 +7,12 @@ import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
+import { GlobalContext } from './reducer';
 import { Loader } from './components/Loader';
 
 export const App: React.FC = () => {
+  const [state] = useContext(GlobalContext);
+
   return (
     <main className="section">
       <div className="container">
@@ -21,22 +24,32 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!state.selectedUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {(state.load.type === 'postsUser' && state.load.active)
+                  && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {state.error?.type === 'listPosts' && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {(state.load.type === 'postsUser'
+                  && !state.load.active
+                  && state.listPostsUser.length < 1
+                && state.error?.type !== 'listPosts') && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
                 <PostsList />
               </div>
@@ -50,11 +63,11 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': state.selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {state.selectedPost && <PostDetails />}
             </div>
           </div>
         </div>
