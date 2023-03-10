@@ -11,16 +11,6 @@ export const UserSelector: React.FC = () => {
   const [listUsers, setListUsers] = useState<User[] | []>([]);
   const [state, dispatch] = useContext(GlobalContext);
 
-  const closeDrobdownMenu = (event: any) => {
-    if (
-      event.target.parentNode.className !== 'button'
-        && event.target.parentNode.className !== 'icon is-small'
-        && event.target.parentNode.className !== 'dropdown-trigger'
-    ) {
-      dispatch({ type: 'active', show: false });
-    }
-  };
-
   useEffect(() => {
     getUsersList().then((request: User[] | Error) => {
       if ('error' in request) {
@@ -29,10 +19,6 @@ export const UserSelector: React.FC = () => {
         setListUsers(request);
       }
     });
-
-    document.addEventListener('click', closeDrobdownMenu);
-
-    return document.removeEventListener('click', closeDrobdownMenu);
   }, []);
 
   const selectUser = (user: User) => {

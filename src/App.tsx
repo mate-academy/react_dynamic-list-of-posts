@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -11,7 +11,23 @@ import { GlobalContext } from './reducer';
 import { Loader } from './components/Loader';
 
 export const App: React.FC = () => {
-  const [state] = useContext(GlobalContext);
+  const [state, dispatch] = useContext(GlobalContext);
+
+  const closeDrobdownMenu = (event: any) => {
+    if (event.target.parentNode) {
+      if (
+        event.target.parentNode.className !== 'button'
+        && event.target.parentNode.className !== 'icon is-small'
+        && event.target.parentNode.className !== 'dropdown-trigger'
+      ) {
+        dispatch({ type: 'active', show: false });
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', closeDrobdownMenu);
+  }, []);
 
   return (
     <main className="section">
