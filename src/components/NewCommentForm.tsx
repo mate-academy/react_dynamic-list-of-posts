@@ -12,17 +12,13 @@ type Props = {
 
 export const NewCommentForm: React.FC<Props> = ({ getComments }) => {
   const [state, dispatch] = useContext(GlobalContext);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [text, setText] = useState('');
+  const [fields, setFieldsx] = useState({ name: '', email: '', body: '' });
   const [valideFrom, setValidForm] = useState(
     { name: true, email: true, text: true },
   );
 
   const clearForm = () => {
-    setName('');
-    setEmail('');
-    setText('');
+    setFieldsx({ name: '', email: '', body: '' });
     setValidForm({ name: true, email: true, text: true });
   };
 
@@ -30,15 +26,15 @@ export const NewCommentForm: React.FC<Props> = ({ getComments }) => {
     event.preventDefault();
     const valid = { ...valideFrom };
 
-    if (!name) {
+    if (!fields.name) {
       valid.name = false;
     }
 
-    if (!email) {
+    if (!fields.email) {
       valid.email = false;
     }
 
-    if (!text) {
+    if (!fields.body) {
       valid.text = false;
     }
 
@@ -48,13 +44,15 @@ export const NewCommentForm: React.FC<Props> = ({ getComments }) => {
           type: 'loadData',
           objectLoad: { type: 'addComments', active: true },
         });
-        addComment({
+        const newComment = {
           id: 0,
           postId: state.selectedPost.id,
-          name,
-          email,
-          body: text,
-        }).then((request: Comment | Error) => {
+          name: fields.name,
+          email: fields.email,
+          body: fields.body,
+        };
+
+        addComment(newComment).then((request: Comment | Error) => {
           if ('message' in request) {
             dispatch({
               type: 'error',
@@ -84,8 +82,8 @@ export const NewCommentForm: React.FC<Props> = ({ getComments }) => {
   return (
     <form data-cy="NewCommentForm" onSubmit={addCommentSubmit}>
       <Field
-        value={name}
-        setValue={setName}
+        value={fields.name}
+        setValue={setFieldsx}
         error={valideFrom.name}
         textError="Name is required"
         title="Author Name"
@@ -93,10 +91,11 @@ export const NewCommentForm: React.FC<Props> = ({ getComments }) => {
         setValidFormFields={setValidForm}
         type="name"
         placeholder="Name Surname"
+        fields={fields}
       />
       <Field
-        value={email}
-        setValue={setEmail}
+        value={fields.email}
+        setValue={setFieldsx}
         error={valideFrom.email}
         textError="Email is required"
         title="Author Email"
@@ -104,17 +103,19 @@ export const NewCommentForm: React.FC<Props> = ({ getComments }) => {
         setValidFormFields={setValidForm}
         type="email"
         placeholder="email@test.com"
+        fields={fields}
       />
       <Field
-        value={text}
-        setValue={setText}
+        value={fields.body}
+        setValue={setFieldsx}
         error={valideFrom.text}
         textError="Enter some text"
         title="Comment Text"
         ValidationFields={valideFrom}
         setValidFormFields={setValidForm}
-        type="text"
+        type="body"
         placeholder="Type comment here"
+        fields={fields}
       />
 
       <div className="field is-grouped">

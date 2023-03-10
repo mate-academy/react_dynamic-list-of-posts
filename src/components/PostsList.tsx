@@ -39,38 +39,36 @@ export const PostsList: React.FC = () => {
   const selectPost = (post: Post) => {
     if (state.selectedPost === post) {
       dispatch({ type: 'selectPost', post: null });
-      dispatch({ type: 'activeForm', active: false });
     } else {
       dispatch({ type: 'selectPost', post });
-      dispatch({ type: 'activeForm', active: false });
     }
+
+    dispatch({ type: 'activeForm', active: false });
   };
 
   const renderListPosts = useMemo(() => {
-    return state.listPostsUser.map((post: Post) => {
-      return (
-        <tr data-cy="Post" key={post.id}>
-          <td data-cy="PostId">{post.id}</td>
+    return state.listPostsUser.map((post: Post) => (
+      <tr data-cy="Post" key={post.id}>
+        <td data-cy="PostId">{post.id}</td>
 
-          <td data-cy="PostTitle">
-            {post.body}
-          </td>
+        <td data-cy="PostTitle">
+          {post.body}
+        </td>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className={classNames('button is-link', {
-                'is-light': state.selectedPost !== post,
-              })}
-              onClick={() => selectPost(post)}
-            >
-              { state.selectedPost === post ? 'Close' : 'Open'}
-            </button>
-          </td>
-        </tr>
-      );
-    });
+        <td className="has-text-right is-vcentered">
+          <button
+            type="button"
+            data-cy="PostButton"
+            className={classNames('button is-link', {
+              'is-light': state.selectedPost !== post,
+            })}
+            onClick={() => selectPost(post)}
+          >
+            { state.selectedPost === post ? 'Close' : 'Open'}
+          </button>
+        </td>
+      </tr>
+    ));
   }, [state.listPostsUser, state.selectedPost]);
 
   return (

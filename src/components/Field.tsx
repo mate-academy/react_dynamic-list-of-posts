@@ -3,7 +3,7 @@ import { Valid } from '../types/Valid';
 
 type Props = {
   value: string,
-  setValue: (val: string) => void,
+  setValue: (fields: { name: string, email: string, body: string }) => void,
   error: boolean,
   textError: string,
   title: string,
@@ -11,6 +11,7 @@ type Props = {
   setValidFormFields: (obj: Valid) => void
   type: string,
   placeholder: string
+  fields: { name: string, email: string, body: string }
 };
 
 export const Field: React.FC<Props> = ({
@@ -23,11 +24,12 @@ export const Field: React.FC<Props> = ({
   setValidFormFields,
   type,
   placeholder,
+  fields,
 }) => {
   const changeHandler = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setValue(event.target.value);
+    setValue({ ...fields, [type]: event.target.value });
     const array = Object.entries(ValidationFields);
 
     const result = array.map((el) => (el[0] === type ? [type, true] : el));
@@ -41,7 +43,7 @@ export const Field: React.FC<Props> = ({
         {title}
       </label>
 
-      {type === 'text' ? (
+      {type === 'body' ? (
         <div className="control">
           <textarea
             id="comment-body"
