@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -29,6 +29,13 @@ export const App: React.FC = () => {
     document.addEventListener('click', closeDrobdownMenu);
   }, []);
 
+  const noPost = useMemo(() => {
+    return state.load.type === 'postsUser'
+      && !state.load.active
+      && state.listPostsUser.length < 1
+      && state.error?.type !== 'listPosts';
+  }, [state.load]);
+
   return (
     <main className="section">
       <div className="container">
@@ -58,10 +65,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(state.load.type === 'postsUser'
-                  && !state.load.active
-                  && state.listPostsUser.length < 1
-                && state.error?.type !== 'listPosts') && (
+                {(noPost) && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>

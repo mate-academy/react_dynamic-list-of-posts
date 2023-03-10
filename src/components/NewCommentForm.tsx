@@ -43,7 +43,7 @@ export const NewCommentForm: React.FC<Props> = ({ getComments }) => {
     }
 
     if (!Object.values(valid).some((el: boolean) => el === false)) {
-      if (state.selectedPost && state.selectedUser) {
+      if (state.selectedPost) {
         dispatch({
           type: 'loadData',
           objectLoad: { type: 'addComments', active: true },
@@ -89,8 +89,8 @@ export const NewCommentForm: React.FC<Props> = ({ getComments }) => {
         error={valideFrom.name}
         textError="Name is required"
         title="Author Name"
-        valideFrom={valideFrom}
-        setValidForm={setValidForm}
+        ValidationFields={valideFrom}
+        setValidFormFields={setValidForm}
         type="name"
         placeholder="Name Surname"
       />
@@ -100,8 +100,8 @@ export const NewCommentForm: React.FC<Props> = ({ getComments }) => {
         error={valideFrom.email}
         textError="Email is required"
         title="Author Email"
-        valideFrom={valideFrom}
-        setValidForm={setValidForm}
+        ValidationFields={valideFrom}
+        setValidFormFields={setValidForm}
         type="email"
         placeholder="email@test.com"
       />
@@ -111,8 +111,8 @@ export const NewCommentForm: React.FC<Props> = ({ getComments }) => {
         error={valideFrom.text}
         textError="Enter some text"
         title="Comment Text"
-        valideFrom={valideFrom}
-        setValidForm={setValidForm}
+        ValidationFields={valideFrom}
+        setValidFormFields={setValidForm}
         type="text"
         placeholder="Type comment here"
       />

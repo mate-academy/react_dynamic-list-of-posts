@@ -7,8 +7,8 @@ type Props = {
   error: boolean,
   textError: string,
   title: string,
-  valideFrom: Valid,
-  setValidForm: (obj: Valid) => void
+  ValidationFields: Valid,
+  setValidFormFields: (obj: Valid) => void
   type: string,
   placeholder: string
 };
@@ -19,8 +19,8 @@ export const Field: React.FC<Props> = ({
   error,
   textError,
   title,
-  valideFrom,
-  setValidForm,
+  ValidationFields,
+  setValidFormFields,
   type,
   placeholder,
 }) => {
@@ -28,11 +28,11 @@ export const Field: React.FC<Props> = ({
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setValue(event.target.value);
-    const array = Object.entries(valideFrom);
+    const array = Object.entries(ValidationFields);
 
     const result = array.map((el) => (el[0] === type ? [type, true] : el));
 
-    setValidForm(Object.fromEntries(result) as Valid);
+    setValidFormFields(Object.fromEntries(result) as Valid);
   };
 
   return (
