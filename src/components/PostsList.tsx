@@ -1,85 +1,97 @@
-import React from 'react';
+import classNames from 'classnames';
+import React, { useContext, useEffect, useMemo } from 'react';
+import { getPostsUser } from '../api';
+import { GlobalContext } from '../reducer';
+import { Error } from '../types/Error';
+import { Post } from '../types/Post';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+export const PostsList: React.FC = () => {
+  const [state, dispatch] = useContext(GlobalContext);
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+  useEffect(() => {
+    if (state.selectedUser) {
+      dispatch(
+        { type: 'loadData', objectLoad: { type: 'postsUser', active: true } },
+      );
+      getPostsUser(state.selectedUser.id).then((request: Post[] | Error) => {
+        if ('error' in request) {
+          dispatch(
+            {
+              type: 'loadData',
+              objectLoad: { type: 'postsUser', active: false },
+            },
+          );
+          dispatch({ type: 'error', error: { ...request, type: 'listPosts' } });
+        } else {
+          dispatch({ type: 'postsUser', posts: request });
+          dispatch(
+            {
+              type: 'loadData',
+              objectLoad:
+                { type: 'postsUser', active: false },
+            },
+          );
+        }
+      });
+    }
+  }, [state.selectedUser]);
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+  const selectPost = (post: Post) => {
+    if (state.selectedPost === post) {
+      dispatch({ type: 'selectPost', post: null });
+    } else {
+      dispatch({ type: 'selectPost', post });
+    }
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+    dispatch({ type: 'activeForm', active: false });
+  };
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+  const renderListPosts = useMemo(() => {
+    return state.listPostsUser.map((post: Post) => (
+      <tr data-cy="Post" key={post.id}>
+        <td data-cy="PostId">{post.id}</td>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+        <td data-cy="PostTitle">
+          {post.body}
+        </td>
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+        <td className="has-text-right is-vcentered">
+          <button
+            type="button"
+            data-cy="PostButton"
+            className={classNames('button is-link', {
+              'is-light': state.selectedPost !== post,
+            })}
+            onClick={() => selectPost(post)}
+          >
+            { state.selectedPost === post ? 'Close' : 'Open'}
+          </button>
+        </td>
+      </tr>
+    ));
+  }, [state.listPostsUser, state.selectedPost]);
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
+  return (
+    state.listPostsUser.length > 0 ? (
+      <div data-cy="PostsList">
+        <p className="title">Posts:</p>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
+        <table
+          className="table is-fullwidth is-striped is-hoverable is-narrow"
+        >
+          <thead>
+            <tr className="has-background-link-light">
+              <th>#</th>
+              <th>Title</th>
+              <th> </th>
+            </tr>
+          </thead>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+          <tbody>
+            {renderListPosts}
+          </tbody>
+        </table>
+      </div>
+    ) : <></>
+  );
+};
