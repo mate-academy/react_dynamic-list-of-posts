@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { useContext, useState } from 'react';
 import { addComment } from '../api';
 import { GlobalContext } from '../reducer';
@@ -39,26 +40,42 @@ export const NewCommentForm: React.FC<Props> = ({ getComments }) => {
 
     if (!text) {
       valid.text = false;
-    } else if (state.selectedPost && state.selectedUser) {
-      addComment({
-        id: 0,
-        postId: state.selectedPost.id,
-        name,
-        email,
-        body: text,
-      }).then((request: Comment | Error) => {
-        if ('message' in request) {
-          dispatch({
-            type: 'error',
-            error: { ...request, type: 'comments' },
-          });
-        }
+    }
 
-        if (state.selectedPost) {
-          getComments(state.selectedPost.id);
-          clearForm();
-        }
-      });
+    if (!Object.values(valid).some((el: boolean) => el === false)) {
+      if (state.selectedPost && state.selectedUser) {
+        dispatch({
+          type: 'loadData',
+          objectLoad: { type: 'addComments', active: true },
+        });
+        addComment({
+          id: 0,
+          postId: state.selectedPost.id,
+          name,
+          email,
+          body: text,
+        }).then((request: Comment | Error) => {
+          if ('message' in request) {
+            dispatch({
+              type: 'error',
+              error: { ...request, type: 'comments' },
+            });
+            dispatch({
+              type: 'loadData',
+              objectLoad: { type: 'addComments', active: false },
+            });
+          }
+
+          if (state.selectedPost) {
+            getComments(state.selectedPost.id);
+            clearForm();
+            dispatch({
+              type: 'loadData',
+              objectLoad: { type: 'addComments', active: false },
+            });
+          }
+        });
+      }
     }
 
     setValidForm(valid);
@@ -102,7 +119,15 @@ export const NewCommentForm: React.FC<Props> = ({ getComments }) => {
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link">
+          <button
+            type="submit"
+            className={
+              classNames('button is-link', {
+                'is-loading': state.load.type === 'addComments'
+                && state.load.active,
+              })
+            }
+          >
             Add
           </button>
         </div>

@@ -52,6 +52,19 @@ export const PostDetails: React.FC = () => {
     });
   };
 
+  const renderCommentForm = useMemo(() => {
+    return !state.activeForm ? (
+      <button
+        data-cy="WriteCommentButton"
+        type="button"
+        className="button is-link"
+        onClick={() => dispatch({ type: 'activeForm', active: true })}
+      >
+        Write a comment
+      </button>
+    ) : <NewCommentForm getComments={getComments} />;
+  }, [state.activeForm]);
+
   const renderListComments = useMemo(() => {
     return (
       <>
@@ -119,16 +132,7 @@ export const PostDetails: React.FC = () => {
           : renderListComments}
       </div>
 
-      {!state.activeForm ? (
-        <button
-          data-cy="WriteCommentButton"
-          type="button"
-          className="button is-link"
-          onClick={() => dispatch({ type: 'activeForm', active: true })}
-        >
-          Write a comment
-        </button>
-      ) : <NewCommentForm getComments={getComments} />}
+      {renderCommentForm}
     </div>
   );
 };
