@@ -44,8 +44,6 @@ export const App: React.FC = () => {
     try {
       setIsLoading(true);
       const postsData = await getUserPosts(selectedUserId);
-
-      setIsLoading(false);
       setUserPosts(postsData);
     } catch {
       setIsError(true);

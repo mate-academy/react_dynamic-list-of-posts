@@ -2,8 +2,6 @@ import React, { useMemo, useState } from 'react';
 
 import { User } from '../types/User';
 
-// import { getUser } from '../helpers';
-
 type Props = {
   users: User[],
   selectUserId: (value: number) => void,

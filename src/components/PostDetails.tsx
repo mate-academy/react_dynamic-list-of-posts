@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-// import { CommentData } from '../types/Comment';
 import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 
@@ -23,7 +22,6 @@ export const PostDetails: React.FC<Props> = React.memo(
     const loadDataCommets = async () => {
       try {
         const commentsData = await getPostComments(postId);
-
         setCommnets(commentsData);
       } catch {
         if (post !== null) {
@@ -53,7 +51,7 @@ export const PostDetails: React.FC<Props> = React.memo(
     };
 
     useEffect(() => {
-      if (postId !== null) {
+      if (postId) {
         currentPostHandle();
       }
     }, [postId]);
@@ -72,11 +70,7 @@ export const PostDetails: React.FC<Props> = React.memo(
           <div className="block">
             {post && (
               <h2 data-cy="PostTitle">
-                #
-                {post?.id}
-                :
-                {' '}
-                {post?.title}
+                {`#${post?.id}:${post?.title}`}
               </h2>
             )}
 
@@ -91,7 +85,10 @@ export const PostDetails: React.FC<Props> = React.memo(
             )}
 
             {isError && (
-              <div className="notification is-danger" data-cy="CommentsError">
+              <div 
+                className="notification is-danger" 
+                data-cy="CommentsError"
+              >
                 Something went wrong
               </div>
             )}
@@ -99,7 +96,10 @@ export const PostDetails: React.FC<Props> = React.memo(
             {!isLoading && (
               <>
                 {!comments.length && (
-                  <p className="title is-4" data-cy="NoCommentsMessage">
+                  <p 
+                    className="title is-4" 
+                    data-cy="NoCommentsMessage"
+                  >
                     No comments yet
                   </p>
                 )}
@@ -107,7 +107,7 @@ export const PostDetails: React.FC<Props> = React.memo(
                 {!!comments.length && (
                   <p className="title is-4">Comments:</p>
                 )}
-  
+
                 {comments.map((comment) => (
                   <>
                     {post && (
@@ -126,12 +126,12 @@ export const PostDetails: React.FC<Props> = React.memo(
                             className="delete is-small"
                             aria-label="delete"
                             onClick={() => onCommentDelete(comment.id)}
-    
+
                           >
                             delete button
                           </button>
                         </div>
-    
+
                         <div className="message-body" data-cy="CommentBody">
                           {comment.body}
                         </div>

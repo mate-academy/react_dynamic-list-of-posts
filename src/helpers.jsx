@@ -1,8 +1,5 @@
 import { client } from './utils/fetchClient';
 
-// import { User } from "./types/User";
-// import { Post } from "./types/Post";
-
 export const getUsers = () => {
   return client.get('/users');
 };
