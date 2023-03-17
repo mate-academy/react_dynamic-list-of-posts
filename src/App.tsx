@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +8,52 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { User } from './types/User';
+import { getUsers } from './api/users';
+import { Post } from './types/Post';
+import { getUserPosts } from './api/posts';
 
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  const loadUsers = async () => {
+    try {
+      const loadedUsers = await getUsers();
+
+      setUsers(loadedUsers);
+    } catch {
+      setHasError(true);
+    }
+  };
+
+  const loadUserPosts = async () => {
+    setIsLoading(true);
+    try {
+      if (selectedUser) {
+        const loadedUserPosts = await getUserPosts(selectedUser.id);
+
+        setPosts(loadedUserPosts);
+      }
+    } catch {
+      setHasError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  useEffect(() => {
+    loadUserPosts();
+  }, [selectedUser]);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,28 +61,49 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  users={users}
+                  selectUser={setSelectedUser}
+                  selectedUser={selectedUser}
+                  selectPost={setSelectedPost}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isLoading && selectedUser && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {selectedUser && hasError && !isLoading && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {selectedUser && !isLoading && !hasError && !posts.length && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
 
-                <PostsList />
+                )}
+
+                {selectedUser && !isLoading && posts.length > 0 && (
+                  <PostsList
+                    posts={posts}
+                    selectPost={setSelectedPost}
+                    selectedPost={selectedPost}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -50,12 +115,16 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              {
+                'Sidebar--open': selectedPost,
+              },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
+            {selectedPost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails selectedPost={selectedPost} />
+              </div>
+            )}
           </div>
         </div>
       </div>
