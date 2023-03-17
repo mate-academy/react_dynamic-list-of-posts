@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { useState } from 'react';
 import { User } from '../types/User';
 
@@ -12,6 +13,7 @@ export const UserSelector: React.FC<Props> = ({
 }) => {
   const [isClickedOnMenu, setIsClickedOnMenu] = useState(false);
   const [title, setTitle] = useState('Choose a user');
+  const [selectedUser, setSelectedUser] = useState(-1);
 
   return (
     <div
@@ -41,10 +43,13 @@ export const UserSelector: React.FC<Props> = ({
               return (
                 <a
                   key={user.id}
-                  href="{`#user-&{user.id}`}"
-                  className="dropdown-item"
+                  href={`#user-${user.id}`}
+                  className={classNames(
+                    'dropdown-item', { 'is-active': user.id === selectedUser },
+                  )}
                   onClick={() => {
                     onChooseUser(user.id);
+                    setSelectedUser(user.id);
                     setIsClickedOnMenu(false);
                     setTitle(user.name);
                   }}
