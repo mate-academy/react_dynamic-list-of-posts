@@ -11,14 +11,14 @@ import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { getUsers } from './api/users';
 import { Post } from './types/Post';
-import { getPosts } from './api/posts';
+import { getUserPosts } from './api/posts';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const loadUsers = async () => {
@@ -31,16 +31,18 @@ export const App: React.FC = () => {
     }
   };
 
-  const loadPosts = async () => {
-    setIsLoaded(true);
+  const loadUserPosts = async () => {
+    setIsLoading(true);
     try {
-      const loadedPosts = await getPosts(selectedUserId);
+      if (selectedUser) {
+        const loadedUserPosts = await getUserPosts(selectedUser.id);
 
-      setPosts(loadedPosts);
+        setPosts(loadedUserPosts);
+      }
     } catch {
       setHasError(true);
     } finally {
-      setIsLoaded(false);
+      setIsLoading(false);
     }
   };
 
@@ -49,8 +51,8 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    loadPosts();
-  }, [selectedUserId]);
+    loadUserPosts();
+  }, [selectedUser]);
 
   return (
     <main className="section">
@@ -61,22 +63,22 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  selectUserId={setSelectedUserId}
-                  selectedUserId={selectedUserId}
+                  selectUser={setSelectedUser}
+                  selectedUser={selectedUser}
                   selectPost={setSelectedPost}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {selectedUserId === 0 && (
+                {!selectedUser && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                { isLoaded && <Loader />}
+                {isLoading && selectedUser && <Loader />}
 
-                {hasError && (
+                {selectedUser && hasError && !isLoading && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -85,14 +87,22 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!isLoaded && !posts.length && selectedUserId > 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
+                {selectedUser
+                  && !isLoading
+                  && !hasError
+                  && !posts.length
+                  && selectedUser
+                  && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
 
-                )}
+                  )}
 
-                {selectedUserId > 0 && posts.length > 0 && (
+                {selectedUser && !isLoading && posts.length > 0 && (
                   <PostsList
                     posts={posts}
                     selectPost={setSelectedPost}

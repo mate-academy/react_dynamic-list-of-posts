@@ -1,27 +1,44 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 
 interface Props {
   users: User[],
-  selectUserId: (userId: number) => void,
-  selectedUserId: number,
+  selectUser: (user: User) => void,
+  selectedUser: User | null,
   selectPost: (post: Post | null) => void,
 }
 
 export const UserSelector: React.FC<Props> = ({
   users,
-  selectUserId,
-  selectedUserId,
+  selectUser,
+  selectedUser,
   selectPost,
 }) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    if (!expanded) {
+      return;
+    }
+
+    const handleDocumentClick = () => {
+      setExpanded(false);
+    };
+
+    document.addEventListener('click', handleDocumentClick);
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, [expanded]);
 
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={classNames('dropdown', { 'is-active': expanded })}
     >
       <div className="dropdown-trigger">
         <button
@@ -30,10 +47,10 @@ export const UserSelector: React.FC<Props> = ({
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => {
-            setIsVisible(!isVisible);
+            setExpanded(current => !current);
           }}
         >
-          <span>Choose a user</span>
+          <span>{ selectedUser?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -41,35 +58,25 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      {isVisible && (
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          <div className="dropdown-content">
-            {users.map(user => (
-              <a
-                key={user.id}
-                href={`#user-${user.id}`}
-                className={classNames('dropdown-item', {
-                  'is-active': user.id === selectedUserId,
-                })}
-                onClick={() => {
-                  selectUserId(user.id);
-                  setIsVisible(false);
-                  selectPost(null);
-                }}
-              >
-                {user.name}
-              </a>
-            ))}
-            <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-            <a href="#user-2" className="dropdown-item is-active">
-              Ervin Howell
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        <div className="dropdown-content">
+          {users.map(user => (
+            <a
+              key={user.id}
+              href={`#user-${user.id}`}
+              className={classNames('dropdown-item', {
+                'is-active': user.id === selectedUser?.id,
+              })}
+              onClick={() => {
+                selectUser(user);
+                selectPost(null);
+              }}
+            >
+              {user.name}
             </a>
-            <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-            <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-            <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
-          </div>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 };

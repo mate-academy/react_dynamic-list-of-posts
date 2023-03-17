@@ -11,13 +11,13 @@ interface Props {
 
 export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
   const loadComments = async () => {
     setIsVisible(false);
-    setIsLoaded(true);
+    setIsLoading(true);
     try {
       const loadedcomments = await getComments(selectedPost.id);
 
@@ -25,7 +25,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
     } catch {
       setHasError(true);
     } finally {
-      setIsLoaded(false);
+      setIsLoading(false);
     }
   };
 
@@ -73,21 +73,21 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         </div>
 
         <div className="block">
-          { isLoaded && <Loader />}
+          { isLoading && <Loader />}
 
-          {hasError && (
+          {!isLoading && hasError && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
           )}
 
-          {!comments.length && (
+          {!comments.length && !hasError && !isLoading && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {!isLoaded && comments.length > 0 && (
+          {!isLoading && comments.length > 0 && (
             <>
               <p className="title is-4">Comments:</p>
               {comments.map(comment => (
@@ -121,7 +121,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             </>
           )}
 
-          {!isLoaded && !hasError && (
+          {!isLoading && !hasError && !isVisible && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -135,7 +135,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
           )}
         </div>
 
-        {!isLoaded && !hasError && isVisible && (
+        {!isLoading && !hasError && isVisible && (
           <NewCommentForm addComment={addComment} />
         )}
       </div>
