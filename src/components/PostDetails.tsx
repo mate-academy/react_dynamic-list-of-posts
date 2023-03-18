@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import React, { useEffect, useState } from 'react';
 import Notiflix from 'notiflix';
 import { deleteComment, getComments, postComment } from '../api/serverData';
@@ -59,7 +57,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
       setComments(prev => prev.filter(comment => comment.id !== commentId));
     } catch {
-      console.error;
+      Notiflix.Notify.failure(
+        'Can`t delete comment rigth now.Please try again later',
+      );
     }
   };
 
@@ -106,19 +106,24 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             ) : (
               <>
                 <p className="title is-4">Comments:</p>
-                {comments.map(comment => {
+                {comments.map(({
+                  id: commentId,
+                  body: commentBody,
+                  email: commentEmail,
+                  name: commentName,
+                }) => {
                   return (
                     <article
                       className="message is-small"
                       data-cy="Comment"
-                      key={comment.id}
+                      key={commentId}
                     >
                       <div className="message-header">
                         <a
-                          href={`mailto:${comment.email}`}
+                          href={`mailto:${commentEmail}`}
                           data-cy="CommentAuthor"
                         >
-                          {comment.name}
+                          {commentName}
                         </a>
                         <button
                           data-cy="CommentDelete"
@@ -126,7 +131,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                           className="delete is-small"
                           aria-label="delete"
                           onClick={() => {
-                            deletePostComment(comment.id);
+                            deletePostComment(commentId);
                           }}
                         >
                           delete button
@@ -134,7 +139,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                       </div>
 
                       <div className="message-body" data-cy="CommentBody">
-                        {comment.body}
+                        {commentBody}
                       </div>
                     </article>
                   );

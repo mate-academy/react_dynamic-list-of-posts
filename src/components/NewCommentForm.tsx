@@ -40,6 +40,13 @@ export const NewCommentForm: React.FC<Props> = ({
     setIsSubmit(false);
   };
 
+  const clickHandler = () => {
+    setAuthor('');
+    setEmail('');
+    setComment('');
+    setIsSubmit(false);
+  };
+
   const errorInputAuthor = isSubmit && !author.trim();
   const errorInputEmail = isSubmit && !email.trim();
   const errorTextComment = isSubmit && !comment.trim();
@@ -157,7 +164,6 @@ export const NewCommentForm: React.FC<Props> = ({
                 'is-loading': isLoading && !isResponse,
               },
             )}
-            // onClick={() => setIsLoading(true)}
           >
             Add
           </button>
@@ -168,12 +174,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={() => {
-              setAuthor('');
-              setEmail('');
-              setComment('');
-              setIsSubmit(false);
-            }}
+            onClick={clickHandler}
           >
             Clear
           </button>

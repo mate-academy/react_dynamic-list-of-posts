@@ -15,6 +15,13 @@ export const UserSelector: React.FC<Props> = ({
   const [title, setTitle] = useState('Choose a user');
   const [selectedUser, setSelectedUser] = useState(-1);
 
+  const onClickHandler = ({ id, name }: User) => {
+    onChooseUser(id);
+    setSelectedUser(id);
+    setIsClickedOnMenu(false);
+    setTitle(name);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -48,10 +55,7 @@ export const UserSelector: React.FC<Props> = ({
                     'dropdown-item', { 'is-active': user.id === selectedUser },
                   )}
                   onClick={() => {
-                    onChooseUser(user.id);
-                    setSelectedUser(user.id);
-                    setIsClickedOnMenu(false);
-                    setTitle(user.name);
+                    onClickHandler(user);
                   }}
                 >
                   {user.name}
