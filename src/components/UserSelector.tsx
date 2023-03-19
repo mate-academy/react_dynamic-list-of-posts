@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 
@@ -19,6 +19,8 @@ export const UserSelector: React.FC<Props> = ({
   setOpenedPost,
 }) => {
   const [isActiveButton, setIsActivebutton] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   const setUserAndPosts = (user: User) => {
     if (selectedUser === user) {
       return;
@@ -38,9 +40,25 @@ export const UserSelector: React.FC<Props> = ({
 
   const handleIsActiveButton = () => setIsActivebutton(!isActiveButton);
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current
+      && !dropdownRef.current.contains(event.target as Node)) {
+      setIsActivebutton(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div
       data-cy="UserSelector"
+      ref={dropdownRef}
       className={classNames(
         'dropdown',
         { 'is-active': isActiveButton },

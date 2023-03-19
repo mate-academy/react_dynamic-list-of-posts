@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+/* eslint-disable no-console */
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { addComment } from '../api/coment';
@@ -5,10 +7,10 @@ import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 
 type Props = {
-  setComments: (args: Comment[]) => void,
-  comments: Comment[],
-  setIsErrorSide: (args: boolean) => void,
-  openedPost: Post | null,
+  setComments: (args: Comment[]) => void;
+  comments: Comment[];
+  setIsErrorSide: (args: boolean) => void;
+  openedPost: Post | null;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
@@ -17,9 +19,9 @@ export const NewCommentForm: React.FC<Props> = ({
   setIsErrorSide,
   openedPost,
 }) => {
-  const [authorName, setAuthorName] = useState<string>();
-  const [authorEmail, setAuthorEmail] = useState<string>();
-  const [commentText, setCommentText] = useState<string>();
+  const [authorName, setAuthorName] = useState('');
+  const [authorEmail, setAuthorEmail] = useState('');
+  const [commentText, setCommentText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isEmptyName, setIsEmptyName] = useState(false);
   const [isEmptyEmail, setIsEmptyEmail] = useState(false);
@@ -44,13 +46,17 @@ export const NewCommentForm: React.FC<Props> = ({
       setIsLoading(true);
       addComment(commentData)
         .then((data) => {
-          if (!('error' in data)) {
+          if (data) {
             setComments([...comments, data]);
+          } else {
+            throw new Error('Failed to add comment.');
           }
-
-          setIsErrorSide('error' in data);
         })
-        .catch(() => setIsErrorSide(true))
+        .catch((error) => {
+          console.error(error);
+          setIsErrorSide(true);
+          alert('Failed to add comment. Please try again later.');
+        })
         .finally(() => {
           setIsLoading(false);
           setCommentText('');
@@ -133,7 +139,7 @@ export const NewCommentForm: React.FC<Props> = ({
         </label>
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
@@ -145,6 +151,19 @@ export const NewCommentForm: React.FC<Props> = ({
             onChange={(event) => {
               setAuthorEmail(event.target.value);
               setIsEmptyEmail(false);
+            }}
+            onBlur={(event) => {
+              const email = event.target.value;
+
+              if (email) {
+                const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+                if (!isValidEmail) {
+                  setIsEmptyEmail(true);
+                  setAuthorEmail('');
+                  alert('Please enter a valid email address.');
+                }
+              }
             }}
           />
 
