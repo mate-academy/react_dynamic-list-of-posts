@@ -7,3 +7,6 @@ export interface Comment {
 }
 
 export type CommentData = Pick<Comment, 'name' | 'email' | 'body'>;
+
+export type CommentDataToServer
+  = Pick<Comment, 'name' | 'email' | 'body' | 'postId'>;
