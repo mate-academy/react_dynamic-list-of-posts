@@ -77,11 +77,9 @@ export const PostDetails: React.FC<Props> = ({
           {!isErrorSide
             && comments.length === 0
             && !isVisibleForm
+            && openedPost
             && (
-              <p
-                className="title is-4"
-                data-cy="NoCommentsMessage"
-              >
+              <p className="title is-4" data-cy="NoCommentsMessage">
                 No comments yet
               </p>
             )}
@@ -128,7 +126,6 @@ export const PostDetails: React.FC<Props> = ({
             )}
           {!isErrorSide
             && openedPost
-            && comments.length > 0
             && !isVisibleForm
             && (
               <button

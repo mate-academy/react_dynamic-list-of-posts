@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
+import { NoCommentsMessage } from './components/NoCommentsMessage';
 import { Loader } from './components/Loader';
 
 import { getUsers } from './api/user';
@@ -127,6 +128,8 @@ export const App: React.FC = () => {
                     posts={posts}
                     setCommentsList={setCommentsList}
                     setIsVisibleForm={setIsVisibleForm}
+                    setIsErrorSide={setIsErrorSideBar}
+                    setPosts={setPosts}
                   />
                 )}
               </div>
@@ -153,7 +156,9 @@ export const App: React.FC = () => {
                 setComments={setComments}
                 isVisibleForm={isVisibleForm}
                 setIsVisibleForm={setIsVisibleForm}
-              />
+              >
+                {comments.length === 0 && <NoCommentsMessage />}
+              </PostDetails>
             </div>
           </div>
         </div>
