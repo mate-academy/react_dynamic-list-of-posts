@@ -128,8 +128,6 @@ export const App: React.FC = () => {
                     posts={posts}
                     setCommentsList={setCommentsList}
                     setIsVisibleForm={setIsVisibleForm}
-                    setIsErrorSide={setIsErrorSideBar}
-                    setPosts={setPosts}
                   />
                 )}
               </div>
