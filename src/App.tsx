@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
-/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
 import Notiflix from 'notiflix';
 import 'bulma/bulma.sass';
@@ -23,6 +21,7 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isWarning, setIsWarning] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const loadUsers = async () => {
     try {
@@ -44,9 +43,11 @@ export const App: React.FC = () => {
       setIsError(false);
       const userPosts = await getUserPosts(userId);
 
-      userPosts.length > 1
-        ? setPosts(userPosts)
-        : setIsWarning(true);
+      if (userPosts.length) {
+        setPosts(userPosts);
+      } else {
+        setIsWarning(true);
+      }
     } catch {
       setIsError(true);
     } finally {
@@ -58,7 +59,12 @@ export const App: React.FC = () => {
     loadUsers();
   }, []);
 
-  const setActiveUserOnClick = (userId:number) => {
+  const setActiveUserOnClick = (userId: number) => {
+    if (activeUserId !== userId) {
+      setPosts([]);
+      setIsOpen(false);
+    }
+
     setActiveUserId(userId);
     loadUserPosts(userId);
   };
@@ -108,28 +114,31 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     onPostDetails={setActivePostOnClick}
+                    onShowPostDetails={setIsOpen}
                   />
                 )}
               </div>
             </div>
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              { 'Sidebar--open': activePost },
-            )}
-          >
-            { activePost && (
-              <div className="tile is-child box is-success ">
-                <PostDetails post={activePost} />
-              </div>
-            )}
-          </div>
+          {isOpen && (
+            <div
+              data-cy="Sidebar"
+              className={classNames(
+                'tile',
+                'is-parent',
+                'is-8-desktop',
+                'Sidebar',
+                { 'Sidebar--open': activePost },
+              )}
+            >
+              { activePost && (
+                <div className="tile is-child box is-success ">
+                  <PostDetails post={activePost} />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </main>

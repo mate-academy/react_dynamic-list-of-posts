@@ -4,17 +4,24 @@ import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[],
-  onPostDetails: (post:Post) => void,
+  onPostDetails: (post: Post) => void,
+  onShowPostDetails: (click:boolean) => void,
 };
 
-export const PostsList: React.FC<Props> = ({ posts, onPostDetails }) => {
+export const PostsList: React.FC<Props> = ({
+  posts,
+  onPostDetails,
+  onShowPostDetails,
+}) => {
   const [currentPostId, setCurrentPostId] = useState(-1);
 
   const clickHandler = (post:Post) => {
     setCurrentPostId(post.id);
     onPostDetails(post);
+    onShowPostDetails(true);
     if (currentPostId === post.id) {
       setCurrentPostId(-1);
+      onShowPostDetails(false);
     }
   };
 

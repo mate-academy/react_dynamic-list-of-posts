@@ -4,7 +4,7 @@ import { User } from '../types/User';
 
 type Props = {
   users: User[],
-  onChooseUser: (userId:number) => void,
+  onChooseUser: (userId: number) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
