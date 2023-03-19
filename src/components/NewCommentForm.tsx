@@ -1,9 +1,10 @@
 import React, { FormEvent, useCallback, useState } from 'react';
 import classNames from 'classnames';
 import { addComment } from '../api/comments';
-import { CommentFormErrors, ErrorTypes } from '../constants';
+import { CommentFormErrors, EMAIL_REGEXP, ErrorTypes } from '../constants';
 import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
+import { ErrorIcon } from './ErrorIcon';
 
 type Props = {
   post: Post | null;
@@ -24,15 +25,6 @@ export const NewCommentForm: React.FC<Props> = ({
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [hasComment, setHasComment] = useState(true);
   const [isCommentAdding, setIsCommentAdding] = useState(false);
-
-  const errorIcon = (
-    <span
-      className="icon is-small is-right has-text-danger"
-      data-cy="ErrorIcon"
-    >
-      <i className="fas fa-exclamation-triangle" />
-    </span>
-  );
 
   const addNewComment = useCallback(async () => {
     setIsCommentAdding(true);
@@ -59,15 +51,6 @@ export const NewCommentForm: React.FC<Props> = ({
     }
   }, [name, email, comment]);
 
-  const validateEmail = (userEmail: string) => {
-    return String(userEmail)
-      .toLowerCase()
-      .match(
-        // eslint-disable-next-line
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
-  };
-
   const handleFormSubmit = (event: FormEvent) => {
     event.preventDefault();
     let isNotValid;
@@ -82,7 +65,7 @@ export const NewCommentForm: React.FC<Props> = ({
       isNotValid = true;
     }
 
-    if (!validateEmail(email)) {
+    if (!EMAIL_REGEXP(email)) {
       setIsEmailValid(false);
       isNotValid = true;
     }
@@ -109,6 +92,22 @@ export const NewCommentForm: React.FC<Props> = ({
     setIsEmailValid(true);
   };
 
+  const handleNameChange = (event: FormEvent<HTMLInputElement>) => {
+    setName(event.currentTarget.value);
+    setHasName(true);
+  };
+
+  const handleEmailChange = (event: FormEvent<HTMLInputElement>) => {
+    setEmail(event.currentTarget.value);
+    setHasEmail(true);
+    setIsEmailValid(true);
+  };
+
+  const handleCommentChange = (event: FormEvent<HTMLTextAreaElement>) => {
+    setComment(event.currentTarget.value);
+    setHasComment(true);
+  };
+
   return (
     <form
       data-cy="NewCommentForm"
@@ -129,10 +128,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': !hasName,
             })}
             value={name}
-            onChange={(event) => {
-              setName(event.target.value);
-              setHasName(true);
-            }}
+            onChange={handleNameChange}
           />
 
           <span className="icon is-small is-left">
@@ -140,7 +136,8 @@ export const NewCommentForm: React.FC<Props> = ({
           </span>
 
           {!hasName && (
-            errorIcon)}
+            <ErrorIcon />
+          )}
         </div>
 
         {!hasName && (
@@ -165,11 +162,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': !hasEmail,
             })}
             value={email}
-            onChange={(event) => {
-              setEmail(event.target.value);
-              setHasEmail(true);
-              setIsEmailValid(true);
-            }}
+            onChange={handleEmailChange}
           />
 
           <span className="icon is-small is-left">
@@ -177,7 +170,8 @@ export const NewCommentForm: React.FC<Props> = ({
           </span>
 
           {(!hasEmail || !isEmailValid) && (
-            errorIcon)}
+            <ErrorIcon />
+          )}
         </div>
 
         {(!hasEmail || !isEmailValid) && (
@@ -201,10 +195,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': !hasComment,
             })}
             value={comment}
-            onChange={(event) => {
-              setComment(event.target.value);
-              setHasComment(true);
-            }}
+            onChange={handleCommentChange}
           />
         </div>
 

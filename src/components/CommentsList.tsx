@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { deleteComment } from '../api/comments';
 import { ErrorTypes } from '../constants';
 import { Comment } from '../types/Comment';
@@ -14,7 +14,7 @@ export const CommentsList: React.FC<Props> = ({
   setComments,
   setErrorType,
 }) => {
-  const handleDeleteComment = useCallback(async (commentId: number) => {
+  const handleDeleteComment = async (commentId: number) => {
     try {
       setComments(prevComments => prevComments
         .filter(({ id }) => id !== commentId));
@@ -22,7 +22,7 @@ export const CommentsList: React.FC<Props> = ({
     } catch (error) {
       setErrorType(ErrorTypes.DELETE);
     }
-  }, [setComments, setErrorType]);
+  };
 
   if (!comments.length) {
     return (

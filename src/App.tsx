@@ -20,14 +20,16 @@ export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
+  const [isLoaderVisible, setIsLoaderVisible] = useState(false);
+  const [isCommentFormOpen, setIsCommentFormOpen] = useState(false);
+  const [isPostlistVisible, setIsPostListVisible] = useState(false);
+  const [isCommentsFetching, setIsCommentsFetching] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [errorType, setErrorType] = useState<ErrorTypes | null>(null);
-  const [isLoaderVisible, setIsLoaderVisible] = useState(false);
-  const [isCommentsListtHidden, setIsCommentsListHidden] = useState(true);
-  const [isCommentFormOpen, setIsCommentFormOpen] = useState(false);
-  const [isCommentsFetching, setIsCommentsFetching] = useState(false);
-  const [isPostlistVisible, setIsPostListVisible] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isCommentsListtHidden, setIsCommentsListHidden] = useState(true);
+
+  const loadingDataErrors = [ErrorTypes.USERS, ErrorTypes.POSTS];
 
   const getUsersFromServer = async () => {
     try {
@@ -39,7 +41,7 @@ export const App: React.FC = () => {
     }
   };
 
-  const getPostsFromServer = async (userId: number) => {
+  const getPostsByUserIdFromServer = async (userId: number) => {
     setIsLoaderVisible(true);
     setIsPostListVisible(false);
 
@@ -56,7 +58,7 @@ export const App: React.FC = () => {
     }
   };
 
-  const getCommentsFromServer = async (postId: number) => {
+  const getCommentsByPostIdFromServer = async (postId: number) => {
     setIsCommentsFetching(true);
     setIsCommentsListHidden(false);
 
@@ -74,7 +76,7 @@ export const App: React.FC = () => {
 
   const handleOpenDetails = (post: Post) => {
     setSelectedPost(post);
-    getCommentsFromServer(post.id);
+    getCommentsByPostIdFromServer(post.id);
     setIsCommentFormOpen(false);
   };
 
@@ -93,7 +95,7 @@ export const App: React.FC = () => {
                   users={users}
                   selected={selectedUser}
                   onSelect={setSelectedUser}
-                  getUsersPosts={getPostsFromServer}
+                  getUsersPosts={getPostsByUserIdFromServer}
                   setIsCommentsListHidden={setIsCommentsListHidden}
                 />
               </div>
@@ -109,8 +111,7 @@ export const App: React.FC = () => {
                   <Loader />
                 )}
 
-                {(errorType === ErrorTypes.USERS
-                  || errorType === ErrorTypes.POSTS) && (
+                {(errorType && loadingDataErrors.includes(errorType)) && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"

@@ -53,7 +53,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setIsVisible(() => true)}
+          onClick={() => setIsVisible(true)}
         >
           <span>
             {selected

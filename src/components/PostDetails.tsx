@@ -8,7 +8,7 @@ import { ErrorTypes } from '../constants';
 
 type Props = {
   post: Post | null;
-  errorType: string | null;
+  errorType: ErrorTypes | null;
   comments: Comment[];
   isFetching: boolean;
   isCommentFormOpen: boolean;
@@ -31,14 +31,11 @@ export const PostDetails: React.FC<Props> = ({
     openCommentsForm(true);
   };
 
-  // const errorNotification = (
-  //   <div
-  //     className="notification is-danger"
-  //     data-cy="CommentsError"
-  //   >
-  //     {`Something went wrong on comment ${errorType}!`}
-  //   </div>
-  // );
+  const errorTypes: ErrorTypes[] = [
+    ErrorTypes.ADD,
+    ErrorTypes.DELETE,
+    ErrorTypes.COMMENTS,
+  ];
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -58,9 +55,7 @@ export const PostDetails: React.FC<Props> = ({
             <Loader />
           )}
 
-          {(errorType === ErrorTypes.ADD
-            || errorType === ErrorTypes.DELETE
-            || errorType === ErrorTypes.COMMENTS) && (
+          {(errorType && errorTypes.includes(errorType)) && (
             <div
               className="notification is-danger"
               data-cy="CommentsError"
