@@ -43,6 +43,24 @@ export const PostDetails: FC<Props> = ({ post }) => {
     fetchData();
   }, [post]);
 
+  useEffect(() => {
+    const handlePostButtonClick = () => {
+      setFormOpen(false);
+    };
+
+    const buttons = document.querySelectorAll('[data-cy="PostButton"]');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', handlePostButtonClick);
+    });
+
+    return () => {
+      buttons.forEach(button => {
+        button.removeEventListener('click', handlePostButtonClick);
+      });
+    };
+  }, [isFormOpen]);
+
   const removeComment = async (id: number) => {
     setError(false);
 
@@ -124,7 +142,7 @@ export const PostDetails: FC<Props> = ({ post }) => {
               </div>
             )}
 
-            {!hasComments && (
+            {!hasComments && !isError && (
               <p className="title is-4" data-cy="NoCommentsMessage">
                 No comments yet
               </p>
@@ -166,17 +184,19 @@ export const PostDetails: FC<Props> = ({ post }) => {
               );
             })}
 
-            <button
-              data-cy="WriteCommentButton"
-              type="button"
-              className="button is-link"
-              onClick={() => setFormOpen(true)}
-            >
-              Write a comment
-            </button>
+            {!isFormOpen && !isError && (
+              <button
+                data-cy="WriteCommentButton"
+                type="button"
+                className="button is-link"
+                onClick={() => setFormOpen(true)}
+              >
+                Write a comment
+              </button>
+            )}
           </div>
         )}
-        {isFormOpen && (
+        {isFormOpen && !isError && (
           <NewCommentForm
             isLoading={isAddingLoading}
             isError={isAddingError}

@@ -1,5 +1,10 @@
 import classNames from 'classnames';
-import { FC, useState } from 'react';
+import {
+  FC,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { User } from '../types/User';
 
 type Props = {
@@ -14,6 +19,22 @@ export const UserSelector: FC<Props> = ({
   onUserChange,
 }) => {
   const [isSelectOpen, setSelectOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current
+        && !dropdownRef.current.contains(event.target as Node)) {
+        setSelectOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownRef]);
 
   const handleSelect = () => {
     setSelectOpen(prev => !prev);
@@ -29,7 +50,10 @@ export const UserSelector: FC<Props> = ({
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={classNames(
+        'dropdown',
+        { 'is-active': isSelectOpen },
+      )}
     >
       <div className="dropdown-trigger">
         <button
@@ -46,9 +70,10 @@ export const UserSelector: FC<Props> = ({
           </span>
         </button>
       </div>
-      {isSelectOpen && (
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          <div className="dropdown-content">
+
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        {isSelectOpen && (
+          <div className="dropdown-content" ref={dropdownRef}>
             {users.map(user => {
               const {
                 id,
@@ -58,11 +83,11 @@ export const UserSelector: FC<Props> = ({
               return (
                 <a
                   key={id}
-                  href={`#user-${id}`}
                   className={classNames(
                     'dropdown-item',
                     { 'is-active': activeUserId === id },
                   )}
+                  href={`#user-${id}`}
                   onClick={() => handleUserChange(id)}
                 >
                   {name}
@@ -70,8 +95,9 @@ export const UserSelector: FC<Props> = ({
               );
             })}
           </div>
-        </div>
-      )}
+        )}
+      </div>
+
     </div>
   );
 };

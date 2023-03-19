@@ -34,7 +34,7 @@ export const App: React.FC = () => {
     };
 
     fetchData();
-  });
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -120,22 +120,23 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {selectedPost && (
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                'Sidebar--open',
-              )}
-            >
-              <div className="tile is-child box is-success ">
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': selectedPost },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              {selectedPost && (
                 <PostDetails post={selectedPost} />
-              </div>
+              )}
             </div>
-          )}
+          </div>
+
         </div>
       </div>
     </main>
