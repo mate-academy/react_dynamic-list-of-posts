@@ -6,7 +6,7 @@ import React, {
 } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
-import { getUsers } from '../utils/Helper';
+import { getUsers } from '../utils/helper';
 
 type Props = {
   handleSelectUser: (id: number) => void,

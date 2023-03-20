@@ -8,7 +8,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { Post } from './types/Post';
-import { getPosts } from './utils/Helper';
+import { getPosts } from './utils/helper';
 
 export const App: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);

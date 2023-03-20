@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Comment, CommentData } from '../types/Comment';
 import { Post } from '../types/Post';
-import { addComment, deleteComment, getComments } from '../utils/Helper';
+import { addComment, deleteComment, getComments } from '../utils/helper';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
