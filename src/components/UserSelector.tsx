@@ -95,7 +95,6 @@ export const UserSelector: FC<Props> = ({
           })}
         </div>
       </div>
-
     </div>
   );
 };
