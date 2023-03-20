@@ -1,117 +1,129 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { CommentInfo } from './CommentsInfo';
+import { Post } from '../types/Post';
+import { Comment } from '../types/Comment';
 
-export const PostDetails: React.FC = () => {
+type Props = {
+  post: Post | null,
+  comments: Comment[],
+  isLoadComments: boolean,
+  isErrorLoadComments: boolean,
+  isPostNewComment: boolean,
+  isErrorPostComments: boolean,
+  safeBodyComments: boolean,
+  isErrorDelete: boolean,
+  setIsErrorDelete: React.Dispatch<React.SetStateAction<boolean>>,
+  setErrorPostComments: React.Dispatch<React.SetStateAction<boolean>>,
+  onAddComment: (name: string, email: string, body: string) => void,
+  deletePost: (id: number) => void,
+};
+
+export const PostDetails: React.FC<Props> = ({
+  post,
+  comments,
+  isLoadComments,
+  isErrorLoadComments,
+  isErrorDelete: errorDelete,
+  isPostNewComment,
+  isErrorPostComments,
+  safeBodyComments,
+  setErrorPostComments,
+  onAddComment,
+  deletePost,
+  setIsErrorDelete,
+}) => {
+  const [isActiveForm, setIsActiveForm] = useState<boolean>(false);
+  const hendlerAddNewComment = (): void => {
+    setIsActiveForm(true);
+  };
+
+  useEffect(() => {
+    if (isErrorPostComments) {
+      setTimeout(() => setErrorPostComments(false), 1500);
+    }
+
+    if (errorDelete) {
+      setTimeout(() => setIsErrorDelete(false), 1500);
+    }
+  }, [isErrorPostComments, errorDelete]);
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {`#${post?.id}: ${post?.title}`}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            {post?.title}
           </p>
         </div>
+        {isLoadComments || <Loader />}
 
         <div className="block">
-          <Loader />
-
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
+          {isErrorLoadComments && isLoadComments && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
             </div>
+          )}
 
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
+          {isLoadComments && !!comments.length && (
+            <>
+              <p className="title is-4">Comments:</p>
+
+              {comments.map(comment => (
+                <article
+                  className="message is-small"
+                  data-cy="Comment"
+                  key={comment.id}
+                >
+                  <CommentInfo
+                    comment={comment}
+                    onDelete={deletePost}
+                  />
+                </article>
+              ))}
+            </>
+          )}
+
+          {isLoadComments && !comments.length && !isErrorLoadComments && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
+
+          {errorDelete && (
+            <div className="notification is-danger">
+              can`t delete, try again
             </div>
-          </article>
+          )}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
+          {isLoadComments && !isErrorLoadComments && !isActiveForm && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={hendlerAddNewComment}
             >
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
+        {isActiveForm && (
+          <NewCommentForm
+            onAddComment={onAddComment}
+            isPostNewComment={isPostNewComment}
+            safeBodyComments={safeBodyComments}
+          />
+        )}
+
+        {isErrorPostComments && (
+          <div className="notification is-danger">Can`t post, try again</div>
+        )}
       </div>
     </div>
   );
