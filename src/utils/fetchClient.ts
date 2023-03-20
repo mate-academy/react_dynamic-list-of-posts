@@ -1,4 +1,4 @@
-const BASE_URL = 'https://mate.academy/students-api';
+export const BASE_URL = 'https://mate.academy/students-api';
 
 function wait(delay: number) {
   return new Promise(resolve => {
@@ -8,7 +8,7 @@ function wait(delay: number) {
 
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
-function request<T>(
+async function request<T>(
   url: string,
   method: RequestMethod = 'GET',
   data: unknown = null,
@@ -22,9 +22,10 @@ function request<T>(
     };
   }
 
-  return wait(300)
-    .then(() => fetch(BASE_URL + url, options))
-    .then(response => response.json());
+  await wait(300);
+  const response = await fetch(BASE_URL + url, options);
+
+  return response.json();
 }
 
 export const client = {

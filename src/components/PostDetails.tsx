@@ -1,45 +1,100 @@
-import React, { useEffect } from 'react';
-import { deleteComment } from '../api/coment';
-import { Comment } from '../types/Comment';
+import React, { useEffect, useState } from 'react';
+import { Comment, CommentData } from '../types/Comment';
 import { Post } from '../types/Post';
+import { addComment, deleteComment, getComments } from '../utils/Helper';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 type Props = {
-  isLoadingSidebar: boolean,
-  comments: Comment[],
-  isErrorSide: boolean,
-  openedPost: Post | null,
-  setIsErrorSide: (arg: boolean) => void,
-  setComments: (arg: Comment[]) => void,
-  isVisibleForm: boolean,
-  setIsVisibleForm: (arg: boolean) => void,
+  post: Post | null,
+  postSelected: Post | null,
 };
 
 export const PostDetails: React.FC<Props> = ({
-  isLoadingSidebar,
-  comments,
-  isErrorSide,
-  openedPost,
-  setIsErrorSide,
-  setComments,
-  isVisibleForm,
-  setIsVisibleForm,
+  post,
+  postSelected,
 }) => {
-  const handleCommentDelete = (commentId: number) => {
-    deleteComment(commentId)
-      .then(() => {
-        setComments(comments.filter((element) => element.id !== commentId));
-      })
-      .catch(() => setIsErrorSide(true));
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isLoaderVisible, setIsLoaderVisible] = useState(false);
+  const [isNewFormVisible, setIsNewFormVisible] = useState(false);
+  const [isWriteCommentVisible, setIsWriteCommentVisible] = useState(false);
+  const [isCommentErrorVisible, setIsCommentErrorVisible] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [isNewCommentLoading, setIsNewCommentLoading] = useState(false);
+
+  const loadComments = async (selectedPost: Post) => {
+    setIsLoaderVisible(true);
+
+    try {
+      const commentsFromServer = await getComments(selectedPost.id);
+
+      setComments(commentsFromServer);
+      setIsCommentErrorVisible(false);
+      setIsWriteCommentVisible(true);
+    } catch {
+      setIsCommentErrorVisible(true);
+    } finally {
+      setIsLoaderVisible(false);
+    }
   };
 
-  const handleFormVisiblity = () => setIsVisibleForm(true);
-
   useEffect(() => {
-    setComments([]);
-    setIsVisibleForm(false);
-  }, [openedPost]);
+    if (post !== null) {
+      loadComments(post);
+      setIsNewFormVisible(false);
+    }
+  }, [post]);
+
+  const handleOnDelete = (id: number) => {
+    if (post === null) {
+      return;
+    }
+
+    try {
+      deleteComment(id);
+      const preparedComments = comments.filter(comment => comment.id !== id);
+
+      setComments(preparedComments);
+    } catch {
+      setHasError(true);
+    }
+  };
+
+  const handleOnAdd = async (newComment: CommentData) => {
+    const preparedComment = { ...newComment, postId: post?.id };
+
+    setIsNewCommentLoading(true);
+
+    try {
+      const comment = await addComment(preparedComment);
+
+      setComments(prev => [...prev, comment]);
+    } catch {
+      setHasError(true);
+    } finally {
+      setIsNewCommentLoading(false);
+    }
+  };
+
+  const handleShowNewForm = () => {
+    setIsNewFormVisible(true);
+  };
+
+  if (hasError) {
+    return (
+      <div
+        className="notification is-danger"
+        data-cy="CommentsError"
+      >
+        Something went wrong
+      </div>
+    );
+  }
+
+  const isCommentsVisible = (comments.length > 0 && !isLoaderVisible);
+  const isNoComments = comments.length === 0
+    && !isLoaderVisible
+    && !isCommentErrorVisible;
 
   return (
     <div
@@ -50,102 +105,100 @@ export const PostDetails: React.FC<Props> = ({
         className="content"
         data-cy="PostDetails"
       >
-        {openedPost && (
-          <div className="block">
-            <h2 data-cy="PostTitle">
-              {`#${openedPost?.id}: ${openedPost?.title}`}
-            </h2>
+        <div className="block">
+          <h2 data-cy="PostTitle">
+            {`#${post?.id}: ${post?.title}`}
+          </h2>
 
-            <p data-cy="PostBody">
-              {openedPost?.body}
-            </p>
-          </div>
-        )}
+          <p data-cy="PostBody">
+            {post?.body}
+          </p>
+        </div>
 
         <div className="block">
-          {isLoadingSidebar && (
-            <Loader />
-          )}
-          {isErrorSide && (
+          {isLoaderVisible && <Loader />}
+          {isCommentErrorVisible && (
             <div
               className="notification is-danger"
               data-cy="CommentsError"
             >
-              Something went wrong
+              Something went wrong!
             </div>
           )}
-          {!isErrorSide
-            && comments.length === 0
-            && !isVisibleForm
-            && openedPost
-            && (
-              <p className="title is-4" data-cy="NoCommentsMessage">
-                No comments yet
-              </p>
-            )}
-          {openedPost
-            && comments.length > 0
-            && (
-              <>
-                <p className="title is-4">
-                  Comments:
-                </p>
-                {comments.map((item) => (
-                  <article
-                    key={item.id}
-                    className="message is-small"
-                    data-cy="Comment"
-                  >
-                    <div className="message-header">
-                      <a
-                        href={`mailto:${item.email}`}
-                        data-cy="CommentAuthor"
-                      >
-                        {item.name}
-                      </a>
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
-                        onClick={() => handleCommentDelete(item.id)}
-                      >
-                        Delete comment
-                      </button>
-                    </div>
 
-                    <div
-                      className="message-body"
-                      data-cy="CommentBody"
+          {isNoComments && (
+            <p
+              className="title is-4"
+              data-cy="NoCommentsMessage"
+            >
+              No comments yet
+            </p>
+          )}
+
+          {isCommentsVisible && (
+            <>
+              <p className="title is-4">
+                Comments:
+              </p>
+              {comments.map(comment => (
+                <article
+                  key={comment.id}
+                  className="message is-small"
+                  data-cy="Comment"
+                >
+                  <div className="message-header">
+                    <a
+                      href={`mailto:${comment.email}`}
+                      data-cy="CommentAuthor"
                     >
-                      {item.body}
-                    </div>
-                  </article>
-                ))}
-              </>
-            )}
-          {!isErrorSide
-            && openedPost
-            && !isVisibleForm
+                      {comment.name}
+                    </a>
+
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={() => {
+                        handleOnDelete(comment.id);
+                      }}
+                    >
+                      delete button
+                    </button>
+                  </div>
+
+                  <div
+                    className="message-body"
+                    data-cy="CommentBody"
+                  >
+                    {comment.body}
+                  </div>
+                </article>
+              ))}
+            </>
+          )}
+
+          {isNewFormVisible && (
+            <NewCommentForm
+              handleOnAdd={handleOnAdd}
+              isNewCommentLoading={isNewCommentLoading}
+              postSelected={postSelected}
+            />
+          )}
+
+          {(isWriteCommentVisible
+            && !isNewFormVisible)
             && (
               <button
                 data-cy="WriteCommentButton"
                 type="button"
                 className="button is-link"
-                onClick={handleFormVisiblity}
+                onClick={handleShowNewForm}
               >
                 Write a comment
               </button>
             )}
         </div>
-        {isVisibleForm && (
-          <NewCommentForm
-            openedPost={openedPost}
-            comments={comments}
-            setComments={setComments}
-            setIsErrorSide={setIsErrorSide}
-          />
-        )}
       </div>
     </div>
   );

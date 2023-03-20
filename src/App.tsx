@@ -1,79 +1,73 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-
 import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-import { NoCommentsMessage } from './components/NoCommentsMessage';
 import { Loader } from './components/Loader';
-
-import { getUsers } from './api/user';
-import { getPosts } from './api/post';
-import { getComments } from './api/coment';
-import { User } from './types/User';
 import { Post } from './types/Post';
-import { Comment } from './types/Comment';
+import { getPosts } from './utils/Helper';
 
 export const App: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [isError, setIsError] = useState(false);
-  const [isErrorSideBar, setIsErrorSideBar] = useState(false);
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingSidebar, setIsLoadingSidebar] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [postSelected, setPostSelected] = useState<Post | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [openedPost, setOpenedPost] = useState<Post | null>(null);
-  const [isVisibleForm, setIsVisibleForm] = useState(false);
-  const [isEmptyPostMessage, setIsEmptyPostMessage] = useState(false);
+  const [isLoaderVisible, setIsLoaderVisible] = useState(false);
+  const [isPostsVisible, setIsPostsVisible] = useState(false);
+  const [isPostDetailsVisible, setIsPostDetailsVisible] = useState(false);
+  const [isSideBarVisible, setIsSideBarVisible] = useState(false);
+  const [isPostErrorVisible, setIsPostErrorVisible] = useState(false);
+  const [isEmptyPostMessageVisible,
+    setIsEmptyPostMessageVisible] = useState(false);
 
-  const setUsersList = useMemo(() => () => {
-    getUsers()
-      .then((data) => {
-        setUsers(data);
-        setIsError('error' in data);
-      })
-      .catch(() => setIsError(true));
-  }, []);
+  const loadPosts = async () => {
+    setIsLoaderVisible(true);
+    setIsEmptyPostMessageVisible(false);
+    setIsPostsVisible(false);
 
-  const setUsersPost = (user: User) => {
-    if (user) {
-      setIsLoading(true);
-      setPosts([]);
+    try {
+      const postsFromServer = await getPosts(selectedUserId);
 
-      getPosts(user.id)
-        .then((data) => {
-          setPosts(data);
-          setIsError('error' in data);
-          setIsEmptyPostMessage(data.length === 0);
-        })
-        .catch(() => setIsError(true))
-        .finally(() => setIsLoading(false));
+      setPosts(postsFromServer);
+      setIsPostErrorVisible(false);
+      if (postsFromServer.length === 0) {
+        setIsEmptyPostMessageVisible(true);
+      } else {
+        setIsPostsVisible(true);
+      }
+    } catch {
+      setIsPostErrorVisible(true);
+    } finally {
+      setIsLoaderVisible(false);
     }
-  };
-
-  const setCommentsList = (postId: number) => {
-    if (openedPost?.id === postId) {
-      return;
-    }
-
-    setIsLoadingSidebar(true);
-    getComments(postId)
-      .then((data) => {
-        setComments(data);
-        setIsErrorSideBar('error' in data);
-      })
-      .catch(() => setIsErrorSideBar(true))
-      .finally(() => setIsLoadingSidebar(false));
   };
 
   useEffect(() => {
-    setUsersList();
-  }, [setUsersList]);
+    if (selectedUserId) {
+      loadPosts();
+    }
+  }, [selectedUserId]);
+
+  const handleSelectPost = (post: Post) => {
+    if (postSelected?.id === post.id) {
+      setIsSideBarVisible(false);
+      setIsPostDetailsVisible(false);
+      setPostSelected(null);
+    } else {
+      setPostSelected(post);
+      setIsSideBarVisible(true);
+      setIsPostDetailsVisible(true);
+    }
+  };
+
+  const handleSelectUser = (newUserId: number) => {
+    setSelectedUserId(newUserId);
+    setPostSelected(null);
+    setIsPostDetailsVisible(false);
+    setIsSideBarVisible(false);
+  };
 
   return (
     <main className="section">
@@ -83,11 +77,8 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  selectedUser={selectedUser}
-                  setSelectedUser={setSelectedUser}
-                  users={users}
-                  setUsersPost={setUsersPost}
-                  setOpenedPost={setOpenedPost}
+                  handleSelectUser={handleSelectUser}
+                  selectedUserId={selectedUserId}
                 />
               </div>
 
@@ -95,17 +86,12 @@ export const App: React.FC = () => {
                 className="block"
                 data-cy="MainContent"
               >
-                {!selectedUser && (
+                {selectedUserId === 0 && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
-
-                {isLoading && (
-                  <Loader />
-                )}
-
-                {isError && (
+                {isPostErrorVisible && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -113,7 +99,9 @@ export const App: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-                {isEmptyPostMessage && (
+                {isLoaderVisible && <Loader />}
+
+                {isEmptyPostMessageVisible && (
                   <div
                     className="notification is-warning"
                     data-cy="NoPostsYet"
@@ -121,19 +109,17 @@ export const App: React.FC = () => {
                     No posts yet
                   </div>
                 )}
-                {posts.length > 0 && (
+
+                {isPostsVisible && (
                   <PostsList
-                    openedPost={openedPost}
-                    setOpenedPost={setOpenedPost}
                     posts={posts}
-                    setCommentsList={setCommentsList}
-                    setIsVisibleForm={setIsVisibleForm}
+                    postSelected={postSelected}
+                    handleSelectPost={handleSelectPost}
                   />
                 )}
               </div>
             </div>
           </div>
-
           <div
             data-cy="Sidebar"
             className={classNames(
@@ -141,23 +127,17 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              `Sidebar--${openedPost ? 'open' : 'close'}`,
+              { 'Sidebar--open': isSideBarVisible },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails
-                setIsErrorSide={setIsErrorSideBar}
-                openedPost={openedPost}
-                isErrorSide={isErrorSideBar}
-                isLoadingSidebar={isLoadingSidebar}
-                comments={comments}
-                setComments={setComments}
-                isVisibleForm={isVisibleForm}
-                setIsVisibleForm={setIsVisibleForm}
-              >
-                {comments.length === 0 && <NoCommentsMessage />}
-              </PostDetails>
-            </div>
+            {isPostDetailsVisible && (
+              <div className="tile is-child box is-success ">
+                <PostDetails
+                  post={postSelected}
+                  postSelected={postSelected}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
