@@ -72,30 +72,28 @@ export const UserSelector: FC<Props> = ({
       </div>
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        {isSelectOpen && (
-          <div className="dropdown-content" ref={dropdownRef}>
-            {users.map(user => {
-              const {
-                id,
-                name,
-              } = user;
+        <div className="dropdown-content" ref={dropdownRef}>
+          {users.map(user => {
+            const {
+              id,
+              name,
+            } = user;
 
-              return (
-                <a
-                  key={id}
-                  className={classNames(
-                    'dropdown-item',
-                    { 'is-active': activeUserId === id },
-                  )}
-                  href={`#user-${id}`}
-                  onClick={() => handleUserChange(id)}
-                >
-                  {name}
-                </a>
-              );
-            })}
-          </div>
-        )}
+            return (
+              <a
+                key={id}
+                className={classNames(
+                  'dropdown-item',
+                  { 'is-active': activeUserId === id },
+                )}
+                href={`#user-${id}`}
+                onClick={() => handleUserChange(id)}
+              >
+                {name}
+              </a>
+            );
+          })}
+        </div>
       </div>
 
     </div>
