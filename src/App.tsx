@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable no-alert */
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +9,22 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { getAllUsers } from './utils/fetchClient';
+import { User } from './types/User';
 
 export const App: React.FC = () => {
+  const [visibleUsers, setVisibleUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    getAllUsers()
+      .then((data) => (
+        setVisibleUsers(data)
+      ))
+      .catch(() => (
+        alert('Coult not load the Users')
+      ));
+  }, []);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,7 +32,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector visibleUsers={visibleUsers} />
               </div>
 
               <div className="block" data-cy="MainContent">

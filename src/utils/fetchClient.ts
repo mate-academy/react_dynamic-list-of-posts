@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { User } from '../types/User';
+
 const BASE_URL = 'https://mate.academy/students-api';
 
 // a promise resolved after a given delay
@@ -36,4 +39,8 @@ export const client = {
   post: <T>(url: string, data: any) => request<T>(url, 'POST', data),
   patch: <T>(url: string, data: any) => request<T>(url, 'PATCH', data),
   delete: (url: string) => request(url, 'DELETE'),
+};
+
+export const getAllUsers = () => {
+  return client.get<User[]>('/users');
 };
