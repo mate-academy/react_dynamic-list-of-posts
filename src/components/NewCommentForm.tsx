@@ -6,6 +6,12 @@ import { setComment } from '../api/api';
 import { Errors } from '../types/Errors';
 import { Comment } from '../types/Comment';
 
+function validateEmail(str: string) {
+  const reg = /\S+@\S+\.\S+/;
+
+  return reg.test(str);
+}
+
 type Props = {
   postId: number;
   onClickHandleAdd: (comment: Comment) => void;
@@ -54,12 +60,13 @@ export const NewCommentForm: React.FC<Props> = ({
     const isName = input.name.length;
     const isEmail = input.email.length;
     const isTextarea = input.textarea.length;
+    const isValidatedEmail = validateEmail(input.email);
 
     if (!isName) {
       setErrors(currErrors => ([...currErrors, Errors.NAME]));
     }
 
-    if (!isEmail) {
+    if (!isEmail || !isValidatedEmail) {
       setErrors(currErrors => ([...currErrors, Errors.EMAIL]));
     }
 
@@ -67,7 +74,7 @@ export const NewCommentForm: React.FC<Props> = ({
       setErrors(currErrors => ([...currErrors, Errors.TEXTAREA]));
     }
 
-    if (isName && isEmail && isTextarea) {
+    if (isName && isEmail && isTextarea && isValidatedEmail) {
       postedComment();
     }
   };
