@@ -1,6 +1,4 @@
-import React, { useEffect } from 'react';
-
-import { useAction, useValues } from '../customState';
+import React, { useEffect, useState } from 'react';
 
 import { getComments, deleteComment } from '../api/api';
 
@@ -17,25 +15,25 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({
   postDetail,
 }) => {
-  const comments = useValues<Comment[]>([]);
-  const isOpenForm = useAction(false);
-  const loading = useAction(true);
-  const errors = useAction(false);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isOpenForm, setOpenForm] = useState(false);
+  const [isLoading, setLoading] = useState(true);
+  const [isError, setError] = useState(false);
 
   const fetchingComments = async (id: number) => {
-    loading.changeAction(true);
-    comments.changeValue([]);
+    setLoading(true);
+    setComments([]);
 
     try {
       const response = await getComments(id);
 
-      comments.changeValue(response);
+      setComments(response);
     } catch (error) {
-      loading.changeAction(false);
-      isOpenForm.changeAction(false);
-      errors.changeAction(true);
+      setLoading(false);
+      setOpenForm(false);
+      setError(true);
     } finally {
-      loading.changeAction(false);
+      setLoading(false);
     }
   };
 
@@ -43,7 +41,7 @@ export const PostDetails: React.FC<Props> = ({
     try {
       await deleteComment(id);
     } catch (error) {
-      errors.changeAction(true);
+      setError(true);
     }
   };
 
@@ -52,22 +50,22 @@ export const PostDetails: React.FC<Props> = ({
       fetchingComments(postDetail.id);
     }
 
-    isOpenForm.changeAction(false);
+    setOpenForm(false);
   }, [postDetail]);
 
   const onClickHandle = () => {
-    isOpenForm.changeAction(true);
+    setOpenForm(true);
   };
 
   const onClickHandleRemove = (id: number) => {
     removeComment(id);
 
-    comments.changeValue(comments.currValue
+    setComments(currComments => currComments
       .filter(comment => comment.id !== id));
   };
 
   const onClickHandleAdd = (comment: Comment) => {
-    comments.changeValue([...comments.currValue, comment]);
+    setComments(currComments => ([...currComments, comment]));
   };
 
   return (
@@ -86,7 +84,7 @@ export const PostDetails: React.FC<Props> = ({
             </div>
 
             <div className="block">
-              {errors.currAction && (
+              {isError && (
                 <div
                   className="notification is-danger"
                   data-cy="CommentsError"
@@ -95,11 +93,11 @@ export const PostDetails: React.FC<Props> = ({
                 </div>
               )}
 
-              {loading.currAction
+              {isLoading
                 ? <Loader />
                 : (
                   <>
-                    {!comments.currValue.length && !errors.currAction && (
+                    {!comments.length && !isError && (
                       <p
                         className="title is-4"
                         data-cy="NoCommentsMessage"
@@ -108,11 +106,11 @@ export const PostDetails: React.FC<Props> = ({
                       </p>
                     )}
 
-                    {!!comments.currValue.length && !errors.currAction && (
+                    {!!comments.length && !isError && (
                       <>
                         <p className="title is-4">Comments:</p>
 
-                        {comments.currValue.map(({
+                        {comments.map(({
                           id,
                           name,
                           email,
@@ -149,7 +147,7 @@ export const PostDetails: React.FC<Props> = ({
                       </>
                     )}
 
-                    {!isOpenForm.currAction && !errors.currAction && (
+                    {!isOpenForm && !isError && (
                       <button
                         data-cy="WriteCommentButton"
                         type="button"
@@ -163,10 +161,10 @@ export const PostDetails: React.FC<Props> = ({
                 )}
             </div>
 
-            {isOpenForm.currAction && (
+            {isOpenForm && (
               <NewCommentForm
                 postId={postDetail?.id || 0}
-                commentsLength={comments.currValue.length}
+                commentsLength={comments.length}
                 onClickHandleAdd={onClickHandleAdd}
               />
             )}

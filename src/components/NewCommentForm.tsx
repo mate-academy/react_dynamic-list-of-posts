@@ -5,7 +5,6 @@ import { setComment } from '../api/api';
 
 import { Errors } from '../types/Errors';
 import { Comment } from '../types/Comment';
-import { useValues } from '../customState';
 
 type Props = {
   postId: number;
@@ -18,9 +17,7 @@ export const NewCommentForm: React.FC<Props> = ({
   onClickHandleAdd,
   commentsLength,
 }) => {
-  const name = useValues('');
-  const email = useValues('');
-  const textarea = useValues('');
+  const [input, setInput] = useState({ name: '', email: '', textarea: '' });
   const [isLoading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Errors[]>([]);
 
@@ -30,14 +27,14 @@ export const NewCommentForm: React.FC<Props> = ({
     const newComment: Comment = {
       id: commentsLength + 1,
       postId,
-      name: name.currValue,
-      email: email.currValue,
-      body: textarea.currValue,
+      name: input.name,
+      email: input.email,
+      body: input.textarea,
     };
 
     setComment(newComment)
       .then(() => {
-        textarea.changeValue('');
+        setInput(prev => ({ ...prev, textarea: '' }));
         onClickHandleAdd(newComment);
       })
       .finally(() => setLoading(false));
@@ -54,41 +51,45 @@ export const NewCommentForm: React.FC<Props> = ({
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    if (!name.currValue.length) {
+    const isName = input.name.length;
+    const isEmail = input.email.length;
+    const isTextarea = input.textarea.length;
+
+    if (!isName) {
       setErrors(currErrors => ([...currErrors, Errors.NAME]));
     }
 
-    if (!email.currValue.length) {
+    if (!isEmail) {
       setErrors(currErrors => ([...currErrors, Errors.EMAIL]));
     }
 
-    if (!textarea.currValue.length) {
+    if (!isTextarea) {
       setErrors(currErrors => ([...currErrors, Errors.TEXTAREA]));
     }
 
-    postedComment();
+    if (isName && isEmail && isTextarea) {
+      postedComment();
+    }
   };
 
   const onChangName = (e: ChangeEvent<HTMLInputElement>) => {
     filteredErrors(Errors.NAME);
-    name.changeValue(e.target.value);
+    setInput(prev => ({ ...prev, name: e.target.value }));
   };
 
   const onChangEmail = (e: ChangeEvent<HTMLInputElement>) => {
     filteredErrors(Errors.EMAIL);
-    email.changeValue(e.target.value);
+    setInput(prev => ({ ...prev, email: e.target.value }));
   };
 
   const onChangTextarea = (e: ChangeEvent<HTMLTextAreaElement>) => {
     filteredErrors(Errors.TEXTAREA);
-    textarea.changeValue(e.target.value);
+    setInput(prev => ({ ...prev, textarea: e.target.value }));
   };
 
   const onReset = () => {
     setErrors([]);
-    name.changeValue('');
-    email.changeValue('');
-    textarea.changeValue('');
+    setInput({ name: '', email: '', textarea: '' });
   };
 
   return (
@@ -108,7 +109,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'input',
               { 'is-danger': checkErrors(Errors.NAME) },
             )}
-            value={name.currValue}
+            value={input.name}
             onChange={onChangName}
           />
 
@@ -148,7 +149,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'input',
               { 'is-danger': checkErrors(Errors.EMAIL) },
             )}
-            value={email.currValue}
+            value={input.email}
             onChange={onChangEmail}
           />
 
@@ -187,7 +188,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'textarea',
               { 'is-danger': checkErrors(Errors.TEXTAREA) },
             )}
-            value={textarea.currValue}
+            value={input.textarea}
             onChange={onChangTextarea}
           />
         </div>

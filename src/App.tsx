@@ -1,11 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import classNames from 'classnames';
-
-import { useAction, useValues } from './customState';
 
 import { getPosts, getUsers } from './api/api';
 
@@ -18,42 +16,42 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 
 export const App: React.FC = () => {
-  const users = useValues<User[]>([]);
-  const posts = useValues<Post[]>([]);
-  const selectedPost = useValues<Post | null>(null);
-  const selectedUser = useValues<User | null>(null);
-  const isPostsVisible = useAction(false);
-  const loading = useAction(false);
-  const errors = useAction(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isPostsVisible, setPostsVisible] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+  const [isError, setError] = useState(false);
 
   const fetchingUsers = async () => {
     try {
       const response = await getUsers();
 
-      users.changeValue(response);
+      setUsers(response);
     } catch (error) {
-      errors.changeAction(true);
+      setError(true);
     }
   };
 
   const fetchingPosts = async () => {
-    if (!selectedUser.currValue) {
+    if (!selectedUser) {
       return;
     }
 
-    isPostsVisible.changeAction(false);
-    loading.changeAction(true);
+    setPostsVisible(false);
+    setLoading(true);
 
     try {
-      const response = await getPosts(selectedUser.currValue.id);
+      const response = await getPosts(selectedUser.id);
 
-      posts.changeValue(response);
-      isPostsVisible.changeAction(true);
+      setPosts(response);
+      setPostsVisible(true);
     } catch (error) {
-      isPostsVisible.changeAction(false);
-      errors.changeAction(true);
+      setPostsVisible(false);
+      setError(true);
     } finally {
-      loading.changeAction(false);
+      setLoading(false);
     }
   };
 
@@ -63,11 +61,11 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     fetchingPosts();
-  }, [selectedUser.currValue]);
+  }, [selectedUser]);
 
   const onChangeUser = (user: User) => {
-    selectedUser.changeValue(user);
-    selectedPost.changeValue(null);
+    setSelectedUser(user);
+    setSelectedPost(null);
   };
 
   return (
@@ -78,22 +76,22 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  users={users.currValue}
-                  user={selectedUser.currValue}
+                  users={users}
+                  user={selectedUser}
                   onChangeUser={onChangeUser}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {loading.currAction && <Loader />}
+                {isLoading && <Loader />}
 
-                {!selectedUser.currValue && (
+                {!selectedUser && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {errors.currAction && (
+                {isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -102,11 +100,11 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {isPostsVisible.currAction && (
+                {isPostsVisible && (
                   <PostsList
-                    posts={posts.currValue}
-                    selectedPostId={selectedPost.currValue?.id || 0}
-                    onPost={selectedPost.changeValue}
+                    posts={posts}
+                    selectedPostId={selectedPost?.id || 0}
+                    onPost={setSelectedPost}
                   />
                 )}
               </div>
@@ -120,12 +118,12 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': selectedPost.currValue },
+              { 'Sidebar--open': selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">
               <PostDetails
-                postDetail={selectedPost.currValue}
+                postDetail={selectedPost}
               />
             </div>
           </div>
