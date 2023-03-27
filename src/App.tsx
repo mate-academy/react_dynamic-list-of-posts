@@ -95,7 +95,8 @@ export const App: React.FC = () => {
                   && !isLoading && currentPostsList.length > 0 && (
                   <PostsList
                     currentPostsList={currentPostsList}
-                    setSelectedPost={setSelectedPostId}
+                    setSelectedPostId={setSelectedPostId}
+                    selectedPostId={selectedPostId}
                   />
                 )}
               </div>
@@ -112,7 +113,7 @@ export const App: React.FC = () => {
               { 'Sidebar--open': selectedPostId },
             )}
           >
-            {selectedPost && (
+            {selectedPost && selectedPostId && (
               <div className="tile is-child box is-success ">
                 <PostDetails
                   selectedPost={selectedPost}

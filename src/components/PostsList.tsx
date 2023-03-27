@@ -1,18 +1,18 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React from 'react';
 import { Post } from '../types/Post';
 
 type PostlistProps = {
   currentPostsList: Post[],
-  setSelectedPost: (postId: number) => void,
+  setSelectedPostId: (postId: number) => void,
+  selectedPostId: number,
 };
 
 export const PostsList: React.FC<PostlistProps> = ({
   currentPostsList,
-  setSelectedPost,
+  setSelectedPostId,
+  selectedPostId,
 }) => {
-  const [isPostSelected, setIsPostSelected] = useState(false);
-
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -44,39 +44,24 @@ export const PostsList: React.FC<PostlistProps> = ({
                   data-cy="PostButton"
                   className={classNames(
                     'button',
-                    { 'is-link': isPostSelected },
-                    { 'is-light': !isPostSelected },
+                    { 'is-link': post.id === selectedPostId },
+                    { 'is-link is-light': post.id !== selectedPostId },
                   )}
                   onClick={() => {
-                    setSelectedPost(post.id);
-                    setIsPostSelected(true);
+                    if (post.id === selectedPostId) {
+                      setSelectedPostId(0);
+                    } else {
+                      setSelectedPostId(post.id);
+                    }
                   }}
                 >
-                  {isPostSelected
+                  {post.id === selectedPostId
                     ? ('Close')
                     : ('Open')}
                 </button>
               </td>
             </tr>
           ))}
-          {/*
-          <tr data-cy="Post">
-            <td data-cy="PostId">18</td>
-
-            <td data-cy="PostTitle">
-              voluptate et itaque vero tempora molestiae
-            </td>
-
-            <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className="button is-link"
-              >
-                Close
-              </button>
-            </td>
-          </tr> */}
         </tbody>
       </table>
     </div>
