@@ -9,11 +9,21 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getAllUsers } from './utils/fetchClient';
+import { getAllUsers, getPostsfromUser } from './utils/fetchClient';
 import { User } from './types/User';
+import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const [visibleUsers, setVisibleUsers] = useState<User[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState<number>(0);
+  const [currentPostsList, setCurrentPostsList] = useState<Post[]>([]);
+  const [postError, setPostError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState(0);
+
+  const selectedPost = currentPostsList.find((post) => (
+    post.id === selectedPostId
+  ));
 
   useEffect(() => {
     getAllUsers()
@@ -25,6 +35,20 @@ export const App: React.FC = () => {
       ));
   }, []);
 
+  useEffect(() => {
+    setIsLoading(true);
+    getPostsfromUser(selectedUserId)
+      .then((data) => (
+        setCurrentPostsList(data)
+      ))
+      .catch(() => (
+        setPostError(true)
+      ))
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [selectedUserId]);
+
   return (
     <main className="section">
       <div className="container">
@@ -32,7 +56,11 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector visibleUsers={visibleUsers} />
+                <UserSelector
+                  visibleUsers={visibleUsers}
+                  setSelectedUserId={setSelectedUserId}
+                  setPostError={setPostError}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -40,20 +68,34 @@ export const App: React.FC = () => {
                   No user selected
                 </p>
 
-                <Loader />
+                {selectedUserId && isLoading && (
+                  <Loader />
+                )}
+                {selectedUserId && !isLoading && postError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
-
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                {selectedUserId
+                && !isLoading && currentPostsList.length === 0 && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                )}
+                {selectedUserId
+                && !isLoading && currentPostsList.length > 0 && (
+                  <PostsList
+                    currentPostsList={currentPostsList}
+                    setSelectedPost={setSelectedPostId}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -65,12 +107,17 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPostId },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
+            {selectedPost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails
+                  selectedPost={selectedPost}
+                  selectedUserId={selectedUserId}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

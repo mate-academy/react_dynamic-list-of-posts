@@ -4,11 +4,23 @@ import { User } from '../types/User';
 
 type UserSelectorProps = {
   visibleUsers: User[],
+  setSelectedUserId: (userId: number) => void,
+  setPostError: (state: boolean) => void,
 };
 
-export const UserSelector: React.FC<UserSelectorProps> = ({ visibleUsers }) => {
+export const UserSelector: React.FC<UserSelectorProps> = ({
+  visibleUsers,
+  setSelectedUserId,
+  setPostError,
+}) => {
   const [isListOpen, setIsListOpen] = useState(false);
   const [isActive, setIsActive] = useState(false);
+
+  const handleUserOnclick = (userId: number) => {
+    setSelectedUserId(userId);
+    setPostError(false);
+    setIsListOpen(false);
+  };
 
   return (
     <div
@@ -46,12 +58,13 @@ export const UserSelector: React.FC<UserSelectorProps> = ({ visibleUsers }) => {
         <div className="dropdown-content">
           {visibleUsers.map((user) => (
             <a
-              href={`#${user.id}`}
+              href={`#user-${user.id}`}
               className={classNames(
                 'dropdown-item',
                 { 'is-active': isActive },
               )}
               key={user.id}
+              onClick={() => handleUserOnclick(user.id)}
             >
               {user.name}
             </a>

@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { CommentData } from '../types/Comment';
+import { Post } from '../types/Post';
 import { User } from '../types/User';
 
 const BASE_URL = 'https://mate.academy/students-api';
@@ -43,4 +45,12 @@ export const client = {
 
 export const getAllUsers = () => {
   return client.get<User[]>('/users');
+};
+
+export const getPostsfromUser = (userId: number) => {
+  return client.get<Post[]>(`/posts?userId=${userId}`);
+};
+
+export const getCommentsfromPost = (postId: number) => {
+  return client.get<CommentData[]>(`/comments?postId=${postId}`);
 };
