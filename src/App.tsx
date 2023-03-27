@@ -64,9 +64,11 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectedUserId && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
                 {selectedUserId && isLoading && (
                   <Loader />
@@ -81,7 +83,7 @@ export const App: React.FC = () => {
                 )}
 
                 {selectedUserId
-                && !isLoading && currentPostsList.length === 0 && (
+                  && !isLoading && currentPostsList.length === 0 && (
                   <div
                     className="notification is-warning"
                     data-cy="NoPostsYet"
@@ -90,7 +92,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
                 {selectedUserId
-                && !isLoading && currentPostsList.length > 0 && (
+                  && !isLoading && currentPostsList.length > 0 && (
                   <PostsList
                     currentPostsList={currentPostsList}
                     setSelectedPost={setSelectedPostId}

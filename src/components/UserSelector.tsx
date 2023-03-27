@@ -15,6 +15,7 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
 }) => {
   const [isListOpen, setIsListOpen] = useState(false);
   const [isActive, setIsActive] = useState(false);
+  const [textBox, setTextBox] = useState('Choose a user');
 
   const handleUserOnclick = (userId: number) => {
     setSelectedUserId(userId);
@@ -36,6 +37,7 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          value={textBox}
           onClick={() => {
             setIsListOpen((current) => !current);
           }}
@@ -46,7 +48,9 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
             setIsActive(false);
           }}
         >
-          <span>Choose a user</span>
+          {textBox && (
+            <span>{textBox}</span>
+          )}
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -64,7 +68,10 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
                 { 'is-active': isActive },
               )}
               key={user.id}
-              onClick={() => handleUserOnclick(user.id)}
+              onClick={() => {
+                handleUserOnclick(user.id);
+                setTextBox(user.name);
+              }}
             >
               {user.name}
             </a>
