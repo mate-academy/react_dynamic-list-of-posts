@@ -9,12 +9,10 @@ import { NewCommentForm } from './NewCommentForm';
 
 type PostdetailsProps = {
   selectedPost: Post
-  selectedUserId: number,
 };
 
 export const PostDetails: React.FC<PostdetailsProps> = ({
   selectedPost,
-  selectedUserId,
 }) => {
   const [comments, setComments] = useState<CommentData[]>([]);
   const [commentsAreLoading, setCommentsAreLoading] = useState(false);
@@ -30,7 +28,7 @@ export const PostDetails: React.FC<PostdetailsProps> = ({
       })
       .catch(() => setLoadingCommsError(true))
       .finally(() => setCommentsAreLoading(false));
-  }, [selectedUserId]);
+  }, [selectedPost]);
 
   return (
     <div className="content" data-cy="PostDetails">
