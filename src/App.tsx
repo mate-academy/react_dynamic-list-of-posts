@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +8,42 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { User } from './types/User';
+import { getUsers, getPosts } from './api';
+import { Post } from './types/Post';
+import { ErrorTypes } from './types/ErrorAction';
 
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorType, setErrorType] = useState<ErrorTypes | null>(null);
+  const [isSelectedUser, setSelectedUser] = useState(false);
+  const [selectPost, setSelectPost] = useState<Post | null>(null);
+
+  useEffect(() => {
+    getUsers()
+      .then(result => {
+        setUsers(result);
+      })
+      .catch(() => {
+        setErrorType(ErrorTypes.USERS);
+      });
+  }, []);
+
+  const getPostsById = (id:number) => {
+    setIsLoading(true);
+    getPosts(id)
+      .then(result => {
+        setPosts(result);
+        setSelectedUser(true);
+      })
+      .catch(() => {
+        setErrorType(ErrorTypes.POSTS);
+      })
+      .finally(() => setIsLoading(false));
+  };
+
   return (
     <main className="section">
       <div className="container">
@@ -17,28 +51,46 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  users={users}
+                  getPostsById={getPostsById}
+                  setSelectPost={setSelectPost}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!isSelectedUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
+                {errorType === ErrorTypes.USERS && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    {ErrorTypes.USERS.toString()}
+                  </div>
+                )}
 
-                <Loader />
+                {errorType === ErrorTypes.POSTS && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    {ErrorTypes.POSTS.toString()}
+                  </div>
+                )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
-
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                {isLoading
+                  ? <Loader />
+                  : isSelectedUser && (
+                    <PostsList
+                      posts={posts}
+                      setSelectPost={setSelectPost}
+                      selectPost={selectPost}
+                    />
+                  )}
               </div>
             </div>
           </div>
@@ -50,11 +102,11 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectPost },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {selectPost && (<PostDetails selectPost={selectPost} />)}
             </div>
           </div>
         </div>
