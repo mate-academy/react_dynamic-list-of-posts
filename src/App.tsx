@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -21,9 +21,13 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(0);
 
-  const selectedPost = currentPostsList.find((post) => (
-    post.id === selectedPostId
-  ));
+  const selectedPost = useMemo(
+    () => {
+      return currentPostsList.find((post) => (
+        post.id === selectedPostId
+      ));
+    }, [selectedPostId],
+  );
 
   useEffect(() => {
     getAllUsers()
@@ -60,6 +64,7 @@ export const App: React.FC = () => {
                   visibleUsers={visibleUsers}
                   setSelectedUserId={setSelectedUserId}
                   setPostError={setPostError}
+                  setSelectedPostId={setSelectedPostId}
                 />
               </div>
 

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { CommentData } from '../types/Comment';
 import { Post } from '../types/Post';
 import { getCommentsfromPost } from '../utils/fetchClient';
+import { CommentCard } from './CommentsList';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -17,6 +18,7 @@ export const PostDetails: React.FC<PostdetailsProps> = ({
 }) => {
   const [comments, setComments] = useState<CommentData[]>([]);
   const [commentsAreLoading, setCommentsAreLoading] = useState(false);
+  const [loadingCommsError, setLoadingCommsError] = useState(false);
 
   useEffect(() => {
     setCommentsAreLoading(true);
@@ -26,7 +28,7 @@ export const PostDetails: React.FC<PostdetailsProps> = ({
           setComments(data);
         }
       })
-      .catch(() => alert('could not load de comments'))
+      .catch(() => setLoadingCommsError(true))
       .finally(() => setCommentsAreLoading(false));
   }, [selectedUserId]);
 
@@ -47,10 +49,11 @@ export const PostDetails: React.FC<PostdetailsProps> = ({
           {commentsAreLoading && (
             <Loader />
           )}
-
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
+          {loadingCommsError && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
+            </div>
+          )}
           {!commentsAreLoading && comments.length === 0 && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
@@ -59,29 +62,13 @@ export const PostDetails: React.FC<PostdetailsProps> = ({
           {!commentsAreLoading && comments.length > 0 && (
             <>
               <p className="title is-4">Comments:</p>
-
-              <article className="message is-small" data-cy="Comment">
-                <div className="message-header">
-                  <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                    Misha Hrynko
-                  </a>
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                  >
-                    delete button
-                  </button>
-                </div>
-
-                <div className="message-body" data-cy="CommentBody">
-                  Some comment
-                </div>
-              </article>
+              {comments.map((comment) => (
+                <CommentCard comment={comment} />
+              ))}
             </>
           )}
-          <p className="title is-4">Comments:</p>
+
+          {/* <p className="title is-4">Comments:</p>
 
           <article className="message is-small" data-cy="Comment">
             <div className="message-header">
@@ -151,7 +138,7 @@ export const PostDetails: React.FC<PostdetailsProps> = ({
             <div className="message-body" data-cy="CommentBody">
               {'Multi\nline\ncomment'}
             </div>
-          </article>
+          </article> */}
 
           <button
             data-cy="WriteCommentButton"

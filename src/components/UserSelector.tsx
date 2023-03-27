@@ -6,12 +6,14 @@ type UserSelectorProps = {
   visibleUsers: User[],
   setSelectedUserId: (userId: number) => void,
   setPostError: (state: boolean) => void,
+  setSelectedPostId: (value: number) => void,
 };
 
 export const UserSelector: React.FC<UserSelectorProps> = ({
   visibleUsers,
   setSelectedUserId,
   setPostError,
+  setSelectedPostId,
 }) => {
   const [isListOpen, setIsListOpen] = useState(false);
   const [isActive, setIsActive] = useState(false);
@@ -71,6 +73,7 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
               onClick={() => {
                 handleUserOnclick(user.id);
                 setTextBox(user.name);
+                setSelectedPostId(0);
               }}
             >
               {user.name}
