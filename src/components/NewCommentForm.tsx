@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
@@ -34,6 +35,8 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
     setIsWriting(false);
   };
 
+  const isReadyToAdd = name && email && comment;
+
   return (
     <form data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
@@ -52,6 +55,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             onChange={(event) => {
               setName(event.target.value);
             }}
+            required
           />
 
           <span className="icon is-small is-left">
@@ -87,6 +91,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             onChange={(event) => {
               setEmail(event.target.value);
             }}
+            required
           />
 
           <span className="icon is-small is-left">
@@ -133,7 +138,10 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
         <div className="control">
           <button
             type="submit"
-            className="button is-link is-loading"
+            className={classNames(
+              'button is-link',
+              { 'is-loading': !isReadyToAdd },
+            )}
             onClick={handleAdd}
           >
             Add
