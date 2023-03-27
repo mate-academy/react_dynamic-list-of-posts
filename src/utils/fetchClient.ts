@@ -58,3 +58,7 @@ export const getCommentsfromPost = (postId: number) => {
 export const deleteCommentfromPost = (commentId: number) => {
   return client.delete(`/comments/${commentId}`);
 };
+
+export const addCommentFromPost = (newComment: CommentData) => {
+  return client.post('/comments', newComment);
+};

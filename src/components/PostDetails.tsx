@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { CommentData } from '../types/Comment';
 import { Post } from '../types/Post';
 import {
+  addCommentFromPost,
   deleteCommentfromPost,
   getCommentsfromPost,
 } from '../utils/fetchClient';
@@ -35,14 +36,21 @@ export const PostDetails: React.FC<PostdetailsProps> = ({
   }, [selectedPost]);
 
   const handleCommentDelete = (commentId: number) => {
-    deleteCommentfromPost(commentId);
+    deleteCommentfromPost(commentId)
+      .then(() => {
+        setComments((current) => current
+          .filter((comment) => comment.id !== commentId));
+      });
   };
 
   const addComment = (newComment: CommentData) => {
-    setComments([
-      ...comments,
-      newComment,
-    ]);
+    addCommentFromPost(newComment)
+      .then(() => {
+        setComments([
+          ...comments,
+          newComment,
+        ]);
+      });
   };
 
   return (

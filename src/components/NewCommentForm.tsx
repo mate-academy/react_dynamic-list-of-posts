@@ -34,14 +34,35 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
       id: (Math.max(...comments.map((element) => element.id)) + 1),
     };
 
-    if (!name) {
+    if (!name && !email && !comment) {
       setNameError(true);
+      setEmailError(true);
+      setBodyError(true);
+    }
+
+    if (!name && !email) {
+      setNameError(true);
+      setEmailError(true);
 
       return;
     }
 
-    if (!email) {
+    if (!name && !comment) {
+      setNameError(true);
+      setBodyError(true);
+
+      return;
+    }
+
+    if (!email && !comment) {
       setEmailError(true);
+      setBodyError(true);
+
+      return;
+    }
+
+    if (!name) {
+      setNameError(true);
 
       return;
     }
@@ -52,11 +73,17 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
       return;
     }
 
+    if (!email) {
+      setEmailError(true);
+
+      return;
+    }
+
     addComment(newComment);
     setIsWriting(false);
   };
 
-  const isReadyToAdd = name && email && comment;
+  // const isReadyToAdd = name && email && comment;
 
   return (
     <form data-cy="NewCommentForm">
@@ -82,22 +109,27 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             }}
             required
           />
+          {nameError
+            ? (
+              <span
+                className="icon is-small is-right has-text-danger"
+                data-cy="ErrorIcon"
+              >
+                <i className="fas fa-exclamation-triangle" />
+              </span>
+            )
+            : (
+              <span className="icon is-small is-left">
+                <i className="fas fa-user" />
+              </span>
 
-          <span className="icon is-small is-left">
-            <i className="fas fa-user" />
-          </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+            )}
         </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
+        {nameError && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Name is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -122,22 +154,26 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             }}
             required
           />
-
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
-          </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {emailError
+            ? (
+              <span
+                className="icon is-small is-right has-text-danger"
+                data-cy="ErrorIcon"
+              >
+                <i className="fas fa-exclamation-triangle" />
+              </span>
+            )
+            : (
+              <span className="icon is-small is-left">
+                <i className="fas fa-envelope" />
+              </span>
+            )}
         </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
+        {emailError && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -161,10 +197,11 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             }}
           />
         </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
+        {bodyError && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Enter some text
+          </p>
+        )}
       </div>
 
       <div className="field is-grouped">
@@ -173,7 +210,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             type="submit"
             className={classNames(
               'button is-link',
-              { 'is-loading': !isReadyToAdd },
+              // { 'is-loading': !isReadyToAdd },
             )}
             onClick={handleAdd}
           >
