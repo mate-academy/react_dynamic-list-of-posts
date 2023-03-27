@@ -59,9 +59,7 @@ export const UserSelector: React.FC<Props> = ({
           onClick={onClickButton}
         >
           <span>
-            {user
-              ? user.name
-              : 'Choose a user'}
+            {user?.name || 'Choose a user'}
           </span>
 
           <span className="icon is-small">
