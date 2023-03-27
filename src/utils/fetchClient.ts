@@ -54,3 +54,7 @@ export const getPostsfromUser = (userId: number) => {
 export const getCommentsfromPost = (postId: number) => {
   return client.get<CommentData[]>(`/comments?postId=${postId}`);
 };
+
+export const deleteCommentfromPost = (commentId: number) => {
+  return client.delete(`/comments/${commentId}`);
+};
