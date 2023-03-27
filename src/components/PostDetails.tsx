@@ -38,6 +38,13 @@ export const PostDetails: React.FC<PostdetailsProps> = ({
     deleteCommentfromPost(commentId);
   };
 
+  const addComment = (newComment: CommentData) => {
+    setComments([
+      ...comments,
+      newComment,
+    ]);
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -79,7 +86,11 @@ export const PostDetails: React.FC<PostdetailsProps> = ({
 
           {isWriting
             ? (
-              <NewCommentForm />
+              <NewCommentForm
+                setIsWriting={setIsWriting}
+                comments={comments}
+                addComment={addComment}
+              />
             )
             : (
               <button

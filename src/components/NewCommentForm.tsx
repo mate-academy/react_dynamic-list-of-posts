@@ -1,6 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { CommentData } from '../types/Comment';
 
-export const NewCommentForm: React.FC = () => {
+type NewCommentFormProps = {
+  setIsWriting: (state: boolean) => void,
+  comments: CommentData[],
+  addComment: (newComment: CommentData) => void,
+};
+
+export const NewCommentForm: React.FC<NewCommentFormProps> = ({
+  setIsWriting,
+  comments,
+  addComment,
+}) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [comment, setComment] = useState('');
+
+  const handleReset = () => {
+    setName('');
+    setEmail('');
+    setComment('');
+  };
+
+  const handleAdd = () => {
+    const newComment = {
+      name,
+      email,
+      body: comment,
+      id: (Math.max(...comments.map((element) => element.id)) + 1),
+    };
+
+    addComment(newComment);
+    setIsWriting(false);
+  };
+
   return (
     <form data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
@@ -15,6 +48,10 @@ export const NewCommentForm: React.FC = () => {
             id="comment-author-name"
             placeholder="Name Surname"
             className="input is-danger"
+            value={name}
+            onChange={(event) => {
+              setName(event.target.value);
+            }}
           />
 
           <span className="icon is-small is-left">
@@ -46,6 +83,10 @@ export const NewCommentForm: React.FC = () => {
             id="comment-author-email"
             placeholder="email@test.com"
             className="input is-danger"
+            value={email}
+            onChange={(event) => {
+              setEmail(event.target.value);
+            }}
           />
 
           <span className="icon is-small is-left">
@@ -76,6 +117,10 @@ export const NewCommentForm: React.FC = () => {
             name="body"
             placeholder="Type comment here"
             className="textarea is-danger"
+            value={comment}
+            onChange={(event) => {
+              setComment(event.target.value);
+            }}
           />
         </div>
 
@@ -86,14 +131,22 @@ export const NewCommentForm: React.FC = () => {
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className="button is-link is-loading"
+            onClick={handleAdd}
+          >
             Add
           </button>
         </div>
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={handleReset}
+          >
             Clear
           </button>
         </div>
