@@ -16,6 +16,9 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');
+  const [nameError, setNameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [bodyError, setBodyError] = useState(false);
 
   const handleReset = () => {
     setName('');
@@ -30,6 +33,24 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
       body: comment,
       id: (Math.max(...comments.map((element) => element.id)) + 1),
     };
+
+    if (!name) {
+      setNameError(true);
+
+      return;
+    }
+
+    if (!email) {
+      setEmailError(true);
+
+      return;
+    }
+
+    if (!comment) {
+      setBodyError(true);
+
+      return;
+    }
 
     addComment(newComment);
     setIsWriting(false);
@@ -50,10 +71,14 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            className={classNames(
+              'input',
+              { 'is-danger': nameError },
+            )}
             value={name}
             onChange={(event) => {
               setName(event.target.value);
+              setNameError(false);
             }}
             required
           />
@@ -86,10 +111,14 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            className={classNames(
+              'input',
+              { 'is-danger': emailError },
+            )}
             value={email}
             onChange={(event) => {
               setEmail(event.target.value);
+              setEmailError(false);
             }}
             required
           />
@@ -121,10 +150,14 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            className={classNames(
+              'textarea',
+              { 'is-danger': bodyError },
+            )}
             value={comment}
             onChange={(event) => {
               setComment(event.target.value);
+              setBodyError(false);
             }}
           />
         </div>
