@@ -15,9 +15,7 @@ export const PostDetails: React.FC<Props> = ({ selectPost }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorType, setErrorType] = useState<ErrorTypes | null>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const {
-    id, title, body,
-  } = selectPost;
+  const { id, title, body } = selectPost;
 
   useEffect(() => {
     setIsLoading(true);
@@ -80,16 +78,15 @@ export const PostDetails: React.FC<Props> = ({ selectPost }) => {
         </div>
 
         <div className="block">
-          {isLoading ? (
-            <Loader />
-          ) : (
+          {isLoading && <Loader />}
+          {!isLoading && (
             <>
-              {(!comments.length && !errorType) ? (
+              {comments.length > 0 || errorType ? (
+                <p className="title is-4">Comments:</p>
+              ) : (
                 <p className="title is-4" data-cy="NoCommentsMessage">
                   No comments yet
                 </p>
-              ) : (
-                <p className="title is-4">Comments:</p>
               )}
             </>
           )}

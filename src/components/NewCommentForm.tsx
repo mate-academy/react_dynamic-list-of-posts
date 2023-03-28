@@ -13,17 +13,15 @@ export const NewCommentForm: React.FC<Props> = ({
   postId,
   isLoading,
 }) => {
-  const [formData, setFormData] = useState({
+  const EMPTY_FORM_DATA = {
     name: '',
     email: '',
     body: '',
-  });
+  };
 
-  const [errors, setErrors] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
+  const [formData, setFormData] = useState({ ...EMPTY_FORM_DATA });
+
+  const [errors, setErrors] = useState({ ...EMPTY_FORM_DATA });
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -38,11 +36,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const newErrors = {
-      name: '',
-      email: '',
-      body: '',
-    };
+    const newErrors = EMPTY_FORM_DATA;
 
     if (!formData.name) {
       newErrors.name = 'Name is required';
@@ -67,16 +61,9 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const handleClear = () => {
-    setFormData({
-      name: '',
-      body: '',
-      email: '',
-    });
-    setErrors({
-      name: '',
-      body: '',
-      email: '',
-    });
+    setFormData(EMPTY_FORM_DATA);
+
+    setErrors(EMPTY_FORM_DATA);
   };
 
   return (
@@ -92,7 +79,10 @@ export const NewCommentForm: React.FC<Props> = ({
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={`input ${errors.name ? 'is-danger' : ''}`}
+            className={classNames(
+              'input',
+              { 'is-danger': errors.name },
+            )}
             value={formData.name}
             onChange={handleChange}
           />
@@ -128,7 +118,10 @@ export const NewCommentForm: React.FC<Props> = ({
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={`input ${errors.email ? 'is-danger' : ''}`}
+            className={classNames(
+              'input',
+              { 'is-danger': errors.email },
+            )}
             value={formData.email}
             onChange={handleChange}
           />
@@ -164,7 +157,10 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={`input ${errors.body ? 'is-danger' : ''}`}
+            className={classNames(
+              'input',
+              { 'is-danger': errors.body },
+            )}
             value={formData.body}
             onChange={handleChange}
           />
