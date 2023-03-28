@@ -6,7 +6,5 @@ export const getUserPosts = (
 ): Post[] => {
   const idNumber = Number(userId?.slice(userId?.indexOf('-') + 1)) || 0;
 
-  return posts.filter(post => {
-    return post.userId === idNumber;
-  });
+  return posts.filter(post => post.userId === idNumber);
 };

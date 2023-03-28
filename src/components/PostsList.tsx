@@ -48,7 +48,7 @@ export const PostsList: React.FC<Props> = ({
     );
   }
 
-  if (posts === null) {
+  if (!posts) {
     return <Loader />;
   }
 
