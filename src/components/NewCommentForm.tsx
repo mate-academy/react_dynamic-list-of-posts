@@ -34,6 +34,16 @@ export const NewCommentForm: React.FC<Props> = ({
     }));
   };
 
+  const validateEmail = (email:string) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (emailPattern.test(email)) {
+      return true;
+    }
+
+    return false;
+  };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const newErrors = EMPTY_FORM_DATA;
@@ -42,7 +52,7 @@ export const NewCommentForm: React.FC<Props> = ({
       newErrors.name = 'Name is required';
     }
 
-    if (!formData.email) {
+    if (!formData.email || (!validateEmail(formData.email))) {
       newErrors.email = 'Email is required';
     }
 

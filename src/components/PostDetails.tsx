@@ -5,6 +5,7 @@ import { NewCommentForm } from './NewCommentForm';
 import { Comment, CommentData } from '../types/Comment';
 import { deleteComment, getComments, addComment } from '../api';
 import { ErrorTypes } from '../types/ErrorAction';
+import { NotificationError } from './NotificationError';
 
 type Props = {
   selectPost:Post;
@@ -20,6 +21,7 @@ export const PostDetails: React.FC<Props> = ({ selectPost }) => {
   useEffect(() => {
     setIsLoading(true);
     setIsOpen(false);
+    setComments([]);
     getComments(id)
       .then(result => {
         setComments(result);
@@ -92,9 +94,10 @@ export const PostDetails: React.FC<Props> = ({ selectPost }) => {
           )}
 
           {errorType === ErrorTypes.COMMENTS && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
-            </div>
+            <NotificationError
+              errorMessage={ErrorTypes.COMMENTS.toString()}
+              labelData="CommentsError"
+            />
           )}
 
           {comments.map(comment => {

@@ -12,6 +12,7 @@ import { User } from './types/User';
 import { getUsers, getPosts } from './api';
 import { Post } from './types/Post';
 import { ErrorTypes } from './types/ErrorAction';
+import { NotificationError } from './components/NotificationError';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -65,21 +66,17 @@ export const App: React.FC = () => {
                   </p>
                 )}
                 {errorType === ErrorTypes.USERS && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
-                    {ErrorTypes.USERS.toString()}
-                  </div>
+                  <NotificationError
+                    errorMessage={ErrorTypes.USERS.toString()}
+                    labelData="PostsLoadingError"
+                  />
                 )}
 
                 {errorType === ErrorTypes.POSTS && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
-                    {ErrorTypes.POSTS.toString()}
-                  </div>
+                  <NotificationError
+                    errorMessage={ErrorTypes.POSTS.toString()}
+                    labelData="PostsLoadingError"
+                  />
                 )}
 
                 {isLoading && <Loader />}
