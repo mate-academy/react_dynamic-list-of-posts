@@ -1,85 +1,90 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useMatch } from 'react-router-dom';
+import { getData } from '../api/posts';
+import { Post } from '../types/Post';
+import { getUserPosts } from '../utils';
+import { Loader } from './Loader';
+import { PostItem } from './PostItem';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+type Props = {
+  selectedPost: Post | null,
+  setSelectedPost: (id: Post | null) => void,
+  setIsCommentLoading: React.Dispatch<React.SetStateAction<boolean>>,
+};
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+export const PostsList: React.FC<Props> = ({
+  selectedPost,
+  setSelectedPost,
+  setIsCommentLoading,
+}) => {
+  const userId = useMatch('/:userId')?.params?.userId;
+  const [posts, setPosts] = useState<Post[] | null>(null);
+  const [error, setError] = useState(false);
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+  useEffect(() => {
+    setPosts(null);
+    getData<Post>('posts')
+      .then((allPosts) => getUserPosts(allPosts, userId))
+      .then(setPosts)
+      .catch(() => setError(true));
+  }, [userId]);
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+  if (!userId) {
+    return (
+      <div data-cy="NoSelectedUser">
+        No user selected
+      </div>
+    );
+  }
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+  if (error) {
+    return (
+      <div
+        className="notification is-danger"
+        data-cy="PostsLoadingError"
+      >
+        Something went wrong!
+      </div>
+    );
+  }
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+  if (!posts) {
+    return <Loader />;
+  }
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+  if (!posts.length) {
+    return (
+      <div className="notification is-warning" data-cy="NoPostsYet">
+        No posts yet
+      </div>
+    );
+  }
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            <th> </th>
+          </tr>
+        </thead>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+        <tbody>
+          {posts.map(post => (
+            <PostItem
+              setIsCommentLoading={setIsCommentLoading}
+              key={post.id}
+              post={post}
+              selectedPost={selectedPost}
+              setSelectedPost={setSelectedPost}
+            />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};

@@ -1,15 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import classNames from 'classnames';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
+import { getData } from './api/posts';
+import { Post, User } from './types';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
+import { PostsList } from './components/PostsList';
 
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[] | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [isCommentLoading, setIsCommentLoading] = useState(false);
+
+  useEffect(() => {
+    getData<User>('users')
+      .then(setUsers);
+  }, []);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,28 +27,18 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  users={users}
+                  setSelectedPost={setSelectedPost}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
-
-                <Loader />
-
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
-
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                <PostsList
+                  selectedPost={selectedPost}
+                  setSelectedPost={setSelectedPost}
+                  setIsCommentLoading={setIsCommentLoading}
+                />
               </div>
             </div>
           </div>
@@ -50,12 +50,18 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPost },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
+            {selectedPost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails
+                  selectedPost={selectedPost}
+                  isCommentLoading={isCommentLoading}
+                  setIsCommentLoading={setIsCommentLoading}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

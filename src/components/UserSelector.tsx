@@ -1,6 +1,29 @@
-import React from 'react';
+/* eslint-disable no-unneeded-ternary */
+import React, { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import className from 'classnames';
+import { Post, User } from '../types';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  users: User[] | null,
+  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>,
+};
+
+export const UserSelector: React.FC<Props> = ({ users, setSelectedPost }) => {
+  const { userId } = useParams();
+  const [isVisible, setIsVisible] = useState(false);
+  const [selectedName, setSelectedName] = useState('');
+
+  const toggleVisibility = () => {
+    setIsVisible(prev => !prev);
+  };
+
+  const onSelectUser = (name: string) => {
+    setIsVisible(false);
+    setSelectedName(name);
+    setSelectedPost(null);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -12,8 +35,9 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={toggleVisibility}
         >
-          <span>Choose a user</span>
+          <span>{selectedName ? selectedName : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -22,13 +46,28 @@ export const UserSelector: React.FC = () => {
       </div>
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
-        </div>
+        {isVisible && (
+          <div className="dropdown-content">
+            {users?.map(user => {
+              const { id, name } = user;
+              const isSelectedUser = `user-${id}` === userId;
+
+              return (
+                <Link
+                  key={id}
+                  to={`/user-${id}`}
+                  className={className(
+                    'dropdown-item',
+                    { 'is-active': isSelectedUser },
+                  )}
+                  onClick={() => onSelectUser(name)}
+                >
+                  {name}
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
