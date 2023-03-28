@@ -58,7 +58,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
     setErrors(newErrors);
 
-    if (Object.values(newErrors).every((error) => error === '')) {
+    if ((newErrors.body || newErrors.email || newErrors.name) === '') {
       const newComment = { ...formData, postId };
 
       handleAddComment(newComment);
@@ -67,9 +67,15 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const handleClear = () => {
-    Object.keys(formData).forEach((key) => {
-      setFormData(prev => ({ ...prev, [key]: '' }));
-      setErrors(prev => ({ ...prev, [key]: '' }));
+    setFormData({
+      name: '',
+      body: '',
+      email: '',
+    });
+    setErrors({
+      name: '',
+      body: '',
+      email: '',
     });
   };
 

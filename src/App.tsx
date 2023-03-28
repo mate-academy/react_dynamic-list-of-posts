@@ -18,7 +18,7 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorType, setErrorType] = useState<ErrorTypes | null>(null);
-  const [isSelectedUser, setSelectedUser] = useState(false);
+  const [isSelectedUser, setIsSelectedUser] = useState(false);
   const [selectPost, setSelectPost] = useState<Post | null>(null);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export const App: React.FC = () => {
     getPosts(id)
       .then(result => {
         setPosts(result);
-        setSelectedUser(true);
+        setIsSelectedUser(true);
       })
       .catch(() => {
         setErrorType(ErrorTypes.POSTS);
@@ -82,15 +82,15 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {isLoading
-                  ? <Loader />
-                  : isSelectedUser && (
-                    <PostsList
-                      posts={posts}
-                      setSelectPost={setSelectPost}
-                      selectPost={selectPost}
-                    />
-                  )}
+                {isLoading && <Loader />}
+
+                {(isSelectedUser && !isLoading) && (
+                  <PostsList
+                    posts={posts}
+                    setSelectPost={setSelectPost}
+                    selectPost={selectPost}
+                  />
+                )}
               </div>
             </div>
           </div>
