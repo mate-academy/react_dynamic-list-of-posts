@@ -40,7 +40,10 @@ export const PostDetails: React.FC<PostdetailsProps> = ({
       .then(() => {
         setComments((current) => current
           .filter((comment) => comment.id !== commentId));
-      });
+      })
+      .catch(() => (
+        alert('Comment could not be deleted')
+      ));
   };
 
   const handleAddComment = (newComment: CommentData) => {
@@ -50,7 +53,10 @@ export const PostDetails: React.FC<PostdetailsProps> = ({
           ...comments,
           addedComment,
         ]);
-      });
+      })
+      .catch(() => (
+        alert('Comment could not be added')
+      ));
   };
 
   return (

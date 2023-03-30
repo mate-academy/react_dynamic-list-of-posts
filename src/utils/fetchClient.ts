@@ -59,7 +59,7 @@ export const deleteCommentfromPost = (commentId: number) => {
   return client.delete(`/comments/${commentId}`);
 };
 
-export const addCommentFromPost
-= (newComment: CommentData): Promise<CommentData> => {
+export const addCommentFromPost = (newComment: CommentData)
+: Promise<CommentData> => {
   return client.post('/comments', newComment);
 };

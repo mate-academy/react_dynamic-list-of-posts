@@ -13,7 +13,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [comment, setComment] = useState('');
+  const [body, setBody] = useState('');
   const [nameError, setNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [bodyError, setBodyError] = useState(false);
@@ -21,18 +21,18 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
   const handleReset = () => {
     setName('');
     setEmail('');
-    setComment('');
+    setBody('');
   };
 
   const handleAdd = () => {
     const newComment = {
       name,
       email,
-      body: comment,
+      body,
       id: (Math.max(...comments.map((element) => element.id)) + 1),
     };
 
-    if (!name && !email && !comment) {
+    if (!name && !email && !body) {
       setNameError(true);
       setEmailError(true);
       setBodyError(true);
@@ -47,14 +47,14 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
       return;
     }
 
-    if (!name && !comment) {
+    if (!name && !body) {
       setNameError(true);
       setBodyError(true);
 
       return;
     }
 
-    if (!email && !comment) {
+    if (!email && !body) {
       setEmailError(true);
       setBodyError(true);
 
@@ -67,7 +67,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
       return;
     }
 
-    if (!comment) {
+    if (!body) {
       setBodyError(true);
 
       return;
@@ -80,7 +80,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
     }
 
     addComment(newComment);
-    setComment('');
+    setBody('');
   };
 
   return (
@@ -186,9 +186,9 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
               'textarea',
               { 'is-danger': bodyError },
             )}
-            value={comment}
+            value={body}
             onChange={(event) => {
-              setComment(event.target.value);
+              setBody(event.target.value);
               setBodyError(false);
             }}
           />
