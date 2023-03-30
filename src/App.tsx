@@ -15,7 +15,7 @@ import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const [visibleUsers, setVisibleUsers] = useState<User[]>([]);
-  const [selectedUserId, setSelectedUserId] = useState<number>(0);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [currentPostsList, setCurrentPostsList] = useState<Post[]>([]);
   const [postError, setPostError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,16 +41,18 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    getPostsfromUser(selectedUserId)
-      .then((data) => (
-        setCurrentPostsList(data)
-      ))
-      .catch(() => (
-        setPostError(true)
-      ))
-      .finally(() => {
-        setIsLoading(false);
-      });
+    if (selectedUserId) {
+      getPostsfromUser(selectedUserId)
+        .then((data) => (
+          setCurrentPostsList(data)
+        ))
+        .catch(() => (
+          setPostError(true)
+        ))
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
   }, [selectedUserId]);
 
   return (
