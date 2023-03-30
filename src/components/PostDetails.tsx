@@ -45,10 +45,10 @@ export const PostDetails: React.FC<PostdetailsProps> = ({
 
   const handleAddComment = (newComment: CommentData) => {
     addCommentFromPost(newComment)
-      .then(() => {
+      .then((addedComment) => {
         setComments([
           ...comments,
-          newComment,
+          addedComment,
         ]);
       });
   };
@@ -95,7 +95,6 @@ export const PostDetails: React.FC<PostdetailsProps> = ({
           {isWriting
             ? (
               <NewCommentForm
-                setIsWriting={setIsWriting}
                 comments={comments}
                 addComment={handleAddComment}
               />

@@ -3,13 +3,11 @@ import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
 type NewCommentFormProps = {
-  setIsWriting: (state: boolean) => void,
   comments: CommentData[],
   addComment: (newComment: CommentData) => void,
 };
 
 export const NewCommentForm: React.FC<NewCommentFormProps> = ({
-  setIsWriting,
   comments,
   addComment,
 }) => {
@@ -38,6 +36,8 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
       setNameError(true);
       setEmailError(true);
       setBodyError(true);
+
+      return;
     }
 
     if (!name && !email) {
@@ -80,10 +80,8 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
     }
 
     addComment(newComment);
-    setIsWriting(false);
+    setComment('');
   };
-
-  // const isReadyToAdd = name && email && comment;
 
   return (
     <form data-cy="NewCommentForm">
@@ -107,7 +105,6 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
               setName(event.target.value);
               setNameError(false);
             }}
-            required
           />
           {nameError
             ? (
@@ -152,7 +149,6 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
               setEmail(event.target.value);
               setEmailError(false);
             }}
-            required
           />
           {emailError
             ? (
@@ -210,9 +206,11 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             type="submit"
             className={classNames(
               'button is-link',
-              // { 'is-loading': !isReadyToAdd },
             )}
-            onClick={handleAdd}
+            onClick={(event) => {
+              event.preventDefault();
+              handleAdd();
+            }}
           >
             Add
           </button>

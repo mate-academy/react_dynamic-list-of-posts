@@ -16,7 +16,6 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
   setSelectedPostId,
 }) => {
   const [isListOpen, setIsListOpen] = useState(false);
-  const [isActive, setIsActive] = useState(false);
   const [textBox, setTextBox] = useState('Choose a user');
 
   const handleUserOnclick = (userId: number) => {
@@ -43,12 +42,6 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
           onClick={() => {
             setIsListOpen((current) => !current);
           }}
-          onMouseEnter={() => {
-            setIsActive(true);
-          }}
-          onMouseLeave={() => {
-            setIsActive(false);
-          }}
         >
           {textBox && (
             <span>{textBox}</span>
@@ -67,7 +60,6 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
               href={`#user-${user.id}`}
               className={classNames(
                 'dropdown-item',
-                { 'is-active': isActive },
               )}
               key={user.id}
               onClick={() => {
