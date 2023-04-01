@@ -1,6 +1,11 @@
 import React from 'react';
+import { Post } from '../types/Post';
 
-export const PostsList: React.FC = () => (
+type Props = {
+  posts: Post[];
+};
+
+export const PostsList: React.FC<Props> = ({ posts }) => (
   <div data-cy="PostsList">
     <p className="title">Posts:</p>
 
@@ -19,6 +24,7 @@ export const PostsList: React.FC = () => (
 
           <td data-cy="PostTitle">
             fugit voluptas sed molestias voluptatem provident
+            { posts[0]?.title }
           </td>
 
           <td className="has-text-right is-vcentered">
