@@ -31,6 +31,7 @@ export const UserSelector: React.FC<Props> = ({
     setIsLoading(true);
     setSelectedUser(user);
     handleDropdown();
+    setHasPostsError(false);
 
     getPosts(user.id)
       .then(setPosts)

@@ -19,14 +19,14 @@ export const App: React.FC = () => {
   const [hasUsersError, setHasUsersError] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
     getUsers()
       .then(setUsers)
-      .catch(() => setHasUsersError(true));
+      .catch(() => setHasUsersError(true))
+      .finally(() => setHasUsersError(false));
   }, []);
-
-  console.log(hasPostsError);
 
   const noPostsWarn = selectedUser && !posts.length
     && !isLoading && !hasPostsError;
@@ -84,28 +84,32 @@ export const App: React.FC = () => {
                 {posts.length > 0 && (
                   <PostsList
                     posts={posts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
                   />
                 )}
               </div>
             </div>
           </div>
 
-          {false && (
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                'Sidebar--open',
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': selectedPost },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              {selectedPost && (
+                <PostDetails
+                  selectedPost={selectedPost}
+                />
               )}
-            >
-              <div className="tile is-child box is-success ">
-                <PostDetails />
-              </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </main>
