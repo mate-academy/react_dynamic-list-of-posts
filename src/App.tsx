@@ -82,7 +82,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {posts.length > 0 && (
+                {posts.length > 0 && !isLoading && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}

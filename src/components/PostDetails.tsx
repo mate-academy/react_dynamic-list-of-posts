@@ -29,14 +29,23 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const noCommentsWarn
     = !hasCommentsError && !comments.length && !isLoadingComments;
 
+  const writeButtonIsActive
+   = !commentFormIsActive && !isLoadingComments && !hasCommentsError;
+
   const handleCommentDelete = (id: number) => {
     setHasCommentDeleteError(false);
+    setComments(prev => prev.filter(comment => comment.id !== id));
 
     deleteComment(id)
-      .then(() => setComments(prev => prev.filter(
-        comment => comment.id !== id,
-      )))
-      .catch(() => setHasCommentDeleteError(true));
+      .catch(() => {
+        const commentToRestore = comments.find(comment => comment.id === id);
+
+        if (commentToRestore) {
+          setComments(prev => [...prev, commentToRestore]);
+        }
+
+        setHasCommentDeleteError(true);
+      });
   };
 
   return (
@@ -67,36 +76,37 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             </p>
           )}
 
-          <p className="title is-4">Comments:</p>
-
           {!isLoadingComments && comments.map(comment => (
-            <article
-              key={comment.id}
-              className="message is-small"
-              data-cy="Comment"
-            >
-              <div className="message-header">
-                <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                  {comment.name}
-                </a>
-                <button
-                  data-cy="CommentDelete"
-                  type="button"
-                  className="delete is-small"
-                  aria-label="delete"
-                  onClick={() => handleCommentDelete(comment.id)}
-                >
-                  delete button
-                </button>
-              </div>
+            <>
+              <p className="title is-4">Comments:</p>
+              <article
+                key={comment.id}
+                className="message is-small"
+                data-cy="Comment"
+              >
+                <div className="message-header">
+                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                    {comment.name}
+                  </a>
+                  <button
+                    data-cy="CommentDelete"
+                    type="button"
+                    className="delete is-small"
+                    aria-label="delete"
+                    onClick={() => handleCommentDelete(comment.id)}
+                  >
+                    delete button
+                  </button>
+                </div>
 
-              <div className="message-body" data-cy="CommentBody">
-                {comment.body}
-              </div>
-            </article>
+                <div className="message-body" data-cy="CommentBody">
+                  {comment.body}
+                </div>
+              </article>
+            </>
           ))}
 
-          {!commentFormIsActive && (
+          {writeButtonIsActive && (
             <button
               data-cy="WriteCommentButton"
               type="button"
