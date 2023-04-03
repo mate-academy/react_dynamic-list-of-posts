@@ -4,6 +4,7 @@ import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { deleteComment, getComments } from '../api/api';
 import { Comment } from '../types/Comment';
+import { CommentsList } from './CommentsList';
 
 type Props = {
   selectedPost: Post;
@@ -26,7 +27,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       .finally(() => setIsLoadingComments(false));
   }, [selectedPost]);
 
-  const noCommentsWarn
+  const isCommentsWarn
     = !hasCommentsError && !comments.length && !isLoadingComments;
 
   const writeButtonIsActive
@@ -70,7 +71,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             </div>
           )}
 
-          {noCommentsWarn && (
+          {isCommentsWarn && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -78,32 +79,12 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
 
           {!!comments.length && (<p className="title is-4">Comments:</p>)}
 
-          {!isLoadingComments && comments.map(comment => (
-            <article
-              key={comment.id}
-              className="message is-small"
-              data-cy="Comment"
-            >
-              <div className="message-header">
-                <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                  {comment.name}
-                </a>
-                <button
-                  data-cy="CommentDelete"
-                  type="button"
-                  className="delete is-small"
-                  aria-label="delete"
-                  onClick={() => handleCommentDelete(comment.id)}
-                >
-                  delete button
-                </button>
-              </div>
-
-              <div className="message-body" data-cy="CommentBody">
-                {comment.body}
-              </div>
-            </article>
-          ))}
+          {isLoadingComments && (
+            <CommentsList
+              comments={comments}
+              handleCommentDelete={handleCommentDelete}
+            />
+          )}
 
           {writeButtonIsActive && (
             <button

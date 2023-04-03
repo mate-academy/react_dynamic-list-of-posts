@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -24,12 +24,13 @@ export const App: React.FC = () => {
   useEffect(() => {
     getUsers()
       .then(setUsers)
-      .catch(() => setHasUsersError(true))
-      .finally(() => setHasUsersError(false));
+      .catch(() => setHasUsersError(true));
   }, []);
 
-  const noPostsWarn = selectedUser && !posts.length
+  const noPostsWarn = useMemo(() => {
+    return selectedUser && !posts.length
     && !isLoading && !hasPostsError;
+  }, [selectedUser, posts, isLoading, hasPostsError]);
 
   return (
     <main className="section">
@@ -60,9 +61,7 @@ export const App: React.FC = () => {
                 )}
 
                 {hasUsersError && (
-                  <div
-                    className="notification is-danger"
-                  >
+                  <div className="notification is-danger">
                     Unable to load users!
                   </div>
                 )}
@@ -105,9 +104,7 @@ export const App: React.FC = () => {
           >
             <div className="tile is-child box is-success ">
               {selectedPost && (
-                <PostDetails
-                  selectedPost={selectedPost}
-                />
+                <PostDetails selectedPost={selectedPost} />
               )}
             </div>
           </div>

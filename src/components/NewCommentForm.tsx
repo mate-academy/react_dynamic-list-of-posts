@@ -16,15 +16,15 @@ export const NewCommentForm: React.FC<Props> = ({
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [noName, setNoName] = useState(false);
-  const [noEmail, setNoEmail] = useState(false);
-  const [noBody, setNoBody] = useState(false);
+  const [hasName, setHasName] = useState(false);
+  const [hasEmail, setHasEmail] = useState(false);
+  const [hasBody, setHasBody] = useState(false);
   const [hasSubmittingError, setHasSubmittingError] = useState(false);
 
   const resetErrors = () => {
-    setNoName(false);
-    setNoEmail(false);
-    setNoBody(false);
+    setHasName(false);
+    setHasEmail(false);
+    setHasBody(false);
   };
 
   const clearInputs = () => {
@@ -34,19 +34,20 @@ export const NewCommentForm: React.FC<Props> = ({
     resetErrors();
   };
 
-  const handleNewCommentSubmit = () => {
+  const handleNewCommentSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     setHasSubmittingError(false);
+    e.preventDefault();
 
     if (!name.trim()) {
-      setNoName(true);
+      setHasName(true);
     }
 
     if (!email.trim()) {
-      setNoEmail(true);
+      setHasEmail(true);
     }
 
     if (!body.trim()) {
-      setNoBody(true);
+      setHasBody(true);
     }
 
     if (!name.trim() || !email.trim() || !body.trim()) {
@@ -77,7 +78,7 @@ export const NewCommentForm: React.FC<Props> = ({
       <form
         data-cy="NewCommentForm"
         className="form"
-        onSubmit={e => e.preventDefault()}
+        onSubmit={handleNewCommentSubmit}
       >
         <div className="field" data-cy="NameField">
           <label className="label" htmlFor="comment-author-name">
@@ -94,7 +95,7 @@ export const NewCommentForm: React.FC<Props> = ({
               onChange={e => setName(e.target.value)}
               className={classNames(
                 'input',
-                { 'is-danger': noName && !name.length },
+                { 'is-danger': hasName && !name.length },
               )}
             />
 
@@ -102,7 +103,7 @@ export const NewCommentForm: React.FC<Props> = ({
               <i className="fas fa-user" />
             </span>
 
-            {noName && !name.length && (
+            {hasName && !name.length && (
               <span
                 className="icon is-small is-right has-text-danger"
                 data-cy="ErrorIcon"
@@ -112,7 +113,7 @@ export const NewCommentForm: React.FC<Props> = ({
             )}
           </div>
 
-          {noName && !name.length && (
+          {hasName && !name.length && (
             <p className="help is-danger" data-cy="ErrorMessage">
               Name is required
             </p>
@@ -134,7 +135,7 @@ export const NewCommentForm: React.FC<Props> = ({
               onChange={e => setEmail(e.target.value)}
               className={classNames(
                 'input',
-                { 'is-danger': noEmail && !email.length },
+                { 'is-danger': hasEmail && !email.length },
               )}
             />
 
@@ -142,7 +143,7 @@ export const NewCommentForm: React.FC<Props> = ({
               <i className="fas fa-envelope" />
             </span>
 
-            {noEmail && !email.length && (
+            {hasEmail && !email.length && (
               <span
                 className="icon is-small is-right has-text-danger"
                 data-cy="ErrorIcon"
@@ -152,7 +153,7 @@ export const NewCommentForm: React.FC<Props> = ({
             )}
           </div>
 
-          {noEmail && !email.length && (
+          {hasEmail && !email.length && (
             <p className="help is-danger" data-cy="ErrorMessage">
               Email is required
             </p>
@@ -173,12 +174,12 @@ export const NewCommentForm: React.FC<Props> = ({
               onChange={e => setBody(e.target.value)}
               className={classNames(
                 'textarea',
-                { 'is-danger': noBody && !body.length },
+                { 'is-danger': hasBody && !body.length },
               )}
             />
           </div>
 
-          {noBody && !body.length && (
+          {hasBody && !body.length && (
             <p className="help is-danger" data-cy="ErrorMessage">
               Enter some text
             </p>
@@ -189,7 +190,6 @@ export const NewCommentForm: React.FC<Props> = ({
           <div className="control">
             <button
               type="submit"
-              onClick={handleNewCommentSubmit}
               className={classNames(
                 'button is-link',
                 { 'is-loading': isSubmitting },
