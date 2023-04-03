@@ -1,14 +1,34 @@
+import { Dispatch, SetStateAction } from 'react';
+import { deleteComment } from '../api/api';
 import { Comment } from '../types/Comment';
 
 type Props = {
   comments: Comment[];
-  handleCommentDelete: (id: number) => void;
+  setHasCommentDeleteError: (value: boolean) => void;
+  setComments: Dispatch<SetStateAction<Comment[]>>;
 };
 
 export const CommentsList: React.FC<Props> = ({
   comments,
-  handleCommentDelete,
+  setHasCommentDeleteError,
+  setComments,
 }) => {
+  const handleCommentDelete = (id: number) => {
+    setHasCommentDeleteError(false);
+    setComments(prev => prev.filter(comment => comment.id !== id));
+
+    deleteComment(id)
+      .catch(() => {
+        const commentToRestore = comments.find(comment => comment.id === id);
+
+        if (commentToRestore) {
+          setComments(prev => [...prev, commentToRestore]);
+        }
+
+        setHasCommentDeleteError(true);
+      });
+  };
+
   return (
     <>
       {comments.map(comment => (

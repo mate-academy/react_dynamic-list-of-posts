@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
-import { deleteComment, getComments } from '../api/api';
+import { getComments } from '../api/api';
 import { Comment } from '../types/Comment';
 import { CommentsList } from './CommentsList';
 
@@ -32,22 +32,6 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
 
   const writeButtonIsActive
    = !commentFormIsActive && !isLoadingComments && !hasCommentsError;
-
-  const handleCommentDelete = (id: number) => {
-    setHasCommentDeleteError(false);
-    setComments(prev => prev.filter(comment => comment.id !== id));
-
-    deleteComment(id)
-      .catch(() => {
-        const commentToRestore = comments.find(comment => comment.id === id);
-
-        if (commentToRestore) {
-          setComments(prev => [...prev, commentToRestore]);
-        }
-
-        setHasCommentDeleteError(true);
-      });
-  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -79,10 +63,11 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
 
           {!!comments.length && (<p className="title is-4">Comments:</p>)}
 
-          {isLoadingComments && (
+          {!isLoadingComments && (
             <CommentsList
               comments={comments}
-              handleCommentDelete={handleCommentDelete}
+              setHasCommentDeleteError={setHasCommentDeleteError}
+              setComments={setComments}
             />
           )}
 

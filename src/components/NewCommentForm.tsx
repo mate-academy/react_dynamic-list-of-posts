@@ -35,8 +35,8 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const handleNewCommentSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    setHasSubmittingError(false);
     e.preventDefault();
+    setHasSubmittingError(false);
 
     if (!name.trim()) {
       setHasName(true);
