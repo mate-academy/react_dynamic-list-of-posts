@@ -11,6 +11,7 @@ type Props = {
   setPosts: (posts: Post[]) => void ;
   setIsLoading: (value: boolean) => void;
   setHasPostsError: (vlaue: boolean) => void;
+  setSelectedPost: (post: Post | null) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
@@ -20,6 +21,7 @@ export const UserSelector: React.FC<Props> = ({
   setPosts,
   setIsLoading,
   setHasPostsError,
+  setSelectedPost,
 }) => {
   const [dropdownIsActive, setDropdownIsActive] = useState(false);
 
@@ -32,6 +34,7 @@ export const UserSelector: React.FC<Props> = ({
     setSelectedUser(user);
     handleDropdown();
     setHasPostsError(false);
+    setSelectedPost(null);
 
     getPosts(user.id)
       .then(setPosts)

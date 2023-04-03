@@ -45,6 +45,7 @@ export const App: React.FC = () => {
                   setPosts={setPosts}
                   setIsLoading={setIsLoading}
                   setHasPostsError={setHasPostsError}
+                  setSelectedPost={setSelectedPost}
                 />
               </div>
 
