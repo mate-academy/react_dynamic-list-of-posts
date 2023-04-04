@@ -9,6 +9,7 @@ import { NewCommentForm } from '../NewCommentForm/NewCommentForm';
 import { Post } from '../../types/Post';
 import { Comment, CommentData } from '../../types/Comment';
 import { addComment, getComments, removeComment } from '../../api/comments';
+import { CommentItem } from '../CommentItem/CommentItem';
 
 interface Props {
   selectedPost: Post,
@@ -57,17 +58,19 @@ export const PostDetails: FC<Props> = (props) => {
     }, [],
   );
 
-  const deleteComment = async (commentId: number) => {
-    try {
-      setComments(prevState => {
-        return prevState.filter(({ id }) => id !== commentId);
-      });
+  const deleteComment = useCallback(
+    async (commentId: number) => {
+      try {
+        setComments(prevState => {
+          return prevState.filter(({ id }) => id !== commentId);
+        });
 
-      await removeComment(commentId);
-    } catch {
-      setIsError(true);
-    }
-  };
+        await removeComment(commentId);
+      } catch {
+        setIsError(true);
+      }
+    }, [],
+  );
 
   const noComments = !comments.length && !isError && !isLoading;
   const isVisibleButton = !isFormVisible && !isError && !isLoading;
@@ -119,46 +122,13 @@ export const PostDetails: FC<Props> = (props) => {
             </p>
           )}
 
-          {comments.map(comment => {
-            const {
-              name,
-              body,
-              email,
-              id,
-            } = comment;
-
-            return (
-              <article
-                className="message is-small"
-                data-cy="Comment"
-              >
-                <div className="message-header">
-                  <a
-                    href={`mailto:${email}`}
-                    data-cy="CommentAuthor"
-                  >
-                    {name}
-                  </a>
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                    onClick={() => deleteComment(id)}
-                  >
-                    delete button
-                  </button>
-                </div>
-
-                <div
-                  className="message-body"
-                  data-cy="CommentBody"
-                >
-                  {body}
-                </div>
-              </article>
-            );
-          })}
+          {comments.map(comment => (
+            <CommentItem
+              key={comment.id}
+              comment={comment}
+              onDelete={deleteComment}
+            />
+          ))}
 
           {isVisibleButton && (
             <button

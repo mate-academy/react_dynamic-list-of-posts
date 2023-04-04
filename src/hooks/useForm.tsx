@@ -21,7 +21,7 @@ export const useForm = (options: Options) => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!name.trim()) {
+    if (!name.trim() || name.length < 3) {
       setNameError(true);
     }
 
@@ -49,9 +49,9 @@ export const useForm = (options: Options) => {
     }
 
     const newComment = {
-      name,
+      name: name.trim(),
       email,
-      body: commentText,
+      body: commentText.trim(),
     };
 
     onAddComment(newComment);

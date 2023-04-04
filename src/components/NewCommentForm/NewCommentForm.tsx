@@ -2,6 +2,8 @@ import { FC } from 'react';
 import cn from 'classnames';
 import { CommentData } from '../../types/Comment';
 import { useForm } from '../../hooks/useForm';
+import { Field } from './Field/Field';
+import { TextArea } from './TextArea/TextArea';
 
 interface Props {
   isLoading: boolean;
@@ -30,114 +32,29 @@ export const NewCommentForm: FC<Props> = (props) => {
       data-cy="NewCommentForm"
       onSubmit={handleSubmit}
     >
-      <div className="field" data-cy="NameField">
-        <label className="label" htmlFor="comment-author-name">
-          Author Name
-        </label>
+      <Field
+        value={name}
+        label="Author Name"
+        placeHolder="Name Surname"
+        errorType={nameError}
+        onChange={handleNameChange}
+      />
 
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="name"
-            value={name}
-            id="comment-author-name"
-            placeholder="Name Surname"
-            className={cn('input', {
-              'is-danger': nameError,
-            })}
-            onChange={handleNameChange}
-          />
+      <Field
+        value={email}
+        label="Author Email"
+        placeHolder="email@test.com"
+        errorType={emailError}
+        notValid={notValidEmail}
+        onChange={handleEmailChange}
+      />
 
-          <span className="icon is-small is-left">
-            <i className="fas fa-user" />
-          </span>
-
-          {nameError && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
-              <i className="fas fa-exclamation-triangle" />
-            </span>
-          )}
-        </div>
-
-        {nameError && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Name is required
-          </p>
-        )}
-      </div>
-
-      <div className="field" data-cy="EmailField">
-        <label className="label" htmlFor="comment-author-email">
-          Author Email
-        </label>
-
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="email"
-            value={email}
-            id="comment-author-email"
-            placeholder="email@test.com"
-            className={cn('input', {
-              'is-danger': emailError,
-            })}
-            onChange={handleEmailChange}
-          />
-
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
-          </span>
-
-          {emailError && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
-              <i className="fas fa-exclamation-triangle" />
-            </span>
-          )}
-        </div>
-
-        {emailError && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
-          </p>
-        )}
-
-        {(!emailError && notValidEmail) && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Email is not valid
-          </p>
-        )}
-      </div>
-
-      <div className="field" data-cy="BodyField">
-        <label className="label" htmlFor="comment-body">
-          Comment Text
-        </label>
-
-        <div className="control">
-          <textarea
-            id="comment-body"
-            name="body"
-            value={commentText}
-            placeholder="Type comment here"
-            className={cn('textarea', {
-              'is-danger': commentError,
-            })}
-            onChange={handleTextChange}
-          />
-        </div>
-
-        {commentError && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Enter some text
-          </p>
-        )}
-      </div>
+      <TextArea
+        value={commentText}
+        label="Comment Text"
+        errorType={commentError}
+        onChange={handleTextChange}
+      />
 
       <div className="field is-grouped">
         <div className="control">
@@ -152,9 +69,8 @@ export const NewCommentForm: FC<Props> = (props) => {
         </div>
 
         <div className="control">
-          {/*  eslint-disable-next-line react/button-has-type */}
           <button
-            type="reset"
+            type="button"
             className="button is-link is-light"
             onClick={handleClear}
           >

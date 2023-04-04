@@ -1,13 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react';
+import {
+  FC,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import cn from 'classnames';
 import { User } from '../../types/User';
+import { UserInfo } from '../UserInfo/UserInfo';
+import { SelectComponent } from '../SelectComponent/SelectComponent';
 
 interface Props {
   users: User[];
   onUserSelect: (user: User) => void
 }
 
-export const UserSelector: React.FC<Props> = (props) => {
+export const UserSelector: FC<Props> = (props) => {
   const { users, onUserSelect } = props;
   const [isOpen, setIsOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState('Choose a user');
@@ -29,15 +37,15 @@ export const UserSelector: React.FC<Props> = (props) => {
     };
   }, []);
 
-  const handleOpen = () => {
+  const handleOpen = useCallback(() => {
     setIsOpen(prevState => !prevState);
-  };
+  }, []);
 
-  const handleSelect = (user: User) => {
+  const handleSelect = useCallback((user: User) => {
     onUserSelect(user);
     setIsOpen(false);
     setCurrentUser(user.name);
-  };
+  }, []);
 
   return (
     <div
@@ -47,23 +55,11 @@ export const UserSelector: React.FC<Props> = (props) => {
         'is-active': isOpen,
       })}
     >
-      <div className="dropdown-trigger">
-        <button
-          type="button"
-          className="button"
-          aria-haspopup="true"
-          aria-controls="dropdown-menu"
-          onClick={handleOpen}
-        >
-          <span>
-            {currentUser}
-          </span>
 
-          <span className="icon is-small">
-            <i className="fas fa-angle-down" aria-hidden="true" />
-          </span>
-        </button>
-      </div>
+      <SelectComponent
+        currentUserName={currentUser}
+        onOpen={handleOpen}
+      />
 
       <div
         className="dropdown-menu"
@@ -71,22 +67,14 @@ export const UserSelector: React.FC<Props> = (props) => {
         role="menu"
       >
         <div className="dropdown-content">
-          {users.map(user => {
-            const { id, name } = user;
-
-            return (
-              <a
-                key={id}
-                href={`#user-${id}`}
-                className={cn('dropdown-item', {
-                  'is-active': currentUser === user.name,
-                })}
-                onClick={() => handleSelect(user)}
-              >
-                {name}
-              </a>
-            );
-          })}
+          {users.map(user => (
+            <UserInfo
+              key={user.id}
+              user={user}
+              currentUserName={currentUser}
+              onSelect={handleSelect}
+            />
+          ))}
         </div>
       </div>
     </div>
