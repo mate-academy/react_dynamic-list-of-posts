@@ -1,15 +1,84 @@
-import React from 'react';
+import {
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-
-import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
+import cn from 'classnames';
+import { PostsList } from './components/PostsList/PostsList';
+import { PostDetails } from './components/PostDetails/PostDetails';
+import { UserSelector } from './components/UserSelector/UserSelector';
 import { Loader } from './components/Loader';
+import { getUsers } from './api/users';
+import { User } from './types/User';
+import { Post } from './types/Post';
+import { getPosts } from './api/posts';
 
-export const App: React.FC = () => {
+export const App: FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [noPosts, setNoPosts] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchUsers = async () => {
+    try {
+      const usersFromServer = await getUsers();
+
+      setUsers(usersFromServer);
+    } catch {
+      setIsError(true);
+    }
+  };
+
+  const fetchUserPosts = async () => {
+    setNoPosts(false);
+    setIsLoading(true);
+    setIsError(false);
+
+    try {
+      const postsFromServer = await getPosts(selectedUserId);
+
+      if (postsFromServer.length === 0) {
+        setNoPosts(true);
+      }
+
+      setPosts(postsFromServer);
+    } catch {
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSelectUser = useCallback((user: User) => {
+    if (user.id !== selectedUserId) {
+      setSelectedUserId(user.id);
+      setSelectedPostId(0);
+      setPosts([]);
+    }
+  }, [selectedUserId]);
+
+  const selectedPost = useMemo(() => {
+    return posts.find(({ id }) => id === selectedPostId);
+  }, [selectedPostId]);
+
+  useEffect(() => {
+    if (selectedUserId) {
+      fetchUserPosts();
+    }
+  }, [selectedUserId]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,44 +86,68 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  users={users}
+                  onUserSelect={handleSelectUser}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectedUserId && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isLoading && (
+                  <Loader />
+                )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {isError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {noPosts && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                )}
 
-                <PostsList />
+                {posts.length > 0 && (
+                  <PostsList
+                    posts={posts}
+                    selectedPostId={selectedPostId}
+                    onPostSelect={setSelectedPostId}
+                  />
+                )}
               </div>
             </div>
           </div>
 
           <div
             data-cy="Sidebar"
-            className={classNames(
+            className={cn(
               'tile',
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPostId > 0 },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {selectedPost && (
+                <PostDetails
+                  selectedPost={selectedPost}
+                />
+              )}
             </div>
           </div>
         </div>
