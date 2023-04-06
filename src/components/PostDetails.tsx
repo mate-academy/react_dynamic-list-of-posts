@@ -46,7 +46,7 @@ export const PostDetails: React.FC<PostdetailsProps> = ({
       ));
   };
 
-  const handleAddComment = (newComment: CommentData) => {
+  const handleAddComment = (newComment: Comment) => {
     addCommentFromPost(newComment)
       .then((addedComment) => {
         setComments([
@@ -101,8 +101,9 @@ export const PostDetails: React.FC<PostdetailsProps> = ({
           {isWriting
             ? (
               <NewCommentForm
+                addComment={handleAddComment as () => void}
+                selectedPost={selectedPost}
                 comments={comments}
-                addComment={handleAddComment}
               />
             )
             : (

@@ -1,15 +1,18 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { CommentData } from '../types/Comment';
+import { Comment, CommentData } from '../types/Comment';
+import { Post } from '../types/Post';
 
 type NewCommentFormProps = {
+  addComment: (newComment: Comment) => void,
+  selectedPost: Post,
   comments: CommentData[],
-  addComment: (newComment: CommentData) => void,
 };
 
 export const NewCommentForm: React.FC<NewCommentFormProps> = ({
-  comments,
   addComment,
+  selectedPost,
+  comments,
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -29,6 +32,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
       name,
       email,
       body,
+      postId: selectedPost.id,
       id: (Math.max(...comments.map((element) => element.id)) + 1),
     };
 
