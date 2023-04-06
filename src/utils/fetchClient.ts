@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { CommentData } from '../types/Comment';
+import { Post } from '../types/Post';
+import { User } from '../types/User';
+
 const BASE_URL = 'https://mate.academy/students-api';
 
 // a promise resolved after a given delay
@@ -36,4 +41,25 @@ export const client = {
   post: <T>(url: string, data: any) => request<T>(url, 'POST', data),
   patch: <T>(url: string, data: any) => request<T>(url, 'PATCH', data),
   delete: (url: string) => request(url, 'DELETE'),
+};
+
+export const getAllUsers = () => {
+  return client.get<User[]>('/users');
+};
+
+export const getPostsfromUser = (userId: number) => {
+  return client.get<Post[]>(`/posts?userId=${userId}`);
+};
+
+export const getCommentsfromPost = (postId: number) => {
+  return client.get<CommentData[]>(`/comments?postId=${postId}`);
+};
+
+export const deleteCommentfromPost = (commentId: number) => {
+  return client.delete(`/comments/${commentId}`);
+};
+
+export const addCommentFromPost = (newComment: Comment)
+: Promise<CommentData> => {
+  return client.post('/comments', newComment);
 };
