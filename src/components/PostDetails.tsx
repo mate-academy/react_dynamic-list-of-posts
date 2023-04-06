@@ -10,35 +10,35 @@ import { CommentsList } from './CommentsList';
 type Props = {
   selectedPost: Post | null,
   comments: Comment[] | null,
-  isCommentsLoad: boolean,
+  isCommentsLoadError: boolean,
   isNoComments: boolean,
   onButtonForm: () => void,
   isShowForm: boolean,
   isShowButton: boolean,
   onAddComment: (name: string, email: string, body: string) => Promise<void>,
-  isCommentsUpdate: boolean,
-  setIsCommentsUpdate: React.Dispatch<React.SetStateAction<boolean>>,
-  setIsCommentDelete: React.Dispatch<React.SetStateAction<boolean>>,
+  isCommentsUpdateError: boolean,
+  setIsCommentsUpdateError: React.Dispatch<React.SetStateAction<boolean>>,
+  setIsCommentDeleteError: React.Dispatch<React.SetStateAction<boolean>>,
   isNewCommentLoad: boolean,
   onDeleteComment: (commentId: number) => void,
-  isCommentDelete: boolean,
+  isCommentDeleteError: boolean,
 };
 
 export const PostDetails: React.FC<Props> = ({
   selectedPost,
-  isCommentsLoad,
+  isCommentsLoadError,
   comments,
   isNoComments,
   onButtonForm,
   isShowForm,
   isShowButton,
   onAddComment,
-  isCommentsUpdate,
-  setIsCommentsUpdate,
+  isCommentsUpdateError,
+  setIsCommentsUpdateError,
   isNewCommentLoad,
   onDeleteComment,
-  isCommentDelete,
-  setIsCommentDelete,
+  isCommentDeleteError,
+  setIsCommentDeleteError,
 }) => {
   return (
     <div className="content" data-cy="PostDetails">
@@ -56,7 +56,7 @@ export const PostDetails: React.FC<Props> = ({
         <div className="block">
           {isNoComments && <Loader />}
 
-          {isCommentsLoad && !isNoComments && (
+          {isCommentsLoadError && !isNoComments && (
             <div
               className="notification is-danger"
               data-cy="CommentsError"
@@ -65,12 +65,12 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {!isNoComments && !isCommentsLoad && (
+          {!isNoComments && !isCommentsLoadError && (
             <>
               <CommentsList
                 comments={comments}
                 onDeleteComment={onDeleteComment}
-                isCommentDelete={isCommentDelete}
+                isCommentDeleteError={isCommentDeleteError}
               />
 
               <button
@@ -91,10 +91,10 @@ export const PostDetails: React.FC<Props> = ({
         {isShowForm && (
           <NewCommentForm
             onAddComment={onAddComment}
-            isCommentsUpdate={isCommentsUpdate}
-            setIsCommentsUpdate={setIsCommentsUpdate}
+            isCommentsUpdateError={isCommentsUpdateError}
+            setIsCommentsUpdateError={setIsCommentsUpdateError}
             isNewCommentLoad={isNewCommentLoad}
-            setIsCommentDelete={setIsCommentDelete}
+            setIsCommentDeleteError={setIsCommentDeleteError}
           />
         )}
       </div>

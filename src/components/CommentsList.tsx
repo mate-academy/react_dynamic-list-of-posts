@@ -3,14 +3,14 @@ import { Comment } from '../types/Comment';
 
 type Props = {
   comments: Comment[] | null,
-  isCommentDelete: boolean,
+  isCommentDeleteError: boolean,
   onDeleteComment: (commentId: number) => void,
 };
 
 export const CommentsList: React.FC<Props> = ({
   comments,
   onDeleteComment,
-  isCommentDelete,
+  isCommentDeleteError,
 }) => {
   return comments?.length ? (
     <>
@@ -41,7 +41,7 @@ export const CommentsList: React.FC<Props> = ({
           </div>
         </article>
       ))}
-      {isCommentDelete && (
+      {isCommentDeleteError && (
         <div
           className="notification is-danger"
           data-cy="CommentsDeleteError"

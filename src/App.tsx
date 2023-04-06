@@ -22,20 +22,19 @@ import {
 export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[]>([]);
-  const [selectedUserName, setSelectedUserName] = useState('');
-  const [selectedUser, setSelectedUser] = useState<number | null>(null);
-  const [isUsersLoading, setIsUsersLoading] = useState(false);
-  const [isPostsLoading, setIsPostsLoading] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isUsersLoadingError, setIsUsersLoadingError] = useState(false);
+  const [isPostsLoadingError, setIsPostsLoadingError] = useState(false);
   const [isNoPosts, setIsNoPosts] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [loadComments, setLoadComments] = useState<Comment[]>([]);
-  const [isCommentsLoad, setIsCommentsLoad] = useState(false);
+  const [isCommentsLoadError, setIsCommentsLoadError] = useState(false);
   const [isNoComments, setIsNoComments] = useState(false);
   const [isShowForm, setIsShowForm] = useState(false);
   const [isShowButton, setIsShowButton] = useState(false);
-  const [isCommentsUpdate, setIsCommentsUpdate] = useState(false);
+  const [isCommentsUpdateError, setIsCommentsUpdateError] = useState(false);
   const [isNewCommentLoad, setIsNewCommentLoad] = useState(false);
-  const [isCommentDelete, setIsCommentDelete] = useState(false);
+  const [isCommentDeleteError, setIsCommentDeleteError] = useState(false);
 
   useEffect(() => {
     const loadUsers = async () => {
@@ -44,26 +43,25 @@ export const App: React.FC = () => {
 
         setUsers(usersList);
       } catch {
-        setIsUsersLoading(true);
+        setIsUsersLoadingError(true);
       }
     };
 
     loadUsers();
   }, []);
 
-  const handleSelectUser = async (userId: number, userName: string) => {
-    setSelectedUser(userId);
-    setSelectedUserName(userName);
+  const handleSelectUser = async (user: User) => {
+    setSelectedUser(user);
     setIsNoPosts(true);
     setSelectedPost(null);
-    setIsPostsLoading(false);
+    setIsPostsLoadingError(false);
 
     try {
-      const postList = await getPosts(userId);
+      const postList = await getPosts(user?.id);
 
       setPosts(postList);
     } catch {
-      setIsPostsLoading(true);
+      setIsPostsLoadingError(true);
     } finally {
       setIsNoPosts(false);
     }
@@ -74,8 +72,8 @@ export const App: React.FC = () => {
     setIsNoComments(true);
     setIsShowForm(false);
     setIsShowButton(false);
-    setIsCommentsUpdate(false);
-    setIsCommentDelete(false);
+    setIsCommentsUpdateError(false);
+    setIsCommentDeleteError(false);
 
     if (post) {
       try {
@@ -83,7 +81,7 @@ export const App: React.FC = () => {
 
         setLoadComments(loadUserPost);
       } catch {
-        setIsCommentsLoad(true);
+        setIsCommentsLoadError(true);
       } finally {
         setIsNoComments(false);
       }
@@ -96,7 +94,7 @@ export const App: React.FC = () => {
     body: string,
   ) => {
     setIsNewCommentLoad(true);
-    setIsCommentDelete(false);
+    setIsCommentDeleteError(false);
     const newComment = {
       postId: selectedPost?.id,
       name,
@@ -107,7 +105,7 @@ export const App: React.FC = () => {
     try {
       const postNewComment = await postComment(newComment);
 
-      setIsCommentsUpdate(false);
+      setIsCommentsUpdateError(false);
 
       setLoadComments((comments) => {
         return comments
@@ -115,14 +113,14 @@ export const App: React.FC = () => {
           : [postNewComment];
       });
     } catch {
-      setIsCommentsUpdate(true);
+      setIsCommentsUpdateError(true);
     } finally {
       setIsNewCommentLoad(false);
     }
   }, [loadComments]);
 
   const handleDeleteComment = (commentId: number) => {
-    setIsCommentDelete(false);
+    setIsCommentDeleteError(false);
     const prevComments = [...loadComments];
 
     setLoadComments(allComments => (
@@ -132,14 +130,14 @@ export const App: React.FC = () => {
       .then()
       .catch(() => {
         setLoadComments(prevComments);
-        setIsCommentDelete(true);
+        setIsCommentDeleteError(true);
       });
   };
 
   const handleButtonForm = () => {
     setIsShowForm(true);
     setIsShowButton(true);
-    setIsCommentDelete(false);
+    setIsCommentDeleteError(false);
   };
 
   return (
@@ -153,7 +151,6 @@ export const App: React.FC = () => {
                   users={users}
                   selectedUser={selectedUser}
                   onSelectUser={handleSelectUser}
-                  selectedUserName={selectedUserName}
                 />
               </div>
 
@@ -168,7 +165,7 @@ export const App: React.FC = () => {
                   <Loader />
                 )}
 
-                {isPostsLoading && (
+                {isPostsLoadingError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -177,7 +174,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!isPostsLoading
+                {!isPostsLoadingError
                   && selectedUser
                   && !isNoPosts
                   && (
@@ -188,7 +185,7 @@ export const App: React.FC = () => {
                     />
                   )}
 
-                {isUsersLoading && (
+                {isUsersLoadingError && (
                   <div
                     className="notification is-danger"
                     data-cy="UsersLoadingError"
@@ -215,18 +212,18 @@ export const App: React.FC = () => {
                 <PostDetails
                   selectedPost={selectedPost}
                   comments={loadComments}
-                  isCommentsLoad={isCommentsLoad}
+                  isCommentsLoadError={isCommentsLoadError}
                   isNoComments={isNoComments}
                   onButtonForm={handleButtonForm}
                   isShowForm={isShowForm}
                   isShowButton={isShowButton}
                   onAddComment={handleAddComment}
-                  isCommentsUpdate={isCommentsUpdate}
-                  setIsCommentsUpdate={setIsCommentsUpdate}
+                  isCommentsUpdateError={isCommentsUpdateError}
+                  setIsCommentsUpdateError={setIsCommentsUpdateError}
                   isNewCommentLoad={isNewCommentLoad}
                   onDeleteComment={handleDeleteComment}
-                  isCommentDelete={isCommentDelete}
-                  setIsCommentDelete={setIsCommentDelete}
+                  isCommentDeleteError={isCommentDeleteError}
+                  setIsCommentDeleteError={setIsCommentDeleteError}
                 />
               )}
             </div>

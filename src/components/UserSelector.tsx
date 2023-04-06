@@ -4,25 +4,19 @@ import { User } from '../types/User';
 
 type Props = {
   users: User[],
-  selectedUser: number | null,
-  onSelectUser: (userId: number, userName: string) => void,
-  selectedUserName: string,
+  selectedUser: User | null,
+  onSelectUser: (user: User) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   onSelectUser,
   selectedUser,
-  selectedUserName,
 }) => {
   const [showUserList, setShowUserList] = useState(false);
 
-  const toggleUsersList = () => {
-    setShowUserList(!showUserList);
-  };
-
   const handleButtonToggler = () => {
-    toggleUsersList();
+    setShowUserList(prevState => !prevState);
   };
 
   return (
@@ -41,7 +35,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={handleButtonToggler}
         >
-          <span>{selectedUserName || 'Choose a user'}</span>
+          <span>{selectedUser?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -61,11 +55,11 @@ export const UserSelector: React.FC<Props> = ({
               href={`#user-${user.id}`}
               className={classNames(
                 'dropdown-item',
-                { 'is-active': selectedUser === user.id },
+                { 'is-active': selectedUser?.id === user.id },
               )}
               onClick={() => {
-                onSelectUser(user.id, user.name);
-                toggleUsersList();
+                onSelectUser(user);
+                setShowUserList(pervState => !pervState);
               }}
             >
               {user.name}

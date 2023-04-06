@@ -4,17 +4,17 @@ import classNames from 'classnames';
 type Props = {
   onAddComment: (name: string, email: string, body: string) => Promise<void>,
   isNewCommentLoad: boolean,
-  isCommentsUpdate: boolean,
-  setIsCommentsUpdate: React.Dispatch<React.SetStateAction<boolean>>,
-  setIsCommentDelete: React.Dispatch<React.SetStateAction<boolean>>,
+  isCommentsUpdateError: boolean,
+  setIsCommentsUpdateError: React.Dispatch<React.SetStateAction<boolean>>,
+  setIsCommentDeleteError: React.Dispatch<React.SetStateAction<boolean>>,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   onAddComment,
   isNewCommentLoad,
-  isCommentsUpdate,
-  setIsCommentsUpdate,
-  setIsCommentDelete,
+  isCommentsUpdateError,
+  setIsCommentsUpdateError,
+  setIsCommentDeleteError,
 }) => {
   const [nameField, setNameField] = useState('');
   const [emailField, setEmailField] = useState('');
@@ -71,7 +71,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleAddButton = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    if (!isNewCommentLoad && !isCommentsUpdate && validationFields()) {
+    if (!isNewCommentLoad && !isCommentsUpdateError && validationFields()) {
       setBodyField('');
     }
 
@@ -91,8 +91,8 @@ export const NewCommentForm: React.FC<Props> = ({
     setIsDangerName(false);
     setIsDangerEmail(false);
     setIsDangerTextArea(false);
-    setIsCommentsUpdate(false);
-    setIsCommentDelete(false);
+    setIsCommentsUpdateError(false);
+    setIsCommentDeleteError(false);
   };
 
   return (
@@ -239,7 +239,7 @@ export const NewCommentForm: React.FC<Props> = ({
               { 'is-loading': isNewCommentLoad },
             )}
             onClick={handleAddButton}
-            disabled={isCommentsUpdate}
+            disabled={isCommentsUpdateError}
           >
             Add
           </button>
@@ -260,7 +260,7 @@ export const NewCommentForm: React.FC<Props> = ({
         </div>
       </div>
 
-      {isCommentsUpdate && (
+      {isCommentsUpdateError && (
         <div
           className="notification is-danger"
           data-cy="CommentsAddError"
