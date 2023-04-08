@@ -113,9 +113,14 @@ export const App: React.FC = () => {
   };
 
   const commentDelete = async (commentId: number) => {
-    setPostComments(state => {
-      return state.filter(comment => comment.id !== commentId);
-    });
+    if (postComments.length === 1) {
+      setIsNoComments(true);
+      setPostComments([]);
+    } else {
+      setPostComments(state => {
+        return state.filter(comment => comment.id !== commentId);
+      });
+    }
 
     try {
       await deleteComment(commentId);
