@@ -100,12 +100,11 @@ export const App: React.FC = () => {
       });
 
       if (addedComment) {
+        offButtonLoad(false);
+        clearText();
         setPostComments((state) => {
           return [...state, addedComment];
         });
-        loadPostComments(openedPost.id);
-        offButtonLoad(false);
-        clearText();
       }
     } catch {
       offButtonLoad(false);
@@ -119,11 +118,7 @@ export const App: React.FC = () => {
     });
 
     try {
-      const deletedComment = await deleteComment(commentId);
-
-      if (deletedComment) {
-        loadPostComments(openedPost.id);
-      }
+      await deleteComment(commentId);
     } catch {
       setIsCommentLoadingError(true);
     }
