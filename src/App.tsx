@@ -129,14 +129,10 @@ export const App: React.FC = () => {
     }
   };
 
-  const selectUser = (
-    user: User,
-    setIsChoosing: (isChoosing: boolean) => void,
-  ) => {
+  const selectUser = (user: User) => {
     setIsNoPosts(false);
     setIsPostLoadingError(false);
     setSelectedUser(user);
-    setIsChoosing(false);
     setOpenedPost(tempPost);
     loadUserPosts(user.id);
     setIsPostLoading(true);

@@ -4,10 +4,7 @@ import { User } from '../types/User';
 
 type PropsType = {
   users: User[];
-  selectUser: (
-    user: User,
-    setIsChoosing: (isChoosing: boolean) => void,
-  ) => void;
+  selectUser: (user: User) => void;
   selectedUser: User;
 };
 
@@ -21,7 +18,10 @@ export const UserSelector: React.FC<PropsType> = ({
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={classNames(
+        'dropdown',
+        { 'is-active': isChoosing },
+      )}
     >
       <div className="dropdown-trigger">
         <button
@@ -29,7 +29,7 @@ export const UserSelector: React.FC<PropsType> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setIsChoosing((state) => !state)}
+          onClick={() => setIsChoosing(true)}
         >
           {selectedUser.id !== 0
             ? (
@@ -46,42 +46,28 @@ export const UserSelector: React.FC<PropsType> = ({
         </button>
       </div>
 
-      {isChoosing && (
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          <div className="dropdown-content">
-            {users.length !== 0 && users.map(user => {
-              const { id } = user;
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        <div className="dropdown-content">
+          {users.map(user => {
+            const { id } = user;
 
-              return (
-                // eslint-disable-next-line jsx-a11y/mouse-events-have-key-events
-                <a
-                  key={id}
-                  href={`#user-${id}`}
-                  className={classNames(
-                    'dropdown-item',
-                    { 'is-active': selectedUser.id === id },
-                  )}
-                  onClick={() => {
-                    selectUser(user, setIsChoosing);
-                  }}
-                >
-                  {user.name}
-                </a>
-              );
-            })}
-            {/* <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-            <a
-              href="#user-2"
-              className="dropdown-item is-active"
-            >
-              Ervin Howell
-            </a>
-            <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-            <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-            <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a> */}
-          </div>
+            return (
+              <a
+                key={id}
+                href={`#user-${id}`}
+                className={classNames(
+                  'dropdown-item',
+                  { 'is-active': selectedUser.id === id },
+                )}
+                onMouseDown={() => selectUser(user)}
+                onClick={() => setIsChoosing(false)}
+              >
+                {user.name}
+              </a>
+            );
+          })}
         </div>
-      )}
+      </div>
     </div>
   );
 };
