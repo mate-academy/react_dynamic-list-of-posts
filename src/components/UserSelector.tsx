@@ -29,7 +29,8 @@ export const UserSelector: React.FC<PropsType> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setIsChoosing(true)}
+          onClick={() => setIsChoosing(state => !state)}
+          onBlur={() => setIsChoosing(false)}
         >
           {selectedUser.id !== 0
             ? (

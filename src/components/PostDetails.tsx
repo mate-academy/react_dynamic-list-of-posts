@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
@@ -17,7 +17,7 @@ type Props = {
     offButtonLoad: (status: boolean) => void,
     clearText: () => void,
   ) => void,
-  commentDelete: (commentId: number, setDeleteId: () => void) => void,
+  commentDelete: (commentId: number) => void,
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -31,12 +31,6 @@ export const PostDetails: React.FC<Props> = ({
   addComment,
   commentDelete,
 }) => {
-  const [commentDeleteId, setCommentDeleteId] = useState(0);
-
-  const setDeleteId = () => {
-    setCommentDeleteId(0);
-  };
-
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -77,10 +71,6 @@ export const PostDetails: React.FC<Props> = ({
                   body,
                 } = comment;
 
-                if (commentDeleteId === id) {
-                  return null;
-                }
-
                 return (
                   <article
                     key={id}
@@ -96,10 +86,7 @@ export const PostDetails: React.FC<Props> = ({
                         type="button"
                         className="delete is-small"
                         aria-label="delete"
-                        onClick={() => {
-                          commentDelete(id, setDeleteId);
-                          setCommentDeleteId(id);
-                        }}
+                        onClick={() => commentDelete(id)}
                       >
                         delete button
                       </button>

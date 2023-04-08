@@ -113,16 +113,16 @@ export const App: React.FC = () => {
     }
   };
 
-  const commentDelete = async (commentId: number, setDeleteId: () => void) => {
+  const commentDelete = async (commentId: number) => {
+    setPostComments(state => {
+      return state.filter(comment => comment.id !== commentId);
+    });
+
     try {
       const deletedComment = await deleteComment(commentId);
 
       if (deletedComment) {
-        setPostComments(state => {
-          return state.filter(comment => comment.id !== commentId);
-        });
         loadPostComments(openedPost.id);
-        setDeleteId();
       }
     } catch {
       setIsCommentLoadingError(true);
@@ -147,6 +147,7 @@ export const App: React.FC = () => {
     if (post.id === openedPost.id) {
       setOpenedPost(tempPost);
     } else {
+      setOpenedPost(tempPost);
       setOpenedPost(post);
       loadPostComments(post.id);
       setIsCommentLoading(true);
@@ -219,17 +220,19 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails
-                openedPost={openedPost}
-                postComments={postComments}
-                isCommentLoading={isCommentLoading}
-                isCommentLoadingError={isCommentLoadingError}
-                isNoComments={isNoComments}
-                setIsNewCommentForm={setIsNewCommentForm}
-                isNewCommentForm={isNewCommentForm}
-                addComment={addComment}
-                commentDelete={commentDelete}
-              />
+              {openedPost.id !== 0 && (
+                <PostDetails
+                  openedPost={openedPost}
+                  postComments={postComments}
+                  isCommentLoading={isCommentLoading}
+                  isCommentLoadingError={isCommentLoadingError}
+                  isNoComments={isNoComments}
+                  setIsNewCommentForm={setIsNewCommentForm}
+                  isNewCommentForm={isNewCommentForm}
+                  addComment={addComment}
+                  commentDelete={commentDelete}
+                />
+              )}
             </div>
           </div>
         </div>
