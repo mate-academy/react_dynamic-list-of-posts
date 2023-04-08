@@ -212,32 +212,30 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {userPosts.length !== 0 && openedPost.id !== 0 && (
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                { 'Sidebar--open': openedPost.id !== 0 },
-              )}
-            >
-              <div className="tile is-child box is-success ">
-                <PostDetails
-                  openedPost={openedPost}
-                  postComments={postComments}
-                  isCommentLoading={isCommentLoading}
-                  isCommentLoadingError={isCommentLoadingError}
-                  isNoComments={isNoComments}
-                  setIsNewCommentForm={setIsNewCommentForm}
-                  isNewCommentForm={isNewCommentForm}
-                  addComment={addComment}
-                  commentDelete={commentDelete}
-                />
-              </div>
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': openedPost.id !== 0 },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              <PostDetails
+                openedPost={openedPost}
+                postComments={postComments}
+                isCommentLoading={isCommentLoading}
+                isCommentLoadingError={isCommentLoadingError}
+                isNoComments={isNoComments}
+                setIsNewCommentForm={setIsNewCommentForm}
+                isNewCommentForm={isNewCommentForm}
+                addComment={addComment}
+                commentDelete={commentDelete}
+              />
             </div>
-          )}
+          </div>
         </div>
       </div>
     </main>
