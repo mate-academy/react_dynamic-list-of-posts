@@ -2,12 +2,14 @@ import classNames from 'classnames';
 import React, { FormEvent, useState } from 'react';
 import { CommentData } from '../types/Comment';
 
+type SendDataType = {
+  newComment: CommentData,
+  setIsButtonLoading: (IsButtonLoading: boolean) => void,
+  clearText: () => void,
+};
+
 type Props = {
-  addComment: (
-    newComment: CommentData,
-    offButtonLoad: (status: boolean) => void,
-    clearText: () => void,
-  ) => void,
+  addComment: (sendData: SendDataType) => void,
 };
 
 export const NewCommentForm: React.FC<Props> = ({ addComment }) => {
@@ -41,13 +43,19 @@ export const NewCommentForm: React.FC<Props> = ({ addComment }) => {
     }
 
     if (name && email && text) {
-      const sendData = {
+      const newComment = {
         name,
         email,
         body: text,
       };
 
-      addComment(sendData, setIsButtonLoading, clearText);
+      const sendData = {
+        newComment,
+        setIsButtonLoading,
+        clearText,
+      };
+
+      addComment(sendData);
     }
   };
 

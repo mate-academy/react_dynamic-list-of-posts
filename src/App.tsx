@@ -29,6 +29,12 @@ const tempPost = {
   body: '',
 };
 
+type SendDataType = {
+  newComment: CommentData,
+  setIsButtonLoading: (IsButtonLoading: boolean) => void,
+  clearText: () => void,
+};
+
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User>(tempUser);
@@ -36,7 +42,7 @@ export const App: React.FC = () => {
   const [isPostLoading, setIsPostLoading] = useState(false);
   const [isPostLoadingError, setIsPostLoadingError] = useState(false);
   const [isNoPosts, setIsNoPosts] = useState(false);
-  const [openedPost, setOpenedPost] = useState<Post>(tempPost);
+  const [currentPost, setcurrentPost] = useState<Post>(tempPost);
   const [postComments, setPostComments] = useState<Comment[]>([]);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
   const [isCommentLoadingError, setIsCommentLoadingError] = useState(false);
@@ -58,16 +64,15 @@ export const App: React.FC = () => {
       const loadedUserPosts = await getUserPosts(userId);
 
       if (loadedUserPosts.length !== 0) {
-        setIsPostLoading(false);
         setUserPosts(loadedUserPosts);
       } else {
-        setIsPostLoading(false);
         setIsNoPosts(true);
       }
     } catch {
-      setIsPostLoading(false);
       setIsPostLoadingError(true);
       setUserPosts([]);
+    } finally {
+      setIsPostLoading(false);
     }
   };
 
@@ -76,38 +81,35 @@ export const App: React.FC = () => {
       const loadedPostComments = await getPostComments(postId);
 
       if (loadedPostComments.length !== 0) {
-        setIsCommentLoading(false);
         setPostComments(loadedPostComments);
       } else {
-        setIsCommentLoading(false);
         setIsNoComments(true);
       }
     } catch {
-      setIsCommentLoading(false);
       setIsCommentLoadingError(true);
+    } finally {
+      setIsCommentLoading(false);
     }
   };
 
-  const addComment = async (
-    newComment: CommentData,
-    offButtonLoad: (status: boolean) => void,
-    clearText: () => void,
-  ) => {
+  const addComment = async (sendData: SendDataType) => {
+    const { newComment, setIsButtonLoading, clearText } = sendData;
+
     try {
       const addedComment = await addNewComment({
-        postId: openedPost.id,
+        postId: currentPost.id,
         ...newComment,
       });
 
       if (addedComment) {
-        offButtonLoad(false);
+        setIsButtonLoading(false);
         clearText();
         setPostComments((state) => {
           return [...state, addedComment];
         });
       }
     } catch {
-      offButtonLoad(false);
+      setIsButtonLoading(false);
       setIsCommentLoadingError(true);
     }
   };
@@ -133,7 +135,7 @@ export const App: React.FC = () => {
     setIsNoPosts(false);
     setIsPostLoadingError(false);
     setSelectedUser(user);
-    setOpenedPost(tempPost);
+    setcurrentPost(tempPost);
     loadUserPosts(user.id);
     setIsPostLoading(true);
   };
@@ -144,11 +146,11 @@ export const App: React.FC = () => {
     setIsCommentLoadingError(false);
     setIsNewCommentForm(false);
 
-    if (post.id === openedPost.id) {
-      setOpenedPost(tempPost);
+    if (post.id === currentPost.id) {
+      setcurrentPost(tempPost);
     } else {
-      setOpenedPost(tempPost);
-      setOpenedPost(post);
+      setcurrentPost(tempPost);
+      setcurrentPost(post);
       loadPostComments(post.id);
       setIsCommentLoading(true);
     }
@@ -202,7 +204,7 @@ export const App: React.FC = () => {
                   <PostsList
                     userPosts={userPosts}
                     onOpenPost={onOpenPost}
-                    openedPost={openedPost}
+                    currentPost={currentPost}
                   />
                 )}
               </div>
@@ -216,13 +218,13 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': openedPost.id !== 0 },
+              { 'Sidebar--open': currentPost.id !== 0 },
             )}
           >
             <div className="tile is-child box is-success ">
-              {openedPost.id !== 0 && (
+              {currentPost.id !== 0 && (
                 <PostDetails
-                  openedPost={openedPost}
+                  currentPost={currentPost}
                   postComments={postComments}
                   isCommentLoading={isCommentLoading}
                   isCommentLoadingError={isCommentLoadingError}

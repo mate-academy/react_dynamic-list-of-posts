@@ -4,24 +4,26 @@ import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
 
+type SendDataType = {
+  newComment: CommentData,
+  setIsButtonLoading: (IsButtonLoading: boolean) => void,
+  clearText: () => void,
+};
+
 type Props = {
-  openedPost: Post;
+  currentPost: Post;
   postComments: Comment[];
   isCommentLoading: boolean,
   isCommentLoadingError: boolean,
   isNoComments: boolean,
   setIsNewCommentForm: (newCommentForm: boolean) => void,
   isNewCommentForm: boolean,
-  addComment: (
-    newComment: CommentData,
-    offButtonLoad: (status: boolean) => void,
-    clearText: () => void,
-  ) => void,
+  addComment: (sendData: SendDataType) => void,
   commentDelete: (commentId: number) => void,
 };
 
 export const PostDetails: React.FC<Props> = ({
-  openedPost,
+  currentPost,
   postComments,
   isCommentLoading,
   isCommentLoadingError,
@@ -36,11 +38,11 @@ export const PostDetails: React.FC<Props> = ({
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {`#${openedPost.id}: ${openedPost.title}`}
+            {`#${currentPost.id}: ${currentPost.title}`}
           </h2>
 
           <p data-cy="PostBody">
-            {openedPost.body}
+            {currentPost.body}
           </p>
         </div>
 

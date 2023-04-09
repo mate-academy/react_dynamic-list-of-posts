@@ -5,13 +5,13 @@ import { Post } from '../types/Post';
 type Props = {
   userPosts: Post[];
   onOpenPost: (post: Post) => void,
-  openedPost: Post,
+  currentPost: Post,
 };
 
 export const PostsList: React.FC<Props> = ({
   userPosts,
   onOpenPost,
-  openedPost,
+  currentPost,
 }) => {
   return (
     <div data-cy="PostsList">
@@ -29,7 +29,7 @@ export const PostsList: React.FC<Props> = ({
         <tbody>
           {userPosts.map((post) => {
             const { id, title } = post;
-            const isOpenedPost = openedPost.id !== id;
+            const iscurrentPost = currentPost.id !== id;
 
             return (
               <tr
@@ -45,11 +45,11 @@ export const PostsList: React.FC<Props> = ({
                     data-cy="PostButton"
                     className={classNames(
                       'button is-link',
-                      { 'is-light': isOpenedPost },
+                      { 'is-light': iscurrentPost },
                     )}
                     onClick={() => onOpenPost(post)}
                   >
-                    {isOpenedPost
+                    {iscurrentPost
                       ? 'Open'
                       : 'Close'}
                   </button>

@@ -61,7 +61,6 @@ export const UserSelector: React.FC<PropsType> = ({
                   { 'is-active': selectedUser.id === id },
                 )}
                 onMouseDown={() => selectUser(user)}
-                // onClick={() => setIsChoosing(false)}
               >
                 {user.name}
               </a>
