@@ -1,6 +1,6 @@
 import React from 'react';
 import { Comment } from '../types/Comment';
-import { CommentUser } from './Comment';
+import { CommentUser } from './CommentUser';
 
 type Props = {
   postComments: Comment[],

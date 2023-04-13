@@ -86,7 +86,7 @@ export const NewCommentForm: React.FC<Props> = ({
     event.preventDefault();
 
     if (!validateForm()) {
-      return null;
+      return;
     }
 
     const dataComment = {
@@ -94,14 +94,12 @@ export const NewCommentForm: React.FC<Props> = ({
       postId: activePostId,
     };
 
-    const newCommentInPost = postComment(dataComment);
+    postComment(dataComment);
 
     setInputValue({
       ...inputValue,
       body: '',
     });
-
-    return newCommentInPost;
   };
 
   return (

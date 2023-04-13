@@ -30,7 +30,7 @@ export const App: React.FC = () => {
   const [isNewCommentForm, setIsNewCommentForm] = useState(false);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
 
-  function clearingSidebar() {
+  function clearSidebar() {
     setIsError(false);
     setCommentsError(false);
     setIsNewCommentForm(false);
@@ -38,7 +38,7 @@ export const App: React.FC = () => {
 
   const loadUsers = async () => {
     try {
-      clearingSidebar();
+      clearSidebar();
       const usersFromServer = await getUsers();
 
       setUsers(usersFromServer);
@@ -47,12 +47,12 @@ export const App: React.FC = () => {
     }
   };
 
-  const loadUserPosts = async (UserId: number) => {
+  const loadUserPosts = async (userId: number) => {
     try {
       setIsLoading(true);
       setActivePost(null);
-      clearingSidebar();
-      const posts = await getUserPosts(UserId);
+      clearSidebar();
+      const posts = await getUserPosts(userId);
 
       setUserPosts(posts);
     } catch (error) {
@@ -64,7 +64,7 @@ export const App: React.FC = () => {
 
   const loadComments = async (postId: number) => {
     try {
-      clearingSidebar();
+      clearSidebar();
       const comments = await getPostComments(postId);
 
       setPostComments(comments);
@@ -109,7 +109,7 @@ export const App: React.FC = () => {
     }
   };
 
-  const handlerSideBar = (
+  const handleSideBar = (
     post: Post,
   ) => {
     if (post.id !== activePost?.id) {
@@ -157,7 +157,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!userPosts?.length && (
+                {(userPosts !== null && !userPosts?.length) && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
@@ -167,7 +167,7 @@ export const App: React.FC = () => {
                   <PostsList
                     userPosts={userPosts}
                     activePost={activePost}
-                    handlerSideBar={handlerSideBar}
+                    handleSideBar={handleSideBar}
                   />
                 )}
               </div>

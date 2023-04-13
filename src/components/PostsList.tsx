@@ -5,13 +5,13 @@ import { PostUser } from './PostUser';
 type Props = {
   userPosts: Post[],
   activePost: Post | null,
-  handlerSideBar: (post: Post) => void
+  handleSideBar: (post: Post) => void
 };
 
 export const PostsList: React.FC<Props> = ({
   userPosts,
   activePost,
-  handlerSideBar,
+  handleSideBar,
 }) => {
   return (
     <div data-cy="PostsList">
@@ -32,7 +32,7 @@ export const PostsList: React.FC<Props> = ({
               key={postItem.id}
               post={postItem}
               activePost={activePost}
-              handlerSideBar={handlerSideBar}
+              handleSideBar={handleSideBar}
             />
           ))}
         </tbody>

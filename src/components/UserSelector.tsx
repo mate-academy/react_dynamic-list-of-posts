@@ -34,6 +34,8 @@ export const UserSelector: React.FC<Props> = ({
     <div
       data-cy="UserSelector"
       className={classNames('dropdown', { 'is-active': isDropDownActive })}
+      onMouseEnter={() => setIsDropDownActive(true)}
+      onMouseLeave={() => setIsDropDownActive(false)}
     >
       <div
         className="dropdown-trigger"
@@ -58,10 +60,7 @@ export const UserSelector: React.FC<Props> = ({
         id="dropdown-menu"
         role="menu"
       >
-        <div
-          className="dropdown-content"
-          onBlur={() => setIsDropDownActive(false)}
-        >
+        <div className="dropdown-content">
           {users.map((user) => {
             const { id, name } = user;
 
