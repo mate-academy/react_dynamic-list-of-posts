@@ -2,7 +2,7 @@ import React, {
   Dispatch,
   SetStateAction,
   useCallback,
-  useEffect,
+  useEffect, useRef,
   useState,
 } from 'react';
 import classNames from 'classnames';
@@ -26,14 +26,13 @@ export const UserSelector: React.FC<Props> = ({
   setPostSelectedId,
 }) => {
   const [selectedUser, setSelectedUser] = useState<User>();
+  const dropDownRef = useRef<HTMLDivElement>(null);
   const showOptions = () => {
     setDropDownOpen(prevState => !prevState);
   };
 
   const handleUserKeyPress = useCallback(event => {
-    const dropDown = document.getElementById('dropdown-menu');
-
-    if (dropDown && !dropDown.contains(event.target)) {
+    if (dropDownRef.current && !dropDownRef.current.contains(event.target)) {
       setDropDownOpen(false);
     }
   }, []);
@@ -46,8 +45,16 @@ export const UserSelector: React.FC<Props> = ({
     };
   }, [handleUserKeyPress]);
 
+  const chooseUserHandler = (user: User) => {
+    setSelectedUser(user);
+    setUserSelectedId(user.id);
+    setPostSelectedId(0);
+    setDropDownOpen(false);
+  };
+
   return (
     <div
+      ref={dropDownRef}
       data-cy="UserSelector"
       id="dropdown-menu"
       className={classNames('dropdown', {
@@ -62,7 +69,8 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={showOptions}
         >
-          {!selectedUser ? <span>Choose a user</span>
+          {!selectedUser
+            ? <span>Choose a user</span>
             : <span>{selectedUser.name}</span>}
 
           <span className="icon is-small">
@@ -82,10 +90,7 @@ export const UserSelector: React.FC<Props> = ({
                 })}
                 key={user.id}
                 onClick={() => {
-                  setSelectedUser(user);
-                  setUserSelectedId(user.id);
-                  setPostSelectedId(0);
-                  setDropDownOpen(false);
+                  chooseUserHandler(user);
                 }}
               >
                 {user.name}

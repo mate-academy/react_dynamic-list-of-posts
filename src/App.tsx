@@ -13,7 +13,7 @@ import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const [showSideBar, setShowSideBar] = useState(false);
-  const [users, setUsers] = useState<User[] | null>();
+  const [users, setUsers] = useState<User[] | null>(null);
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const [userSelectedId, setUserSelectedId] = useState(0);
   const [postSelectedId, setPostSelectedId] = useState(0);
@@ -49,7 +49,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {userSelectedId === 0 && (
+                {!userSelectedId && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>

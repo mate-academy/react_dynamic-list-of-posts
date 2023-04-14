@@ -49,6 +49,17 @@ export const PostsList: React.FC<Props> = ({
     setIsErrorPosts(false);
   }, [userSelectedId]);
 
+  const closeButton = () => {
+    setShowSideBar(false);
+    setPostSelectedId(0);
+  };
+
+  const openButton = (post: Post) => {
+    setShowSideBar(true);
+    setPostSelectedId(post.id);
+    setSelectedPost(post);
+  };
+
   return (
     <>
       {isErrorPosts && (
@@ -99,10 +110,7 @@ export const PostsList: React.FC<Props> = ({
                             type="button"
                             data-cy="PostButton"
                             className="button is-link"
-                            onClick={() => {
-                              setShowSideBar(false);
-                              setPostSelectedId(0);
-                            }}
+                            onClick={closeButton}
                           >
                             Close
                           </button>
@@ -111,11 +119,7 @@ export const PostsList: React.FC<Props> = ({
                             type="button"
                             data-cy="PostButton"
                             className="button is-link is-light"
-                            onClick={() => {
-                              setShowSideBar(true);
-                              setPostSelectedId(post.id);
-                              setSelectedPost(post);
-                            }}
+                            onClick={() => openButton(post)}
                           >
                             Open
                           </button>

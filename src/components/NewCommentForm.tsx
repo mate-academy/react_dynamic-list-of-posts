@@ -63,17 +63,17 @@ export const NewCommentForm: React.FC<Props> = ({
       body: fieldComment,
     };
 
-    if (fieldName.trim().length === 0) {
+    if (!fieldName.trim().length) {
       setValidName(true);
       formError = true;
     }
 
-    if (fieldEmail.trim().length === 0) {
+    if (!fieldEmail.trim().length) {
       setValidEmail(true);
       formError = true;
     }
 
-    if (fieldComment.trim().length === 0) {
+    if (!fieldComment.trim().length) {
       setValidComment(true);
       formError = true;
     }
