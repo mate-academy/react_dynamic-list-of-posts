@@ -43,7 +43,7 @@ export const PostItem: React.FC<Props> = ({
               'is-light': !isSelected,
             },
           )}
-          onClick={() => setSelectedPost(post)}
+          onClick={() => setSelectedPost(isSelected ? null : post)}
         >
           {isSelected ? 'Close' : 'Open'}
         </button>

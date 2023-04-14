@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 
 import { User } from '../../types/User';
@@ -15,6 +15,24 @@ export const UserSelector: React.FC<Props> = ({
   onUserSelect,
 }) => {
   const [isOpened, setIsOpened] = useState(false);
+  const dropdownElement = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClick = ({ target }: MouseEvent) => {
+      if (
+        target instanceof Node
+        && dropdownElement.current
+        && !dropdownElement.current.contains(target)
+        && isOpened
+      ) {
+        setIsOpened(false);
+      }
+    };
+
+    document.addEventListener('click', handleClick);
+
+    return () => document.removeEventListener('click', handleClick);
+  }, [isOpened]);
 
   const handleMenuClick = () => setIsOpened(!isOpened);
 
@@ -53,7 +71,12 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+      <div
+        className="dropdown-menu"
+        id="dropdown-menu"
+        role="menu"
+        ref={dropdownElement}
+      >
         <div className="dropdown-content">
           {users.map((user) => (
             <a

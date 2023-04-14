@@ -4,11 +4,11 @@ import { getCommentsOfPost } from '../../api/comment';
 
 import { NewCommentForm } from '../NewCommentForm';
 import { Loader } from '../Loader';
+import { CommentItem } from '../CommentItem';
 
 import { Comment } from '../../types/Comment';
 import { Post } from '../../types/Post';
 import { LoadStage } from '../../types/LoadStage';
-import { CommentItem } from '../CommentItem';
 
 type Props = {
   selectedPost: Post;
@@ -38,6 +38,16 @@ export const PostDetails: React.FC<Props> = ({
         () => setLoadStage(LoadStage.Error),
       );
   }, [id]);
+
+  const handleCommentAddLocal = (comment: Comment): void => (
+    setComments(prevComments => [...prevComments, comment])
+  );
+
+  const handleCommentDeleteLocal = (commentId: number): void => (
+    setComments(prevComments => (
+      prevComments.filter(comment => comment.id !== commentId)
+    ))
+  );
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -77,6 +87,7 @@ export const PostDetails: React.FC<Props> = ({
                 <CommentItem
                   key={comment.id}
                   comment={comment}
+                  onCommentDelete={handleCommentDeleteLocal}
                 />
               ))}
             </>
@@ -95,7 +106,10 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         {isFormOpened && (
-          <NewCommentForm />
+          <NewCommentForm
+            postId={id}
+            onCommentAdd={handleCommentAddLocal}
+          />
         )}
       </div>
     </div>

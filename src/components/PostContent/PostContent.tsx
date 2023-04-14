@@ -5,7 +5,7 @@ import { getUsers10 } from '../../api/user';
 import { PostContext } from '../../contexts/PostContext';
 
 import { UserSelector } from '../UserSelector';
-import { Loader } from '../Loader';
+// import { Loader } from '../Loader';
 import { PostsList } from '../PostsList';
 
 import { User } from '../../types/User';
@@ -46,10 +46,6 @@ export const PostContent: React.FC = () => {
       </div>
 
       <div className="block" data-cy="MainContent">
-        {loadStage === LoadStage.Loading && (
-          <Loader />
-        )}
-
         {loadStage === LoadStage.Error && (
           <div
             className="notification is-danger"
@@ -59,9 +55,7 @@ export const PostContent: React.FC = () => {
           </div>
         )}
 
-        {loadStage === LoadStage.Success
-          && users.length > 0
-          && !selectedUser
+        {!selectedUser
           && (
             <p data-cy="NoSelectedUser">
               No user selected
