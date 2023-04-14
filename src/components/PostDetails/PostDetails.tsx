@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
-import { getCommentsOfPost } from '../api/comment';
+import { getCommentsOfPost } from '../../api/comment';
 
-import { NewCommentForm } from './NewCommentForm';
-import { Loader } from './Loader';
+import { NewCommentForm } from '../NewCommentForm';
+import { Loader } from '../Loader';
 
-import { Comment } from '../types/Comment';
-import { Post } from '../types/Post';
-import { LoadStage } from '../types/LoadStage';
-import { CommentItem } from './CommentItem';
+import { Comment } from '../../types/Comment';
+import { Post } from '../../types/Post';
+import { LoadStage } from '../../types/LoadStage';
+import { CommentItem } from '../CommentItem';
 
 type Props = {
   selectedPost: Post;
