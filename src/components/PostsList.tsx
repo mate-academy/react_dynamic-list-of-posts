@@ -23,7 +23,7 @@ export const PostsList: React.FC<Props> = ({
   setPostSelectedId,
   setSelectedPost,
 }) => {
-  const [posts, setPosts] = useState<Post[] | null>();
+  const [posts, setPosts] = useState<Post[] | null>(null);
   const [isLoader, setIsLoader] = useState(false);
   const [isErrorPosts, setIsErrorPosts] = useState(false);
 
@@ -47,6 +47,7 @@ export const PostsList: React.FC<Props> = ({
 
     setShowSideBar(false);
     setIsErrorPosts(false);
+    setSelectedPost(undefined);
   }, [userSelectedId]);
 
   const closeButton = () => {

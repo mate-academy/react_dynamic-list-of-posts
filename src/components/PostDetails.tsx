@@ -15,6 +15,7 @@ type Props = {
   setIsShowForm: Dispatch<SetStateAction<boolean>>;
   showSideBar: boolean;
 };
+
 export const PostDetails: React.FC<Props> = ({
   postSelectedId,
   selectedPost,
@@ -23,14 +24,15 @@ export const PostDetails: React.FC<Props> = ({
   showSideBar,
 }) => {
   const [postComments, setPostComments] = useState<Comment[]>([]);
-  const [isLoaderPost, setIsLoaderPost] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { id, title, body } = selectedPost;
 
   useEffect(() => {
-    setIsLoaderPost(true);
+    setIsLoading(true);
     getComments(postSelectedId)
       .then(comments => {
         setPostComments(comments);
-        setIsLoaderPost(false);
+        setIsLoading(false);
       });
   }, [postSelectedId]);
 
@@ -52,26 +54,28 @@ export const PostDetails: React.FC<Props> = ({
 
   return (
     <>
-      {showSideBar && (
+      {showSideBar && selectedPost && (
         <div className="content" data-cy="PostDetails">
           <div className="block">
             <h2 data-cy="PostTitle">
-              {`#${selectedPost?.id}: ${selectedPost?.title}`}
+              {`#${id}: ${title}`}
             </h2>
-            ≠
             <p data-cy="PostBody">
-              {selectedPost?.body}
+              {body}
             </p>
           </div>
           <div className="block">
-            {isLoaderPost ? <Loader /> : (
+
+            {isLoading ? (
+              <Loader />
+            ) : (
               <CommentList
                 postComments={postComments}
                 deleteComment={deleteComment}
               />
             )}
 
-            {!isShowForm && !isLoaderPost && (
+            {!isShowForm && !isLoading && (
               <button
                 data-cy="WriteCommentButton"
                 type="button"
@@ -82,14 +86,13 @@ export const PostDetails: React.FC<Props> = ({
               </button>
             )}
           </div>
-          {isShowForm
-            && (
-              <NewCommentForm
-                selectedPost={selectedPost}
-                setPostComments={setPostComments}
-                postComments={postComments}
-              />
-            )}
+          {isShowForm && (
+            <NewCommentForm
+              selectedPost={selectedPost}
+              setPostComments={setPostComments}
+              postComments={postComments}
+            />
+          )}
         </div>
       )}
     </>
