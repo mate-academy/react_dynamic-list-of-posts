@@ -1,10 +1,65 @@
-import React from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect, useRef,
+  useState,
+} from 'react';
+import classNames from 'classnames';
+import { User } from '../types/User';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  users: User[] | null | undefined
+  setDropDownOpen: Dispatch<SetStateAction<boolean>>;
+  dropDownOpen: boolean;
+  setUserSelectedId: Dispatch<SetStateAction<number>>;
+  userSelectedId: number;
+  setPostSelectedId: Dispatch<SetStateAction<number>>
+};
+
+export const UserSelector: React.FC<Props> = ({
+  users,
+  setDropDownOpen,
+  dropDownOpen,
+  setUserSelectedId,
+  userSelectedId,
+  setPostSelectedId,
+}) => {
+  const [selectedUser, setSelectedUser] = useState<User>();
+  const dropDownRef = useRef<HTMLDivElement>(null);
+  const showOptions = () => {
+    setDropDownOpen(prevState => !prevState);
+  };
+
+  const handleUserKeyPress = useCallback(event => {
+    if (dropDownRef.current && !dropDownRef.current.contains(event.target)) {
+      setDropDownOpen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('click', handleUserKeyPress);
+
+    return () => {
+      window.removeEventListener('click', handleUserKeyPress);
+    };
+  }, [handleUserKeyPress]);
+
+  const chooseUserHandler = (user: User) => {
+    setSelectedUser(user);
+    setUserSelectedId(user.id);
+    setPostSelectedId(0);
+    setDropDownOpen(false);
+  };
+
   return (
     <div
+      ref={dropDownRef}
       data-cy="UserSelector"
-      className="dropdown is-active"
+      id="dropdown-menu"
+      className={classNames('dropdown', {
+        'is-active': dropDownOpen,
+      })}
     >
       <div className="dropdown-trigger">
         <button
@@ -12,8 +67,11 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={showOptions}
         >
-          <span>Choose a user</span>
+          {!selectedUser
+            ? <span>Choose a user</span>
+            : <span>{selectedUser.name}</span>}
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -23,11 +81,22 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+          {users && (
+            users.map(user => (
+              <a
+                href={`#user-${user.id}`}
+                className={classNames('dropdown-item', {
+                  'is-active': userSelectedId === user.id,
+                })}
+                key={user.id}
+                onClick={() => {
+                  chooseUserHandler(user);
+                }}
+              >
+                {user.name}
+              </a>
+            ))
+          )}
         </div>
       </div>
     </div>
