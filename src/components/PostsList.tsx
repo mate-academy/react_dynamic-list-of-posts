@@ -6,24 +6,24 @@ interface Props {
   posts: Post[],
   hasSidebar: boolean,
   setSidebar: (state: boolean) => void,
-  selectPost: number,
-  setSelectPost: (postId: number) => void,
+  selectedPost: number,
+  setSelectedPost: (postId: number) => void,
 }
 
 export const PostsList: React.FC<Props> = React.memo(({
   posts,
   hasSidebar,
   setSidebar,
-  selectPost,
-  setSelectPost,
+  selectedPost,
+  setSelectedPost,
 }) => {
   const toogleSideBar = (id: number) => {
-    if (id === selectPost) {
-      setSelectPost(0);
+    if (id === selectedPost) {
+      setSelectedPost(0);
       setSidebar(!hasSidebar);
     } else {
       setSidebar(true);
-      setSelectPost(id);
+      setSelectedPost(id);
     }
   };
 
@@ -56,11 +56,11 @@ export const PostsList: React.FC<Props> = React.memo(({
                   data-cy="PostButton"
                   className={classNames(
                     'button is-link',
-                    { 'is-light': post.id !== selectPost || !hasSidebar },
+                    { 'is-light': post.id !== selectedPost || !hasSidebar },
                   )}
                   onClick={() => toogleSideBar(post.id)}
                 >
-                  {selectPost === post.id && hasSidebar ? 'Close' : 'Open'}
+                  {selectedPost === post.id && hasSidebar ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

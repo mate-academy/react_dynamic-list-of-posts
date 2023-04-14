@@ -14,11 +14,10 @@ export const PostDetails: React.FC<Props> = React.memo(({ post }) => {
   const [isLoading, setLoading] = useState(false);
   const [hasOpenForm, setOpenForm] = useState(false);
   const [loadingErrorNotice, setLoadingErrorNotice] = useState('');
-  const hasLoadingError = !!loadingErrorNotice;
 
   const loadComments = async (postId: number) => {
-    setLoadingErrorNotice('');
     try {
+      setLoadingErrorNotice('');
       setLoading(true);
       setOpenForm(false);
       const comments = await getComments(postId);
@@ -32,15 +31,15 @@ export const PostDetails: React.FC<Props> = React.memo(({ post }) => {
   };
 
   const handleDeleteComment = async (commentId: number) => {
-    setLoadingErrorNotice('');
-    if (commentsFromServer) {
-      const immediatelyDelete = commentsFromServer.filter(comment => (
-        comment.id !== commentId));
-
-      setComments(immediatelyDelete);
-    }
-
     try {
+      setLoadingErrorNotice('');
+      if (commentsFromServer) {
+        const immediatelyDelete = commentsFromServer.filter(comment => (
+          comment.id !== commentId));
+
+        setComments(immediatelyDelete);
+      }
+
       await deleteComment(commentId);
     } catch (error) {
       setLoadingErrorNotice('Unable to delete comment, please try again');
@@ -68,46 +67,51 @@ export const PostDetails: React.FC<Props> = React.memo(({ post }) => {
           : (
             <div className="block">
 
-              {hasLoadingError && (
+              {!!loadingErrorNotice && (
                 <div className="notification is-danger" data-cy="CommentsError">
                   {loadingErrorNotice}
                 </div>
               )}
 
-              {commentsFromServer?.length === 0
+              {!commentsFromServer?.length
                 ? (
                   <p className="title is-4" data-cy="NoCommentsMessage">
                     No comments yet
                   </p>
                 )
                 : <p className="title is-4">Comments:</p>}
-              {commentsFromServer?.map(comment => (
-                <article
-                  key={comment.id}
-                  className="message is-small"
-                  data-cy="Comment"
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                      {comment.name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => handleDeleteComment(comment.id)}
-                    >
-                      delete button
-                    </button>
-                  </div>
+              {commentsFromServer?.map(comment => {
+                const {
+                  email, name, id, body,
+                } = comment;
 
-                  <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
-                    {/* {'Multi\nline\ncomment'} */}
-                  </div>
-                </article>
-              ))}
+                return (
+                  <article
+                    key={id}
+                    className="message is-small"
+                    data-cy="Comment"
+                  >
+                    <div className="message-header">
+                      <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                        {name}
+                      </a>
+                      <button
+                        data-cy="CommentDelete"
+                        type="button"
+                        className="delete is-small"
+                        aria-label="delete"
+                        onClick={() => handleDeleteComment(id)}
+                      >
+                        delete button
+                      </button>
+                    </div>
+
+                    <div className="message-body" data-cy="CommentBody">
+                      {body}
+                    </div>
+                  </article>
+                );
+              })}
 
               {!hasOpenForm && (
                 <button

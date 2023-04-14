@@ -18,9 +18,9 @@ export const App: React.FC = () => {
   const [postsFromServer, setPosts] = useState<Post[] | null>(null);
   const [isLoadingError, setLoadingError] = useState(false);
   const [hasSidebar, setSidebar] = useState(false);
-  const [selectPost, setSelectPost] = useState(0);
+  const [selectedPost, setSelectedPost] = useState(0);
 
-  const loadingUsers = useCallback(async () => {
+  const loadUsers = useCallback(async () => {
     try {
       setLoading(true);
       const users = await getUsers();
@@ -36,6 +36,7 @@ export const App: React.FC = () => {
   const loadingPosts = useCallback(async (userId: number) => {
     try {
       setLoading(true);
+      setSidebar(false);
       const posts = await getPosts(userId);
 
       setPosts(posts);
@@ -46,21 +47,21 @@ export const App: React.FC = () => {
     }
   }, []);
 
-  const showPostDetails = useCallback((id: number) => {
-    const selectedPost = postsFromServer?.find(post => post.id === id);
+  const getPostDetails = useCallback((id: number) => {
+    const getSelectedPost = postsFromServer?.find(post => post.id === id);
 
-    if (selectedPost) {
-      return selectedPost;
+    if (getSelectedPost) {
+      return getSelectedPost;
     }
 
     return null;
   }, [postsFromServer]);
 
   useEffect(() => {
-    loadingUsers();
+    loadUsers();
   }, []);
 
-  const selectedPost = showPostDetails(selectPost);
+  const getSelectedPost = getPostDetails(selectedPost);
 
   return (
     <main className="section">
@@ -76,14 +77,15 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
+
+                {isLoading && <Loader />}
+
                 {!postsFromServer
                   && (
                     <p data-cy="NoSelectedUser">
                       No user selected
                     </p>
                   )}
-
-                {isLoading && <Loader />}
 
                 {isLoadingError && (
                   <div
@@ -103,14 +105,14 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {postsFromServer && postsFromServer.length !== 0
+                {postsFromServer && !!postsFromServer.length
                   && (
                     <PostsList
                       posts={postsFromServer}
                       hasSidebar={hasSidebar}
                       setSidebar={setSidebar}
-                      selectPost={selectPost}
-                      setSelectPost={setSelectPost}
+                      selectedPost={selectedPost}
+                      setSelectedPost={setSelectedPost}
                     />
                   )}
               </div>
@@ -128,9 +130,9 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
+              {getSelectedPost && (
                 <PostDetails
-                  post={selectedPost}
+                  post={getSelectedPost}
                 />
               )}
             </div>

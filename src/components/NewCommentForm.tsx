@@ -34,24 +34,20 @@ export const NewCommentForm: React.FC<Props> = ({
       body: comment,
     };
 
-    switch (true) {
-      case !name.trim():
-        setEmptyName(true);
+    if (!name.trim()) {
+      setEmptyName(true);
+    }
 
-        return;
+    if (!email.trim()) {
+      setEmptyEmail(true);
+    }
 
-      case !email.trim():
-        setEmptyEmail(true);
+    if (!comment.trim()) {
+      setEmptyCommentBody(true);
+    }
 
-        return;
-
-      case !comment.trim():
-        setEmptyCommentBody(true);
-
-        return;
-
-      default:
-        break;
+    if (!name.trim() || !email.trim() || !comment.trim()) {
+      return;
     }
 
     try {

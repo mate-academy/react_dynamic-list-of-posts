@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
 import { User } from '../types/User';
 
 interface Props {
@@ -11,12 +12,21 @@ export const UserSelector: React.FC<Props> = React.memo(({
   loadingPosts,
 }) => {
   const [isOpen, setOpenList] = useState(false);
-  const [currentUser, setUser] = useState('');
+  const [currentUser, setUser] = useState<User | null>(null);
+
+  const handleChooseUser = (id: number, user: User) => {
+    loadingPosts(id);
+    setOpenList(false);
+    setUser(user);
+  };
 
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={classNames(
+        'dropdown',
+        { 'is-active': isOpen },
+      )}
     >
       <div className="dropdown-trigger">
         <button
@@ -27,7 +37,7 @@ export const UserSelector: React.FC<Props> = React.memo(({
           onBlur={() => setOpenList(false)}
           onClick={() => setOpenList(!isOpen)}
         >
-          <span>{!currentUser ? 'Choose a user' : `${currentUser}`}</span>
+          <span>{!currentUser ? 'Choose a user' : `${currentUser.name}`}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -41,12 +51,11 @@ export const UserSelector: React.FC<Props> = React.memo(({
               <a
                 key={user.id}
                 href={`#user-${user.id}`}
-                className="dropdown-item"
-                onMouseDown={() => {
-                  loadingPosts(user.id);
-                  setOpenList(false);
-                  setUser(user.name);
-                }}
+                className={classNames(
+                  'dropdown-item',
+                  { 'is-active': user.id === currentUser?.id },
+                )}
+                onMouseDown={() => handleChooseUser(user.id, user)}
               >
                 {user.name}
               </a>
