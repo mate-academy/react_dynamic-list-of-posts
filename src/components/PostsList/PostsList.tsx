@@ -15,7 +15,6 @@ type Props = {
 
 export const PostsList: React.FC<Props> = ({ selectedUserId }) => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [selectedPostId, setSelectedPostId] = useState(0);
   const [loadStage, setLoadStage]
     = useState<LoadStage>(LoadStage.Uninitialized);
 
@@ -29,10 +28,6 @@ export const PostsList: React.FC<Props> = ({ selectedUserId }) => {
         () => setLoadStage(LoadStage.Error),
       );
   }, [selectedUserId]);
-
-  const handlePostSelection = (newPostId: number) => (
-    setSelectedPostId(newPostId)
-  );
 
   return (
     <>
@@ -81,8 +76,6 @@ export const PostsList: React.FC<Props> = ({ selectedUserId }) => {
                 <PostItem
                   key={post.id}
                   post={post}
-                  isSelected={post.id === selectedPostId}
-                  onPostSelection={handlePostSelection}
                 />
               ))}
             </tbody>

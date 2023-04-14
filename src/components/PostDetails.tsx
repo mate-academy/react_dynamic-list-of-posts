@@ -1,117 +1,102 @@
-import React from 'react';
-import { Loader } from './Loader';
-import { NewCommentForm } from './NewCommentForm';
+import React, { useState, useEffect } from 'react';
 
-export const PostDetails: React.FC = () => {
+import { getCommentsOfPost } from '../api/comment';
+
+import { NewCommentForm } from './NewCommentForm';
+import { Loader } from './Loader';
+
+import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
+import { LoadStage } from '../types/LoadStage';
+import { CommentItem } from './CommentItem';
+
+type Props = {
+  selectedPost: Post;
+};
+
+export const PostDetails: React.FC<Props> = ({
+  selectedPost: {
+    id,
+    title,
+    body,
+  },
+}) => {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [loadStage, setLoadStage]
+    = useState<LoadStage>(LoadStage.Uninitialized);
+
+  const [isFormOpened, setIsFormOpened] = useState(false);
+
+  useEffect(() => {
+    setLoadStage(LoadStage.Loading);
+    setIsFormOpened(false);
+
+    getCommentsOfPost(id)
+      .then(setComments)
+      .then(
+        () => setLoadStage(LoadStage.Success),
+        () => setLoadStage(LoadStage.Error),
+      );
+  }, [id]);
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {`#${id}: ${title}`}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            {body}
           </p>
         </div>
 
         <div className="block">
-          <Loader />
+          {loadStage === LoadStage.Loading && (
+            <Loader />
+          )}
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
+          {loadStage === LoadStage.Error && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
             </div>
+          )}
 
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
+          {loadStage === LoadStage.Success && !comments.length && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
+          {loadStage === LoadStage.Success && comments.length > 0 && (
+            <>
+              <p className="title is-4">Comments:</p>
 
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
+              {comments.map(comment => (
+                <CommentItem
+                  key={comment.id}
+                  comment={comment}
+                />
+              ))}
+            </>
+          )}
+
+          {loadStage === LoadStage.Success && !isFormOpened && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setIsFormOpened(true)}
             >
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
+        {isFormOpened && (
+          <NewCommentForm />
+        )}
       </div>
     </div>
   );

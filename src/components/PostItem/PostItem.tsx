@@ -1,21 +1,27 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import classNames from 'classnames';
+import { PostContext } from '../../contexts/PostContext';
 import { Post } from '../../types/Post';
 
 type Props = {
   post: Post;
-  isSelected: boolean;
-  onPostSelection: (newPostId: number) => void;
 };
 
 export const PostItem: React.FC<Props> = ({
-  post: {
+  post,
+}) => {
+  const {
     id,
     title,
-  },
-  isSelected,
-  onPostSelection,
-}) => {
+  } = post;
+
+  const {
+    post: selectedPost,
+    setPost: setSelectedPost,
+  } = useContext(PostContext);
+
+  const isSelected = id === selectedPost?.id;
+
   return (
     <tr data-cy="Post">
       <td data-cy="PostId">
@@ -37,7 +43,7 @@ export const PostItem: React.FC<Props> = ({
               'is-light': !isSelected,
             },
           )}
-          onClick={() => onPostSelection(id)}
+          onClick={() => setSelectedPost(post)}
         >
           {isSelected ? 'Close' : 'Open'}
         </button>

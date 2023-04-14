@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import { getUsers10 } from '../../api/user';
+
+import { PostContext } from '../../contexts/PostContext';
 
 import { UserSelector } from '../UserSelector';
 import { Loader } from '../Loader';
@@ -15,6 +17,8 @@ export const PostContent: React.FC = () => {
   const [loadStage, setLoadStage]
     = useState<LoadStage>(LoadStage.Uninitialized);
 
+  const { setPost } = useContext(PostContext);
+
   useEffect(() => {
     setLoadStage(LoadStage.Loading);
 
@@ -26,7 +30,10 @@ export const PostContent: React.FC = () => {
       );
   }, []);
 
-  const hanleUserSelect = (newUser: User) => setSelectedUser(newUser);
+  const hanleUserSelect = (newUser: User) => {
+    setSelectedUser(newUser);
+    setPost(null);
+  };
 
   return (
     <div className="tile is-child box is-success">

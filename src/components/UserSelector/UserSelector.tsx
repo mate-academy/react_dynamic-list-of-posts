@@ -16,10 +16,11 @@ export const UserSelector: React.FC<Props> = ({
 }) => {
   const [isOpened, setIsOpened] = useState(false);
 
-  const handleMenuClick = () => setIsOpened(prevIsOpened => !prevIsOpened);
+  const handleMenuClick = () => setIsOpened(!isOpened);
+
   const handleUserSelect = (newUser: User) => {
     onUserSelect(newUser);
-    handleMenuClick();
+    setIsOpened(false);
   };
 
   return (
