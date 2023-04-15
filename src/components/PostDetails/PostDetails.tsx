@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-import { getCommentsOfPost } from '../../api/comment';
+import { getCommentsOfPost, deleteComment } from '../../api/comment';
 
 import { useDataLoader } from '../../hooks/useDataLoader';
 import { NewCommentForm } from '../NewCommentForm';
@@ -24,6 +24,7 @@ export const PostDetails: React.FC<Props> = ({
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loadStage, loadData] = useDataLoader();
+  const [, deleteData] = useDataLoader();
   const [isFormOpened, setIsFormOpened] = useState(false);
 
   useEffect(() => loadData(
@@ -36,11 +37,13 @@ export const PostDetails: React.FC<Props> = ({
     setComments(prevComments => [...prevComments, comment])
   ), []);
 
-  const handleCommentDeleteLocal = useCallback((commentId: number) => (
+  const handleCommentDelete = useCallback((commentId: number) => {
     setComments(prevComments => (
       prevComments.filter(comment => comment.id !== commentId)
-    ))
-  ), []);
+    ));
+
+    deleteData(() => deleteComment(commentId));
+  }, []);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -80,7 +83,7 @@ export const PostDetails: React.FC<Props> = ({
                 <CommentItem
                   key={comment.id}
                   comment={comment}
-                  onCommentDelete={handleCommentDeleteLocal}
+                  onCommentDelete={handleCommentDelete}
                 />
               ))}
             </>

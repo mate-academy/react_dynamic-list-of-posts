@@ -35,11 +35,11 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
   const handleFormSubmit = (submitEvent: React.SyntheticEvent) => {
     submitEvent.preventDefault();
 
-    setHasUserNameError(!userName);
-    setHasEmailError(!email);
-    setHasTextError(!text);
+    setHasUserNameError(!userName.trim());
+    setHasEmailError(!email.trim());
+    setHasTextError(!text.trim());
 
-    if (userName && email && text) {
+    if ([userName, email, text].every(field => field.trim())) {
       setText('');
 
       handleCommentAdd({
