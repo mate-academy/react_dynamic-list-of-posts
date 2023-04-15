@@ -34,7 +34,6 @@ export const UserSelector: React.FC<Props> = ({
     <div
       data-cy="UserSelector"
       className={classNames('dropdown', { 'is-active': isDropDownActive })}
-      onMouseEnter={() => setIsDropDownActive(true)}
       onMouseLeave={() => setIsDropDownActive(false)}
     >
       <div

@@ -30,11 +30,11 @@ export const App: React.FC = () => {
   const [isNewCommentForm, setIsNewCommentForm] = useState(false);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
 
-  function clearSidebar() {
+  const clearSidebar = () => {
     setIsError(false);
     setCommentsError(false);
     setIsNewCommentForm(false);
-  }
+  };
 
   const loadUsers = async () => {
     try {
@@ -78,15 +78,13 @@ export const App: React.FC = () => {
       setIsCommentLoading(true);
       const newComment = await createComment(data);
 
-      setPostComments(comments => {
-        return (
-          comments !== null ? ([
-            ...comments,
-            newComment,
-          ]) : (
-            [newComment]
-          ));
-      });
+      setPostComments(comments => (comments !== null
+        ? [
+          ...comments,
+          newComment,
+        ]
+        : [newComment]
+      ));
     } catch (error) {
       setCommentsError(true);
     } finally {
