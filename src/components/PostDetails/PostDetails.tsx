@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { getCommentsOfPost } from '../../api/comment';
 
@@ -22,9 +22,7 @@ export const PostDetails: React.FC<Props> = ({
   },
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [loadStage, setLoadStage]
-    = useState<LoadStage>(LoadStage.Uninitialized);
-
+  const [loadStage, setLoadStage] = useState(LoadStage.Uninitialized);
   const [isFormOpened, setIsFormOpened] = useState(false);
 
   useEffect(() => {
@@ -39,15 +37,15 @@ export const PostDetails: React.FC<Props> = ({
       );
   }, [id]);
 
-  const handleCommentAddLocal = (comment: Comment): void => (
+  const handleCommentAddLocal = useCallback((comment: Comment): void => (
     setComments(prevComments => [...prevComments, comment])
-  );
+  ), []);
 
-  const handleCommentDeleteLocal = (commentId: number): void => (
+  const handleCommentDeleteLocal = useCallback((commentId: number): void => (
     setComments(prevComments => (
       prevComments.filter(comment => comment.id !== commentId)
     ))
-  );
+  ), []);
 
   return (
     <div className="content" data-cy="PostDetails">

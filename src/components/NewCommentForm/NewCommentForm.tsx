@@ -13,7 +13,7 @@ type Props = {
   onCommentAdd: (comment: Comment) => void;
 };
 
-export const NewCommentForm: React.FC<Props> = ({
+export const NewCommentForm: React.FC<Props> = React.memo(({
   postId,
   onCommentAdd,
 }) => {
@@ -25,17 +25,16 @@ export const NewCommentForm: React.FC<Props> = ({
   const [hasEmailError, setHasEmailError] = useState(false);
   const [hasTextError, setHasTextError] = useState(false);
 
-  const [addCommentStage, setAddCommentStage]
-    = useState<LoadStage>(LoadStage.Uninitialized);
+  const [addingStage, setAddingStage] = useState(LoadStage.Uninitialized);
 
   const handleCommentAdd = async (newComment: Omit<Comment, 'id'>) => {
-    setAddCommentStage(LoadStage.Loading);
+    setAddingStage(LoadStage.Loading);
 
     addComment(newComment)
       .then(onCommentAdd)
       .then(
-        () => setAddCommentStage(LoadStage.Success),
-        () => setAddCommentStage(LoadStage.Error),
+        () => setAddingStage(LoadStage.Success),
+        () => setAddingStage(LoadStage.Error),
       );
   };
 
@@ -129,7 +128,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'button',
               'is-link',
               {
-                'is-loading': addCommentStage === LoadStage.Loading,
+                'is-loading': addingStage === LoadStage.Loading,
               },
             )}
           >
@@ -150,4 +149,4 @@ export const NewCommentForm: React.FC<Props> = ({
       </div>
     </form>
   );
-};
+});

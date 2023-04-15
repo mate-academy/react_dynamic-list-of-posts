@@ -9,7 +9,7 @@ type Props = {
   onUserSelect: (newUser: User) => void;
 };
 
-export const UserSelector: React.FC<Props> = ({
+export const UserSelector: React.FC<Props> = React.memo(({
   users,
   selectedUser,
   onUserSelect,
@@ -18,7 +18,7 @@ export const UserSelector: React.FC<Props> = ({
   const dropdownElement = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClick = ({ target }: MouseEvent) => {
+    const handleMenuClose = ({ target }: MouseEvent) => {
       if (
         target instanceof Node
         && dropdownElement.current
@@ -29,12 +29,16 @@ export const UserSelector: React.FC<Props> = ({
       }
     };
 
-    document.addEventListener('click', handleClick);
+    document.addEventListener('click', handleMenuClose);
 
-    return () => document.removeEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleMenuClose);
   }, [isOpened]);
 
-  const handleMenuClick = () => setIsOpened(!isOpened);
+  const handleMenuOpen = () => {
+    if (!isOpened) {
+      setIsOpened(true);
+    }
+  };
 
   const handleUserSelect = (newUser: User) => {
     onUserSelect(newUser);
@@ -57,7 +61,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={handleMenuClick}
+          onClick={handleMenuOpen}
         >
           <span>
             {selectedUser
@@ -97,4 +101,4 @@ export const UserSelector: React.FC<Props> = ({
       </div>
     </div>
   );
-};
+});

@@ -1,11 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+} from 'react';
 
 import { getUsers10 } from '../../api/user';
 
 import { PostContext } from '../../contexts/PostContext';
-
 import { UserSelector } from '../UserSelector';
-// import { Loader } from '../Loader';
 import { PostsList } from '../PostsList';
 
 import { User } from '../../types/User';
@@ -14,8 +17,7 @@ import { LoadStage } from '../../types/LoadStage';
 export const PostContent: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [loadStage, setLoadStage]
-    = useState<LoadStage>(LoadStage.Uninitialized);
+  const [loadStage, setLoadStage] = useState(LoadStage.Uninitialized);
 
   const { setPost } = useContext(PostContext);
 
@@ -30,10 +32,10 @@ export const PostContent: React.FC = () => {
       );
   }, []);
 
-  const hanleUserSelect = (newUser: User) => {
+  const hanleUserSelect = useCallback((newUser: User) => {
     setSelectedUser(newUser);
     setPost(null);
-  };
+  }, []);
 
   return (
     <div className="tile is-child box is-success">

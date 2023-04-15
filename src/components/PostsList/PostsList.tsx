@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useContext,
+} from 'react';
 import classNames from 'classnames';
 
 import { getPostsOfUser } from '../../api/post';
 
+import { PostContext } from '../../contexts/PostContext';
 import { PostItem } from '../PostItem';
 import { Loader } from '../Loader';
 
@@ -13,10 +18,14 @@ type Props = {
   selectedUserId: number;
 };
 
-export const PostsList: React.FC<Props> = ({ selectedUserId }) => {
+export const PostsList: React.FC<Props> = React.memo(({ selectedUserId }) => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loadStage, setLoadStage]
-    = useState<LoadStage>(LoadStage.Uninitialized);
+  const [loadStage, setLoadStage] = useState(LoadStage.Uninitialized);
+
+  const {
+    post: selectedPost,
+    setPost: setSelectedPost,
+  } = useContext(PostContext);
 
   useEffect(() => {
     setLoadStage(LoadStage.Loading);
@@ -76,6 +85,8 @@ export const PostsList: React.FC<Props> = ({ selectedUserId }) => {
                 <PostItem
                   key={post.id}
                   post={post}
+                  isSelected={post.id === selectedPost?.id}
+                  onSelect={setSelectedPost}
                 />
               ))}
             </tbody>
@@ -84,4 +95,4 @@ export const PostsList: React.FC<Props> = ({ selectedUserId }) => {
       )}
     </>
   );
-};
+});

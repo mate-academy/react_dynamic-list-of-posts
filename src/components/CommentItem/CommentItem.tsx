@@ -7,7 +7,7 @@ type Props = {
   onCommentDelete: (commentId: number) => void;
 };
 
-export const CommentItem: React.FC<Props> = ({
+export const CommentItem: React.FC<Props> = React.memo(({
   comment: {
     id,
     name,
@@ -49,4 +49,4 @@ export const CommentItem: React.FC<Props> = ({
       </div>
     </article>
   );
-};
+});

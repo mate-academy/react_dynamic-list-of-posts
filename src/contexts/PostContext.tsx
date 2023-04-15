@@ -3,7 +3,7 @@ import { Post } from '../types/Post';
 
 type PostContextType = {
   post: Post | null;
-  setPost: (selectedPost: Post | null) => void;
+  setPost: (newPost: Post | null) => void;
 };
 
 export const PostContext = React.createContext<PostContextType>({

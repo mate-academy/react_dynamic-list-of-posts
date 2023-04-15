@@ -16,7 +16,7 @@ type Props = {
   onError: (hasError: boolean) => void;
 };
 
-export const TextField: React.FC<Props> = ({
+export const TextField: React.FC<Props> = React.memo(({
   textArea = false,
   children,
   label,
@@ -106,4 +106,4 @@ export const TextField: React.FC<Props> = ({
       )}
     </div>
   );
-};
+});

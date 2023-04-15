@@ -1,26 +1,24 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import classNames from 'classnames';
-import { PostContext } from '../../contexts/PostContext';
 import { Post } from '../../types/Post';
 
 type Props = {
   post: Post;
+  isSelected: boolean;
+  onSelect: (post: Post | null) => void;
 };
 
-export const PostItem: React.FC<Props> = ({
+export const PostItem: React.FC<Props> = React.memo(({
   post,
+  isSelected,
+  onSelect,
 }) => {
   const {
     id,
     title,
   } = post;
 
-  const {
-    post: selectedPost,
-    setPost: setSelectedPost,
-  } = useContext(PostContext);
-
-  const isSelected = id === selectedPost?.id;
+  const handlePostSelect = () => onSelect(isSelected ? null : post);
 
   return (
     <tr data-cy="Post">
@@ -43,11 +41,11 @@ export const PostItem: React.FC<Props> = ({
               'is-light': !isSelected,
             },
           )}
-          onClick={() => setSelectedPost(isSelected ? null : post)}
+          onClick={handlePostSelect}
         >
           {isSelected ? 'Close' : 'Open'}
         </button>
       </td>
     </tr>
   );
-};
+});
