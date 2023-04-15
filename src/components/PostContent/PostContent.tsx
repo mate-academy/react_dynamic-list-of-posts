@@ -8,6 +8,7 @@ import React, {
 import { getUsers10 } from '../../api/user';
 
 import { PostContext } from '../../contexts/PostContext';
+import { useDataLoader } from '../../hooks/useDataLoader';
 import { UserSelector } from '../UserSelector';
 import { PostsList } from '../PostsList';
 
@@ -17,20 +18,13 @@ import { LoadStage } from '../../types/LoadStage';
 export const PostContent: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [loadStage, setLoadStage] = useState(LoadStage.Uninitialized);
+  const [loadStage, loadData] = useDataLoader();
 
   const { setPost } = useContext(PostContext);
 
-  useEffect(() => {
-    setLoadStage(LoadStage.Loading);
-
-    getUsers10()
-      .then(setUsers)
-      .then(
-        () => setLoadStage(LoadStage.Success),
-        () => setLoadStage(LoadStage.Error),
-      );
-  }, []);
+  useEffect(() => loadData(
+    () => getUsers10().then(setUsers),
+  ), []);
 
   const hanleUserSelect = useCallback((newUser: User) => {
     setSelectedUser(newUser);

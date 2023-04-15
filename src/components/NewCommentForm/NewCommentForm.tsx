@@ -3,6 +3,7 @@ import classNames from 'classnames';
 
 import { addComment } from '../../api/comment';
 
+import { useDataLoader } from '../../hooks/useDataLoader';
 import { TextField } from '../TextField';
 
 import { LoadStage } from '../../types/LoadStage';
@@ -25,18 +26,11 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
   const [hasEmailError, setHasEmailError] = useState(false);
   const [hasTextError, setHasTextError] = useState(false);
 
-  const [addingStage, setAddingStage] = useState(LoadStage.Uninitialized);
+  const [addingStage, loadData] = useDataLoader();
 
-  const handleCommentAdd = async (newComment: Omit<Comment, 'id'>) => {
-    setAddingStage(LoadStage.Loading);
-
-    addComment(newComment)
-      .then(onCommentAdd)
-      .then(
-        () => setAddingStage(LoadStage.Success),
-        () => setAddingStage(LoadStage.Error),
-      );
-  };
+  const handleCommentAdd = async (newComment: Omit<Comment, 'id'>) => (
+    loadData(() => addComment(newComment).then(onCommentAdd))
+  );
 
   const handleFormSubmit = (submitEvent: React.SyntheticEvent) => {
     submitEvent.preventDefault();

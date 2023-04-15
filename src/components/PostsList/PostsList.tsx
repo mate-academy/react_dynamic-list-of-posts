@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import { getPostsOfUser } from '../../api/post';
 
 import { PostContext } from '../../contexts/PostContext';
+import { useDataLoader } from '../../hooks/useDataLoader';
 import { PostItem } from '../PostItem';
 import { Loader } from '../Loader';
 
@@ -20,23 +21,16 @@ type Props = {
 
 export const PostsList: React.FC<Props> = React.memo(({ selectedUserId }) => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loadStage, setLoadStage] = useState(LoadStage.Uninitialized);
+  const [loadStage, loadData] = useDataLoader();
 
   const {
     post: selectedPost,
     setPost: setSelectedPost,
   } = useContext(PostContext);
 
-  useEffect(() => {
-    setLoadStage(LoadStage.Loading);
-
-    getPostsOfUser(selectedUserId)
-      .then(setPosts)
-      .then(
-        () => setLoadStage(LoadStage.Success),
-        () => setLoadStage(LoadStage.Error),
-      );
-  }, [selectedUserId]);
+  useEffect(() => loadData(
+    () => getPostsOfUser(selectedUserId).then(setPosts),
+  ), [selectedUserId]);
 
   return (
     <>

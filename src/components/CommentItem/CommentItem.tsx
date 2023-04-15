@@ -1,5 +1,6 @@
 import React from 'react';
 import { deleteComment } from '../../api/comment';
+import { useDataLoader } from '../../hooks/useDataLoader';
 import { Comment } from '../../types/Comment';
 
 type Props = {
@@ -16,14 +17,11 @@ export const CommentItem: React.FC<Props> = React.memo(({
   },
   onCommentDelete,
 }) => {
+  const [, loadData] = useDataLoader();
+
   const handleCommentDelete = async () => {
     onCommentDelete(id);
-
-    deleteComment(id)
-      .then(
-        () => window.console.log('Comment was deleted successfully'),
-        () => window.console.log('Error occured while comment removing'),
-      );
+    loadData(() => deleteComment(id));
   };
 
   return (

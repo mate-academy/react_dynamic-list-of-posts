@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 import { getCommentsOfPost } from '../../api/comment';
 
+import { useDataLoader } from '../../hooks/useDataLoader';
 import { NewCommentForm } from '../NewCommentForm';
 import { Loader } from '../Loader';
 import { CommentItem } from '../CommentItem';
@@ -22,26 +23,18 @@ export const PostDetails: React.FC<Props> = ({
   },
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [loadStage, setLoadStage] = useState(LoadStage.Uninitialized);
+  const [loadStage, loadData] = useDataLoader();
   const [isFormOpened, setIsFormOpened] = useState(false);
 
-  useEffect(() => {
-    setLoadStage(LoadStage.Loading);
-    setIsFormOpened(false);
-
-    getCommentsOfPost(id)
-      .then(setComments)
-      .then(
-        () => setLoadStage(LoadStage.Success),
-        () => setLoadStage(LoadStage.Error),
-      );
-  }, [id]);
+  useEffect(() => loadData(
+    () => getCommentsOfPost(id).then(setComments),
+  ), [id]);
 
   const handleCommentAddLocal = useCallback((comment: Comment): void => (
     setComments(prevComments => [...prevComments, comment])
   ), []);
 
-  const handleCommentDeleteLocal = useCallback((commentId: number): void => (
+  const handleCommentDeleteLocal = useCallback((commentId: number) => (
     setComments(prevComments => (
       prevComments.filter(comment => comment.id !== commentId)
     ))
