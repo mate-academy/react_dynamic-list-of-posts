@@ -30,6 +30,8 @@ export const PostDetails: React.FC<Props> = ({
     () => getCommentsOfPost(id).then(setComments),
   ), [id]);
 
+  useEffect(() => setIsFormOpened(false), [id]);
+
   const handleCommentAddLocal = useCallback((comment: Comment): void => (
     setComments(prevComments => [...prevComments, comment])
   ), []);
