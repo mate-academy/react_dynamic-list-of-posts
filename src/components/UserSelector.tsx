@@ -1,17 +1,17 @@
 /* eslint-disable max-len */
 import classNames from 'classnames';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { User } from '../types/User';
 
 type Props = {
   usersList: User[],
-  selectedUser: User | null,
+  userName: string | undefined,
   setSelectedUser: (user:User) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
   usersList,
-  selectedUser,
+  userName,
   setSelectedUser,
 }) => {
   const [isActiveList, setIsActiveList] = useState(false);
@@ -24,6 +24,23 @@ export const UserSelector: React.FC<Props> = ({
     setSelectedUser(user);
     setIsActiveList(!isActiveList);
   };
+
+  useEffect(() => {
+    if (!isActiveList) {
+      return;
+    }
+
+    const handleDocumentClick = () => {
+      setIsActiveList(false);
+    };
+
+    document.addEventListener('click', handleDocumentClick);
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, [isActiveList]);
 
   return (
     <div
@@ -38,8 +55,8 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={toggleActiveList}
         >
-          { selectedUser
-            ? <span>{selectedUser.name}</span>
+          { userName
+            ? <span>{userName}</span>
             : <span>Choose a user</span> }
 
           <span className="icon is-small">
@@ -64,7 +81,6 @@ export const UserSelector: React.FC<Props> = ({
             ))}
           </div>
         )}
-
       </div>
     </div>
   );
