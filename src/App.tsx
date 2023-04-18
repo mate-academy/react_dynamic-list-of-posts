@@ -11,9 +11,11 @@ import { Loader } from './components/Loader';
 
 import { getUsers } from './api/users';
 import { getPosts } from './api/posts';
+import { getComments } from './api/coments';
 
 import { User } from './types/User';
 import { Post } from './types/Post';
+import { Comment } from './types/Comment';
 
 export const App: React.FC = () => {
   const [usersList, setUsersList] = useState<User[]>([]);
@@ -22,6 +24,7 @@ export const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [postsList, setPostsList] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [commentsList, setCommentsList] = useState<Comment[]>([]);
 
   const isVisiblePostList = !!postsList.length;
 
@@ -62,6 +65,26 @@ export const App: React.FC = () => {
 
     getUsertPostList();
   }, [selectedUser]);
+
+  useEffect(() => {
+    const getCommentsToPost = async () => {
+      try {
+        setIsLoading(true);
+        if (selectedPost) {
+          const commentsData = await getComments(selectedPost.id);
+
+          setCommentsList(commentsData);
+        }
+      } catch {
+        setIsProcessingError(true);
+      } finally {
+        setIsLoading(false);
+        setIsProcessingError(false);
+      }
+    };
+
+    getCommentsToPost();
+  }, [selectedPost]);
 
   return (
     <main className="section">
@@ -126,7 +149,12 @@ export const App: React.FC = () => {
               { 'Sidebar--open': selectedPost },
             )}
           >
-            { selectedPost && <PostDetails />}
+            { selectedPost && (
+              <PostDetails
+                selectedPost={selectedPost}
+                commentsList={commentsList}
+              />
+            )}
           </div>
         </div>
       </div>
