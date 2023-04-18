@@ -11,7 +11,7 @@ import { Loader } from './components/Loader';
 
 import { getUsers } from './api/users';
 import { getPosts } from './api/posts';
-import { getComments } from './api/coments';
+import { getComments } from './api/comments';
 
 import { User } from './types/User';
 import { Post } from './types/Post';
