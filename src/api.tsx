@@ -22,7 +22,3 @@ export const postComment = (comm: Omit<Comment, 'id'>) => {
 export const deleteComment = (comId: number) => {
   return client.delete(`/comments/${comId}`);
 };
-
-// export const updateTodo = (todo: Todo) => {
-//   return client.patch<Todo>(`/todos/${todo.id}`, todo);
-// };

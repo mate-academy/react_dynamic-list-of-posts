@@ -14,27 +14,27 @@ export const NewCommentForm: React.FC<Props> = ({
   isCommentsAdding,
 }) => {
   const [name, setName] = useState('');
-  const [nameError, setNameError] = useState(false);
+  const [isNameError, setIsNameError] = useState(false);
   const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState(false);
+  const [isEmailError, setIsEmailError] = useState(false);
   const [comment, setComment] = useState('');
-  const [commentError, setCommentError] = useState(false);
+  const [isCommentError, setIsCommentError] = useState(false);
   const onAdd = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event?.preventDefault();
     if (!name) {
-      setNameError(true);
+      setIsNameError(true);
 
       return;
     }
 
     if (!email) {
-      setEmailError(true);
+      setIsEmailError(true);
 
       return;
     }
 
     if (!comment) {
-      setCommentError(true);
+      setIsCommentError(true);
 
       return;
     }
@@ -53,9 +53,9 @@ export const NewCommentForm: React.FC<Props> = ({
     setName('');
     setEmail('');
     setComment('');
-    setNameError(false);
-    setEmailError(false);
-    setCommentError(false);
+    setIsNameError(false);
+    setIsEmailError(false);
+    setIsCommentError(false);
   };
 
   const onChange = (
@@ -65,15 +65,15 @@ export const NewCommentForm: React.FC<Props> = ({
     switch (event.target.name) {
       case 'name':
         setName(event.target.value);
-        setNameError(false);
+        setIsNameError(false);
         break;
       case 'email':
         setEmail(event.target.value);
-        setEmailError(false);
+        setIsEmailError(false);
         break;
       case 'body':
         setComment(event.target.value);
-        setCommentError(false);
+        setIsCommentError(false);
         break;
       default:
         break;
@@ -95,7 +95,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Name Surname"
             className={classNames(
               'input',
-              { 'is-danger': nameError },
+              { 'is-danger': isNameError },
             )}
             value={name}
             onChange={onChange}
@@ -105,7 +105,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-user" />
           </span>
 
-          {nameError && (
+          {isNameError && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -115,7 +115,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {nameError && (
+        {isNameError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -135,7 +135,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="email@test.com"
             className={classNames(
               'input',
-              { 'is-danger': emailError },
+              { 'is-danger': isEmailError },
             )}
             value={email}
             onChange={onChange}
@@ -145,7 +145,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-envelope" />
           </span>
 
-          {emailError && (
+          {isEmailError && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -155,7 +155,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {emailError && (
+        {isEmailError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -174,14 +174,14 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Type comment here"
             className={classNames(
               'textarea',
-              { 'is-danger': commentError },
+              { 'is-danger': isCommentError },
             )}
             value={comment}
             onChange={onChange}
           />
         </div>
 
-        {commentError && (
+        {isCommentError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>

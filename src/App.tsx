@@ -3,7 +3,6 @@ import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
@@ -21,7 +20,6 @@ enum Error {
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
-  // const [comments, setComments] = useState<Comment[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [openedPostId, setOpenedPostId] = useState<number | null>(null);
   const [openedPost, setOpenedPost] = useState<Post | null>(null);
@@ -64,18 +62,9 @@ export const App: React.FC = () => {
       });
   };
 
-  // const loadCommentsOfUser = (postId: number) => {
-  //   getComments()
-  //     .then(res => {
-  //       setComments(res);
-  //     })
-  // };
-
   useEffect(() => {
     getUsers()
-      .then(res => {
-        setUsers(res);
-      })
+      .then(res => setUsers(res))
       .catch(() => {
         setUsers([]);
       });
@@ -134,13 +123,7 @@ export const App: React.FC = () => {
           {openedPostId && (
             <div
               data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                'Sidebar--open',
-              )}
+              className="tile is-parent is-8-desktop Sidebar Sidebar--open"
             >
               <div className="tile is-child box is-success ">
                 {openedPost && (
