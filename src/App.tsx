@@ -34,7 +34,7 @@ export const App: FC = () => {
       .then(result => setPosts(result))
       .catch(() => setError(Error.Load))
       .finally(() => setIsLoader(false));
-  }, [selectedUser]); //-------------------------треба вимкнути для першого рендера-----
+  }, [selectedUser]);
 
   return (
     <main className="section">
@@ -70,7 +70,7 @@ export const App: FC = () => {
                 )}
 
                 {selectedUser
-                  && ((posts.length)
+                  && ((!!posts.length)
                     ? (
                       <PostsList
                         posts={posts}
@@ -79,8 +79,7 @@ export const App: FC = () => {
                       />
                     ) : (
                       <div
-                        className="notification
-                      is-warning"
+                        className="notification is-warning"
                         data-cy="NoPostsYet"
                       >
                         No posts yet

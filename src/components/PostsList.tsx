@@ -29,6 +29,7 @@ export const PostsList: FC<Props> = ({
         <tbody>
           {posts.map(post => (
             <PostItem
+              key={post.id}
               post={post}
               isSelected={post.id === selectedPostId}
               setSelectedPost={setSelectedPost}

@@ -25,15 +25,27 @@ export const PostDetails: FC<Props> = ({ post }) => {
   const [isForm, setIsForm] = useState(false);
   const { id, title, body } = post;
 
-  useEffect(() => {
-    setIsLoader(true);
-    setIsForm(false);
-
+  const getComments = () => {
     client.get<SetStateAction<Comment[]>>(`/comments?postId=${post.id}`)
       .then((result) => setComments(result))
       .catch(() => setError(Error.Load))
       .finally(() => setIsLoader(false));
+  };
+
+  useEffect(() => {
+    setIsLoader(true);
+    setIsForm(false);
+
+    getComments();
   }, [post]);
+
+  const handleDelete = (commentId: number) => {
+    setComments(prev => (
+      prev.filter(comment => comment.id !== commentId)
+    ));
+
+    client.delete(`/comments/${commentId}`);
+  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -67,7 +79,11 @@ export const PostDetails: FC<Props> = ({ post }) => {
                 <p className="title is-4">Comments:</p>
 
                 {comments.map(comment => (
-                  <CommentItem key={comment.id} comment={comment} />
+                  <CommentItem
+                    key={comment.id}
+                    comment={comment}
+                    handleDelete={handleDelete}
+                  />
                 ))}
               </>
             )}
@@ -86,7 +102,7 @@ export const PostDetails: FC<Props> = ({ post }) => {
           </button>
         </div>
 
-        {isForm && <NewCommentForm />}
+        {isForm && <NewCommentForm postId={id} reloadComments={getComments} />}
       </div>
     </div>
   );
