@@ -70,7 +70,7 @@ export const App: FC = () => {
                 )}
 
                 {selectedUser
-                  && ((!!posts.length)
+                  && ((posts.length)
                     ? (
                       <PostsList
                         posts={posts}
