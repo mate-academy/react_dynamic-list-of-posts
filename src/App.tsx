@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -22,18 +22,21 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [openedPostId, setOpenedPostId] = useState<number | null>(null);
-  const [openedPost, setOpenedPost] = useState<Post | null>(null);
   const [isPostsLoading, setIsPostLoading] = useState(false);
   const [isPostsLoaded, setIsPostLoaded] = useState(false);
   const [error, setError] = useState<Error>(Error.None);
+  const openedPost = useMemo(
+    () => posts.find(post => post.id === openedPostId) || null,
+    [openedPostId],
+  );
 
   const selectUserId = (id: number) => {
     setSelectedUserId(id);
+    setOpenedPostId(null);
   };
 
   const openPost = (postId: number | null) => {
     setOpenedPostId(postId);
-    setOpenedPost(posts.find(post => post.id === postId) || null);
   };
 
   const clearError = () => {
