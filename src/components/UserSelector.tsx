@@ -2,7 +2,6 @@ import {
   FC,
   useEffect,
   useState,
-  SetStateAction,
 } from 'react';
 import cn from 'classnames';
 import { User } from '../types/User';
@@ -26,7 +25,7 @@ export const UserSelector: FC<Props> = ({
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    client.get<SetStateAction<User[]>>('/users')
+    client.get<User[]>('/users')
       .then((result) => setUsers(result))
       .catch(() => setError(Error.Load));
   }, []);
@@ -72,7 +71,7 @@ export const UserSelector: FC<Props> = ({
           {users.map(user => (
             <a
               key={user.id}
-              onClick={() => onClickUser(user)} // без () => якась фігня--------------????
+              onClick={() => onClickUser(user)}
               href={`#user-${user.id}`}
               className="dropdown-item"
             >

@@ -58,8 +58,6 @@ export const App: FC = () => {
                   </p>
                 )}
 
-                {isLoader && <Loader />}
-
                 {error === Error.Load && (
                   <div
                     className="notification is-danger"
@@ -68,9 +66,10 @@ export const App: FC = () => {
                     Something went wrong!
                   </div>
                 )}
+                {isLoader && <Loader />}
 
-                {selectedUser
-                  && ((posts.length)
+                {(selectedUser && !isLoader)
+                  && (posts.length
                     ? (
                       <PostsList
                         posts={posts}

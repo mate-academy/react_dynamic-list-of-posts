@@ -14,7 +14,7 @@ export const PostItem: FC<Props> = ({ post, isSelected, setSelectedPost }) => {
   };
 
   return (
-    <tr key={post.id} data-cy="Post">
+    <tr data-cy="Post">
       <td data-cy="PostId">{post.id}</td>
 
       <td data-cy="PostTitle">
