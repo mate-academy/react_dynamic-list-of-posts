@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { Comment } from '../types/Comment';
+import { FormFilds } from '../types/FormFilds';
 
 type Props = {
   postId: number,
@@ -21,19 +22,19 @@ export const NewCommentForm: React.FC<Props> = ({
   const [isCommentError, setIsCommentError] = useState(false);
   const onAdd = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event?.preventDefault();
-    if (!name) {
+    if (!(name.trim())) {
       setIsNameError(true);
 
       return;
     }
 
-    if (!email) {
+    if (!(email.trim())) {
       setIsEmailError(true);
 
       return;
     }
 
-    if (!comment) {
+    if (!(comment.trim())) {
       setIsCommentError(true);
 
       return;
@@ -63,15 +64,15 @@ export const NewCommentForm: React.FC<Props> = ({
     | React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     switch (event.target.name) {
-      case 'name':
+      case FormFilds.Name:
         setName(event.target.value);
         setIsNameError(false);
         break;
-      case 'email':
+      case FormFilds.Email:
         setEmail(event.target.value);
         setIsEmailError(false);
         break;
-      case 'body':
+      case FormFilds.Body:
         setComment(event.target.value);
         setIsCommentError(false);
         break;
