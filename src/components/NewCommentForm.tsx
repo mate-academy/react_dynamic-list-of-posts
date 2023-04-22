@@ -2,7 +2,6 @@ import {
   FC,
   useState,
   FormEvent,
-  SetStateAction,
 } from 'react';
 import cn from 'classnames';
 import { client } from '../utils/fetchClient';
@@ -50,7 +49,7 @@ export const NewCommentForm: FC<Props> = ({ postId, reloadComments }) => {
     if (name && email && body) {
       setIsLoader(true);
 
-      client.post<SetStateAction<Comment[]>>('/comments', newComment)
+      client.post<Comment[]>('/comments', newComment)
         .then(() => {
           setErrAdd(false);
           setBody('');

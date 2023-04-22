@@ -1,6 +1,5 @@
 import {
   FC,
-  SetStateAction,
   useEffect,
   useState,
 } from 'react';
@@ -26,7 +25,7 @@ export const PostDetails: FC<Props> = ({ post }) => {
   const { id, title, body } = post;
 
   const getComments = () => {
-    client.get<SetStateAction<Comment[]>>(`/comments?postId=${post.id}`)
+    client.get<Comment[]>(`/comments?postId=${post.id}`)
       .then((result) => setComments(result))
       .catch(() => setError(Error.Load))
       .finally(() => setIsLoader(false));
