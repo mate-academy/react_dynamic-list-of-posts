@@ -74,7 +74,7 @@ export const App: FC = () => {
                       <PostsList
                         posts={posts}
                         selectedPostId={selectedPost ? selectedPost.id : null}
-                        setSelectedPost={setSelectedPost}
+                        onSelectPost={setSelectedPost}
                       />
                     ) : (
                       <div

@@ -5,12 +5,12 @@ import { Post } from '../types/Post';
 type Props = {
   post: Post,
   isSelected: boolean,
-  setSelectedPost: (post: Post | null) => void,
+  onSelectPost: (post: Post | null) => void,
 };
 
-export const PostItem: FC<Props> = ({ post, isSelected, setSelectedPost }) => {
+export const PostItem: FC<Props> = ({ post, isSelected, onSelectPost }) => {
   const handlePostButton = () => {
-    setSelectedPost(isSelected ? null : post);
+    onSelectPost(isSelected ? null : post);
   };
 
   return (

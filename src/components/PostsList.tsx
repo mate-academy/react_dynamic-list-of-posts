@@ -5,13 +5,13 @@ import { PostItem } from './PostItem';
 type Props = {
   posts: Post[],
   selectedPostId: number | null,
-  setSelectedPost: (post: Post | null) => void,
+  onSelectPost: (post: Post | null) => void,
 };
 
 export const PostsList: FC<Props> = ({
   posts,
   selectedPostId,
-  setSelectedPost,
+  onSelectPost,
 }) => {
   return (
     <div data-cy="PostsList">
@@ -32,7 +32,7 @@ export const PostsList: FC<Props> = ({
               key={post.id}
               post={post}
               isSelected={post.id === selectedPostId}
-              setSelectedPost={setSelectedPost}
+              onSelectPost={onSelectPost}
             />
           ))}
         </tbody>

@@ -68,24 +68,25 @@ export const PostDetails: FC<Props> = ({ post }) => {
             </div>
           )}
 
-          {!comments.length
-            ? (
-              <p className="title is-4" data-cy="NoCommentsMessage">
-                No comments yet
-              </p>
-            ) : (
-              <>
-                <p className="title is-4">Comments:</p>
+          {!isLoader
+            && (!comments.length
+              ? (
+                <p className="title is-4" data-cy="NoCommentsMessage">
+                  No comments yet
+                </p>
+              ) : (
+                <>
+                  <p className="title is-4">Comments:</p>
 
-                {comments.map(comment => (
-                  <CommentItem
-                    key={comment.id}
-                    comment={comment}
-                    handleDelete={handleDelete}
-                  />
-                ))}
-              </>
-            )}
+                  {comments.map(comment => (
+                    <CommentItem
+                      key={comment.id}
+                      comment={comment}
+                      handleDelete={handleDelete}
+                    />
+                  ))}
+                </>
+              ))}
 
           <button
             onClick={() => setIsForm(true)}
