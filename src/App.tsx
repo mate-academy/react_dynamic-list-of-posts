@@ -2,7 +2,6 @@ import {
   FC,
   useEffect,
   useState,
-  SetStateAction,
 } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -30,7 +29,7 @@ export const App: FC = () => {
   useEffect(() => {
     setIsLoader(true);
 
-    client.get<SetStateAction<Post[]>>(`/posts?userId=${selectedUser?.id}`)
+    client.get<Post[]>(`/posts?userId=${selectedUser?.id}`)
       .then(result => setPosts(result))
       .catch(() => setError(Error.Load))
       .finally(() => setIsLoader(false));
