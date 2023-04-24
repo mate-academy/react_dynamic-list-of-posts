@@ -1,21 +1,74 @@
 import classNames from 'classnames';
+import { useState, useEffect } from 'react';
+
+import { getPosts } from '../api/posts';
 
 import { Post } from '../types/Post';
+import { User } from '../types/User';
+import { Loader } from './Loader';
 
 type Props = {
-  postsList: Post[],
+  selectedUser: User,
   selectedPost: Post | null,
   setSelectedPost: (post: Post | null) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
-  postsList,
+  selectedUser,
   selectedPost,
   setSelectedPost,
 }) => {
+  const [postsList, setPostsList] = useState<Post[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isProcessingError, setIsProcessingError] = useState(false);
   const toggleOpenerSidebar = (post: Post | null) => {
     setSelectedPost(post);
   };
+
+  useEffect(() => {
+    const getUsersPostList = async () => {
+      try {
+        if (selectedUser) {
+          const posts = await getPosts(selectedUser.id);
+
+          setPostsList(posts);
+        }
+      } catch {
+        setIsProcessingError(true);
+      } finally {
+        setIsLoading(false);
+        setIsProcessingError(false);
+      }
+    };
+
+    getUsersPostList();
+  }, [selectedUser]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (isProcessingError) {
+    return (
+      <div
+        className="notification is-danger"
+        data-cy="PostsLoadingError"
+      >
+        Something went wrong!
+      </div>
+    );
+  }
+
+  if (!postsList.length) {
+    return (
+      <div
+        className="notification is-warning"
+        data-cy="NoPostsYet"
+      >
+        No posts yet
+      </div>
+    );
+  }
 
   return (
     <div data-cy="PostsList">
