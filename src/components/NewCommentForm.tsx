@@ -15,10 +15,41 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
   const [isBodyInputError, setIsBodyInputError] = useState(false);
   const [isFormLoading, setIsFormLoading] = useState(false);
 
-  const handleInputError = () => {
-    setIsNameInputError(!name);
-    setIsEmailInputError(!email);
-    setIsBodyInputError(!body);
+  const isValidForms = name.trim()
+    && email.trim()
+    && body.trim();
+
+  const handleNameChange = (value: string) => {
+    if (!value.trim()) {
+      setIsNameInputError(true);
+
+      return;
+    }
+
+    setIsNameInputError(false);
+    setName(value);
+  };
+
+  const handleEmailChange = (value: string) => {
+    if (!value.trim()) {
+      setIsEmailInputError(true);
+
+      return;
+    }
+
+    setIsEmailInputError(false);
+    setEmail(value);
+  };
+
+  const handleBodyChange = (value: string) => {
+    if (!value.trim()) {
+      setIsBodyInputError(true);
+
+      return;
+    }
+
+    setIsBodyInputError(false);
+    setBody(value);
   };
 
   const resetForm = () => {
@@ -35,9 +66,20 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
 
   const addCommentToServer = async (event: FormEvent) => {
     event.preventDefault();
-    handleInputError();
 
-    if (name && email && body) {
+    if (!email.includes('@')) {
+      setIsEmailInputError(true);
+
+      return;
+    }
+
+    if (!body.trim()) {
+      setIsBodyInputError(true);
+
+      return;
+    }
+
+    if (isValidForms) {
       try {
         setIsFormLoading(true);
         await onAddComment({
@@ -72,7 +114,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
             className={classNames('input', { 'is-danger': isNameInputError })}
             value={name}
             onChange={(event) => {
-              setName(event.target.value);
+              handleNameChange(event.target.value);
             }}
           />
 
@@ -112,7 +154,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
             className={classNames('input', { 'is-danger': isEmailInputError })}
             value={email}
             onChange={(event) => {
-              setEmail(event.target.value);
+              handleEmailChange(event.target.value);
             }}
           />
 
@@ -151,7 +193,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
               { 'is-danger': isBodyInputError })}
             value={body}
             onChange={(event) => {
-              setBody(event.target.value);
+              handleBodyChange(event.target.value);
             }}
           />
         </div>
