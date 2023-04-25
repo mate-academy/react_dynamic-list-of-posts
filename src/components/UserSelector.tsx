@@ -1,10 +1,51 @@
-import React from 'react';
+/* eslint-disable max-len */
+import classNames from 'classnames';
+import { useState, useEffect } from 'react';
+import { User } from '../types/User';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  usersList: User[],
+  userName: string | undefined,
+  setSelectedUser: (user:User) => void,
+};
+
+export const UserSelector: React.FC<Props> = ({
+  usersList,
+  userName,
+  setSelectedUser,
+}) => {
+  const [isActiveList, setIsActiveList] = useState(false);
+
+  const toggleActiveList = () => {
+    setIsActiveList(!isActiveList);
+  };
+
+  const handleSelectedUser = (user: User) => {
+    setSelectedUser(user);
+    setIsActiveList(!isActiveList);
+  };
+
+  useEffect(() => {
+    if (!isActiveList) {
+      return;
+    }
+
+    const handleDocumentClick = () => {
+      setIsActiveList(false);
+    };
+
+    document.addEventListener('click', handleDocumentClick);
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, [isActiveList]);
+
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={classNames('dropdown', { 'is-active': isActiveList })}
     >
       <div className="dropdown-trigger">
         <button
@@ -12,23 +53,34 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={toggleActiveList}
         >
-          <span>Choose a user</span>
+          { userName
+            ? <span>{userName}</span>
+            : <span>Choose a user</span> }
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
           </span>
         </button>
       </div>
-
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
-        </div>
+        { isActiveList && (
+          <div className="dropdown-content">
+            {usersList.map(user => (
+              <a
+                key={user.id}
+                href={`#user-${user.id}`}
+                className="dropdown-item"
+                onClick={() => {
+                  handleSelectedUser(user);
+                }}
+              >
+                {user.name}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
