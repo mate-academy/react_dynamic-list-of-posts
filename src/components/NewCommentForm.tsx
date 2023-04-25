@@ -10,15 +10,15 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
-  const [isNameInputError, setNameInputError] = useState(false);
-  const [isEmailInputError, setEmailInputError] = useState(false);
-  const [isBodyInputError, setBodyInputError] = useState(false);
-  const [isFormLoading, setFormLoading] = useState(false);
+  const [isNameInputError, setIsNameInputError] = useState(false);
+  const [isEmailInputError, setIsEmailInputError] = useState(false);
+  const [isBodyInputError, setIsBodyInputError] = useState(false);
+  const [isFormLoading, setIsFormLoading] = useState(false);
 
   const handleInputError = () => {
-    setNameInputError(!name);
-    setEmailInputError(!email);
-    setBodyInputError(!body);
+    setIsNameInputError(!name);
+    setIsEmailInputError(!email);
+    setIsBodyInputError(!body);
   };
 
   const resetForm = () => {
@@ -28,9 +28,9 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
   };
 
   const resetError = () => {
-    setNameInputError(false);
-    setEmailInputError(false);
-    setBodyInputError(false);
+    setIsNameInputError(false);
+    setIsEmailInputError(false);
+    setIsBodyInputError(false);
   };
 
   const addCommentToServer = async (event: FormEvent) => {
@@ -39,7 +39,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
 
     if (name && email && body) {
       try {
-        setFormLoading(true);
+        setIsFormLoading(true);
         await onAddComment({
           name,
           email,
@@ -48,7 +48,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
         resetError();
         setBody('');
       } finally {
-        setFormLoading(false);
+        setIsFormLoading(false);
       }
     }
   };
@@ -56,7 +56,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
   return (
     <form
       data-cy="NewCommentForm"
-      onSubmit={event => addCommentToServer(event)}
+      onSubmit={addCommentToServer}
     >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
