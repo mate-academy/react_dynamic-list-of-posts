@@ -17,8 +17,6 @@ export const UserSelector: React.FC<Props> = ({
 
   useEffect(() => {
     getUsers().then(setUsers);
-
-    return () => setUsers(null);
   }, []);
 
   const handleUserSelect = (user: User) => {
@@ -40,9 +38,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => {
-            setShowList(true);
-          }}
+          onClick={() => setShowList(true)}
         >
           <span>
             {!selectedUser

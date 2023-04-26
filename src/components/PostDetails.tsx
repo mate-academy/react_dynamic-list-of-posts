@@ -3,7 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
-import { addCommentToList, deleteComent, getComments } from './api/comments';
+import { addCommentToList, deleteComment, getComments } from './api/comments';
 
 type Props = {
   activePost: Post,
@@ -50,7 +50,7 @@ export const PostDetails: React.FC<Props> = ({
   );
 
   const removeComment = (commentId: number) => {
-    deleteComent(commentId)
+    deleteComment(commentId)
       .then(() => {
         setComments(currentComents => (
           currentComents.filter(comment => comment.id !== commentId)
