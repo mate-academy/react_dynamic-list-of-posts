@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
+import '../styles/usersList.scss';
 
 type Props = {
   users: User[],
@@ -47,21 +48,40 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+      <div
+        className="dropdown-menu"
+        id="dropdown-menu"
+        role="menu"
+      >
         <div className="dropdown-content">
-          {users.map(user => (
-            <a
-              key={user.id}
-              href={`#user-${user.id}`}
-              className={classNames(
-                'dropdown-item',
-                { 'is-active': user.id === selectedUser?.id },
-              )}
-              onClick={() => handleSelectedUser(user)}
-            >
-              {user.name}
-            </a>
-          ))}
+          <ul className="content users-list">
+            {users.map(({
+              id,
+              name,
+              email,
+              phone,
+            }) => (
+              <li key={id} className="user">
+                <a
+                  href={`#user-${id}`}
+                  className={classNames(
+                    'dropdown-item',
+                    { 'is-active': id === selectedUser?.id },
+                  )}
+                  onClick={() => {
+                    handleSelectedUser({
+                      id,
+                      name,
+                      email,
+                      phone,
+                    });
+                  }}
+                >
+                  {name}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>

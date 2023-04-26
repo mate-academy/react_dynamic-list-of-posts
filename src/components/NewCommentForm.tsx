@@ -14,17 +14,21 @@ export const NewCommentForm: React.FC<Props> = ({
   isPostComment,
   onAddComment,
 }) => {
-  const [newComment, setNewComment] = useState({
+  const innerComment = {
     postId: selectedPost?.id,
     name: '',
     email: '',
     body: '',
-  });
-  const [errors, setErrors] = useState({
+  };
+
+  const innerErrors = {
     name: '',
     email: '',
     body: '',
-  });
+  };
+
+  const [newComment, setNewComment] = useState({ ...innerComment });
+  const [errors, setErrors] = useState({ ...innerErrors });
 
   /* eslint-disable-next-line */
   const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -36,11 +40,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const validForm = () => {
     let isValid = true;
-    const newErrors = {
-      name: '',
-      email: '',
-      body: '',
-    };
+    const newErrors = { ...innerErrors };
 
     if (!newComment.name.trim()) {
       newErrors.name = 'Name is required';
@@ -88,31 +88,17 @@ export const NewCommentForm: React.FC<Props> = ({
     if (validForm()) {
       onAddComment(newComment);
       setNewComment({
-        postId: selectedPost?.id,
+        ...innerComment,
         name: newComment.name,
         email: newComment.email,
-        body: '',
       });
-      setErrors({
-        name: '',
-        email: '',
-        body: '',
-      });
+      setErrors({ ...innerErrors });
     }
   };
 
   const handleClear = () => {
-    setNewComment({
-      postId: selectedPost?.id,
-      name: '',
-      email: '',
-      body: '',
-    });
-    setErrors({
-      name: '',
-      email: '',
-      body: '',
-    });
+    setNewComment({ ...innerComment });
+    setErrors({ ...innerErrors });
   };
 
   return (
