@@ -10,7 +10,7 @@ type Props = {
   selectedPost: Post | null,
   comments: Comment[],
   isLoadingComments: boolean,
-  isError: ErrorType,
+  isCommentError: ErrorType,
   onAddComment: (data: CommentData) => void,
   isPostComment: boolean,
   onDeleteComment: (commentId: number) => void,
@@ -20,7 +20,7 @@ export const PostDetails: React.FC<Props> = ({
   selectedPost,
   comments,
   isLoadingComments,
-  isError,
+  isCommentError,
   onAddComment,
   isPostComment,
   onDeleteComment,
@@ -47,9 +47,9 @@ export const PostDetails: React.FC<Props> = ({
         <div className="block">
           {isLoadingComments && <Loader />}
 
-          {isError && (
+          {isCommentError && (
             <div className="notification is-danger" data-cy="CommentsError">
-              {isError}
+              {isCommentError}
             </div>
           )}
 

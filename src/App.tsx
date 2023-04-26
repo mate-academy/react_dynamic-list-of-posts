@@ -31,6 +31,9 @@ export const App: React.FC = () => {
   const [isLoadingComments, setIsLoadingComments] = useState<boolean>(false);
   const [isPostComment, setIsPostComment] = useState<boolean>(false);
   const [isError, setIsError] = useState<ErrorType>(ErrorType.NONE);
+  const [isCommentError, setIsCommentError] = useState<ErrorType>(
+    ErrorType.NONE,
+  );
 
   const noPostsYet = useMemo(() => {
     return !posts.length && selectedUser
@@ -89,7 +92,7 @@ export const App: React.FC = () => {
 
     getComments(selectedPost.id)
       .then(setComments)
-      .catch(() => setIsError(ErrorType.COMMENTS))
+      .catch(() => setIsCommentError(ErrorType.COMMENTS))
       .finally(() => setIsLoadingComments(false));
   }, [selectedPost]);
 
@@ -100,7 +103,7 @@ export const App: React.FC = () => {
       .then((newComment) => {
         setComments((prevComments) => [...prevComments, newComment]);
       })
-      .catch(() => setIsError(ErrorType.ADDCOMMENT))
+      .catch(() => setIsCommentError(ErrorType.ADDCOMMENT))
       .finally(() => setIsPostComment(false));
   };
 
@@ -110,7 +113,7 @@ export const App: React.FC = () => {
         setComments((prevComments) => prevComments
           .filter((comment) => comment.id !== commentId));
       })
-      .catch(() => setIsError(ErrorType.DELETECOMMENT));
+      .catch(() => setIsCommentError(ErrorType.DELETECOMMENT));
   };
 
   return (
@@ -178,7 +181,7 @@ export const App: React.FC = () => {
                   selectedPost={selectedPost}
                   comments={comments}
                   isLoadingComments={isLoadingComments}
-                  isError={isError}
+                  isCommentError={isCommentError}
                   onAddComment={handleAddComment}
                   isPostComment={isPostComment}
                   onDeleteComment={handleDeleteComment}

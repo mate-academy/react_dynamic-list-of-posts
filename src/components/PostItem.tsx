@@ -14,17 +14,21 @@ export const PostItem: React.FC<Props> = ({
   onSelectPost,
 }) => {
   const isSelected = selectedPost?.id === post.id;
+  const {
+    id,
+    title,
+  } = post;
 
   return (
     <tr
       data-cy="Post"
     >
       <td data-cy="PostId">
-        {post.id}
+        {id}
       </td>
 
       <td data-cy="PostTitle">
-        {post.title}
+        {title}
       </td>
 
       <td className="has-text-right is-vcentered">
