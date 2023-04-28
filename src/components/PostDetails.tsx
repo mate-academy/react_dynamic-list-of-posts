@@ -57,10 +57,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
     try {
       await deleteComment(commentId);
-
-      // setComments((prevComments) => {
-      //   return prevComments.filter(comment => comment.id !== commentId);
-      // });
     } catch {
       setErrorMessage('Unable to delete a comment');
       clearError();
