@@ -7,5 +7,5 @@ export interface CommentType {
 }
 
 export type CommentData = (
-  Pick<CommentType, 'postId' | 'name' | 'email' | 'body'>
+  Omit<CommentType, 'id'>
 );

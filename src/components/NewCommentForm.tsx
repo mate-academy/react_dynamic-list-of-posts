@@ -67,10 +67,10 @@ export const NewCommentForm: React.FC<Props> = ({
     }
   };
 
-  const handleInputOnChange = (inputType: string) => (
-    event: React.ChangeEvent<HTMLInputElement>,
+  const handleInputOnChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    switch (inputType) {
+    switch (event.target.name) {
       case 'name':
         setName(event.target.value);
         setErrors(prevState => prevState.filter(
@@ -83,18 +83,15 @@ export const NewCommentForm: React.FC<Props> = ({
           error => error !== ErrorType.EMAIL,
         ));
         break;
+      case 'body':
+        setText(event.target.value);
+        setErrors(prevState => prevState.filter(
+          error => error !== ErrorType.TEXT,
+        ));
+        break;
       default:
         break;
     }
-  };
-
-  const handleTextAreaOnChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
-    setText(event.target.value);
-    setErrors(prevState => prevState.filter(
-      error => error !== ErrorType.TEXT,
-    ));
   };
 
   const handleClearButton = () => {
@@ -131,7 +128,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': errors.includes(ErrorType.NAME),
             })}
             value={name}
-            onChange={handleInputOnChange('name')}
+            onChange={handleInputOnChange}
           />
 
           <span className="icon is-small is-left">
@@ -170,7 +167,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': errors.includes(ErrorType.EMAIL),
             })}
             value={email}
-            onChange={handleInputOnChange('email')}
+            onChange={handleInputOnChange}
           />
 
           <span className="icon is-small is-left">
@@ -208,7 +205,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': errors.includes(ErrorType.TEXT),
             })}
             value={text}
-            onChange={handleTextAreaOnChange}
+            onChange={handleInputOnChange}
           />
         </div>
 
