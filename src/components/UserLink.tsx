@@ -5,18 +5,18 @@ import { User } from '../types/User';
 type Props = {
   user: User;
   selectedUser: User | null;
-  getSelectedUser: (user: User) => void;
+  handleSelectedUser: (user: User) => void;
   setIsMenuOpen: Dispatch<SetStateAction<boolean>>
 };
 
 export const UserLink: FC<Props> = ({
   user,
   selectedUser,
-  getSelectedUser,
+  handleSelectedUser,
   setIsMenuOpen,
 }) => {
   const handleOnClickUser = () => {
-    getSelectedUser(user);
+    handleSelectedUser(user);
     setIsMenuOpen(false);
   };
 

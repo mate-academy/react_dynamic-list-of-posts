@@ -21,7 +21,7 @@ export const App: React.FC = () => {
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const getSelectedUser = (user: User) => {
+  const handleSelectedUser = (user: User) => {
     setSelectedUser(user);
   };
 
@@ -66,7 +66,7 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  getSelectedUser={getSelectedUser}
+                  handleSelectedUser={handleSelectedUser}
                   selectedUser={selectedUser}
                 />
               </div>

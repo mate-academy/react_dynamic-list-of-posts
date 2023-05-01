@@ -11,7 +11,7 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = React.memo(({ selectedPost }) => {
-  const [commments, setComments] = useState<CommentType[]>([]);
+  const [comments, setComments] = useState<CommentType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -43,7 +43,7 @@ export const PostDetails: React.FC<Props> = React.memo(({ selectedPost }) => {
   const commentsBlock = (
     <>
       <p className="title is-4">Comments:</p>
-      {commments.map(comment => (
+      {comments.map(comment => (
         <Comment
           key={comment.id}
           comment={comment}
@@ -92,7 +92,7 @@ export const PostDetails: React.FC<Props> = React.memo(({ selectedPost }) => {
                 )}
 
                 {
-                  commments.length
+                  comments.length
                     ? commentsBlock
                     : noCommentsBlock
                 }

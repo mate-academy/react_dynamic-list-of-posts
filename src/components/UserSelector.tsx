@@ -5,13 +5,13 @@ import { UserLink } from './UserLink';
 type Props = {
   users: User[];
   selectedUser: User | null;
-  getSelectedUser: (user: User) => void;
+  handleSelectedUser: (user: User) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   selectedUser,
-  getSelectedUser,
+  handleSelectedUser,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const handleMenuToggle = () => setIsMenuOpen(prev => !prev);
@@ -47,7 +47,7 @@ export const UserSelector: React.FC<Props> = ({
                 key={user.id}
                 user={user}
                 selectedUser={selectedUser}
-                getSelectedUser={getSelectedUser}
+                handleSelectedUser={handleSelectedUser}
                 setIsMenuOpen={setIsMenuOpen}
               />
             ))}
