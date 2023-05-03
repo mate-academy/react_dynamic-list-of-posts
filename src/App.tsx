@@ -56,6 +56,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (selectedUser) {
       loadUserPosts(selectedUser.id);
+      setSelectedPost(null);
     }
   }, [selectedUser]);
 

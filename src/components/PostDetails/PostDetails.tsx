@@ -131,7 +131,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             )
           )}
 
-          {!hasLoadingError && (
+          {(!hasLoadingError && !areCommentsLoading) && (
             isCommentFormOpen ? (
               <NewCommentForm
                 handleAddComment={handleAddComment}
