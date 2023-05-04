@@ -34,11 +34,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const deleteComment = async (commentId: number) => {
     try {
-      await client.delete(`/comments/${commentId}`);
-
       if (comments) {
         setComments(comments.filter(comment => comment.id !== commentId));
       }
+
+      await client.delete(`/comments/${commentId}`);
     } catch {
       // eslint-disable-next-line no-console
       console.warn('Comment was not deleted from server');

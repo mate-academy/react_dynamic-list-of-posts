@@ -52,8 +52,9 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     if (selectedUser) {
-      loadUserPosts(selectedUser.id);
+      setUserPosts(null);
       setSelectedPost(null);
+      loadUserPosts(selectedUser.id);
     }
   }, [selectedUser]);
 
@@ -90,7 +91,7 @@ export const App: React.FC = () => {
                 )}
 
                 {userPosts && (
-                  userPosts?.length ? (
+                  userPosts.length ? (
                     <PostsList
                       posts={userPosts}
                       selectedPost={selectedPost}
