@@ -7,3 +7,9 @@ export interface Comment {
 }
 
 export type CommentData = Pick<Comment, 'name' | 'email' | 'body'>;
+
+export interface CommentDataErrors {
+  name: boolean;
+  email: boolean;
+  body: boolean;
+}
