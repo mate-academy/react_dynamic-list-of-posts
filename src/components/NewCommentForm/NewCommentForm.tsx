@@ -5,6 +5,7 @@ import {
   checkInputsHaveErrors, validateCommentData,
 } from '../../utils/helpers';
 import { client } from '../../utils/fetchClient';
+import { InputNames } from '../../types/InputNames';
 
 type Props = {
   handleAddComment: (comment: Comment) => void;
@@ -29,26 +30,22 @@ export const NewCommentForm: React.FC<Props> = ({
   });
   const [isCommentLoading, setIsCommentLoading] = useState(false);
 
-  const handleTextInput = (
-    { name, value }: { name: string, value: string },
-  ) => {
-    if (name === 'name' || name === 'email' || name === 'body') {
-      if (!commentData[name].length && value === ' ') {
-        return;
-      }
+  const handleTextInput = (value: string, name: InputNames) => {
+    if (!commentData[name].length && value === ' ') {
+      return;
+    }
 
-      if (hasInputError[name]) {
-        setHasInputError(prevInputErrors => ({
-          ...prevInputErrors,
-          [name]: false,
-        }));
-      }
-
-      setCommentData(prevCommentData => ({
-        ...prevCommentData,
-        [name]: value,
+    if (hasInputError[name]) {
+      setHasInputError(prevInputErrors => ({
+        ...prevInputErrors,
+        [name]: false,
       }));
     }
+
+    setCommentData(prevCommentData => ({
+      ...prevCommentData,
+      [name]: value,
+    }));
   };
 
   const handleResetForm = () => {
@@ -106,7 +103,7 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
-            name="name"
+            name={InputNames.Name}
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames(
@@ -115,7 +112,7 @@ export const NewCommentForm: React.FC<Props> = ({
             )}
             value={commentData.name}
             onChange={({ target }) => {
-              handleTextInput(target);
+              handleTextInput(target.value, InputNames.Name);
             }}
           />
 
@@ -148,7 +145,7 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
-            name="email"
+            name={InputNames.Email}
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames(
@@ -157,7 +154,7 @@ export const NewCommentForm: React.FC<Props> = ({
             )}
             value={commentData.email}
             onChange={({ target }) => {
-              handleTextInput(target);
+              handleTextInput(target.value, InputNames.Email);
             }}
           />
 
@@ -190,7 +187,7 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control">
           <textarea
             id="comment-body"
-            name="body"
+            name={InputNames.Body}
             placeholder="Type comment here"
             className={classNames(
               'textarea',
@@ -198,7 +195,7 @@ export const NewCommentForm: React.FC<Props> = ({
             )}
             value={commentData.body}
             onChange={({ target }) => {
-              handleTextInput(target);
+              handleTextInput(target.value, InputNames.Body);
             }}
           />
         </div>
