@@ -19,7 +19,6 @@ export const App: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [arePostsLoading, setArePostsLoading] = useState(false);
   const [hasPostsLoadingError, setHasPostsLoadingError] = useState(false);
-  const [wasLoadingSuccessful, setWasLoadingSuccessful] = useState(false);
 
   const loadUsers = async () => {
     try {
@@ -36,12 +35,10 @@ export const App: React.FC = () => {
     try {
       setArePostsLoading(true);
       setHasPostsLoadingError(false);
-      setWasLoadingSuccessful(false);
 
       const loadedPosts: Post[] = await client.get(`/posts?userId=${userId}`);
 
       setUserPosts(loadedPosts);
-      setWasLoadingSuccessful(true);
     } catch {
       setHasPostsLoadingError(true);
     } finally {
@@ -92,7 +89,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {wasLoadingSuccessful && (
+                {userPosts && (
                   userPosts?.length ? (
                     <PostsList
                       posts={userPosts}
