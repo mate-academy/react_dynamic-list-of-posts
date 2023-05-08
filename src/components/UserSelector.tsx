@@ -1,35 +1,72 @@
 import React from 'react';
+import classNames from 'classnames';
 
-export const UserSelector: React.FC = () => {
-  return (
-    <div
-      data-cy="UserSelector"
-      className="dropdown is-active"
-    >
-      <div className="dropdown-trigger">
-        <button
-          type="button"
-          className="button"
-          aria-haspopup="true"
-          aria-controls="dropdown-menu"
+import { User } from '../types/User';
+import { CurrentUser } from '../types/CurrentUser';
+
+interface Props {
+  users: User[];
+  currentUser: CurrentUser | null;
+  selectRef?: React.LegacyRef<HTMLDivElement>;
+  handleSelectButtonClick: () => void;
+  isSelectClicked: boolean;
+  handleOnUserClick: (name: string, id: number) => void;
+}
+
+export const UserSelector: React.FC<Props>
+  = ({
+    users,
+    isSelectClicked,
+    handleSelectButtonClick,
+    selectRef,
+    handleOnUserClick,
+    currentUser,
+  }) => {
+    return (
+      <div
+        data-cy="UserSelector"
+        className={classNames('dropdown', { 'is-active': isSelectClicked })}
+      >
+        <div
+          ref={selectRef}
+          className="dropdown-trigger"
         >
-          <span>Choose a user</span>
+          <button
+            type="button"
+            className="button"
+            aria-haspopup="true"
+            aria-controls="dropdown-menu"
+            onClick={handleSelectButtonClick}
+          >
+            {!currentUser ? (
+              <span>Choose a user</span>
+            ) : (
+              <span>{currentUser.name}</span>
+            )}
 
-          <span className="icon is-small">
-            <i className="fas fa-angle-down" aria-hidden="true" />
-          </span>
-        </button>
-      </div>
+            <span className="icon is-small">
+              <i className="fas fa-angle-down" aria-hidden="true" />
+            </span>
+          </button>
+        </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div className="dropdown-content">
+            {users.map(({ id, name }: User) => (
+              <a
+                href={`#${id}`}
+                className="dropdown-item"
+                key={id}
+                style={
+                  { backgroundColor: currentUser?.id === id ? 'cyan' : '' }
+                }
+                onClick={() => handleOnUserClick(name, id)}
+              >
+                {name}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
