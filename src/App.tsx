@@ -31,7 +31,7 @@ export const App: React.FC = () => {
     setUsers(usersFromServer);
   }
 
-  const selectUser = (user: User) => {
+  const handleUserSelect = (user: User) => {
     setCurrPost(null);
     setFormShown(false);
     setCurrUser(user);
@@ -84,7 +84,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   users={users}
                   currUser={currUser}
-                  selectUser={selectUser}
+                  handleUserSelect={handleUserSelect}
                 />
               </div>
 
@@ -136,7 +136,6 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success ">
               <PostDetails
                 post={currPost}
-                user={currUser}
                 typeOfError={typeOfError}
                 setTypeOfError={setTypeOfError}
                 isFormShown={isFormShown}

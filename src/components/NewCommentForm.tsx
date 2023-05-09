@@ -43,7 +43,7 @@ export const NewCommentForm: React.FC<Props> = ({
     setBodyError(false);
   };
 
-  const handleAddClick = () => (event: React.FormEvent<HTMLButtonElement>) => {
+  const handleAddClick = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
     if (newCommentsData.name !== ''
@@ -193,7 +193,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-link',
               { 'is-loading': isCommentAdding },
             )}
-            onClick={handleAddClick()}
+            onClick={handleAddClick}
           >
             Add
           </button>

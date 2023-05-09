@@ -4,7 +4,6 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 import { Post } from '../types/Post';
-import { User } from '../types/User';
 import { Comment, CommentData } from '../types/Comment';
 import { Errors } from '../types/Errors';
 
@@ -12,7 +11,6 @@ import { getComments, postComment, deleteComment } from '../api/users';
 
 type Props = {
   post: Post | null;
-  user: User | null;
   isFormShown: boolean;
   typeOfError: Errors;
   setTypeOfError: (data: Errors) => void;
@@ -21,7 +19,6 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({
   post,
-  user,
   isFormShown,
   showForm,
   typeOfError,
@@ -46,7 +43,7 @@ export const PostDetails: React.FC<Props> = ({
     setTypeOfError(Errors.None);
     try {
       setCommentsLoading(true);
-      const commentsFromServer = await getComments(user?.id);
+      const commentsFromServer = await getComments(post?.id);
 
       setCommentsList(commentsFromServer);
     } catch (error) {
