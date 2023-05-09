@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-
 import { CommentData } from '../types/Comment';
 import { Errors } from '../types/Errors';
 
