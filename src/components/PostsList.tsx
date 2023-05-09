@@ -5,7 +5,7 @@ import { Post } from '../types/Post';
 interface Props {
   posts: Post[];
   handleOnPostClick: (id: number, title: string, body: string) => void;
-  currentPostId?: number;
+  currentPostId: number | null;
 }
 
 export const PostsList: React.FC<Props>

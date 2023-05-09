@@ -10,7 +10,7 @@ function wait(delay: number) {
 }
 
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
-type AvailableDataType = Post | Comment | unknown | null;
+type AvailableDataType = Post | Comment | null;
 
 function request<T>(
   url: string,
@@ -33,7 +33,7 @@ function request<T>(
 
 export const client = {
   get: <T>(url: string) => request<T>(url),
-  post: <T>(url: string, data: Comment | unknown) => {
+  post: <T>(url: string, data: Comment) => {
     return request<T>(url, 'POST', data);
   },
   patch: <T>(url: string, data: Post) => request<T>(url, 'PATCH', data),

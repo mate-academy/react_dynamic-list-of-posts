@@ -1,7 +1,6 @@
 import React from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { CurrentPost } from '../types/CurrentPost';
 import { Comment } from '../types/Comment';
 import { ErrorType } from '../utils/ErrorType';
 
@@ -9,22 +8,26 @@ interface Props {
   comments: Comment[] | null;
   setComments: (comments: Comment[]) => void;
   error: ErrorType;
-  isWriteACommentClicked: boolean;
-  currentPost?: CurrentPost;
+  showNewCommentForm: boolean;
+  currentPostId: number | null;
+  currentPostTitle: string | null;
+  currentPostBody: string | null;
   handleOnWriteACommentClick: () => void;
   handleCommentDelete: (id: number) => void;
   post: (
     url: string,
-    data: any,
-  ) => Promise<any>;
+    data: Comment,
+  ) => Promise<Comment>;
 }
 
 export const PostDetails: React.FC<Props> = ({
   comments,
   setComments,
-  currentPost,
+  currentPostId,
+  currentPostTitle,
+  currentPostBody,
   error,
-  isWriteACommentClicked,
+  showNewCommentForm,
   handleOnWriteACommentClick,
   handleCommentDelete,
   post,
@@ -34,11 +37,11 @@ export const PostDetails: React.FC<Props> = ({
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {currentPost?.title}
+            {currentPostTitle}
           </h2>
 
           <p data-cy="PostBody">
-            {currentPost?.body}
+            {currentPostBody}
           </p>
         </div>
 
@@ -50,7 +53,7 @@ export const PostDetails: React.FC<Props> = ({
               <>
                 {comments.map(({
                   id, name, email, body,
-                }) => (
+                }: Comment) => (
                   <article
                     className="message is-small"
                     data-cy="Comment"
@@ -65,7 +68,7 @@ export const PostDetails: React.FC<Props> = ({
                         type="button"
                         className="delete is-small"
                         aria-label="delete"
-                        onClick={() => handleCommentDelete(id)}
+                        onClick={() => id && handleCommentDelete(id)}
                       >
                         delete button
                       </button>
@@ -89,7 +92,7 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {!isWriteACommentClicked && (
+          {!showNewCommentForm && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -101,10 +104,10 @@ export const PostDetails: React.FC<Props> = ({
           )}
         </div>
 
-        {isWriteACommentClicked && (
+        {showNewCommentForm && (
           <NewCommentForm
             post={post}
-            postId={currentPost?.id}
+            postId={currentPostId}
             comments={comments}
             setComments={setComments}
           />

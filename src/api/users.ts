@@ -15,8 +15,8 @@ export const getComments = (url: string, postId: number) => {
   return client.get<Comment[]>(`${url}?postId=${postId}`);
 };
 
-export const post = (url: string, data: any) => {
-  return client.post<any>(url, data);
+export const post = <T>(url: string, data: Comment) => {
+  return client.post<T>(url, data);
 };
 
 export const removeComment = (url: string, id: number) => {

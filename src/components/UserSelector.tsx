@@ -2,11 +2,11 @@ import React from 'react';
 import classNames from 'classnames';
 
 import { User } from '../types/User';
-import { CurrentUser } from '../types/CurrentUser';
 
 interface Props {
   users: User[];
-  currentUser: CurrentUser | null;
+  currentUserName: string | null;
+  currentUserId: number | null;
   selectRef?: React.LegacyRef<HTMLDivElement>;
   handleSelectButtonClick: () => void;
   isSelectClicked: boolean;
@@ -20,7 +20,8 @@ export const UserSelector: React.FC<Props>
     handleSelectButtonClick,
     selectRef,
     handleOnUserClick,
-    currentUser,
+    currentUserName,
+    currentUserId,
   }) => {
     return (
       <div
@@ -38,10 +39,10 @@ export const UserSelector: React.FC<Props>
             aria-controls="dropdown-menu"
             onClick={handleSelectButtonClick}
           >
-            {!currentUser ? (
+            {!currentUserName ? (
               <span>Choose a user</span>
             ) : (
-              <span>{currentUser.name}</span>
+              <span>{currentUserName}</span>
             )}
 
             <span className="icon is-small">
@@ -55,11 +56,11 @@ export const UserSelector: React.FC<Props>
             {users.map(({ id, name }: User) => (
               <a
                 href={`#${id}`}
-                className="dropdown-item"
-                key={id}
-                style={
-                  { backgroundColor: currentUser?.id === id ? 'cyan' : '' }
+                className={
+                  classNames('dropdown-item',
+                    { 'is-active': currentUserId === id })
                 }
+                key={id}
                 onClick={() => handleOnUserClick(name, id)}
               >
                 {name}

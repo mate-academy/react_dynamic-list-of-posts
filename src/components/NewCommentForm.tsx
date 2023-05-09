@@ -1,14 +1,14 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
-import { ApiTypes } from '../utils/ApiTypes';
+import { ApiRouters } from '../utils/ApiRouters';
 import { Comment } from '../types/Comment';
 
 interface Props {
   post: (
     url: string,
-    data: any,
-  ) => Promise<any>;
-  postId?: number;
+    data: Comment,
+  ) => Promise<Comment>;
+  postId: number | null;
   comments: Comment[] | null;
   setComments: (comments: Comment[]) => void;
 }
@@ -72,7 +72,7 @@ export const NewCommentForm: React.FC<Props> = ({
         setIsLoading(true);
 
         const newCommentFromServer
-          = await post(ApiTypes.COMMENTS, newComment);
+          = await post(ApiRouters.COMMENTS, newComment);
 
         if (comments) {
           setComments([...comments, newCommentFromServer]);

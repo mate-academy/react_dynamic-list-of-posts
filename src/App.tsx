@@ -12,9 +12,7 @@ import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { Post } from './types/Post';
 import { Comment } from './types/Comment';
-import { CurrentUser } from './types/CurrentUser';
-import { CurrentPost } from './types/CurrentPost';
-import { ApiTypes } from './utils/ApiTypes';
+import { ApiRouters } from './utils/ApiRouters';
 import { ErrorType } from './utils/ErrorType';
 
 import {
@@ -27,13 +25,16 @@ export const App: React.FC = () => {
   const [comments, setComments] = useState<Comment[] | null>(null);
   const [error, setError] = useState<ErrorType>(ErrorType.INITIAL);
   const [isSelectClicked, setIsSelectClicked] = useState<boolean>(false);
-  const [isCommentClicked, setIsCommentClicked] = useState<boolean>(false);
-  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
-  const [currentPost, setCurrentPost] = useState<CurrentPost | null>(null);
+  const [showNewCommentForm, setShowNewCommentForm] = useState<boolean>(false);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [currentUserName, setCurrentUserName] = useState<string | null>(null);
+  const [currentPostId, setCurrentPostId] = useState<number | null>(null);
+  const [currentPostTitle, setCurrentPostTitle] = useState<string | null>('');
+  const [currentPostBody, setCurrentPostBody] = useState<string | null>('');
   const selectRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    getUsers(ApiTypes.USERS)
+    getUsers(ApiRouters.USERS)
       .then(usersFromServer => setUsers(usersFromServer))
       .catch(() => setError(ErrorType.GET));
   }, []);
@@ -59,21 +60,26 @@ export const App: React.FC = () => {
 
   const handleOnUserClick = (name: string, id: number) => {
     handleSelectButtonClick();
-    setCurrentUser({ ...currentUser, name, id });
+    setCurrentUserId(id);
+    setCurrentUserName(name);
     setPosts(null);
     setError(ErrorType.INITIAL);
 
-    getPosts(ApiTypes.POSTS, id)
+    getPosts(ApiRouters.POSTS, id)
       .then(postsFromServer => setPosts(postsFromServer))
       .catch(() => setError(ErrorType.GET));
   };
 
   const handleOnWriteACommentClick = () => {
-    setIsCommentClicked(true);
+    setShowNewCommentForm(true);
   };
 
-  const handleCommentDelete = (id: number) => {
-    removeComment(ApiTypes.COMMENTS, id)
+  const handleCommentDelete = (id?: number) => {
+    if (!id) {
+      return;
+    }
+
+    removeComment(ApiRouters.COMMENTS, id)
       .then(() => {
         if (comments && error !== ErrorType.DELETE) {
           setComments(comments?.filter(comment => comment.id !== id));
@@ -83,18 +89,18 @@ export const App: React.FC = () => {
   };
 
   const handleOnPostClick = (id: number, title: string, body: string) => {
-    setCurrentPost(currPost => ({
-      ...currPost, title, id, body,
-    }));
-    setIsCommentClicked(false);
+    setCurrentPostTitle(title);
+    setCurrentPostBody(body);
+    setCurrentPostId(id);
+    setShowNewCommentForm(false);
     setComments(null);
     setError(ErrorType.INITIAL);
 
-    if (currentPost && currentPost.id === id) {
-      setCurrentPost(null);
+    if (currentPostId === id) {
+      setCurrentPostId(null);
     }
 
-    getComments(ApiTypes.COMMENTS, id)
+    getComments(ApiRouters.COMMENTS, id)
       .then((commentsFromServer) => {
         setComments(commentsFromServer);
       })
@@ -110,7 +116,8 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  currentUser={currentUser}
+                  currentUserName={currentUserName}
+                  currentUserId={currentUserId}
                   selectRef={selectRef}
                   handleSelectButtonClick={handleSelectButtonClick}
                   isSelectClicked={isSelectClicked}
@@ -119,13 +126,13 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!currentUser && (
+                {!currentUserId && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {currentUser && (
+                {currentUserId && (
                   <>
                     {(!posts && error === ErrorType.INITIAL) && <Loader />}
                     {posts && (
@@ -134,7 +141,7 @@ export const App: React.FC = () => {
                           <PostsList
                             posts={posts}
                             handleOnPostClick={handleOnPostClick}
-                            currentPostId={currentPost?.id}
+                            currentPostId={currentPostId}
                           />
                         ) : (
                           <div
@@ -169,19 +176,21 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': currentPost?.id },
+              { 'Sidebar--open': currentPostId },
             )}
           >
             <div className="tile is-child box is-success ">
-              {currentPost && (
+              {currentPostId && (
                 <PostDetails
                   comments={comments}
                   setComments={setComments}
                   error={error}
-                  isWriteACommentClicked={isCommentClicked}
+                  showNewCommentForm={showNewCommentForm}
                   handleOnWriteACommentClick={handleOnWriteACommentClick}
                   handleCommentDelete={handleCommentDelete}
-                  currentPost={currentPost}
+                  currentPostId={currentPostId}
+                  currentPostTitle={currentPostTitle}
+                  currentPostBody={currentPostBody}
                   post={post}
                 />
               )}
