@@ -1,8 +1,79 @@
-import React from 'react';
+import React, { useState } from 'react';
+import classNames from 'classnames';
+import { addComment } from '../api/posts';
 
-export const NewCommentForm: React.FC = () => {
+interface Props {
+  postId: number | undefined,
+  getPostInfo: () => void,
+  setError: React.Dispatch<React.SetStateAction<string>>
+}
+
+export const NewCommentForm: React.FC<Props> = ({
+  postId, getPostInfo, setError,
+}) => {
+  const [body, setBody] = useState('');
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [showRequiredOn, setShowRequiredOn] = useState('');
+
+  const addCommentRequest = () => {
+    if (postId) {
+      if (body && email && name) {
+        setShowRequiredOn('');
+
+        addComment({
+          postId, name, email, body,
+        })
+          .then(() => {
+            getPostInfo();
+            setBody('');
+            setError('');
+          })
+          .catch(() => {
+            setError(
+              'Cannot add comment. '
+              + 'Check your internet connection and try again.',
+            );
+          });
+
+        return;
+      }
+
+      if (!name) {
+        setShowRequiredOn('name');
+
+        return;
+      }
+
+      if (!email) {
+        setShowRequiredOn('email');
+
+        return;
+      }
+
+      if (!body) {
+        setShowRequiredOn('body');
+      }
+    }
+  };
+
+  const handleReset = () => {
+    setBody('');
+    setEmail('');
+    setName('');
+  };
+
+  const handleSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
+    ev.preventDefault();
+    addCommentRequest();
+  };
+
   return (
-    <form data-cy="NewCommentForm">
+    <form
+      data-cy="NewCommentForm"
+      onSubmit={handleSubmit}
+      onReset={handleReset}
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -12,26 +83,37 @@ export const NewCommentForm: React.FC = () => {
           <input
             type="text"
             name="name"
+            value={name}
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            className={classNames(
+              'input',
+              {
+                'is-danger': showRequiredOn === 'name',
+              },
+            )}
+            onChange={(ev) => setName(ev.currentTarget.value)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {showRequiredOn === 'name' ? (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          ) : null}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
+        {showRequiredOn === 'name' ? (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Name is required
+          </p>
+        ) : null}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -41,28 +123,39 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
+            value={email}
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            className={classNames(
+              'input',
+              {
+                'is-danger': showRequiredOn === 'email',
+              },
+            )}
+            onChange={(ev) => setEmail(ev.currentTarget.value)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {showRequiredOn === 'email' ? (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          ) : null}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
+        {showRequiredOn === 'email' ? (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is required
+          </p>
+        ) : null}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -74,19 +167,31 @@ export const NewCommentForm: React.FC = () => {
           <textarea
             id="comment-body"
             name="body"
+            value={body}
             placeholder="Type comment here"
-            className="textarea is-danger"
+            className={classNames(
+              'textarea',
+              {
+                'is-danger': showRequiredOn === 'body',
+              },
+            )}
+            onChange={(ev) => setBody(ev.currentTarget.value)}
           />
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
+        {showRequiredOn === 'body' ? (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Enter some text
+          </p>
+        ) : null}
       </div>
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className="button is-link"
+          >
             Add
           </button>
         </div>
