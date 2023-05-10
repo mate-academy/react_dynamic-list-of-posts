@@ -32,7 +32,7 @@ export const PostDetails: React.FC<Props> = ({
       .catch(() => {
         setError('Cannot delete comment');
       });
-  }, [postComments]);
+  }, [postComments, getPostInfo, setError]);
 
   const showLoaderComponent = <Loader />;
 
@@ -50,15 +50,15 @@ export const PostDetails: React.FC<Props> = ({
 
   const CommentsComponent = () => {
     if (showCommentsLoader) {
-      return <>{showLoaderComponent}</>;
+      return showLoaderComponent;
     }
 
-    if (error.length) {
-      return <>{showErrorComponent}</>;
+    if (error) {
+      return showErrorComponent;
     }
 
     if (!postComments.length) {
-      return <>{showNoCommentsComponent}</>;
+      return showNoCommentsComponent;
     }
 
     return (

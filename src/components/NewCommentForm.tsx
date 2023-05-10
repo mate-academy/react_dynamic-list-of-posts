@@ -57,13 +57,13 @@ export const NewCommentForm: React.FC<Props> = ({
     }
   };
 
-  const onReset = () => {
+  const handleReset = () => {
     setBody('');
     setEmail('');
     setName('');
   };
 
-  const onSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
     addCommentRequest();
   };
@@ -71,8 +71,8 @@ export const NewCommentForm: React.FC<Props> = ({
   return (
     <form
       data-cy="NewCommentForm"
-      onSubmit={onSubmit}
-      onReset={onReset}
+      onSubmit={handleSubmit}
+      onReset={handleReset}
     >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">

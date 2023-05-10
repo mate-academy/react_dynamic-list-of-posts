@@ -19,22 +19,22 @@ export const App: React.FC = () => {
   const [currentUserPosts, setcurrentUserPosts] = useState<Post[]>([]);
   const [error, setError] = useState('');
   const [showLoader, setShowLoader] = useState(false);
-  const [isSideBarIsAlreadyOpen, setIsSideBarIsAlreadyOpen] = useState(false);
+  const [isSidebarOpen, setisSidebarOpen] = useState(false);
   const [currentPost, setCurrentPost] = useState<Post>();
   const [currentPostComments, setCurrentPostComments] = useState<Comment[]>([]);
-  const [isCommentsLoaderIsShow, setisCommentsLoaderIsShow] = useState(false);
+  const [isCommentsLoaderVisible, setisCommentsLoaderVisible] = useState(false);
   const getPostInfo = () => {
     if (currentPost) {
-      setisCommentsLoaderIsShow(true);
+      setisCommentsLoaderVisible(true);
 
       postInfo(currentPost.id)
         .then((fetchedComments) => {
           setCurrentPostComments(fetchedComments);
-          setisCommentsLoaderIsShow(false);
+          setisCommentsLoaderVisible(false);
         })
         .catch(() => {
           setError('Cannot load post comments');
-          setisCommentsLoaderIsShow(false);
+          setisCommentsLoaderVisible(false);
         });
     }
   };
@@ -87,21 +87,21 @@ export const App: React.FC = () => {
     }
 
     if (showLoader) {
-      return <>{showLoaderComponent}</>;
+      return showLoaderComponent;
     }
 
-    if (error.length) {
-      return <>{showErrorComponent}</>;
+    if (error) {
+      return showErrorComponent;
     }
 
     if (!currentUserPosts.length) {
-      return <>{showNoPostsComponent}</>;
+      return showNoPostsComponent;
     }
 
     return (
       <PostsList
         posts={currentUserPosts}
-        setSideBarIsOpen={setIsSideBarIsAlreadyOpen}
+        setSideBarIsOpen={setisSidebarOpen}
         setCurrentPost={setCurrentPost}
       />
     );
@@ -127,7 +127,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {isSideBarIsAlreadyOpen ? (
+          {isSidebarOpen ? (
             <div
               data-cy="Sidebar"
               className={classNames(
@@ -142,7 +142,7 @@ export const App: React.FC = () => {
                 <PostDetails
                   postComments={currentPostComments}
                   error={error}
-                  showCommentsLoader={isCommentsLoaderIsShow}
+                  showCommentsLoader={isCommentsLoaderVisible}
                   post={currentPost}
                   getPostInfo={getPostInfo}
                   setError={setError}
