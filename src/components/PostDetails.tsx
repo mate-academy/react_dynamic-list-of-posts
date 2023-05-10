@@ -58,8 +58,7 @@ export const PostDetails: React.FC<Props> = ({
               ) : (
                 <p className="title is-4">Comments:</p>
               )
-            )
-          }
+          )}
 
           {!isCommentLoading && (
             filteredComments.map(comment => (
