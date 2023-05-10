@@ -11,9 +11,9 @@ import { Loader } from './components/Loader';
 import {
   addComment, deleteComment, getComments, getPosts, getUsers,
 } from './api/posts';
+import { Comment } from './types/Comment';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { Comment } from './types/Comment';
 
 export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);

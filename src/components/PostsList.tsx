@@ -1,6 +1,6 @@
+import classNames from 'classnames';
 import { useEffect, useRef } from 'react';
 import { Post } from '../types/Post';
-import classNames from 'classnames';
 
 type Props = {
   filteredPosts: Post[] | [],
