@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, {
+  useEffect, useState, useRef, useCallback,
+} from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 
@@ -23,21 +25,21 @@ export const UserSelector: React.FC<Props> = ({
     toggleList();
   };
 
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const checkIfClickedOutside = (e: any) => {
-      if (isListShown && ulRef.current
-        && !ulRef.current.contains(e.currentTarget)) {
-        setListShown(false);
-      }
-    };
+  const handleClick = useCallback(({ target }: MouseEvent) => {
+    const node = ulRef?.current;
 
-    document.addEventListener('click', checkIfClickedOutside);
+    if (node && target instanceof Node && !node.contains(target)) {
+      setListShown(false);
+    }
+  }, [isListShown, ulRef]);
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClick);
 
     return () => {
-      document.removeEventListener('click', checkIfClickedOutside);
+      document.removeEventListener('mousedown', handleClick);
     };
-  }, [isListShown]);
+  }, [handleClick]);
 
   return (
     <div

@@ -116,7 +116,7 @@ export const PostDetails: React.FC<Props> = ({
     }
 
     return () => {};
-  }, [typeOfError]);
+  }, [typeOfError, setTypeOfError, setRemovingCommentsId]);
 
   return (
     <div className="content" data-cy="PostDetails">
