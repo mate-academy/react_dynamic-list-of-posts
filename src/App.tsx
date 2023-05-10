@@ -145,7 +145,6 @@ export const App: React.FC = () => {
                   showCommentsLoader={isCommentsLoaderIsShow}
                   post={currentPost}
                   getPostInfo={getPostInfo}
-                  setPostComments={setCurrentPostComments}
                   setError={setError}
                 />
               </div>

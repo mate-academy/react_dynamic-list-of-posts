@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment } from '../types/Comment';
@@ -11,7 +11,6 @@ interface Props {
   showCommentsLoader: boolean
   post: Post | undefined,
   getPostInfo: () => void
-  setPostComments: React.Dispatch<React.SetStateAction<Comment[]>>,
   setError: React.Dispatch<React.SetStateAction<string>>
 }
 
@@ -21,19 +20,19 @@ export const PostDetails: React.FC<Props> = ({
   showCommentsLoader,
   post,
   getPostInfo,
-  setPostComments,
   setError,
 }) => {
   const [formIsOpen, setFormIsOpen] = useState(false);
 
-  const onRemove = (commentId: number) => {
-    setPostComments(postComments.filter(comment => comment.id !== commentId));
-
-    deleteComment(commentId)
+  const onRemove = useCallback((id: number) => {
+    deleteComment(id)
+      .then(() => {
+        getPostInfo();
+      })
       .catch(() => {
         setError('Cannot delete comment');
       });
-  };
+  }, [postComments]);
 
   const showLoaderComponent = <Loader />;
 
