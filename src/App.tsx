@@ -19,13 +19,28 @@ export const App: React.FC = () => {
   const [currentUserPosts, setcurrentUserPosts] = useState<Post[]>([]);
   const [error, setError] = useState('');
   const [showLoader, setShowLoader] = useState(false);
-  const [sideBarIsOpen, setSideBarIsOpen] = useState(false);
+  const [isSideBarIsAlreadyOpen, setIsSideBarIsAlreadyOpen] = useState(false);
   const [currentPost, setCurrentPost] = useState<Post>();
   const [currentPostComments, setCurrentPostComments] = useState<Comment[]>([]);
-  const [showCommentsLoader, setShowCommentsLoader] = useState(false);
+  const [isCommentsLoaderIsShow, setisCommentsLoaderIsShow] = useState(false);
+  const getPostInfo = () => {
+    if (currentPost) {
+      setisCommentsLoaderIsShow(true);
 
-  const getUsersFromServer = () => {
-    getUsers('users')
+      postInfo(currentPost.id)
+        .then((fetchedComments) => {
+          setCurrentPostComments(fetchedComments);
+          setisCommentsLoaderIsShow(false);
+        })
+        .catch(() => {
+          setError('Cannot load post comments');
+          setisCommentsLoaderIsShow(false);
+        });
+    }
+  };
+
+  useEffect(() => {
+    getUsers()
       .then((fetchedUsers: User[]) => {
         setUsers(fetchedUsers);
         setError('');
@@ -33,13 +48,12 @@ export const App: React.FC = () => {
       .catch(() => {
         setError('Cannot load users');
       });
-  };
-
-  const getUserPosts = () => {
+  }, []);
+  useEffect(() => {
     if (selectedUser) {
       setShowLoader(true);
 
-      getPostsByUser(selectedUser?.id)
+      getPostsByUser(selectedUser.id)
         .then((fetchedPosts) => {
           setcurrentUserPosts(fetchedPosts);
           setError('');
@@ -50,27 +64,48 @@ export const App: React.FC = () => {
           setShowLoader(false);
         });
     }
-  };
-
-  const getPostInfo = () => {
-    if (currentPost?.id) {
-      setShowCommentsLoader(true);
-
-      postInfo(currentPost.id)
-        .then((fetchedComments) => {
-          setCurrentPostComments(fetchedComments);
-          setShowCommentsLoader(false);
-        })
-        .catch(() => {
-          setError('Cannot load post comments');
-          setShowCommentsLoader(false);
-        });
-    }
-  };
-
-  useEffect(getUsersFromServer, []);
-  useEffect(getUserPosts, [selectedUser]);
+  }, [selectedUser]);
   useEffect(getPostInfo, [currentPost]);
+
+  const showLoaderComponent = <Loader />;
+
+  const showErrorComponent = (
+    <div className="notification is-danger" data-cy="PostsLoadingError">
+      {error}
+    </div>
+  );
+
+  const showNoPostsComponent = (
+    <div className="notification is-warning" data-cy="NoPostsYet">
+      No posts yet
+    </div>
+  );
+
+  const PostsComponent = () => {
+    if (!selectedUser) {
+      return <p data-cy="NoSelectedUser">No user selected</p>;
+    }
+
+    if (showLoader) {
+      return <>{showLoaderComponent}</>;
+    }
+
+    if (error.length) {
+      return <>{showErrorComponent}</>;
+    }
+
+    if (!currentUserPosts.length) {
+      return <>{showNoPostsComponent}</>;
+    }
+
+    return (
+      <PostsList
+        posts={currentUserPosts}
+        setSideBarIsOpen={setIsSideBarIsAlreadyOpen}
+        setCurrentPost={setCurrentPost}
+      />
+    );
+  };
 
   return (
     <main className="section">
@@ -87,50 +122,12 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {selectedUser ? (
-                  <>
-                    {showLoader ? (
-                      <Loader />
-                    ) : (
-                      <>
-                        {error.length ? (
-                          <div
-                            className="notification is-danger"
-                            data-cy="PostsLoadingError"
-                          >
-                            {error}
-                          </div>
-                        ) : (
-                          <>
-                            {!currentUserPosts.length ? (
-                              <div
-                                className="notification is-warning"
-                                data-cy="NoPostsYet"
-                              >
-                                No posts yet
-                              </div>
-                            ) : (
-                              <PostsList
-                                posts={currentUserPosts}
-                                setSideBarIsOpen={setSideBarIsOpen}
-                                setCurrentPost={setCurrentPost}
-                              />
-                            )}
-                          </>
-                        )}
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <p data-cy="NoSelectedUser">
-                    No user selected
-                  </p>
-                )}
+                <PostsComponent />
               </div>
             </div>
           </div>
 
-          {sideBarIsOpen ? (
+          {isSideBarIsAlreadyOpen ? (
             <div
               data-cy="Sidebar"
               className={classNames(
@@ -145,7 +142,7 @@ export const App: React.FC = () => {
                 <PostDetails
                   postComments={currentPostComments}
                   error={error}
-                  showCommentsLoader={showCommentsLoader}
+                  showCommentsLoader={isCommentsLoaderIsShow}
                   post={currentPost}
                   getPostInfo={getPostInfo}
                   setPostComments={setCurrentPostComments}

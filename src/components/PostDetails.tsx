@@ -27,16 +27,75 @@ export const PostDetails: React.FC<Props> = ({
   const [formIsOpen, setFormIsOpen] = useState(false);
 
   const onRemove = (commentId: number) => {
-    const index = postComments.map(comment => comment.id)
-      .indexOf(commentId);
-
-    setPostComments(postComments.slice(0, index)
-      .concat(postComments.slice(index + 1)));
+    setPostComments(postComments.filter(comment => comment.id !== commentId));
 
     deleteComment(commentId)
       .catch(() => {
         setError('Cannot delete comment');
       });
+  };
+
+  const showLoaderComponent = <Loader />;
+
+  const showErrorComponent = (
+    <div className="notification is-danger" data-cy="CommentsError">
+      {error}
+    </div>
+  );
+
+  const showNoCommentsComponent = (
+    <div className="title is-4" data-cy="NoCommentsMessage">
+      No comments yet
+    </div>
+  );
+
+  const CommentsComponent = () => {
+    if (showCommentsLoader) {
+      return <>{showLoaderComponent}</>;
+    }
+
+    if (error.length) {
+      return <>{showErrorComponent}</>;
+    }
+
+    if (!postComments.length) {
+      return <>{showNoCommentsComponent}</>;
+    }
+
+    return (
+      <>
+        <p className="title is-4">Comments:</p>
+
+        <>
+          {postComments.map(comment => (
+            <article
+              className="message is-small"
+              data-cy="Comment"
+              key={comment.id}
+            >
+              <div className="message-header">
+                <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                  {comment.name}
+                </a>
+                <button
+                  data-cy="CommentDelete"
+                  type="button"
+                  className="delete is-small"
+                  aria-label="delete"
+                  onClick={() => onRemove(comment.id)}
+                >
+                  delete button
+                </button>
+              </div>
+
+              <div className="message-body" data-cy="CommentBody">
+                {comment.body}
+              </div>
+            </article>
+          ))}
+        </>
+      </>
+    );
   };
 
   return (
@@ -53,59 +112,7 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {showCommentsLoader ? (
-            <Loader />
-          ) : (
-            <>
-              {error ? (
-                <div className="notification is-danger" data-cy="CommentsError">
-                  {error}
-                </div>
-              ) : (
-                <>
-                  {!postComments.length ? (
-                    <p className="title is-4" data-cy="NoCommentsMessage">
-                      No comments yet
-                    </p>
-                  ) : (
-                    <>
-                      <p className="title is-4">Comments:</p>
-
-                      <>
-                        {postComments.map(comment => (
-                          <article
-                            className="message is-small"
-                            data-cy="Comment"
-                            key={comment.id}
-                          >
-                            <div className="message-header">
-                              <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                                {comment.name}
-                              </a>
-                              <button
-                                data-cy="CommentDelete"
-                                type="button"
-                                className="delete is-small"
-                                aria-label="delete"
-                                onClick={() => onRemove(comment.id)}
-                              >
-                                delete button
-                              </button>
-                            </div>
-
-                            <div className="message-body" data-cy="CommentBody">
-                              {comment.body}
-                            </div>
-                          </article>
-                        ))}
-                      </>
-                    </>
-                  )}
-                </>
-              )}
-            </>
-          )}
-
+          <CommentsComponent />
           {!formIsOpen ? (
             <button
               data-cy="WriteCommentButton"
@@ -115,15 +122,14 @@ export const PostDetails: React.FC<Props> = ({
             >
               Write a comment
             </button>
-          ) : null}
+          ) : (
+            <NewCommentForm
+              postId={post?.id}
+              getPostInfo={getPostInfo}
+              setError={setError}
+            />
+          )}
         </div>
-
-        {formIsOpen ? (
-          <NewCommentForm
-            postId={post?.id}
-            getPostInfo={getPostInfo}
-          />
-        ) : null}
       </div>
     </div>
   );

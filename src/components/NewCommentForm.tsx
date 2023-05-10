@@ -4,10 +4,13 @@ import { addComment } from '../api/posts';
 
 interface Props {
   postId: number | undefined,
-  getPostInfo: () => void
+  getPostInfo: () => void,
+  setError: React.Dispatch<React.SetStateAction<string>>
 }
 
-export const NewCommentForm: React.FC<Props> = ({ postId, getPostInfo }) => {
+export const NewCommentForm: React.FC<Props> = ({
+  postId, getPostInfo, setError,
+}) => {
   const [body, setBody] = useState('');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -24,6 +27,13 @@ export const NewCommentForm: React.FC<Props> = ({ postId, getPostInfo }) => {
           .then(() => {
             getPostInfo();
             setBody('');
+            setError('');
+          })
+          .catch(() => {
+            setError(
+              'Cannot add comment. '
+              + 'Check your internet connection and try again.',
+            );
           });
 
         return;
@@ -47,18 +57,22 @@ export const NewCommentForm: React.FC<Props> = ({ postId, getPostInfo }) => {
     }
   };
 
+  const onReset = () => {
+    setBody('');
+    setEmail('');
+    setName('');
+  };
+
+  const onSubmit = (ev: React.FormEvent<HTMLFormElement>) => {
+    ev.preventDefault();
+    addCommentRequest();
+  };
+
   return (
     <form
       data-cy="NewCommentForm"
-      onSubmit={(ev) => {
-        ev.preventDefault();
-        addCommentRequest();
-      }}
-      onReset={() => {
-        setBody('');
-        setEmail('');
-        setName('');
-      }}
+      onSubmit={onSubmit}
+      onReset={onReset}
     >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
@@ -109,7 +123,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, getPostInfo }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             value={email}
             id="comment-author-email"

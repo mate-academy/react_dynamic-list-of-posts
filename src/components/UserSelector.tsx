@@ -12,6 +12,12 @@ export const UserSelector: React.FC<Props> = ({
   setSelectedUser, users, selectedUser,
 }) => {
   const [menuIsOpen, setMenuIsOpen] = useState(false);
+  const onClickOnUser = (user: User) => () => {
+    setSelectedUser(user);
+    setMenuIsOpen(false);
+  };
+
+  const onClickOnMenu = () => setMenuIsOpen(!menuIsOpen);
 
   return (
     <div
@@ -24,7 +30,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setMenuIsOpen(!menuIsOpen)}
+          onClick={onClickOnMenu}
         >
           <span>
             {selectedUser ? selectedUser?.name : 'Choose a user'}
@@ -48,10 +54,7 @@ export const UserSelector: React.FC<Props> = ({
                     'is-active': user === selectedUser,
                   },
                 )}
-                onClick={() => {
-                  setSelectedUser(user);
-                  setMenuIsOpen(false);
-                }}
+                onClick={onClickOnUser(user)}
                 key={user.id}
               >
                 {user.name}

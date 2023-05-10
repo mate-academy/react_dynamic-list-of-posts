@@ -4,8 +4,8 @@ import { Comment } from '../types/Comment';
 import { client } from '../utils/fetchClient';
 import { CommentRequest } from '../types/commentRequest';
 
-export const getUsers = (url: string) => {
-  return client.get<User[]>(`/${url}`);
+export const getUsers = () => {
+  return client.get<User[]>('/users');
 };
 
 export const getPostsByUser = (userId: number) => {
