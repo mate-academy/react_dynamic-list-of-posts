@@ -104,18 +104,20 @@ export const PostDetails: React.FC<Props> = ({
   }, [post?.id]);
 
   useEffect(() => {
+    let timer = 0;
+
     if (typeOfError === Errors.Adding || typeOfError === Errors.Deleting) {
-      const timer = window.setTimeout(() => {
+      timer = window.setTimeout(() => {
         setTypeOfError(Errors.None);
         setRemovingCommentsId(null);
       }, 3000);
-
-      return () => {
-        window.clearTimeout(timer);
-      };
     }
 
-    return () => {};
+    return () => {
+      if (timer) {
+        window.clearTimeout(timer);
+      }
+    };
   }, [typeOfError, setTypeOfError, setRemovingCommentsId]);
 
   return (
