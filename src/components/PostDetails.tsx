@@ -7,7 +7,7 @@ import { NewCommentForm } from './NewCommentForm';
 type Props = {
   selectedPost: Post | null,
   filteredComments: Comment[],
-  isLoading: boolean,
+  isCommentLoading: boolean,
   isError: boolean,
   handleAddComment: (
     name: string,
@@ -20,7 +20,7 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({
   selectedPost,
   filteredComments,
-  isLoading,
+  isCommentLoading,
   isError,
   handleAddComment,
   handleRemoveComment,
@@ -41,7 +41,7 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {isLoading && <Loader />}
+          {isCommentLoading && <Loader />}
 
           {isError && (
             <div className="notification is-danger" data-cy="CommentsError">
@@ -49,62 +49,68 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {!filteredComments.length
-            ? (
-              <p className="title is-4" data-cy="NoCommentsMessage">
-                No comments yet
-              </p>
-            ) : (
-              <p className="title is-4">Comments:</p>
-            )}
+          {!isCommentLoading && (
+            (!filteredComments.length)
+              ? (
+                <p className="title is-4" data-cy="NoCommentsMessage">
+                  No comments yet
+                </p>
+              ) : (
+                <p className="title is-4">Comments:</p>
+              )
+            )
+          }
 
-          {filteredComments.map(comment => (
-            <article
-              className="message is-small"
-              data-cy="Comment"
-              key={comment.id}
-            >
-              <div className="message-header">
-                <a
-                  href={`mailto:${comment.email}`}
-                  data-cy="CommentAuthor"
-                >
-                  {comment.name}
-                </a>
-                <button
-                  data-cy="CommentDelete"
-                  type="button"
-                  className="delete is-small"
-                  aria-label="delete"
-                  onClick={() => handleRemoveComment(comment.id)}
-                >
-                  delete button
-                </button>
-              </div>
-
-              <div className="message-body" data-cy="CommentBody">
-                {comment.body}
-              </div>
-            </article>
-          ))}
-
-          {isButtonNotVisible
-            ? (
-              <NewCommentForm
-                handleAddComment={handleAddComment}
-                selectedPost={selectedPost}
-                setIsButtonNotVisible={setIsButtonNotVisible}
-              />
-            ) : (
-              <button
-                data-cy="WriteCommentButton"
-                type="button"
-                className="button is-link"
-                onClick={() => setIsButtonNotVisible(true)}
+          {!isCommentLoading && (
+            filteredComments.map(comment => (
+              <article
+                className="message is-small"
+                data-cy="Comment"
+                key={comment.id}
               >
-                Write a comment
-              </button>
-            )}
+                <div className="message-header">
+                  <a
+                    href={`mailto:${comment.email}`}
+                    data-cy="CommentAuthor"
+                  >
+                    {comment.name}
+                  </a>
+                  <button
+                    data-cy="CommentDelete"
+                    type="button"
+                    className="delete is-small"
+                    aria-label="delete"
+                    onClick={() => handleRemoveComment(comment.id)}
+                  >
+                    delete button
+                  </button>
+                </div>
+
+                <div className="message-body" data-cy="CommentBody">
+                  {comment.body}
+                </div>
+              </article>
+            )))}
+
+          {(!isCommentLoading) && (
+            (isButtonNotVisible)
+              ? (
+                <NewCommentForm
+                  handleAddComment={handleAddComment}
+                  selectedPost={selectedPost}
+                  setIsButtonNotVisible={setIsButtonNotVisible}
+                />
+              ) : (
+                <button
+                  data-cy="WriteCommentButton"
+                  type="button"
+                  className="button is-link"
+                  onClick={() => setIsButtonNotVisible(true)}
+                >
+                  Write a comment
+                </button>
+              )
+          )}
         </div>
       </div>
     </div>

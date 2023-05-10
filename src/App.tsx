@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -17,6 +17,7 @@ import { Comment } from './types/Comment';
 
 export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isCommentLoading, setIsCommentLoading] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -45,7 +46,7 @@ export const App: React.FC = () => {
   }
 
   async function fetchComments() {
-    setIsLoading(true);
+    setIsCommentLoading(true);
     try {
       const commentsList = await getComments();
 
@@ -53,7 +54,7 @@ export const App: React.FC = () => {
     } catch {
       setIsError(true);
     } finally {
-      setIsLoading(false);
+      setIsCommentLoading(false);
     }
   }
 
@@ -77,10 +78,15 @@ export const App: React.FC = () => {
     fetchComments();
   }, [selectedPost]);
 
-  const filteredPosts = posts
-    .filter(post => selectedUser?.id === post.userId);
-  const filteredComments = comments
-    .filter(comment => selectedPost?.id === comment.postId);
+  const filteredPosts = useMemo(() => {
+    return posts
+      .filter(post => selectedUser?.id === post.userId);
+  }, [posts]);
+
+  const filteredComments = useMemo(() => {
+    return comments
+      .filter(comment => selectedPost?.id === comment.postId);
+  }, [comments]);
 
   const handleAddComment = async (
     name: string,
@@ -176,7 +182,7 @@ export const App: React.FC = () => {
               <PostDetails
                 selectedPost={selectedPost}
                 filteredComments={filteredComments}
-                isLoading={isLoading}
+                isCommentLoading={isCommentLoading}
                 isError={isError}
                 handleAddComment={handleAddComment}
                 handleRemoveComment={handleRemoveComment}
