@@ -57,6 +57,14 @@ export const PostDetails: React.FC<Props> = ({
     setCommentAdding(false);
     setTypeOfError(Errors.None);
 
+    if (newCommentsData.name === ''
+    || newCommentsData.email === ''
+    || newCommentsData.body === '') {
+      setTypeOfError(Errors.Form);
+
+      return;
+    }
+
     try {
       setCommentAdding(true);
 
@@ -69,6 +77,8 @@ export const PostDetails: React.FC<Props> = ({
 
         return [comment];
       });
+
+      setNewCommentsData({ ...newCommentsData, body: '' });
     } catch (error) {
       setTypeOfError(Errors.Adding);
     } finally {
@@ -209,6 +219,7 @@ export const PostDetails: React.FC<Props> = ({
             setNewCommentsData={setNewCommentsData}
             addComment={addComment}
             isCommentAdding={isCommentAdding}
+            setTypeOfError={setTypeOfError}
             typeOfError={typeOfError}
           />
         )}

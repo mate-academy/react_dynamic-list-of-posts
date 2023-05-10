@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import classNames from 'classnames';
 import { CommentData } from '../types/Comment';
 import { Errors } from '../types/Errors';
@@ -8,6 +7,7 @@ type Props = {
   setNewCommentsData: (data: CommentData) => void;
   addComment: () => void;
   isCommentAdding: boolean;
+  setTypeOfError: (data: Errors) => void;
   typeOfError: Errors;
 };
 
@@ -16,54 +16,46 @@ export const NewCommentForm: React.FC<Props> = ({
   setNewCommentsData,
   addComment,
   isCommentAdding,
+  setTypeOfError,
   typeOfError,
 }) => {
-  const [nameError, setNameError] = useState(false);
-  const [emailError, setEmailError] = useState(false);
-  const [bodyError, setBodyError] = useState(false);
-
   const inputCommentsName = (event: React.FormEvent<HTMLInputElement>) => {
     const name = event.currentTarget.value;
 
     setNewCommentsData({ ...newCommentsData, name });
-    setNameError(false);
+
+    if (newCommentsData.email !== ''
+    && newCommentsData.body !== '') {
+      setTypeOfError(Errors.None);
+    }
   };
 
   const inputCommentsEmail = (event: React.FormEvent<HTMLInputElement>) => {
     const email = event.currentTarget.value;
 
     setNewCommentsData({ ...newCommentsData, email });
-    setEmailError(false);
+
+    if (newCommentsData.name !== ''
+    && newCommentsData.body !== '') {
+      setTypeOfError(Errors.None);
+    }
   };
 
   const inputCommentsBody = (event: React.FormEvent<HTMLTextAreaElement>) => {
     const body = event.currentTarget.value;
 
     setNewCommentsData({ ...newCommentsData, body });
-    setBodyError(false);
+
+    if (newCommentsData.email !== ''
+    && newCommentsData.name !== '') {
+      setTypeOfError(Errors.None);
+    }
   };
 
   const handleAddClick = (event: React.FormEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    if (newCommentsData.name !== ''
-    && newCommentsData.email !== ''
-    && newCommentsData.body !== '') {
-      addComment();
-      setNewCommentsData({ ...newCommentsData, body: '' });
-    } else {
-      if (newCommentsData.name === '') {
-        setNameError(true);
-      }
-
-      if (newCommentsData.email === '') {
-        setEmailError(true);
-      }
-
-      if (newCommentsData.body === '') {
-        setBodyError(true);
-      }
-    }
+    addComment();
   };
 
   const handleClearClick = () => {
@@ -74,9 +66,7 @@ export const NewCommentForm: React.FC<Props> = ({
       body: '',
     });
 
-    setNameError(false);
-    setEmailError(false);
-    setBodyError(false);
+    setTypeOfError(Errors.None);
   };
 
   return (
@@ -93,7 +83,11 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames(
-              'input', { 'is-danger': nameError },
+              'input',
+              {
+                'is-danger': typeOfError === Errors.Form
+              && newCommentsData.name === '',
+              },
             )}
             value={newCommentsData.name}
             onChange={inputCommentsName}
@@ -103,7 +97,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-user" />
           </span>
 
-          {nameError && (
+          { typeOfError === Errors.Form && newCommentsData.name === '' && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -113,7 +107,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {nameError && (
+        {typeOfError === Errors.Form && newCommentsData.name === '' && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -132,7 +126,11 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames(
-              'input', { 'is-danger': emailError },
+              'input',
+              {
+                'is-danger': typeOfError === Errors.Form
+              && newCommentsData.email === '',
+              },
             )}
             value={newCommentsData.email}
             onChange={inputCommentsEmail}
@@ -142,7 +140,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-envelope" />
           </span>
 
-          {emailError && (
+          {typeOfError === Errors.Form && newCommentsData.email === '' && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -152,7 +150,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {emailError && (
+        {typeOfError === Errors.Form && newCommentsData.email === '' && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -170,14 +168,18 @@ export const NewCommentForm: React.FC<Props> = ({
             name="body"
             placeholder="Type comment here"
             className={classNames(
-              'textarea', { 'is-danger': bodyError },
+              'textarea',
+              {
+                'is-danger': typeOfError === Errors.Form
+              && newCommentsData.body === '',
+              },
             )}
             value={newCommentsData.body}
             onChange={inputCommentsBody}
           />
         </div>
 
-        {bodyError && (
+        {typeOfError === Errors.Form && newCommentsData.body === '' && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
