@@ -3,17 +3,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Post } from '../types/Post';
 
 type Props = {
-  addComment: (
-    value1: string,
-    value2: string,
-    value3: string,
+  handleAddComment: (
+    name: string,
+    email: string,
+    body: string,
   ) => void,
   selectedPost: Post | null,
-  setIsButtonNotVisible: (value: boolean) => void,
+  setIsButtonNotVisible: (isVisible: boolean) => void,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
-  addComment,
+  handleAddComment,
   selectedPost,
   setIsButtonNotVisible,
 }) => {
@@ -41,25 +41,27 @@ export const NewCommentForm: React.FC<Props> = ({
     }
 
     if (name.trim().length && email.trim().length && commentText) {
-      addComment(name, email, commentText);
+      handleAddComment(name, email, commentText);
       setIsCommentLoading(false);
       setCommentText('');
     }
   };
 
-  const nameHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setHasNameError(false);
 
     setName(e.target.value);
   };
 
-  const emailHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setHasEmailError(false);
 
     setEmail(e.target.value);
   };
 
-  const commentTextHandler = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleCommentTextChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     setHasCommentTextError(false);
 
     setCommentText(e.target.value);
@@ -77,7 +79,7 @@ export const NewCommentForm: React.FC<Props> = ({
     didMount.current = true;
   }, [selectedPost]);
 
-  const handleClear = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClearButton = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setName('');
     setEmail('');
@@ -108,7 +110,7 @@ export const NewCommentForm: React.FC<Props> = ({
               { 'is-danger': hasNameError },
             )}
             value={name}
-            onChange={nameHandler}
+            onChange={handleNameChange}
           />
 
           <span className="icon is-small is-left">
@@ -149,7 +151,7 @@ export const NewCommentForm: React.FC<Props> = ({
               { 'is-danger': hasEmailError },
             )}
             value={email}
-            onChange={emailHandler}
+            onChange={handleEmailChange}
           />
 
           <span className="icon is-small is-left">
@@ -189,7 +191,7 @@ export const NewCommentForm: React.FC<Props> = ({
               { 'is-danger': hasCommentTextError },
             )}
             value={commentText}
-            onChange={commentTextHandler}
+            onChange={handleCommentTextChange}
           />
         </div>
 
@@ -220,7 +222,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="submit"
             className="button is-link is-light"
-            onClick={handleClear}
+            onClick={handleClearButton}
           >
             Clear
           </button>

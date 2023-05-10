@@ -6,7 +6,7 @@ type Props = {
   filteredPosts: Post[] | [],
   setIsSelected: React.Dispatch<React.SetStateAction<boolean>>
   isSelected: boolean,
-  selectPost: (value: Post) => void,
+  selectPost: (post: Post) => void,
   selectedPost: Post | null,
 };
 

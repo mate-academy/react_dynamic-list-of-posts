@@ -15,7 +15,7 @@ export const getComments = () => {
   return client.get<Comment[]>('/comments');
 };
 
-export const addComments = (data: NewComment) => {
+export const addComment = (data: NewComment) => {
   return client.post<Comment>('/comments', data);
 };
 

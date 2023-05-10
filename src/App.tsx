@@ -9,7 +9,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import {
-  addComments, deleteComment, getComments, getPosts, getUsers,
+  addComment, deleteComment, getComments, getPosts, getUsers,
 } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
@@ -78,23 +78,27 @@ export const App: React.FC = () => {
   }, [selectedPost]);
 
   const filteredPosts = posts
-    .filter(post => selectedUser?.id === post.userId) || [];
+    .filter(post => selectedUser?.id === post.userId);
   const filteredComments = comments
-    .filter(comment => selectedPost?.id === comment.postId) || [];
+    .filter(comment => selectedPost?.id === comment.postId);
 
-  const addComment = async (
+  const handleAddComment = async (
     name: string,
     email: string,
     body: string,
   ) => {
-    const newComment = await addComments({
-      name,
-      email,
-      body,
-      postId: selectedPost?.id,
-    });
+    let newComment;
 
-    setComments([...filteredComments, newComment]);
+    if (selectedPost) {
+      newComment = await addComment({
+        name,
+        email,
+        body,
+        postId: selectedPost.id,
+      });
+
+      setComments([...filteredComments, newComment]);
+    }
   };
 
   const handleRemoveComment = async (selectedCommentId: number) => {
@@ -137,7 +141,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(selectedUser && !filteredPosts.length) && (
+                {(selectedUser && !filteredPosts.length && !isLoading) && (
                   <div
                     className="notification is-warning"
                     data-cy="NoPostsYet"
@@ -146,7 +150,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(selectedUser && filteredPosts.length > 0) && (
+                {(selectedUser && filteredPosts.length > 0 && !isLoading) && (
                   <PostsList
                     filteredPosts={filteredPosts}
                     selectedPost={selectedPost}
@@ -174,7 +178,7 @@ export const App: React.FC = () => {
                 filteredComments={filteredComments}
                 isLoading={isLoading}
                 isError={isError}
-                addComment={addComment}
+                handleAddComment={handleAddComment}
                 handleRemoveComment={handleRemoveComment}
               />
             </div>

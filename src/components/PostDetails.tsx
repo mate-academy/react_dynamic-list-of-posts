@@ -9,12 +9,12 @@ type Props = {
   filteredComments: Comment[],
   isLoading: boolean,
   isError: boolean,
-  addComment: (
-    value1: string,
-    value2: string,
-    value3: string
+  handleAddComment: (
+    name: string,
+    email: string,
+    body: string
   ) => void,
-  handleRemoveComment: (value: number) => void,
+  handleRemoveComment: (commentID: number) => void,
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -22,7 +22,7 @@ export const PostDetails: React.FC<Props> = ({
   filteredComments,
   isLoading,
   isError,
-  addComment,
+  handleAddComment,
   handleRemoveComment,
 }) => {
   const [isButtonNotVisible, setIsButtonNotVisible] = useState(false);
@@ -91,7 +91,7 @@ export const PostDetails: React.FC<Props> = ({
           {isButtonNotVisible
             ? (
               <NewCommentForm
-                addComment={addComment}
+                handleAddComment={handleAddComment}
                 selectedPost={selectedPost}
                 setIsButtonNotVisible={setIsButtonNotVisible}
               />
