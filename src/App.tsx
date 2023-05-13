@@ -47,10 +47,12 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
+    setPosts([]);
+
     const Posts = async () => {
       if (selectedUser) {
         setIsLoading(true);
-
+        setIsOpened(false);
         try {
           const innerPosts = await getPosts(selectedUser?.id);
 
@@ -59,6 +61,7 @@ export const App: React.FC = () => {
           throw new Error();
         } finally {
           setIsLoading(false);
+          setSelectedPost(null);
         }
       }
     };
@@ -124,14 +127,17 @@ export const App: React.FC = () => {
                     </div>
                   )}
 
-                {(selectedPost !== null && posts.length === 0) && (
-                  <div
-                    className="notification is-warning"
-                    data-cy="NoPostsYet"
-                  >
-                    No posts yet
-                  </div>
-                )}
+                {(selectedUser !== null
+                  && posts.length === 0
+                  && !isLoading
+                ) && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  )}
 
                 {posts.length !== 0
                   && (

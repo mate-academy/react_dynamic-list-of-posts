@@ -169,70 +169,74 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         </div>
 
         <div className="block">
-          {isLoading
-            && <Loader />}
-
           {error
             && (
               <div className="notification is-danger" data-cy="CommentsError">
                 Something went wrong!
               </div>
             )}
-          {comments.length !== 0 ? (
-            <div>
-              <p className="title is-4">Comments:</p>
-              {comments.map((comment) => {
-                const { name, body, id } = comment;
 
-                return (
-                  <article
-                    className="message is-small"
-                    data-cy="Comment"
-                    key={id}
-                  >
-                    <div className="message-header">
-                      <a
-                        href="mailto:misha@mate.academy"
-                        data-cy="CommentAuthor"
-                      >
-                        {name}
-                      </a>
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
-                        onClick={(event) => deleteCommentHandler(id, event)}
-                      >
-                        delete button
-                      </button>
-                    </div>
-
-                    <div className="message-body" data-cy="CommentBody">
-                      {body}
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
+          {isLoading ? (
+            <Loader />
           ) : (
-            <p className="title is-4" data-cy="NoCommentsMessage">
-              No comments yet
-            </p>
-          )}
+            <>
+              {comments.length !== 0 ? (
+                <div>
+                  <p className="title is-4">Comments:</p>
+                  {comments.map((comment) => {
+                    const { name, body, id } = comment;
 
-          {!isWriting
-            && (
-              <button
-                data-cy="WriteCommentButton"
-                type="button"
-                className={classNames('button', 'is-link')}
-                onClick={() => setIsWriting(isWriteComment => !isWriteComment)}
-              >
-                Write a comment
-              </button>
-            )}
+                    return (
+                      <article
+                        className="message is-small"
+                        data-cy="Comment"
+                        key={id}
+                      >
+                        <div className="message-header">
+                          <a
+                            href="mailto:misha@mate.academy"
+                            data-cy="CommentAuthor"
+                          >
+                            {name}
+                          </a>
+                          <button
+                            data-cy="CommentDelete"
+                            type="button"
+                            className="delete is-small"
+                            aria-label="delete"
+                            onClick={(event) => deleteCommentHandler(id, event)}
+                          >
+                            delete button
+                          </button>
+                        </div>
+
+                        <div className="message-body" data-cy="CommentBody">
+                          {body}
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p className="title is-4" data-cy="NoCommentsMessage">
+                  No comments yet
+                </p>
+              )}
+
+              {!isWriting && (
+                <button
+                  data-cy="WriteCommentButton"
+                  type="button"
+                  className={classNames('button', 'is-link')}
+                  onClick={() => setIsWriting(true)}
+                >
+                  Write a comment
+                </button>
+              )}
+            </>
+          )}
         </div>
+
         {isWriting
           && (
             <NewCommentForm
