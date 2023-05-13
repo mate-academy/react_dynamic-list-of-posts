@@ -131,13 +131,13 @@ export const App: React.FC = () => {
                   && posts.length === 0
                   && !isLoading
                 ) && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )}
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                )}
 
                 {posts.length !== 0
                   && (

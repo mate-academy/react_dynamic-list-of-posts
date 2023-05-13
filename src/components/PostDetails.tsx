@@ -237,7 +237,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
           )}
         </div>
 
-        {isWriting
+        {(isWriting && !isLoading)
           && (
             <NewCommentForm
               onCommentData={imputHandler}
