@@ -147,6 +147,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
           setError(true);
         } finally {
           setIsLoading(false);
+          setIsWriting(false);
         }
       }
     };

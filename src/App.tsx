@@ -105,7 +105,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {selectedUser === null && (
+                {(selectedUser === null && !error) && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
