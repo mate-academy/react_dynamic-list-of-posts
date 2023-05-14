@@ -54,7 +54,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     return emailRegex.test(email.trim());
-  }, [newComment]);
+  }, []);
 
   const validateFields = useCallback((
     innerNewComment: CommentData, innerFieldErrors: FieldErrors,
@@ -75,7 +75,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
     }
 
     return setFieldError(newFieldErrors);
-  }, [newComment]);
+  }, [isEmailValid]);
 
   const addComment = useCallback(async (
     event: FormEvent<HTMLButtonElement>,
@@ -109,7 +109,6 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
 
   const imputHandler = useCallback((
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    innerNewComment: CommentData,
   ) => {
     event.preventDefault();
     const { name, value } = event.target;
@@ -120,17 +119,20 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       setFieldError({ ...fieldErrors, [name]: false });
     }
 
-    return setNewComment({ ...innerNewComment, [name]: value });
-  }, [newComment]);
+    return setNewComment({ ...newComment, [name]: value });
+  }, [fieldErrors]);
 
-  const deleteCommentHandler = useCallback(async (commentId: number, event) => {
+  const deleteCommentHandler = useCallback(async (
+    commentId: number,
+    event,
+  ) => {
     event.preventDefault();
     setComments(comments.filter(comment => comment.id !== commentId));
 
     try {
       await deleteComment(commentId);
     } catch (innerError) {
-      throw new Error();
+      throw new Error('Failed to delete the comment. Please try again later.');
     }
   }, [comments]);
 

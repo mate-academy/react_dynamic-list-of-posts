@@ -49,7 +49,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     setPosts([]);
 
-    const Posts = async () => {
+    const loadPosts = async () => {
       if (selectedUser) {
         setIsLoading(true);
         setIsOpened(false);
@@ -58,7 +58,7 @@ export const App: React.FC = () => {
 
           setPosts(innerPosts);
         } catch (innerError) {
-          throw new Error();
+          throw new Error('Failed to load posts. Please try again later.');
         } finally {
           setIsLoading(false);
           setSelectedPost(null);
@@ -66,7 +66,7 @@ export const App: React.FC = () => {
       }
     };
 
-    Posts();
+    loadPosts();
   }, [selectedUser]);
 
   const selectUser = (user: User) => {
@@ -78,7 +78,7 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
-    const Users = async () => {
+    const loadUsers = async () => {
       try {
         const innerUsers = await getUsers();
 
@@ -88,7 +88,7 @@ export const App: React.FC = () => {
       }
     };
 
-    Users();
+    loadUsers();
   }, []);
 
   return (

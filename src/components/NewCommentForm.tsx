@@ -8,8 +8,7 @@ import { FieldErrors } from '../types/Errors';
 
 interface Props {
   onCommentData: (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newComment: CommentData
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void
   onAddComment: (event: FormEvent<HTMLButtonElement>) => void
   onClearForm: () => void
@@ -44,7 +43,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': name })}
             onChange={(event) => {
-              onCommentData(event, newComment);
+              onCommentData(event);
             }}
           />
 
@@ -82,7 +81,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': email })}
-            onChange={(event) => onCommentData(event, newComment)}
+            onChange={(event) => onCommentData(event)}
           />
 
           <span className="icon is-small is-left">
@@ -118,7 +117,7 @@ export const NewCommentForm: React.FC<Props> = ({
             value={newComment?.body}
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': body })}
-            onChange={(event) => onCommentData(event, newComment)}
+            onChange={(event) => onCommentData(event)}
           />
         </div>
 
