@@ -9,7 +9,6 @@ function wait(delay: number) {
 
 // To have autocompletion and avoid mistypes
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
-
 function request<T>(
   url: string,
   method: RequestMethod = 'GET',
