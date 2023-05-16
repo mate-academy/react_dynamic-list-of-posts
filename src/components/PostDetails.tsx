@@ -23,12 +23,12 @@ export const PostDetails: React.FC<Props> = ({
   setIsCommentsError,
 }) => {
   const { id, title, body } = selectedPost;
-  const [comments, setComments] = useState<Comment[]>();
+  const [comments, setComments] = useState<Comment[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (selectedPost) {
-      setComments(undefined);
+      setComments(null);
       setIsLoading(true);
       getPostComments(selectedPost.id)
         .then((res) => {

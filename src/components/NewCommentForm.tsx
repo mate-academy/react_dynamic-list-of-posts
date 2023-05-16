@@ -43,7 +43,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const validateForm = useCallback(() => {
     for (const [key, value] of Object.entries(formFields)) {
       if (!value.length) {
-        showError(key.toString() as FormFieldsNames);
+        showError(`${key.toString()}` as FormFieldsNames);
       }
     }
   }, [formFields]);
@@ -74,6 +74,11 @@ export const NewCommentForm: React.FC<Props> = ({
           setFormErrors({ ...initialState.formErrors });
         });
     }
+  };
+
+  const onClear = () => {
+    setFormErrors({ ...initialState.formErrors });
+    setFormFields(initialState.formFields);
   };
 
   return (
@@ -151,10 +156,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={() => {
-              setFormErrors({ ...initialState.formErrors });
-              setFormFields(initialState.formFields);
-            }}
+            onClick={onClear}
           >
             Clear
           </button>
