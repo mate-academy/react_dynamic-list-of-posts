@@ -1,3 +1,4 @@
+import { CommentPostBody } from '../types/CommentPostBody';
 import { client } from '../utils/fetchClient';
 
 export const getUsers = () => {
@@ -12,7 +13,7 @@ export const getPostComments = (postId: number) => {
   return client.get(`/comments?postId=${postId}`);
 };
 
-export const postComment = (data: {}) => {
+export const postComment = (data: CommentPostBody) => {
   return client.post('/comments', data);
 };
 

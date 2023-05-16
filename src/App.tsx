@@ -20,10 +20,10 @@ import { Comment } from './types/Comment';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<User | null>(null);
   const [isPostsLoading, setIsPostsLoading] = useState(false);
   const [posts, setPosts] = useState<Post[]>();
-  const [selectedPost, setSelectedPost] = useState<Post>();
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isNewCommentForm, setIsNewCommentForm] = useState(false);
   const [newComment, setNewComment] = useState<Comment | null>(null);
   const [isPostsError, setIsPostsError] = useState(false);
@@ -46,7 +46,7 @@ export const App: React.FC = () => {
           setIsPostsError(true);
         })
         .finally(() => {
-          setIsPostsLoading(() => false);
+          setIsPostsLoading(false);
         });
     }
   }, [user]);

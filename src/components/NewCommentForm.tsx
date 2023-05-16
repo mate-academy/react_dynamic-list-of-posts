@@ -38,20 +38,20 @@ export const NewCommentForm: React.FC<Props> = ({
   const showError = useCallback((key: FormFieldsNames) => {
     formErrors[key] = true;
     setFormErrors(prev => ({ ...prev, ...formErrors }));
-  }, []);
+  }, [formFields]);
 
-  const validateForm = () => {
+  const validateForm = useCallback(() => {
     for (const [key, value] of Object.entries(formFields)) {
       if (!value.length) {
         showError(key.toString() as FormFieldsNames);
       }
     }
-  };
+  }, [formFields]);
 
   const onFieldChange = (
     { value, name }: EventTarget & HTMLInputElement | HTMLTextAreaElement,
   ) => {
-    setFormErrors(prev => ({ ...prev, [name]: false }));
+    setFormErrors({ ...initialState.formErrors });
     setFormFields(prev => ({ ...prev, [name]: value }));
   };
 
@@ -59,7 +59,7 @@ export const NewCommentForm: React.FC<Props> = ({
     e.preventDefault();
     validateForm();
     setIsCommentsError(false);
-    if (Object.values(formErrors).every(item => !item)) {
+    if (!Object.values(formFields).some(item => !item)) {
       setIsLoading(true);
       postComment({ postId: selectedPost.id, ...formFields })
         .then((res) => {
@@ -68,10 +68,10 @@ export const NewCommentForm: React.FC<Props> = ({
         })
         .catch(() => {
           setIsCommentsError(true);
-          setFormErrors(initialState.formErrors);
         })
         .finally(() => {
           setIsLoading(false);
+          setFormErrors({ ...initialState.formErrors });
         });
     }
   };
@@ -152,7 +152,7 @@ export const NewCommentForm: React.FC<Props> = ({
             type="reset"
             className="button is-link is-light"
             onClick={() => {
-              setFormErrors(initialState.formErrors);
+              setFormErrors({ ...initialState.formErrors });
               setFormFields(initialState.formFields);
             }}
           >

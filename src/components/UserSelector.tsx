@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { User } from '../types/User';
 
 type Props = {
-  user: User | undefined,
+  user: User | null,
   setUser: (user: User) => void,
   users: User[],
   setIsPostsLoading: (isLoading: boolean)=> void,
@@ -48,7 +48,7 @@ export const UserSelector: React.FC<Props> = ({
             {users.map((item) => (
               <a
                 key={item.id}
-                href="#user-1"
+                href={`#user-${item.id}`}
                 className="dropdown-item"
                 onClick={() => onUserChoose(item)}
               >

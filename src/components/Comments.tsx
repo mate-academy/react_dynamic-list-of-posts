@@ -40,9 +40,7 @@ export const Comments: React.FC<Props> = ({
               className="delete is-small"
               aria-label="delete"
               onClick={() => onDelete(comment.id)}
-            >
-              delete button
-            </button>
+            />
           </div>
 
           <div className="message-body" data-cy="CommentBody">

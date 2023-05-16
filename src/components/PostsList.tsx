@@ -4,8 +4,8 @@ import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[]
-  selectedPost: Post | undefined,
-  setSelectedPost: (cb: () => Post | undefined) => void,
+  selectedPost: Post | null,
+  setSelectedPost: (postCallback: () => Post | null) => void,
   setIsNewCommentForm: (value: boolean) => void,
   setIsCommentsError: (value: boolean) => void,
 };
@@ -21,7 +21,7 @@ export const PostsList: React.FC<Props> = ({
     setIsCommentsError(false);
     setIsNewCommentForm(false);
     setSelectedPost(() => {
-      return selectedPost?.id === post.id ? undefined : post;
+      return selectedPost?.id === post.id ? null : post;
     });
   };
 
