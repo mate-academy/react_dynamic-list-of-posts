@@ -56,7 +56,7 @@ export const NewCommentForm: React.FC<Props> = ({
     const keys = Object.keys(obj);
 
     keys.forEach((key) => {
-      if (obj[key] === '') {
+      if (!obj[key]) {
         setIsInputError(state => ({
           ...state,
           [key]: true,
@@ -75,7 +75,7 @@ export const NewCommentForm: React.FC<Props> = ({
     };
 
     const values = Object.values(newComment);
-    const isValuesEmpty = values.some(value => value === '');
+    const isValuesEmpty = values.some(value => !value);
 
     if (isValuesEmpty) {
       return setInputError(newComment);

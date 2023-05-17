@@ -21,7 +21,7 @@ export const App: React.FC = () => {
   const [isPostOpen, setIsPostOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isError, setIsError] = useState(false);
-  const isUserNoPosts = userPosts.length === 0 && isUserSelected;
+  const hasUserNoPosts = !userPosts.length && isUserSelected;
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -86,7 +86,7 @@ export const App: React.FC = () => {
                       </div>
                     )}
 
-                    {isUserNoPosts && (
+                    {hasUserNoPosts && (
                       <div
                         className="notification is-warning"
                         data-cy="NoPostsYet"
