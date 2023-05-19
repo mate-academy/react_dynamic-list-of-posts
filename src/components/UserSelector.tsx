@@ -5,9 +5,11 @@ import { User } from '../types/User';
 
 type Props = {
   usersList: User[] | null,
+  setUser: (id: number) => void,
 };
 
-export const UserSelector: React.FC<Props> = ({ usersList }) => {
+export const UserSelector: React.FC<Props>
+= React.memo(({ usersList, setUser }) => {
   const [activeId, setActiveId] = useState<number | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -24,7 +26,7 @@ export const UserSelector: React.FC<Props> = ({ usersList }) => {
       data-cy="UserSelector"
       className={classNames('dropdown', { 'is-active': isOpen })}
     >
-      <div className="dropdown-trigger" onBlur={() => setIsOpen(false)}>
+      <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
@@ -40,7 +42,12 @@ export const UserSelector: React.FC<Props> = ({ usersList }) => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+      <div
+        className="dropdown-menu"
+        id="dropdown-menu"
+        role="menu"
+        onBlur={() => setIsOpen(false)}
+      >
         <div className="dropdown-content">
           {usersList?.map(user => {
             const { id, name } = user;
@@ -53,7 +60,11 @@ export const UserSelector: React.FC<Props> = ({ usersList }) => {
                   'dropdown-item',
                   { 'is-active': id === activeId },
                 )}
-                onClick={() => handleActiveId(id)}
+                onClick={() => {
+                  handleActiveId(id);
+                  setUser(id);
+                  setIsOpen(false);
+                }}
               >
                 {name}
               </a>
@@ -63,4 +74,4 @@ export const UserSelector: React.FC<Props> = ({ usersList }) => {
       </div>
     </div>
   );
-};
+});

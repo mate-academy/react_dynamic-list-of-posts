@@ -2,20 +2,30 @@ import React from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-export const PostDetails: React.FC = () => {
+import { Post } from '../types/Post';
+
+type Props = {
+  activePoste: Post,
+};
+
+export const PostDetails: React.FC<Props> = ({ activePoste }) => {
+  const { id, title, body } = activePoste;
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {/* #18: voluptate et itaque vero tempora molestiae */}
+            {`#${id}: ${title}`}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
+            {/* eveniet quo quis
             laborum totam consequatur non dolor
             ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            est voluptatem vel debitis et magnam */}
+            {body}
           </p>
         </div>
 

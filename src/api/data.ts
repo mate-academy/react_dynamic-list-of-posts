@@ -1,13 +1,14 @@
 import { User } from '../types/User';
+import { Post } from '../types/Post';
 import { client } from '../utils/fetchClient';
 
 export const getUsers = () => {
   return client.get<User[]>('/users');
-};
+}; // return userList
 
-export const getActiveTodos = (userId: number) => {
-  return client.get<User[]>(`/todos?userId=${userId}&completed=false`);
-};
+export const getUserPosts = (userId: number) => {
+  return client.get<Post[]>(`/posts?userId=${userId}`);
+}; // return list of user posts
 
 export const getCompletedTodos = (userId: number) => {
   return client.get<User[]>(`/todos?userId=${userId}&completed=true`);
