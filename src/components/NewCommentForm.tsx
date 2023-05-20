@@ -229,11 +229,16 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={() => setNewComment({
-              name: '',
-              email: '',
-              body: '',
-            })}
+            onClick={() => {
+              setNewComment({
+                name: '',
+                email: '',
+                body: '',
+              });
+              setIsNameError(false);
+              setIsEmailError(false);
+              setIsTextError(false);
+            }}
           >
             Clear
           </button>
