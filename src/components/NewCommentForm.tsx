@@ -30,6 +30,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const [isNameError, setIsNameError] = useState(false);
   const [isEmailError, setIsEmailError] = useState(false);
   const [isTextError, setIsTextError] = useState(false);
+
   const addPostComments = async (comment: Omit<Comment, 'id'>) => {
     setIsError(false);
     setIsAdding(true);
@@ -41,20 +42,22 @@ export const NewCommentForm: React.FC<Props> = ({
         ...postComments,
         response,
       ]);
-
-      setIsAdding(false);
     } catch {
       setIsError(true);
+      setTimeout(() => setIsError(false), 2500);
+    } finally {
       setIsAdding(false);
+
+      setNewComment({
+        ...newComment,
+        body: '',
+      });
     }
-
-    setNewComment({
-      ...newComment,
-      body: '',
-    });
-
-    setIsAdding(false);
   };
+
+  const trimText = (text: string) => (
+    text[0] === ' ' ? text.trim() : text
+  );
 
   return (
     <form
@@ -74,9 +77,9 @@ export const NewCommentForm: React.FC<Props> = ({
           setIsTextError(true);
         }
 
-        if (newComment.name !== ''
-          && newComment.email !== ''
-          && newComment.body !== '') {
+        if (newComment.name
+          && newComment.email
+          && newComment.body) {
           const commentToAdd: Omit<Comment, 'id'> = {
             postId: activePostId,
             name: newComment.name,
@@ -107,7 +110,7 @@ export const NewCommentForm: React.FC<Props> = ({
               setIsNameError(false);
               setNewComment({
                 ...newComment,
-                name: event.target.value,
+                name: trimText(event.target.value),
               });
             }}
           />
@@ -150,7 +153,7 @@ export const NewCommentForm: React.FC<Props> = ({
               setIsEmailError(false);
               setNewComment({
                 ...newComment,
-                email: event.target.value,
+                email: trimText(event.target.value),
               });
             }}
           />
@@ -192,7 +195,7 @@ export const NewCommentForm: React.FC<Props> = ({
               setIsTextError(false);
               setNewComment({
                 ...newComment,
-                body: event.target.value,
+                body: trimText(event.target.value),
               });
             }}
           />

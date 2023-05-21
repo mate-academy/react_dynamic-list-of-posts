@@ -17,26 +17,36 @@ export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [currentUserPosts, setCurrentUserPosts] = useState<Post[]>([]);
-  const [isFindPosts, setIsFindPosts] = useState(false);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(false);
   const [isError, setIsError] = useState(false);
   const [activePost, setActivePost] = useState<null | Post>(null);
 
   const getUserPosts = async (user: User) => {
     setIsError(false);
-    setIsFindPosts(true);
+    setIsLoadingPosts(true);
 
     try {
       const response = await getPosts(user.id);
 
       setCurrentUserPosts(response);
-
-      setIsFindPosts(false);
     } catch {
-      setIsFindPosts(false);
       setIsError(true);
+    } finally {
+      setIsLoadingPosts(false);
     }
+  };
 
-    setIsFindPosts(false);
+  const hideCommemts = () => {
+    setActivePost(null);
+    setCurrentUserPosts([]);
+  };
+
+  const handleUserSelect = (user: User) => {
+    setCurrentUser(user);
+  };
+
+  const handleSelectActivePost = (post: Post) => {
+    setActivePost(post);
   };
 
   useEffect(() => {
@@ -45,8 +55,6 @@ export const App: React.FC = () => {
         setUsers(value);
       });
   }, []);
-
-  // useMemo(() => setActivePost(null), [activePost]);
 
   return (
     <main className="section">
@@ -57,11 +65,10 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  currentUser={currentUser as User}
-                  setCurrentUser={user => setCurrentUser(user)}
+                  currentUser={currentUser}
+                  onUserSelect={handleUserSelect}
                   getUserPosts={getUserPosts}
-                  setActivePost={() => setActivePost(null)}
-                  setCurrentUserPosts={() => setCurrentUserPosts([])}
+                  hideCommemts={hideCommemts}
                 />
               </div>
 
@@ -72,7 +79,7 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {isFindPosts && (
+                {isLoadingPosts && (
                   <Loader />
                 )}
 
@@ -90,7 +97,7 @@ export const App: React.FC = () => {
 
                 {(currentUserPosts.length < 1
                   && currentUser
-                  && !isFindPosts
+                  && !isLoadingPosts
                 ) && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
@@ -100,8 +107,8 @@ export const App: React.FC = () => {
                 {(currentUserPosts.length > 0) && (
                   <PostsList
                     currentUserPosts={currentUserPosts}
-                    activePost={activePost as Post}
-                    setActivePost={post => setActivePost(post)}
+                    activePost={activePost}
+                    setActivePost={handleSelectActivePost}
                   />
                 )}
 

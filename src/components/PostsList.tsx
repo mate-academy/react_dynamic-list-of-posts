@@ -4,7 +4,7 @@ import { Post } from '../types/Post';
 
 type Props = {
   currentUserPosts: Post[],
-  activePost: Post,
+  activePost: Post | null,
   setActivePost(post: Post | null): void,
 };
 

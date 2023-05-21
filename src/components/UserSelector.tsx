@@ -4,20 +4,18 @@ import { User } from '../types/User';
 
 type Props = {
   users: User[];
-  currentUser: User;
-  setCurrentUser(user: User): void,
+  currentUser: User | null;
+  onUserSelect(user: User): void,
   getUserPosts(user: User): void;
-  setActivePost(): void,
-  setCurrentUserPosts(): void,
+  hideCommemts(): void,
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   currentUser,
-  setCurrentUser,
+  onUserSelect,
   getUserPosts,
-  setActivePost,
-  setCurrentUserPosts,
+  hideCommemts,
 }) => {
   const [isButtonTriggered, setIsButtonTriggered] = useState(false);
 
@@ -54,11 +52,10 @@ export const UserSelector: React.FC<Props> = ({
                   { 'is-active': currentUser === user },
                 )}
                 onClick={() => {
-                  setCurrentUser(user);
+                  onUserSelect(user);
                   setIsButtonTriggered(false);
                   getUserPosts(user);
-                  setActivePost();
-                  setCurrentUserPosts();
+                  hideCommemts();
                 }}
               >
                 {user.name}

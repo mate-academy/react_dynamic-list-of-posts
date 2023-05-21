@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { CommentsList } from './CommentsList';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
@@ -12,8 +13,11 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ activePost }) => {
   const [isFindComments, setIsFindComments] = useState(false);
   const [postComments, setPostComments] = useState<Comment[] | []>([]);
+  const [commentToRemove, setCommentToRemove] = useState<Comment | null>(null);
   const [isError, setIsError] = useState(false);
+  const [isDeleteError, setIsDeleteError] = useState(false);
   const [isFormActive, setIsFormActive] = useState(false);
+  const [isRemovingComment, setIsRemovingComment] = useState(false);
   const getPostComments = async (post: Post) => {
     setIsError(false);
     setIsFindComments(true);
@@ -22,28 +26,39 @@ export const PostDetails: React.FC<Props> = ({ activePost }) => {
       const response = await getComments(post.id);
 
       setPostComments(response);
-
-      setIsFindComments(false);
     } catch {
-      setIsFindComments(false);
       setIsError(true);
+    } finally {
+      setIsFindComments(false);
     }
-
-    setIsFindComments(false);
   };
 
   const removeComment = async (comment: Comment) => {
-    setPostComments(
-      postComments.filter(activeComment => activeComment.id !== comment.id),
-    );
+    setIsRemovingComment(true);
+    setIsDeleteError(false);
 
-    deleteComment(comment.id, activePost.id);
+    try {
+      await deleteComment(comment.id, activePost.id);
+
+      setPostComments(
+        postComments.filter(activeComment => activeComment.id !== comment.id),
+      );
+    } catch {
+      setIsDeleteError(true);
+      setTimeout(() => setIsDeleteError(false), 2500);
+    } finally {
+      setIsRemovingComment(false);
+    }
+  };
+
+  const handleRemovingComment = (comment: Comment) => {
+    setCommentToRemove(comment);
+    removeComment(comment);
   };
 
   useEffect(() => {
-    setPostComments([]);
-    setIsFormActive(false);
     getPostComments(activePost);
+    setIsFormActive(false);
   }, [activePost]);
 
   return (
@@ -80,33 +95,19 @@ export const PostDetails: React.FC<Props> = ({ activePost }) => {
             <>
               <p className="title is-4">Comments:</p>
 
-              {postComments.map(comment => (
-                <article
-                  className="message is-small"
-                  data-cy="Comment"
-                  key={comment.id}
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                      {comment.name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => removeComment(comment)}
-                    >
-                      delete button
-                    </button>
-                  </div>
-
-                  <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
-                  </div>
-                </article>
-              ))}
+              <CommentsList
+                postComments={postComments}
+                commentToRemove={commentToRemove}
+                handleRemovingComment={handleRemovingComment}
+                isRemovingComment={isRemovingComment}
+              />
             </>
+          )}
+
+          {isDeleteError && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
+            </div>
           )}
 
           {(!isFindComments && !isError && !isFormActive) && (
