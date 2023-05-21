@@ -47,7 +47,7 @@ export const PostsList: React.FC<Props> = ({
                   )}
                   onClick={() => onHandleSidebarButton(post)}
                 >
-                  {selectedId === post.id ? 'close' : 'open'}
+                  {selectedId === post.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

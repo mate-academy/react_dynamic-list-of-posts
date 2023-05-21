@@ -50,7 +50,7 @@ export const PostDetails: React.FC<Props> = ({
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {`${postId}: ${postTitle}`}
+            {`#${postId}: ${postTitle}`}
           </h2>
 
           <p data-cy="PostBody">

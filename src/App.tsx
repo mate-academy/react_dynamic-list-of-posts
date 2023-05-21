@@ -164,7 +164,7 @@ export const App: React.FC = () => {
 
               <div className="block" data-cy="MainContent">
                 {!userId && (
-                  <p data-cy="Nopost">
+                  <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
