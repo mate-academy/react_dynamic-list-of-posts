@@ -1,8 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-export const NewCommentForm: React.FC = () => {
+import { postComment } from '../api/data';
+
+type Props = {
+  postId: number
+  getNewComments: (postId: number) => Promise<void>;
+};
+
+export const NewCommentForm: React.FC<Props> = ({ postId, getNewComments }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [comment, setComment] = useState('');
+
+  const handleInput = (callback: (param: string) => void) => (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { value } = event.currentTarget;
+
+    callback(value.trim());
+  };
+
+  const postCommentOnServer = async () => {
+    if (name && email && comment) {
+      postComment(postId, name, email, comment)
+        .then(() => getNewComments(postId));
+    }
+  };
+
   return (
-    <form data-cy="NewCommentForm">
+    <form
+      data-cy="NewCommentForm"
+      onSubmit={(event) => event.preventDefault()}
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -12,6 +41,8 @@ export const NewCommentForm: React.FC = () => {
           <input
             type="text"
             name="name"
+            value={name}
+            onChange={handleInput(setName)}
             id="comment-author-name"
             placeholder="Name Surname"
             className="input is-danger"
@@ -43,6 +74,8 @@ export const NewCommentForm: React.FC = () => {
           <input
             type="text"
             name="email"
+            value={email}
+            onChange={handleInput(setEmail)}
             id="comment-author-email"
             placeholder="email@test.com"
             className="input is-danger"
@@ -74,6 +107,8 @@ export const NewCommentForm: React.FC = () => {
           <textarea
             id="comment-body"
             name="body"
+            value={comment}
+            onChange={handleInput(setComment)}
             placeholder="Type comment here"
             className="textarea is-danger"
           />
@@ -86,7 +121,11 @@ export const NewCommentForm: React.FC = () => {
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className="button is-link"
+            onClick={postCommentOnServer}
+          >
             Add
           </button>
         </div>

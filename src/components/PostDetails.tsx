@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
@@ -18,6 +18,18 @@ export const PostDetails: React.FC<Props> = React.memo(({ activePoste }) => {
   const [isGetCommentsError, setIsGetCommentsError] = useState(false);
   const [showNewCommentForm, setShowNewCommentForm] = useState(false);
 
+  const commentsGetter = useCallback(async (postId: number) => {
+    try {
+      const comments = await getComment(postId);
+
+      setListOfComments(comments);
+    } catch {
+      setIsGetCommentsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     setIsLoading(true);
     setListOfComments(null);
@@ -30,19 +42,7 @@ export const PostDetails: React.FC<Props> = React.memo(({ activePoste }) => {
       setShowNewCommentForm(false);
     }
 
-    const commentsGetter = async () => {
-      try {
-        const comments = await getComment(id);
-
-        setListOfComments(comments);
-      } catch {
-        setIsGetCommentsError(true);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    commentsGetter();
+    commentsGetter(id);
   }, [activePoste]);
 
   return (
@@ -76,13 +76,18 @@ export const PostDetails: React.FC<Props> = React.memo(({ activePoste }) => {
                     )}
 
                   {listOfComments?.map(comment => {
-                    const { name, email, body: bodyOfComment } = comment;
+                    const {
+                      id: commentId,
+                      name,
+                      email,
+                      body: bodyOfComment,
+                    } = comment;
 
                     return (
                       <article
                         className="message is-small"
                         data-cy="Comment"
-                        key={id}
+                        key={commentId}
                       >
                         <div className="message-header">
                           <a href={`mailto:${email}`} data-cy="CommentAuthor">
@@ -105,16 +110,24 @@ export const PostDetails: React.FC<Props> = React.memo(({ activePoste }) => {
                     );
                   })}
 
-                  <button
-                    data-cy="WriteCommentButton"
-                    type="button"
-                    className="button is-link"
-                    onClick={() => setShowNewCommentForm(true)}
-                  >
-                    Write a comment
-                  </button>
+                  {!showNewCommentForm && (
+                    <button
+                      data-cy="WriteCommentButton"
+                      type="button"
+                      className="button is-link"
+                      onClick={() => setShowNewCommentForm(true)}
+                    >
+                      Write a comment
+                    </button>
+                  )}
 
-                  {showNewCommentForm && <NewCommentForm />}
+                  {showNewCommentForm
+                    && (
+                      <NewCommentForm
+                        postId={id}
+                        getNewComments={commentsGetter}
+                      />
+                    )}
                 </>
               )}
             </>

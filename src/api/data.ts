@@ -15,11 +15,17 @@ export const getComment = (postId: number) => {
   return client.get<Comment[]>(`/comments?postId=${postId}`);
 };
 
-export const postTodos = (userId: number, title: string) => {
-  return client.post<User>(`/todos?userId=${userId}`, {
-    userId,
-    title,
-    completed: false,
+export const postComment = (
+  postId: number,
+  name: string,
+  email: string,
+  body: string,
+) => {
+  return client.post<Post>('/comments', {
+    postId,
+    name,
+    email,
+    body,
   });
 };
 
