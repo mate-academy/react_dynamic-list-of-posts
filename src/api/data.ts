@@ -29,10 +29,6 @@ export const postComment = (
   });
 };
 
-export const deleteTodos = (id: number) => {
-  return client.delete(`/todos/${id}`);
-};
-
-export const patchTodos = (id: number, data: Partial<User>) => {
-  return client.patch<User>(`/todos/${id}`, data);
+export const deleteComment = (commentId: number) => {
+  return client.delete(`/comments/${commentId}`);
 };

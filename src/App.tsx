@@ -90,6 +90,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   usersList={users}
                   setUser={setSelectedUserId}
+                  setActivePost={setActivePostId}
                 />
               </div>
 
@@ -141,7 +142,7 @@ export const App: React.FC = () => {
           >
             {activePost && (
               <div className="tile is-child box is-success ">
-                <PostDetails activePoste={activePost} />
+                <PostDetails activePostData={activePost} />
               </div>
             )}
 

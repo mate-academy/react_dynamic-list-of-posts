@@ -6,12 +6,14 @@ import { User } from '../types/User';
 type Props = {
   usersList: User[] | null,
   setUser: (id: number) => void,
+  setActivePost: (param: null | number) => void
 };
 
 export const UserSelector: React.FC<Props>
-= React.memo(({ usersList, setUser }) => {
+= React.memo(({ usersList, setUser, setActivePost }) => {
   const [activeId, setActiveId] = useState<number | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [userName, setUserName] = useState('Choose a user');
 
   const handleActiveId = useCallback((id: number) => {
     setActiveId(id);
@@ -34,7 +36,7 @@ export const UserSelector: React.FC<Props>
           aria-controls="dropdown-menu"
           onClick={handleOpenState}
         >
-          <span>Choose a user</span>
+          <span>{userName}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -61,6 +63,8 @@ export const UserSelector: React.FC<Props>
                   { 'is-active': id === activeId },
                 )}
                 onClick={() => {
+                  setActivePost(null);
+                  setUserName(name);
                   handleActiveId(id);
                   setUser(id);
                   setIsOpen(false);
