@@ -61,6 +61,7 @@ export const App: React.FC = () => {
                   setCurrentUser={user => setCurrentUser(user)}
                   getUserPosts={getUserPosts}
                   setActivePost={() => setActivePost(null)}
+                  setCurrentUserPosts={() => setCurrentUserPosts([])}
                 />
               </div>
 

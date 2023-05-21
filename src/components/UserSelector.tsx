@@ -8,6 +8,7 @@ type Props = {
   setCurrentUser(user: User): void,
   getUserPosts(user: User): void;
   setActivePost(): void,
+  setCurrentUserPosts(): void,
 };
 
 export const UserSelector: React.FC<Props> = ({
@@ -16,6 +17,7 @@ export const UserSelector: React.FC<Props> = ({
   setCurrentUser,
   getUserPosts,
   setActivePost,
+  setCurrentUserPosts,
 }) => {
   const [isButtonTriggered, setIsButtonTriggered] = useState(false);
 
@@ -56,6 +58,7 @@ export const UserSelector: React.FC<Props> = ({
                   setIsButtonTriggered(false);
                   getUserPosts(user);
                   setActivePost();
+                  setCurrentUserPosts();
                 }}
               >
                 {user.name}
