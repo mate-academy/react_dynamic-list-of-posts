@@ -26,7 +26,7 @@ export const NewCommentForm: React.FC<Props>
   ) => {
     const { value } = event.currentTarget;
 
-    callback(value.trim());
+    callback(value);
   };
 
   const handleClear = () => {
@@ -71,7 +71,12 @@ export const NewCommentForm: React.FC<Props>
     if (name && email && comment) {
       setIsCommentLoading(true);
 
-      postComment(postId, name, email, comment)
+      postComment(
+        postId,
+        name.trim(),
+        email.trim(),
+        comment.trim(),
+      )
         .then(() => getNewComments(postId))
         .catch(() => commentError(true))
         .finally(() => {

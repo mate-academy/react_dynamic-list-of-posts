@@ -15,6 +15,15 @@ export const UserSelector: React.FC<Props>
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [userName, setUserName] = useState('Choose a user');
 
+  const handleBlur
+  = useCallback((event: React.FocusEvent<HTMLButtonElement>) => {
+    const { relatedTarget } = event;
+
+    if (!relatedTarget || !relatedTarget.classList.contains('dropdown-item')) {
+      setIsOpen(false);
+    }
+  }, []);
+
   const handleActiveId = useCallback((id: number) => {
     setActiveId(id);
   }, []);
@@ -35,6 +44,7 @@ export const UserSelector: React.FC<Props>
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={handleOpenState}
+          onBlur={handleBlur}
         >
           <span>{userName}</span>
 
