@@ -65,15 +65,15 @@ export const NewCommentForm: React.FC<Props> = ({
       onSubmit={(event) => {
         event.preventDefault();
 
-        if (newComment.name === '') {
+        if (!newComment.name.trim()) {
           setIsNameError(true);
         }
 
-        if (newComment.email === '') {
+        if (!newComment.email.trim()) {
           setIsEmailError(true);
         }
 
-        if (newComment.body === '') {
+        if (!newComment.body.trim()) {
           setIsTextError(true);
         }
 
@@ -88,8 +88,6 @@ export const NewCommentForm: React.FC<Props> = ({
           };
 
           addPostComments(commentToAdd);
-        } else {
-          setIsTextError(true);
         }
       }}
     >

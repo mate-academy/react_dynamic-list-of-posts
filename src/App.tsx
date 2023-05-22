@@ -43,10 +43,10 @@ export const App: React.FC = () => {
 
   const handleUserSelect = (user: User) => {
     setCurrentUser(user);
-  };
-
-  const handleSelectActivePost = (post: Post) => {
-    setActivePost(post);
+    getUserPosts(user);
+    hideCommemts();
+    setActivePost(null);
+    setCurrentUserPosts([]);
   };
 
   useEffect(() => {
@@ -67,8 +67,6 @@ export const App: React.FC = () => {
                   users={users}
                   currentUser={currentUser}
                   onUserSelect={handleUserSelect}
-                  getUserPosts={getUserPosts}
-                  hideCommemts={hideCommemts}
                 />
               </div>
 
@@ -108,7 +106,7 @@ export const App: React.FC = () => {
                   <PostsList
                     currentUserPosts={currentUserPosts}
                     activePost={activePost}
-                    setActivePost={handleSelectActivePost}
+                    setActivePost={setActivePost}
                   />
                 )}
 

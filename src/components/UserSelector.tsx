@@ -6,16 +6,12 @@ type Props = {
   users: User[];
   currentUser: User | null;
   onUserSelect(user: User): void,
-  getUserPosts(user: User): void;
-  hideCommemts(): void,
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   currentUser,
   onUserSelect,
-  getUserPosts,
-  hideCommemts,
 }) => {
   const [isButtonTriggered, setIsButtonTriggered] = useState(false);
 
@@ -54,8 +50,6 @@ export const UserSelector: React.FC<Props> = ({
                 onClick={() => {
                   onUserSelect(user);
                   setIsButtonTriggered(false);
-                  getUserPosts(user);
-                  hideCommemts();
                 }}
               >
                 {user.name}
