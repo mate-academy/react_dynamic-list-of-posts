@@ -15,8 +15,9 @@ export const UserSelector: React.FC<Props>
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [userName, setUserName] = useState('Choose a user');
 
-  const handleBlur
-  = useCallback((event: React.FocusEvent<HTMLButtonElement>) => {
+  const handleBlur = useCallback((
+    event: React.FocusEvent<HTMLButtonElement>,
+  ) => {
     const { relatedTarget } = event;
 
     if (!relatedTarget || !relatedTarget.classList.contains('dropdown-item')) {
@@ -31,6 +32,14 @@ export const UserSelector: React.FC<Props>
   const handleOpenState = useCallback(() => {
     setIsOpen(currVal => !currVal);
   }, []);
+
+  const handleChoosenUsere = (name: string, id: number) => {
+    setActivePost(null);
+    setUserName(name);
+    handleActiveId(id);
+    setUser(id);
+    setIsOpen(false);
+  };
 
   return (
     <div
@@ -72,13 +81,7 @@ export const UserSelector: React.FC<Props>
                   'dropdown-item',
                   { 'is-active': id === activeId },
                 )}
-                onClick={() => {
-                  setActivePost(null);
-                  setUserName(name);
-                  handleActiveId(id);
-                  setUser(id);
-                  setIsOpen(false);
-                }}
+                onClick={() => handleChoosenUsere(name, id)}
               >
                 {name}
               </a>

@@ -30,29 +30,13 @@ export const NewCommentForm: React.FC<Props>
   };
 
   const handleClear = () => {
-    if (isEmailError) {
-      setIsEmailError(false);
-    }
+    setIsEmailError(false);
+    setIsCommentError(false);
+    setIsNameError(false);
 
-    if (isCommentError) {
-      setIsCommentError(false);
-    }
-
-    if (isNameError) {
-      setIsNameError(false);
-    }
-
-    if (name) {
-      setName('');
-    }
-
-    if (email) {
-      setEmail('');
-    }
-
-    if (comment) {
-      setComment('');
-    }
+    setName('');
+    setEmail('');
+    setComment('');
   };
 
   const postCommentOnServer = async () => {
@@ -89,7 +73,11 @@ export const NewCommentForm: React.FC<Props>
   return (
     <form
       data-cy="NewCommentForm"
-      onSubmit={(event) => event.preventDefault()}
+      onSubmit={(event) => {
+        event.preventDefault();
+
+        postCommentOnServer();
+      }}
     >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
@@ -223,7 +211,6 @@ export const NewCommentForm: React.FC<Props>
               'button is-link',
               { 'is-loading': isCommentLoading },
             )}
-            onClick={postCommentOnServer}
           >
             Add
           </button>

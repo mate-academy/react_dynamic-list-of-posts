@@ -4,7 +4,7 @@ import { NewCommentForm } from './NewCommentForm';
 
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
-import { getComment, deleteComment } from '../api/data';
+import { getComments, deleteComment } from '../api/data';
 
 type Props = {
   activePostData: Post,
@@ -18,11 +18,9 @@ export const PostDetails: React.FC<Props> = React.memo(({ activePostData }) => {
   const [isGetCommentsError, setIsGetCommentsError] = useState(false);
   const [showNewCommentForm, setShowNewCommentForm] = useState(false);
 
-  const [deletedCommentId, setDeletedCommentId] = useState<null | number>(null);
-
   const commentsGetter = useCallback(async (postId: number) => {
     try {
-      const comments = await getComment(postId);
+      const comments = await getComments(postId);
 
       setListOfComments(comments);
     } catch {
@@ -32,10 +30,18 @@ export const PostDetails: React.FC<Props> = React.memo(({ activePostData }) => {
     }
   }, []);
 
-  const handleDeleteComment = (commentId: number) => {
-    setDeletedCommentId(commentId);
+  const handleDeleteComment = (param: number) => {
+    const visibleComments = listOfComments?.filter(comment => {
+      const { id: commentId } = comment;
 
-    deleteComment(commentId)
+      return commentId !== param;
+    });
+
+    if (visibleComments) {
+      setListOfComments(visibleComments);
+    }
+
+    deleteComment(param)
       .finally(() => commentsGetter(id));
   };
 
@@ -53,12 +59,6 @@ export const PostDetails: React.FC<Props> = React.memo(({ activePostData }) => {
 
     commentsGetter(id);
   }, [activePostData]);
-
-  const visibleComments = listOfComments?.filter(comment => {
-    const { id: commentId } = comment;
-
-    return commentId !== deletedCommentId;
-  });
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -82,7 +82,7 @@ export const PostDetails: React.FC<Props> = React.memo(({ activePostData }) => {
                 </div>
               ) : (
                 <>
-                  {visibleComments && visibleComments.length
+                  {listOfComments && listOfComments.length
                     ? (<p className="title is-4">Comments:</p>)
                     : (
                       <p className="title is-4" data-cy="NoCommentsMessage">
@@ -90,7 +90,7 @@ export const PostDetails: React.FC<Props> = React.memo(({ activePostData }) => {
                       </p>
                     )}
 
-                  {visibleComments?.map(comment => {
+                  {listOfComments?.map(comment => {
                     const {
                       id: commentId,
                       name,

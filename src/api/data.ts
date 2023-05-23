@@ -11,7 +11,7 @@ export const getUserPosts = (userId: number) => {
   return client.get<Post[]>(`/posts?userId=${userId}`);
 }; // return list of user posts
 
-export const getComment = (postId: number) => {
+export const getComments = (postId: number) => {
   return client.get<Comment[]>(`/comments?postId=${postId}`);
 };
 

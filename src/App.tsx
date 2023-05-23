@@ -25,7 +25,7 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [isPostsLoading, setIsPostsLoading] = useState<boolean>(false);
   const [isGetPostsError, setIsGetPostsError] = useState<boolean>(false);
-  const [isNoPostNotif, setNoPostNotif] = useState<boolean>(false);
+  const [isNoPostNotif, setIsNoPostNotif] = useState<boolean>(false);
   const [activePostId, setActivePostId] = useState<null | number>(null);
 
   const usersGetter = useCallback(() => {
@@ -43,17 +43,17 @@ export const App: React.FC = () => {
     }
 
     if (isNoPostNotif) {
-      setNoPostNotif(false);
+      setIsNoPostNotif(false);
     }
 
     const fetchPosts = async (id: number) => {
       try {
-        const responce = await getUserPosts(id);
+        const response = await getUserPosts(id);
 
-        if (responce.length) {
-          setPosts(responce);
+        if (response.length) {
+          setPosts(response);
         } else {
-          setNoPostNotif(true);
+          setIsNoPostNotif(true);
         }
       } catch {
         setIsGetPostsError(true);
