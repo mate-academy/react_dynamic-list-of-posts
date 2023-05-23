@@ -1,4 +1,9 @@
-import React from 'react';
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+} from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -9,7 +14,72 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 
+import { User } from './types/User';
+import { Post } from './types/Post';
+
+import { getUsers, getUserPosts } from './api/data';
+
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[] | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [posts, setPosts] = useState<Post[] | null>(null);
+  const [isPostsLoading, setIsPostsLoading] = useState<boolean>(false);
+  const [isGetPostsError, setIsGetPostsError] = useState<boolean>(false);
+  const [isNoPostNotif, setIsNoPostNotif] = useState<boolean>(false);
+  const [activePostId, setActivePostId] = useState<null | number>(null);
+
+  const usersGetter = useCallback(() => {
+    getUsers()
+      .then(setUsers);
+  }, []);
+
+  useEffect(() => {
+    usersGetter();
+  }, []);
+
+  useEffect(() => {
+    if (posts) {
+      setPosts(null);
+    }
+
+    if (isNoPostNotif) {
+      setIsNoPostNotif(false);
+    }
+
+    const fetchPosts = async (id: number) => {
+      try {
+        const response = await getUserPosts(id);
+
+        if (response.length) {
+          setPosts(response);
+        } else {
+          setIsNoPostNotif(true);
+        }
+      } catch {
+        setIsGetPostsError(true);
+      } finally {
+        setIsPostsLoading(false);
+      }
+    };
+
+    if (selectedUserId) {
+      if (isGetPostsError) {
+        setIsGetPostsError(false);
+      }
+
+      setIsPostsLoading(true);
+      fetchPosts(selectedUserId);
+    }
+  }, [selectedUserId]);
+
+  const activePost = useMemo(() => {
+    if (posts) {
+      return posts.find(p => p.id === activePostId);
+    }
+
+    return null;
+  }, [activePostId, posts]);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,28 +87,45 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  usersList={users}
+                  setUser={setSelectedUserId}
+                  setActivePost={setActivePostId}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectedUserId && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isPostsLoading && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {isGetPostsError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {isNoPostNotif && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                <PostsList />
+                {!!posts?.length
+                  && (
+                    <PostsList
+                      userPosts={posts}
+                      activePost={activePostId}
+                      setActivePost={setActivePostId}
+                    />
+                  )}
               </div>
             </div>
           </div>
@@ -50,12 +137,15 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': activePost },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
+            {activePost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails activePostData={activePost} />
+              </div>
+            )}
+
           </div>
         </div>
       </div>
