@@ -1,4 +1,3 @@
-// import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 import { Comment } from '../types/Comment';

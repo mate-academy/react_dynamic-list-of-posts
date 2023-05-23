@@ -59,6 +59,30 @@ export const NewCommentForm: React.FC<Props> = ({
     text[0] === ' ' ? text.trim() : text
   );
 
+  const handleNameSetting = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsNameError(false);
+    setNewComment({
+      ...newComment,
+      name: trimText(event.target.value),
+    });
+  };
+
+  const handleEmailSetting = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsEmailError(false);
+    setNewComment({
+      ...newComment,
+      email: trimText(event.target.value),
+    });
+  };
+
+  const handleTextSetting = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setIsTextError(false);
+    setNewComment({
+      ...newComment,
+      body: trimText(event.target.value),
+    });
+  };
+
   return (
     <form
       data-cy="NewCommentForm"
@@ -104,13 +128,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': isNameError })}
             value={newComment.name}
-            onChange={(event) => {
-              setIsNameError(false);
-              setNewComment({
-                ...newComment,
-                name: trimText(event.target.value),
-              });
-            }}
+            onChange={handleNameSetting}
           />
 
           <span className="icon is-small is-left">
@@ -147,13 +165,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': isEmailError })}
             value={newComment.email}
-            onChange={(event) => {
-              setIsEmailError(false);
-              setNewComment({
-                ...newComment,
-                email: trimText(event.target.value),
-              });
-            }}
+            onChange={handleEmailSetting}
           />
 
           <span className="icon is-small is-left">
@@ -189,13 +201,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': isTextError })}
             value={newComment.body}
-            onChange={(event) => {
-              setIsTextError(false);
-              setNewComment({
-                ...newComment,
-                body: trimText(event.target.value),
-              });
-            }}
+            onChange={handleTextSetting}
           />
         </div>
 
