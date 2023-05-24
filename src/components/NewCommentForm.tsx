@@ -83,37 +83,50 @@ export const NewCommentForm: React.FC<Props> = ({
     });
   };
 
+  const onReset = () => {
+    setNewComment({
+      name: '',
+      email: '',
+      body: '',
+    });
+    setIsNameError(false);
+    setIsEmailError(false);
+    setIsTextError(false);
+  };
+
+  const onSubmit = (event: React.SyntheticEvent) => {
+    event.preventDefault();
+
+    if (!newComment.name.trim()) {
+      setIsNameError(true);
+    }
+
+    if (!newComment.email.trim()) {
+      setIsEmailError(true);
+    }
+
+    if (!newComment.body.trim()) {
+      setIsTextError(true);
+    }
+
+    if (newComment.name
+      && newComment.email
+      && newComment.body) {
+      const commentToAdd: Omit<Comment, 'id'> = {
+        postId: activePostId,
+        name: newComment.name,
+        email: newComment.email,
+        body: newComment.body,
+      };
+
+      addPostComments(commentToAdd);
+    }
+  };
+
   return (
     <form
       data-cy="NewCommentForm"
-      onSubmit={(event) => {
-        event.preventDefault();
-
-        if (!newComment.name.trim()) {
-          setIsNameError(true);
-        }
-
-        if (!newComment.email.trim()) {
-          setIsEmailError(true);
-        }
-
-        if (!newComment.body.trim()) {
-          setIsTextError(true);
-        }
-
-        if (newComment.name
-          && newComment.email
-          && newComment.body) {
-          const commentToAdd: Omit<Comment, 'id'> = {
-            postId: activePostId,
-            name: newComment.name,
-            email: newComment.email,
-            body: newComment.body,
-          };
-
-          addPostComments(commentToAdd);
-        }
-      }}
+      onSubmit={onSubmit}
     >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
@@ -236,16 +249,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={() => {
-              setNewComment({
-                name: '',
-                email: '',
-                body: '',
-              });
-              setIsNameError(false);
-              setIsEmailError(false);
-              setIsTextError(false);
-            }}
+            onClick={onReset}
           >
             Clear
           </button>

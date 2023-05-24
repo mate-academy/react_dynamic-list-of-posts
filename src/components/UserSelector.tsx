@@ -15,6 +15,11 @@ export const UserSelector: React.FC<Props> = ({
 }) => {
   const [isButtonTriggered, setIsButtonTriggered] = useState(false);
 
+  const showPosts = (user: User) => {
+    onUserSelect(user);
+    setIsButtonTriggered(false);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -47,10 +52,7 @@ export const UserSelector: React.FC<Props> = ({
                   'dropdown-item',
                   { 'is-active': currentUser === user },
                 )}
-                onClick={() => {
-                  onUserSelect(user);
-                  setIsButtonTriggered(false);
-                }}
+                onClick={() => showPosts(user)}
               >
                 {user.name}
               </a>
