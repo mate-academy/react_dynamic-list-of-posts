@@ -4,7 +4,7 @@ import { Post } from '../types/Post';
 type Props = {
   posts: Post[];
   handleSelectPost: (value: Post | null) => void;
-  selectedPost: Post | null
+  selectedPost: Post | null;
 };
 
 export const PostsList: React.FC<Props> = React.memo(({
@@ -40,7 +40,7 @@ export const PostsList: React.FC<Props> = React.memo(({
               <td data-cy="PostTitle">
                 {post.title}
               </td>
-              {selectedPost?.id === post.id ? (
+              {(!post?.id && selectedPost?.id === post.id) ? (
                 <td className="has-text-right is-vcentered">
                   <button
                     type="button"

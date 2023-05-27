@@ -145,7 +145,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {(loadSideBar && selectedPost) && (
+          {(loadSideBar && selectedPost && selectedUser) && (
             <div
               data-cy="Sidebar"
               className={classNames(

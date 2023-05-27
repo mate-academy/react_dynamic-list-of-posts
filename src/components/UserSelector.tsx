@@ -22,7 +22,15 @@ export const UserSelector: React.FC<Props> = React.memo(({
   const handleListClick = useCallback((user: User) => {
     handleSelectUser(user);
     toggleList();
-  }, [users]);
+  }, []);
+
+  const handleBlur = (event: React.FocusEvent<HTMLButtonElement>) => {
+    const { relatedTarget } = event;
+
+    if (!relatedTarget || !relatedTarget.classList.contains('dropdown-item')) {
+      setList(false);
+    }
+  };
 
   return (
     <div
@@ -37,6 +45,7 @@ export const UserSelector: React.FC<Props> = React.memo(({
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={toggleList}
+          onBlur={handleBlur}
         >
           {selectedUser ? selectedUser.name : (<span>Choose a user</span>)}
 

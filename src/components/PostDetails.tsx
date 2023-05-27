@@ -75,7 +75,7 @@ export const PostDetails: React.FC<Props> = React.memo(({
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {`${selectedPost?.id}: ${selectedPost?.title}`}
+            {`#${selectedPost?.id}: ${selectedPost?.title}`}
           </h2>
 
           <p data-cy="PostBody">
