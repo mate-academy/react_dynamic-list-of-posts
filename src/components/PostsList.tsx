@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Post } from '../types/Post';
 
 type Props = {
@@ -12,10 +12,15 @@ export const PostsList: React.FC<Props> = React.memo(({
   handleSelectPost,
   selectedPost,
 }) => {
+  const [isPost, setIsPost] = useState(false);
   const handleOpenPost = useCallback((post: Post | null) => {
     if (!post?.id) {
+      setIsPost(false);
+
       return handleSelectPost(null);
     }
+
+    setIsPost(true);
 
     return handleSelectPost(post);
   }, []);
@@ -40,7 +45,7 @@ export const PostsList: React.FC<Props> = React.memo(({
               <td data-cy="PostTitle">
                 {post.title}
               </td>
-              {(!post?.id && selectedPost?.id === post.id) ? (
+              {(isPost && selectedPost?.id === post.id) ? (
                 <td className="has-text-right is-vcentered">
                   <button
                     type="button"
