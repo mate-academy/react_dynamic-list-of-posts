@@ -1,27 +1,24 @@
-import React, { useState } from 'react';
+import React, { useCallback } from 'react';
 import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[];
-  handleSelectPost: (value: Post) => void;
-  // selectId: Post | null
+  handleSelectPost: (value: Post | null) => void;
+  selectedPost: Post | null
 };
 
-export const PostsList: React.FC<Props> = ({
+export const PostsList: React.FC<Props> = React.memo(({
   posts,
   handleSelectPost,
-  // selectId,
+  selectedPost,
 }) => {
-  const [open, setOpen] = useState<number | null>(null);
-  const handleOpenPost = (post: Post) => {
-    if (open === post.id) {
-      setOpen(null);
-    } else {
-      setOpen(post.id);
+  const handleOpenPost = useCallback((post: Post | null) => {
+    if (!post?.id) {
+      return handleSelectPost(null);
     }
 
-    handleSelectPost(post);
-  };
+    return handleSelectPost(post);
+  }, []);
 
   return (
     <div data-cy="PostsList">
@@ -43,13 +40,13 @@ export const PostsList: React.FC<Props> = ({
               <td data-cy="PostTitle">
                 {post.title}
               </td>
-              {open === post.id ? (
+              {selectedPost?.id === post.id ? (
                 <td className="has-text-right is-vcentered">
                   <button
                     type="button"
                     data-cy="PostButton"
                     className="button is-link"
-                    onClick={() => handleOpenPost(post)}
+                    onClick={() => handleOpenPost(null)}
                   >
                     Close
                   </button>
@@ -73,4 +70,4 @@ export const PostsList: React.FC<Props> = ({
       </table>
     </div>
   );
-};
+});

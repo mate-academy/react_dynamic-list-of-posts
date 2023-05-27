@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -58,11 +58,11 @@ export const App: React.FC = () => {
     }
   };
 
-  const handleSelectUser = (user: User) => {
+  const handleSelectUser = useCallback((user: User) => {
     setLoadSideBar(false);
     setSelectedUser(user);
     loadPosts(user.id);
-  };
+  }, []);
 
   const loadComments = async (postId: number) => {
     setLoadComment(true);
@@ -78,19 +78,14 @@ export const App: React.FC = () => {
     }
   };
 
-  const handleSelectPost = (post: Post) => {
+  const handleSelectPost = useCallback((post: Post | null) => {
     setLoadSideBar(true);
     setSelectedPost(post);
-    loadComments(post.id);
-  };
 
-  // useEffect(() => {
-  //   if (selectedPost?.id) {
-  //     setLoadSideBar(true);
-  //   } else {
-  //     setLoadSideBar(false);
-  //   }
-  // }, [selectedPost?.id]);
+    if (post) {
+      loadComments(post.id);
+    }
+  }, []);
 
   return (
     <main className="section">
@@ -134,7 +129,7 @@ export const App: React.FC = () => {
                       <PostsList
                         posts={posts}
                         handleSelectPost={handleSelectPost}
-                        // selectId={selectedPost}
+                        selectedPost={selectedPost}
                       />
                     ) : (
                       <div
@@ -150,7 +145,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {loadSideBar && (
+          {(loadSideBar && selectedPost) && (
             <div
               data-cy="Sidebar"
               className={classNames(
@@ -166,7 +161,8 @@ export const App: React.FC = () => {
                   selectedPost={selectedPost}
                   comments={comments}
                   loading={loadComment}
-                  error={errorComment}
+                  setErrorComment={setErrorComment}
+                  errorComment={errorComment}
                   setComments={setComments}
                 />
               </div>

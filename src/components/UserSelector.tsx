@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { User } from '../types/User';
 
 type Props = {
@@ -8,21 +8,21 @@ type Props = {
   handleSelectUser: (value: User) => void;
 };
 
-export const UserSelector: React.FC<Props> = ({
+export const UserSelector: React.FC<Props> = React.memo(({
   users,
   selectedUser,
   handleSelectUser,
 }) => {
   const [list, setList] = useState(false);
 
-  const toggleList = () => {
+  const toggleList = useCallback(() => {
     setList(prev => !prev);
-  };
+  }, []);
 
-  const handleListClick = (user: User) => {
+  const handleListClick = useCallback((user: User) => {
     handleSelectUser(user);
     toggleList();
-  };
+  }, [users]);
 
   return (
     <div
@@ -65,4 +65,4 @@ export const UserSelector: React.FC<Props> = ({
       </div>
     </div>
   );
-};
+});

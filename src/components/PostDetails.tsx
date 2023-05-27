@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
 import { Loader } from './Loader';
@@ -10,20 +10,20 @@ type Props = {
   comments: Comment[];
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
   loading: boolean;
-  error: boolean;
-  // setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
+  errorComment: boolean;
+  setErrorComment: (value: boolean) => void;
 };
 
-export const PostDetails: React.FC<Props> = ({
+export const PostDetails: React.FC<Props> = React.memo(({
   selectedPost,
   comments,
   loading,
-  error,
+  errorComment,
+  setErrorComment,
   setComments,
 }) => {
   const [createComment, setCreateComment] = useState(false);
   const [buttonLoad, setButtonLoad] = useState(false);
-  // const [errorComment, setErrorComment] = useState(false);
 
   const createNewComment = async (commentData: CommentData) => {
     const data: Comment = {
@@ -33,7 +33,7 @@ export const PostDetails: React.FC<Props> = ({
 
     try {
       setButtonLoad(true);
-      // setErrorComment(false);
+      setErrorComment(false);
       const newComment: Comment = await postComment(data);
 
       setComments(prev => [
@@ -41,7 +41,7 @@ export const PostDetails: React.FC<Props> = ({
         newComment,
       ]);
     } catch {
-      // setErrorComment(true);
+      setErrorComment(true);
     } finally {
       setButtonLoad(false);
     }
@@ -55,17 +55,18 @@ export const PostDetails: React.FC<Props> = ({
     }
   }, [selectedPost]);
 
-  const handleClick = () => {
+  const handleClick = useCallback(() => {
     setCreateComment(prev => !prev);
-  };
+  }, []);
 
   const removeComment = async (commentId: number) => {
     try {
+      setErrorComment(false);
       await deleteComment(commentId);
 
       setComments(comments.filter(comment => comment.id !== commentId));
     } catch {
-      throw new Error('Error');
+      setErrorComment(true);
     }
   };
 
@@ -87,13 +88,13 @@ export const PostDetails: React.FC<Props> = ({
             <Loader />
           )}
 
-          {error && (
+          {errorComment && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
           )}
 
-          {(selectedPost && !loading && !error) && (
+          {(selectedPost && !loading && !errorComment) && (
             <>
               {comments?.length > 0 ? (
                 <>
@@ -149,15 +150,14 @@ export const PostDetails: React.FC<Props> = ({
 
         </div>
 
-        {!createComment && (
+        {(!createComment && !errorComment) && (
           <NewCommentForm
             createNewComment={createNewComment}
             buttonLoad={buttonLoad}
-            error={error}
           />
         )}
 
       </div>
     </div>
   );
-};
+});
