@@ -1,15 +1,25 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
+// import classNames from 'classnames';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
-import './App.scss';
 
-import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
+// import { PostsList } from './components/PostsList';
+// import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
+// import { Loader } from './components/Loader';
+import { User } from './types/User';
+import './App.scss';
+import { client } from './utils/fetchClient';
 
-export const App: React.FC = () => {
+export const App = () => {
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    client.get<User[]>('/users')
+      .then(data => setUsers(data))
+      .catch(() => console.log('ups'));
+  }, []);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,7 +27,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector users={users} />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -25,7 +35,7 @@ export const App: React.FC = () => {
                   No user selected
                 </p>
 
-                <Loader />
+                {/* <Loader />
 
                 <div
                   className="notification is-danger"
@@ -38,12 +48,12 @@ export const App: React.FC = () => {
                   No posts yet
                 </div>
 
-                <PostsList />
+                <PostsList /> */}
               </div>
             </div>
           </div>
 
-          <div
+          {/* <div
             data-cy="Sidebar"
             className={classNames(
               'tile',
@@ -56,7 +66,7 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success ">
               <PostDetails />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </main>
