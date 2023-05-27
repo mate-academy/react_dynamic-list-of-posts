@@ -96,19 +96,20 @@ export const PostDetails: React.FC<Props> = React.memo(({
                 ))}
               </article>
 
-              {!isFormActive && (
-                <button
-                  data-cy="WriteCommentButton"
-                  type="button"
-                  className="button is-link"
-                  onClick={() => setIsFormActive(true)}
-                >
-                  Write a comment
-                </button>
-              )}
             </>
           )}
         </div>
+
+        {!isFormActive && (
+          <button
+            data-cy="WriteCommentButton"
+            type="button"
+            className="button is-link"
+            onClick={() => setIsFormActive(true)}
+          >
+            Write a comment
+          </button>
+        )}
 
         {isFormActive && (
           <NewCommentForm
