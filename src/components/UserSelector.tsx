@@ -3,17 +3,25 @@ import classNames from 'classnames';
 import { User } from '../types/User';
 
 type UserSelectorProps = {
-  users: User[]
+  users: User[];
+  setSelectedUser: (id: number) => void;
+  selectedUserName?: string;
 };
 
-export const UserSelector = ({ users }: UserSelectorProps) => {
+export const UserSelector = ({
+  users,
+  setSelectedUser,
+  selectedUserName = 'Choose a user',
+}: UserSelectorProps) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  const handleClick = (id: number) => {
+    setSelectedUser(id);
+    setDropdownOpen(false);
+  };
+
   return (
-    <div
-      data-cy="UserSelector"
-      className="dropdown is-active"
-    >
+    <div data-cy="UserSelector" className="dropdown is-active">
       <div className="dropdown-trigger">
         <button
           type="button"
@@ -22,7 +30,7 @@ export const UserSelector = ({ users }: UserSelectorProps) => {
           aria-controls="dropdown-menu"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
-          <span>Choose a user</span>
+          <span>{selectedUserName}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -32,15 +40,20 @@ export const UserSelector = ({ users }: UserSelectorProps) => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div
-          className={
-            classNames('dropdown-content', { 'is-hidden': !dropdownOpen })
-          }
+          className={classNames('dropdown-content', {
+            'is-hidden': !dropdownOpen,
+          })}
         >
-          {
-            users.map(({ name }) => (
-              <a href="#user-1" className="dropdown-item">{name}</a>
-            ))
-          }
+          {users.map(({ name, id }) => (
+            <a
+              key={id}
+              href="#user-1"
+              className="dropdown-item"
+              onClick={() => handleClick(id)}
+            >
+              {name}
+            </a>
+          ))}
         </div>
       </div>
     </div>
