@@ -21,13 +21,15 @@ export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loadingPost, setLoadingPost] = useState(false);
+  const [isLoadingPost, setIsLoadingPost] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [errorPost, setErrorPost] = useState(false);
+  const [isErrorPost, setIsErrorPost] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
-  const [loadComment, setLoadComment] = useState(false);
-  const [loadSideBar, setLoadSideBar] = useState(false);
-  const [errorComment, setErrorComment] = useState(false);
+  const [isLoadComment, setIsLoadComment] = useState(false);
+  const [isLoadSideBar, setIsLoadSideBar] = useState(false);
+  const [isErrorComment, setIsErrorComment] = useState(false);
+  const isOpeningSideBar = isLoadSideBar && selectedPost && selectedUser;
+  const isOpeningPostList = selectedUser && !isLoadingPost && !isErrorPost;
 
   const loadUsers = async () => {
     try {
@@ -44,42 +46,42 @@ export const App: React.FC = () => {
   }, []);
 
   const loadPosts = async (userId: number) => {
-    setLoadingPost(true);
-    setErrorPost(false);
+    setIsLoadingPost(true);
+    setIsErrorPost(false);
 
     try {
       const dataPosts = await getPosts(userId);
 
       setPosts(dataPosts);
     } catch {
-      setErrorPost(true);
+      setIsErrorPost(true);
     } finally {
-      setLoadingPost(false);
+      setIsLoadingPost(false);
     }
   };
 
   const handleSelectUser = useCallback((user: User) => {
-    setLoadSideBar(false);
+    setIsLoadSideBar(false);
     setSelectedUser(user);
     loadPosts(user.id);
   }, []);
 
   const loadComments = async (postId: number) => {
-    setLoadComment(true);
-    setErrorComment(false);
+    setIsLoadComment(true);
+    setIsErrorComment(false);
     try {
       const dataComments = await getComments(postId);
 
       setComments(dataComments);
     } catch {
-      setErrorComment(true);
+      setIsErrorComment(true);
     } finally {
-      setLoadComment(false);
+      setIsLoadComment(false);
     }
   };
 
   const handleSelectPost = useCallback((post: Post | null) => {
-    setLoadSideBar(true);
+    setIsLoadSideBar(true);
     setSelectedPost(post);
 
     if (post) {
@@ -94,7 +96,6 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-
                 <UserSelector
                   users={users}
                   selectedUser={selectedUser}
@@ -103,18 +104,17 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-
                 {!selectedUser && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {loadingPost && (
+                {isLoadingPost && (
                   <Loader />
                 )}
 
-                {errorPost && (
+                {isErrorPost && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -123,7 +123,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(selectedUser && !loadingPost && !errorPost) && (
+                {(isOpeningPostList) && (
                   <>
                     {posts.length > 0 ? (
                       <PostsList
@@ -145,7 +145,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {(loadSideBar && selectedPost && selectedUser) && (
+          {(isOpeningSideBar) && (
             <div
               data-cy="Sidebar"
               className={classNames(
@@ -160,15 +160,14 @@ export const App: React.FC = () => {
                 <PostDetails
                   selectedPost={selectedPost}
                   comments={comments}
-                  loading={loadComment}
-                  setErrorComment={setErrorComment}
-                  errorComment={errorComment}
+                  isLoadComment={isLoadComment}
+                  setIsErrorComment={setIsErrorComment}
+                  isErrorComment={isErrorComment}
                   setComments={setComments}
                 />
               </div>
             </div>
           )}
-
         </div>
       </div>
     </main>

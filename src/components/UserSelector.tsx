@@ -13,10 +13,10 @@ export const UserSelector: React.FC<Props> = React.memo(({
   selectedUser,
   handleSelectUser,
 }) => {
-  const [list, setList] = useState(false);
+  const [isListOpen, setIsListOpen] = useState(false);
 
   const toggleList = useCallback(() => {
-    setList(prev => !prev);
+    setIsListOpen(prev => !prev);
   }, []);
 
   const handleListClick = useCallback((user: User) => {
@@ -28,14 +28,14 @@ export const UserSelector: React.FC<Props> = React.memo(({
     const { relatedTarget } = event;
 
     if (!relatedTarget || !relatedTarget.classList.contains('dropdown-item')) {
-      setList(false);
+      setIsListOpen(false);
     }
   };
 
   return (
     <div
       data-cy="UserSelector"
-      className={classNames('dropdown', { 'is-active': list })}
+      className={classNames('dropdown', { 'is-active': isListOpen })}
     >
 
       <div className="dropdown-trigger">

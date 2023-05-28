@@ -9,21 +9,22 @@ type Props = {
   selectedPost: Post | null;
   comments: Comment[];
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
-  loading: boolean;
-  errorComment: boolean;
-  setErrorComment: (value: boolean) => void;
+  isLoadComment: boolean;
+  isErrorComment: boolean;
+  setIsErrorComment: (value: boolean) => void;
 };
 
 export const PostDetails: React.FC<Props> = React.memo(({
   selectedPost,
   comments,
-  loading,
-  errorComment,
-  setErrorComment,
+  isLoadComment,
+  isErrorComment,
+  setIsErrorComment,
   setComments,
 }) => {
-  const [createComment, setCreateComment] = useState(false);
-  const [buttonLoad, setButtonLoad] = useState(false);
+  const [isCreateComment, setIsCreateComment] = useState(false);
+  const [isButtonLoad, setIsButtonLoad] = useState(false);
+  const hasComments = selectedPost && !isLoadComment && !isErrorComment;
 
   const createNewComment = async (commentData: CommentData) => {
     const data: Comment = {
@@ -32,8 +33,8 @@ export const PostDetails: React.FC<Props> = React.memo(({
     };
 
     try {
-      setButtonLoad(true);
-      setErrorComment(false);
+      setIsButtonLoad(true);
+      setIsErrorComment(false);
       const newComment: Comment = await postComment(data);
 
       setComments(prev => [
@@ -41,32 +42,32 @@ export const PostDetails: React.FC<Props> = React.memo(({
         newComment,
       ]);
     } catch {
-      setErrorComment(true);
+      setIsErrorComment(true);
     } finally {
-      setButtonLoad(false);
+      setIsButtonLoad(false);
     }
   };
 
   useEffect(() => {
     if (selectedPost?.id) {
-      setCreateComment(true);
+      setIsCreateComment(true);
     } else {
-      setCreateComment(false);
+      setIsCreateComment(false);
     }
   }, [selectedPost]);
 
   const handleClick = useCallback(() => {
-    setCreateComment(prev => !prev);
+    setIsCreateComment(prev => !prev);
   }, []);
 
   const removeComment = async (commentId: number) => {
     try {
-      setErrorComment(false);
+      setIsErrorComment(false);
       await deleteComment(commentId);
 
       setComments(comments.filter(comment => comment.id !== commentId));
     } catch {
-      setErrorComment(true);
+      setIsErrorComment(true);
     }
   };
 
@@ -84,17 +85,17 @@ export const PostDetails: React.FC<Props> = React.memo(({
         </div>
 
         <div className="block">
-          {loading && (
+          {isLoadComment && (
             <Loader />
           )}
 
-          {errorComment && (
+          {isErrorComment && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
           )}
 
-          {(selectedPost && !loading && !errorComment) && (
+          {(hasComments) && (
             <>
               {comments?.length > 0 ? (
                 <>
@@ -135,7 +136,7 @@ export const PostDetails: React.FC<Props> = React.memo(({
                 </>
               )}
 
-              {createComment && (
+              {isCreateComment && (
                 <button
                   data-cy="WriteCommentButton"
                   type="button"
@@ -150,10 +151,10 @@ export const PostDetails: React.FC<Props> = React.memo(({
 
         </div>
 
-        {(!createComment && !errorComment) && (
+        {(!isCreateComment && !isErrorComment) && (
           <NewCommentForm
             createNewComment={createNewComment}
-            buttonLoad={buttonLoad}
+            isButtonLoad={isButtonLoad}
           />
         )}
 

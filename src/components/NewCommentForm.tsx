@@ -4,18 +4,23 @@ import { CommentData } from '../types/Comment';
 
 type Props = {
   createNewComment: (value: CommentData) => void;
-  buttonLoad: boolean;
+  isButtonLoad: boolean;
 };
 
 export const NewCommentForm: React.FC<Props> = React.memo(({
   createNewComment,
-  buttonLoad,
+  isButtonLoad,
 }) => {
   const [data, setData] = useState({ body: '', name: '', email: '' });
   const [dataError, setDataError] = useState({
-    body: false, name: false, email: false,
+    body: false,
+    name: false,
+    email: false,
   });
-  const [submit, setSubmit] = useState(false);
+  const [isSubmit, setIsSubmit] = useState(false);
+  const isValidName = dataError.name && !data.name && isSubmit;
+  const isValidEmail = dataError.email && !data.email && isSubmit;
+  const isValidBody = dataError.body && !data.body && isSubmit;
 
   const isValidData = data.body.trim()
     && data.email.trim()
@@ -30,7 +35,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
         name: data.name.trim().length === 0,
         email: data.email.trim().length === 0,
       });
-      setSubmit(true);
+      setIsSubmit(true);
 
       return;
     }
@@ -38,13 +43,13 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
     createNewComment(data);
     setData(prev => ({ ...prev, body: '' }));
     setDataError(prev => ({ ...prev, body: false }));
-    setSubmit(true);
+    setIsSubmit(true);
   };
 
   const clearData = () => {
     setData({ body: '', name: '', email: '' });
     setDataError({ body: false, name: false, email: false });
-    setSubmit(false);
+    setIsSubmit(false);
   };
 
   return (
@@ -61,7 +66,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', {
-              'is-danger': dataError.name && !data.name && submit,
+              'is-danger': isValidName,
             })}
             value={data.name}
             onChange={(e) => setData(prev => ({
@@ -74,7 +79,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             <i className="fas fa-user" />
           </span>
 
-          {(dataError.name && !data.name && submit) && (
+          {(isValidName) && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -84,7 +89,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
           )}
 
         </div>
-        {(dataError.name && !data.name && submit) && (
+        {(isValidName) && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -104,7 +109,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', {
-              'is-danger': dataError.email && !data.email && submit,
+              'is-danger': isValidEmail,
             })}
             value={data.email}
             onChange={(e) => setData(prev => ({
@@ -117,7 +122,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             <i className="fas fa-envelope" />
           </span>
 
-          {(dataError.email && !data.email && submit) && (
+          {(isValidEmail) && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -127,7 +132,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
           )}
         </div>
 
-        {(dataError.email && !data.email && submit) && (
+        {(isValidEmail) && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -145,7 +150,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', {
-              'is-danger': dataError.body && !data.body && submit,
+              'is-danger': isValidBody,
             })}
             value={data.body}
             onChange={(e) => setData(prev => ({
@@ -155,7 +160,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
           />
         </div>
 
-        {(dataError.body && !data.body && submit) && (
+        {(isValidBody) && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -168,7 +173,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': buttonLoad,
+              'is-loading': isButtonLoad,
             })}
           >
             Add
