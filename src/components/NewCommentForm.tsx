@@ -17,7 +17,7 @@ type FormErrors = {
 
 type NewCommentFormProps = {
   postId?: number;
-  handleAddComment: <K>(data: K, url: string, msg: string) => Promise<void>;
+  handleAddComment: (data: any, url: string, msg: string) => Promise<void>;
 };
 
 const initialFormData: FormData = {
