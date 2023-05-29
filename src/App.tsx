@@ -12,35 +12,48 @@ import './App.scss';
 import { client } from './utils/fetchClient';
 import { Post } from './types/Post';
 
+type UsersMap = {
+  [key: number]: User;
+};
+
+type SelectedUser = User & {
+  posts: Post[] | null
+};
+
 export const App = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [posts, setPosts] = useState<Post[] | null>(null);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [usersMap, setUsersMap] = useState<UsersMap>({});
+  const [selectedUser, setSelectedUser] = useState<SelectedUser | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
     client
       .get<User[]>('/users')
-      .then((data) => setUsers(data))
+      .then((data) => setUsersMap(data.reduce(
+        (acc, curr) => ({ ...acc, [curr.id]: { ...curr } }), {},
+      )))
       .catch(() => setErrorMsg('Unable to load users - reload'));
   }, []);
 
-  const handlePostsFetch = (userId: number) => {
-    client
-      .get<Post[]>(`/posts?userId=${userId}`)
-      .then((data) => setPosts(data))
-      .catch(() => setErrorMsg('Unable to load posts'))
-      .finally(() => setLoading(false));
+  const handlePostsFetch = async (userId: number) => {
+    try {
+      return await client.get<Post[]>(`/posts?userId=${userId}`);
+    } catch {
+      setErrorMsg('Unable to load posts');
+
+      return null;
+    }
   };
 
-  const handleUserSelect = (id: number) => {
+  const handleUserSelect = async (id: number) => {
     setErrorMsg('');
     setLoading(true);
-    setPosts(null);
-    setSelectedUser(users.find((user) => user.id === id) ?? null);
+    setSelectedUser(null);
 
-    handlePostsFetch(id);
+    const posts = await handlePostsFetch(id);
+
+    setSelectedUser({ posts, ...usersMap[id] });
+    setLoading(false);
   };
 
   return (
@@ -51,7 +64,7 @@ export const App = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  users={users}
+                  users={Object.values(usersMap)}
                   setSelectedUser={handleUserSelect}
                   selectedUserName={selectedUser?.name}
                 />
@@ -73,8 +86,8 @@ export const App = () => {
                   </div>
                 )}
 
-                {posts
-                  && (posts.length === 0 ? (
+                {selectedUser
+                  && (selectedUser?.posts?.length === 0 ? (
                     <div
                       className="notification is-warning"
                       data-cy="NoPostsYet"
@@ -82,7 +95,7 @@ export const App = () => {
                       No posts yet
                     </div>
                   ) : (
-                    <PostsList posts={posts} />
+                    <PostsList posts={selectedUser?.posts} />
                   ))}
               </div>
             </div>
