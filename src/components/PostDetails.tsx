@@ -16,6 +16,7 @@ export const PostDetails = ({ selectedPost }: PostDetailsProps) => {
   const {
     handleItemsFetch,
     handleItemPost,
+    handleItemDelete,
     loading,
     errorMsg,
     items: comments,
@@ -59,7 +60,10 @@ export const PostDetails = ({ selectedPost }: PostDetailsProps) => {
                 No comments yet
               </p>
             ) : (
-              <CommentsList comments={comments} />
+              <CommentsList
+                comments={comments}
+                handleDeleteComment={handleItemDelete}
+              />
             ))}
 
           {!formOpen && !loading && (
