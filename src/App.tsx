@@ -35,6 +35,7 @@ export const App = () => {
     }
 
     setSelectedUser(null);
+    setSelectedPost(null);
 
     handleItemsFetch('/posts?userId=', user.id, 'Unable to fetch Posts');
 
@@ -51,7 +52,7 @@ export const App = () => {
                 <UserSelector
                   users={users}
                   setSelectedUser={handleUserSelect}
-                  selectedUserName={selectedUser?.name}
+                  selectedUser={selectedUser}
                 />
               </div>
 
@@ -90,22 +91,20 @@ export const App = () => {
             </div>
           </div>
 
-          { selectedUser && (
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                { 'Sidebar--open': selectedPost },
-              )}
-            >
-              <div className="tile is-child box is-success ">
-                <PostDetails selectedPost={selectedPost} />
-              </div>
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': selectedPost },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              {selectedPost && <PostDetails selectedPost={selectedPost} />}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </main>

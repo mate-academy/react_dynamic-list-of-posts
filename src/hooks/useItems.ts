@@ -17,6 +17,7 @@ export const useItems = <T extends { id : number }>() => {
       setLoading(false);
     } catch {
       setErrorMsg(msg);
+      setLoading(false);
     }
   };
 

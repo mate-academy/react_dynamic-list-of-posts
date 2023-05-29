@@ -9,13 +9,14 @@ type InputProps = {
   errorMsg: string;
   isError: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  data: string;
 };
 
 export const Input = ({
-  label, id, icon, errorMsg, isError, ...attr
+  label, id, icon, errorMsg, isError, data, ...attr
 }: InputProps) => {
   return (
-    <div className="field" data-cy="NameField">
+    <div className="field" data-cy={data}>
       <label className="label" htmlFor={id}>
         {label}
       </label>

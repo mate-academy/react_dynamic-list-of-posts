@@ -104,6 +104,7 @@ export const NewCommentForm = ({
       icon: 'fa-user',
       errorMsg: 'Name is required',
       isError: nameError,
+      data: 'NameField',
     },
     {
       label: 'Author email',
@@ -114,6 +115,7 @@ export const NewCommentForm = ({
       icon: 'fa-envelope',
       errorMsg: 'Email is required',
       isError: emailError,
+      data: 'EmailField',
     },
   ];
 

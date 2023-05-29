@@ -1,17 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 
 type UserSelectorProps = {
   users: User[];
   setSelectedUser: (user: User) => void;
-  selectedUserName?: string;
+  selectedUser: User | null;
 };
 
 export const UserSelector = ({
   users,
   setSelectedUser,
-  selectedUserName = 'Choose a user',
+  selectedUser,
 }: UserSelectorProps) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -20,8 +20,21 @@ export const UserSelector = ({
     setDropdownOpen(false);
   };
 
+  const handleClickOutside = () => {
+    if (!dropdownOpen) {
+      setDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.body.addEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className={classNames('dropdown', { 'is-active': dropdownOpen })}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
@@ -30,7 +43,7 @@ export const UserSelector = ({
           aria-controls="dropdown-menu"
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
-          <span>{selectedUserName}</span>
+          <span>{selectedUser?.name ?? 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -47,9 +60,11 @@ export const UserSelector = ({
           {users.map((user) => (
             <a
               key={user.id}
-              href="#user-1"
-              className="dropdown-item"
-              onClick={() => handleClick(user)}
+              href={`#user-${user.id}`}
+              className={classNames('dropdown-item', {
+                'is-active': user.id === selectedUser?.id,
+              })}
+              onMouseDown={() => handleClick(user)}
             >
               {user.name}
             </a>

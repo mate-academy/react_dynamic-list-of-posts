@@ -66,7 +66,7 @@ export const PostDetails = ({ selectedPost }: PostDetailsProps) => {
               />
             ))}
 
-          {!formOpen && !loading && (
+          {!formOpen && !loading && !errorMsg && (
             <button
               data-cy="WriteCommentButton"
               type="button"
