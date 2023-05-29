@@ -15,16 +15,21 @@ export const PostDetails = ({ selectedPost }: PostDetailsProps) => {
   const [formOpen, setFormOpen] = useState(false);
   const {
     handleItemsFetch,
+    handleItemPost,
     loading,
     errorMsg,
     items: comments,
-  } = useItems<Comment[]>('/comments?postId=');
+  } = useItems<Comment>();
 
   useEffect(() => {
     setFormOpen(false);
 
     if (selectedPost) {
-      handleItemsFetch('Unable to fetch comments', selectedPost.id);
+      handleItemsFetch(
+        '/comments?postId=',
+        selectedPost.id,
+        'Unable to fetch comments',
+      );
     }
   }, [selectedPost]);
 
@@ -69,7 +74,12 @@ export const PostDetails = ({ selectedPost }: PostDetailsProps) => {
           )}
         </div>
 
-        {formOpen && <NewCommentForm />}
+        {formOpen && (
+          <NewCommentForm
+            postId={selectedPost?.id}
+            handleAddComment={handleItemPost}
+          />
+        )}
       </div>
     </div>
   );

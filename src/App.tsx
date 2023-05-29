@@ -20,7 +20,7 @@ export const App = () => {
   const {
     setErrorMsg, handleItemsFetch, loading, errorMsg, items: posts,
   }
-    = useItems<Post[]>('/posts?userId=');
+    = useItems<Post>();
 
   useEffect(() => {
     client
@@ -36,7 +36,7 @@ export const App = () => {
 
     setSelectedUser(null);
 
-    handleItemsFetch('Unable to fetch Posts', user.id);
+    handleItemsFetch('/posts?userId=', user.id, 'Unable to fetch Posts');
 
     setSelectedUser(user);
   };
