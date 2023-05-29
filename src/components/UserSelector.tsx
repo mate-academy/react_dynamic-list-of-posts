@@ -4,7 +4,7 @@ import { User } from '../types/User';
 
 type UserSelectorProps = {
   users: User[];
-  setSelectedUser: (id: number) => void;
+  setSelectedUser: (user: User) => void;
   selectedUserName?: string;
 };
 
@@ -15,8 +15,8 @@ export const UserSelector = ({
 }: UserSelectorProps) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const handleClick = (id: number) => {
-    setSelectedUser(id);
+  const handleClick = (user: User) => {
+    setSelectedUser(user);
     setDropdownOpen(false);
   };
 
@@ -44,14 +44,14 @@ export const UserSelector = ({
             'is-hidden': !dropdownOpen,
           })}
         >
-          {users.map(({ name, id }) => (
+          {users.map((user) => (
             <a
-              key={id}
+              key={user.id}
               href="#user-1"
               className="dropdown-item"
-              onClick={() => handleClick(id)}
+              onClick={() => handleClick(user)}
             >
-              {name}
+              {user.name}
             </a>
           ))}
         </div>
