@@ -1,10 +1,55 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { User } from '../types/User';
+import { getUsers } from '../api/api';
 
-export const UserSelector: React.FC = () => {
+interface Props {
+  selectedUserId: number;
+  setSelectedUserId: (id: number) => void;
+}
+
+export const UserSelector: React.FC<Props> = ({
+  selectedUserId,
+  setSelectedUserId,
+}) => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectedUserName, setSelectedUserName] = useState('');
+  const [isDropDownActive, setIsDropDownActive] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    getUsers().then((user) => {
+      setUsers(user);
+    });
+  }, []);
+
+  const selectUser = (user: User) => {
+    if (user.id !== selectedUserId) {
+      setSelectedUserId(user.id);
+      setSelectedUserName(user.name);
+    }
+
+    setIsDropDownActive(false);
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current
+        && !dropdownRef.current.contains(event.target as HTMLElement)) {
+      setIsDropDownActive(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={`dropdown ${isDropDownActive && 'is-active'}`}
     >
       <div className="dropdown-trigger">
         <button
@@ -12,8 +57,9 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setIsDropDownActive(prevState => !prevState)}
         >
-          <span>Choose a user</span>
+          <span>{selectedUserName || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -23,11 +69,16 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+          {users.map(user => (
+            <a
+              key={user.id}
+              href={`#user-${user.id}`}
+              className={`dropdown-item ${user.id === selectedUserId && 'is-active'}`}
+              onClick={() => selectUser(user)}
+            >
+              {user.name}
+            </a>
+          ))}
         </div>
       </div>
     </div>
