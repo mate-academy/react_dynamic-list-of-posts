@@ -54,10 +54,7 @@ export const PostDetails = ({ selectedPost }: PostDetailsProps) => {
                 No comments yet
               </p>
             ) : (
-              <>
-                <p className="title is-4">Comments:</p>
-                <CommentsList comments={comments} />
-              </>
+              <CommentsList comments={comments} />
             ))}
 
           {!formOpen && !loading && (

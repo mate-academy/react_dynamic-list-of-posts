@@ -6,6 +6,7 @@ type CommentsListProps = {
 
 export const CommentsList = ({ comments }: CommentsListProps) => (
   <>
+    <p className="title is-4">Comments:</p>
     {comments.map(({ email, name, body }) => (
       <article className="message is-small" data-cy="Comment">
         <div className="message-header">

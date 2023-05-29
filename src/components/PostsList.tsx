@@ -1,3 +1,5 @@
+import classNames from 'classnames';
+
 import { Post } from '../types/Post';
 
 type PostListProps = {
@@ -43,10 +45,14 @@ export const PostsList = ({
                 <button
                   type="button"
                   data-cy="PostButton"
-                  className="button is-link"
+                  className={classNames(
+                    'button',
+                    'is-link',
+                    { 'is-light': selectedPostId !== post.id },
+                  )}
                   onClick={() => handleClick(post)}
                 >
-                  {selectedPostId === post.id ? 'Close' : 'Open'}
+                  {selectedPostId !== post.id ? 'Open' : 'Close'}
                 </button>
               </td>
             </tr>
