@@ -1,30 +1,20 @@
-import {
-  useState,
-  useContext,
-  useEffect,
-  useCallback,
-} from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
-import { DropdownMenu, DropdownTrigger } from './components';
-import { UserSelectorContext } from '../../context';
+import { DropdownMenu, DropdownTrigger } from './index';
 import {
   User,
   Error,
-  Loading,
   UserSelectorProps,
 } from '../../types';
-import { getUsersFromServer, getPostsFromServer } from '../../api';
+import { getUsersFromServer } from '../../api';
 
 export const UserSelector: React.FC<UserSelectorProps> = ({
+  currentUserId,
   setError,
-  setPosts,
-  setLoading,
-  setCurrentPost,
-  setCurrentUserId,
+  handleUserSelect,
 }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const { currentUserId } = useContext(UserSelectorContext);
 
   const getUsers = async () => {
     try {
@@ -36,27 +26,11 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
     }
   };
 
-  const getPosts = async (userId: number) => {
-    setLoading(Loading.Posts);
-    setError(Error.None);
-    setCurrentPost(null);
-
-    try {
-      const data = await getPostsFromServer(userId);
-
-      setPosts(data);
-    } catch {
-      setError(Error.GetPosts);
-    } finally {
-      setLoading(Loading.None);
-    }
-  };
-
   useEffect(() => {
     getUsers();
   }, []);
 
-  const handleSelect = useCallback(event => {
+  const handleDocumentClick = useCallback(event => {
     const trigger = event.target.closest('.dropdown-trigger');
     const item = event.target.matches('.dropdown-item');
 
@@ -72,16 +46,15 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
   }, [isOpen]);
 
   useEffect(() => {
-    document.addEventListener('click', handleSelect);
+    document.addEventListener('click', handleDocumentClick);
 
     return () => {
-      document.removeEventListener('click', handleSelect);
+      document.removeEventListener('click', handleDocumentClick);
     };
   }, [isOpen]);
 
-  const selectUser = (id: number) => {
-    setCurrentUserId(id);
-    getPosts(id);
+  const selectUser = (userId: number) => {
+    handleUserSelect(userId);
     setIsOpen(false);
   };
 

@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { FC, useContext } from 'react';
-import { UserSelectorContext } from '../../../../context';
-import { DropdownItemProps } from '../../../../types';
+import { UserSelectorContext } from '../../context';
+import { DropdownItemProps } from '../../types';
 
 export const DropdownItem: FC<DropdownItemProps> = ({
   id,

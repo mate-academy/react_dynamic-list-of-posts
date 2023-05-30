@@ -1,6 +1,6 @@
 import { FC } from 'react';
-import { DropdownItem } from '../DropdownItem';
-import { DropdownMenuProps } from '../../../../types';
+import { DropdownItem } from './index';
+import { DropdownMenuProps } from '../../types';
 
 export const DropdownMenu: FC<DropdownMenuProps> = ({
   users,

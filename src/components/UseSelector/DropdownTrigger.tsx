@@ -1,6 +1,6 @@
 import { FC, useContext } from 'react';
-import { Error, DropdownTriggerProps } from '../../../../types';
-import { UserSelectorContext } from '../../../../context';
+import { Error, DropdownTriggerProps } from '../../types';
+import { UserSelectorContext } from '../../context';
 
 export const DropdownTrigger: FC<DropdownTriggerProps> = ({
   userName,
