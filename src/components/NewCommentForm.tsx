@@ -17,7 +17,11 @@ type FormErrors = {
 
 type NewCommentFormProps = {
   postId?: number;
-  handleAddComment: (data: any, url: string, msg: string) => Promise<void>;
+  handleAddComment: (
+    data: CommentData,
+    url: string,
+    msg: string
+  ) => Promise<void>;
 };
 
 const initialFormData: FormData = {
@@ -36,29 +40,29 @@ export const NewCommentForm = ({
   postId,
   handleAddComment,
 }: NewCommentFormProps) => {
-  const [formData, setformData] = useState<FormData>(initialFormData);
-  const [formErrors, setformErrors] = useState<FormErrors>(initialFormErrors);
+  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [formErrors, setFormErrors] = useState<FormErrors>(initialFormErrors);
   const [loading, setLoading] = useState(false);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     if (formErrors[e.target.name as keyof FormErrors]) {
-      setformErrors((prevErrors) => ({
+      setFormErrors((prevErrors) => ({
         ...prevErrors,
         [e.target.name]: false,
       }));
     }
 
-    setformData((prevData) => ({
+    setFormData((prevData) => ({
       ...prevData,
       [e.target.name]: e.target.value,
     }));
   };
 
   const handleClearButton = () => {
-    setformErrors(initialFormErrors);
-    setformData(initialFormData);
+    setFormErrors(initialFormErrors);
+    setFormData(initialFormData);
   };
 
   const handleSubmitForm: React.FormEventHandler = async (e) => {
@@ -67,7 +71,7 @@ export const NewCommentForm = ({
 
     Object.keys(formData).forEach((key) => {
       if (!formData[key as keyof FormData]) {
-        setformErrors((prevErrors) => ({ ...prevErrors, [key]: true }));
+        setFormErrors((prevErrors) => ({ ...prevErrors, [key]: true }));
         isValid = false;
       }
     });
@@ -87,7 +91,7 @@ export const NewCommentForm = ({
       );
 
       setLoading(false);
-      setformData((prevData) => ({ ...prevData, body: '' }));
+      setFormData((prevData) => ({ ...prevData, body: '' }));
     }
   };
 

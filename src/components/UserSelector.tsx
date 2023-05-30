@@ -28,6 +28,10 @@ export const UserSelector = ({
 
   useEffect(() => {
     document.body.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.body.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   return (

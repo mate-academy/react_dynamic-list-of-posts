@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { client } from '../utils/fetchClient';
+import { CommentData } from '../types/Comment';
 
 export const useItems = <T extends { id : number }>() => {
   const [items, setItems] = useState<T[] | null>(null);
@@ -12,16 +13,17 @@ export const useItems = <T extends { id : number }>() => {
     setLoading(true);
 
     try {
-      setItems(await client.get(`${url}${id}`));
-
-      setLoading(false);
+      setItems(await client.get<T[]>(`${url}${id}`));
     } catch {
       setErrorMsg(msg);
+    } finally {
       setLoading(false);
     }
   };
 
-  const handleItemPost = async (data: any, url: string, msg: string) => {
+  const handleItemPost = async (
+    data: CommentData, url: string, msg: string,
+  ) => {
     setErrorMsg('');
 
     try {

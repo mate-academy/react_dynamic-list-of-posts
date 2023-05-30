@@ -9,12 +9,6 @@ export const CommentsList = ({
   comments,
   handleDeleteComment,
 }: CommentsListProps) => {
-  const handleClick = handleDeleteComment.bind(
-    this,
-    '/comments/',
-    'Unable to remove comment',
-  );
-
   return (
     <>
       <p className="title is-4">Comments:</p>
@@ -31,9 +25,13 @@ export const CommentsList = ({
               type="button"
               className="delete is-small"
               aria-label="delete"
-              onClick={() => handleClick(id)}
+              onClick={() => handleDeleteComment(
+                '/comments/',
+                'Unable to remove comment',
+                id,
+              )}
             >
-              delete button
+              delete comment
             </button>
           </div>
 
