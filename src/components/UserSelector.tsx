@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { User } from '../types/User';
 import { getUsers } from '../api/api';
+import { Post } from '../types/Post';
 
 interface Props {
   selectedUserId: number;
   setSelectedUserId: (id: number) => void;
+  setPost: (post: Post | null) => void,
 }
 
 export const UserSelector: React.FC<Props> = ({
   selectedUserId,
   setSelectedUserId,
+  setPost,
 }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUserName, setSelectedUserName] = useState('');
@@ -23,6 +26,7 @@ export const UserSelector: React.FC<Props> = ({
   }, []);
 
   const selectUser = (user: User) => {
+    setPost(null);
     if (user.id !== selectedUserId) {
       setSelectedUserId(user.id);
       setSelectedUserName(user.name);
@@ -50,6 +54,7 @@ export const UserSelector: React.FC<Props> = ({
     <div
       data-cy="UserSelector"
       className={`dropdown ${isDropDownActive && 'is-active'}`}
+      ref={dropdownRef}
     >
       <div className="dropdown-trigger">
         <button

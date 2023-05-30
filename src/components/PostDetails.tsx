@@ -14,18 +14,30 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isNewComent, setIsNewComent] = useState(false);
+  const [hasComments, setHasComments] = useState(false);
 
   useEffect(() => {
-    setIsLoading(true);
     if (post) {
+      setIsLoading(true);
       getCommentsByPost(post.id).then((res) => {
-        setComments(res);
         setIsLoading(false);
+        setComments(res);
+        setIsNewComent(false);
       }).catch(() => {
+        setIsLoading(false);
+        setHasComments(true);
         setHasError(true);
       });
     }
   }, [post]);
+
+  useEffect(() => {
+    if (comments.length === 0) {
+      setHasComments(false);
+    } else if (comments.length > 0) {
+      setHasComments(true);
+    }
+  }, [comments]);
 
   const handleDelete = (commentId: number) => {
     deleteComment(commentId);
@@ -56,17 +68,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </div>
           )}
 
-          {comments.length === 0 ? (
-            <p className="title is-4" data-cy="NoCommentsMessage">
-              No comments yet
-            </p>
-          ) : (
+          {(comments.length > 0 && !isLoading) && (
             <>
               <p className="title is-4">Comments:</p>
               {comments.map(comment => (
-                <article className="message is-small" data-cy="Comment">
+                <article
+                  className="message is-small"
+                  data-cy="Comment"
+                  key={comment.name}
+                >
                   <div className="message-header">
-                    <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
+                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                       {comment.name}
                     </a>
                     <button
@@ -88,7 +100,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </>
           )}
 
-          {!isNewComent && (
+          {(!hasComments && post && !isLoading) && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
+
+          {(!isNewComent && !isLoading && !hasError) && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -101,7 +119,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
         </div>
 
-        {isNewComent && (
+        {(isNewComent && !isLoading) && (
           <NewCommentForm
             setComments={setComments}
             postId={post?.id || 0}

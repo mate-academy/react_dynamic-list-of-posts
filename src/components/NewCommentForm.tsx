@@ -76,6 +76,11 @@ export const NewCommentForm: React.FC<Props> = ({
     setName('');
     setEmail('');
     setBody('');
+    setErrors({
+      name: false,
+      email: false,
+      body: false,
+    });
   };
 
   return (

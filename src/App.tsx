@@ -17,18 +17,30 @@ export const App: React.FC = () => {
   const [post, setPost] = useState<Post | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [hasPost, setHasPost] = useState(false);
+  // const hasNotPost = !isLoading && posts.length === 0 && selectedUserId !== 0;
 
   useEffect(() => {
     if (selectedUserId) {
       setIsLoading(true);
+      setHasPost(false);
       getPostsByUser(selectedUserId).then((res) => {
         setPosts(res);
         setIsLoading(false);
       }).catch(() => {
+        setIsLoading(false);
         setHasError(true);
       });
     }
   }, [selectedUserId]);
+
+  useEffect(() => {
+    if (posts.length === 0 && selectedUserId !== 0) {
+      setHasPost(true);
+    } else {
+      setHasPost(false);
+    }
+  }, [posts]);
 
   return (
     <main className="section">
@@ -40,6 +52,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   selectedUserId={selectedUserId}
                   setSelectedUserId={setSelectedUserId}
+                  setPost={setPost}
                 />
               </div>
 
@@ -61,7 +74,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(posts.length > 0) && (
+                {(posts.length > 0 && !isLoading) && (
                   <PostsList
                     posts={posts}
                     currentPost={post}
@@ -69,7 +82,7 @@ export const App: React.FC = () => {
                   />
                 )}
 
-                {!isLoading && posts.length === 0 && selectedUserId !== 0 && (
+                {hasPost && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
@@ -88,9 +101,11 @@ export const App: React.FC = () => {
               { 'Sidebar--open': post },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails post={post} />
-            </div>
+            {post && (
+              <div className="tile is-child box is-success ">
+                <PostDetails post={post} />
+              </div>
+            )}
           </div>
         </div>
       </div>
