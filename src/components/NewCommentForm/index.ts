@@ -1,0 +1,1 @@
+export { NewCommentForm } from './NewCommentForm';

@@ -1,0 +1,1 @@
+export { PostDetails } from './PostDetails';
