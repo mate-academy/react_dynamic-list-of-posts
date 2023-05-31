@@ -27,14 +27,18 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
     const normalizedInputEmail = inputEmail.trim();
     const normalizedInputComment = inputComment.trim();
 
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    const isEmailValid = emailRegex.test(normalizedInputEmail);
+
     setIsInputNameRequired(!normalizedInputName);
-    setIsInputEmailRequired(!normalizedInputEmail);
+    setIsInputEmailRequired(!normalizedInputEmail || !isEmailValid);
     setIsInputCommentRequired(!normalizedInputComment);
 
     return (
       normalizedInputName
       && normalizedInputEmail
       && normalizedInputComment
+      && isEmailValid
     );
   };
 
