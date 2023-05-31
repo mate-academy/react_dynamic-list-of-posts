@@ -52,7 +52,7 @@ export const PostsList: React.FC<Props> = React.memo(({
                     type="button"
                     data-cy="PostButton"
                     className="button is-link"
-                    onClick={() => handleCloseClick()}
+                    onClick={handleCloseClick}
                   >
                     Close
                   </button>

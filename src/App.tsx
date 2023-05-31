@@ -1,8 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import 'bulma/bulma.sass';
-import '@fortawesome/fontawesome-free/css/all.css';
-import './App.scss';
-
 import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
@@ -18,6 +14,10 @@ import { User } from './types/User';
 import { Post } from './types/Post';
 import { Loader } from './components/Loader';
 import { Comment, CommentData } from './types/Comment';
+
+import 'bulma/bulma.sass';
+import '@fortawesome/fontawesome-free/css/all.css';
+import './App.scss';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
