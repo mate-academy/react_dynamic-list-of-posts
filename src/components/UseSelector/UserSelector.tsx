@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
-import { DropdownMenu, DropdownTrigger } from './index';
+import { DropdownMenu } from './DropdownMenu';
+import { DropdownTrigger } from './DropdownTrigger';
 import {
   User,
   Error,
