@@ -5,22 +5,22 @@ import { CommentData } from '../types/Comment';
 type Props = {
   postId: number;
   addComment: (comment: CommentData) => void;
-  commentAdditionError: boolean;
-  commentAdditionLoading: boolean;
+  isCommentAdditionError: boolean;
+  isCommentAdditionLoading: boolean;
 };
 
 export const NewCommentForm: React.FC<Props> = React.memo(({
   postId,
   addComment,
-  commentAdditionError,
-  commentAdditionLoading,
+  isCommentAdditionError,
+  isCommentAdditionLoading,
 }) => {
   const [userName, setUserName] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [userComment, setUserComment] = useState('');
-  const [userRequired, setUserRequired] = useState(false);
-  const [userEmailRequired, setUserEmailRequired] = useState(false);
-  const [userCommentRequired, setUserCommentRequired] = useState(false);
+  const [isUserRequired, setIsUserRequired] = useState(false);
+  const [isUserEmailRequired, setIsUserEmailRequired] = useState(false);
+  const [isUserCommentRequired, setIsUserCommentRequired] = useState(false);
 
   const handleSubmit = useCallback((event: React.FormEvent) => {
     event.preventDefault();
@@ -29,15 +29,15 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
     const normalizedUserComment = userComment.trim();
 
     if (!normalizedUserName) {
-      setUserRequired(true);
+      setIsUserRequired(true);
     }
 
     if (!normalizedUserEmail) {
-      setUserEmailRequired(true);
+      setIsUserEmailRequired(true);
     }
 
     if (!normalizedUserComment) {
-      setUserCommentRequired(true);
+      setIsUserCommentRequired(true);
     }
 
     if (normalizedUserName && normalizedUserEmail && normalizedUserComment) {
@@ -55,41 +55,41 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
 
   const handleResetClick = useCallback(() => {
     setUserName('');
-    setUserRequired(false);
+    setIsUserRequired(false);
     setUserEmail('');
-    setUserEmailRequired(false);
+    setIsUserEmailRequired(false);
     setUserComment('');
-    setUserCommentRequired(false);
+    setIsUserCommentRequired(false);
   }, []);
 
   const handleUserInput = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (userRequired) {
-        setUserRequired(false);
+      if (isUserRequired) {
+        setIsUserRequired(false);
       }
 
       setUserName(event.target.value);
-    }, [userName, userRequired],
+    }, [userName, isUserRequired],
   );
 
   const handleUserEmailInput = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      if (userEmailRequired) {
-        setUserEmailRequired(false);
+      if (isUserEmailRequired) {
+        setIsUserEmailRequired(false);
       }
 
       setUserEmail(event.target.value);
-    }, [userEmail, userEmailRequired],
+    }, [userEmail, isUserEmailRequired],
   );
 
   const handleUserCommentInput = useCallback(
     (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      if (userCommentRequired) {
-        setUserCommentRequired(false);
+      if (isUserCommentRequired) {
+        setIsUserCommentRequired(false);
       }
 
       setUserComment(event.target.value);
-    }, [userComment, userCommentRequired],
+    }, [userComment, isUserCommentRequired],
   );
 
   return (
@@ -105,7 +105,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': userRequired })}
+            className={classNames('input', { 'is-danger': isUserRequired })}
             value={userName}
             onChange={handleUserInput}
           />
@@ -114,7 +114,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             <i className="fas fa-user" />
           </span>
 
-          {userRequired && (
+          {isUserRequired && (
             <>
               <span
                 className="icon is-small is-right has-text-danger"
@@ -142,7 +142,9 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': userEmailRequired })}
+            className={classNames('input', {
+              'is-danger': isUserEmailRequired,
+            })}
             value={userEmail}
             onChange={handleUserEmailInput}
           />
@@ -151,7 +153,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             <i className="fas fa-envelope" />
           </span>
 
-          {userEmailRequired && (
+          {isUserEmailRequired && (
             <>
               <span
                 className="icon is-small is-right has-text-danger"
@@ -179,14 +181,14 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', {
-              'is-danger': userCommentRequired,
+              'is-danger': isUserCommentRequired,
             })}
             value={userComment}
             onChange={handleUserCommentInput}
           />
         </div>
 
-        {userCommentRequired && (
+        {isUserCommentRequired && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -198,7 +200,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
           <button
             type="submit"
             className={classNames('button is-link', {
-              'is-loading': commentAdditionLoading,
+              'is-loading': isCommentAdditionLoading,
             })}
           >
             Add
@@ -218,7 +220,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
 
       </div>
 
-      {commentAdditionError && (
+      {isCommentAdditionError && (
         <div className="notification is-danger" data-cy="CommentsError">
           Something went wrong
         </div>

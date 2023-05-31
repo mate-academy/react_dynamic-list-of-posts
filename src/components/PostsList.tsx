@@ -17,12 +17,12 @@ export const PostsList: React.FC<Props> = React.memo(({
     setPostId(post.id);
     setIsPostOpen(true);
     onPostDetails(post);
-  }, []);
+  }, [onPostDetails]);
 
   const handleCloseClick = useCallback(() => {
     setIsPostOpen(false);
     onPostDetails(null);
-  }, []);
+  }, [onPostDetails]);
 
   return (
     <div data-cy="PostsList">

@@ -27,12 +27,16 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [hasCommentsError, setHasCommentsError] = useState(false);
-  const [commentAdditionError, setCommentAdditionError] = useState(false);
-  const [commentAdditionLoading, setCommentAdditionLoading] = useState(false);
+  const [isCommentAdditionError, setIsCommentAdditionError] = useState(false);
+  const [
+    isCommentAdditionLoading,
+    setIsCommentAdditionLoading,
+  ] = useState(false);
 
   useEffect(() => {
     getUsers()
-      .then(userList => setUsers(userList));
+      .then(userList => setUsers(userList))
+      .catch(() => setHasError(true));
   }, []);
 
   const shouldShowNoPostsMessage = !isLoading
@@ -73,7 +77,7 @@ export const App: React.FC = () => {
   }, []);
 
   const addComment = useCallback(async (comment: CommentData) => {
-    setCommentAdditionLoading(true);
+    setIsCommentAdditionLoading(true);
 
     try {
       const createdComment = await createComment(comment);
@@ -83,9 +87,9 @@ export const App: React.FC = () => {
         createdComment,
       ]) as Comment[]);
     } catch {
-      setCommentAdditionError(true);
+      setIsCommentAdditionError(true);
     } finally {
-      setCommentAdditionLoading(false);
+      setIsCommentAdditionLoading(false);
     }
   }, []);
 
@@ -114,7 +118,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {posts === null && (
+                {!posts && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
@@ -167,8 +171,8 @@ export const App: React.FC = () => {
                   hasCommentsError={hasCommentsError}
                   removeComment={removeComment}
                   addComment={addComment}
-                  commentAdditionError={commentAdditionError}
-                  commentAdditionLoading={commentAdditionLoading}
+                  isCommentAdditionError={isCommentAdditionError}
+                  isCommentAdditionLoading={isCommentAdditionLoading}
                 />
               </div>
             )}

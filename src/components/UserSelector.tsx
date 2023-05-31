@@ -22,8 +22,10 @@ export const UserSelector: React.FC<Props> = React.memo(({
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
-      if (dropdownRef.current
-        && !dropdownRef.current.contains(event.target as Node)) {
+      const isOutsideDropdownClick = dropdownRef.current
+      && !dropdownRef.current.contains(event.target as Node);
+
+      if (isOutsideDropdownClick) {
         setIsDropdownActive(false);
       }
     };
@@ -39,7 +41,7 @@ export const UserSelector: React.FC<Props> = React.memo(({
     setUserName(name);
     onUserClick(userId);
     setIsDropdownActive(false);
-  }, [userName]);
+  }, [userName, onUserClick]);
 
   return (
     <div

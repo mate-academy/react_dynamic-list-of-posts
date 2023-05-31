@@ -10,8 +10,8 @@ type Props = {
   hasCommentsError: boolean;
   removeComment: (commentId: number) => void;
   addComment: (comment: CommentData) => void;
-  commentAdditionError: boolean;
-  commentAdditionLoading: boolean;
+  isCommentAdditionError: boolean;
+  isCommentAdditionLoading: boolean;
 };
 
 export const PostDetails: React.FC<Props> = React.memo(({
@@ -20,8 +20,8 @@ export const PostDetails: React.FC<Props> = React.memo(({
   hasCommentsError,
   removeComment,
   addComment,
-  commentAdditionError,
-  commentAdditionLoading,
+  isCommentAdditionError,
+  isCommentAdditionLoading,
 }) => {
   const [isFormActive, setIsFormActive] = useState(false);
 
@@ -85,7 +85,7 @@ export const PostDetails: React.FC<Props> = React.memo(({
                         aria-label="delete"
                         onClick={() => removeComment(comment.id)}
                       >
-                        delete button
+                        Delete comment
                       </button>
                     </div>
 
@@ -115,8 +115,8 @@ export const PostDetails: React.FC<Props> = React.memo(({
           <NewCommentForm
             postId={post.id}
             addComment={addComment}
-            commentAdditionError={commentAdditionError}
-            commentAdditionLoading={commentAdditionLoading}
+            isCommentAdditionError={isCommentAdditionError}
+            isCommentAdditionLoading={isCommentAdditionLoading}
           />
         )}
       </div>
