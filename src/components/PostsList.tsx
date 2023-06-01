@@ -15,7 +15,7 @@ export const PostsList: React.FC<Props> = ({
   selectedPost,
   handlePostSelect,
   userId,
-  hidePostDetails
+  hidePostDetails,
 }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +45,7 @@ export const PostsList: React.FC<Props> = ({
 
   const handleButtonClick = useCallback((isPostSelected: boolean, post) => {
     if (isPostSelected) {
-      hidePostDetails()
+      hidePostDetails();
     } else {
       handlePostSelect(post);
     }
