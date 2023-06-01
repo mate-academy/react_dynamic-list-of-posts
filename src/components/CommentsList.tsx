@@ -16,23 +16,7 @@ export const CommentsList: React.FC<Props> = ({ postId }) => {
   const [deleteError, setDeleteError] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(false);
 
-  const getPostCommentsFromServer = async () => {
-    try {
-      setComments([]);
-      setIsFormVisible(false);
-      setLoadError(false);
-      setIsLoading(true);
-      const commentsFromServer = await getComments(postId);
-
-      setComments(commentsFromServer);
-    } catch {
-      setLoadError(true);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const postNewComment = useCallback(async (comment: CommentData) => {
+  const addNewComment = useCallback(async (comment: CommentData) => {
     const newComment = { ...comment, postId };
 
     try {
@@ -44,7 +28,7 @@ export const CommentsList: React.FC<Props> = ({ postId }) => {
     }
   }, []);
 
-  const handleDeleteComment = useCallback(async (commentId: number) => {
+  const deleteSelectedComment = useCallback(async (commentId: number) => {
     const tempComments = [...comments];
 
     setComments(currentComments => (
@@ -61,17 +45,40 @@ export const CommentsList: React.FC<Props> = ({ postId }) => {
   }, []);
 
   useEffect(() => {
-    getPostCommentsFromServer();
+    const fetchPostComments = async () => {
+      try {
+        setComments([]);
+        setIsFormVisible(false);
+        setLoadError(false);
+        setIsLoading(true);
+        const commentsFromServer = await getComments(postId);
+
+        setComments(commentsFromServer);
+      } catch {
+        setLoadError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPostComments();
   }, [postId]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const deleteErrorTimer = setTimeout(() => {
       setDeleteError(false);
+    }, 3000);
+
+    return () => clearTimeout(deleteErrorTimer);
+  }, [deleteError]);
+
+  useEffect(() => {
+    const addErrorTimer = setTimeout(() => {
       setAddError(false);
     }, 3000);
 
-    return () => clearTimeout(timer);
-  }, [addError, deleteError]);
+    return () => clearTimeout(addErrorTimer);
+  }, [addError]);
 
   if (isLoading) {
     return <Loader />;
@@ -115,10 +122,8 @@ export const CommentsList: React.FC<Props> = ({ postId }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => handleDeleteComment(comment.id)}
-                  >
-                    delete button
-                  </button>
+                    onClick={() => deleteSelectedComment(comment.id)}
+                  />
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">
@@ -158,8 +163,7 @@ export const CommentsList: React.FC<Props> = ({ postId }) => {
             Write a comment
           </button>
         )
-        : <NewCommentForm onAddComment={postNewComment} />}
-
+        : <NewCommentForm onAddComment={addNewComment} />}
     </>
   );
 };

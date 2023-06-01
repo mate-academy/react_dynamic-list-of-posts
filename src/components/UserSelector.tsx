@@ -10,7 +10,7 @@ import { User } from '../types/User';
 type Props = {
   users: User[];
   selectedUser: User | null;
-  selectUser: (user: User) => void;
+  selectUser: (user: User | null) => void;
 };
 
 export const UserSelector: React.FC<Props> = React.memo(({
@@ -21,10 +21,12 @@ export const UserSelector: React.FC<Props> = React.memo(({
   const [isListOpened, setIsListOpened] = useState(false);
   const selectionRef = useRef<HTMLDivElement>(null);
 
-  const handleSelectUser = useCallback((user: User) => {
-    selectUser(user);
+  const handleSelectUser = useCallback((userId: number) => {
+    const foundUser = users.find(user => user.id === userId) || null;
+
+    selectUser(foundUser);
     setIsListOpened(false);
-  }, []);
+  }, [selectUser, users]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -76,23 +78,19 @@ export const UserSelector: React.FC<Props> = React.memo(({
         role="menu"
       >
         <div className="dropdown-content">
-          {users.map(user => {
-            const { id, name } = user;
-
-            return (
-              <a
-                key={id}
-                href={`#user-${id}`}
-                className={classNames(
-                  'dropdown-item',
-                  { 'is-active': selectedUser === user },
-                )}
-                onClick={() => handleSelectUser(user)}
-              >
-                {name}
-              </a>
-            );
-          })}
+          {users.map(({ id, name }) => (
+            <a
+              key={id}
+              href={`#user-${id}`}
+              className={classNames(
+                'dropdown-item',
+                { 'is-active': selectedUser?.id === id },
+              )}
+              onClick={() => handleSelectUser(id)}
+            >
+              {name}
+            </a>
+          ))}
         </div>
       </div>
     </div>

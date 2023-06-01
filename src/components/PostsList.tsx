@@ -19,9 +19,11 @@ export const PostsList: React.FC<Props> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const handleSelectPost = (post: Post) => {
-    if (selectedPost !== post) {
-      onSelectPost(post);
+  const handleSelectPost = (postId: number) => {
+    if (selectedPost?.id !== postId) {
+      const openedPost = posts.find(post => post.id === postId) || null;
+
+      onSelectPost(openedPost);
     } else {
       onSelectPost(null);
     }
@@ -83,39 +85,35 @@ export const PostsList: React.FC<Props> = ({
         </thead>
 
         <tbody>
-          {posts.map(post => {
-            const { id, title } = post;
+          {posts.map(({ id, title }) => (
+            <tr
+              data-cy="Post"
+              key={id}
+            >
+              <td data-cy="PostId">{id}</td>
 
-            return (
-              <tr
-                data-cy="Post"
-                key={id}
-              >
-                <td data-cy="PostId">{id}</td>
+              <td data-cy="PostTitle">
+                {title}
+              </td>
 
-                <td data-cy="PostTitle">
-                  {title}
-                </td>
-
-                <td className="has-text-right is-vcentered">
-                  <button
-                    type="button"
-                    data-cy="PostButton"
-                    className={classNames(
-                      'button',
-                      'is-link',
-                      { 'is-light': selectedPost !== post },
-                    )}
-                    onClick={() => handleSelectPost(post)}
-                  >
-                    {selectedPost === post
-                      ? 'Close'
-                      : 'Open'}
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className={classNames(
+                    'button',
+                    'is-link',
+                    { 'is-light': selectedPost?.id !== id },
+                  )}
+                  onClick={() => handleSelectPost(id)}
+                >
+                  {selectedPost?.id === id
+                    ? 'Close'
+                    : 'Open'}
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
