@@ -89,8 +89,6 @@ export const NewCommentForm: React.FC<Props> = ({
       Object.values(errors).forEach((error) => {
         if (error) {
           setAddButtonClicked(true);
-          
-          return;
         }
       });
 
