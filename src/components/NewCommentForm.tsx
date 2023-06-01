@@ -86,11 +86,11 @@ export const NewCommentForm: React.FC<Props> = ({
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
-      Object.values(errors).forEach((error) => {
-        if (error) {
-          setAddButtonClicked(true);
-        }
-      });
+      if (Object.values(errors).some(error => error)) {
+        setAddButtonClicked(true);
+
+        return;
+      }
 
       const addComment = async () => {
         try {
