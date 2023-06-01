@@ -10,7 +10,7 @@ import { UserSelector } from './components/UserSelector';
 import { User } from './types/User';
 import { client } from './utils/fetchClient';
 import { Post } from './types/Post';
-import { PostDetails } from './components/PostDetails';
+import { PostDetails } from './components/PostDetails/PostDetails';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -35,10 +35,15 @@ export const App: React.FC = () => {
 
   const handleUserSelect = useCallback((user: User) => {
     setSelectedUser(user);
+    setSelectedPost(null);
   }, []);
 
   const handlePostSelect = useCallback((post: Post) => {
     setSelectedPost(post);
+  }, []);
+
+  const hidePostDetails = useCallback(() => {
+    setSelectedPost(null);
   }, []);
 
   return (
@@ -63,6 +68,7 @@ export const App: React.FC = () => {
                     handlePostSelect={handlePostSelect}
                     selectedPost={selectedPost}
                     userId={selectedUser.id}
+                    hidePostDetails={hidePostDetails}
                   />
                 )}
               </div>

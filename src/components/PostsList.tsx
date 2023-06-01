@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { Post } from '../types/Post';
 import { Loader } from './Loader';
@@ -7,13 +7,15 @@ import { client } from '../utils/fetchClient';
 interface Props {
   handlePostSelect: (post: Post) => void;
   selectedPost: Post | null;
-  userId: number
+  userId: number;
+  hidePostDetails: () => void
 }
 
 export const PostsList: React.FC<Props> = ({
   selectedPost,
   handlePostSelect,
   userId,
+  hidePostDetails
 }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -40,6 +42,14 @@ export const PostsList: React.FC<Props> = ({
 
     fetchPosts();
   }, [userId]);
+
+  const handleButtonClick = useCallback((isPostSelected: boolean, post) => {
+    if (isPostSelected) {
+      hidePostDetails()
+    } else {
+      handlePostSelect(post);
+    }
+  }, []);
 
   if (isLoading) {
     return <Loader />;
@@ -91,7 +101,7 @@ export const PostsList: React.FC<Props> = ({
                     className={classNames('button is-link', {
                       'is-light': !isPostSelected,
                     })}
-                    onClick={() => handlePostSelect(post)}
+                    onClick={() => handleButtonClick(isPostSelected, post)}
                   >
                     {isPostSelected ? 'Close' : 'Open'}
                   </button>
