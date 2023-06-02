@@ -31,7 +31,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const [touhed, setTouched] = useState(false);
 
   const hasError = (input : string) => {
-    return !input && touhed;
+    return !input.trim() && touhed;
   };
 
   const { name, email, body } = newComment;
@@ -40,7 +40,7 @@ export const NewCommentForm: React.FC<Props> = ({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
-    if (name && email && body) {
+    if (name.trim() && email.trim() && body.trim()) {
       setIsProcessing(ShowLoader.AddComment);
       client.post<Comment>('/comments', {
         ...newComment,
@@ -50,6 +50,7 @@ export const NewCommentForm: React.FC<Props> = ({
         .catch(() => setErrorMessage(ErrorMessage.AddNewComment))
         .finally(() => setIsProcessing(''));
       setNewComment({ ...newComment, body: '' });
+      setTouched(false);
     } else {
       setTouched(true);
     }
