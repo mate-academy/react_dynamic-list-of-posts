@@ -3,17 +3,20 @@ import cn from 'classnames';
 import { User } from '../types/User';
 import { ErrorMessage } from '../types/ErrorMessage';
 import { client } from '../utils/fetchClient';
+import { Post } from '../types/Post';
 
 type Props = {
   getActiveUser:(user: User | null) => void,
   activeUser: User | null,
-  setErrorMessage: (message : ErrorMessage) => void
+  setErrorMessage: (message : ErrorMessage) => void,
+  setActivePost: (post: Post | null) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
   getActiveUser,
   activeUser,
   setErrorMessage,
+  setActivePost,
 }) => {
   const [showUserList, setShowUserList] = useState(false);
   const [users, setUsers] = useState<User []>([]);
@@ -35,6 +38,7 @@ export const UserSelector: React.FC<Props> = ({
   const handleSelectUser = (user: User) => {
     getActiveUser(user);
     setShowUserList(false);
+    setActivePost(null);
   };
 
   return (

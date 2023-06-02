@@ -15,6 +15,7 @@ type Props = {
   activePost: Post | null,
   setErrorMessage:(message: ErrorMessage) => void,
   errorMessage: ErrorMessage | null,
+  // changeUser: boolean,
 };
 
 const { DeleteComment, LoadingComments, AddNewComment } = ErrorMessage;
@@ -27,6 +28,7 @@ export const PostDetails: React.FC<Props> = ({
   setIsProcessing,
   setErrorMessage,
   errorMessage,
+  // changeUser,
 }) => {
   const [writeCommentButton, setWriteCommentButton] = useState(false);
   const [showError, setShowError] = useState(false);

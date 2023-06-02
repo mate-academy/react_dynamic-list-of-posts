@@ -63,6 +63,7 @@ export const App: React.FC = () => {
                   getActiveUser={setActiveUser}
                   activeUser={activeUser}
                   setErrorMessage={setErrorMessage}
+                  setActivePost={setActivePost}
                 />
               </div>
 
@@ -92,14 +93,11 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                { posts?.length !== 0 && posts
-                && (
-                  <PostsList
-                    posts={posts}
-                    activePost={activePost}
-                    setActivePost={setActivePost}
-                  />
-                )}
+                <PostsList
+                  posts={posts}
+                  activePost={activePost}
+                  setActivePost={setActivePost}
+                />
               </div>
             </div>
           </div>
@@ -115,17 +113,17 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {activePost && (
-                <PostDetails
-                  comments={comments}
-                  isProcessing={isProcessing}
-                  setComments={setComments}
-                  activePost={activePost}
-                  setIsProcessing={setIsProcessing}
-                  setErrorMessage={setErrorMessage}
-                  errorMessage={errorMessage}
-                />
-              ) }
+
+              <PostDetails
+                comments={comments}
+                isProcessing={isProcessing}
+                setComments={setComments}
+                activePost={activePost}
+                setIsProcessing={setIsProcessing}
+                setErrorMessage={setErrorMessage}
+                errorMessage={errorMessage}
+              />
+
             </div>
           </div>
         </div>

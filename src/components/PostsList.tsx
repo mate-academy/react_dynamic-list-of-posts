@@ -13,7 +13,10 @@ export const PostsList: React.FC<Props> = ({
   setActivePost,
   activePost,
 }) => (
-  <div data-cy="PostsList">
+  <div
+    data-cy="PostsList"
+    style={{ display: !posts?.length ? 'none' : 'block' }}
+  >
     <p className="title">Posts:</p>
 
     <table className="table is-fullwidth is-striped is-hoverable is-narrow">
