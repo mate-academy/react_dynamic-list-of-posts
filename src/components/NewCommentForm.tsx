@@ -22,28 +22,30 @@ export const NewCommentForm: React.FC<Props> = ({
   setErrorMessage,
 }) => {
   const defaultComment = {
-    postId: activePost?.id,
     name: '',
     email: '',
     body: '',
   };
   const [newComment, setNewComment] = useState<CommentData>(defaultComment);
 
-  const [tocuhed, setTouched] = useState(false);
+  const [touhed, setTouched] = useState(false);
 
   const hasError = (input : string) => {
-    return !input && tocuhed;
+    return !input && touhed;
   };
 
   const { name, email, body } = newComment;
 
-  const onAddNewcomment = (
+  const handleAddNewcomment = (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => {
     e.preventDefault();
     if (name && email && body) {
       setIsProcessing(ShowLoader.AddComment);
-      client.post<Comment>('/comments', newComment)
+      client.post<Comment>('/comments', {
+        ...newComment,
+        postId: activePost?.id,
+      })
         .then(response => onAddComments(response))
         .catch(() => setErrorMessage(ErrorMessage.AddNewComment))
         .finally(() => setIsProcessing(''));
@@ -165,7 +167,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-link',
               { 'is-loading': isProcessing === ShowLoader.AddComment },
             )}
-            onClick={(e) => onAddNewcomment(e)}
+            onClick={(e) => handleAddNewcomment(e)}
           >
             Add
           </button>

@@ -68,7 +68,7 @@ export const PostDetails: React.FC<Props> = ({
               {errorMessage}
             </div>
           )}
-          {isProcessing !== 'sideBar' && (
+          {isProcessing !== ShowLoader.SideBar && (
             <>
               {comments.length === 0
                 ? (
