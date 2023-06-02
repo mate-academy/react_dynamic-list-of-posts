@@ -15,12 +15,12 @@ import { Comment as CommentType } from './types/Comment';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[] | []>([]);
-  const [isDropdownActive, setIsDropdownActiove] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedUserPosts, setSelectedUserPost] = useState<Post[] | []>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [areCommentsLoading, setAreCommentsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [isDropdownActive, setIsDropdownActive] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<CommentType[]>([]);
   const [showAddComment, setShowAddComment] = useState(false);
@@ -41,10 +41,6 @@ export const App: React.FC = () => {
     loadUsers();
   }, []);
 
-  const handleUsersDropdown = () => {
-    setIsDropdownActiove(prevValue => !prevValue);
-  };
-
   const loadPosts = async (user: User | null) => {
     if (user) {
       try {
@@ -62,12 +58,12 @@ export const App: React.FC = () => {
   };
 
   const handleSelectUser = useCallback((user: User | null) => {
+    setIsDropdownActive(false);
     setSelectedUser(null);
     setSelectedPost(null);
     setHasCommentError(false);
     setHasError(false);
     setSelectedUser(user);
-    handleUsersDropdown();
     loadPosts(user);
   }, []);
 
@@ -120,6 +116,7 @@ export const App: React.FC = () => {
   }, []);
 
   const handleClearCommentForm = useCallback(() => {
+    setHasFormError(false);
     setCommentAuthorName('');
     setCommentAuthorEmail('');
     setCommentContent('');
@@ -177,9 +174,9 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  users={users}
-                  onClickUsersDropdown={handleUsersDropdown}
                   isDropdownActive={isDropdownActive}
+                  setIsDropdownActive={setIsDropdownActive}
+                  users={users}
                   onSelectUser={handleSelectUser}
                   selectedUser={selectedUser}
                 />
@@ -230,7 +227,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {selectedPost && !hasError && (
+          {!hasError && (
             <div
               data-cy="Sidebar"
               className={classNames(
@@ -241,28 +238,31 @@ export const App: React.FC = () => {
                 { 'Sidebar--open': selectedPost },
               )}
             >
-              <div className="tile is-child box is-success ">
-                <PostDetails
-                  selectedPost={selectedPost}
-                  areCommentsLoading={areCommentsLoading}
-                  comments={comments}
-                  hasError={hasError}
-                  onShowAddComment={handleShowAddComment}
-                  showAddComment={showAddComment}
-                  onChangeCommentAuthorName={handleChangeCommentAuthorName}
-                  onChangeCommentAuthorEmail={handleChangeCommentAuthorEmail}
-                  onChangeCommentContent={handleChangeCommentContent}
-                  commentAuthorName={commentAuthorName}
-                  commentAuthorEmail={commentAuthorEmail}
-                  commentContent={commentContent}
-                  onClearCommentForm={handleClearCommentForm}
-                  onCommentSubmit={handleCommentSubmit}
-                  hasFormError={hasFormError}
-                  isAddingComment={isAddingComment}
-                  onRemoveComment={handleRemoveComment}
-                  hasCommentError={hasCommentError}
-                />
-              </div>
+              {selectedPost
+              && (
+                <div className="tile is-child box is-success ">
+                  <PostDetails
+                    selectedPost={selectedPost}
+                    areCommentsLoading={areCommentsLoading}
+                    comments={comments}
+                    hasError={hasError}
+                    onShowAddComment={handleShowAddComment}
+                    showAddComment={showAddComment}
+                    onChangeCommentAuthorName={handleChangeCommentAuthorName}
+                    onChangeCommentAuthorEmail={handleChangeCommentAuthorEmail}
+                    onChangeCommentContent={handleChangeCommentContent}
+                    commentAuthorName={commentAuthorName}
+                    commentAuthorEmail={commentAuthorEmail}
+                    commentContent={commentContent}
+                    onClearCommentForm={handleClearCommentForm}
+                    onCommentSubmit={handleCommentSubmit}
+                    hasFormError={hasFormError}
+                    isAddingComment={isAddingComment}
+                    onRemoveComment={handleRemoveComment}
+                    hasCommentError={hasCommentError}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>
