@@ -12,10 +12,9 @@ type Props = {
   setComments:(filterComments: Comment[]) => void,
   isProcessing: string,
   setIsProcessing:(string: string) => void,
-  activePost: Post | null,
+  activePost: Post,
   setErrorMessage:(message: ErrorMessage) => void,
   errorMessage: ErrorMessage | null,
-  // changeUser: boolean,
 };
 
 const { DeleteComment, LoadingComments, AddNewComment } = ErrorMessage;
@@ -28,7 +27,6 @@ export const PostDetails: React.FC<Props> = ({
   setIsProcessing,
   setErrorMessage,
   errorMessage,
-  // changeUser,
 }) => {
   const [writeCommentButton, setWriteCommentButton] = useState(false);
   const [showError, setShowError] = useState(false);
@@ -48,31 +46,36 @@ export const PostDetails: React.FC<Props> = ({
     }
   }, [errorMessage]);
 
+  const showWriteCommentButton
+    = !isProcessing && !writeCommentButton && !showError;
+  const showComments = !showError && isProcessing !== ShowLoader.SideBar;
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {`#${activePost?.id}: ${activePost?.title}`}
+            {`#${activePost.id}: ${activePost?.title}`}
           </h2>
 
           <p data-cy="PostBody">
-            {activePost?.body}
+            {activePost.body}
           </p>
         </div>
 
         <div className="block">
           {isProcessing === ShowLoader.SideBar && <Loader />}
 
-          { showError && errorMessage
-          && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              {errorMessage}
-            </div>
-          )}
-          {isProcessing !== ShowLoader.SideBar && (
+          { showError
+              && (
+                <div className="notification is-danger" data-cy="CommentsError">
+                  {errorMessage}
+                </div>
+              ) }
+
+          {showComments && (
             <>
-              {comments.length === 0
+              {!comments.length
                 ? (
                   <p className="title is-4" data-cy="NoCommentsMessage">
                     No comments yet
@@ -85,8 +88,12 @@ export const PostDetails: React.FC<Props> = ({
                 name,
                 body,
               }) => (
-                <article className="message is-small" data-cy="Comment">
-                  <div className="message-header" key={id}>
+                <article
+                  className="message is-small"
+                  data-cy="Comment"
+                  key={id}
+                >
+                  <div className="message-header">
                     <a href={`mailto:${email}`} data-cy="CommentAuthor">
                       {name}
                     </a>
@@ -109,7 +116,7 @@ export const PostDetails: React.FC<Props> = ({
             </>
           )}
 
-          {!isProcessing && !writeCommentButton && (
+          {showWriteCommentButton && (
             <button
               data-cy="WriteCommentButton"
               type="button"

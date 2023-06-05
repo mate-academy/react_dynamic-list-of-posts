@@ -3,7 +3,7 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import classNames from 'classnames';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
@@ -19,7 +19,7 @@ const { LoadingComments, LoadingUser, LoadingPosts } = ErrorMessage;
 
 export const App: React.FC = () => {
   const [activeUser, setActiveUser] = useState<User | null>(null);
-  const [posts, setPosts] = useState<Post [] | undefined>();
+  const [posts, setPosts] = useState<Post[]>();
   const [comments, setComments] = useState<Comment[]>([]);
   const [activePost, setActivePost] = useState<Post | null>(null);
   const [isProcessing, setIsProcessing] = useState('');
@@ -52,6 +52,12 @@ export const App: React.FC = () => {
     return () => clearTimeout(timerId);
   }, [errorMessage]);
 
+  const showError = useMemo(() => ((errorMessage === LoadingPosts
+    || errorMessage === LoadingUser) && errorMessage), [errorMessage]);
+
+  const showNoSelectedUser = !activeUser && errorMessage !== LoadingUser;
+  const showNoPostsYet = !posts?.length && posts && !showError;
+
   return (
     <main className="section">
       <div className="container">
@@ -68,7 +74,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!activeUser && errorMessage !== LoadingUser && (
+                {showNoSelectedUser && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
@@ -76,8 +82,7 @@ export const App: React.FC = () => {
 
                 {isProcessing === ShowLoader.Post && <Loader />}
 
-                {((errorMessage === LoadingPosts
-                  || errorMessage === LoadingUser) && errorMessage)
+                {showError
                 && (
                   <div
                     className="notification is-danger"
@@ -87,17 +92,19 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!posts?.length && posts && (
+                {showNoPostsYet && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                <PostsList
-                  posts={posts}
-                  activePost={activePost}
-                  setActivePost={setActivePost}
-                />
+                {!showError && (
+                  <PostsList
+                    posts={posts}
+                    activePost={activePost}
+                    setActivePost={setActivePost}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -114,15 +121,17 @@ export const App: React.FC = () => {
           >
             <div className="tile is-child box is-success ">
 
-              <PostDetails
-                comments={comments}
-                isProcessing={isProcessing}
-                setComments={setComments}
-                activePost={activePost}
-                setIsProcessing={setIsProcessing}
-                setErrorMessage={setErrorMessage}
-                errorMessage={errorMessage}
-              />
+              {activePost && !errorMessage && (
+                <PostDetails
+                  comments={comments}
+                  isProcessing={isProcessing}
+                  setComments={setComments}
+                  activePost={activePost}
+                  setIsProcessing={setIsProcessing}
+                  setErrorMessage={setErrorMessage}
+                  errorMessage={errorMessage}
+                />
+              )}
 
             </div>
           </div>

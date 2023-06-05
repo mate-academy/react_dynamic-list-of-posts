@@ -5,6 +5,7 @@ import { Post } from '../types/Post';
 import { ErrorMessage } from '../types/ErrorMessage';
 import { ShowLoader } from '../types/ShowLoader';
 import { client } from '../utils/fetchClient';
+import { defaultComment } from '../utils/defaultComment';
 
 type Props = {
   activePost: Post | null,
@@ -21,16 +22,11 @@ export const NewCommentForm: React.FC<Props> = ({
   setIsProcessing,
   setErrorMessage,
 }) => {
-  const defaultComment = {
-    name: '',
-    email: '',
-    body: '',
-  };
   const [newComment, setNewComment] = useState<CommentData>(defaultComment);
 
   const [touhed, setTouched] = useState(false);
 
-  const hasError = (input : string) => {
+  const errorChecking = (input : string) => {
     return !input.trim() && touhed;
   };
 
@@ -56,6 +52,11 @@ export const NewCommentForm: React.FC<Props> = ({
     }
   };
 
+  const handleResetForm = () => {
+    setTouched(false);
+    setNewComment(defaultComment);
+  };
+
   return (
     <form data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
@@ -69,7 +70,7 @@ export const NewCommentForm: React.FC<Props> = ({
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={cn('input', { 'is-danger': hasError(name) })}
+            className={cn('input', { 'is-danger': errorChecking(name) })}
             value={newComment.name}
             onChange={(e) => setNewComment(
               { ...newComment, name: e.target.value },
@@ -80,7 +81,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-user" />
           </span>
 
-          {hasError(name) && (
+          {errorChecking(name) && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -90,7 +91,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {hasError(name) && (
+        {errorChecking(name) && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -108,7 +109,7 @@ export const NewCommentForm: React.FC<Props> = ({
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={cn('input', { 'is-danger': hasError(email) })}
+            className={cn('input', { 'is-danger': errorChecking(email) })}
             value={email}
             onChange={(e) => setNewComment(
               { ...newComment, email: e.target.value },
@@ -118,7 +119,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
-          {hasError(email) && (
+          {errorChecking(email) && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -127,7 +128,7 @@ export const NewCommentForm: React.FC<Props> = ({
             </span>
           )}
         </div>
-        {hasError(email) && (
+        {errorChecking(email) && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -144,7 +145,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={cn('textarea', { 'is-danger': hasError(body) })}
+            className={cn('textarea', { 'is-danger': errorChecking(body) })}
             value={body}
             onChange={(e) => setNewComment(
               { ...newComment, body: e.target.value },
@@ -152,7 +153,7 @@ export const NewCommentForm: React.FC<Props> = ({
           />
         </div>
 
-        {hasError(body) && (
+        {errorChecking(body) && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -179,10 +180,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={() => {
-              setTouched(false);
-              setNewComment(defaultComment);
-            }}
+            onClick={handleResetForm}
           >
             Clear
           </button>
