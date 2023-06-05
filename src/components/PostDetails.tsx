@@ -66,12 +66,12 @@ export const PostDetails: React.FC<Props> = ({
         <div className="block">
           {isProcessing === ShowLoader.SideBar && <Loader />}
 
-          { showError
-              && (
-                <div className="notification is-danger" data-cy="CommentsError">
-                  {errorMessage}
-                </div>
-              ) }
+          { showError && errorMessage
+          && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              {errorMessage}
+            </div>
+          )}
 
           {showComments && (
             <>
