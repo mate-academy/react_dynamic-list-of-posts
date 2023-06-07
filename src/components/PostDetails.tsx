@@ -1,18 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { usePostsContext } from '../Context/PostsContext';
+import { Comment } from '../types/Comment';
 
 export const PostDetails: React.FC = () => {
   const {
     loadingPost, postError, comments, chosenPost, posts,
     handleDeleteComment, isWriteComment, setIsWriteComment,
   } = usePostsContext();
+
+  const [tempComments, setTempComments] = useState<Comment[]>([]);
+
   const isCommets = !comments.length;
   const postTitle = posts?.filter(post => post.id === chosenPost)
     .find(post => post.title);
   const postBody = posts?.filter(post => post.id === chosenPost)
     .find(post => post.body);
+
+  function deletingComment(id: number) {
+    const temp = comments.filter(comment => comment.id !== id);
+
+    setTempComments(prevState => prevState.concat(temp));
+  }
+
+  const handleDelete = (id: number) => {
+    handleDeleteComment(id);
+    deletingComment(id);
+  };
+
+  const showComments = tempComments.length
+    ? tempComments
+    : comments;
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -44,7 +63,7 @@ export const PostDetails: React.FC = () => {
           {!isCommets && !loadingPost && (
             <>
               <p className="title is-4">Comments:</p>
-              {comments.map(comment => {
+              {showComments.map(comment => {
                 const {
                   email, name, body, id,
                 } = comment;
@@ -67,7 +86,7 @@ export const PostDetails: React.FC = () => {
                         type="button"
                         className="delete is-small"
                         aria-label="delete"
-                        onClick={() => handleDeleteComment(id)}
+                        onClick={() => handleDelete(id)}
                       >
                         delete button
                       </button>

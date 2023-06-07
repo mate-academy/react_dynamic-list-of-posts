@@ -84,7 +84,7 @@ export const PostsContextProvider = ({ children }: { children: ReactNode }) => {
     };
 
     loadData();
-  }, [selectedUserId, changes]);
+  }, [selectedUserId]);
 
   useEffect(() => {
     const url = '/users';
@@ -149,7 +149,7 @@ export const PostsContextProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setChanges(!changes);
     }
-  }, [posts, changes, chosenPost, isOpenPost, isWriteComment, users, comments]);
+  }, [isWriteComment]);
 
   const AddComment = async (newComment: {}) => {
     setLoadAdd(true);
