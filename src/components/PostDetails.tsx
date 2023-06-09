@@ -24,9 +24,6 @@ export const PostDetails: React.FC<Prop> = ({ selectedPost }) => {
     createCommentOnServer(selectedPost.id, name, email, comment)
       .then(newComment => setComments([...comments, newComment]))
       .catch(() => setError(ShowError.error))
-      .finally(() => {
-
-      });
   };
 
   const deleteComment = (commentId: number) => {
