@@ -1,10 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
+import classNames from 'classnames';
+import { User } from '../types/User';
 
-export const UserSelector: React.FC = () => {
+type SelectorUsers = {
+  listOfUserf: User[],
+  saveSelectedUser: (user: User) => void,
+  choosenUser: User | null,
+};
+
+export const UserSelector: React.FC<SelectorUsers> = ({
+  listOfUserf,
+  saveSelectedUser,
+  choosenUser,
+}) => {
+  const [isActive, setIsActive] = useState(false);
+
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={classNames('dropdown', { 'is-active': isActive })}
     >
       <div className="dropdown-trigger">
         <button
@@ -12,8 +26,14 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setIsActive(!isActive)}
         >
-          <span>Choose a user</span>
+          {choosenUser?.name
+            ? (
+              <p>{choosenUser.name}</p>
+            ) : (
+              <span>Choose a user</span>
+            )}
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -22,13 +42,26 @@ export const UserSelector: React.FC = () => {
       </div>
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
-        </div>
+        {true && (
+          <div className="dropdown-content">
+            {listOfUserf.map((user, idx) => (
+              <a
+                href={`#user=${idx + 1}`}
+                className={classNames(
+                  'dropdown-item',
+                  { 'is-active': user.id === choosenUser?.id },
+                )}
+                key={user.id}
+                onClick={() => {
+                  saveSelectedUser(user);
+                  setIsActive(false);
+                }}
+              >
+                {user.name}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
