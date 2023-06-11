@@ -21,8 +21,8 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPostId, setSelectedPostId] = useState(0);
   const [comments, setComments] = useState<Comment[]>([]);
-  const [arePostsLoading, setArePostLoading] = useState(false);
-  const [areCommentsLoading, setAreCommentsLoading] = useState(false);
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [postsError, setPostsError] = useState(false);
   const [commentsError, setCommentsError] = useState(false);
 
@@ -35,14 +35,14 @@ export const App: React.FC = () => {
     if (selectedUserId) {
       const searchedUrl = `/posts?userId=${selectedUserId}`;
 
-      setArePostLoading(true);
+      setIsPostsLoading(true);
       getPosts(searchedUrl)
         .then((userPosts) => {
           setPosts(userPosts);
           setPostsError(false);
         })
         .catch(() => setPostsError(true))
-        .finally(() => setArePostLoading(false));
+        .finally(() => setIsPostsLoading(false));
     }
   }, [selectedUserId]);
 
@@ -50,14 +50,14 @@ export const App: React.FC = () => {
     if (selectedPostId) {
       const searchedUrl = `/comments?postId=${selectedPostId}`;
 
-      setAreCommentsLoading(true);
+      setIsCommentsLoading(true);
       getComments(searchedUrl)
         .then((chosenPostComment) => {
           setComments(chosenPostComment);
           setCommentsError(false);
         })
         .catch(() => setCommentsError(true))
-        .finally(() => setAreCommentsLoading(false));
+        .finally(() => setIsCommentsLoading(false));
     }
   }, [selectedPostId]);
 
@@ -112,7 +112,7 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {arePostsLoading ? (
+                {isPostsLoading ? (
                   <Loader />
                 ) : (
                   <>
@@ -164,7 +164,7 @@ export const App: React.FC = () => {
                   post={chosenPost}
                   comments={comments}
                   commentsError={commentsError}
-                  areCommentsLoading={areCommentsLoading}
+                  areCommentsLoading={isCommentsLoading}
                   onCommentAdd={handleCommentAdd}
                   onCommentDelete={handleCommentDelete}
                 />
