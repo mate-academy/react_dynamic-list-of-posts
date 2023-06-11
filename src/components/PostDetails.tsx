@@ -72,7 +72,7 @@ export const PostDetails: React.FC<PostDetailsProps> = React.memo(({
           )
             : (
               <>
-                {!areCommentsLoading && comments.length === 0 && (
+                {!areCommentsLoading && !comments.length && (
                   <p className="title is-4" data-cy="NoCommentsMessage">
                     No comments yet
                   </p>

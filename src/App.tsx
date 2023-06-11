@@ -199,10 +199,9 @@ export const App: React.FC = () => {
                       >
                         Something went wrong!
                       </div>
-                    )
-                      : (
-                        <>
-                          {!isLoading && selectedUserPosts.length === 0
+                    ) : (
+                      <>
+                        {!isLoading && !selectedUserPosts.length
                       && (
                         <div
                           className="notification is-warning"
@@ -211,7 +210,7 @@ export const App: React.FC = () => {
                           No posts yet
                         </div>
                       )}
-                          {!isLoading && selectedUserPosts.length > 0
+                        {!isLoading && selectedUserPosts.length > 0
                      && (
                        <PostsList
                          selectedUserPosts={selectedUserPosts}
@@ -219,8 +218,8 @@ export const App: React.FC = () => {
                          selectedPost={selectedPost}
                        />
                      )}
-                        </>
-                      )}
+                      </>
+                    )}
                   </>
                 )}
               </div>
