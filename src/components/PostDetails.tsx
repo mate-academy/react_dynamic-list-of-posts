@@ -3,79 +3,67 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
-import { Error } from '../types/Error';
-import { deleteComment } from '../api';
+import { ErrorType } from '../types/ErrorType';
 
 type Props = {
-  post?: Post,
-  isLoading: string,
-  comments: Comment[],
-  onAddComment: (newComment: Comment) => void,
-  onDeleteComment: (comments: Comment[]) => void,
-  isError: Error,
-  formIsActive: boolean,
-  onSetFormIsActive: (arg: boolean) => void,
+  selectedPost?: Post,
+  isLoading: boolean,
+  postComments: Comment[],
+  onAddComment: (arg: Comment | null) => void,
+  onDeleteComment: (commentId: number) => void,
+  errorMessage: ErrorType,
+  isFormActive: boolean,
+  onSetIsFormActive: (arg: boolean) => void,
 };
 
 export const PostDetails: React.FC<Props> = ({
-  post,
+  selectedPost,
   isLoading,
-  comments,
-  isError,
-  formIsActive,
+  postComments,
+  errorMessage,
+  isFormActive,
   onAddComment,
   onDeleteComment,
-  onSetFormIsActive,
-}) => {
-  const handleCommentDelete = (commentId: number) => {
-    const filteredComments
-      = comments.filter(comment => comment.id !== commentId);
-
-    onDeleteComment(filteredComments);
-    deleteComment(commentId)
-      .then()
-      .catch()
-      .finally();
-  };
-
-  return (
+  onSetIsFormActive,
+}) => (
+  <div className="content" data-cy="PostDetails">
     <div className="content" data-cy="PostDetails">
-      <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 data-cy="PostTitle">
-            {`#${post?.id}: ${post?.title}`}
-          </h2>
+      <div className="block">
+        <h2 data-cy="PostTitle">
+          {`#${selectedPost?.id}: ${selectedPost?.title}`}
+        </h2>
 
-          <p data-cy="PostBody">
-            {post?.body}
-          </p>
-        </div>
+        <p data-cy="PostBody">
+          {selectedPost?.body}
+        </p>
+      </div>
 
-        <div className="block">
-          {isLoading === 'comments' && <Loader />}
+      <div className="block">
+        {isLoading && <Loader />}
 
-          {isError && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              {isError}
-            </div>
+        {!isLoading && errorMessage === ErrorType.LoadingFailed && (
+          <div className="notification is-danger" data-cy="CommentsError">
+            {errorMessage}
+          </div>
+        )}
+
+        {!isLoading
+          && !postComments.length
+          && !errorMessage
+          && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
           )}
 
-          {!isLoading
-            && comments.length === 0
-            && isError === Error.NONE
-            && (
-              <p className="title is-4" data-cy="NoCommentsMessage">
-                No comments yet
-              </p>
-            )}
-
-          {!isLoading
-            && comments.length > 0
-            && isError === Error.NONE && (
+        {!isLoading
+          && postComments.length > 0
+          && !errorMessage
+          && (
             <>
               <p className="title is-4">Comments:</p>
 
-              {comments.map(comment => (
+              {postComments.map(comment => (
                 <article
                   className="message is-small"
                   data-cy="Comment"
@@ -90,7 +78,7 @@ export const PostDetails: React.FC<Props> = ({
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
-                      onClick={() => handleCommentDelete(comment.id)}
+                      onClick={() => onDeleteComment(comment.id)}
                     >
                       delete button
                     </button>
@@ -104,25 +92,24 @@ export const PostDetails: React.FC<Props> = ({
             </>
           )}
 
-          {!isLoading && !formIsActive && isError === Error.NONE && (
-            <button
-              data-cy="WriteCommentButton"
-              type="button"
-              className="button is-link"
-              onClick={() => onSetFormIsActive(true)}
-            >
-              Write a comment
-            </button>
-          )}
-        </div>
-
-        {formIsActive && (
-          <NewCommentForm
-            postId={post?.id || 0}
-            onAddComment={onAddComment}
-          />
+        {!isLoading && !isFormActive && !errorMessage && (
+          <button
+            data-cy="WriteCommentButton"
+            type="button"
+            className="button is-link"
+            onClick={() => onSetIsFormActive(true)}
+          >
+            Write a comment
+          </button>
         )}
       </div>
+
+      {!errorMessage && isFormActive && (
+        <NewCommentForm
+          selectedPostId={selectedPost?.id || 0}
+          onAddComment={onAddComment}
+        />
+      )}
     </div>
-  );
-};
+  </div>
+);

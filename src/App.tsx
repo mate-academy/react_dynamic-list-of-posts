@@ -9,77 +9,107 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
-import { getPostComments, getUserPosts, getUsers } from './api';
+import {
+  deleteComment,
+  getPostComments,
+  getUserPosts,
+  getUsers,
+} from './api';
 import { Post } from './types/Post';
 import { Comment } from './types/Comment';
-import { Error } from './types/Error';
+import { ErrorType } from './types/ErrorType';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [isLoading, setIsLoading] = useState('');
-  const [selectedUserId, setSelectedUserId] = useState(0);
-  const [isError, setIsError] = useState(Error.NONE);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [errorMessage, setErrorMessage] = useState(ErrorType.NONE);
   const [selectedUserPosts, setSelectedUserPosts] = useState<Post[]>([]);
-  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [postComments, setPostComments] = useState<Comment[]>([]);
-  const [formIsActive, setFormIsActive] = useState(false);
+  const [isFormActive, setIsFormActive] = useState(false);
 
   useEffect(() => {
-    setIsError(Error.NONE);
+    setErrorMessage(ErrorType.NONE);
 
     getUsers()
       .then((usersFromServer) => setUsers(usersFromServer))
-      .catch(() => setIsError(Error.USERS));
+      .catch(() => setErrorMessage(ErrorType.LoadingFailed));
   }, []);
 
   const handleUserSelect = (userId: number) => {
-    setSelectedPostId(0);
+    setSelectedPostId(null);
     setSelectedUserPosts([]);
-    setIsError(Error.NONE);
+    setErrorMessage(ErrorType.NONE);
 
     if (userId === selectedUserId) {
       return;
     }
 
-    setIsLoading('users');
+    setIsLoading(true);
     setSelectedUserId(userId);
 
     getUserPosts(userId)
       .then((userPostsFromServer) => {
         if (userPostsFromServer.length === 0) {
-          setIsError(Error.NOPOSTS);
+          setErrorMessage(ErrorType.NOPOSTS);
         }
 
         setSelectedUserPosts(userPostsFromServer);
       })
       .catch(() => {
-        setIsError(Error.USERS);
+        setErrorMessage(ErrorType.LoadingFailed);
         setSelectedUserPosts([]);
       })
-      .finally(() => setIsLoading(''));
+      .finally(() => setIsLoading(false));
   };
 
-  const handleCommentsLoads = (postId: number) => {
-    setIsLoading('comments');
-    setIsError(Error.NONE);
+  const handleCommentsLoad = (postId: number) => {
+    setIsLoading(true);
+    setErrorMessage(ErrorType.NONE);
 
     getPostComments(postId)
       .then(commentsFromServer => setPostComments(commentsFromServer))
-      .catch(() => setIsError(Error.COMMENTS))
-      .finally(() => setIsLoading(''));
+      .catch(() => setErrorMessage(ErrorType.LoadingFailed))
+      .finally(() => setIsLoading(false));
   };
 
-  const handlePostSelect = (postId: number) => {
-    if (postId !== selectedPostId) {
-      setFormIsActive(false);
+  const handlePostSelect = (postId: number | null) => {
+    if (!postId) {
+      setSelectedPostId(null);
+
+      return;
     }
 
+    if (postId === selectedPostId) {
+      setSelectedPostId(null);
+
+      return;
+    }
+
+    setIsFormActive(false);
     setSelectedPostId(postId);
-    handleCommentsLoads(postId);
+    handleCommentsLoad(postId);
   };
 
-  const handleAddComment = (newComment: Comment) => {
-    setPostComments([...postComments, newComment]);
+  const handleAddComment = (arg: Comment | null) => {
+    if (!arg) {
+      setErrorMessage(ErrorType.LoadingFailed);
+
+      return;
+    }
+
+    setPostComments([...postComments, arg]);
+  };
+
+  const handleCommentDelete = (commentId: number) => {
+    const updatedComments
+      = postComments.filter(comment => commentId !== comment.id);
+
+    setPostComments(updatedComments);
+
+    deleteComment(commentId)
+      .catch(() => setErrorMessage(ErrorType.LoadingFailed));
   };
 
   const selectedPost
@@ -100,50 +130,46 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!isError && selectedUserId === 0 && (
+                {!errorMessage && !selectedUserId && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {isLoading === 'users' && <Loader />}
+                {isLoading && !selectedUserPosts.length && <Loader />}
 
-                {isError === Error.USERS && (
+                {errorMessage === ErrorType.LoadingFailed
+                && !selectedUserPosts.length
+                && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    {isError}
+                    {errorMessage}
                   </div>
                 )}
 
                 {
                   !isLoading
-                  && isError === Error.NOPOSTS
-                  && selectedUserId > 0
-                  && selectedUserPosts.length === 0
+                  && errorMessage === ErrorType.NOPOSTS
                   && (
                     <div
                       className="notification is-warning"
                       data-cy="NoPostsYet"
                     >
-                      {isError}
+                      {errorMessage}
                     </div>
                   )
                 }
 
-                {
-                  selectedUserId !== 0
-                  && selectedUserPosts.length > 0
-                  && !isError
+                {selectedUserPosts.length > 0
                   && (
                     <PostsList
-                      posts={selectedUserPosts}
+                      selectedUserPosts={selectedUserPosts}
                       selectedPostId={selectedPostId}
                       onSelectPost={handlePostSelect}
                     />
-                  )
-                }
+                  )}
               </div>
             </div>
           </div>
@@ -155,21 +181,21 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': selectedPostId !== 0 },
+              { 'Sidebar--open': selectedPostId },
             )}
           >
-            <div className="tile is-child box is-success ">
-              {selectedPostId > 0
+            <div className="tile is-child box is-success">
+              {selectedPostId
                 && (
                   <PostDetails
-                    post={selectedPost}
+                    selectedPost={selectedPost}
                     isLoading={isLoading}
-                    comments={postComments}
+                    postComments={postComments}
                     onAddComment={handleAddComment}
-                    onDeleteComment={setPostComments}
-                    isError={isError}
-                    formIsActive={formIsActive}
-                    onSetFormIsActive={setFormIsActive}
+                    onDeleteComment={handleCommentDelete}
+                    errorMessage={errorMessage}
+                    isFormActive={isFormActive}
+                    onSetIsFormActive={setIsFormActive}
                   />
                 )}
             </div>

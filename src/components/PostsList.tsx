@@ -3,13 +3,13 @@ import classNames from 'classnames';
 import { Post } from '../types/Post';
 
 type Props = {
-  posts: Post[],
-  selectedPostId: number,
-  onSelectPost: (postId: number) => void,
+  selectedUserPosts: Post[],
+  selectedPostId: number | null,
+  onSelectPost: (postId: number | null) => void,
 };
 
 export const PostsList: React.FC<Props> = ({
-  posts,
+  selectedUserPosts,
   selectedPostId,
   onSelectPost,
 }) => (
@@ -26,7 +26,7 @@ export const PostsList: React.FC<Props> = ({
       </thead>
 
       <tbody>
-        {posts.map(post => (
+        {selectedUserPosts.map(post => (
           <tr data-cy="Post" key={post.id}>
             <td data-cy="PostId">{post.id}</td>
 
@@ -43,13 +43,7 @@ export const PostsList: React.FC<Props> = ({
                   'is-link',
                   { 'is-light': post.id !== selectedPostId },
                 )}
-                onClick={() => {
-                  if (post.id === selectedPostId) {
-                    onSelectPost(0);
-                  } else {
-                    onSelectPost(post.id);
-                  }
-                }}
+                onClick={() => onSelectPost(post.id)}
               >
                 {selectedPostId === post.id ? 'Close' : 'Open' }
               </button>

@@ -4,7 +4,7 @@ import { User } from '../types/User';
 
 type Props = {
   users: User[],
-  selectedUserId: number,
+  selectedUserId: number | null,
   onSelectUser: (userId: number) => void,
 };
 
@@ -51,7 +51,7 @@ export const UserSelector: React.FC<Props> = ({
         <div className="dropdown-content">
           {users.map(user => (
             <a
-              href="#user-1"
+              href={`#user-${user.id}`}
               className={classNames(
                 'dropdown-item',
                 { 'is-active': user.id === selectedUserId },

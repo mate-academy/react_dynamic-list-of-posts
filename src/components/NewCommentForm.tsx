@@ -1,65 +1,92 @@
 import classNames from 'classnames';
 import React, { FormEvent, useState } from 'react';
-import { createNewComment } from '../api';
+import { createComment } from '../api';
 import { Comment } from '../types/Comment';
 
 type Props = {
-  postId: number,
-  onAddComment: (newComment: Comment) => void,
+  selectedPostId: number,
+  onAddComment: (arg: Comment | null) => void,
 };
 
-export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
+export const NewCommentForm: React.FC<Props> = ({
+  selectedPostId,
+  onAddComment,
+}) => {
   const [commentAuthor, setCommentAuthor] = useState('');
-  const [authorsEmail, setAuthorsEmail] = useState('');
+  const [commentAuthorsEmail, setCommentAuthorsEmail] = useState('');
   const [commentText, setCommentText] = useState('');
-  const [noAuthor, setNoAuthor] = useState(false);
-  const [noEmail, setNoEmail] = useState(false);
-  const [noText, setNoText] = useState(false);
-  const [commentIsAdding, setCommentIsAdding] = useState(false);
+  const [isCommentAuthorsNameEmpty, setisAuthorNameEmpty] = useState(false);
+  const [isAuthorsEmailEmpty, setIsAuthorsEmailEmpty] = useState(false);
+  const [isCommentTextEmpty, setIsCommentTextEmpty] = useState(false);
+  const [isCommentAdding, setIsCommentAdding] = useState(false);
 
-  const formSubmitHandler = (event: FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!commentAuthor) {
-      setNoAuthor(true);
+    if (!commentAuthor.trim()) {
+      setisAuthorNameEmpty(true);
+      setCommentAuthor('');
     }
 
-    if (!authorsEmail) {
-      setNoEmail(true);
+    if (!commentAuthorsEmail.trim()) {
+      setIsAuthorsEmailEmpty(true);
+      setCommentAuthorsEmail('');
     }
 
-    if (!commentText) {
-      setNoText(true);
+    if (!commentText.trim()) {
+      setIsCommentTextEmpty(true);
+      setCommentText('');
 
       return;
     }
 
     const newComment = {
-      postId,
+      postId: selectedPostId,
       name: commentAuthor,
-      email: authorsEmail,
+      email: commentAuthorsEmail,
       body: commentText,
     };
 
-    setCommentIsAdding(true);
-    createNewComment(newComment)
+    setIsCommentAdding(true);
+    createComment(newComment)
       .then(res => onAddComment(res))
-      .catch()
-      .finally(() => setCommentIsAdding(false));
+      .catch(() => onAddComment(null))
+      .finally(() => setIsCommentAdding(false));
 
     setCommentText('');
   };
 
-  const handleReset = () => {
+  const handleCommentAuthorChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setCommentAuthor(e.target.value);
+    setisAuthorNameEmpty(false);
+  };
+
+  const handleCommentAuthorsEmailChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setCommentAuthorsEmail(e.target.value);
+    setIsAuthorsEmailEmpty(false);
+  };
+
+  const handleCommentTextChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    setCommentText(e.target.value);
+    setIsCommentTextEmpty(false);
+  };
+
+  const handleFormReset = () => {
     setCommentAuthor('');
-    setAuthorsEmail('');
+    setCommentAuthorsEmail('');
     setCommentText('');
-    setNoAuthor(false);
-    setNoEmail(false);
-    setNoText(false);
+    setisAuthorNameEmpty(false);
+    setIsAuthorsEmailEmpty(false);
+    setIsCommentTextEmpty(false);
   };
 
   return (
-    <form data-cy="NewCommentForm" onSubmit={formSubmitHandler}>
+    <form data-cy="NewCommentForm" onSubmit={handleFormSubmit}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -73,20 +100,17 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
             placeholder="Name Surname"
             className={classNames(
               'input',
-              { 'is-danger': noAuthor },
+              { 'is-danger': isCommentAuthorsNameEmpty },
             )}
             value={commentAuthor}
-            onChange={(e) => {
-              setCommentAuthor(e.target.value);
-              setNoAuthor(false);
-            }}
+            onChange={handleCommentAuthorChange}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {noAuthor && (
+          {isCommentAuthorsNameEmpty && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -96,7 +120,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
           )}
         </div>
 
-        {noAuthor && (
+        {isCommentAuthorsNameEmpty && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -116,20 +140,17 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
             placeholder="email@test.com"
             className={classNames(
               'input',
-              { 'is-danger': noEmail },
+              { 'is-danger': isAuthorsEmailEmpty },
             )}
-            value={authorsEmail}
-            onChange={(e) => {
-              setAuthorsEmail(e.target.value);
-              setNoEmail(false);
-            }}
+            value={commentAuthorsEmail}
+            onChange={handleCommentAuthorsEmailChange}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {noEmail && (
+          {isAuthorsEmailEmpty && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -139,7 +160,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
           )}
         </div>
 
-        {noEmail && (
+        {isAuthorsEmailEmpty && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -158,17 +179,14 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
             placeholder="Type comment here"
             className={classNames(
               'textarea',
-              { 'is-danger': noText },
+              { 'is-danger': isCommentTextEmpty },
             )}
             value={commentText}
-            onChange={e => {
-              setCommentText(e.target.value);
-              setNoText(false);
-            }}
+            onChange={handleCommentTextChange}
           />
         </div>
 
-        {noText && (
+        {isCommentTextEmpty && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -181,7 +199,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
             type="submit"
             className={classNames(
               'button is-link',
-              { 'is-loading': commentIsAdding },
+              { 'is-loading': isCommentAdding },
             )}
           >
             Add
@@ -193,7 +211,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={() => handleReset()}
+            onClick={handleFormReset}
           >
             Clear
           </button>
