@@ -18,7 +18,6 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [hasPost, setHasPost] = useState(false);
-  // const hasNotPost = !isLoading && posts.length === 0 && selectedUserId !== 0;
 
   useEffect(() => {
     if (selectedUserId) {
@@ -35,7 +34,7 @@ export const App: React.FC = () => {
   }, [selectedUserId]);
 
   useEffect(() => {
-    if (posts.length === 0 && selectedUserId !== 0) {
+    if (!posts.length && selectedUserId !== 0) {
       setHasPost(true);
     } else {
       setHasPost(false);
