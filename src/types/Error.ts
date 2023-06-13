@@ -1,4 +1,4 @@
-export enum Error {
+export enum ErrorMessage {
   None = '',
   UserPosts = 'Unable to get a user posts',
   Delete = 'Unable to delete comment',

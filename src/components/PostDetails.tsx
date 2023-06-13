@@ -3,7 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
-import { Error } from '../types/Error';
+import { ErrorMessage } from '../types/Error';
 
 type Props = {
   postComments: Comment[],
@@ -11,8 +11,8 @@ type Props = {
   handleDeleteComment: (commntId: number) => void,
   setPostComments: React.Dispatch<React.SetStateAction<Comment[]>>,
   isLoadingComments: boolean,
-  error: Error,
-  setError: React.Dispatch<React.SetStateAction<Error>>,
+  error: ErrorMessage,
+  setError: React.Dispatch<React.SetStateAction<ErrorMessage>>,
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -30,16 +30,22 @@ export const PostDetails: React.FC<Props> = ({
     setOpenCommentForm(false);
   }, [selectedPost]);
 
+  const {
+    id,
+    title,
+    body,
+  } = selectedPost;
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {`#${selectedPost.id}: ${selectedPost.title}`}
+            {`#${id}: ${title}`}
           </h2>
 
           <p data-cy="PostBody">
-            {selectedPost.body}
+            {body}
           </p>
         </div>
 
@@ -48,7 +54,7 @@ export const PostDetails: React.FC<Props> = ({
             <Loader />
           )}
 
-          {error !== Error.None && (
+          {error !== ErrorMessage.None && (
             <div className="notification is-danger" data-cy="CommentsError">
               {error}
             </div>
@@ -63,9 +69,7 @@ export const PostDetails: React.FC<Props> = ({
           {postComments.map(comment => {
             const {
               name,
-              body,
               email,
-              id,
             } = comment;
 
             return (
@@ -83,14 +87,14 @@ export const PostDetails: React.FC<Props> = ({
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => handleDeleteComment(id)}
+                    onClick={() => handleDeleteComment(comment.id)}
                   >
                     delete button
                   </button>
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">
-                  {body}
+                  {comment.body}
                 </div>
               </article>
             );

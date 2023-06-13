@@ -9,7 +9,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
-import { Error } from './types/Error';
+import { ErrorMessage } from './types/Error';
 import { Post } from './types/Post';
 import { Comment } from './types/Comment';
 import {
@@ -28,7 +28,7 @@ export const App: React.FC = () => {
   const [postComments, setPostComments] = useState<Comment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [isOpenSidebar, setIsOpenSidebar] = useState(false);
-  const [error, setError] = useState<Error>(Error.None);
+  const [error, setError] = useState<ErrorMessage>(ErrorMessage.None);
 
   useEffect(() => {
     getUsers()
@@ -39,11 +39,11 @@ export const App: React.FC = () => {
     setIsLoadingPost(true);
 
     if (selectedUserId) {
-      setError(Error.None);
+      setError(ErrorMessage.None);
 
       getUserPosts(selectedUserId)
         .then(posts => setUserPosts(posts))
-        .catch(() => setError(Error.UserPosts))
+        .catch(() => setError(ErrorMessage.UserPosts))
         .finally(() => setIsLoadingPost(false));
     }
   }, [selectedUserId]);
@@ -61,7 +61,7 @@ export const App: React.FC = () => {
   const handleSelectedUser = (userId: number) => {
     setSelectedUserId(userId);
     setIsOpenSidebar(false);
-    setError(Error.None);
+    setError(ErrorMessage.None);
 
     setSelectedPost(null);
   };
@@ -73,11 +73,11 @@ export const App: React.FC = () => {
       setSelectedPost(newSelectedPost);
     }
 
-    setError(Error.None);
+    setError(ErrorMessage.None);
   };
 
   const handleDeleteComment = (commentId: number) => {
-    setError(Error.None);
+    setError(ErrorMessage.None);
 
     deleteComment(commentId)
       .then(() => {
@@ -86,7 +86,7 @@ export const App: React.FC = () => {
 
         setPostComments(newCommentList);
       })
-      .catch(() => setError(Error.Delete));
+      .catch(() => setError(ErrorMessage.Delete));
   };
 
   const handleToggleSidebar = (status?: boolean) => {
@@ -122,7 +122,7 @@ export const App: React.FC = () => {
                   <Loader />
                 )}
 
-                {error === Error.UserPosts && (
+                {error === ErrorMessage.UserPosts && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"

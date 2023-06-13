@@ -3,13 +3,13 @@ import classNames from 'classnames';
 import { addComment, getAllComment } from '../api/users';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
-import { Error, ErrorForm } from '../types/Error';
+import { ErrorMessage, ErrorForm } from '../types/Error';
 
 type Props = {
   selectedPost: Post,
   postComments: Comment[],
   setPostComments: React.Dispatch<React.SetStateAction<Comment[]>>
-  setError: React.Dispatch<React.SetStateAction<Error>>,
+  setError: React.Dispatch<React.SetStateAction<ErrorMessage>>,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
@@ -41,7 +41,7 @@ export const NewCommentForm: React.FC<Props> = ({
     setName('');
     setEmail('');
     setComment('');
-    setError(Error.None);
+    setError(ErrorMessage.None);
     setErrorForm({
       name: false,
       email: false,
@@ -76,7 +76,7 @@ export const NewCommentForm: React.FC<Props> = ({
       .then(() => {
         setPostComments([...postComments, newComment]);
       })
-      .catch(() => setError(Error.Add))
+      .catch(() => setError(ErrorMessage.Add))
       .finally(() => {
         setComment('');
         setLoading(false);
