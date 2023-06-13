@@ -68,8 +68,6 @@ export const PostsContextProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const url = '/posts';
-
-    setLoader(true);
     const loadData = async () => {
       try {
         const data = await client.get<Post[]>(url);
@@ -77,7 +75,6 @@ export const PostsContextProvider = ({ children }: { children: ReactNode }) => {
         setPosts(data.filter(post => post.userId === selectedUserId));
       } catch {
         setError(true);
-        throw new Error('ERROR!');
       } finally {
         setLoader(false);
       }
@@ -95,7 +92,8 @@ export const PostsContextProvider = ({ children }: { children: ReactNode }) => {
 
         setUsers(data);
       } catch {
-        throw new Error('ERROR!');
+        throw new Error('That user is invisible for you! ;)'
+        + 'or maybe The user does not exist');
       }
     };
 
@@ -104,8 +102,6 @@ export const PostsContextProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const url = '/comments';
-
-    setLoadingPost(true);
     const loadData = async () => {
       try {
         const data = await client.get<Comment[]>(url);
@@ -113,26 +109,28 @@ export const PostsContextProvider = ({ children }: { children: ReactNode }) => {
         setComments(data.filter(comment => comment.postId === chosenPost));
       } catch {
         setPostError(false);
-        throw new Error('ERROR!');
       } finally {
         setLoadingPost(false);
       }
     };
 
     loadData();
-  }, [chosenPost, changes]);
+  }, [chosenPost, changes, loadAdd]);
 
   const handleClickOpenComments = useCallback((id: number) => {
+    setLoadingPost(true);
     setChosenPost(id);
     setIsOpenPost(true);
     if (chosenPost === id) {
       setIsOpenPost(!isOpenPost);
+      setLoadingPost(false);
     }
 
     setIsWriteComment(!setIsWriteComment);
   }, [chosenPost, isOpenPost, isWriteComment, posts, users, comments]);
 
   const handleClickOnUsers = useCallback((id: number) => {
+    setLoader(true);
     setChanges(!changes);
     setSelectedUserId(id);
     setIsActive(!isActive);

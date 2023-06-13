@@ -20,31 +20,12 @@ export const NewCommentForm: React.FC = () => {
 
   const handleSubmitAdd = (event: FormEvent) => {
     event.preventDefault();
-    if (!author) {
-      setIsAuthor(false);
-    }
 
-    if (!authorEmail) {
-      setIsEmail(false);
-    }
+    setIsAuthor(!!author);
+    setIsEmail(!!authorEmail);
+    setIsText(!!text);
 
-    if (!text) {
-      setIsText(false);
-    }
-
-    if (author) {
-      setIsAuthor(true);
-    }
-
-    if (authorEmail) {
-      setIsEmail(true);
-    }
-
-    if (text) {
-      setIsText(true);
-    }
-
-    if (isAuthor && isEmail && isText && text !== '') {
+    if (isAuthor && isEmail && isText) {
       const newCommment = {
         postId: chosenPost,
         name: author,

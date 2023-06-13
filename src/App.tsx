@@ -14,7 +14,12 @@ export const App: React.FC = () => {
   const {
     loader, selectedUserId, posts, error, isOpenPost,
   } = usePostsContext();
-  const isEmptyPosts = posts?.length === 0;
+
+  let isEmptyPosts;
+
+  if (posts) {
+    isEmptyPosts = posts.length === 0;
+  }
 
   return (
     <main className="section">
@@ -44,7 +49,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!isEmptyPosts && <PostsList />}
+                {!isEmptyPosts && !loader && !!selectedUserId && <PostsList />}
                 {isEmptyPosts && !loader && !!selectedUserId && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
@@ -54,7 +59,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {isOpenPost && (
+          {isOpenPost && !!selectedUserId && (
             <div
               data-cy="Sidebar"
               className={classNames(
