@@ -7,3 +7,5 @@ export interface Comment {
 }
 
 export type CommentData = Pick<Comment, 'name' | 'email' | 'body'>;
+
+export type CommentPostData = Omit<Comment, 'id'>;
