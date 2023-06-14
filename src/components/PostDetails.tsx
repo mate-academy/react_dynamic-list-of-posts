@@ -60,6 +60,8 @@ export const PostDetails: React.FC<Props> = ({
     try {
       await deleteComment(commentId);
     } catch {
+      setFormIsOpen(false);
+
       setIsError(true);
 
       setErrorType(ErrorType.onCommentsLoad);
