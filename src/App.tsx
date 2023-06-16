@@ -24,7 +24,6 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [userIsSelected, setUserIsSelected] = useState(false);
   const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
-  const [isError, setIsError] = useState(false);
   const [errorType, setErrorType] = useState(ErrorType.none);
 
   useEffect(() => {
@@ -34,18 +33,11 @@ export const App: React.FC = () => {
 
   const handleLoadPosts = async (userId: number) => {
     try {
-      setIsError(false);
-
       setSidebarIsOpen(false);
-
       setSelectedPost(null);
-
       setErrorType(ErrorType.none);
-
       setUserPosts([]);
-
       setUserIsSelected(true);
-
       setIsLoading(true);
 
       const postsFromServer = await getUserPosts(userId);
@@ -53,13 +45,9 @@ export const App: React.FC = () => {
       setUserPosts(postsFromServer);
 
       if (!postsFromServer.length) {
-        setIsError(true);
-
         setErrorType(ErrorType.noPosts);
       }
     } catch {
-      setIsError(true);
-
       setErrorType(ErrorType.onPostsLoad);
     } finally {
       setIsLoading(false);
@@ -69,14 +57,12 @@ export const App: React.FC = () => {
   const handleOpenSidebar = (post: Post) => {
     if (post === selectedPost) {
       setSidebarIsOpen(false);
-
       setSelectedPost(null);
 
       return;
     }
 
     setSidebarIsOpen(true);
-
     setSelectedPost(post);
   };
 
@@ -102,7 +88,7 @@ export const App: React.FC = () => {
 
                 {isLoading && <Loader />}
 
-                {isError && (
+                {errorType !== ErrorType.none && !sidebarIsOpen && (
                   <Notification errorType={errorType} />
                 )}
 

@@ -54,16 +54,13 @@ export const NewCommentForm: React.FC<Props> = ({
       const comment = await createComment(newComment);
 
       setComment('');
-
       onSetComments((prevComments) => ([
         ...prevComments,
         comment,
       ]));
     } catch {
       onSetFromIsOpen(false);
-
       onSetIsError(true);
-
       onSetErrorType(ErrorType.onCommentsLoad);
     } finally {
       setIsLoading(false);
@@ -71,25 +68,27 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const validateForm = (data: CommentData) => {
-    const { name, email, body } = data;
+    const trimmedValues = {
+      name: data.name.trim(),
+      email: data.email.trim(),
+      comment: data.body.trim(),
+    };
 
-    const trimmedName = name.trim();
-    const trimmedEmail = email.trim();
-    const trimmedComment = body.trim();
+    const { name, email, comment } = trimmedValues;
 
-    if (trimmedName && trimmedEmail && trimmedComment) {
+    if (name && email && comment) {
       return true;
     }
 
-    if (!trimmedName) {
+    if (!name) {
       setNameIsValid(false);
     }
 
-    if (!trimmedEmail) {
+    if (!email) {
       setEmailIsValid(false);
     }
 
-    if (!trimmedComment) {
+    if (!comment) {
       setCommentIsValid(false);
     }
 

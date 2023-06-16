@@ -17,7 +17,6 @@ export const UserSelector: React.FC<Props> = ({ users, onLoadPosts }) => {
 
   const handleLoadPosts = (userId: number) => {
     onLoadPosts(userId);
-
     setIsActive(false);
   };
 

@@ -30,9 +30,7 @@ export const PostDetails: React.FC<Props> = ({
   const handleLoadComments = async () => {
     try {
       setIsError(false);
-
       setComments([]);
-
       setIsLoading(true);
 
       const commentsFromServer = await getPostComments(id);
@@ -40,7 +38,6 @@ export const PostDetails: React.FC<Props> = ({
       setComments(commentsFromServer);
     } catch {
       setIsError(true);
-
       setErrorType(ErrorType.onCommentsLoad);
     } finally {
       setIsLoading(false);
@@ -49,7 +46,6 @@ export const PostDetails: React.FC<Props> = ({
 
   useEffect(() => {
     setFormIsOpen(false);
-
     handleLoadComments();
   }, [selectedPost]);
 
@@ -61,9 +57,7 @@ export const PostDetails: React.FC<Props> = ({
       await deleteComment(commentId);
     } catch {
       setFormIsOpen(false);
-
       setIsError(true);
-
       setErrorType(ErrorType.onCommentsLoad);
     }
   };

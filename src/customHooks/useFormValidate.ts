@@ -1,7 +1,11 @@
 import { useReducer } from 'react';
 
+enum ActionType {
+  'created_error',
+}
+
 type Action = {
-  type: 'created_error';
+  type: ActionType.created_error;
   key: 'nameIsValid' | 'emailIsValid' | 'commentIsValid';
   value: boolean;
 };
@@ -28,7 +32,7 @@ const reducer = (state: State, action: Action) => {
   const { type, key, value } = action;
 
   switch (type) {
-    case 'created_error':
+    case ActionType.created_error:
       return {
         ...state,
         [key]: value,
@@ -44,7 +48,7 @@ export const useFormValidate = (): [State, Handlers] => {
 
   const setNameIsValid = (value: boolean) => {
     dispatch({
-      type: 'created_error',
+      type: ActionType.created_error,
       key: 'nameIsValid',
       value,
     });
@@ -52,7 +56,7 @@ export const useFormValidate = (): [State, Handlers] => {
 
   const setEmailIsValid = (value: boolean) => {
     dispatch({
-      type: 'created_error',
+      type: ActionType.created_error,
       key: 'emailIsValid',
       value,
     });
@@ -60,7 +64,7 @@ export const useFormValidate = (): [State, Handlers] => {
 
   const setCommentIsValid = (value: boolean) => {
     dispatch({
-      type: 'created_error',
+      type: ActionType.created_error,
       key: 'commentIsValid',
       value,
     });

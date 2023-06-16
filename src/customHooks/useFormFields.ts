@@ -1,11 +1,16 @@
 import { useReducer } from 'react';
 
+enum ActionType {
+  'updated_input',
+  'cleared_form',
+}
+
 type Action = {
-  type: 'updated_input';
+  type: ActionType.updated_input;
   key: 'name' | 'email' | 'comment';
   value: string;
 } | {
-  type: 'cleared_form'
+  type: ActionType.cleared_form;
 };
 
 type State = {
@@ -29,13 +34,13 @@ const initialState = {
 
 const reducer = (state: State, action: Action) => {
   switch (action.type) {
-    case 'updated_input':
+    case ActionType.updated_input:
       return {
         ...state,
         [action.key]: action.value,
       };
 
-    case 'cleared_form':
+    case ActionType.cleared_form:
       return {
         ...initialState,
       };
@@ -50,7 +55,7 @@ export const useFormFields = (): [State, Handlers] => {
 
   const setName = (value: string) => {
     dispatch({
-      type: 'updated_input',
+      type: ActionType.updated_input,
       key: 'name',
       value,
     });
@@ -58,7 +63,7 @@ export const useFormFields = (): [State, Handlers] => {
 
   const setEmail = (value: string) => {
     dispatch({
-      type: 'updated_input',
+      type: ActionType.updated_input,
       key: 'email',
       value,
     });
@@ -66,7 +71,7 @@ export const useFormFields = (): [State, Handlers] => {
 
   const setComment = (value: string) => {
     dispatch({
-      type: 'updated_input',
+      type: ActionType.updated_input,
       key: 'comment',
       value,
     });
@@ -74,7 +79,7 @@ export const useFormFields = (): [State, Handlers] => {
 
   const clearForm = () => {
     dispatch({
-      type: 'cleared_form',
+      type: ActionType.cleared_form,
     });
   };
 
