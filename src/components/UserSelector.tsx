@@ -8,7 +8,7 @@ interface Props {
   selectUser: (user: User) => void;
 }
 
-export const UserSelector: React.FC<Props> = ({
+export const UserSelector: React.FC<Props> = React.memo(({
   selectedUser,
   selectUser,
 }) => {
@@ -84,4 +84,4 @@ export const UserSelector: React.FC<Props> = ({
       </div>
     </div>
   );
-};
+});

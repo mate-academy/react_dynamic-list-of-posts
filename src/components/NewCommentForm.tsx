@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import cn from 'classnames';
 import { CommentData } from '../types/Comment';
 import { isFieldValid } from '../utils/helpers';
@@ -13,7 +13,9 @@ const initialFormState: CommentData = {
   body: '',
 };
 
-export const NewCommentForm: React.FC<Props> = ({ submitComment }) => {
+export const NewCommentForm: React.FC<Props> = React.memo(({
+  submitComment,
+}) => {
   const [formState, setFormState] = useState(initialFormState);
   const [isLoading, setIsLoading] = useState(false);
   const [isNameValid, setIsNameValid] = useState(true);
@@ -22,13 +24,15 @@ export const NewCommentForm: React.FC<Props> = ({ submitComment }) => {
 
   const { name, email, body } = formState;
 
-  const resetFieldsErrors = () => {
+  const resetFieldsErrors = useCallback(() => {
     setIsNameValid(true);
     setIsEmailValid(true);
     setIsBodyValid(true);
-  };
+  }, []);
 
-  const submitForm = async (event: React.FormEvent<HTMLFormElement>) => {
+  const submitForm = useCallback(async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
 
     setIsLoading(true);
@@ -55,7 +59,7 @@ export const NewCommentForm: React.FC<Props> = ({ submitComment }) => {
     }));
     resetFieldsErrors();
     setIsLoading(false);
-  };
+  }, [formState]);
 
   const handleNameFieldOnChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -222,4 +226,4 @@ export const NewCommentForm: React.FC<Props> = ({ submitComment }) => {
       </div>
     </form>
   );
-};
+});

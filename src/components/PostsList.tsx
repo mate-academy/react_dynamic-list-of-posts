@@ -7,7 +7,7 @@ interface Props {
   selectPost: (post: Post | null) => void;
 }
 
-export const PostsList: React.FC<Props> = ({
+export const PostsList: React.FC<Props> = React.memo(({
   posts,
   selectedPostId,
   selectPost,
@@ -65,4 +65,4 @@ export const PostsList: React.FC<Props> = ({
       </table>
     </div>
   );
-};
+});

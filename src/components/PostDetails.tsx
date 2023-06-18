@@ -9,7 +9,7 @@ interface Props {
   post: Post;
 }
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
+export const PostDetails: React.FC<Props> = React.memo(({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isVisible, setIsVisible] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -154,4 +154,4 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
     </div>
   );
-};
+});
