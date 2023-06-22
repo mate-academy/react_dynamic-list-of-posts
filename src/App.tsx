@@ -29,33 +29,29 @@ export const App: React.FC = () => {
 
         setUsers(loadedUsers);
       } catch (error) {
-        throw new Error('Unable to load users from server');
+        setIsError(true);
       }
     };
 
     loadUsers();
   }, []);
 
-  useEffect(() => {
-    const loadPosts = async () => {
-      if (!selectedUser) {
-        return;
-      }
+  const loadPosts = async (userId: number) => {
+    if (!selectedUser) {
+      return;
+    }
 
-      try {
-        setIsLoading(true);
-        const loadedPosts = await getPosts(selectedUser.id);
+    try {
+      setIsLoading(true);
+      const loadedPosts = await getPosts(userId);
 
-        setPosts(loadedPosts);
-      } catch (error) {
-        setIsError(true);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadPosts();
-  }, [selectedUser]);
+      setPosts(loadedPosts);
+    } catch (error) {
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     const loadComments = async () => {
@@ -74,6 +70,16 @@ export const App: React.FC = () => {
 
     loadComments();
   }, [selectedPost]);
+
+  useEffect(() => {
+    setSelectedPost(null);
+
+    if (selectedUser) {
+      loadPosts(selectedUser.id);
+    } else {
+      setPosts([]);
+    }
+  }, [selectedUser?.id]);
 
   return (
     <main className="section">
@@ -100,7 +106,7 @@ export const App: React.FC = () => {
                   <Loader />
                 )}
 
-                {selectedUser && isError && (
+                {(selectedUser && isLoading && isError) && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -109,13 +115,18 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(selectedUser && posts.length === 0 && isError) && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
+                {(selectedUser && posts.length === 0 && !isLoading && !isError)
+                && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
                     No posts yet
                   </div>
                 )}
 
-                {selectedUser && posts.length > 0 && (
+                {(selectedUser && posts.length > 0 && !isLoading && !isError)
+                && (
                   <PostsList
                     posts={posts}
                     setSelectedPost={setSelectedPost}
