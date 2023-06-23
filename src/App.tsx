@@ -37,19 +37,14 @@ export const App: React.FC = () => {
   }, []);
 
   const loadPosts = async (userId: number) => {
-    if (!selectedUser) {
-      return;
-    }
-
     try {
-      setIsLoading(true);
       const loadedPosts = await getPosts(userId);
 
       setPosts(loadedPosts);
     } catch (error) {
       setIsError(true);
     } finally {
-      setIsLoading(false);
+      setIsLoading(true);
     }
   };
 
@@ -102,11 +97,9 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {selectedUser && isLoading && (
-                  <Loader />
-                )}
+                {selectedUser && !isLoading && <Loader />}
 
-                {(selectedUser && isLoading && isError) && (
+                {selectedUser && isError && isLoading && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -115,7 +108,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(selectedUser && posts.length === 0 && !isLoading && !isError)
+                {selectedUser && posts.length === 0 && !isError && isLoading
                 && (
                   <div
                     className="notification is-warning"
@@ -125,8 +118,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(selectedUser && posts.length > 0 && !isLoading && !isError)
-                && (
+                {selectedUser && posts.length > 0 && !isError && isLoading && (
                   <PostsList
                     posts={posts}
                     setSelectedPost={setSelectedPost}
