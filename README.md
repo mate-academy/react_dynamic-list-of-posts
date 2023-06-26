@@ -34,3 +34,5 @@ form to add new comments.
 1. Implement comment deletion
     - Delete the commnet immediately not waiting for the server response to improve the UX.
 1. (*) Handle `Add` and `Delete` errors so the user can retry
+
+- Replace `<your_account>` with your Github username in the [DEMO LINK](https://SamirMamedov1010.github.io/react_dynamic-list-of-posts/) and add it to the PR description.
