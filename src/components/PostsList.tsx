@@ -76,7 +76,7 @@ export const PostsList: React.FC<Props> = ({
                       <button
                         type="button"
                         data-cy="PostButton"
-                        className="button"
+                        className="button is-link is-light"
                         onClick={() => openerDetails(post)}
                       >
                         Open

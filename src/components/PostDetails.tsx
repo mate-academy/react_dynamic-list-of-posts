@@ -8,7 +8,7 @@ import { CommentsList } from './CommentList';
 
 type Props = {
   post: Post | null,
-  comment: Comment[],
+  comments: Comment[],
   errorType: ErrorType | null,
   setErrorType: React.Dispatch<React.SetStateAction<ErrorType | null>>,
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
@@ -19,7 +19,7 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({
   post,
-  comment,
+  comments,
   errorType,
   setErrorType,
   setComments,
@@ -62,9 +62,9 @@ export const PostDetails: React.FC<Props> = ({
 
           {(errorType !== ErrorType.COMMENTS) && (
             <CommentsList
-              comments={comment}
+              comments={comments}
               setErrorType={setErrorType}
-              setComment={setComments}
+              setComments={setComments}
             />
           )}
 

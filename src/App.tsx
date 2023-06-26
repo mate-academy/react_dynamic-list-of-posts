@@ -34,7 +34,7 @@ export const App: React.FC = () => {
       const fetchUsers = await customFetch.getUserFromServer();
 
       setUsers(fetchUsers as User[]);
-    } catch (eroor) {
+    } catch (error) {
       setErrorType(ErrorType.USERS);
     }
   };
@@ -50,9 +50,11 @@ export const App: React.FC = () => {
     try {
       const fetchPost = await customFetch.getPostFromServer(userId);
 
+      setErrorType(null);
+
       setPosts(fetchPost);
       setIsPostListVisible(true);
-    } catch (eroor) {
+    } catch (error) {
       setErrorType(ErrorType.POSTS);
       setIsPostListVisible(false);
     } finally {
@@ -118,10 +120,6 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {/* <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>  */}
-
                 {isPostListVisible && (
                   <PostsList
                     posts={posts}
@@ -150,7 +148,7 @@ export const App: React.FC = () => {
               <div className="tile is-child box is-success ">
                 <PostDetails
                   post={selectedPost}
-                  comment={comments}
+                  comments={comments}
                   errorType={isErrorType}
                   setErrorType={setErrorType}
                   setComments={setComments}

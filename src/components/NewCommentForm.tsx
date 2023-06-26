@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { Post } from '../types/Post';
 import { ErrorType } from '../types/ErrorType';
 import { customFetch } from '../utils/fetchClient';
-import { EMAIL_REGEXP } from '../helper/helper';
+import { validateEmailAddress } from '../helper/helper';
 import { ErrorForm } from '../types/ErrorTypesForm';
 import { Comment } from '../types/Comment';
 
@@ -50,7 +50,7 @@ export const NewCommentForm: React.FC<Props> = ({
       setHasEmail(true);
       setHasComment(true);
     }
-  }, [name, email, message]);
+  }, [name, email, message, post]);
 
   const handleFormSubmit = (ev: FormEvent) => {
     ev.preventDefault();
@@ -67,7 +67,7 @@ export const NewCommentForm: React.FC<Props> = ({
       isNotValid = true;
     }
 
-    if (!EMAIL_REGEXP(email)) {
+    if (!validateEmailAddress(email)) {
       setIsEmailValid(false);
       isNotValid = true;
     }
@@ -82,6 +82,9 @@ export const NewCommentForm: React.FC<Props> = ({
     }
 
     addNewComment();
+    setName('');
+    setEmail('');
+    setMessage('');
   };
 
   const handleClearForm = () => {
@@ -186,7 +189,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         {(!hasEmail || !isEmailValid) && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            {!hasEmail ? ErrorForm.EMAIL : ErrorForm.NOTVALID}
+            {!hasEmail ? ErrorForm.EMAIL : ErrorForm.INVALID_EMAIL}
           </p>
         )}
       </div>
