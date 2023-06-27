@@ -1,117 +1,113 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
+import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
 import { NewCommentForm } from './NewCommentForm';
+import { CommentItem } from './CommentItem';
+import { deleteComment, getComments } from '../api/coments';
 
-export const PostDetails: React.FC = () => {
+type Props = {
+  selectedPost: Post | undefined,
+};
+export const PostDetails: React.FC<Props> = ({
+  selectedPost,
+}) => {
+  const [isShowCommentForm, setIsShowCommentForm] = useState<boolean>(false);
+  const [commentsFromServer, setCommentsFromServer] = useState<Comment[]>([]);
+  const [isLoader, setIsLoader] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  const handleDeleteComment = (commentId: number) => {
+    setCommentsFromServer((prevComments) => prevComments
+      .filter(comment => comment.id !== commentId));
+
+    deleteComment(commentId);
+  };
+
+  const handleAddNewComment = () => {
+    setIsShowCommentForm(true);
+  };
+
+  const handleCreateNewComment = (comment: Comment) => {
+    setCommentsFromServer((prevState) => {
+      return [...prevState, comment];
+    });
+  };
+
+  useEffect(() => {
+    if (selectedPost) {
+      setIsLoader(true);
+      getComments(selectedPost.id)
+        .then(setCommentsFromServer)
+        .catch(() => {
+          setIsError(true);
+        })
+        .finally(() => {
+          setIsLoader(false);
+        });
+    }
+  }, [selectedPost]);
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {selectedPost && (
+              `#${selectedPost.id}: ${selectedPost.title}`
+            )}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            {selectedPost && (
+              selectedPost.body
+            )}
           </p>
         </div>
 
         <div className="block">
-          <Loader />
+          {isLoader && (
+            <Loader />
+          )}
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
+          {isError && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
             </div>
+          )}
 
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
+          {!commentsFromServer.length ? (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          ) : (
+            <p className="title is-4">Comments:</p>
+          )}
+          {!!commentsFromServer.length && (
+            commentsFromServer.map((comment) => (
+              <CommentItem
+                comment={comment}
+                onDeleteComment={handleDeleteComment}
+              />
+            )))}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
+          {!isShowCommentForm && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={handleAddNewComment}
             >
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+              Write a comment
+            </button>
+          )}
         </div>
-
-        <NewCommentForm />
+        {isShowCommentForm && (
+          <NewCommentForm
+            postId={selectedPost?.id}
+            createNewComment={handleCreateNewComment}
+          />
+        )}
       </div>
     </div>
   );
