@@ -1,5 +1,4 @@
 import React, {
-  useCallback,
   useEffect,
   useRef,
   useState,
@@ -19,7 +18,11 @@ export const UserSelector: React.FC<Props> = React.memo(({
   selectUser,
 }) => {
   const [listIsOpen, setListIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  const dropdownMenuStyle = {
+    display: listIsOpen ? 'block' : 'none',
+  };
 
   const handleSelectUser = (userId: number) => {
     const foundUser = users.find(user => user.id === userId) || null;
@@ -28,18 +31,20 @@ export const UserSelector: React.FC<Props> = React.memo(({
     setListIsOpen(false);
   };
 
-  const handleClick = useCallback((event: MouseEvent) => {
-    if (dropdownRef.current
-      && !dropdownRef.current.contains(event.target as ChildNode)) {
-      setListIsOpen(false);
-    }
-  }, [listIsOpen, dropdownRef]);
-
   useEffect(() => {
-    window.addEventListener('click', handleClick);
+    const handleClick = (event: MouseEvent) => {
+      if (
+        dropdownRef.current
+        && !dropdownRef.current.contains(event.target as ChildNode)
+      ) {
+        setListIsOpen(false);
+      }
+    };
 
-    return () => window.removeEventListener('click', handleClick);
-  }, [handleClick]);
+    window.addEventListener('mousedown', handleClick);
+
+    return () => window.removeEventListener('mousedown', handleClick);
+  }, []);
 
   return (
     <div
@@ -70,7 +75,12 @@ export const UserSelector: React.FC<Props> = React.memo(({
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+      <div
+        className="dropdown-menu"
+        id="dropdown-menu"
+        role="menu"
+        style={dropdownMenuStyle}
+      >
         <div className="dropdown-content">
           {users.map(user => (
             <a

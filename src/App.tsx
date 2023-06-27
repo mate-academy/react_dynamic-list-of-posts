@@ -24,11 +24,15 @@ export const App: React.FC = () => {
     setSelectedPost(post);
   }, []);
 
-  async function getUserList() {
-    const usersFromServer = await getUsers();
+  const getUserList = async () => {
+    try {
+      const usersFromServer = await getUsers();
 
-    setUsers(usersFromServer);
-  }
+      setUsers(usersFromServer);
+    } catch {
+      throw new Error('Can\'t load users');
+    }
+  };
 
   useEffect(() => {
     getUserList();
