@@ -1,3 +1,13 @@
+import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
+
+type NewComment = {
+  postId: number,
+  name: string,
+  email: string,
+  body: string,
+};
+
 const BASE_URL = 'https://mate.academy/students-api';
 
 // a promise resolved after a given delay
@@ -36,4 +46,13 @@ export const client = {
   post: <T>(url: string, data: any) => request<T>(url, 'POST', data),
   patch: <T>(url: string, data: any) => request<T>(url, 'PATCH', data),
   delete: (url: string) => request(url, 'DELETE'),
+};
+
+export const customFetch = {
+  getUserFromServer: () => client.get('/users'),
+  getPostFromServer: (userId: number) => client.get<Post[]>(`/posts?userId=${userId}`),
+  getPostComments: (postId: number) => client.get<Comment[]>(`/comments?postId=${postId}`),
+  addComment: (newComment: NewComment) => (
+    client.post<Comment>('/comments', newComment)),
+  removeComment: (idComment: number) => client.delete(`/comments/${idComment}`),
 };
