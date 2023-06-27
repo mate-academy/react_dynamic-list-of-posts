@@ -2,7 +2,7 @@ import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 
 type NewComment = {
-  postId?: number,
+  postId: number,
   name: string,
   email: string,
   body: string,

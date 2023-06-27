@@ -31,17 +31,20 @@ export const NewCommentForm: React.FC<Props> = ({
     setIsCommentAdd(true);
 
     try {
-      const newComment = {
-        postId: post?.id,
-        name,
-        email,
-        body: message,
-      };
+      if (post !== null) {
+        const newComment = {
+          postId: post.id,
+          name,
+          email,
+          body: message,
+        };
 
-      const fetchComment = await customFetch.addComment(newComment);
+        const fetchComment = await customFetch.addComment(newComment);
 
-      setMessage('');
-      setComments(prevComments => [...prevComments, fetchComment]);
+        setMessage('');
+        setComments(prevComments => [...prevComments, fetchComment]);
+        setErrorType(null);
+      }
     } catch (error) {
       setErrorType(ErrorType.ADD);
     } finally {

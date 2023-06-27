@@ -3,27 +3,31 @@ import { Comment } from '../types/Comment';
 
 type Props = {
   comment: Comment,
-  commentDestroyer: (id: number) => void,
+  onDeleteComment: (id: number) => void,
 };
 
-export const CommentInfo: React.FC<Props> = ({ comment, commentDestroyer }) => {
+export const CommentInfo: React.FC<Props> = ({ comment, onDeleteComment }) => {
+  const {
+    name, email, id, body,
+  } = comment;
+
   return (
     <>
       <div className="message-header">
-        <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-          {comment.name}
+        <a href={`mailto:${email}`} data-cy="CommentAuthor">
+          {name}
         </a>
         <button
           data-cy="CommentDelete"
           type="button"
           className="delete is-small"
           aria-label="delete"
-          onClick={() => commentDestroyer(comment.id)}
+          onClick={() => onDeleteComment(id)}
         />
       </div>
 
       <div className="message-body" data-cy="CommentBody">
-        {comment.body}
+        {body}
       </div>
     </>
   );

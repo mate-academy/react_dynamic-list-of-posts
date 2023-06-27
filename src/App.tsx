@@ -34,6 +34,7 @@ export const App: React.FC = () => {
       const fetchUsers = await customFetch.getUserFromServer();
 
       setUsers(fetchUsers as User[]);
+      setErrorType(null);
     } catch (error) {
       setErrorType(ErrorType.USERS);
     }
@@ -54,6 +55,7 @@ export const App: React.FC = () => {
 
       setPosts(fetchPost);
       setIsPostListVisible(true);
+      setErrorType(null);
     } catch (error) {
       setErrorType(ErrorType.POSTS);
       setIsPostListVisible(false);
@@ -71,6 +73,7 @@ export const App: React.FC = () => {
 
       setComments(fetchComments);
       setIsPostListVisible(true);
+      setErrorType(null);
     } catch (error) {
       setErrorType(ErrorType.COMMENTS);
     } finally {
@@ -107,17 +110,19 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {isLoaderVisible && (
+                {isLoaderVisible ? (
                   <Loader />
-                )}
-
-                {(isErrorType && loadingErrors.includes(isErrorType)) && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
-                    {isErrorType}
-                  </div>
+                ) : (
+                  <>
+                    {(isErrorType && loadingErrors.includes(isErrorType)) && (
+                      <div
+                        className="notification is-danger"
+                        data-cy="PostsLoadingError"
+                      >
+                        {isErrorType}
+                      </div>
+                    )}
+                  </>
                 )}
 
                 {isPostListVisible && (

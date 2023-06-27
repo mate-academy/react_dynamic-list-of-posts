@@ -44,7 +44,7 @@ export const CommentsList: React.FC<Props> = ({
         >
           <CommentInfo
             comment={comment}
-            commentDestroyer={handleDeleteComment}
+            onDeleteComment={handleDeleteComment}
           />
         </article>
       ))}

@@ -62,22 +62,24 @@ export const PostDetails: React.FC<Props> = ({
               )}
 
               {(errorType !== ErrorType.COMMENTS) && (
-                <CommentsList
-                  comments={comments}
-                  setErrorType={setErrorType}
-                  setComments={setComments}
-                />
-              )}
+                <>
+                  <CommentsList
+                    comments={comments}
+                    setErrorType={setErrorType}
+                    setComments={setComments}
+                  />
 
-              {!isCommentFormOpen && (
-                <button
-                  data-cy="WriteCommentButton"
-                  type="button"
-                  className="button is-link"
-                  onClick={handleOpenCommentForm}
-                >
-                  Write a comment
-                </button>
+                  {(!isCommentFormOpen) && (
+                    <button
+                      data-cy="WriteCommentButton"
+                      type="button"
+                      className="button is-link"
+                      onClick={handleOpenCommentForm}
+                    >
+                      Write a comment
+                    </button>
+                  )}
+                </>
               )}
             </>
           )}
