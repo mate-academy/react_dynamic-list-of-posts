@@ -19,7 +19,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
   const addNewComment = useCallback(async (comment: CommentData) => {
-    const newComment = { ...comment, id };
+    const newComment = { ...comment };
 
     try {
       const addedComment = await postComment(newComment);
@@ -170,7 +170,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                 Write a comment
               </button>
             ) : (
-              <NewCommentForm onAddComment={addNewComment} />
+              <NewCommentForm
+                onAddComment={addNewComment}
+                postId={id}
+              />
             )}
           </>
         )}

@@ -4,9 +4,10 @@ import { CommentData } from '../types/Comment';
 
 type Props = {
   onAddComment: (commnet: CommentData) => Promise<void>;
+  postId: number,
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
+export const NewCommentForm: React.FC<Props> = ({ onAddComment, postId }) => {
   const [nameInput, setNameInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
   const [commentInput, setCommentInput] = useState('');
@@ -57,6 +58,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
           name: nameInput,
           email: emailInput,
           body: commentInput,
+          postId,
         };
 
         await onAddComment(newComment);
