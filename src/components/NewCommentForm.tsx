@@ -82,9 +82,6 @@ export const NewCommentForm: React.FC<Props> = ({
     }
 
     addNewComment();
-    setName('');
-    setEmail('');
-    setMessage('');
   };
 
   const handleClearForm = () => {

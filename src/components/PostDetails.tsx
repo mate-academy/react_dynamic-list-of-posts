@@ -51,33 +51,37 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {isFetch && (
+          {isFetch ? (
             <Loader />
-          )}
-          {(errorType && errorTypes.includes(errorType)) && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              {errorType}
-            </div>
+          ) : (
+            <>
+              {(errorType && errorTypes.includes(errorType)) && (
+                <div className="notification is-danger" data-cy="CommentsError">
+                  {errorType}
+                </div>
+              )}
+
+              {(errorType !== ErrorType.COMMENTS) && (
+                <CommentsList
+                  comments={comments}
+                  setErrorType={setErrorType}
+                  setComments={setComments}
+                />
+              )}
+
+              {!isCommentFormOpen && (
+                <button
+                  data-cy="WriteCommentButton"
+                  type="button"
+                  className="button is-link"
+                  onClick={handleOpenCommentForm}
+                >
+                  Write a comment
+                </button>
+              )}
+            </>
           )}
 
-          {(errorType !== ErrorType.COMMENTS) && (
-            <CommentsList
-              comments={comments}
-              setErrorType={setErrorType}
-              setComments={setComments}
-            />
-          )}
-
-          {!isCommentFormOpen && (
-            <button
-              data-cy="WriteCommentButton"
-              type="button"
-              className="button is-link"
-              onClick={handleOpenCommentForm}
-            >
-              Write a comment
-            </button>
-          )}
         </div>
 
         {isCommentFormOpen && (
