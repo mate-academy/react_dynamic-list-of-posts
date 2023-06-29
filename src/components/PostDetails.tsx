@@ -66,7 +66,7 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {isLoader && (
+          {isLoader && !commentsFromServer.length && (
             <Loader />
           )}
 

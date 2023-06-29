@@ -84,7 +84,7 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {isLoader && (
+                {isLoader && !postsFromServer.length && (
                   <Loader />
                 )}
 
