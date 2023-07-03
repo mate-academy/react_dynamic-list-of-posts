@@ -4,8 +4,8 @@ import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[],
-  onSelectedPost: (post: number) => void,
-  postId: number,
+  onSelectedPost: (post: Post) => void,
+  postId: number | null,
 };
 
 export const PostItem: React.FC<Props> = ({
@@ -35,9 +35,7 @@ export const PostItem: React.FC<Props> = ({
               className={classNames('button is-link', {
                 'is-light': (post.id !== postId),
               })}
-              onClick={() => {
-                onSelectedPost(post.id);
-              }}
+              onClick={() => onSelectedPost(post)}
             >
               {(post.id !== postId) ? (
                 'Open'

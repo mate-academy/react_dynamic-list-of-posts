@@ -4,8 +4,8 @@ import { PostItem } from './PostItem';
 
 type Props = {
   posts: Post[],
-  onSelectedPost: (post: number) => void,
-  postId: number,
+  onSelectedPost: (post: Post) => void,
+  postId: number | null,
 };
 
 export const PostsList: React.FC<Props> = ({
@@ -26,11 +26,13 @@ export const PostsList: React.FC<Props> = ({
           </tr>
         </thead>
 
-        <PostItem
-          posts={posts}
-          onSelectedPost={onSelectedPost}
-          postId={postId}
-        />
+        {!!posts.length && (
+          <PostItem
+            posts={posts}
+            onSelectedPost={onSelectedPost}
+            postId={postId}
+          />
+        )}
       </table>
     </div>
   );

@@ -6,23 +6,23 @@ import { useClickOutside } from '../hooks/useClickoutside';
 type Props = {
   users: User[] | null,
   selectedUser: User | null,
-  setSelectedUser: (user: User) => void,
+  onSelectUser: (user: User) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   selectedUser,
-  setSelectedUser,
+  onSelectUser,
 }) => {
-  // const [isShowUsers, setIsShowUsers] = useState(false);
-  // const isActiveUser = selectedUser.name ===
-  // useEffect(() => {
-  //   console.log(ref.current);
-  // });
   const { domNode, setIsUsersVisible, isUsersVisible } = useClickOutside(false);
 
-  const handleToggleIsVisible = () => {
+  const handleToggleIsVisibleUsers = () => {
     setIsUsersVisible((prev) => !prev);
+  };
+
+  const handleUserClick = (user: User) => {
+    handleToggleIsVisibleUsers();
+    onSelectUser(user);
   };
 
   return (
@@ -39,7 +39,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={handleToggleIsVisible}
+          onClick={handleToggleIsVisibleUsers}
         >
           <span>
             {!selectedUser ? (
@@ -70,10 +70,7 @@ export const UserSelector: React.FC<Props> = ({
                     'is-active': selectedUser?.name === user.name,
                   })}
                   key={user.id}
-                  onClick={() => {
-                    setSelectedUser(user);
-                    handleToggleIsVisible();
-                  }}
+                  onClick={() => handleUserClick(user)}
                 >
                   {user.name}
                 </a>

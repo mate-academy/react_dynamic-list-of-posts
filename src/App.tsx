@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -12,37 +12,40 @@ import { User } from './types/User';
 import { Post } from './types/Post';
 import { getUsers } from './api/users';
 import { getPosts } from './api/posts';
+import { ErrorMessages } from './types/ErrorMessages';
 
 export const App: React.FC = () => {
-  const [usersFromServer, setUsersFromServer] = useState<User[] | null>([]);
+  const [usersFromServer, setUsersFromServer] = useState<User[]>([]);
   const [postsFromServer, setPostsFromServer] = useState<Post[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isLoader, setIsLoader] = useState(false);
-
-  // const [isErrorMessage, setIsErrorMessage] = useState(false);
-  // const [errorMessageName, setErrorMessageName] = useState<string | null>(null);
   const [isError, setIsError] = useState(false);
-
   const [isShowPostDetails, setIsShowPostDetails] = useState<boolean>(false);
-  const [postId, setPostId] = useState<number>(0);
+  const [postId, setPostId] = useState<number | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  const selectedPost = useMemo(() => postsFromServer
-    .find((post) => post.id === postId),
-  [postId]);
-
-  const handleSelectedPost = (id: number) => {
-    if (postId !== id) {
+  const handleSelectedPost = (post: Post) => {
+    setSelectedPost(post);
+    if (postId !== post.id) {
       setIsShowPostDetails(true);
-      setPostId(id);
+      setPostId(post.id);
     } else {
       setIsShowPostDetails(false);
-      setPostId(0);
+      setPostId(null);
     }
+  };
+
+  const handleSelectUser = (user: User) => {
+    setSelectedUser(user);
   };
 
   useEffect(() => {
     getUsers()
-      .then(setUsersFromServer);
+      .then(setUsersFromServer)
+      .then(() => setIsError(false))
+      .catch(() => {
+        setIsError(true);
+      });
   }, []);
 
   useEffect(() => {
@@ -52,7 +55,8 @@ export const App: React.FC = () => {
         .then(setPostsFromServer)
         .then(() => {
           setIsShowPostDetails(false);
-          setPostId(0);
+          setPostId(null);
+          setIsError(false);
         })
         .catch(() => {
           setIsError(true);
@@ -73,12 +77,12 @@ export const App: React.FC = () => {
                 <UserSelector
                   users={usersFromServer}
                   selectedUser={selectedUser}
-                  setSelectedUser={setSelectedUser}
+                  onSelectUser={handleSelectUser}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUser && (
+                {!selectedUser && !!usersFromServer.length && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
@@ -88,16 +92,27 @@ export const App: React.FC = () => {
                   <Loader />
                 )}
 
-                {isError && (
+                {isError && !usersFromServer.length && (
                   <div
                     className="notification is-danger"
-                    data-cy="PostsLoadingError"
+                    data-cy="UsersLoadingError"
                   >
-                    `Unable to load posts`
+                    {ErrorMessages.UnableToLoadUsers}
                   </div>
                 )}
-                {selectedUser && (
-                  !postsFromServer.length ? (
+
+                {isError && !!usersFromServer.length
+                  && (
+                    <div
+                      className="notification is-danger"
+                      data-cy="PostsLoadingError"
+                    >
+                      {ErrorMessages.UnableToLoadPosts}
+                    </div>
+                  )}
+
+                {!isError && selectedUser && (
+                  !postsFromServer.length && !isLoader ? (
                     <div
                       className="notification is-warning"
                       data-cy="NoPostsYet"
@@ -129,9 +144,11 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails
-                selectedPost={selectedPost}
-              />
+              {selectedPost && (
+                <PostDetails
+                  selectedPost={selectedPost}
+                />
+              )}
             </div>
           </div>
         </div>

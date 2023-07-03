@@ -15,11 +15,12 @@ export const NewCommentForm: React.FC<Props> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isValidateError, setIsValidateError] = useState(false);
+  const emptyValue = '';
 
   const [formValue, setFormValue] = useState<Partial<Comment>>({
-    name: '',
-    email: '',
-    body: '',
+    name: emptyValue,
+    email: emptyValue,
+    body: emptyValue,
   });
 
   const { name, email, body } = formValue;
@@ -37,9 +38,9 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleClear = () => {
     setFormValue(() => {
       return {
-        name: '',
-        email: '',
-        body: '',
+        name: emptyValue,
+        email: emptyValue,
+        body: emptyValue,
       };
     });
   };
@@ -47,7 +48,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (name?.length === 0 || email?.length === 0 || body?.length === 0) {
+    if (!name || !email || !body) {
       setIsValidateError(true);
 
       return;
@@ -64,7 +65,7 @@ export const NewCommentForm: React.FC<Props> = ({
       });
     setFormValue((prevState) => ({
       ...prevState,
-      body: '',
+      body: emptyValue,
     }));
   };
 
