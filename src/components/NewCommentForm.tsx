@@ -25,14 +25,20 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const { name, email, body } = formValue;
 
+  const verifyField = (string: any) => {
+    return string.replace(/\s+/g, ' ').trim();
+  };
+
   const handleChange = (e:React
     .ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormValue((prevState) => {
-      return {
-        ...prevState,
-        [e.target.name]: e.target.value,
-      };
-    });
+    if (verifyField(e.target.value)) {
+      setFormValue((prevState) => {
+        return {
+          ...prevState,
+          [e.target.name]: e.target.value,
+        };
+      });
+    }
   };
 
   const handleClear = () => {
@@ -63,6 +69,7 @@ export const NewCommentForm: React.FC<Props> = ({
       .finally(() => {
         setIsLoading(false);
       });
+
     setFormValue((prevState) => ({
       ...prevState,
       body: emptyValue,

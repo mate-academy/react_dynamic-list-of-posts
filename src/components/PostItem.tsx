@@ -15,37 +15,44 @@ export const PostItem: React.FC<Props> = ({
 }) => {
   return (
     <tbody>
-      {posts.map((post: Post) => (
-        <tr
-          data-cy="Post"
-          key={post.id}
-        >
-          <td data-cy="PostId">
-            {post.id}
-          </td>
+      {posts.map((post: Post) => {
+        const {
+          id,
+          title,
+        } = post;
 
-          <td data-cy="PostTitle">
-            {post.title}
-          </td>
+        return (
+          <tr
+            data-cy="Post"
+            key={id}
+          >
+            <td data-cy="PostId">
+              {id}
+            </td>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className={classNames('button is-link', {
-                'is-light': (post.id !== postId),
-              })}
-              onClick={() => onSelectedPost(post)}
-            >
-              {(post.id !== postId) ? (
-                'Open'
-              ) : (
-                'Close'
-              )}
-            </button>
-          </td>
-        </tr>
-      ))}
+            <td data-cy="PostTitle">
+              {title}
+            </td>
+
+            <td className="has-text-right is-vcentered">
+              <button
+                type="button"
+                data-cy="PostButton"
+                className={classNames('button is-link', {
+                  'is-light': (post.id !== postId),
+                })}
+                onClick={() => onSelectedPost(post)}
+              >
+                {(post.id !== postId) ? (
+                  'Open'
+                ) : (
+                  'Close'
+                )}
+              </button>
+            </td>
+          </tr>
+        );
+      })}
     </tbody>
   );
 };
