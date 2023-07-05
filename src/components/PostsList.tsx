@@ -3,61 +3,77 @@ import { Post } from '../types/Post';
 
 type ListOfPosts = {
   posts: Post[],
+  onSelectPost: (post: Post | null) => void,
+  selectedPost: Post | null,
 };
 
-export const PostsList: React.FC<ListOfPosts> = ({ posts }) => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+export const PostsList: React.FC<ListOfPosts> = ({
+  posts,
+  onSelectPost,
+  selectedPost,
+}) => {
+  const handleOpenPost = (post: Post) => {
+    onSelectPost(post);
+  };
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+  const handleClosePost = () => {
+    onSelectPost(null);
+  };
 
-      <tbody>
-        {posts.map(post => (
-          <tr data-cy="Post" key={post.id}>
-            <td data-cy="PostId">{post.id}</td>
+  return (
+    <>
+      {posts.length > 0 && (
+        <div data-cy="PostsList">
+          <p className="title">Posts:</p>
 
-            <td data-cy="PostTitle">
-              {post.title}
-            </td>
+          <table
+            className="table is-fullwidth is-striped is-hoverable is-narrow"
+          >
+            <thead>
+              <tr className="has-background-link-light">
+                <th>#</th>
+                <th>Title</th>
+                <th> </th>
+              </tr>
+            </thead>
 
-            <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className="button is-link is-light"
-              >
-                Open
-              </button>
-            </td>
-          </tr>
-        ))}
+            <tbody>
+              {posts.map(post => (
+                <tr data-cy="Post" key={post.id}>
+                  <td data-cy="PostId">{post.id}</td>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+                  <td data-cy="PostTitle">
+                    {post.title}
+                  </td>
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+                  <td className="has-text-right is-vcentered">
+                    {selectedPost?.id === post.id ? (
+                      <button
+                        type="button"
+                        data-cy="PostButton"
+                        className="button is-link"
+                        onClick={handleClosePost}
+                      >
+                        Close
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        data-cy="PostButton"
+                        className="button is-link is-light"
+                        onClick={() => handleOpenPost(post)}
+                      >
+                        Open
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
-
-      </tbody>
-    </table>
-  </div>
-);
+            </tbody>
+          </table>
+        </div>
+      )}
+    </>
+  );
+};

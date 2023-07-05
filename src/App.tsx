@@ -9,21 +9,25 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
-import { client } from './utils/fetchClient';
 import { Post } from './types/Post';
-
-const usersFromServer = () => client.get<User[]>('/users');
-const postsFromServer = (userID: number) => client.get<Post[]>(`/posts?userId=${userID}`);
+import { ErrorType } from './types/ErrorType';
+import {
+  getPostsFromServer,
+  getUsersFromServer,
+} from './utils/helperFunctions';
 
 export const App: React.FC = () => {
   const [listOfUsers, setListOfUsers] = useState<User[]>([]);
   const [listsOfPosts, setListsOfPosts] = useState<Post[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [typeOfError, setTypeOfError] = useState<ErrorType>(ErrorType.none);
+  const [isLoading, setIsLoading] = useState(false);
 
   const chooseUser = (user: User) => setSelectedUser(user);
 
   useEffect(() => {
-    usersFromServer()
+    getUsersFromServer()
       .then(usersApi => {
         setListOfUsers(usersApi);
       });
@@ -31,12 +35,22 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     if (selectedUser) {
-      postsFromServer(selectedUser?.id)
+      setIsLoading(true);
+      setTypeOfError(ErrorType.none);
+
+      getPostsFromServer(selectedUser.id)
         .then(postsFromSever => {
           setListsOfPosts(postsFromSever);
+          if (!postsFromSever.length) {
+            setTypeOfError(ErrorType.noPosts);
+          }
+        })
+        .finally(() => {
+          setIsLoading(false);
+          setSelectedPost(null);
         });
     }
-  });
+  }, [selectedUser]);
 
   return (
     <main className="section">
@@ -59,40 +73,49 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                <Loader />
+                {isLoading && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {typeOfError && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {selectedUser && (
+                  <PostsList
+                    posts={listsOfPosts}
+                    onSelectPost={setSelectedPost}
+                    selectedPost={selectedPost}
+                  />
+                )}
 
-                <PostsList
-                  posts={listsOfPosts}
-                />
               </div>
             </div>
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
+          {selectedPost && (
+            <div
+              data-cy="Sidebar"
+              className={classNames(
+                'tile',
+                'is-parent',
+                'is-8-desktop',
+                'Sidebar',
+                'Sidebar--open',
+              )}
+            >
+              <div className="tile is-child box is-success ">
+                {/* {selectedPost && (
+                  <PostDetails
+                    selectedPost={selectedPost}
+                  />
+                )} */}
+                <PostDetails
+                  selectedPost={selectedPost}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </main>
