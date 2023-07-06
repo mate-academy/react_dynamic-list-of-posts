@@ -4,14 +4,14 @@ import { Post } from '../types/Post';
 
 interface PostListProps {
   posts: Post[],
-  postIdSelected: (id: number) => void,
+  postSelected: (post: Post) => void,
 }
 
 export const PostsList: React.FC<PostListProps> = ({
   posts,
-  postIdSelected,
+  postSelected,
 }) => {
-  const [selectedId, setSelectedId] = useState(0);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   return (
     <div data-cy="PostsList">
@@ -31,7 +31,7 @@ export const PostsList: React.FC<PostListProps> = ({
             const { id, title } = post;
 
             return (
-              <tr data-cy="Post">
+              <tr data-cy="Post" key={id}>
                 <td data-cy="PostId">{id}</td>
                 <td data-cy="PostTitle">
                   {title}
@@ -45,16 +45,15 @@ export const PostsList: React.FC<PostListProps> = ({
                       'is-light': selectedId !== id,
                     })}
                     onClick={() => {
-                      postIdSelected(id);
+                      postSelected(post);
                       if (selectedId !== id) {
                         setSelectedId(id);
                       } else {
-                        setSelectedId(0);
-                        postIdSelected(0);
+                        setSelectedId(null);
                       }
                     }}
                   >
-                    {`${selectedId === id ? 'Close' : 'Open'}`}
+                    {selectedId === id ? 'Close' : 'Open'}
                   </button>
                 </td>
               </tr>

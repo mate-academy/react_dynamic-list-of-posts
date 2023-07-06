@@ -4,12 +4,14 @@ import { User } from '../types/User';
 
 interface UserSelectorProps {
   users: User[],
-  userIdSelected: (id: number) => void,
+  selectedUser: User | null,
+  userSelectedId: (user: User) => void,
 }
 
 export const UserSelector: React.FC<UserSelectorProps> = ({
   users,
-  userIdSelected,
+  selectedUser,
+  userSelectedId,
 }) => {
   const [dropdownActive, setDropdownActive] = useState(false);
 
@@ -28,7 +30,7 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
           aria-controls="dropdown-menu"
           onClick={() => setDropdownActive(!dropdownActive)}
         >
-          <span>Choose a user</span>
+          <span>{selectedUser ? selectedUser?.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -43,10 +45,14 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
 
             return (
               <a
+                key={id}
                 href={`#user-${id}`}
-                className="dropdown-item"
+                className={classNames(
+                  'dropdown-item',
+                  { 'is-active': id === selectedUser?.id },
+                )}
                 onClick={() => {
-                  userIdSelected(id);
+                  userSelectedId(user);
                   setDropdownActive(false);
                 }}
               >

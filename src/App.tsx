@@ -9,22 +9,18 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import {
-  getPosts, getUsers, getComments, addComment, deleteComment,
+  getPosts, getUsers,
 } from './api/api';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { Comment, CommentData } from './types/Comment';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [selectedUserId, setSelectedUserId] = useState(0);
-  const [selectedPostId, setSelectedPostId] = useState(0);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [postsLoading, setPostsLoading] = useState(false);
-  const [commentsLoading, setCommentsLoading] = useState(false);
   const [postError, setPostError] = useState(false);
-  const [commentError, setCommentError] = useState(false);
 
   useEffect(() => {
     getUsers('/users')
@@ -32,8 +28,8 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedUserId) {
-      const serchedUrl = `/posts?userId=${selectedUserId}`;
+    if (selectedUser) {
+      const serchedUrl = `/posts?userId=${selectedUser.id}`;
 
       setPostsLoading(true);
       getPosts(serchedUrl)
@@ -44,53 +40,17 @@ export const App: React.FC = () => {
         .catch(() => setPostError(true))
         .finally(() => setPostsLoading(false));
     }
-  }, [selectedUserId]);
+  }, [selectedUser]);
 
-  useEffect(() => {
-    if (selectedPostId) {
-      const searchedUrl = `/comments?postId=${selectedPostId}`;
-
-      setCommentsLoading(true);
-      getComments(searchedUrl)
-        .then((chosenPostComment) => {
-          setComments(chosenPostComment);
-          setCommentError(false);
-        })
-        .catch(() => setCommentError(true))
-        .finally(() => setCommentsLoading(false));
-    }
-  }, [selectedPostId]);
-
-  const handleUserSelected = (id: number) => {
-    setSelectedUserId(id);
+  const handleUserSelected = (user: User) => {
+    setSelectedUser(user);
   };
 
-  const handlePostSelected = (id: number) => {
-    setSelectedPostId(id);
+  const handlePostSelected = (post: Post) => {
+    setSelectedPost(post);
   };
 
-  const handleCommentAdd = (comment: CommentData) => {
-    const newComment = {
-      ...comment,
-      postId: selectedPostId,
-      id: Math.max(...comments.map(com => com.id)) + 1,
-    };
-
-    return addComment('/comments', newComment)
-      .then(() => setComments(prevComments => (
-        [...prevComments, newComment]
-      )));
-  };
-
-  const handleCommentDelete = (commentId: number) => {
-    setComments(comments.filter(comment => comment.id !== commentId));
-
-    const searchedUrl = `/comments/${commentId}`;
-
-    deleteComment(searchedUrl);
-  };
-
-  const selectPost = posts.find(post => post.id === selectedPostId) || null;
+  const selectPost = posts.find(post => post === selectedPost) || null;
 
   return (
     <main className="section">
@@ -101,12 +61,13 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  userIdSelected={handleUserSelected}
+                  selectedUser={selectedUser}
+                  userSelectedId={handleUserSelected}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUserId && (
+                {!selectedUser && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
@@ -128,11 +89,11 @@ export const App: React.FC = () => {
                     {posts.length > 0 && (
                       <PostsList
                         posts={posts}
-                        postIdSelected={handlePostSelected}
+                        postSelected={handlePostSelected}
                       />
                     )}
 
-                    {!posts.length && selectedUserId && (
+                    {!posts.length && selectedUser && (
                       <div
                         className="notification is-warning"
                         data-cy="NoPostsYet"
@@ -154,18 +115,13 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': posts.length && selectedPostId },
+              { 'Sidebar--open': posts.length && selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">
               {selectPost && (
                 <PostDetails
-                  post={selectPost}
-                  comments={comments}
-                  commentsError={commentError}
-                  commentsLoading={commentsLoading}
-                  commentAdd={handleCommentAdd}
-                  commentDelete={handleCommentDelete}
+                  selectedPost={selectPost}
                 />
               )}
             </div>

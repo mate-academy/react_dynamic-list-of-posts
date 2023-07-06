@@ -1,10 +1,9 @@
 /* eslint-disable react/button-has-type */
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import { CommentData } from '../types/Comment';
 
 interface NewCommentFormProps {
-  commentAdd: (comment: CommentData) => Promise<void>,
+  commentAdd: (name: string, email: string, comment: string) => void,
 }
 
 export const NewCommentForm: React.FC<NewCommentFormProps> = ({
@@ -16,27 +15,6 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
   const [commentLoading, setIsCommentLoading] = useState(false);
   const [validSubmit, setValidSubmit] = useState(true);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    if (name && email && body) {
-      const newComment = {
-        name,
-        email,
-        body,
-      };
-
-      setIsCommentLoading(true);
-      setValidSubmit(true);
-
-      commentAdd(newComment)
-        .then(() => setBody(' '))
-        .finally(() => setIsCommentLoading(false));
-    } else {
-      setValidSubmit(false);
-    }
-  };
-
   const handleFormClear = () => {
     setName('');
     setEmail('');
@@ -44,7 +22,21 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
     setValidSubmit(true);
   };
 
-  const validInput = (inputType: string) => !validSubmit && !inputType;
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (name && email && body) {
+      setIsCommentLoading(true);
+      setValidSubmit(true);
+
+      commentAdd(name, email, body);
+    }
+
+    setIsCommentLoading(false);
+    setBody('');
+  };
+
+  const validInput = (inputType: string) => !validSubmit && inputType;
 
   return (
     <form data-cy="NewCommentForm" onSubmit={handleSubmit}>
@@ -61,7 +53,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             placeholder="Name Surname"
             className={classNames('input',
               {
-                'is-danger': !validInput(name),
+                'is-danger': validInput(name),
               })}
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -160,6 +152,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             className={classNames('botton is-link', {
               'is-loading': commentLoading,
             })}
+
           >
             Add
           </button>

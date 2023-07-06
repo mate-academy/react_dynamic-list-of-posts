@@ -11,14 +11,20 @@ export const getPosts = (url: string) => {
   return client.get<Post[]>(url);
 };
 
-export const getComments = (url: string) => {
-  return client.get<Comment[]>(url);
+export const getComments = (id: number) => {
+  return client.get<Comment[]>(`/comments?postId=${id}`);
 };
 
-export const addComment = (url: string, comment: Comment) => {
-  return client.post<Comment[]>(url, comment);
+// eslint-disable-next-line max-len
+export const addComment = (postId: number, name: string, email: string, body: string) => {
+  return client.post<Comment>('/comments', {
+    postId,
+    name,
+    email,
+    body,
+  });
 };
 
-export const deleteComment = (url: string) => {
-  return client.delete(url);
+export const deleteComment = (commentId: number) => {
+  return client.delete(`/comments/${commentId}`);
 };
