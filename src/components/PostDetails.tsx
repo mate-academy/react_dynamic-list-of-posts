@@ -18,6 +18,7 @@ export const PostDetails: React.FC<Props> = ({
 }) => {
   const [postComments, setPostComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isWriteComment, setIsWriteComment] = useState(false);
   const [typeOfError, setTypeOfError] = useState<ErrorType>(ErrorType.none);
 
   useEffect(() => {
@@ -36,6 +37,10 @@ export const PostDetails: React.FC<Props> = ({
           setIsLoading(false);
         });
     }
+
+    return () => {
+      setIsWriteComment(false);
+    };
   }, [selectedPost]);
 
   if (!selectedPost) {
@@ -51,6 +56,10 @@ export const PostDetails: React.FC<Props> = ({
     } catch (error) {
       setTypeOfError(ErrorType.general);
     }
+  };
+
+  const handleWriteComments = () => {
+    setIsWriteComment(true);
   };
 
   return (
@@ -113,18 +122,23 @@ export const PostDetails: React.FC<Props> = ({
             </article>
           ))}
 
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+          {!isWriteComment && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={handleWriteComments}
+            >
+              Write a comment
+            </button>
+          )}
         </div>
 
-        {true && (
+        {isWriteComment && (
           <NewCommentForm
             postId={selectedPost.id}
+            updatePostComments={setPostComments}
+            updateErrorStatus={setTypeOfError}
           />
         )}
       </div>
