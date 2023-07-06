@@ -149,9 +149,11 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
         <div className="control">
           <button
             type="submit"
-            className={classNames('botton is-link', {
-              'is-loading': commentLoading,
-            })}
+            className={classNames(
+              'button',
+              'is-link',
+              { 'is-loading': commentLoading },
+            )}
 
           >
             Add
