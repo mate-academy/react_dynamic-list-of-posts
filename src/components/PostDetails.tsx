@@ -117,7 +117,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ selectedPost }) => {
           </>
         )}
 
-        {!commentsLoading && !formDisplayed && (
+        {!commentsLoading && !formDisplayed && !postError && (
           <button
             data-cy="WriteCommentButton"
             type="button"
