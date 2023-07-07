@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+  useEffect, useMemo, useRef, useState,
+} from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +10,122 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import {
+  addComment, deleteComment, getComments, getPosts, getUsers,
+} from './api/posts';
+import { Comment } from './types/Comment';
+import { User } from './types/User';
+import { Post } from './types/Post';
 
 export const App: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCommentLoading, setIsCommentLoading] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [isError, setIsError] = useState(false);
+  const [isSelected, setIsSelected] = useState(false);
+
+  async function fetchUsers() {
+    const usersList = await getUsers();
+
+    setUsers(usersList);
+  }
+
+  async function fetchPosts() {
+    setIsLoading(true);
+    try {
+      const postsList = await getPosts();
+
+      setPosts(postsList);
+    } catch (error) {
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function fetchComments() {
+    setIsCommentLoading(true);
+    try {
+      const commentsList = await getComments();
+
+      setComments(commentsList);
+    } catch (error) {
+      setIsError(true);
+    } finally {
+      setIsCommentLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const selectUser = (user: User) => {
+    setSelectedUser(user);
+  };
+
+  const selectPost = (post: Post) => {
+    setSelectedPost(post);
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, [selectedUser]);
+
+  useEffect(() => {
+    fetchComments();
+  }, [selectedPost]);
+
+  const filteredPosts = useMemo(() => {
+    return posts
+      .filter(post => selectedUser?.id === post.userId);
+  }, [posts]);
+
+  const filteredComments = useMemo(() => {
+    return comments
+      .filter(comment => selectedPost?.id === comment.postId);
+  }, [comments]);
+
+  const handleAddComment = async (
+    name: string,
+    email: string,
+    body: string,
+  ) => {
+    let newComment;
+
+    if (selectedPost) {
+      newComment = await addComment({
+        name,
+        email,
+        body,
+        postId: selectedPost.id,
+      });
+
+      setComments([...filteredComments, newComment]);
+    }
+  };
+
+  const handleRemoveComment = async (selectedCommentId: number) => {
+    await deleteComment(selectedCommentId);
+    setComments(
+      state => state.filter(stateItem => stateItem.id !== selectedCommentId),
+    );
+  };
+
+  const didMount = useRef(false);
+
+  useEffect(() => {
+    if (didMount.current) {
+      setIsSelected(false);
+    } else {
+      didMount.current = true;
+    }
+  }, [selectedUser]);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,28 +133,51 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  users={users}
+                  selectedUser={selectedUser}
+                  selectUser={selectUser}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
 
-                <Loader />
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {isLoading && <Loader />}
 
-                <PostsList />
+                {(isError && !filteredPosts.length) && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
+
+                {(selectedUser && !filteredPosts.length && !isLoading) && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                )}
+
+                {(selectedUser && filteredPosts.length > 0 && !isLoading) && (
+                  <PostsList
+                    filteredPosts={filteredPosts}
+                    selectedPost={selectedPost}
+                    setIsSelected={setIsSelected}
+                    isSelected={isSelected}
+                    selectPost={selectPost}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -50,11 +189,18 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': isSelected },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              <PostDetails
+                selectedPost={selectedPost}
+                filteredComments={filteredComments}
+                isCommentLoading={isCommentLoading}
+                isError={isError}
+                handleAddComment={handleAddComment}
+                handleRemoveComment={handleRemoveComment}
+              />
             </div>
           </div>
         </div>
