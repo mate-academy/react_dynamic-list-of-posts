@@ -40,7 +40,7 @@ export const App: React.FC = () => {
       const postsList = await getPosts();
 
       setPosts(postsList);
-    } catch {
+    } catch (error) {
       setIsError(true);
     } finally {
       setIsLoading(false);
@@ -53,7 +53,7 @@ export const App: React.FC = () => {
       const commentsList = await getComments();
 
       setComments(commentsList);
-    } catch {
+    } catch (error) {
       setIsError(true);
     } finally {
       setIsCommentLoading(false);
@@ -148,9 +148,10 @@ export const App: React.FC = () => {
                   </p>
 
                 )}
+
                 {isLoading && <Loader />}
 
-                {isError && (
+                {(isError && !filteredPosts.length) && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -160,7 +161,10 @@ export const App: React.FC = () => {
                 )}
 
                 {(selectedUser && !filteredPosts.length && !isLoading) && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
                     No posts yet
                   </div>
                 )}

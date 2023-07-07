@@ -43,9 +43,12 @@ export const PostDetails: React.FC<Props> = ({
         <div className="block">
           {isCommentLoading && <Loader />}
 
-          {isError && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
+          {(isError && !filteredComments.length) && (
+            <div
+              className="notification is-danger"
+              data-cy="CommentsError"
+            >
+              Something went wrong with comments!
             </div>
           )}
 
@@ -110,7 +113,6 @@ export const PostDetails: React.FC<Props> = ({
                 </button>
               )
           )}
-
         </div>
       </div>
     </div>

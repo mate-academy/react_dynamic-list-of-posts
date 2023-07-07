@@ -40,6 +40,12 @@ export const NewCommentForm: React.FC<Props> = ({
       setHasCommentTextError(true);
     }
 
+    if (hasNameError || hasEmailError || hasCommentTextError) {
+      return;
+    }
+
+    setIsCommentLoading(true);
+
     if (name.trim().length && email.trim().length && commentText) {
       handleAddComment(name, email, commentText);
       setIsCommentLoading(false);
