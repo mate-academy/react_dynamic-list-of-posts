@@ -62,81 +62,77 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ selectedPost }) => {
       </div>
 
       <div className="block">
-        {commentsLoading ? (
-          <Loader />
+        {commentsLoading && <Loader />}
+
+        {postError ? (
+          <div className="notification is-danger" data-cy="CommentsError">
+            Something went wrong
+          </div>
         ) : (
           <>
-            {postError && (
-              <div className="notification is-danger" data-cy="CommentsError">
-                Something went wrong
-              </div>
-            )}
-          </>
-        )}
-
-        {!commentsLoading && (
-          <>
-            {!comments.length ? (
+            {!commentsLoading && !comments.length && (
               <p className="title is-4" data-cy="NoCommentsMessage">
                 No comments yet
               </p>
-            ) : (
-              <>
-                <p className="title is-4">Comments:</p>
-                {comments.map(comment => {
-                  const {
-                    name,
-                    email,
-                    body,
-                    id,
-                  } = comment;
+            )}
 
-                  return (
-                    <article
-                      className="message is-small"
-                      data-cy="Comment"
-                      key={id}
+            {!commentsLoading && comments.length > 0
+            && <p className="title is-4">Comments:</p>}
+            {!commentsLoading && comments.length > 0
+            && comments.map(comment => {
+              const {
+                name,
+                email,
+                body,
+                id,
+              } = comment;
+
+              return (
+                <article
+                  className="message is-small"
+                  data-cy="Comment"
+                  key={id}
+                >
+                  <div className="message-header">
+                    <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                      {name}
+                    </a>
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={() => handleCommentDelete(id)}
                     >
-                      <div className="message-header">
-                        <a href={`mailto:${email}`} data-cy="CommentAuthor">
-                          {name}
-                        </a>
-                        <button
-                          data-cy="CommentDelete"
-                          type="button"
-                          className="delete is-small"
-                          aria-label="delete"
-                          onClick={() => handleCommentDelete(id)}
-                        >
-                          delete button
-                        </button>
-                      </div>
+                      delete button
+                    </button>
+                  </div>
 
-                      <div className="message-body" data-cy="CommentBody">
-                        {body}
-                      </div>
-                    </article>
-                  );
-                })}
-              </>
-            )}
-
-            {formDisplayed ? (
-              <NewCommentForm
-                commentLoading={commentLoading}
-                commentAdd={handleCommentAdd}
-              />
-            ) : (
-              <button
-                data-cy="WriteCommentButton"
-                type="button"
-                className="button is-link"
-                onClick={() => handleShowAddComment()}
-              >
-                Write a comment
-              </button>
-            )}
+                  <div className="message-body" data-cy="CommentBody">
+                    {body}
+                  </div>
+                </article>
+              );
+            })}
           </>
+        )}
+
+        {!commentsLoading && !formDisplayed && (
+          <button
+            data-cy="WriteCommentButton"
+            type="button"
+            className="button is-link"
+            onClick={() => handleShowAddComment()}
+          >
+            Write a comment
+          </button>
+        )}
+
+        {formDisplayed && (
+          <NewCommentForm
+            commentLoading={commentLoading}
+            commentAdd={handleCommentAdd}
+          />
         )}
       </div>
     </div>
