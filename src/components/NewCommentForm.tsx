@@ -3,40 +3,42 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 
 interface NewCommentFormProps {
+  commentLoading: boolean,
   commentAdd: (name: string, email: string, comment: string) => void,
 }
 
 export const NewCommentForm: React.FC<NewCommentFormProps> = ({
+  commentLoading,
   commentAdd,
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
-  const [commentLoading, setIsCommentLoading] = useState(false);
-  const [validSubmit, setValidSubmit] = useState(true);
+  const [validSubmit, setValidSubmit] = useState(false);
 
   const handleFormClear = () => {
     setName('');
     setEmail('');
     setBody('');
-    setValidSubmit(true);
+    setValidSubmit(false);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (name && email && body) {
-      setIsCommentLoading(true);
+      commentAdd(name, email, body);
+    } else {
       setValidSubmit(true);
 
-      commentAdd(name, email, body);
+      return;
     }
 
-    setIsCommentLoading(false);
+    setValidSubmit(false);
     setBody('');
   };
 
-  const validInput = (inputType: string) => !validSubmit && inputType;
+  const validInput = (inputType: string) => validSubmit && !inputType;
 
   return (
     <form data-cy="NewCommentForm" onSubmit={handleSubmit}>

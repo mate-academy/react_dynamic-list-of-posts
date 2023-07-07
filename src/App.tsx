@@ -43,10 +43,18 @@ export const App: React.FC = () => {
   }, [selectedUser]);
 
   const handleUserSelected = (user: User) => {
+    setSelectedPost(null);
+    setSelectedUser(null);
     setSelectedUser(user);
   };
 
   const handlePostSelected = (post: Post) => {
+    if (selectedPost?.id === post?.id) {
+      setSelectedPost(null);
+
+      return;
+    }
+
     setSelectedPost(post);
   };
 
@@ -115,7 +123,7 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': posts.length && selectedPost },
+              { 'Sidebar--open': selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">

@@ -13,14 +13,17 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ selectedPost }) => {
   const [postError, setPostError] = useState(false);
   const [formDisplayed, setFormDisplayed] = useState(false);
   const [commentsLoading, setCommentsLoading] = useState(false);
+  const [commentLoading, setCommentLoading] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
 
   const handleCommentAdd = (name: string, email: string, comment: string) => {
+    setCommentLoading(true);
     addComment(selectedPost.id, name, email, comment)
       .then(newComment => {
         setComments([...comments, newComment]);
       })
-      .catch(() => setPostError(true));
+      .catch(() => setPostError(true))
+      .finally(() => setCommentLoading(false));
   };
 
   const handleCommentDelete = (commentId: number) => {
@@ -120,6 +123,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ selectedPost }) => {
 
             {formDisplayed ? (
               <NewCommentForm
+                commentLoading={commentLoading}
                 commentAdd={handleCommentAdd}
               />
             ) : (
