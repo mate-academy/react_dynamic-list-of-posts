@@ -64,84 +64,88 @@ export const PostDetails: React.FC<Props> = ({
 
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 data-cy="PostTitle">
-            {selectedPost.title}
-          </h2>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="content" data-cy="PostDetails">
+          <div className="block">
+            <h2 data-cy="PostTitle">
+              {selectedPost.title}
+            </h2>
 
-          <p data-cy="PostBody">
-            {selectedPost.body}
-          </p>
-        </div>
-
-        <div className="block">
-
-          {typeOfError && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
-            </div>
-          )}
-
-          {!postComments.length && !typeOfError && (
-            <p className="title is-4" data-cy="NoCommentsMessage">
-              No comments yet
+            <p data-cy="PostBody">
+              {selectedPost.body}
             </p>
-          ) }
+          </div>
 
-          {postComments.length ? (
-            <p className="title is-4">Comments:</p>
-          ) : (
-            ''
-          )}
+          <div className="block">
 
-          {isLoading && <Loader />}
-          {postComments.map(postComment => (
-            <article className="message is-small" data-cy="Comment">
-              <div className="message-header">
-                <a
-                  href={`mailto:${postComment.email}`}
-                  data-cy="CommentAuthor"
-                >
-                  {postComment.name}
-                </a>
-                <button
-                  data-cy="CommentDelete"
-                  type="button"
-                  className="delete is-small"
-                  aria-label="delete"
-                  onClick={() => handleDeletePostBtn(postComment.id)}
-                >
-                  delete button
-                </button>
+            {typeOfError && (
+              <div className="notification is-danger" data-cy="CommentsError">
+                Something went wrong
               </div>
+            )}
 
-              <div className="message-body" data-cy="CommentBody">
-                {postComment.body}
-              </div>
-            </article>
-          ))}
+            {!postComments.length && !typeOfError && (
+              <p className="title is-4" data-cy="NoCommentsMessage">
+                No comments yet
+              </p>
+            ) }
 
-          {!isWriteComment && (
-            <button
-              data-cy="WriteCommentButton"
-              type="button"
-              className="button is-link"
-              onClick={handleWriteComments}
-            >
-              Write a comment
-            </button>
+            {postComments.length ? (
+              <p className="title is-4">Comments:</p>
+            ) : (
+              ''
+            )}
+
+            {/* {isLoading && <Loader />} */}
+            {postComments.map(postComment => (
+              <article className="message is-small" data-cy="Comment">
+                <div className="message-header">
+                  <a
+                    href={`mailto:${postComment.email}`}
+                    data-cy="CommentAuthor"
+                  >
+                    {postComment.name}
+                  </a>
+                  <button
+                    data-cy="CommentDelete"
+                    type="button"
+                    className="delete is-small"
+                    aria-label="delete"
+                    onClick={() => handleDeletePostBtn(postComment.id)}
+                  >
+                    delete button
+                  </button>
+                </div>
+
+                <div className="message-body" data-cy="CommentBody">
+                  {postComment.body}
+                </div>
+              </article>
+            ))}
+
+            {!isWriteComment && (
+              <button
+                data-cy="WriteCommentButton"
+                type="button"
+                className="button is-link"
+                onClick={handleWriteComments}
+              >
+                Write a comment
+              </button>
+            )}
+          </div>
+
+          {isWriteComment && (
+            <NewCommentForm
+              postId={selectedPost.id}
+              updatePostComments={setPostComments}
+              updateErrorStatus={setTypeOfError}
+            />
           )}
         </div>
-
-        {isWriteComment && (
-          <NewCommentForm
-            postId={selectedPost.id}
-            updatePostComments={setPostComments}
-            updateErrorStatus={setTypeOfError}
-          />
-        )}
-      </div>
+      )}
     </div>
   );
 };
