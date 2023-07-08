@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import { postNewComment } from '../utils/helperFunctions';
@@ -212,10 +213,8 @@ export const NewCommentForm: React.FC<Props> = ({
 
       <div className="field is-grouped">
         <div className="control">
-          {/* <button type="submit" className="button is-link is-loading"> */}
           <button
             type="submit"
-            // className="button is-link"
             className={classNames(
               'button',
               'is-link',
@@ -229,7 +228,6 @@ export const NewCommentForm: React.FC<Props> = ({
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>

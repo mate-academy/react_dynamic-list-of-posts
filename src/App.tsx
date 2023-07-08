@@ -24,7 +24,7 @@ export const App: React.FC = () => {
   const [typeOfError, setTypeOfError] = useState<ErrorType>(ErrorType.none);
   const [isLoading, setIsLoading] = useState(false);
 
-  const chooseUser = (user: User) => setSelectedUser(user);
+  const saveSelectedUser = (user: User) => setSelectedUser(user);
 
   useEffect(() => {
     getUsersFromServer()
@@ -61,7 +61,7 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   listOfUserf={listOfUsers}
-                  saveSelectedUser={chooseUser}
+                  saveSelectedUser={saveSelectedUser}
                   choosenUser={selectedUser}
                 />
               </div>
@@ -105,11 +105,6 @@ export const App: React.FC = () => {
               )}
             >
               <div className="tile is-child box is-success ">
-                {/* {selectedPost && (
-                  <PostDetails
-                    selectedPost={selectedPost}
-                  />
-                )} */}
                 <PostDetails
                   selectedPost={selectedPost}
                 />
