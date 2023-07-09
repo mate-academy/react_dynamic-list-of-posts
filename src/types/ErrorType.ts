@@ -1,5 +1,5 @@
 export enum ErrorType {
-  none = '',
-  general = 'Something went wrong!',
-  noPosts = 'No posts yet',
+  None = '',
+  General = 'Something went wrong!',
+  NoPosts = 'No posts yet',
 }

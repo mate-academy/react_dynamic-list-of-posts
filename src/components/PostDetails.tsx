@@ -5,7 +5,7 @@ import { Post } from '../types/Post';
 import {
   deleteCommentFromServer,
   getCommentsFromServer,
-} from '../utils/helperFunctions';
+} from '../api/comments';
 import { Comment } from '../types/Comment';
 import { ErrorType } from '../types/ErrorType';
 
@@ -19,10 +19,10 @@ export const PostDetails: React.FC<Props> = ({
   const [postComments, setPostComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isWriteComment, setIsWriteComment] = useState(false);
-  const [typeOfError, setTypeOfError] = useState<ErrorType>(ErrorType.none);
+  const [typeOfError, setTypeOfError] = useState<ErrorType>(ErrorType.None);
 
   useEffect(() => {
-    setTypeOfError(ErrorType.none);
+    setTypeOfError(ErrorType.None);
     if (selectedPost) {
       setIsLoading(true);
       getCommentsFromServer(selectedPost.id)
@@ -31,7 +31,7 @@ export const PostDetails: React.FC<Props> = ({
         })
         .catch(() => {
           setPostComments([]);
-          setTypeOfError(ErrorType.general);
+          setTypeOfError(ErrorType.General);
         })
         .finally(() => {
           setIsLoading(false);
@@ -54,7 +54,7 @@ export const PostDetails: React.FC<Props> = ({
         postComment.id !== postId
       )));
     } catch (error) {
-      setTypeOfError(ErrorType.general);
+      setTypeOfError(ErrorType.General);
     }
   };
 

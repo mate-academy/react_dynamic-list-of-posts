@@ -1,10 +1,5 @@
 import { Comment, CommentData } from '../types/Comment';
-import { Post } from '../types/Post';
-import { User } from '../types/User';
-import { client } from './fetchClient';
-
-export const getUsersFromServer = () => client.get<User[]>('/users');
-export const getPostsFromServer = (userID: number) => client.get<Post[]>(`/posts?userId=${userID}`);
+import { client } from '../utils/fetchClient';
 
 export const getCommentsFromServer = (postId: number) => (
   client.get<Comment[]>(`/comments?postId=${postId}`)

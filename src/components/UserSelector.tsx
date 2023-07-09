@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 
-type SelectorUsers = {
-  listOfUserf: User[],
+type UserSelectorProps = {
+  users: User[],
   saveSelectedUser: (user: User) => void,
   choosenUser: User | null,
 };
 
-export const UserSelector: React.FC<SelectorUsers> = ({
-  listOfUserf,
+export const UserSelector: React.FC<UserSelectorProps> = ({
+  users: listOfUserf,
   saveSelectedUser,
   choosenUser,
 }) => {

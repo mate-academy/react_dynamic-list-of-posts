@@ -11,17 +11,15 @@ import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { Post } from './types/Post';
 import { ErrorType } from './types/ErrorType';
-import {
-  getPostsFromServer,
-  getUsersFromServer,
-} from './utils/helperFunctions';
+import { getPostsFromServer } from './api/posts';
+import { getUsersFromServer } from './api/users';
 
 export const App: React.FC = () => {
-  const [listOfUsers, setListOfUsers] = useState<User[]>([]);
-  const [listsOfPosts, setListsOfPosts] = useState<Post[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [typeOfError, setTypeOfError] = useState<ErrorType>(ErrorType.none);
+  const [typeOfError, setTypeOfError] = useState<ErrorType>(ErrorType.None);
   const [isLoading, setIsLoading] = useState(false);
 
   const saveSelectedUser = (user: User) => setSelectedUser(user);
@@ -29,20 +27,20 @@ export const App: React.FC = () => {
   useEffect(() => {
     getUsersFromServer()
       .then(usersApi => {
-        setListOfUsers(usersApi);
+        setUsers(usersApi);
       });
   }, []);
 
   useEffect(() => {
     if (selectedUser) {
       setIsLoading(true);
-      setTypeOfError(ErrorType.none);
+      setTypeOfError(ErrorType.None);
 
       getPostsFromServer(selectedUser.id)
         .then(postsFromSever => {
-          setListsOfPosts(postsFromSever);
+          setPosts(postsFromSever);
           if (!postsFromSever.length) {
-            setTypeOfError(ErrorType.noPosts);
+            setTypeOfError(ErrorType.NoPosts);
           }
         })
         .finally(() => {
@@ -60,7 +58,7 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  listOfUserf={listOfUsers}
+                  users={users}
                   saveSelectedUser={saveSelectedUser}
                   choosenUser={selectedUser}
                 />
@@ -83,7 +81,7 @@ export const App: React.FC = () => {
 
                 {selectedUser && (
                   <PostsList
-                    posts={listsOfPosts}
+                    posts={posts}
                     onSelectPost={setSelectedPost}
                     selectedPost={selectedPost}
                   />

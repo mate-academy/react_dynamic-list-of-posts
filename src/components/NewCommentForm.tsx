@@ -1,7 +1,7 @@
 /* eslint-disable react/button-has-type */
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import { postNewComment } from '../utils/helperFunctions';
+import { postNewComment } from '../api/comments';
 import { Comment } from '../types/Comment';
 import { ErrorType } from '../types/ErrorType';
 
@@ -59,7 +59,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
       updatePostComments(currentComments => [...currentComments, fetchComment]);
     } catch {
-      updateErrorStatus(ErrorType.general);
+      updateErrorStatus(ErrorType.General);
     } finally {
       setIsLoading(false);
     }
