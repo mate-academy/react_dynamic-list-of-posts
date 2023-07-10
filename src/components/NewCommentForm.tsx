@@ -91,8 +91,10 @@ export const NewCommentForm: React.FC<Props> = ({
 
     addNewComment();
 
-    setNewComment(getIntialCommentState(postId));
+    setNewComment({ ...newComment, postId, body: '' });
   };
+
+  const handleClearBtn = () => setNewComment(getIntialCommentState(postId));
 
   return (
     <form
@@ -228,7 +230,11 @@ export const NewCommentForm: React.FC<Props> = ({
         </div>
 
         <div className="control">
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={handleClearBtn}
+          >
             Clear
           </button>
         </div>

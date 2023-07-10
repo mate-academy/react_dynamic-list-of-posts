@@ -92,15 +92,16 @@ export const PostDetails: React.FC<Props> = ({
               </p>
             ) }
 
-            {postComments.length ? (
+            {postComments.length > 0 && (
               <p className="title is-4">Comments:</p>
-            ) : (
-              ''
             )}
 
-            {/* {isLoading && <Loader />} */}
             {postComments.map(postComment => (
-              <article className="message is-small" data-cy="Comment">
+              <article
+                className="message is-small"
+                data-cy="Comment"
+                key={postComment.postId}
+              >
                 <div className="message-header">
                   <a
                     href={`mailto:${postComment.email}`}

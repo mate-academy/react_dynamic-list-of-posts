@@ -65,7 +65,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {selectedUser ? null : (
+                {!selectedUser && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
