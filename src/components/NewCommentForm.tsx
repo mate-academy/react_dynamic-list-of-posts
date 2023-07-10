@@ -14,13 +14,13 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
-  const [validSubmit, setValidSubmit] = useState(false);
+  const [invalidSubmit, setInvalidSubmit] = useState(false);
 
   const handleFormClear = () => {
     setName('');
     setEmail('');
     setBody('');
-    setValidSubmit(false);
+    setInvalidSubmit(false);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -29,16 +29,16 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
     if (name && email && body) {
       commentAdd(name, email, body);
     } else {
-      setValidSubmit(true);
+      setInvalidSubmit(true);
 
       return;
     }
 
-    setValidSubmit(false);
+    setInvalidSubmit(false);
     setBody('');
   };
 
-  const validInput = (inputType: string) => validSubmit && !inputType;
+  const validInput = (inputType: string) => invalidSubmit && !inputType;
 
   return (
     <form data-cy="NewCommentForm" onSubmit={handleSubmit}>

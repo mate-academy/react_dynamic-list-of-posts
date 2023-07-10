@@ -13,13 +13,13 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
   selectedUser,
   userSelectedId,
 }) => {
-  const [dropdownActive, setDropdownActive] = useState(false);
+  const [isDropdownActive, setIsDropdownActive] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleUsersDropdown = (event: MouseEvent) => {
     if (dropdownRef.current
       && !dropdownRef.current.contains(event.target as HTMLDivElement)) {
-      setDropdownActive(false);
+      setIsDropdownActive(false);
     }
   };
 
@@ -35,7 +35,7 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
     <div
       data-cy="UserSelector"
       className={classNames('dropdown', {
-        'is-active': dropdownActive,
+        'is-active': isDropdownActive,
       })}
       ref={dropdownRef}
     >
@@ -45,7 +45,7 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setDropdownActive(!dropdownActive)}
+          onClick={() => setIsDropdownActive(!isDropdownActive)}
         >
           <span>{selectedUser ? selectedUser?.name : 'Choose a user'}</span>
 
@@ -70,7 +70,7 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
                 )}
                 onClick={() => {
                   userSelectedId(user);
-                  setDropdownActive(false);
+                  setIsDropdownActive(false);
                 }}
               >
                 {name}

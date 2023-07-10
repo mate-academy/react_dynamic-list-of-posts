@@ -46,11 +46,7 @@ export const PostsList: React.FC<PostListProps> = ({
                     })}
                     onClick={() => {
                       postSelected(post);
-                      if (selectedId !== id) {
-                        setSelectedId(id);
-                      } else {
-                        setSelectedId(null);
-                      }
+                      setSelectedId(selectedId !== id ? id : null);
                     }}
                   >
                     {selectedId === id ? 'Close' : 'Open'}

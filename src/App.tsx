@@ -44,7 +44,6 @@ export const App: React.FC = () => {
 
   const handleUserSelected = (user: User) => {
     setSelectedPost(null);
-    setSelectedUser(null);
     setSelectedUser(user);
   };
 
@@ -57,8 +56,6 @@ export const App: React.FC = () => {
 
     setSelectedPost(post);
   };
-
-  const selectPost = posts.find(post => post === selectedPost) || null;
 
   return (
     <main className="section">
@@ -127,9 +124,9 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectPost && (
+              {selectedPost && (
                 <PostDetails
-                  selectedPost={selectPost}
+                  selectedPost={selectedPost}
                 />
               )}
             </div>

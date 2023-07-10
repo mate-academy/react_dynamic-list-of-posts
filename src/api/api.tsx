@@ -16,7 +16,12 @@ export const getComments = (id: number) => {
 };
 
 // eslint-disable-next-line max-len
-export const addComment = (postId: number, name: string, email: string, body: string) => {
+export const addComment = (
+  postId: number,
+  name: string,
+  email: string,
+  body: string,
+) => {
   return client.post<Comment>('/comments', {
     postId,
     name,
