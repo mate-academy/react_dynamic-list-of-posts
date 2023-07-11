@@ -5,7 +5,7 @@ import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
+import cn from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
@@ -138,7 +138,7 @@ export const App: React.FC = () => {
           {!isCommentListHidden && (
             <div
               data-cy="Sidebar"
-              className={classNames(
+              className={cn(
                 'tile',
                 'is-parent',
                 'is-8-desktop',
