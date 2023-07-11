@@ -57,24 +57,20 @@ export const NewCommentForm: React.FC<Props> = ({
     event.preventDefault();
     let isNotValid;
 
-    if (!name) {
-      setHasName(false);
+    if (!email || !name || !validateEmail(email) || !comment) {
       isNotValid = true;
     }
 
-    if (!email) {
-      setHasEmail(false);
-      isNotValid = true;
+    if (!name || !email) {
+      setHasName(false);
     }
 
     if (!validateEmail(email)) {
       setIsEmailValid(false);
-      isNotValid = true;
     }
 
     if (!comment) {
       setHasComment(false);
-      isNotValid = true;
     }
 
     if (isNotValid) {

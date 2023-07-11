@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useState, useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -30,8 +28,6 @@ export const App: React.FC = () => {
   const [isCommentFormOpen, setIsCommentFormOpen] = useState(false);
   const [isPostlistVisible, setIsPostListVisible] = useState(false);
   const [isLoaderVisible, setIsLoaderVisible] = useState(false);
-
-  const loadingArrayErrors = [ErrorMessage.USERS, ErrorMessage.POSTS];
 
   const fetchUsers = async () => {
     try {
@@ -113,7 +109,7 @@ export const App: React.FC = () => {
                   <Loader />
                 )}
 
-                {errorMessage && loadingArrayErrors.includes(errorMessage) && (
+                {errorMessage && (ErrorMessage.USERS || ErrorMessage.POSTS) && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
