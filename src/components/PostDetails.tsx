@@ -1,117 +1,93 @@
 import React from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { Post } from '../types/Post';
+import { ErrorMessage } from '../types/errors';
+import { CommentsList } from './commetsList';
+import { Comment } from '../types/Comment';
 
-export const PostDetails: React.FC = () => {
+interface Props {
+  post: Post | null;
+  errorMessage: ErrorMessage | null;
+  comments: Comment[];
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
+  setErrorMessage: React.Dispatch<React.SetStateAction<ErrorMessage | null>>;
+  isFetching: boolean;
+  isCommentFormOpen: boolean;
+  openCommentsForm: (value: boolean) => void;
+}
+export const PostDetails: React.FC<Props> = ({
+  post,
+  errorMessage,
+  comments,
+  setErrorMessage,
+  setComments,
+  isFetching,
+  isCommentFormOpen,
+  openCommentsForm,
+}) => {
+  const handleOpenCommentForm = () => {
+    openCommentsForm(true);
+  };
+
+  const errorTypes: ErrorMessage[] = [
+    ErrorMessage.ADD,
+    ErrorMessage.DELETE,
+    ErrorMessage.COMMENTS,
+  ];
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {`#${post?.id}: ${post?.title}`}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            {post?.body}
           </p>
         </div>
 
         <div className="block">
-          <Loader />
+          {isFetching && (
+            <Loader />
+          )}
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
+          {errorMessage && errorTypes.includes(errorMessage)
+            && (
+              <div className="notification is-danger" data-cy="CommentsError">
+                {errorMessage}
+              </div>
+            )}
 
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
+          {(errorMessage !== ErrorMessage.COMMENTS)
+            && (
+              <CommentsList
+                comments={comments}
+                setComments={setComments}
+                setErrorMessage={setErrorMessage}
+              />
+            )}
 
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
+          {isCommentFormOpen
+            && (
               <button
-                data-cy="CommentDelete"
+                data-cy="WriteCommentButton"
                 type="button"
-                className="delete is-small"
-                aria-label="delete"
+                className="button is-link"
+                onClick={handleOpenCommentForm}
               >
-                delete button
+                Write a comment
               </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
-            >
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+            )}
         </div>
 
-        <NewCommentForm />
+        <NewCommentForm
+          post={post}
+          setComments={setComments}
+          setErrorMessage={setErrorMessage}
+        />
       </div>
     </div>
   );
