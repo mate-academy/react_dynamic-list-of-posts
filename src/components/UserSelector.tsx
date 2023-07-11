@@ -9,7 +9,7 @@ type UserSelectorProps = {
 };
 
 export const UserSelector: React.FC<UserSelectorProps> = ({
-  users: listOfUserf,
+  users,
   saveSelectedUser,
   choosenUser,
 }) => {
@@ -44,7 +44,7 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         {true && (
           <div className="dropdown-content">
-            {listOfUserf.map((user, idx) => (
+            {users.map((user, idx) => (
               <a
                 href={`#user=${idx + 1}`}
                 className={classNames(
