@@ -1,4 +1,5 @@
 import React from 'react';
+import cn from 'classnames';
 import { Post } from '../types/Post';
 
 interface Props {
@@ -54,7 +55,9 @@ export const PostsList: React.FC<Props> = ({
                   <button
                     type="button"
                     data-cy="PostButton"
-                    className="button is-link is-light"
+                    className={cn('button is-link', {
+                      'is-light': post.id !== selectedPost?.id,
+                    })}
                     onClick={() => openDetails(post)}
                   >
                     Open
