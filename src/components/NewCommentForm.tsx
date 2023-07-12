@@ -56,12 +56,13 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleFormSubmit = (event: FormEvent) => {
     event.preventDefault();
     let isNotValid;
+    const trimmedComment = comment.trim();
 
-    if (!email || !name || !validateEmail(email) || !comment) {
+    if (!email || !name || !validateEmail(email) || !trimmedComment) {
       isNotValid = true;
     }
 
-    if (!name || !email) {
+    if (!name) {
       setHasName(false);
     }
 
@@ -69,7 +70,7 @@ export const NewCommentForm: React.FC<Props> = ({
       setIsEmailValid(false);
     }
 
-    if (!comment) {
+    if (!trimmedComment) {
       setHasComment(false);
     }
 

@@ -70,8 +70,8 @@ export const PostDetails: React.FC<Props> = ({
               />
             )}
 
-          {isCommentFormOpen
-            && (
+          {!isCommentFormOpen
+            ? (
               <button
                 data-cy="WriteCommentButton"
                 type="button"
@@ -80,14 +80,15 @@ export const PostDetails: React.FC<Props> = ({
               >
                 Write a comment
               </button>
+            )
+            : (
+              <NewCommentForm
+                post={post}
+                setComments={setComments}
+                setErrorMessage={setErrorMessage}
+              />
             )}
         </div>
-
-        <NewCommentForm
-          post={post}
-          setComments={setComments}
-          setErrorMessage={setErrorMessage}
-        />
       </div>
     </div>
   );
