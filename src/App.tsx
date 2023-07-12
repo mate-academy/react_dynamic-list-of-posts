@@ -28,12 +28,14 @@ export const App: React.FC = () => {
   const [isCommentFormOpen, setIsCommentFormOpen] = useState(false);
   const [isPostlistVisible, setIsPostListVisible] = useState(false);
   const [isLoaderVisible, setIsLoaderVisible] = useState(false);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const fetchUsers = async () => {
     try {
       const fetchedUsers = await getUsers();
 
       setUsers(fetchedUsers);
+      setIsDataLoaded(true);
     } catch {
       setErrorMessage(ErrorMessage.USERS);
     }
@@ -48,6 +50,7 @@ export const App: React.FC = () => {
 
       setPosts(fetchedPosts);
       setIsPostListVisible(true);
+      setIsDataLoaded(true);
     } catch {
       setErrorMessage(ErrorMessage.POSTS);
       setIsPostListVisible(false);
@@ -65,6 +68,7 @@ export const App: React.FC = () => {
 
       setComments(fetchedComments);
       setIsPostListVisible(true);
+      setIsDataLoaded(true);
     } catch (error) {
       setErrorMessage(ErrorMessage.COMMENTS);
     } finally {
@@ -85,78 +89,85 @@ export const App: React.FC = () => {
   return (
     <main className="section">
       <div className="container">
-        <div className="tile is-ancestor">
-          <div className="tile is-parent">
-            <div className="tile is-child box is-success">
-              <div className="block">
-                <UserSelector
-                  users={users}
-                  selected={selectedUser}
-                  onSelect={setSelectedUser}
-                  getUsersPosts={fetchPosts}
-                  setIsCommentsListHidden={setIsCommentListHidden}
-                />
-              </div>
+        {isDataLoaded
+          && (
+            <div className="tile is-ancestor">
+              <div className="tile is-parent">
+                <div className="tile is-child box is-success">
 
-              <div className="block" data-cy="MainContent">
-                {!selectedUser && (
-                  <p data-cy="NoSelectedUser">
-                    No user selected
-                  </p>
-                )}
-
-                {isLoaderVisible && (
-                  <Loader />
-                )}
-
-                {errorMessage && (ErrorMessage.USERS || ErrorMessage.POSTS) && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
-                    {errorMessage}
+                  <div className="block">
+                    <UserSelector
+                      users={users}
+                      selected={selectedUser}
+                      onSelect={setSelectedUser}
+                      getUsersPosts={fetchPosts}
+                      setIsCommentsListHidden={setIsCommentListHidden}
+                    />
                   </div>
-                )}
 
-                {isPostlistVisible && (
-                  <PostsList
-                    posts={posts}
-                    selectedPost={selectedPost}
-                    openDetails={handleOpenDetails}
-                    closeCommentList={setIsCommentListHidden}
-                    isCommentListHidden={isCommentListHidden}
-                  />
-                )}
+                  <div className="block" data-cy="MainContent">
+                    {!selectedUser && (
+                      <p data-cy="NoSelectedUser">
+                        No user selected
+                      </p>
+                    )}
+
+                    {isLoaderVisible && !isPostlistVisible && (
+                      <Loader />
+                    )}
+
+                    {errorMessage
+                      && (ErrorMessage.USERS || ErrorMessage.POSTS)
+                      && (
+                        <div
+                          className="notification is-danger"
+                          data-cy="PostsLoadingError"
+                        >
+                          {errorMessage}
+                        </div>
+                      )}
+
+                    {isPostlistVisible && (
+                      <PostsList
+                        posts={posts}
+                        selectedPost={selectedPost}
+                        openDetails={handleOpenDetails}
+                        closeCommentList={setIsCommentListHidden}
+                        isCommentListHidden={isCommentListHidden}
+                      />
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          {!isCommentListHidden && (
-            <div
-              data-cy="Sidebar"
-              className={cn(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                'Sidebar--open',
+              {!isCommentListHidden && (
+                <div
+                  data-cy="Sidebar"
+                  className={cn(
+                    'tile',
+                    'is-parent',
+                    'is-8-desktop',
+                    'Sidebar',
+                    'Sidebar--open',
+                  )}
+                >
+                  <div className="tile is-child box is-success ">
+                    <PostDetails
+                      post={selectedPost}
+                      errorMessage={errorMessage}
+                      comments={comments}
+                      setErrorMessage={setErrorMessage}
+                      setComments={setComments}
+                      isFetching={isCommentsFetching}
+                      isCommentFormOpen={isCommentFormOpen}
+                      openCommentsForm={setIsCommentFormOpen}
+                    />
+                  </div>
+                </div>
               )}
-            >
-              <div className="tile is-child box is-success ">
-                <PostDetails
-                  post={selectedPost}
-                  errorMessage={errorMessage}
-                  comments={comments}
-                  setErrorMessage={setErrorMessage}
-                  setComments={setComments}
-                  isFetching={isCommentsFetching}
-                  isCommentFormOpen={isCommentFormOpen}
-                  openCommentsForm={setIsCommentFormOpen}
-                />
-              </div>
             </div>
           )}
-        </div>
+
       </div>
     </main>
   );
