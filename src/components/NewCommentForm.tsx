@@ -1,6 +1,80 @@
-import React from 'react';
+import React, { useState } from 'react';
+import classNames from 'classnames';
+import { CommentData } from '../types/Comment';
 
-export const NewCommentForm: React.FC = () => {
+type Props = {
+  addComment: ({ name, email, body }: CommentData) => Promise<void>;
+  postId: number | undefined;
+  loadingComment: boolean;
+};
+
+export const NewCommentForm: React.FC<Props> = ({
+  addComment,
+  postId,
+  loadingComment,
+}) => {
+  const [inputName, setInputName] = useState('');
+  const [inputNameError, setInputNameError] = useState(false);
+
+  const [inputEmail, setInputEmail] = useState('');
+  const [inputEmailError, setInputEmailError] = useState(false);
+
+  const [inputComment, setInputComment] = useState('');
+  const [inputCommentError, setInputCommentError] = useState(false);
+
+  const changeInputName = (value: string) => {
+    setInputName(value);
+    setInputNameError(false);
+  };
+
+  const changeInputEmail = (value: string) => {
+    setInputEmail(value);
+    setInputEmailError(false);
+  };
+
+  const changeInputComment = (value: string) => {
+    setInputComment(value);
+    setInputCommentError(false);
+  };
+
+  const submitData = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    name: string,
+    email: string,
+    body: string,
+  ) => {
+    event.preventDefault();
+
+    if (!inputName) {
+      setInputNameError(true);
+    }
+
+    if (!inputEmail) {
+      setInputEmailError(true);
+    }
+
+    if (!inputComment) {
+      setInputCommentError(true);
+    }
+
+    if (inputName && inputEmail && inputComment && postId) {
+      addComment({
+        postId, name, email, body,
+      });
+    }
+
+    setInputComment('');
+  };
+
+  const clearData = () => {
+    setInputName('');
+    setInputEmail('');
+    setInputComment('');
+    setInputNameError(false);
+    setInputEmailError(false);
+    setInputCommentError(false);
+  };
+
   return (
     <form data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
@@ -14,24 +88,30 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            className={classNames('input', { 'is-danger': inputNameError })}
+            value={inputName}
+            onChange={(event) => changeInputName(event.target.value)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {inputNameError && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
+        {inputNameError && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Name is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -45,24 +125,30 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            className={classNames('input', { 'is-danger': inputEmailError })}
+            value={inputEmail}
+            onChange={(event) => changeInputEmail(event.target.value)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {inputEmailError && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
+        {inputEmailError && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -75,25 +161,45 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            className={classNames('textarea',
+              { 'is-danger': inputCommentError })}
+            value={inputComment}
+            onChange={(event) => changeInputComment(event.target.value)}
           />
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
+        {inputCommentError && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Enter some text
+          </p>
+        )}
       </div>
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={classNames(
+              'button', 'is-link', { 'is-loading': loadingComment },
+            )}
+            onClick={(event) => submitData(
+              event,
+              inputName,
+              inputEmail,
+              inputComment,
+            )}
+          >
             Add
           </button>
         </div>
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={clearData}
+          >
             Clear
           </button>
         </div>
