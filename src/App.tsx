@@ -18,22 +18,22 @@ export const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [currentPost, setCurrentPost] = useState<Post | null>(null);
-  const [loadingPosts, setLoadingPosts] = useState(false);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(false);
   const [postsError, setPostsError] = useState('');
-  const [sideBarOpened, setSideBarOpened] = useState(false);
+  const [isSideBarOpened, setIsSideBarOpened] = useState(false);
   const [comments, setComments] = useState<Comment[] | null>(null);
-  const [loadingComments, setLoadingComments] = useState(false);
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [commentsError, setCommentsError] = useState('');
-  const [newCommentForm, setNewCommentForm] = useState(false);
-  const [loadingComment, setLoadingComment] = useState(false);
+  const [isCommentFormOpened, setIsCommentFormOpened] = useState(false);
+  const [isLoadingComment, setIsLoadingComment] = useState(false);
+
+  async function fetchUsers() {
+    const data = await client.get<User[]>('/users');
+
+    setUsers(data);
+  }
 
   useEffect(() => {
-    async function fetchUsers() {
-      const data = await client.get<User[]>('/users');
-
-      setUsers(data);
-    }
-
     fetchUsers();
   }, []);
 
@@ -43,8 +43,8 @@ export const App: React.FC = () => {
     }
 
     try {
-      setSideBarOpened(false);
-      setLoadingPosts(true);
+      setIsSideBarOpened(false);
+      setIsLoadingPosts(true);
       setPostsError('');
 
       const data = await client.get<Post[]>(`/posts?userId=${user.id}`);
@@ -54,13 +54,13 @@ export const App: React.FC = () => {
       setPosts([]);
       setPostsError('Failed to load posts');
     } finally {
-      setLoadingPosts(false);
+      setIsLoadingPosts(false);
     }
   };
 
   const loadComments = async (post: Post) => {
     try {
-      setLoadingComments(true);
+      setIsLoadingComments(true);
       setCommentsError('');
 
       const data = await client.get<Comment[]>(`/comments?postId=${post.id}`);
@@ -71,15 +71,18 @@ export const App: React.FC = () => {
       setComments([]);
       setCommentsError('Failed to load comments');
     } finally {
-      setLoadingComments(false);
+      setIsLoadingComments(false);
     }
   };
 
   const addComment = async ({
-    postId, name, email, body,
+    postId,
+    name,
+    email,
+    body,
   }: CommentData) => {
     try {
-      setLoadingComment(true);
+      setIsLoadingComment(true);
       const response: Comment = await client.post(
         '/comments', {
           postId, name, email, body,
@@ -93,10 +96,10 @@ export const App: React.FC = () => {
 
         return [response];
       });
-    } catch (error: any) {
-      throw new Error(error.message);
+    } catch (error: unknown) {
+      throw new Error((error as Error).message);
     } finally {
-      setLoadingComment(false);
+      setIsLoadingComment(false);
     }
   };
 
@@ -135,7 +138,7 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {loadingPosts && <Loader />}
+                {isLoadingPosts && <Loader />}
 
                 {postsError && (
                   <div
@@ -152,13 +155,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {posts && posts.length > 0 && !loadingPosts && (
+                {posts && posts.length > 0 && !isLoadingPosts && (
                   <PostsList
                     posts={posts}
-                    sideBarOpened={sideBarOpened}
-                    setSideBarOpened={setSideBarOpened}
+                    isSideBarOpened={isSideBarOpened}
+                    setSideBarOpened={setIsSideBarOpened}
                     loadComments={loadComments}
-                    setNewCommentForm={setNewCommentForm}
+                    setIsCommentFormOpened={setIsCommentFormOpened}
                   />
                 )}
               </div>
@@ -172,20 +175,20 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': sideBarOpened },
+              { 'Sidebar--open': isSideBarOpened },
             )}
           >
-            {sideBarOpened && (
+            {isSideBarOpened && (
               <div className="tile is-child box is-success ">
                 <PostDetails
                   currentPost={currentPost}
                   comments={comments}
-                  loadingComments={loadingComments}
+                  isLoadingComments={isLoadingComments}
                   commentsError={commentsError}
-                  newCommentForm={newCommentForm}
-                  setNewCommentForm={setNewCommentForm}
+                  isCommentFormOpened={isCommentFormOpened}
+                  setIsCommentFormOpened={setIsCommentFormOpened}
                   addComment={addComment}
-                  loadingComment={loadingComment}
+                  isLoadingComment={isLoadingComment}
                   deleteComment={deleteComment}
                 />
               </div>

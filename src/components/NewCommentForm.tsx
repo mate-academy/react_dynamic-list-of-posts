@@ -23,17 +23,17 @@ export const NewCommentForm: React.FC<Props> = ({
   const [inputCommentError, setInputCommentError] = useState(false);
 
   const changeInputName = (value: string) => {
-    setInputName(value);
+    setInputName(value.trim());
     setInputNameError(false);
   };
 
   const changeInputEmail = (value: string) => {
-    setInputEmail(value);
+    setInputEmail(value.trim());
     setInputEmailError(false);
   };
 
   const changeInputComment = (value: string) => {
-    setInputComment(value);
+    setInputComment(value.trim());
     setInputCommentError(false);
   };
 

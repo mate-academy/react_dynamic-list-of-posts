@@ -7,28 +7,28 @@ import { Post } from '../types/Post';
 type Props = {
   currentPost: Post | null;
   comments: Comment[] | null;
-  loadingComments: boolean;
+  isLoadingComments: boolean;
   commentsError: string;
-  newCommentForm: boolean;
-  setNewCommentForm: React.Dispatch<React.SetStateAction<boolean>>;
+  isCommentFormOpened: boolean;
+  setIsCommentFormOpened: React.Dispatch<React.SetStateAction<boolean>>;
   addComment: ({ name, email, body }: CommentData) => Promise<void>;
-  loadingComment: boolean;
+  isLoadingComment: boolean;
   deleteComment: (id: number) => void;
 };
 
 export const PostDetails: React.FC<Props> = ({
   currentPost,
   comments,
-  loadingComments,
+  isLoadingComments,
   commentsError,
-  newCommentForm,
-  setNewCommentForm,
+  isCommentFormOpened,
+  setIsCommentFormOpened,
   addComment,
-  loadingComment,
+  isLoadingComment,
   deleteComment,
 }) => {
   const showNewCommentForm = () => {
-    setNewCommentForm(true);
+    setIsCommentFormOpened(true);
   };
 
   return (
@@ -45,7 +45,7 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {loadingComments && <Loader />}
+          {isLoadingComments && <Loader />}
 
           {commentsError && (
             <div className="notification is-danger" data-cy="CommentsError">
@@ -59,21 +59,27 @@ export const PostDetails: React.FC<Props> = ({
             </p>
           )}
 
-          {!loadingComments && comments && comments.length > 0 && (
+          {!isLoadingComments && comments && comments.length > 0 && (
             <p className="title is-4">Comments:</p>)}
-          {comments && comments.length > 0 && !loadingComments && comments.map(
-            comment => (
-              <div key={comment.id}>
+          {comments
+          && comments.length > 0 && !isLoadingComments && comments.map(
+            ({
+              id,
+              name,
+              email,
+              body,
+            }) => (
+              <div key={id}>
                 <article
                   className="message is-small"
                   data-cy="Comment"
                 >
                   <div className="message-header">
                     <a
-                      href={`mailto:${comment.email}`}
+                      href={`mailto:${email}`}
                       data-cy="CommentAuthor"
                     >
-                      {comment.name}
+                      {name}
                     </a>
 
                     <button
@@ -81,21 +87,21 @@ export const PostDetails: React.FC<Props> = ({
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
-                      onClick={() => deleteComment(comment.id)}
+                      onClick={() => deleteComment(id)}
                     >
                       delete button
                     </button>
                   </div>
 
                   <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
+                    {body}
                   </div>
                 </article>
               </div>
             ),
           )}
 
-          {!loadingComments && !newCommentForm && (
+          {!isLoadingComments && !isCommentFormOpened && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -107,11 +113,11 @@ export const PostDetails: React.FC<Props> = ({
           )}
         </div>
 
-        {newCommentForm && (
+        {isCommentFormOpened && (
           <NewCommentForm
             addComment={addComment}
             postId={currentPost?.id}
-            loadingComment={loadingComment}
+            loadingComment={isLoadingComment}
           />
         )}
       </div>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import classNames from 'classnames';
 import { User } from '../types/User';
 
 type Props = {
@@ -56,7 +57,7 @@ export const UserSelector: React.FC<Props> = ({
               <a
                 href={`#user-${user.id}`}
                 key={user.id}
-                className={`dropdown-item ${selectedUser && selectedUser.id === user.id ? 'is-active' : ''}`}
+                className={classNames(`dropdown-item ${selectedUser && selectedUser.id === user.id ? 'is-active' : ''}`)}
                 onClick={() => handleUserSelect(user)}
               >
                 {user.name}

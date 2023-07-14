@@ -4,29 +4,29 @@ import { Post } from '../types/Post';
 type Props = {
   posts: Post[] | null;
   setSideBarOpened: React.Dispatch<React.SetStateAction<boolean>>;
-  sideBarOpened: boolean;
+  isSideBarOpened: boolean;
   loadComments: (post: Post) => Promise<void>;
-  setNewCommentForm: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsCommentFormOpened: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
   setSideBarOpened,
-  sideBarOpened,
+  isSideBarOpened,
   loadComments,
-  setNewCommentForm,
+  setIsCommentFormOpened,
 }) => {
   const [id, setId] = useState<number | null>(null);
 
   const openClick = (post?: Post, postId?: number) => {
     setSideBarOpened(true);
-    setNewCommentForm(false);
+    setIsCommentFormOpened(false);
 
     if (postId && post) {
       setId(postId);
       loadComments(post);
     } else {
-      setSideBarOpened(!sideBarOpened);
+      setSideBarOpened(!isSideBarOpened);
     }
   };
 
@@ -53,7 +53,7 @@ export const PostsList: React.FC<Props> = ({
               </td>
 
               <td className="has-text-right is-vcentered">
-                {sideBarOpened && post.id === id ? (
+                {isSideBarOpened && post.id === id ? (
                   <button
                     type="button"
                     data-cy="PostButton"
