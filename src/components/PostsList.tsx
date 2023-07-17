@@ -16,14 +16,14 @@ export const PostsList: React.FC<Props> = ({
   loadComments,
   setIsCommentFormOpened,
 }) => {
-  const [id, setId] = useState<number | null>(null);
+  const [currentId, setCurrentId] = useState<number | null>(null);
 
   const openClick = (post?: Post, postId?: number) => {
     setSideBarOpened(true);
     setIsCommentFormOpened(false);
 
     if (postId && post) {
-      setId(postId);
+      setCurrentId(postId);
       loadComments(post);
     } else {
       setSideBarOpened(!isSideBarOpened);
@@ -44,16 +44,21 @@ export const PostsList: React.FC<Props> = ({
         </thead>
 
         <tbody>
-          {posts && posts.map(post => (
-            <tr data-cy="Post" key={post.id}>
-              <td data-cy="PostId">{post.id}</td>
+          {posts && posts.map(({
+            id,
+            userId,
+            title,
+            body,
+          }) => (
+            <tr data-cy="Post" key={id}>
+              <td data-cy="PostId">{id}</td>
 
               <td data-cy="PostTitle">
-                {post.title}
+                {title}
               </td>
 
               <td className="has-text-right is-vcentered">
-                {isSideBarOpened && post.id === id ? (
+                {isSideBarOpened && id === currentId ? (
                   <button
                     type="button"
                     data-cy="PostButton"
@@ -67,7 +72,12 @@ export const PostsList: React.FC<Props> = ({
                     type="button"
                     data-cy="PostButton"
                     className="button is-link is-light"
-                    onClick={() => openClick(post, post.id)}
+                    onClick={() => openClick({
+                      id,
+                      userId,
+                      title,
+                      body,
+                    }, id)}
                   >
                     Open
                   </button>
