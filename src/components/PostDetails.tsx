@@ -17,6 +17,7 @@ type Props = {
     body: string,
   ) => void;
   handleDeleteComment: (commentId: number) => void;
+  isCommentsLoading: boolean;
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -27,6 +28,7 @@ export const PostDetails: React.FC<Props> = ({
   setCanWriteComment,
   handleAddNewComment,
   handleDeleteComment,
+  isCommentsLoading,
 }) => {
   return (
     <div className="content" data-cy="PostDetails">
@@ -40,7 +42,7 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {!comments && !isCommentError && <Loader />}
+          {isCommentsLoading && !isCommentError && <Loader />}
 
           {isCommentError && (
             <div className="notification is-danger" data-cy="CommentsError">
@@ -54,7 +56,7 @@ export const PostDetails: React.FC<Props> = ({
             </p>
           )}
 
-          {comments && comments?.length > 0 && (
+          {comments && !isCommentsLoading && (
             <>
               <p className="title is-4">Comments:</p>
               {comments.map((comment) => (

@@ -7,9 +7,14 @@ type Props = {
     event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
     user: User,
   ) => void;
+  selectedUser: User | null;
 };
 
-export const UserSelector: React.FC<Props> = ({ users, handleUserSelect }) => {
+export const UserSelector: React.FC<Props> = ({
+  users,
+  handleUserSelect,
+  selectedUser,
+}) => {
   const [isDropDownOpened, setIsDropDownOpened] = useState(false);
 
   return (
@@ -22,7 +27,7 @@ export const UserSelector: React.FC<Props> = ({ users, handleUserSelect }) => {
           aria-controls="dropdown-menu"
           onClick={() => setIsDropDownOpened(!isDropDownOpened)}
         >
-          <span>Choose a user</span>
+          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />

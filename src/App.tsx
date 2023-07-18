@@ -27,6 +27,7 @@ export const App: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
 
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isCommentError, setIsCommentError] = useState(false);
@@ -49,13 +50,18 @@ export const App: React.FC = () => {
   };
 
   const getCommentsFromServer = (postId: number) => {
+    setIsCommentsLoading(true);
+
     getComments(postId)
       .then((data) => {
         setComments(data);
         setIsCommentError(false);
       })
       .catch(() => setIsCommentError(true))
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        setIsLoading(false);
+        setIsCommentsLoading(false);
+      });
   };
 
   const handleUserSelect = (
@@ -66,6 +72,7 @@ export const App: React.FC = () => {
 
     getUserPostsFromServer(user.id);
     setSelectedUser(user);
+    setSelectedPost(null);
   };
 
   const handleSelectPost = (post: Post) => {
@@ -113,6 +120,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   users={users}
                   handleUserSelect={handleUserSelect}
+                  selectedUser={selectedUser}
                 />
               </div>
 
@@ -172,6 +180,7 @@ export const App: React.FC = () => {
                   setCanWriteComment={setCanWriteComment}
                   handleAddNewComment={handleAddNewComment}
                   handleDeleteComment={handleDeleteComment}
+                  isCommentsLoading={isCommentsLoading}
                 />
               )}
             </div>
