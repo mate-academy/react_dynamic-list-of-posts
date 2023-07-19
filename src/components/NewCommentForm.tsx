@@ -54,7 +54,8 @@ export const NewCommentForm: React.FC<Props> = ({
       setIsCommentTextError(false);
     }
 
-    if (name.trim().length
+    if (
+      name.trim().length
       && email.trim().length
       && commentText.trim().length
     ) {
@@ -88,7 +89,10 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': isNameError,
             })}
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.target.value);
+              setIsNameError(false);
+            }}
           />
 
           <span className="icon is-small is-left">
@@ -119,7 +123,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
@@ -127,7 +131,10 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': isEmailError,
             })}
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setIsEmailError(false);
+            }}
           />
 
           <span className="icon is-small is-left">
@@ -165,7 +172,10 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': isCommentTextError,
             })}
             value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
+            onChange={(e) => {
+              setCommentText(e.target.value);
+              setIsCommentTextError(false);
+            }}
           />
         </div>
 
