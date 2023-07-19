@@ -9,7 +9,7 @@ type Props = {
   selectedPost: Post | null;
   comments: Comment[];
   isCommentsError: boolean;
-  isLoader: boolean;
+  isLoading: boolean;
   isFormVisible: boolean;
   isDeleteError: boolean;
   onDelete: (commentId: number) => void;
@@ -21,7 +21,7 @@ export const PostDetails: React.FC<Props> = ({
   selectedPost,
   comments,
   isCommentsError,
-  isLoader,
+  isLoading,
   isFormVisible,
   isDeleteError,
   onDelete,
@@ -44,7 +44,7 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {isLoader && (
+          {isLoading && (
             <Loader />
           )}
 
@@ -54,13 +54,13 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           ) : (
             <>
-              {(!comments.length && !isLoader) && (
+              {(!comments.length && !isLoading) && (
                 <p className="title is-4" data-cy="NoCommentsMessage">
                   No comments yet
                 </p>
               )}
 
-              {(comments.length > 0 && !isLoader) && (
+              {(comments.length > 0 && !isLoading) && (
                 <p className="title is-4">Comments:</p>
               )}
 
@@ -103,7 +103,7 @@ export const PostDetails: React.FC<Props> = ({
                 </div>
               )}
 
-              {(!isLoader && !isFormVisible) && (
+              {(!isLoading && !isFormVisible) && (
                 <button
                   data-cy="WriteCommentButton"
                   type="button"

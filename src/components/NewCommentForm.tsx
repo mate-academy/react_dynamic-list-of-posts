@@ -20,7 +20,7 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost, onAdd }) => {
   };
 
   const [comment, setComment] = useState(initComment);
-  const [isButtonLoad, setIsButtonLoad] = useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [validationErrors, setValidationErrors] = useState({
     isName: true,
@@ -73,7 +73,7 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost, onAdd }) => {
 
     try {
       if (isFormValid) {
-        setIsButtonLoad(true);
+        setIsButtonLoading(true);
         const newComment = await addComment(comment);
 
         onAdd(newComment);
@@ -82,7 +82,7 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost, onAdd }) => {
     } catch {
       setIsError(true);
     } finally {
-      setIsButtonLoad(false);
+      setIsButtonLoading(false);
     }
   };
 
@@ -231,7 +231,7 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost, onAdd }) => {
             type="submit"
             className={classNames(
               'button is-link', {
-                'is-loading': isButtonLoad,
+                'is-loading': isButtonLoading,
               },
             )}
           >

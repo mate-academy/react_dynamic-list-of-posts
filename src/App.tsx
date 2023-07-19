@@ -17,15 +17,15 @@ import { Comment } from './types/Comment';
 import { ErrorMessage } from './types/ErrorMessage';
 
 export const App: React.FC = () => {
-  const [usersFromServer, setUseesFromServer] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [isUserLoader, setIsUserLoad] = useState(true);
+  const [isUserLoading, setIsUserLoading] = useState(true);
 
-  const [postsFromServer, setPostsFromServer] = useState<Post[] | null>(null);
+  const [posts, setPosts] = useState<Post[] | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const [comments, setCcomments] = useState<Comment[]>([]);
-  const [isCommentsLoader, setIsCommentsLoad] = useState(false);
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
 
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [apiErrors, setApiErrors] = useState({
@@ -88,9 +88,9 @@ export const App: React.FC = () => {
 
   const loadUsers = async () => {
     try {
-      const users = await getUsers();
+      const usersFromServer = await getUsers();
 
-      setUseesFromServer(users);
+      setUsers(usersFromServer);
     } catch {
       setApiErrors((prevState) => ({ ...prevState, userError: true }));
     }
@@ -98,26 +98,26 @@ export const App: React.FC = () => {
 
   const loadPosts = async () => {
     if (selectedUser) {
-      setIsUserLoad(true);
+      setIsUserLoading(true);
 
       setApiErrors((prevState) => ({ ...prevState, postError: false }));
       try {
-        const posts = await getPosts(selectedUser.id);
+        const postsFromServer = await getPosts(selectedUser.id);
 
-        setPostsFromServer(posts);
+        setPosts(postsFromServer);
       } catch {
         setApiErrors((prevState) => ({ ...prevState, postError: true }));
       } finally {
-        setIsUserLoad(false);
+        setIsUserLoading(false);
       }
     }
   };
 
-  const LoadComments = async () => {
+  const loadComments = async () => {
     if (selectedPost) {
       setApiErrors((prevState) => ({ ...prevState, commentsError: false }));
 
-      setIsCommentsLoad(true);
+      setIsCommentsLoading(true);
       setCcomments([]);
 
       try {
@@ -127,7 +127,7 @@ export const App: React.FC = () => {
       } catch {
         setApiErrors((prevState) => ({ ...prevState, commentsError: true }));
       } finally {
-        setIsCommentsLoad(false);
+        setIsCommentsLoading(false);
       }
     }
   };
@@ -141,7 +141,7 @@ export const App: React.FC = () => {
   }, [selectedUser]);
 
   useEffect(() => {
-    LoadComments();
+    loadComments();
   }, [selectedPost]);
 
   return (
@@ -152,7 +152,7 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  users={usersFromServer}
+                  users={users}
                   selectedUser={selectedUser}
                   onUserSelect={handleSelectUser}
                 />
@@ -176,7 +176,7 @@ export const App: React.FC = () => {
 
                 {selectedUser && (
                   <>
-                    {isUserLoader && (
+                    {isUserLoading && (
                       <Loader />
                     )}
 
@@ -189,9 +189,7 @@ export const App: React.FC = () => {
                       </div>
                     ) : (
                       <>
-                        {!isUserLoader
-                          && postsFromServer
-                          && !postsFromServer.length
+                        {!isUserLoading && !posts?.length
                           && (
                             <div
                               className="notification is-warning"
@@ -200,16 +198,13 @@ export const App: React.FC = () => {
                               No posts yet
                             </div>
                           )}
-                        {!isUserLoader
-                          && postsFromServer
-                          && postsFromServer.length > 0
-                          && (
-                            <PostsList
-                              posts={postsFromServer}
-                              selectedPost={selectedPost}
-                              onPostSelect={handleSelectPost}
-                            />
-                          )}
+                        {!isUserLoading && !!posts?.length && (
+                          <PostsList
+                            posts={posts}
+                            selectedPost={selectedPost}
+                            onPostSelect={handleSelectPost}
+                          />
+                        )}
                       </>
                     )}
                   </>
@@ -235,7 +230,7 @@ export const App: React.FC = () => {
                   selectedPost={selectedPost}
                   comments={comments}
                   isCommentsError={commentsError}
-                  isLoader={isCommentsLoader}
+                  isLoading={isCommentsLoading}
                   isFormVisible={isFormVisible}
                   isDeleteError={deleteCommentError}
                   onDelete={removeComment}
