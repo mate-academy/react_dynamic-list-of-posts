@@ -1,35 +1,88 @@
-import React from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import classNames from 'classnames';
+import { useUsers } from '../types/useUsers';
+import { DropdownTrigger } from '../common/DropdownTrigger';
+import { UserListItem } from '../common/UserListItem';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  handleSelectUser: (id: number) => void;
+  selectedUserId: number;
+};
+
+export const UserSelector: React.FC<Props> = ({
+  handleSelectUser,
+  selectedUserId,
+}) => {
+  const { users, isError } = useUsers();
+  const [showUsers, setShowUsers] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (wrapperRef.current
+      && !wrapperRef.current.contains(event.target as Node)) {
+      setShowUsers(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [handleClickOutside]);
+
+  const handleLoadUsers = () => {
+    setShowUsers(prev => !prev);
+  };
+
+  const handleChangeUser = (newUserId: number) => {
+    setShowUsers(false);
+    handleSelectUser(newUserId);
+  };
+
+  const selectedUserName = users.find(user => user.id === selectedUserId)?.name;
+
+  if (isError) {
+    return (
+      <div className="notification is-danger">
+        Something went wrong!
+      </div>
+    );
+  }
+
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      ref={wrapperRef}
+      className={classNames('dropdown', {
+        'is-active': showUsers,
+      })}
     >
-      <div className="dropdown-trigger">
-        <button
-          type="button"
-          className="button"
-          aria-haspopup="true"
-          aria-controls="dropdown-menu"
-        >
-          <span>Choose a user</span>
+      <DropdownTrigger
+        onClick={handleLoadUsers}
+        selectedUserName={selectedUserName}
+      />
 
-          <span className="icon is-small">
-            <i className="fas fa-angle-down" aria-hidden="true" />
-          </span>
-        </button>
-      </div>
-
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+      {showUsers && (
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div className="dropdown-content">
+            {users.map(user => (
+              <UserListItem
+                key={user.id}
+                user={user}
+                selected={selectedUserId === user.id}
+                onClick={handleChangeUser}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

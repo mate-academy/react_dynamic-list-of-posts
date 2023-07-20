@@ -1,118 +1,133 @@
-import React from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
+import { Comment, CommentData } from '../types/Comment';
+import { Post } from '../types/Post';
+import { getComments, deleteComment, addComment } from '../utils/serverHelper';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { CommentsList } from '../common/CommentsList';
+import { NoCommentsMessage } from '../common/NoCommentsMessage';
+import { CommentError } from '../common/CommentError';
 
-export const PostDetails: React.FC = () => {
+type Props = {
+  post: Post | null;
+  postSelected: Post | null;
+};
+
+export const PostDetails: React.FC<Props> = ({ post, postSelected }) => {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isLoaderVisible, setIsLoaderVisible] = useState(false);
+  const [isNewFormVisible, setIsNewFormVisible] = useState(false);
+  const [isCommentErrorVisible, setIsCommentErrorVisible] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [isNewCommentLoading, setIsNewCommentLoading] = useState(false);
+
+  useEffect(() => {
+    const loadComments = async (selectedPost: Post) => {
+      setIsLoaderVisible(true);
+
+      try {
+        const commentsFromServer = await getComments(selectedPost.id);
+
+        setComments(commentsFromServer);
+        setIsCommentErrorVisible(false);
+        setIsNewFormVisible(false);
+      } catch {
+        setIsCommentErrorVisible(true);
+      } finally {
+        setIsLoaderVisible(false);
+      }
+    };
+
+    if (post !== null) {
+      loadComments(post);
+    }
+  }, [post]);
+
+  const handleOnDelete = async (id: number) => {
+    if (post === null) {
+      return;
+    }
+
+    try {
+      await deleteComment(id);
+
+      setComments(prevComments => prevComments
+        .filter(comment => comment.id !== id));
+    } catch {
+      setHasError(true);
+    }
+  };
+
+  const handleOnAdd = async (newComment: CommentData) => {
+    const preparedComment = { ...newComment, postId: post?.id };
+
+    setIsNewCommentLoading(true);
+
+    try {
+      const comment = await addComment(preparedComment);
+
+      setComments(prevComments => [...prevComments, comment]);
+      setIsNewFormVisible(false);
+    } catch {
+      setHasError(true);
+    } finally {
+      setIsNewCommentLoading(false);
+    }
+  };
+
+  const handleShowNewForm = () => {
+    setIsNewFormVisible(true);
+  };
+
+  const isCommentsVisible = useMemo(() => comments.length > 0
+  && !isLoaderVisible, [comments, isLoaderVisible]);
+  const isNoComments = useMemo(() => comments.length === 0
+  && !isLoaderVisible
+  && !isCommentErrorVisible,
+  [comments, isLoaderVisible, isCommentErrorVisible]);
+
+  if (hasError) {
+    return <CommentError />;
+  }
+
   return (
-    <div className="content" data-cy="PostDetails">
+    <>
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
-          </h2>
-
-          <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
-          </p>
+          <h2 data-cy="PostTitle">{`#${post?.id}: ${post?.title}`}</h2>
+          <p data-cy="PostBody">{post?.body}</p>
         </div>
 
         <div className="block">
-          <Loader />
-
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
+          {isLoaderVisible && <Loader />}
+          {isCommentErrorVisible && <CommentError />}
+          {isNoComments && <NoCommentsMessage />}
+          {isCommentsVisible
+          && (
+            <CommentsList
+              comments={comments}
+              onDeleteComment={handleOnDelete}
+            />
+          )}
+          {isNewFormVisible && (
+            <NewCommentForm
+              handleOnAdd={handleOnAdd}
+              isNewCommentLoading={isNewCommentLoading}
+              postSelected={postSelected}
+            />
+          )}
+          {!isNewFormVisible && isCommentsVisible && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={handleShowNewForm}
             >
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+              Write a comment
+            </button>
+          )}
         </div>
-
-        <NewCommentForm />
       </div>
-    </div>
+    </>
   );
 };
