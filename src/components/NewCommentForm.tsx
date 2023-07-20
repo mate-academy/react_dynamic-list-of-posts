@@ -11,21 +11,24 @@ type Props = {
   ) => Promise<void>
 };
 
+const initialValue = {
+  name: '',
+  email: '',
+  body: '',
+};
+
+const initialError = {
+  name: false,
+  email: false,
+  body: false,
+};
+
 export const NewCommentForm: React.FC<Props> = ({
   postId, addComment,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [value, setValue] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
-
-  const [isError, setIsError] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
+  const [value, setValue] = useState(initialValue);
+  const [isError, setIsError] = useState(initialError);
 
   const handleOnSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -39,7 +42,10 @@ export const NewCommentForm: React.FC<Props> = ({
         });
       } else {
         setIsLoading(true);
-        await addComment(value.name, value.email, value.body, postId);
+        await addComment(value.name,
+          value.email,
+          value.body,
+          postId);
         setValue(current => ({ ...current, body: '' }));
       }
     } catch (error) {
@@ -50,25 +56,13 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const clearComment = () => {
-    setIsError({
-      name: false,
-      email: false,
-      body: false,
-    });
-    setValue({
-      name: '',
-      email: '',
-      body: '',
-    });
+    setIsError(initialError);
+    setValue(initialValue);
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement
-  | HTMLTextAreaElement>) => {
-    setIsError({
-      name: false,
-      email: false,
-      body: false,
-    });
+    | HTMLTextAreaElement>) => {
+    setIsError(initialError);
 
     setValue(current => {
       const { value: fieldValue, name: fieldName } = event.target;
