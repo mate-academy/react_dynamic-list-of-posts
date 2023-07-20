@@ -61,7 +61,7 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement
-    | HTMLTextAreaElement>) => {
+  | HTMLTextAreaElement>) => {
     setIsError(initialError);
 
     setValue(current => {
