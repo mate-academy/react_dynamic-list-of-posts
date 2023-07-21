@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 
@@ -14,7 +14,15 @@ export const UserSelector: React.FC<Props> = ({
   selectedUserId,
 }) => {
   const [isActive, setIsActive] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const selectUserName = users.find(user => (user.id === selectedUserId))?.name;
+
+  const handleOnBlur = (event: MouseEvent) => {
+    if (menuRef.current
+      && !menuRef.current.contains(event.target as HTMLElement)) {
+      setIsActive(false);
+    }
+  };
 
   const handleOpenListUsers = () => {
     setIsActive(!isActive);
@@ -24,6 +32,14 @@ export const UserSelector: React.FC<Props> = ({
     onLoadPosts(id);
     setIsActive(false);
   };
+
+  useEffect(() => {
+    document.addEventListener('click', handleOnBlur);
+
+    return () => {
+      document.removeEventListener('click', handleOnBlur);
+    };
+  }, []);
 
   return (
     <div
@@ -59,7 +75,10 @@ export const UserSelector: React.FC<Props> = ({
             <a
               key={user.id}
               href={`#user-${user.id}`}
-              className="dropdown-item"
+              className={classNames(
+                'dropdown-item',
+                { 'is-active': selectUserName === user.name },
+              )}
               onClick={() => hendleLoadPosts(user.id)}
             >
               {user.name}

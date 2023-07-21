@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 import { Post } from '../types/Post';
 
 interface Props {
@@ -37,7 +38,11 @@ export const PostsList: React.FC<Props> = ({
               <button
                 type="button"
                 data-cy="PostButton"
-                className="button is-link is-light"
+                className={classNames(
+                  'button',
+                  'is-link',
+                  { 'is-light': selectedPost !== post },
+                )}
                 onClick={() => onOpenSidebar(post)}
               >
                 {selectedPost === post
