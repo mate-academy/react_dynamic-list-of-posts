@@ -61,7 +61,37 @@ export const NewCommentForm: React.FC<Props> = ({
       comment: !comment,
     });
 
-    if (!name.trim() || !email.trim() || !comment.trim()) {
+    if (!name || !email || !comment) {
+      return;
+    }
+
+    if (!name.trim()) {
+      setErrorForm({
+        name: true,
+        email: false,
+        comment: false,
+      });
+
+      return;
+    }
+
+    if (!email.trim()) {
+      setErrorForm({
+        name: false,
+        email: true,
+        comment: false,
+      });
+
+      return;
+    }
+
+    if (!comment.trim()) {
+      setErrorForm({
+        name: false,
+        email: false,
+        comment: true,
+      });
+
       return;
     }
 
