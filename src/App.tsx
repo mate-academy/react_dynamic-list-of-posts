@@ -20,15 +20,15 @@ export const App: React.FC = () => {
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [errorType, setErrorType] = useState<ErrorMessage>(ErrorMessage.None);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [sidebarIsOpen, setSidebarIsOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     getUsers()
       .then(usersFromServer => setUsers(usersFromServer));
   }, []);
 
-  const hendleLoadPosts = async (userId: number) => {
-    setSidebarIsOpen(false);
+  const handleLoadPosts = async (userId: number) => {
+    setIsSidebarOpen(false);
     setSelectedPost(null);
     setUserPosts([]);
     setSelectedUserId(userId);
@@ -50,15 +50,15 @@ export const App: React.FC = () => {
     }
   };
 
-  const heldleOpenSidebar = (post: Post) => {
+  const handleOpenSidebar = (post: Post) => {
     if (post === selectedPost) {
       setSelectedPost(null);
-      setSidebarIsOpen(false);
+      setIsSidebarOpen(false);
 
       return;
     }
 
-    setSidebarIsOpen(true);
+    setIsSidebarOpen(true);
     setSelectedPost(post);
   };
 
@@ -71,7 +71,7 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  onLoadPosts={hendleLoadPosts}
+                  onLoadPosts={handleLoadPosts}
                   selectedUserId={selectedUserId}
                 />
               </div>
@@ -96,7 +96,7 @@ export const App: React.FC = () => {
                 )}
 
                 {(!isLoaling && !userPosts.length
-                && !errorType && !hendleLoadPosts)
+                && !errorType && !handleLoadPosts)
                 && (
                   <div
                     className="notification is-danger"
@@ -109,7 +109,7 @@ export const App: React.FC = () => {
                 {(!!userPosts.length && !isLoaling) && (
                   <PostsList
                     userPosts={userPosts}
-                    onOpenSidebar={heldleOpenSidebar}
+                    onOpenSidebar={handleOpenSidebar}
                     selectedPost={selectedPost}
                   />
                 )}
@@ -117,7 +117,7 @@ export const App: React.FC = () => {
               </div>
             </div>
           </div>
-          {sidebarIsOpen && (
+          {isSidebarOpen && (
             <div
               data-cy="Sidebar"
               className={classNames(

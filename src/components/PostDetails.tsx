@@ -110,6 +110,7 @@ export const PostDetails: React.FC<Props> = ({
                 >
                   {comment.name}
                 </a>
+
                 <button
                   data-cy="CommentDelete"
                   type="button"
@@ -126,15 +127,17 @@ export const PostDetails: React.FC<Props> = ({
               </div>
             </article>
           ))}
+          {(!formIsOpen && !isLoading) && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={handleOpenForm}
+            >
+              Write a comment
+            </button>
+          )}
 
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-            onClick={handleOpenForm}
-          >
-            Write a comment
-          </button>
         </div>
 
         {formIsOpen && (
