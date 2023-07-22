@@ -5,41 +5,56 @@ import React, {
   useState,
 } from 'react';
 import classNames from 'classnames';
-import { useUsers } from '../types/useUsers';
-import { DropdownTrigger } from '../common/DropdownTrigger';
-import { UserListItem } from '../common/UserListItem';
+import { User } from '../types/User';
+import { getUsers } from '../utils/serverHelper';
 
 type Props = {
-  handleSelectUser: (id: number) => void;
-  selectedUserId: number;
+  handleSelectUser: (id: number) => void,
+  selectedUserId: number,
 };
 
 export const UserSelector: React.FC<Props> = ({
   handleSelectUser,
   selectedUserId,
 }) => {
-  const { users, isError } = useUsers();
+  const [users, setUsers] = useState<User[]>([]);
+  const [isError, setIsError] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const handleClickOutside = useCallback((event: MouseEvent) => {
-    if (wrapperRef.current
-      && !wrapperRef.current.contains(event.target as Node)) {
-      setShowUsers(false);
+  const loadUsers = useCallback(async () => {
+    try {
+      const usersFromServer = await getUsers();
+
+      setUsers(usersFromServer);
+      setIsError(false);
+    } catch {
+      setIsError(true);
     }
   }, []);
 
   useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
+
+  const handleLoadUsers = () => {
+    setShowUsers(prevState => !prevState);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (wrapperRef.current
+        && !wrapperRef.current.contains(event.target as Node)) {
+        setShowUsers(false);
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [handleClickOutside]);
-
-  const handleLoadUsers = () => {
-    setShowUsers(prev => !prev);
-  };
+  }, [wrapperRef]);
 
   const handleChangeUser = (newUserId: number) => {
     setShowUsers(false);
@@ -47,14 +62,6 @@ export const UserSelector: React.FC<Props> = ({
   };
 
   const selectedUserName = users.find(user => user.id === selectedUserId)?.name;
-
-  if (isError) {
-    return (
-      <div className="notification is-danger">
-        Something went wrong!
-      </div>
-    );
-  }
 
   return (
     <div
@@ -64,25 +71,45 @@ export const UserSelector: React.FC<Props> = ({
         'is-active': showUsers,
       })}
     >
-      <DropdownTrigger
-        onClick={handleLoadUsers}
-        selectedUserName={selectedUserName}
-      />
-
-      {showUsers && (
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          <div className="dropdown-content">
-            {users.map(user => (
-              <UserListItem
-                key={user.id}
-                user={user}
-                selected={selectedUserId === user.id}
-                onClick={handleChangeUser}
-              />
-            ))}
-          </div>
+      <div className="dropdown-trigger">
+        <button
+          type="button"
+          className="button"
+          aria-haspopup="true"
+          aria-controls="dropdown-menu"
+          onClick={handleLoadUsers}
+        >
+          <span>
+            {selectedUserId ? selectedUserName : 'Choose a user'}
+          </span>
+          <span className="icon is-small">
+            <i className="fas fa-angle-down" aria-hidden="true" />
+          </span>
+        </button>
+      </div>
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        <div className="dropdown-content">
+          {isError && (
+            <div className="notification is-danger">
+              Something went wrong!
+            </div>
+          )}
+          {users.map(user => (
+            <a
+              href={`#user-${user.id}`}
+              className={classNames('dropdown-item', {
+                'is-active': selectedUserId === user.id,
+              })}
+              key={user.id}
+              onClick={() => {
+                handleChangeUser(user.id);
+              }}
+            >
+              {user.name}
+            </a>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 };

@@ -19,15 +19,21 @@ export const App: React.FC = () => {
   const [isPostDetailsVisible, setIsPostDetailsVisible] = useState(false);
   const [isSideBarVisible, setIsSideBarVisible] = useState(false);
   const [isPostErrorVisible, setIsPostErrorVisible] = useState(false);
+  const [isEmptyPostMessageVisible,
+    setIsEmptyPostMessageVisible] = useState(false);
 
   const loadPosts = async () => {
     setIsLoaderVisible(true);
+    setIsEmptyPostMessageVisible(false);
 
     try {
       const postsFromServer = await getPosts(selectedUserId);
 
       setPosts(postsFromServer);
       setIsPostErrorVisible(false);
+      if (postsFromServer.length === 0) {
+        setIsEmptyPostMessageVisible(true);
+      }
     } catch {
       setIsPostErrorVisible(true);
     } finally {
@@ -60,34 +66,6 @@ export const App: React.FC = () => {
     setIsSideBarVisible(false);
   };
 
-  let content: React.ReactNode;
-
-  if (selectedUserId === 0) {
-    content = <p data-cy="NoSelectedUser">No user selected</p>;
-  } else if (isPostErrorVisible) {
-    content = (
-      <div className="notification is-danger" data-cy="PostsLoadingError">
-        Something went wrong!
-      </div>
-    );
-  } else if (isLoaderVisible) {
-    content = <Loader />;
-  } else if (posts.length === 0) {
-    content = (
-      <div className="notification is-warning" data-cy="NoPostsYet">
-        No posts yet
-      </div>
-    );
-  } else {
-    content = (
-      <PostsList
-        posts={posts}
-        postSelected={postSelected}
-        handleSelectPost={handleSelectPost}
-      />
-    );
-  }
-
   return (
     <main className="section">
       <div className="container">
@@ -102,7 +80,34 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {content}
+                {selectedUserId === 0 && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
+
+                {isPostErrorVisible && posts.length === 0 && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
+
+                {isLoaderVisible && <Loader />}
+
+                {posts.length > 0 && !isLoaderVisible && (
+                  <PostsList
+                    posts={posts}
+                    postSelected={postSelected}
+                    handleSelectPost={handleSelectPost}
+                  />
+                )}
+
+                {isEmptyPostMessageVisible && !isLoaderVisible && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -118,11 +123,8 @@ export const App: React.FC = () => {
             )}
           >
             {isPostDetailsVisible && (
-              <div className="tile is-child box is-success ">
-                <PostDetails
-                  post={postSelected}
-                  postSelected={postSelected}
-                />
+              <div className="tile is-child box is-success">
+                <PostDetails post={postSelected} postSelected={postSelected} />
               </div>
             )}
           </div>
