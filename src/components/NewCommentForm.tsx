@@ -23,7 +23,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!name || !email || !body) {
+    if (!name.trim() || !email.trim() || !body.trim()) {
       setToShowErrors(true);
 
       return;
@@ -33,9 +33,9 @@ export const NewCommentForm: React.FC<Props> = ({
 
     client.post<Comment>('/comments', {
       postId: selectedPostId,
-      name,
-      email,
-      body,
+      name: name.trim(),
+      email: email.trim(),
+      body: body.trim(),
     })
       .then((newComment) => {
         if (!comments) {
@@ -77,7 +77,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', {
-              'is-danger': toShowErrors && !name,
+              'is-danger': toShowErrors && !name.trim(),
             })}
             value={name}
             onChange={(event) => setName(event.target.value)}
@@ -87,7 +87,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-user" />
           </span>
 
-          {toShowErrors && !name && (
+          {toShowErrors && !name.trim() && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -97,7 +97,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {toShowErrors && !name && (
+        {toShowErrors && !name.trim() && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -116,7 +116,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', {
-              'is-danger': toShowErrors && !email,
+              'is-danger': toShowErrors && !email.trim(),
             })}
             value={email}
             onChange={(event) => setEmail(event.target.value)}
@@ -126,7 +126,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-envelope" />
           </span>
 
-          {toShowErrors && !email && (
+          {toShowErrors && !email.trim() && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -136,7 +136,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {toShowErrors && !email && (
+        {toShowErrors && !email.trim() && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -154,14 +154,14 @@ export const NewCommentForm: React.FC<Props> = ({
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', {
-              'is-danger': toShowErrors && !body,
+              'is-danger': toShowErrors && !body.trim(),
             })}
             value={body}
             onChange={(event) => setBody(event.target.value)}
           />
         </div>
 
-        {toShowErrors && !body && (
+        {toShowErrors && !body.trim() && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
