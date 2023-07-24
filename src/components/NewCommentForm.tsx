@@ -65,7 +65,7 @@ export const NewCommentForm: React.FC<Props> = ({
         await handleAddNewComment(selectedPostId, name, email, commentText);
         setCommentText('');
       } catch {
-        throw new Error();
+        throw new Error('Unable to submit form');
       } finally {
         setIsLoading(false);
       }

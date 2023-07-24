@@ -34,7 +34,9 @@ export const App: React.FC = () => {
   const [canWriteComment, setCanWriteComment] = useState(false);
 
   useEffect(() => {
-    getUsers().then(setUsers);
+    getUsers()
+      .then((userFromServer: User[]) => setUsers(userFromServer))
+      .catch(() => setIsCommentError(true));
   }, []);
 
   const getUserPostsFromServer = (userId: number) => {
@@ -107,7 +109,8 @@ export const App: React.FC = () => {
       = comments.filter(comment => comment.id !== commentId);
 
     setComments(filteredComments);
-    deleteComment(commentId);
+    deleteComment(commentId)
+      .catch(() => setIsCommentError(true))
   };
 
   return (
