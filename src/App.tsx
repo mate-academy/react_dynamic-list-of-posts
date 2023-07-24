@@ -110,7 +110,7 @@ export const App: React.FC = () => {
 
     setComments(filteredComments);
     deleteComment(commentId)
-      .catch(() => setIsCommentError(true))
+      .catch(() => setIsCommentError(true));
   };
 
   return (
