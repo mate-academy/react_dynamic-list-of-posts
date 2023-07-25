@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
 
 type Props = {
@@ -8,11 +8,12 @@ type Props = {
 };
 
 export const UserSelector: React.FC<Props> = ({ users, onChange }) => {
-  const [menuOpened, setMenuOpened] = useState<boolean>(false);
+  const [isMenuOpened, setIsMenuOpened] = useState<boolean>(false);
   const [currUser, setCurrUser] = useState<string>('Choose a user');
+  const selectRef = useRef(null);
 
   const handleDropdownMenu = () => {
-    setMenuOpened(state => !state);
+    setIsMenuOpened(state => !state);
   };
 
   const handleChooseUser = (user: User) => {
@@ -21,22 +22,27 @@ export const UserSelector: React.FC<Props> = ({ users, onChange }) => {
     onChange(user);
   };
 
-  const handleWindowClick = () => {
-    const dropdownMenu = document.querySelector('.dropdown');
-
-    dropdownMenu?.addEventListener('blur', () => {
-      handleDropdownMenu();
-    });
+  const handleClickOutside = (event: MouseEvent) => {
+    if (event.target !== selectRef.current && isMenuOpened) {
+      setIsMenuOpened(false);
+    }
   };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isMenuOpened]);
 
   return (
     <div
       data-cy="UserSelector"
       className={classNames('dropdown', {
-        'is-active': menuOpened,
+        'is-active': isMenuOpened,
       })}
       role="presentation"
-      onClick={() => handleWindowClick}
     >
       <div className="dropdown-trigger">
         <button
@@ -63,7 +69,9 @@ export const UserSelector: React.FC<Props> = ({ users, onChange }) => {
               <a
                 key={id}
                 href={`#user-${id}`}
-                className="dropdown-item"
+                className={classNames('dropdown-item', {
+                  'is-active': name === currUser,
+                })}
                 onClick={() => handleChooseUser(user)}
               >
                 {name}

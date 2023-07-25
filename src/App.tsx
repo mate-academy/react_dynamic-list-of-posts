@@ -16,6 +16,7 @@ export const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isDataLoading, setIsDataLoading] = useState<boolean>(false);
   const [isErrorOccured, setIsErrorOccured] = useState<boolean>(false);
+  const noPostsYet = selectedUser && !isDataLoading && !isErrorOccured;
 
   useEffect(() => {
     postService.getUsers()
@@ -73,8 +74,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUser && !isDataLoading
-                  && !isErrorOccured && posts.length === 0 && (
+                { noPostsYet && posts.length === 0 && (
                   <div
                     className="notification is-warning"
                     data-cy="NoPostsYet"
@@ -93,22 +93,22 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {!!selectedPost?.id && (
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                { 'Sidebar--open': selectedPost },
-              )}
-            >
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': selectedPost?.id },
+            )}
+          >
+            {selectedPost?.id && (
               <div className="tile is-child box is-success ">
                 <PostDetails post={selectedPost} />
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </main>

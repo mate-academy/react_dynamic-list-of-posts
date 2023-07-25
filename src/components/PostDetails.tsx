@@ -15,6 +15,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [isDataLoading, setIsDataLoading] = useState<boolean>(false);
   const [isErrorOccured, setIsErrorOccured] = useState<boolean>(false);
   const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
+  const isNoComment = !isDataLoading && !isErrorOccured && !comments.length;
+  const writeCommentButton = !isDataLoading && !isErrorOccured && !isFormOpened;
 
   useEffect(() => {
     setComments([]);
@@ -38,12 +40,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   };
 
   const handleDeleteButton = (currentId: number) => {
-    postService.deleteComment(currentId)
-      .then(() => {
-        setComments(prevComments => prevComments.filter(
-          comment => comment.id !== currentId,
-        ));
-      });
+    setComments(prevComments => prevComments.filter(
+      comment => comment.id !== currentId,
+    ));
+    postService.deleteComment(currentId);
   };
 
   return (
@@ -71,8 +71,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </div>
           )}
 
-          {!isDataLoading && !isErrorOccured
-            && comments.length === 0 && (
+          {isNoComment && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -82,39 +81,48 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             <>
               <p className="title is-4">Comments:</p>
 
-              {comments.map((comment: Comment) => (
-                <article
-                  className="message is-small"
-                  data-cy="Comment"
-                  key={comment.id}
-                >
-                  <div className="message-header">
-                    <a
-                      href={`mailto:${comment.email}`}
-                      data-cy="CommentAuthor"
-                    >
-                      {comment.name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => handleDeleteButton(comment.id)}
-                    >
-                      delete button
-                    </button>
-                  </div>
+              {comments.map((comment: Comment) => {
+                const {
+                  id: commentId,
+                  body: commentBody,
+                  name,
+                  email,
+                } = comment;
 
-                  <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
-                  </div>
-                </article>
-              ))}
+                return (
+                  <article
+                    className="message is-small"
+                    data-cy="Comment"
+                    key={commentId}
+                  >
+                    <div className="message-header">
+                      <a
+                        href={`mailto:${email}`}
+                        data-cy="CommentAuthor"
+                      >
+                        {name}
+                      </a>
+                      <button
+                        data-cy="CommentDelete"
+                        type="button"
+                        className="delete is-small"
+                        aria-label="delete"
+                        onClick={() => handleDeleteButton(commentId)}
+                      >
+                        delete button
+                      </button>
+                    </div>
+
+                    <div className="message-body" data-cy="CommentBody">
+                      {commentBody}
+                    </div>
+                  </article>
+                );
+              })}
             </>
           )}
 
-          {!isDataLoading && !isErrorOccured && (
+          { writeCommentButton && (
             <button
               data-cy="WriteCommentButton"
               type="button"

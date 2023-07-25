@@ -20,6 +20,10 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
     setName('');
     setEmail('');
     setText('');
+
+    setIsNamePresent(true);
+    setIsEmailPresent(true);
+    setIsTextPresent(true);
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -32,8 +36,8 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
     if (name && email && text) {
       setIsLoading(true);
       addNewComment({ name, email, body: text })
-        .then(handleReset)
-        .finally(() => setIsLoading(false));
+        .then(() => setIsLoading(false))
+        .finally(() => setText(''));
     }
   };
 
@@ -53,10 +57,11 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
             className={classNames('input', {
               'is-danger': !isNamePresent,
             })}
+            value={name}
             onChange={(e) => {
               setName(e.target.value);
             }}
-            value={name}
+            onBlur={() => setName(name.trim())}
           />
 
           <span className="icon is-small is-left">
@@ -94,10 +99,11 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
             className={classNames('input', {
               'is-danger': !isEmailPresent,
             })}
+            value={email}
             onChange={(e) => {
               setEmail(e.target.value);
             }}
-            value={email}
+            onBlur={() => setEmail(email.trim())}
           />
 
           <span className="icon is-small is-left">
@@ -134,10 +140,11 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
             className={classNames('textarea', {
               'is-danger': !isTextPresent,
             })}
+            value={text}
             onChange={(e) => {
               setText(() => e.target.value);
             }}
-            value={text}
+            onBlur={() => setText(text.trim())}
           />
         </div>
 
