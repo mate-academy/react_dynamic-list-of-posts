@@ -105,12 +105,13 @@ export const App: React.FC = () => {
   };
 
   const handleDeleteComment = (commentId: number) => {
-    const filteredComments
-      = comments.filter(comment => comment.id !== commentId);
-
-    setComments(filteredComments);
     deleteComment(commentId)
-      .catch(() => setIsCommentError(true));
+      .then(() => {
+        const filteredComments
+          = comments.filter(comment => comment.id !== commentId);
+
+        setComments(filteredComments);
+      });
   };
 
   return (
