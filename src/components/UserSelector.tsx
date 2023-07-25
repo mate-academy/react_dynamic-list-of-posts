@@ -1,6 +1,62 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getUsers } from '../api/users';
+import { Post } from '../types/Post';
+import { User } from '../types/User';
+import { UserOption } from './UserOption/UserOption';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  selectedId: number | null;
+  setSelectedUser: (user: User | null) => void;
+  loadPosts: (id: number) => void;
+  setIsLoading: (value: boolean) => void;
+  setError: (error: string) => void;
+  selectedUser: User | null;
+  setSelectedPost: (post: Post | null) => void;
+};
+
+export const UserSelector: React.FC<Props> = ({
+  selectedId,
+  setSelectedUser,
+  loadPosts,
+  setIsLoading,
+  setError,
+  selectedUser,
+  setSelectedPost,
+}) => {
+  const [users, setUsers] = useState<User[] | null>(null);
+  const [isSelectOpen, setIsSelectOpen] = useState(false);
+
+  useEffect(() => {
+    if (isSelectOpen) {
+      setIsLoading(true);
+
+      getUsers()
+        .then(data => {
+          setUsers(data);
+        })
+        .catch(() => {
+          setError(
+            'User can\'t be selected. Please, check internet connection',
+          );
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [isSelectOpen]);
+
+  const selectUserHandler = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    user: User,
+  ) => {
+    e.preventDefault();
+
+    setSelectedPost(null);
+    setSelectedUser(user);
+    setIsSelectOpen(false);
+    loadPosts(user.id);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -12,8 +68,11 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setIsSelectOpen(!isSelectOpen)}
         >
-          <span>Choose a user</span>
+          <span>
+            {selectedUser?.name || 'Choose a user'}
+          </span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -21,15 +80,19 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+      {isSelectOpen && (
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div className="dropdown-content">
+            {users?.length && users.map(user => (
+              <UserOption
+                user={user}
+                selectedId={selectedId}
+                selectUserHandler={selectUserHandler}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
