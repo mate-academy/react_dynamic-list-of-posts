@@ -36,7 +36,7 @@ export const UserSelector: React.FC<Props> = ({
         })
         .catch(() => {
           setError(
-            'User can\'t be selected. Please, check internet connection'
+            'User can\'t be selected. Please, check internet connection',
           );
         })
         .finally(() => {

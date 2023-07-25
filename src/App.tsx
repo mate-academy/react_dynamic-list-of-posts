@@ -11,8 +11,8 @@ import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { Post } from './types/Post';
 import { getPost, getPosts } from './api/posts';
-import { 
-  ErrorsNotification 
+import {
+  ErrorsNotification,
 } from './components/ErrorsNotification/ErrorsNotification';
 
 export const App: React.FC = () => {
