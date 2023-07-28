@@ -137,7 +137,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
         {isFormOpened && (
           <NewCommentForm
-            addNewComment={(newComment) => handleAddNewComment(newComment)}
+            addNewComment={handleAddNewComment}
           />
         )}
       </div>

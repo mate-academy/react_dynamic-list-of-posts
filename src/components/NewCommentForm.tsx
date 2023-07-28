@@ -5,21 +5,22 @@ import { CommentData } from '../types/Comment';
 type Props = {
   addNewComment: (newComment: CommentData) => Promise<void>
 };
+const emptyComment = {
+  name: '',
+  email: '',
+  text: '',
+};
 
 export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
-  const [name, setName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [text, setText] = useState<string>('');
-
   const [isNamePresent, setIsNamePresent] = useState<boolean>(true);
   const [isEmailPresent, setIsEmailPresent] = useState<boolean>(true);
   const [isTextPresent, setIsTextPresent] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [comment, setComment] = useState(emptyComment);
+  const { name, email, text } = comment;
 
   const handleReset = () => {
-    setName('');
-    setEmail('');
-    setText('');
+    setComment(emptyComment);
 
     setIsNamePresent(true);
     setIsEmailPresent(true);
@@ -37,7 +38,7 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
       setIsLoading(true);
       addNewComment({ name, email, body: text })
         .then(() => setIsLoading(false))
-        .finally(() => setText(''));
+        .finally(() => setComment(prevValue => ({ ...prevValue, text: '' })));
     }
   };
 
@@ -59,9 +60,8 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
             })}
             value={name}
             onChange={(e) => {
-              setName(e.target.value);
+              setComment(prevValue => ({ ...prevValue, name: e.target.value }));
             }}
-            onBlur={() => setName(name.trim())}
           />
 
           <span className="icon is-small is-left">
@@ -101,9 +101,10 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
             })}
             value={email}
             onChange={(e) => {
-              setEmail(e.target.value);
+              setComment(
+                prevValue => ({ ...prevValue, email: e.target.value }),
+              );
             }}
-            onBlur={() => setEmail(email.trim())}
           />
 
           <span className="icon is-small is-left">
@@ -142,9 +143,8 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
             })}
             value={text}
             onChange={(e) => {
-              setText(() => e.target.value);
+              setComment(prevValue => ({ ...prevValue, text: e.target.value }));
             }}
-            onBlur={() => setText(text.trim())}
           />
         </div>
 
