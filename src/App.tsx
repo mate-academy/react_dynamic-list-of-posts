@@ -1,15 +1,26 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-
 import classNames from 'classnames';
+import { UserSelector } from './components/UserSelector';
+import {
+  ErrorContext,
+  PostDataContext,
+  PostsContext,
+  UserIdContext,
+} from './components/UserContext/UserContext';
+import { Loader } from './components/Loader';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
 
 export const App: React.FC = () => {
+  const { isLoadingPosts } = useContext(ErrorContext);
+  const { isError } = useContext(ErrorContext);
+  const { userId } = useContext(UserIdContext);
+  const posts = useContext(PostsContext);
+  const postDetails = useContext(PostDataContext);
+
   return (
     <main className="section">
       <div className="container">
@@ -21,42 +32,56 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!userId && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
+                {isError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <Loader />
+                {isLoadingPosts ? <Loader /> : (
+                  <>
+                    {(posts?.length > 0 && userId && !isError) && (
+                      <PostsList />
+                    )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
-
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                    {(posts?.length === 0 && userId && !isError) && (
+                      <div
+                        className="notification is-warning"
+                        data-cy="NoPostsYet"
+                      >
+                        No posts yet
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
+          {postDetails.postData && (
+            <div
+              data-cy="Sidebar"
+              className={classNames(
+                'tile',
+                'is-parent',
+                'is-8-desktop',
+                'Sidebar',
+                'Sidebar--open',
+              )}
+            >
+              <div className="tile is-child box is-success ">
+                <PostDetails />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </main>

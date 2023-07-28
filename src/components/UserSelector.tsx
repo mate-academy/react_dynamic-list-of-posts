@@ -1,6 +1,23 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
+import { UserContext, UserIdContext } from './UserContext/UserContext';
+import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
+  const users = useContext(UserContext);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const userIdContext = useContext(UserIdContext);
+
+  const handleMenu = () => {
+    setIsOpen(prev => !prev);
+  };
+
+  const handleUserId
+    = (userId: User) => {
+      userIdContext.handleUserSelect(userId);
+      handleMenu();
+    };
+
   return (
     <div
       data-cy="UserSelector"
@@ -12,8 +29,13 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={handleMenu}
         >
-          <span>Choose a user</span>
+          {userIdContext.userId ? (
+            <span>{userIdContext.userId.name}</span>
+          ) : (
+            <span>Choose a user</span>
+          )}
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -23,11 +45,16 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+          {isOpen && (users?.map(user => (
+            <a
+              href={`#user-${user.id}`}
+              className="dropdown-item"
+              key={user.id}
+              onClick={() => handleUserId(user)}
+            >
+              {user.name}
+            </a>
+          )))}
         </div>
       </div>
     </div>
