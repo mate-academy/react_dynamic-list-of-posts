@@ -60,7 +60,6 @@ export const NewCommentForm: React.FC<Props> = ({
       })
       .catch(() => {
         setErrorMessage('Cannot create a new comment.');
-        throw new Error('Cannot create a new comment.');
       })
       .finally(() => setLoading(false));
   }

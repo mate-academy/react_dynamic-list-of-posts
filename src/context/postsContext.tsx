@@ -2,7 +2,6 @@ import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { Post } from '../types/Post';
 import { getUsers } from '../api/users.api';
 import { User } from '../types/User';
-// import { getPosts } from '../api/posts.api';
 
 interface PostsProps {
   posts: Post[];
@@ -42,7 +41,6 @@ export const PostsProvider: React.FC<PropsWithChildren<{}>> = ({
       .then(setUsers)
       .catch(() => {
         setErrorMessage('Cannot load data.');
-        throw new Error('Cannot load data.');
       });
   }, []);
 

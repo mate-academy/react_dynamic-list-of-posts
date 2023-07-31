@@ -22,14 +22,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       .then(setComments)
       .catch(() => {
         setErrorMessage('Cannot load comments.');
-        throw new Error('Cannot load comments.');
       })
       .finally(() => setLoading(false));
   }, [post]);
 
   function onCommentDelete(commentId: number) {
-    setLoading(true);
-
     setComments(prev => prev.filter(
       comment => comment.id !== commentId,
     ));
@@ -37,9 +34,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     deleteComment(commentId)
       .catch(() => {
         setErrorMessage('Cannot delete a comment.');
-        throw new Error('Cannot delete a comment.');
-      })
-      .finally(() => setLoading(false));
+      });
   }
 
   useEffect(() => {
@@ -111,30 +106,30 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   ))}
                 </>
               )}
+
+              {!createNewComment && !errorMessage && (
+                <button
+                  data-cy="WriteCommentButton"
+                  type="button"
+                  className="button is-link"
+                  onClick={() => setCreateNewComment(true)}
+                >
+                  Write a comment
+                </button>
+              )}
+
+              {createNewComment && (
+                <NewCommentForm
+                  postId={post.id}
+                  setErrorMessage={setErrorMessage}
+                  setComments={(newComment) => setComments(
+                    prev => [...prev, newComment],
+                  )}
+                />
+              )}
             </>
           )}
-
-          {!createNewComment && (
-            <button
-              data-cy="WriteCommentButton"
-              type="button"
-              className="button is-link"
-              onClick={() => setCreateNewComment(true)}
-            >
-              Write a comment
-            </button>
-          )}
         </div>
-
-        {createNewComment && (
-          <NewCommentForm
-            postId={post.id}
-            setErrorMessage={setErrorMessage}
-            setComments={(newComment) => setComments(
-              prev => [...prev, newComment],
-            )}
-          />
-        )}
       </div>
     </div>
   );

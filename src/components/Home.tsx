@@ -24,6 +24,7 @@ export const Home: React.FC = () => {
       return;
     }
 
+    setErrorMessage('');
     setLoading(true);
 
     getPostsByUserId(selectedUser.id)
@@ -32,7 +33,6 @@ export const Home: React.FC = () => {
       })
       .catch(() => {
         setErrorMessage('Cannot load posts.');
-        throw new Error('Cannot load posts.');
       })
       .finally(() => setLoading(false));
   }, [selectedUser]);
