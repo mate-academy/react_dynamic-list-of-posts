@@ -12,7 +12,7 @@ export const getPosts = (userId: number) => {
 };
 
 export const getComments = (postId: number) => {
-  return client.get<Comment[]>(`comments?postId=${postId}`);
+  return client.get<Comment[]>(`/comments?postId=${postId}`);
 };
 
 export function deleteComment(commentId: number) {

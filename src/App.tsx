@@ -31,11 +31,15 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     setIsLoading(true);
+    setSelectedPost(null);
+    setPosts([]);
 
     if (selectedUser) {
       postService.getPosts(selectedUser?.id)
         .then(setPosts)
-        .finally(() => setIsLoading(false));
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   }, [selectedUser]);
 
@@ -62,7 +66,7 @@ export const App: React.FC = () => {
 
                 {selectedUser && isLoading && (<Loader />)}
 
-                {error && (
+                {!isLoading && error && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -96,11 +100,13 @@ export const App: React.FC = () => {
                 'is-parent',
                 'is-8-desktop',
                 'Sidebar',
-                'Sidebar--open',
+                { 'Sidebar--open': selectedPost },
               )}
             >
               <div className="tile is-child box is-success ">
-                <PostDetails />
+                <PostDetails
+                  post={selectedPost}
+                />
               </div>
             </div>
           )}
