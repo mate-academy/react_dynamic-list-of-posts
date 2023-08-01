@@ -26,7 +26,7 @@ function request<T>(
   }
 
   // for a demo purpose we emulate a delay to see if Loaders work
-  return wait(300)
+  return wait(1000)
     .then(() => fetch(BASE_URL + url, options))
     .then(response => response.json());
 }
