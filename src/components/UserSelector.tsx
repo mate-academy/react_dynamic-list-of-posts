@@ -15,7 +15,8 @@ export const UserSelector: React.FC<Props> = ({ selectedUser, onChoose }) => {
 
   useEffect(() => {
     getUsers()
-      .then(setUsers);
+      .then(setUsers)
+      .catch(() => {});
   }, []);
 
   const handleIsDropDown = () => setIsDropDown(!isDropDown);

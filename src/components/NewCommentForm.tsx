@@ -7,9 +7,14 @@ import { Comment } from '../types/Comment';
 type Props = {
   setComments: React.Dispatch<React.SetStateAction<Comment[] | null>>;
   postId: number;
+  setIsError: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ setComments, postId }) => {
+export const NewCommentForm: React.FC<Props> = ({
+  setComments,
+  postId,
+  setIsError,
+}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
@@ -59,13 +64,16 @@ export const NewCommentForm: React.FC<Props> = ({ setComments, postId }) => {
       setIsLoading(true);
 
       addComment(comment)
-        .then(newComment => setComments(comments => (
-          (comments) ? [...comments, newComment] : [newComment]
-        )))
-        .catch(() => {})
+        .then(newComment => {
+          setComments(comments => (
+            (comments) ? [...comments, newComment] : [newComment]
+          ));
+          setIsError(false);
+          setBody('');
+        })
+        .catch(() => setIsError(true))
         .finally(() => {
           setIsLoading(false);
-          setBody('');
         });
     }
   };
@@ -128,7 +136,7 @@ export const NewCommentForm: React.FC<Props> = ({ setComments, postId }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
