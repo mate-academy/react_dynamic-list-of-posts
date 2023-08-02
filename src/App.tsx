@@ -24,7 +24,8 @@ export const App: React.FC = () => {
   useEffect(() => {
     setError(false);
 
-    postService.getUsers()
+    postService
+      .getUsers()
       .then(setUsers)
       .catch(() => setError(true));
   }, []);
@@ -35,8 +36,10 @@ export const App: React.FC = () => {
     setPosts([]);
 
     if (selectedUser) {
-      postService.getPosts(selectedUser?.id)
+      postService
+        .getPosts(selectedUser?.id)
         .then(setPosts)
+        .catch(() => setError(true))
         .finally(() => {
           setIsLoading(false);
         });
@@ -53,18 +56,16 @@ export const App: React.FC = () => {
                 <UserSelector
                   users={users}
                   selectedUser={selectedUser}
-                  handleSelectUser={setSelectedUser}
+                  onSelectUser={setSelectedUser}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
                 {!selectedUser && (
-                  <p data-cy="NoSelectedUser">
-                    No user selected
-                  </p>
+                  <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {selectedUser && isLoading && (<Loader />)}
+                {selectedUser && isLoading && <Loader />}
 
                 {!isLoading && error && (
                   <div
@@ -75,41 +76,39 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(!isLoading && !posts.length) && (
+                {!isLoading && !posts.length && selectedUser && !error && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {posts.length !== 0 && (
+                {posts.length !== 0 && !isLoading && !error && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}
-                    setSelectedPost={setSelectedPost}
+                    onPostSelected={setSelectedPost}
                   />
                 )}
               </div>
             </div>
           </div>
 
-          {selectedPost && (
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                { 'Sidebar--open': selectedPost },
-              )}
-            >
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': selectedPost !== null },
+            )}
+          >
+            {selectedPost && (
               <div className="tile is-child box is-success ">
-                <PostDetails
-                  post={selectedPost}
-                />
+                <PostDetails post={selectedPost} />
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </main>

@@ -12,25 +12,31 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [postError, setPostError] = useState(false);
+  const [inputAccess, setInputAccess] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
+    setInputAccess(false);
 
     postService.getComments(post.id)
       .then(setComments)
-      .catch(() => setError(true))
+      .catch(() => setPostError(true))
       .finally(() => {
         setIsLoading(false);
       });
-  }, []);
+  }, [post]);
 
-  const handleCommentDeletion = (commentId: number) => (
+  const deleteComment = (commentId: number) => {
+    setComments(prev => prev.filter(comm => comm.id !== commentId));
+
     postService.deleteComment(commentId)
-      .then(() => {
-        setComments(prev => prev.filter(comm => comm.id !== commentId));
-      })
-      .catch(() => setError(true)));
+      .catch(() => setPostError(true));
+  };
+
+  const onAddComment = (comment: Comment) => {
+    setComments(prev => [...prev, comment]);
+  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -48,7 +54,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         <div className="block">
           {isLoading && (<Loader />)}
 
-          {!isLoading && error && (
+          {!isLoading && postError && (
             <div
               className="notification is-danger"
               data-cy="CommentsError"
@@ -57,17 +63,22 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </div>
           )}
 
-          {(!comments.length && !isLoading) && (
+          {(!comments.length && !isLoading && !inputAccess && !postError) && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {comments.length !== 0 && (
+          {(comments.length !== 0 && !isLoading) && (
             <>
-              <p className="title is-4">Comments:</p>
-              {comments.map(comment => (
-                <article className="message is-small" data-cy="Comment">
+              {!postError && (<p className="title is-4">Comments:</p>)}
+
+              {!postError && comments.map(comment => (
+                <article
+                  key={comment.id}
+                  className="message is-small"
+                  data-cy="Comment"
+                >
                   <div className="message-header">
                     <a
                       href={`mailto:${comment.email}`}
@@ -81,7 +92,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
-                      onClick={() => handleCommentDeletion(comment.id)}
+                      onClick={() => deleteComment(comment.id)}
                     >
                       delete button
                     </button>
@@ -92,69 +103,27 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   </div>
                 </article>
               )) }
-
-              <article className="message is-small" data-cy="Comment">
-                <div className="message-header">
-                  <a
-                    href="mailto:misha@mate.academy"
-                    data-cy="CommentAuthor"
-                  >
-                    Misha Hrynko
-                  </a>
-
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                  >
-                    delete button
-                  </button>
-                </div>
-                <div
-                  className="message-body"
-                  data-cy="CommentBody"
-                >
-                  One more comment
-                </div>
-              </article>
-
-              <article className="message is-small" data-cy="Comment">
-                <div className="message-header">
-                  <a
-                    href="mailto:misha@mate.academy"
-                    data-cy="CommentAuthor"
-                  >
-                    Misha Hrynko
-                  </a>
-
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                  >
-                    delete button
-                  </button>
-                </div>
-
-                <div className="message-body" data-cy="CommentBody">
-                  {'Multi\nline\ncomment'}
-                </div>
-              </article>
             </>
           )}
 
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+          {!isLoading && !inputAccess && !postError && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setInputAccess(true)}
+            >
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
+        {inputAccess && (
+          <NewCommentForm
+            postId={post.id}
+            onAddComment={onAddComment}
+          />
+        )}
       </div>
     </div>
   );
