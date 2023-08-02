@@ -11,9 +11,8 @@ type Props = {
 export const CommentsList: React.FC<Props> = ({ postId }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [loadError, setLoadError] = useState(false);
-  const [addError, setAddError] = useState(false);
-  const [deleteError, setDeleteError] = useState(false);
+  const [error, setError] = useState('');
+
   const [isFormVisible, setIsFormVisible] = useState(false);
 
   const addNewComment = useCallback(async (comment: CommentData) => {
@@ -24,7 +23,7 @@ export const CommentsList: React.FC<Props> = ({ postId }) => {
 
       setComments(currentComment => [...currentComment, addedComment]);
     } catch {
-      setAddError(true);
+      setError('Can\'t add new comment');
     }
   }, []);
 
@@ -36,11 +35,11 @@ export const CommentsList: React.FC<Props> = ({ postId }) => {
     ));
 
     try {
-      setDeleteError(false);
+      setError('');
       await deleteComment(commentId);
     } catch {
       setComments(tempComments);
-      setDeleteError(true);
+      setError('Can\'t delete comment');
     }
   }, []);
 
@@ -49,13 +48,13 @@ export const CommentsList: React.FC<Props> = ({ postId }) => {
       try {
         setComments([]);
         setIsFormVisible(false);
-        setLoadError(false);
+        setError('');
         setIsLoading(true);
         const commentsFromServer = await getComments(postId);
 
         setComments(commentsFromServer);
       } catch {
-        setLoadError(true);
+        setError('Something went wrong');
       } finally {
         setIsLoading(false);
       }
@@ -65,29 +64,21 @@ export const CommentsList: React.FC<Props> = ({ postId }) => {
   }, [postId]);
 
   useEffect(() => {
-    const deleteErrorTimer = setTimeout(() => {
-      setDeleteError(false);
+    const errorTimer = setTimeout(() => {
+      setError('');
     }, 3000);
 
-    return () => clearTimeout(deleteErrorTimer);
-  }, [deleteError]);
-
-  useEffect(() => {
-    const addErrorTimer = setTimeout(() => {
-      setAddError(false);
-    }, 3000);
-
-    return () => clearTimeout(addErrorTimer);
-  }, [addError]);
+    return () => clearTimeout(errorTimer);
+  }, [error]);
 
   if (isLoading) {
     return <Loader />;
   }
 
-  if (loadError) {
+  if (error) {
     return (
       <div className="notification is-danger" data-cy="CommentsError">
-        Something went wrong
+        {error}
       </div>
     );
   }
@@ -134,21 +125,12 @@ export const CommentsList: React.FC<Props> = ({ postId }) => {
           </>
         )}
 
-      {addError && (
+      {error && (
         <div
           className="notification is-danger"
           data-cy="CommentsError"
         >
-          Can&apos;t add new comment
-        </div>
-      )}
-
-      {deleteError && (
-        <div
-          className="notification is-danger"
-          data-cy="CommentsError"
-        >
-          Can&apos;t delete comment
+          {error}
         </div>
       )}
 
