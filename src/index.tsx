@@ -1,8 +1,10 @@
 import ReactDOM from 'react-dom';
-
+import { PostsProvider } from './PostsContext';
 import { App } from './App';
 
 ReactDOM.render(
-  <App />,
+  <PostsProvider>
+    <App />
+  </PostsProvider>,
   document.getElementById('root'),
 );
