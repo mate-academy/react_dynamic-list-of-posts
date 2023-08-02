@@ -42,25 +42,25 @@ export const NewCommentForm: React.FC<Props> = ({
     event.preventDefault();
 
     const comment = {
-      name,
-      email,
-      body,
+      name: name.trim(),
+      email: email.trim(),
+      body: body.trim(),
       postId,
     };
 
-    if (!name.length) {
+    if (!comment.name.length) {
       setIsNameError(true);
     }
 
-    if (!email.length) {
+    if (!comment.email.length) {
       setIsEmailError(true);
     }
 
-    if (!body.length) {
+    if (!comment.body.length) {
       setIsCommentError(true);
     }
 
-    if (name.length && email.length && body.length) {
+    if (comment.name.length && comment.email.length && comment.body.length) {
       setIsLoading(true);
 
       addComment(comment)
@@ -82,6 +82,9 @@ export const NewCommentForm: React.FC<Props> = ({
     setName('');
     setEmail('');
     setBody('');
+    setIsNameError(false);
+    setIsEmailError(false);
+    setIsCommentError(false);
   };
 
   return (
