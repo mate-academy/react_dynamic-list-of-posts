@@ -1,4 +1,5 @@
 import React from 'react';
+// eslint-disable-next-line import/extensions
 import { IComment } from '../models/IComment';
 import CommentListItem from './CommentListItem';
 

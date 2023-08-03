@@ -1,4 +1,5 @@
 import { client } from '../utils/fetchClient';
+// eslint-disable-next-line import/extensions
 import { IComment } from '../models/IComment';
 import { ApiEndpoint } from '../utils/constants';
 

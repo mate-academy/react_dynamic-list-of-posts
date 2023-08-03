@@ -3,6 +3,7 @@ import { Loader } from './Loader';
 import ErrorMessage from './ErrorMessage';
 import { usePost } from '../hooks/usePost';
 import { useUser } from '../hooks/useUser';
+// eslint-disable-next-line import/extensions
 import { PostList } from './PostList';
 
 const PostWidgetContent:React.FC = () => {

@@ -10,6 +10,7 @@ import { IPost } from '../models/IPost';
 import { useUser } from '../hooks/useUser';
 // eslint-disable-next-line import/no-cycle
 import { getPostsByUser } from '../api/post.api';
+// eslint-disable-next-line import/no-cycle
 import { CommentProvider } from './comment.context';
 
 interface IPostContext {

@@ -1,6 +1,7 @@
 import React, {
   createContext, PropsWithChildren, useEffect, useState,
 } from 'react';
+// eslint-disable-next-line import/extensions
 import { IComment } from '../models/IComment';
 import {
   deleteCommentById,
