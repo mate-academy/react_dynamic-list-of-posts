@@ -1,15 +1,89 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-
 import classNames from 'classnames';
+
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import * as postService from './api/api';
+import { User } from './types/User';
+import { Post } from './types/Post';
+import { Comment } from './types/Comment';
 
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isCmntsLoading, setIsCmntsLoading] = useState(false);
+  const [isCmntsError, setIsCmntsError] = useState(false);
+  const [isWriting, setIsWriting] = useState(false);
+
+  useEffect(() => {
+    postService.getUsers()
+      .then(setUsers);
+  }, []);
+
+  useEffect(() => {
+    setSelectedPost(null);
+
+    if (selectedUser) {
+      setIsLoading(true);
+
+      postService.getPosts(selectedUser.id)
+        .then(setPosts)
+        .catch(() => setIsError(true))
+        .finally(() => setIsLoading(false));
+    }
+  }, [selectedUser]);
+
+  useEffect(() => {
+    if (selectedPost) {
+      setIsCmntsLoading(true);
+
+      postService.getComments(selectedPost.id)
+        .then(setComments)
+        .catch(() => setIsCmntsError(true))
+        .finally(() => setIsCmntsLoading(false));
+    }
+  }, [selectedPost]);
+
+  const deleteComment = (id: number) => {
+    setComments(prevComments => prevComments
+      .filter(comment => comment.id !== id));
+    postService.deleteComment(id);
+  };
+
+  const addComment = ({
+    postId,
+    name,
+    email,
+    body,
+  }: Omit<Comment, 'id'>) => {
+    const maxId = Math.max(0, ...comments.map(comment => comment.id));
+
+    const id = maxId + 1;
+
+    return postService.createComment({
+      id,
+      postId,
+      name,
+      email,
+      body,
+    })
+      .then(newComment => setComments(prevCmnts => [...prevCmnts, newComment]))
+      .catch(() => (setIsCmntsError(true)));
+  };
+
+  const validatePosts = selectedUser && !isLoading && !isError;
+  const validateComments = !isCmntsLoading && !isCmntsError;
+
   return (
     <main className="section">
       <div className="container">
@@ -17,28 +91,46 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  users={users}
+                  selectedUser={selectedUser}
+                  setSelectedUser={setSelectedUser}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isLoading && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {validatePosts && posts.length === 0 && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {validatePosts && posts.length > 0 && (
+                  <PostsList
+                    posts={posts}
+                    setSelectedPost={setSelectedPost}
+                    selectedPost={selectedPost}
+                    isWriting={isWriting}
+                    setIsWriting={setIsWriting}
+                  />
+                )}
 
-                <PostsList />
+                {isError && !isLoading && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -50,11 +142,23 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {selectedPost && (
+                <PostDetails
+                  selectedPost={selectedPost}
+                  comments={comments}
+                  isLoading={isCmntsLoading}
+                  isError={isCmntsError}
+                  validateComments={validateComments}
+                  deleteComment={deleteComment}
+                  isWriting={isWriting}
+                  setIsWriting={setIsWriting}
+                  addComment={addComment}
+                />
+              )}
             </div>
           </div>
         </div>
