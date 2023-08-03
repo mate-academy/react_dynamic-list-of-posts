@@ -17,6 +17,18 @@ type UserIdType = {
   handleUserSelect: (id: User) => void,
 };
 
+// type NewCommentType = {
+//   postId: number;
+//   name: string;
+//   email: string;
+//   body: string;
+// };
+
+type ComentsDataType = {
+  comments: Comment[],
+  newCommentSelect: (newComment: Comment) => void
+};
+
 type PostDataType = {
   postData: Post | null,
   handlePost: (postDetails: Post) => void
@@ -32,7 +44,8 @@ export const ErrorContext
 export const UserIdContext = React.createContext<UserIdType>({} as UserIdType);
 export const PostsContext
   = React.createContext<Post[]>([]);
-export const CommentsContext = React.createContext<Comment[]>([]);
+export const CommentsContext
+= React.createContext<ComentsDataType>({} as ComentsDataType);
 export const PostDataContext
   = React.createContext<PostDataType>({} as PostDataType);
 
@@ -50,6 +63,10 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
     setUserId(id);
 
     setPostData(null);
+  };
+
+  const newCommentSelect = (newComment: Comment) => {
+    setComments(prevComments => [...prevComments, newComment]);
   };
 
   const handlePost = (postDetails: Post) => {
@@ -126,7 +143,7 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
         <UserIdContext.Provider value={{ userId, handleUserSelect }}>
           <PostsContext.Provider value={posts}>
             <PostDataContext.Provider value={{ postData, handlePost }}>
-              <CommentsContext.Provider value={comments}>
+              <CommentsContext.Provider value={{ comments, newCommentSelect }}>
                 {children}
               </CommentsContext.Provider>
             </PostDataContext.Provider>

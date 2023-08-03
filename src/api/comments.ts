@@ -9,3 +9,7 @@ export const getComments = (postData: Post | null) => {
 export const createComment = (comment: Partial<Comment>) => {
   return client.post<Comment>('/comments', comment);
 };
+
+export const deleteComment = (commentId: number | undefined) => {
+  return client.delete(`/comments/${commentId}`);
+};

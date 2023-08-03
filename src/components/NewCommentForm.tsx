@@ -1,12 +1,20 @@
 import React, { useContext, useState } from 'react';
 import classNames from 'classnames';
 import { CommentData } from '../types/Comment';
-import { ErrorContext, PostDataContext } from './UserContext/UserContext';
+import {
+  // CommentsContext,
+  ErrorContext,
+  PostDataContext,
+} from './UserContext/UserContext';
 import { createComment } from '../api/comments';
 
 export const NewCommentForm: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
+  // const [validEmail, setValidEmail] = useState<string | null>(null);
+
   const postDetails = useContext(PostDataContext);
+  // const commentsData = useContext(CommentsContext);
+
   const error = useContext(ErrorContext);
 
   const onAddComment = async ({ name, email, body }: CommentData) => {
@@ -20,11 +28,10 @@ export const NewCommentForm: React.FC = () => {
     createComment(newComment);
   };
 
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
+  const [hasNameError, setHasNameError] = useState(false);
+  const [hasEmailError, setHasEmailError] = useState(false);
+  const [emailValidationError, setEmailValidationError] = useState(false);
+  const [hasBodyError, setHasBodyError] = useState(false);
 
   const [{ name, email, body }, setValues] = useState({
     name: '',
@@ -49,22 +56,48 @@ export const NewCommentForm: React.FC = () => {
     setValues(current => ({ ...current, body: event.target.value }));
   };
 
+  const validateEmail = (em: string) => {
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+
+    return emailRegex.test(em);
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    setErrors({
-      name: !name,
-      email: !email,
-      body: !body,
-    });
+    if (!validateEmail(email)) {
+      setEmailValidationError(true);
+    }
 
-    if (!name || !email || !body) {
+    if (!email.trim().length) {
+      setHasEmailError(true);
+    }
+
+    if (!name.trim().length) {
+      setHasNameError(true);
+    }
+
+    if (!body.length) {
+      setHasBodyError(true);
+    }
+
+    if (hasBodyError || hasEmailError || hasNameError
+      || emailValidationError) {
       return;
     }
 
     setSubmitting(true);
 
     await onAddComment({ name, email, body });
+
+    // const newComment = {
+    //   name,
+    //   email,
+    //   body,
+    //   postId: postDetails.postData.id,
+    // };
+
+    // commentsData.newCommentSelect(newComment);
 
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
@@ -77,11 +110,15 @@ export const NewCommentForm: React.FC = () => {
       body: '',
     });
 
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
+    setHasNameError(false);
+    setHasEmailError(false);
+    setEmailValidationError(false);
+    setHasBodyError(false);
+  };
+
+  const focusErrorDisabled = () => {
+    setEmailValidationError(false);
+    setHasEmailError(false);
   };
 
   return (
@@ -102,16 +139,17 @@ export const NewCommentForm: React.FC = () => {
               name="name"
               id="comment-author-name"
               placeholder="Name Surname"
-              className={classNames('input', { 'is-danger': errors.name })}
+              className={classNames('input', { 'is-danger': hasNameError })}
               value={name}
               onChange={handleChangeName}
+              onFocus={() => setHasNameError(false)}
             />
 
             <span className="icon is-small is-left">
               <i className="fas fa-user" />
             </span>
 
-            {errors.name && (
+            {hasNameError && (
               <span
                 className="icon is-small is-right has-text-danger"
                 data-cy="ErrorIcon"
@@ -122,7 +160,7 @@ export const NewCommentForm: React.FC = () => {
 
           </div>
 
-          {errors.name && (
+          {hasNameError && (
             <p className="help is-danger" data-cy="ErrorMessage">
               Name is required
             </p>
@@ -141,16 +179,18 @@ export const NewCommentForm: React.FC = () => {
               name="email"
               id="comment-author-email"
               placeholder="email@test.com"
-              className={classNames('input', { 'is-danger': errors.email })}
+              className={classNames('input',
+                { 'is-danger': hasEmailError })}
               value={email}
               onChange={handleChangeEmail}
+              onFocus={() => focusErrorDisabled()}
             />
 
             <span className="icon is-small is-left">
               <i className="fas fa-envelope" />
             </span>
 
-            {errors.email && (
+            {(hasEmailError || emailValidationError) && (
               <span
                 className="icon is-small is-right has-text-danger"
                 data-cy="ErrorIcon"
@@ -160,9 +200,14 @@ export const NewCommentForm: React.FC = () => {
             )}
 
           </div>
-          {errors.email && (
+          {(hasEmailError) && (
             <p className="help is-danger" data-cy="ErrorMessage">
               Email is required
+            </p>
+          )}
+          {emailValidationError && (
+            <p className="help is-danger" data-cy="ErrorMessage">
+              Invalid email address
             </p>
           )}
 
@@ -178,13 +223,15 @@ export const NewCommentForm: React.FC = () => {
               id="comment-body"
               name="body"
               placeholder="Type comment here"
-              className={classNames('textarea', { 'is-danger': errors.body })}
+              className={classNames('textarea',
+                { 'is-danger': hasBodyError })}
               value={body}
               onChange={handleChangeBody}
+              onFocus={() => setHasBodyError(false)}
             />
           </div>
 
-          {errors.body && (
+          {hasBodyError && (
             <p className="help is-danger" data-cy="ErrorMessage">
               Enter some text
             </p>

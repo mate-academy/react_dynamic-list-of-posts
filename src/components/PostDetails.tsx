@@ -11,7 +11,7 @@ export const PostDetails: React.FC = () => {
   const postDetails = useContext(PostDataContext);
   const { isLoading } = useContext(ErrorContext);
   const { isError } = useContext(ErrorContext);
-  const comments = useContext(CommentsContext);
+  const commentsData = useContext(CommentsContext);
   const [click, setClick] = useState(false);
 
   return (
@@ -36,7 +36,7 @@ export const PostDetails: React.FC = () => {
             </div>
           )}
 
-          {comments.length === 0 && (
+          {commentsData.comments.length === 0 && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -44,7 +44,7 @@ export const PostDetails: React.FC = () => {
 
           <p className="title is-4">Comments:</p>
 
-          {comments.map(comment => (
+          {commentsData.comments.map(comment => (
             <article
               className="message is-small"
               data-cy="Comment"

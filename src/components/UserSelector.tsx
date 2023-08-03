@@ -43,20 +43,22 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          {isOpen && (users?.map(user => (
-            <a
-              href={`#user-${user.id}`}
-              className="dropdown-item"
-              key={user.id}
-              onClick={() => handleUserId(user)}
-            >
-              {user.name}
-            </a>
-          )))}
+      {isOpen && (
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div className="dropdown-content">
+            {(users?.map(user => (
+              <a
+                href={`#user-${user.id}`}
+                className="dropdown-item"
+                key={user.id}
+                onClick={() => handleUserId(user)}
+              >
+                {user.name}
+              </a>
+            )))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
