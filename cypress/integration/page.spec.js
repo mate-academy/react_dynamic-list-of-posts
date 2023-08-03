@@ -1,5 +1,5 @@
-/// <reference types="cypress" />
-/// <reference types="../support" />
+/// <reference models="cypress" />
+/// <reference models="../support" />
 
 const { cwd } = require('process');
 
@@ -60,7 +60,7 @@ const page = {
 
   waitForRequest: requestAlias => {
     cy.wait(requestAlias);
-    
+
     // To guarantee that React handled the response
     cy.wait(50);
   },
@@ -81,7 +81,7 @@ const page = {
       .should('have.text', 'Close')
       .and('not.have.class', 'is-light');
   },
-  
+
   assertSelectedPostsCount: count => {
     cy.get('[data-cy="PostButton"]:not(.is-light)').should('have.length', count);
   },
@@ -170,28 +170,28 @@ describe('Page by default', () => {
       page.mockUsers();
       cy.visit('/');
     });
-  
+
     it('should have a UserSelector', () => {
       userSelector.el().should('exist');
     });
-  
+
     it('should show NoSelectedUser message', () => {
       page.noSelectedUserMessage().should('exist');
     });
-  
+
     it('should not show posts', () => {
       page.postsList().should('not.exist');
       page.posts().should('not.exist');
     });
-  
+
     it('should not show posts error message', () => {
       page.postsLoadingError().should('not.exist');
     });
-  
+
     it('should not show no posts yet message', () => {
       page.noPostsYetMessage().should('not.exist');
     });
-  
+
     it('should not show posts loader', () => {
       page.postsLoader().should('not.exist');
     });
@@ -208,7 +208,7 @@ describe('Page by default', () => {
 
     it('should request users only once', () => {
       page.spyOn('**/users', 'users');
-      
+
       cy.visit('/');
       cy.wait(1000);
 
@@ -254,16 +254,16 @@ describe('UserSelector', () => {
     it('should not have users hardcoded', () => {
       cy.intercept('**/users', { fixture: 'someUsers' })
       cy.visit('/');
-  
+
       users().should('have.length', 3);
     });
-  
+
     it('should not have users before they are loaded', () => {
       cy.clock();
       page.mockUsers();
       cy.visit('/');
       users().should('have.length', 0);
-  
+
       cy.tick(1000);
       page.waitForRequest('@usersRequest');
       users().should('have.length', 10);
@@ -292,7 +292,7 @@ describe('UserSelector', () => {
 
     it('should show users on button click', () => {
       button().click();
-      
+
       el().should('have.class', 'is-active');
       el().find('.dropdown-menu').should('be.visible');
       users().eq(0).should('be.visible');
@@ -367,39 +367,39 @@ describe('Page after selecting a user', () => {
 
     it('should load user posts', () => {
       page.spyOn('**/posts?userId=1', 'user1Posts');
-  
+
       cy.visit('/');
       userSelector.select(0);
       cy.wait(500);
-  
+
       cy.get('@user1Posts').should('be.calledOnce');
     });
-  
+
     it('should not load all posts', () => {
       page.spyOn('**/posts', 'allPosts');
-  
+
       cy.visit('/');
       userSelector.select(0);
       cy.wait(500);
-  
+
       cy.get('@allPosts').should('not.be.called');
     });
-  
+
     it('should show posts loader while waiting for API response', () => {
       page.mockUser1Posts()
       cy.visit('/');
       cy.clock();
-  
+
       userSelector.select(0);
-  
+
       page.postsLoader().should('exist');
     });
-  
+
     it('should show not hardcoded user posts', () => {
       page.mockUser2Posts();
       cy.visit('/');
       userSelector.select(1);
-  
+
       page.postsList().should('exist');
       page.posts().should('have.length', 3);
       page.posts().eq(0).byDataCy('PostId').should('have.text', '11');
@@ -511,7 +511,7 @@ describe('Page after selecting a user', () => {
       cy.clock();
 
       userSelector.select(1);
-  
+
       page.postsLoader().should('exist');
     });
 
@@ -569,7 +569,7 @@ describe('Posts List', () => {
     it('should remove `is-light` class from the selected post button', () => {
       page.postButton(0).should('not.have.class', 'is-light');
     });
-  
+
     it('should change selected button text to Close', () => {
       page.posts().eq(0).byDataCy('PostButton').should('have.text', 'Close');
     });
@@ -586,14 +586,14 @@ describe('Posts List', () => {
 
     it('should have not selected posts after clicking Close', () => {
       page.postButton(0).click();
-      
+
       page.assertSelectedPostsCount(0);
     });
 
     it('should have only the last post selected after selecting another one', () => {
       page.mockPost2Comments();
       page.postButton(1).click();
-      
+
       page.assertPostSelected(1);
       page.assertSelectedPostsCount(1);
     });
@@ -637,24 +637,24 @@ describe('Sidebar', () => {
     it('should be open', () => {
       page.sidebar().should('have.class', 'Sidebar--open');
     });
-  
+
     it('should be closed after closing a selected post', () => {
       page.postButton(0).click();
-  
+
       page.sidebar().should('not.have.class', 'Sidebar--open');
     });
-  
+
     it('should stay open after selecting another post', () => {
       page.mockPost2Comments();
       page.postButton(1).click();
-  
+
       page.sidebar().should('have.class', 'Sidebar--open');
     });
-  
+
     it('should be closed after selecting another user', () => {
       page.mockUser2Posts();
       userSelector.select(1);
-  
+
       page.sidebar().should('not.have.class', 'Sidebar--open');
     });
   });
@@ -776,10 +776,10 @@ describe('PostDetails', () => {
     it('should disappear after selecting another user', () => {
       page.mockPost1Comments();
       page.postButton(0).click();
-  
+
       page.mockUser2Posts();
       userSelector.select(1);
-  
+
       postDetails.el().should('not.exist');
     });
   });
@@ -878,11 +878,11 @@ describe('PostDetails', () => {
         page.waitForRequest('@post2ComentsRequest');
 
         postDetails.comments().should('have.length', 1);
-  
+
         postDetails.comments().eq(0).byDataCy('CommentAuthor')
           .should('have.text', 'et fugit eligendi deleniti quidem qui sint nihil autem')
           .and('have.attr', 'href', 'mailto:Presley.Mueller@myrl.com')
-  
+
         postDetails.comments().eq(0).byDataCy('CommentBody')
           .should('have.text', 'doloribus at sed quis culpa deserunt consectetur qui praesentium\naccusamus fugiat dicta\nvoluptatem rerum ut voluptate autem\nvoluptatem repellendus aspernatur dolorem in')
       });
@@ -899,7 +899,7 @@ describe('PostDetails', () => {
       it('should hide NewCommentForm', () => {
         newCommentForm.el().should('not.exist')
       });
-  
+
       it('should show WriteCommentButton', () => {
         postDetails.writeCommentButton().should('exist');
       });
@@ -1205,7 +1205,7 @@ describe('App', () => {
 
   it('should delete a comment immediately', () => {
     postDetails.deleteCommentButton(0).click();
-    
+
     postDetails.comments().should('have.length', 4);
 
     postDetails.comments().eq(0).byDataCy('CommentAuthor')
@@ -1229,7 +1229,7 @@ describe('App', () => {
     postDetails.deleteCommentButton(3).click();
     postDetails.deleteCommentButton(2).click();
     postDetails.deleteCommentButton(1).click();
-    
+
     postDetails.comments().should('have.length', 2);
   });
 
