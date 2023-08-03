@@ -1,8 +1,73 @@
-import React from 'react';
+import React, { FormEvent, useState } from 'react';
+import cn from 'classnames';
+import { useComment } from '../hooks/useComment';
+import { usePost } from '../hooks/usePost';
 
 export const NewCommentForm: React.FC = () => {
+  const { addComment } = useComment();
+  const { selectedPost } = usePost();
+
+  const [inputName, setInputName] = useState('');
+  const [inputEmail, setInputEmail] = useState('');
+  const [inputText, setInputText] = useState('');
+
+  const [nameError, setNameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [textError, setTextError] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+  const validate = () => {
+    if (!inputName.trim()
+      || !inputText.trim()
+      || !inputEmail.trim()
+    ) {
+      throw new Error('please fill the form correctly');
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    try {
+      setLoading(true);
+
+      if (validate() && selectedPost) {
+        await addComment({
+          name: inputName,
+          email: inputEmail,
+          postId: selectedPost?.id,
+          body: inputText,
+        });
+      }
+
+      setInputText('');
+    } catch (error) {
+      setNameError(!inputName.trim());
+      setEmailError(!inputEmail.trim());
+      setTextError(!inputText.trim());
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClear = () => {
+    setInputName('');
+    setInputEmail('');
+    setInputText('');
+
+    setNameError(false);
+    setEmailError(false);
+    setTextError(false);
+  };
+
   return (
-    <form data-cy="NewCommentForm">
+    <form
+      onSubmit={handleSubmit}
+      onReset={handleClear}
+      data-cy="NewCommentForm"
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -14,24 +79,39 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            className={cn('input', {
+              'is-danger': nameError,
+            })}
+            value={inputName}
+            onChange={(event) => {
+              setNameError(false);
+              setInputName(event.target.value);
+            }}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {
+            nameError && (
+              <span
+                className="icon is-small is-right has-text-danger"
+                data-cy="ErrorIcon"
+              >
+                <i className="fas fa-exclamation-triangle" />
+              </span>
+            )
+          }
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
+        {
+          nameError && (
+            <p className="help is-danger" data-cy="ErrorMessage">
+              Name is required
+            </p>
+          )
+        }
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -45,24 +125,39 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            className={cn('input', {
+              'is-danger': emailError,
+            })}
+            value={inputEmail}
+            onChange={(event) => {
+              setEmailError(false);
+              setInputEmail(event.target.value);
+            }}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {
+            emailError && (
+              <span
+                className="icon is-small is-right has-text-danger"
+                data-cy="ErrorIcon"
+              >
+                <i className="fas fa-exclamation-triangle" />
+              </span>
+            )
+          }
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
+        {
+          emailError && (
+            <p className="help is-danger" data-cy="ErrorMessage">
+              Email is required
+            </p>
+          )
+        }
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -75,18 +170,34 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            className={cn('input', {
+              'is-danger': textError,
+            })}
+            value={inputText}
+            onChange={(event) => {
+              setTextError(false);
+              setInputText(event.target.value);
+            }}
           />
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
+        {
+          textError && (
+            <p className="help is-danger" data-cy="ErrorMessage">
+              Enter some text
+            </p>
+          )
+        }
       </div>
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={cn('button', 'is-link', {
+              'is-loading': loading,
+            })}
+          >
             Add
           </button>
         </div>
