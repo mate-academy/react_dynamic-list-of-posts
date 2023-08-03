@@ -57,7 +57,8 @@ export const App: React.FC = () => {
   const deleteComment = (id: number) => {
     setComments(prevComments => prevComments
       .filter(comment => comment.id !== id));
-    postService.deleteComment(id);
+    postService.deleteComment(id)
+      .catch(() => setIsCmntsError(true));
   };
 
   const addComment = ({
@@ -78,7 +79,7 @@ export const App: React.FC = () => {
       body,
     })
       .then(newComment => setComments(prevCmnts => [...prevCmnts, newComment]))
-      .catch(() => (setIsCmntsError(true)));
+      .catch(() => setIsCmntsError(true));
   };
 
   const validatePosts = selectedUser && !isLoading && !isError;

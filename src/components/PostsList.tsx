@@ -43,7 +43,7 @@ export const PostsList: React.FC<Props> = ({
             const { id, title } = post;
 
             return (
-              <tr data-cy="Post">
+              <tr data-cy="Post" key={id}>
                 <td data-cy="PostId">{id}</td>
                 <td data-cy="PostTitle">{title}</td>
                 <td className="has-text-right is-vcentered">

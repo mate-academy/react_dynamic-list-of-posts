@@ -24,37 +24,41 @@ export const NewCommentForm: React.FC<Props> = ({
   const [emailError, setEmailError] = useState(false);
   const [textError, setTextError] = useState(false);
 
-  const handleNameChange = (value: string) => {
-    setName(value);
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
     setNameError(false);
   };
 
-  const handleEmailChange = (value: string) => {
-    setEmail(value);
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
     setEmailError(false);
   };
 
-  const handleBodyChange = (value: string) => {
-    setText(value);
+  const handleBodyChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setText(event.target.value);
     setTextError(false);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!name.trim()) {
+    const nameValidate = !name.trim;
+    const emailValidate = !email.trim;
+    const textValidate = !text.trim;
+
+    if (nameValidate) {
       setNameError(true);
     }
 
-    if (!email.trim()) {
+    if (emailValidate) {
       setEmailError(true);
     }
 
-    if (!text.trim()) {
+    if (textValidate) {
       setTextError(true);
     }
 
-    if (!name.trim() || !email.trim() || !text.trim()) {
+    if (nameValidate || emailValidate || textValidate) {
       return;
     }
 
@@ -99,7 +103,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             value={name}
-            onChange={(event) => handleNameChange(event.target.value)}
+            onChange={handleNameChange}
             className={classNames(
               'input',
               { 'is-danger': nameError },
@@ -139,7 +143,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-email"
             placeholder="email@test.com"
             value={email}
-            onChange={(event) => handleEmailChange(event.target.value)}
+            onChange={handleEmailChange}
             className={classNames(
               'input',
               { 'is-danger': emailError },
@@ -178,7 +182,7 @@ export const NewCommentForm: React.FC<Props> = ({
             name="body"
             placeholder="Type comment here"
             value={text}
-            onChange={(event) => handleBodyChange(event.target.value)}
+            onChange={handleBodyChange}
             className={classNames(
               'textarea',
               { 'is-danger': textError },

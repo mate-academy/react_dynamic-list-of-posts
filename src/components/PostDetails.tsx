@@ -74,7 +74,11 @@ export const PostDetails: React.FC<Props> = ({
                 } = comment;
 
                 return (
-                  <article className="message is-small" data-cy="Comment">
+                  <article
+                    className="message is-small"
+                    data-cy="Comment"
+                    key={id}
+                  >
                     <div className="message-header">
                       <a href={email} data-cy="CommentAuthor">
                         {name}
