@@ -10,6 +10,6 @@ export const createComment = (comment: Partial<Comment>) => {
   return client.post<Comment>('/comments', comment);
 };
 
-export const deleteComment = (commentId: number | undefined) => {
+export const deleteComment = (commentId: number) => {
   return client.delete(`/comments/${commentId}`);
 };

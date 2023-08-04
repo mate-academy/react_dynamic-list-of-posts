@@ -66,7 +66,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {postDetails.postData && (
+          {postDetails.postData !== null && (
             <div
               data-cy="Sidebar"
               className={classNames(

@@ -4,7 +4,7 @@ import { getUsers } from '../../api/users';
 import { getPosts } from '../../api/posts';
 import { Post } from '../../types/Post';
 import { Comment } from '../../types/Comment';
-import { getComments } from '../../api/comments';
+import { deleteComment, getComments } from '../../api/comments';
 
 type ErrorContextType = {
   isLoading: boolean,
@@ -17,16 +17,10 @@ type UserIdType = {
   handleUserSelect: (id: User) => void,
 };
 
-// type NewCommentType = {
-//   postId: number;
-//   name: string;
-//   email: string;
-//   body: string;
-// };
-
 type ComentsDataType = {
   comments: Comment[],
-  newCommentSelect: (newComment: Comment) => void
+  newCommentSelect: (newComment: Comment) => void,
+  hendleRemoveComment: (id: number) => void,
 };
 
 type PostDataType = {
@@ -45,7 +39,7 @@ export const UserIdContext = React.createContext<UserIdType>({} as UserIdType);
 export const PostsContext
   = React.createContext<Post[]>([]);
 export const CommentsContext
-= React.createContext<ComentsDataType>({} as ComentsDataType);
+  = React.createContext<ComentsDataType>({} as ComentsDataType);
 export const PostDataContext
   = React.createContext<PostDataType>({} as PostDataType);
 
@@ -117,6 +111,19 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
+  const hendleRemoveComment = async (id: number) => {
+    try {
+      await deleteComment(id);
+      const visibleComments = comments.filter(comment => {
+        return comment.id !== id;
+      });
+
+      setComments(visibleComments);
+    } catch {
+      setIsError(true);
+    }
+  };
+
   const loadComments = useCallback(() => {
     loadCommentsFromServer();
   }, [postData]);
@@ -143,7 +150,12 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
         <UserIdContext.Provider value={{ userId, handleUserSelect }}>
           <PostsContext.Provider value={posts}>
             <PostDataContext.Provider value={{ postData, handlePost }}>
-              <CommentsContext.Provider value={{ comments, newCommentSelect }}>
+              <CommentsContext.Provider value={{
+                comments,
+                newCommentSelect,
+                hendleRemoveComment,
+              }}
+              >
                 {children}
               </CommentsContext.Provider>
             </PostDataContext.Provider>

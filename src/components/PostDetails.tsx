@@ -36,51 +36,60 @@ export const PostDetails: React.FC = () => {
             </div>
           )}
 
-          {commentsData.comments.length === 0 && (
+          {!commentsData.comments.length && !isLoading && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          <p className="title is-4">Comments:</p>
+          {!isLoading && (
+            <p className="title is-4">Comments:</p>
+          )}
 
-          {commentsData.comments.map(comment => (
-            <article
-              className="message is-small"
-              data-cy="Comment"
-              key={comment.id}
+          {!isLoading && (
+            commentsData.comments.map(comment => (
+              <article
+                className="message is-small"
+                data-cy="Comment"
+                key={comment.id}
+              >
+                <div className="message-header">
+                  <a href={comment.email} data-cy="CommentAuthor">
+                    {comment.name}
+                  </a>
+                  <button
+                    data-cy="CommentDelete"
+                    type="button"
+                    className="delete is-small"
+                    aria-label="delete"
+                    onClick={() => commentsData.hendleRemoveComment(comment.id)}
+                  >
+                    delete button
+                  </button>
+                </div>
+
+                <div className="message-body" data-cy="CommentBody">
+                  {comment.body}
+                </div>
+              </article>
+            ))
+          )}
+
+          {!isLoading && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setClick(true)}
             >
-              <div className="message-header">
-                <a href={comment.email} data-cy="CommentAuthor">
-                  {comment.name}
-                </a>
-                <button
-                  data-cy="CommentDelete"
-                  type="button"
-                  className="delete is-small"
-                  aria-label="delete"
-                >
-                  delete button
-                </button>
-              </div>
+              Write a comment
+            </button>
+          )}
 
-              <div className="message-body" data-cy="CommentBody">
-                {comment.body}
-              </div>
-            </article>
-          ))}
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-            onClick={() => setClick(true)}
-          >
-            Write a comment
-          </button>
         </div>
 
-        {click && <NewCommentForm />}
+        {click && postDetails.postData !== null && !isLoading && (
+          <NewCommentForm postId={postDetails.postData} />)}
 
       </div>
     </div>

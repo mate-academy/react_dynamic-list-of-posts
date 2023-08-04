@@ -2,18 +2,25 @@ import React, { useContext, useState } from 'react';
 import classNames from 'classnames';
 import { CommentData } from '../types/Comment';
 import {
-  // CommentsContext,
+  CommentsContext,
   ErrorContext,
-  PostDataContext,
 } from './UserContext/UserContext';
 import { createComment } from '../api/comments';
 
-export const NewCommentForm: React.FC = () => {
-  const [submitting, setSubmitting] = useState(false);
-  // const [validEmail, setValidEmail] = useState<string | null>(null);
+type PostId = {
+  id: number;
+  userId: number;
+  title: string;
+  body: string;
+};
 
-  const postDetails = useContext(PostDataContext);
-  // const commentsData = useContext(CommentsContext);
+type NewCommentFormProps = {
+  postId: PostId,
+};
+
+export const NewCommentForm: React.FC<NewCommentFormProps> = ({ postId }) => {
+  const [submitting, setSubmitting] = useState(false);
+  const commentsData = useContext(CommentsContext);
 
   const error = useContext(ErrorContext);
 
@@ -22,7 +29,7 @@ export const NewCommentForm: React.FC = () => {
       name,
       email,
       body,
-      postId: postDetails.postData?.id,
+      postId: postId.id,
     };
 
     createComment(newComment);
@@ -90,14 +97,15 @@ export const NewCommentForm: React.FC = () => {
 
     await onAddComment({ name, email, body });
 
-    // const newComment = {
-    //   name,
-    //   email,
-    //   body,
-    //   postId: postDetails.postData.id,
-    // };
+    const newComment = {
+      name,
+      email,
+      body,
+      postId: postId.id,
+      id: Date.now(),
+    };
 
-    // commentsData.newCommentSelect(newComment);
+    commentsData.newCommentSelect(newComment);
 
     setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
