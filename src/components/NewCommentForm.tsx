@@ -13,21 +13,28 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
     comment: '',
   });
 
-  const [nameError, setNameError] = useState(false);
-  const [emailError, setEmailError] = useState(false);
-  const [commentError, setCommentError] = useState(false);
+  const [inputErrors, setInputErrors] = useState({
+    nameError: '',
+    emailError: '',
+    commentError: '',
+  });
+
   const [isAddingComment, setIsAddingComment] = useState(false);
 
   const errorsCheck = () => {
-    setNameError(!newCommentValues.name.trim());
-    setEmailError(!newCommentValues.email.trim());
-    setCommentError(!newCommentValues.comment.trim());
+    setInputErrors({
+      nameError: !newCommentValues.name.trim() ? 'Name is required' : '',
+      emailError: !newCommentValues.email.trim() ? 'Email is required' : '',
+      commentError: !newCommentValues.comment.trim() ? 'Enter some text' : '',
+    });
   };
 
   const clearAll = () => {
-    setNameError(false);
-    setEmailError(false);
-    setCommentError(false);
+    setInputErrors({
+      nameError: '',
+      emailError: '',
+      commentError: '',
+    });
     setNewCommentValues({
       name: '',
       email: '',
@@ -39,8 +46,8 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
     e.preventDefault();
     errorsCheck();
 
-    if (newCommentValues.name && newCommentValues.email
-       && newCommentValues.comment) {
+    if (newCommentValues.name
+      && newCommentValues.email && newCommentValues.comment) {
       try {
         setIsAddingComment(true);
 
@@ -52,7 +59,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
 
         await onAddComment(newComment);
       } catch {
-        throw new Error('Can\'t add new comment');
+        throw new Error("Can't add new comment");
       } finally {
         setIsAddingComment(false);
         setNewCommentValues((prevValues) => ({
@@ -64,10 +71,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
   };
 
   return (
-    <form
-      data-cy="NewCommentForm"
-      onSubmit={postComment}
-    >
+    <form data-cy="NewCommentForm" onSubmit={postComment}>
       {/* Input for Author Name */}
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
@@ -79,18 +83,18 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames(
-              'input',
-              { 'is-danger': nameError },
-            )}
+            className={classNames('input',
+              { 'is-danger': inputErrors.nameError })}
             value={newCommentValues.name}
             onChange={(e) => {
-              // Update the name input value and reset the name error state
               setNewCommentValues((prevValues) => ({
                 ...prevValues,
                 name: e.target.value,
               }));
-              setNameError(false);
+              setInputErrors((prevErrors) => ({
+                ...prevErrors,
+                nameError: '',
+              }));
             }}
           />
           {/* Icon for error indication */}
@@ -99,7 +103,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
           </span>
 
           {/* Error icon shown when there is a nameError */}
-          {nameError && (
+          {inputErrors.nameError && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -110,9 +114,9 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
         </div>
 
         {/* Error message shown when there is a nameError */}
-        {nameError && (
+        {inputErrors.nameError && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Name is required
+            {inputErrors.nameError}
           </p>
         )}
       </div>
@@ -129,18 +133,18 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames(
-              'input',
-              { 'is-danger': emailError },
-            )}
+            className={classNames('input',
+              { 'is-danger': inputErrors.emailError })}
             value={newCommentValues.email}
             onChange={(e) => {
-              // Update the email input value and reset the email error state
               setNewCommentValues((prevValues) => ({
                 ...prevValues,
                 email: e.target.value,
               }));
-              setEmailError(false);
+              setInputErrors((prevErrors) => ({
+                ...prevErrors,
+                emailError: '',
+              }));
             }}
           />
 
@@ -150,7 +154,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
           </span>
 
           {/* Error icon shown when there is an emailError */}
-          {emailError && (
+          {inputErrors.emailError && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -161,9 +165,9 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
         </div>
 
         {/* Error message shown when there is an emailError */}
-        {emailError && (
+        {inputErrors.emailError && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
+            {inputErrors.emailError}
           </p>
         )}
       </div>
@@ -178,26 +182,26 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames(
-              'textarea',
-              { 'is-danger': commentError },
-            )}
+            className={classNames('textarea',
+              { 'is-danger': inputErrors.commentError })}
             value={newCommentValues.comment}
             onChange={(e) => {
-              // Update the comment input value and reset the comment error state
               setNewCommentValues((prevValues) => ({
                 ...prevValues,
                 comment: e.target.value,
               }));
-              setCommentError(false);
+              setInputErrors((prevErrors) => ({
+                ...prevErrors,
+                commentError: '',
+              }));
             }}
           />
         </div>
 
         {/* Error message shown when there is a commentError */}
-        {commentError && (
+        {inputErrors.commentError && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Enter some text
+            {inputErrors.commentError}
           </p>
         )}
       </div>
@@ -206,11 +210,8 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
         <div className="control">
           <button
             type="submit"
-            className={classNames(
-              'button',
-              'is-link',
-              { 'is-loading': isAddingComment },
-            )}
+            className={classNames('button',
+              'is-link', { 'is-loading': isAddingComment })}
           >
             Add
           </button>
