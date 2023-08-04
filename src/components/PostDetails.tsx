@@ -28,10 +28,15 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }, [post]);
 
   const deleteComment = (commentId: number) => {
+    const currentComments = comments;
+
     setComments(prev => prev.filter(comm => comm.id !== commentId));
 
     postService.deleteComment(commentId)
-      .catch(() => setPostError(true));
+      .catch(() => {
+        setPostError(true);
+        setComments(currentComments);
+      });
   };
 
   const onAddComment = (comment: Comment) => {

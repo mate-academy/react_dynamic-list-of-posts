@@ -18,6 +18,9 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment, postId }) => {
 
   const handleClear = () => {
     setError(false);
+
+    setName('');
+    setEmail('');
     setBody('');
   };
 
@@ -39,11 +42,13 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment, postId }) => {
 
     postService.addComment(newComment)
       .then(onAddComment)
-      .then(() => handleClear())
       .catch((commentError) => {
         throw commentError;
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        setIsLoading(false);
+        setBody('');
+      });
   };
 
   const handleSubmitForm = (event: React.FormEvent<HTMLFormElement>) => {
