@@ -18,7 +18,6 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
   const [commentError, setCommentError] = useState(false);
   const [isAddingComment, setIsAddingComment] = useState(false);
 
-  // Move the function 'errorsCheck' above its usage
   const errorsCheck = () => {
     setNameError(!newCommentValues.name.trim());
     setEmailError(!newCommentValues.email.trim());
@@ -26,7 +25,6 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
   };
 
   const clearAll = () => {
-    // Clear all error states and input values
     setNameError(false);
     setEmailError(false);
     setCommentError(false);
@@ -41,26 +39,21 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
     e.preventDefault();
     errorsCheck();
 
-    // Check if all fields have valid values
     if (newCommentValues.name && newCommentValues.email
-      && newCommentValues.comment) {
+       && newCommentValues.comment) {
       try {
-        // Set loading state while adding the comment
         setIsAddingComment(true);
 
-        // Create a new comment object
         const newComment: CommentData = {
           name: newCommentValues.name,
           email: newCommentValues.email,
           body: newCommentValues.comment,
         };
 
-        // Call the onAddComment function to add the new comment
         await onAddComment(newComment);
       } catch {
         throw new Error('Can\'t add new comment');
       } finally {
-        // Reset the loading state and clear the comment input
         setIsAddingComment(false);
         setNewCommentValues((prevValues) => ({
           ...prevValues,
