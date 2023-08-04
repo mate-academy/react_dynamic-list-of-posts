@@ -16,49 +16,60 @@ export const NewCommentForm: React.FC<Props> = ({
   addComment,
   postId,
 }) => {
+  const [formFields, setFormFields] = useState({
+    name: '',
+    email: '',
+    text: '',
+  });
   const [isLoading, setIsLoading] = useState(false);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [text, setText] = useState('');
   const [nameError, setNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [textError, setTextError] = useState(false);
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
+    setFormFields(prevFormFields => ({
+      ...prevFormFields,
+      name: event.target.value,
+    }));
     setNameError(false);
   };
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
+    setFormFields(prevFormFields => ({
+      ...prevFormFields,
+      email: event.target.value,
+    }));
     setEmailError(false);
   };
 
   const handleBodyChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setText(event.target.value);
+    setFormFields(prevFormFields => ({
+      ...prevFormFields,
+      text: event.target.value,
+    }));
     setTextError(false);
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const nameValidate = !name.trim;
-    const emailValidate = !email.trim;
-    const textValidate = !text.trim;
+    const isNameValidate = !formFields.name.trim();
+    const isEmailValidate = !formFields.email.trim();
+    const isTextValidate = !formFields.text.trim();
 
-    if (nameValidate) {
+    if (isNameValidate) {
       setNameError(true);
     }
 
-    if (emailValidate) {
+    if (isEmailValidate) {
       setEmailError(true);
     }
 
-    if (textValidate) {
+    if (isTextValidate) {
       setTextError(true);
     }
 
-    if (nameValidate || emailValidate || textValidate) {
+    if (isNameValidate || isEmailValidate || isTextValidate) {
       return;
     }
 
@@ -66,13 +77,16 @@ export const NewCommentForm: React.FC<Props> = ({
 
     addComment({
       postId,
-      name,
-      email,
-      body: text,
+      name: formFields.name,
+      email: formFields.email,
+      body: formFields.text,
     })
       .finally(() => {
         setIsLoading(false);
-        setText('');
+        setFormFields(prevFormFields => ({
+          ...prevFormFields,
+          text: '',
+        }));
       });
   };
 
@@ -84,9 +98,11 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const handleClear = () => {
     clearErrors();
-    setName('');
-    setEmail('');
-    setText('');
+    setFormFields({
+      name: '',
+      email: '',
+      text: '',
+    });
   };
 
   return (
@@ -102,7 +118,7 @@ export const NewCommentForm: React.FC<Props> = ({
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            value={name}
+            value={formFields.name}
             onChange={handleNameChange}
             className={classNames(
               'input',
@@ -142,7 +158,7 @@ export const NewCommentForm: React.FC<Props> = ({
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            value={email}
+            value={formFields.email}
             onChange={handleEmailChange}
             className={classNames(
               'input',
@@ -181,7 +197,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            value={text}
+            value={formFields.text}
             onChange={handleBodyChange}
             className={classNames(
               'textarea',

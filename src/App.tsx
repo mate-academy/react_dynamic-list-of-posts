@@ -21,8 +21,6 @@ export const App: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [isCmntsLoading, setIsCmntsLoading] = useState(false);
-  const [isCmntsError, setIsCmntsError] = useState(false);
   const [isWriting, setIsWriting] = useState(false);
 
   useEffect(() => {
@@ -43,22 +41,16 @@ export const App: React.FC = () => {
     }
   }, [selectedUser]);
 
-  useEffect(() => {
-    if (selectedPost) {
-      setIsCmntsLoading(true);
-
-      postService.getComments(selectedPost.id)
-        .then(setComments)
-        .catch(() => setIsCmntsError(true))
-        .finally(() => setIsCmntsLoading(false));
-    }
-  }, [selectedPost]);
+  const getComments = (postId: number) => {
+    return postService.getComments(postId)
+      .then(setComments);
+  };
 
   const deleteComment = (id: number) => {
     setComments(prevComments => prevComments
       .filter(comment => comment.id !== id));
-    postService.deleteComment(id)
-      .catch(() => setIsCmntsError(true));
+
+    return postService.deleteComment(id);
   };
 
   const addComment = ({
@@ -78,12 +70,10 @@ export const App: React.FC = () => {
       email,
       body,
     })
-      .then(newComment => setComments(prevCmnts => [...prevCmnts, newComment]))
-      .catch(() => setIsCmntsError(true));
+      .then(newComment => setComments(prevCmnts => [...prevCmnts, newComment]));
   };
 
   const validatePosts = selectedUser && !isLoading && !isError;
-  const validateComments = !isCmntsLoading && !isCmntsError;
 
   return (
     <main className="section">
@@ -151,13 +141,11 @@ export const App: React.FC = () => {
                 <PostDetails
                   selectedPost={selectedPost}
                   comments={comments}
-                  isLoading={isCmntsLoading}
-                  isError={isCmntsError}
-                  validateComments={validateComments}
                   deleteComment={deleteComment}
                   isWriting={isWriting}
                   setIsWriting={setIsWriting}
                   addComment={addComment}
+                  getComments={getComments}
                 />
               )}
             </div>

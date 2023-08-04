@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
@@ -8,10 +8,7 @@ import { Comment } from '../types/Comment';
 type Props = {
   selectedPost: Post;
   comments: Comment[];
-  isLoading: boolean;
-  isError: boolean;
-  validateComments: boolean;
-  deleteComment: (id: number) => void;
+  deleteComment: (id: number) => Promise<unknown>;
   isWriting: boolean;
   setIsWriting: (value: boolean) => void;
   addComment: ({
@@ -20,19 +17,53 @@ type Props = {
     email,
     body,
   }: Omit<Comment, 'id'>) => Promise<void>;
+  getComments: (postId: number) => Promise<void>;
 };
 
 export const PostDetails: React.FC<Props> = ({
   selectedPost,
   comments,
-  isLoading,
-  isError,
-  validateComments,
   deleteComment,
   isWriting,
   setIsWriting,
   addComment,
+  getComments,
 }) => {
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (selectedPost) {
+      setIsLoading(true);
+
+      getComments(selectedPost.id)
+        .catch(() => setIsError(true))
+        .finally(() => setIsLoading(false));
+    }
+  }, [selectedPost]);
+
+  const validateComments = !isLoading && !isError;
+
+  const handleDelete = (id: number) => {
+    deleteComment(id)
+      .catch(() => setIsError(true));
+  };
+
+  const handleAddComment = ({
+    postId,
+    name,
+    email,
+    body,
+  }: Omit<Comment, 'id'>) => {
+    return addComment({
+      postId,
+      name,
+      email,
+      body,
+    })
+      .catch(() => setIsError(true));
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -88,7 +119,7 @@ export const PostDetails: React.FC<Props> = ({
                         type="button"
                         className="delete is-small"
                         aria-label="delete"
-                        onClick={() => deleteComment(id)}
+                        onClick={() => handleDelete(id)}
                       >
                         delete button
                       </button>
@@ -117,7 +148,7 @@ export const PostDetails: React.FC<Props> = ({
 
         {isWriting && (
           <NewCommentForm
-            addComment={addComment}
+            addComment={handleAddComment}
             postId={selectedPost.id}
           />
         )}
