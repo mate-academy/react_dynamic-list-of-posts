@@ -24,7 +24,7 @@ export const UserSelector: React.FC<Props> = (
     document.addEventListener('click', handleClickOutside);
 
     return () => document.removeEventListener('click', handleClickOutside);
-  },[])
+  }, []);
 
   const handleSelectUser = (
     event: React.MouseEvent<HTMLAnchorElement>, user: User,

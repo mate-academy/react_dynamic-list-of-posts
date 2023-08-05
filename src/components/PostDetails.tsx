@@ -22,6 +22,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     }
 
     setErrorMessage('');
+    setIsOpenEditor(false);
     setLoading(true);
 
     client.get<Comment[]>(`/comments?postId=${post.id}`)
@@ -37,7 +38,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       return;
     }
 
-     setErrorMessage('');
+    setErrorMessage('');
     setIsCreatingComment(true);
 
     client.post<Comment>('/comments',
@@ -52,7 +53,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     client.delete(`/comments/${commentId}`);
 
     setComments((prevComments) => prevComments
-      .filter(prevComment => prevComment.id !== commentId))
+      .filter(prevComment => prevComment.id !== commentId));
   };
 
   return (
@@ -83,44 +84,42 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                 No comments yet
               </p>
             )
-            )}
-
-          {comments.length > 0 && !loading && !errorMessage && (
-              <>
-                <p className="title is-4">Comments:</p>
-
-                {comments.map((comment) => (
-                  <article
-                    key={comment.id}
-                    className="message is-small"
-                    data-cy="Comment"
-                  >
-                    <div className="message-header">
-                      <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                        {comment.name}
-                      </a>
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
-                        onClick={() => deleteComment(comment.id)}
-                      >
-                        delete button
-                      </button>
-                    </div>
-
-                    <div className="message-body" data-cy="CommentBody">
-                      {comment.body}
-                    </div>
-                  </article>
-                ))}
-              </>
           )}
 
+          {comments.length > 0 && !loading && !errorMessage && (
+            <>
+              <p className="title is-4">Comments:</p>
 
+              {comments.map((comment) => (
+                <article
+                  key={comment.id}
+                  className="message is-small"
+                  data-cy="Comment"
+                >
+                  <div className="message-header">
+                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                      {comment.name}
+                    </a>
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={() => deleteComment(comment.id)}
+                    >
+                      delete button
+                    </button>
+                  </div>
 
-          {!isOpenEditor && !loading && !errorMessage  && (
+                  <div className="message-body" data-cy="CommentBody">
+                    {comment.body}
+                  </div>
+                </article>
+              ))}
+            </>
+          )}
+
+          {!isOpenEditor && !loading && !errorMessage && (
             <button
               data-cy="WriteCommentButton"
               type="button"
