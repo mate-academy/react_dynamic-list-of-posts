@@ -20,7 +20,6 @@ export const NewCommentForm: React.FC<Props> = ({
   const [body, setBody] = useState('');
   const [hasBodyError, setHasBodyError] = useState(false);
 
-
   const handleAuthorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
     setHasAuthorError(false);
