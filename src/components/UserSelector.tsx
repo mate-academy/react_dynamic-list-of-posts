@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 
@@ -25,13 +25,21 @@ export const UserSelector: React.FC<Props> = ({
     setOpen(false);
   };
 
-  document.addEventListener('click', (event) => {
-    const target = event.target as HTMLElement;
+  useEffect(() => {
+    const handleEvent = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
 
-    if (!ref.current?.contains(target)) {
-      setOpen(false);
-    }
-  });
+      if (!ref.current?.contains(target)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleEvent);
+
+    return () => {
+      document.removeEventListener('click', handleEvent);
+    };
+  }, []);
 
   return (
     <div

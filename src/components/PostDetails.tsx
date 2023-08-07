@@ -13,7 +13,7 @@ export const PostDetails: React.FC<Props> = ({
   post,
 }) => {
   const [comments, setComments] = useState<Comment[] | null>(null);
-  const [IsLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [toShowForm, setToShowForm] = useState(false);
 
@@ -27,7 +27,7 @@ export const PostDetails: React.FC<Props> = ({
 
     client.get<Comment[]>(`/comments?postId=${post.id}`)
       .then((fetchComments) => setComments(fetchComments))
-      .catch(() => setErrorMsg('Something went wrong!'))
+      .catch((error) => setErrorMsg(error.message))
       .finally(() => setIsLoading(false));
   }, [post?.id, post?.userId]);
 
@@ -38,7 +38,8 @@ export const PostDetails: React.FC<Props> = ({
 
     setComments(comments.filter((c) => c.id !== comment.id));
 
-    client.delete(`/comments/${comment.id}`);
+    client.delete(`/comments/${comment.id}`)
+      .catch((error) => setErrorMsg(error.message));
   };
 
   return (
@@ -55,21 +56,21 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {IsLoading && (<Loader />)}
+          {isLoading && (<Loader />)}
 
-          {errorMsg && !IsLoading && (
+          {errorMsg && !isLoading && (
             <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
+              {errorMsg}
             </div>
           )}
 
-          {comments?.length === 0 && !IsLoading && !errorMsg && (
+          {comments?.length === 0 && !isLoading && !errorMsg && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {comments && comments?.length > 0 && !IsLoading && !errorMsg && (
+          {comments && comments?.length > 0 && !isLoading && !errorMsg && (
             <>
               <p className="title is-4">Comments:</p>
 
@@ -106,7 +107,7 @@ export const PostDetails: React.FC<Props> = ({
             </>
           )}
 
-          {!toShowForm && !IsLoading && !errorMsg && (
+          {!toShowForm && !isLoading && !errorMsg && (
             <button
               data-cy="WriteCommentButton"
               type="button"

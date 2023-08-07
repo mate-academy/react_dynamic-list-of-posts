@@ -1,5 +1,5 @@
-import classNames from 'classnames';
 import React, { useState } from 'react';
+import classNames from 'classnames';
 import { client } from '../utils/fetchClient';
 import { Comment } from '../types/Comment';
 
@@ -44,6 +44,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         setComments([...comments, newComment]);
       })
+      .catch()
       .finally(() => setIsLoading(false));
 
     setToShowErrors(false);
