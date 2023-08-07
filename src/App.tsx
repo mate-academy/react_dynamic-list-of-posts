@@ -77,44 +77,42 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUser ? (
+                {!selectedUser && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
-                ) : (
-                  <>
-                    {isLoadingPosts ? (
-                      <Loader />
-                    ) : (
-                      <>
-                        {errorGetPosts && (
-                          <div
-                            className="notification is-danger"
-                            data-cy="PostsLoadingError"
-                          >
-                            Something went wrong!
-                          </div>
-                        )}
+                )}
 
-                        {!errorGetPosts && posts.length !== 0 && (
-                          <PostsList
-                            posts={posts}
-                            selectedPost={selectedPost}
-                            setSelectedPost={setSelectedPost}
-                          />
-                        )}
+                {isLoadingPosts && (
+                  <Loader />
+                )}
 
-                        {!errorGetPosts && posts.length === 0 && (
-                          <div
-                            className="notification is-warning"
-                            data-cy="NoPostsYet"
-                          >
-                            No posts yet
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </>
+                {selectedUser && !isLoadingPosts && errorGetPosts && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
+
+                {selectedUser && !isLoadingPosts && !errorGetPosts
+                && posts.length !== 0 && (
+                  <PostsList
+                    posts={posts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
+                  />
+                )}
+
+                {selectedUser && !isLoadingPosts && !errorGetPosts
+                && posts.length === 0 && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
                 )}
               </div>
             </div>

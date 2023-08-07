@@ -20,6 +20,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const [errorEmail, setErrorEmail] = useState(false);
   const [commentBody, setCommentBody] = useState('');
   const [errorCommentBody, setErrorCommentBody] = useState(false);
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setErrorName(false);
@@ -55,9 +56,7 @@ export const NewCommentForm: React.FC<Props> = ({
         setErrorName(true);
       }
 
-      if (email === '') {
-        setErrorEmail(true);
-      }
+      setErrorEmail(!emailPattern.test(email));
 
       if (commentBody === '') {
         setErrorCommentBody(true);

@@ -26,9 +26,7 @@ export const PostDetails: React.FC<Props> = ({
     ));
 
     deleteComment(commentId)
-      .then()
-      .catch(() => setError(true))
-      .finally();
+      .catch(() => setError(true));
   };
 
   return (
@@ -44,70 +42,67 @@ export const PostDetails: React.FC<Props> = ({
       </div>
 
       <div className="block">
-        {isLoadingComments ? (
+        {isLoadingComments && (
           <Loader />
-        ) : (
+        )}
+        {!isLoadingComments && error && (
+          <div className="notification is-danger" data-cy="CommentsError">
+            Something went wrong
+          </div>
+        )}
+
+        {!isLoadingComments && !error && comments.length === 0 && (
+          <p className="title is-4" data-cy="NoCommentsMessage">
+            No comments yet
+          </p>
+        )}
+
+        {!isLoadingComments && !error && comments.length !== 0 && (
           <>
-            {error && (
-              <div className="notification is-danger" data-cy="CommentsError">
-                Something went wrong
-              </div>
-            )}
+            <p className="title is-4">Comments:</p>
 
-            {!error && comments.length === 0 && (
-              <p className="title is-4" data-cy="NoCommentsMessage">
-                No comments yet
-              </p>
-            )}
-
-            {!error && comments.length !== 0 && (
-              <>
-                <p className="title is-4">Comments:</p>
-
-                {comments.map(comment => (
-                  <article
-                    className="message is-small"
-                    data-cy="Comment"
-                    key={comment.id}
-                  >
-                    <div className="message-header">
-                      <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                        {comment.name}
-                      </a>
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
-                        onClick={() => handleDelete(comment.id)}
-                      >
-                        delete button
-                      </button>
-                    </div>
-
-                    <div className="message-body" data-cy="CommentBody">
-                      {comment.body}
-                    </div>
-                  </article>
-                ))}
-              </>
-            )}
-
-            {!error && activeForm !== selectedPost && (
-              <button
-                data-cy="WriteCommentButton"
-                type="button"
-                className="button is-link"
-                onClick={() => setActiveForm(selectedPost)}
+            {comments.map(comment => (
+              <article
+                className="message is-small"
+                data-cy="Comment"
+                key={comment.id}
               >
-                Write a comment
-              </button>
-            )}
+                <div className="message-header">
+                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                    {comment.name}
+                  </a>
+                  <button
+                    data-cy="CommentDelete"
+                    type="button"
+                    className="delete is-small"
+                    aria-label="delete"
+                    onClick={() => handleDelete(comment.id)}
+                  >
+                    delete button
+                  </button>
+                </div>
+
+                <div className="message-body" data-cy="CommentBody">
+                  {comment.body}
+                </div>
+              </article>
+            ))}
           </>
+        )}
+
+        {!isLoadingComments && !error && activeForm !== selectedPost && (
+          <button
+            data-cy="WriteCommentButton"
+            type="button"
+            className="button is-link"
+            onClick={() => setActiveForm(selectedPost)}
+          >
+            Write a comment
+          </button>
         )}
       </div>
 
-      {!error && activeForm === selectedPost && (
+      {!isLoadingComments && !error && activeForm === selectedPost && (
         <NewCommentForm
           selectedPost={selectedPost}
           setComments={setComments}
