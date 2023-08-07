@@ -1,14 +1,19 @@
 import React, { createRef, useEffect, useState } from 'react';
 import cn from 'classnames';
 import { PostsContext } from '../context/postsContext';
+import { User } from '../types/User';
+import { Loader } from './Loader';
+import { getUsers } from '../api/users.api';
 
 export const UserSelector: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
   const [isDropdownActive, setIsDropdownActive] = useState(false);
   const {
-    users,
     selectedUser,
     setSelectedUser,
     setSelectedPost,
+    setErrorMessage,
   } = React.useContext(PostsContext);
   const dropdown = createRef<HTMLButtonElement>();
 
@@ -30,6 +35,17 @@ export const UserSelector: React.FC = () => {
     };
   }, [isDropdownActive]);
 
+  useEffect(() => {
+    setLoading(true);
+
+    getUsers()
+      .then(setUsers)
+      .catch(() => {
+        setErrorMessage('Cannot load users list.');
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <div
       data-cy="UserSelector"
@@ -44,7 +60,7 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setIsDropdownActive(true)}
+          onClick={() => setIsDropdownActive(!isDropdownActive)}
         >
           <span>
             {selectedUser?.name || 'Choose a user'}
@@ -58,7 +74,9 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.length > 0 && users.map(user => (
+          { loading && <Loader />}
+
+          {!loading && users.length > 0 && users.map(user => (
             <a
               key={user.id}
               href={`#user-${user.id}`}
@@ -74,6 +92,10 @@ export const UserSelector: React.FC = () => {
               {user.name}
             </a>
           ))}
+
+          {!loading && users.length === 0 && (
+            <p className="dropdown-item">There are no users</p>
+          )}
         </div>
       </div>
     </div>

@@ -39,7 +39,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     setCreateNewComment(false);
-  }, [post]);
+  }, [post.id]);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -122,7 +122,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                 <NewCommentForm
                   postId={post.id}
                   setErrorMessage={setErrorMessage}
-                  setComments={(newComment) => setComments(
+                  addComment={(newComment) => setComments(
                     prev => [...prev, newComment],
                   )}
                 />

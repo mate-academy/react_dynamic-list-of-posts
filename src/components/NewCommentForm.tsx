@@ -6,13 +6,13 @@ import { Comment } from '../types/Comment';
 interface Props {
   postId: number,
   setErrorMessage: (error: string) => void,
-  setComments: (comment: Comment) => void,
+  addComment: (comment: Comment) => void,
 }
 
 export const NewCommentForm: React.FC<Props> = ({
   postId,
   setErrorMessage,
-  setComments,
+  addComment,
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -56,7 +56,7 @@ export const NewCommentForm: React.FC<Props> = ({
       .then((createdComment) => {
         setMessage('');
         setHasError(false);
-        setComments(createdComment);
+        addComment(createdComment);
       })
       .catch(() => {
         setErrorMessage('Cannot create a new comment.');
