@@ -47,7 +47,7 @@ export const UserSelector: React.FC<Props> = ({ selectedUser, selectUser }) => {
 
               return (
                 <a
-                  href={`"#user-${id}"`}
+                  href={`#user-${id}`}
                   className="dropdown-item"
                   key={id}
                   onClick={() => {
