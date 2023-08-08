@@ -1,36 +1,74 @@
 import React from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { Post } from '../types/Post';
+import { Comment } from '../types/Comment';
 
-export const PostDetails: React.FC = () => {
+type Props = {
+  post: Post | null
+  comments: Comment[]
+};
+
+export const PostDetails: React.FC<Props> = ({ post, comments }) => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {`#${post?.id}: ${post?.title}`}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            {post?.body}
           </p>
         </div>
 
         <div className="block">
-          <Loader />
+          {false && (
+            <Loader />
+          )}
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
+          {false && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
+            </div>
+          )}
 
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
+          {comments.length === 0 && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
 
           <p className="title is-4">Comments:</p>
+
+          {comments.map(({
+            email, name, body, id,
+          }) => (
+            <article
+              className="message is-small"
+              data-cy="Comment"
+              key={id}
+            >
+              <div className="message-header">
+                <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                  {name}
+                </a>
+                <button
+                  data-cy="CommentDelete"
+                  type="button"
+                  className="delete is-small"
+                  aria-label="delete"
+                >
+                  delete button
+                </button>
+              </div>
+
+              <div className="message-body" data-cy="CommentBody">
+                {body}
+              </div>
+            </article>
+          ))}
 
           <article className="message is-small" data-cy="Comment">
             <div className="message-header">
@@ -111,7 +149,9 @@ export const PostDetails: React.FC = () => {
           </button>
         </div>
 
-        <NewCommentForm />
+        {false && (
+          <NewCommentForm />
+        )}
       </div>
     </div>
   );
