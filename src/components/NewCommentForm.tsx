@@ -37,9 +37,7 @@ export const NewCommentForm: React.FC<Props> = ({
     setCommentBody(event.target.value);
   };
 
-  const handleReset = (
-    // event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-  ) => {
+  const handleReset = () => {
     setErrorName(false);
     setErrorEmail(false);
     setErrorCommentBody(false);
