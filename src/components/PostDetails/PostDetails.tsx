@@ -125,7 +125,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </>
           )}
 
-          {!isLoading && !loadingError && !noComments && showButton && (
+          {!isLoading && !loadingError && showButton && (
             <button
               data-cy="WriteCommentButton"
               type="button"

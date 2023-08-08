@@ -72,7 +72,6 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    handleNewCommentId(selectedPost.id);
 
     if (!name.trim() || !email.trim() || !body.trim()) {
       setNameVisited(true);
@@ -81,6 +80,8 @@ export const NewCommentForm: React.FC<Props> = ({
 
       return;
     }
+
+    handleNewCommentId(selectedPost.id);
 
     onAdd({
       id: newCommentId,
@@ -157,7 +158,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"

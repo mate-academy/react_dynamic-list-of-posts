@@ -22,11 +22,19 @@ export const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User>();
   const [userPosts, setUserPosts] = useState<Post[]>([]);
 
-  const [error, setError] = useState<Notification>(Notification.NoError);
-  const [noPosts, setNoPosts] = useState(false);
+  const [
+    notification,
+    setNotification,
+  ] = useState<Notification>(Notification.NoError);
   const [loadingError, setLoadingError] = useState(false);
 
   const [selectedPost, setSelectedPost] = useState<Post>();
+
+  const showList = !isLoading && !loadingError
+  && selectedUser && (notification !== Notification.NoPostsYet);
+
+  const showNoPosts = !isLoading && !loadingError
+  && selectedUser && (notification === Notification.NoPostsYet);
 
   useEffect(() => {
     client
@@ -37,21 +45,20 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (selectedUser) {
       setIsLoading(true);
-      setNoPosts(false);
+      setNotification(Notification.NoError);
 
       client
         .get<Post[]>(`/posts?userId=${selectedUser.id}`)
         .then((data) => {
           if (data.length === 0) {
-            setError(Notification.NoPostsYet);
-            setNoPosts(true);
+            setNotification(Notification.NoPostsYet);
           }
 
           setUserPosts(data);
         })
         .catch(() => {
           setLoadingError(true);
-          setError(Notification.PostsLoadingError);
+          setNotification(Notification.PostsLoadingError);
         })
         .finally(() => setIsLoading(false));
     }
@@ -98,23 +105,21 @@ export const App: React.FC = () => {
                 {!isLoading && loadingError && (
 
                   <NotificationMessage
-                    notification={error}
+                    notification={notification}
                     errorType="is-danger"
                     data="PostsLoadingError"
                   />
                 )}
 
-                {!isLoading && !loadingError
-                && selectedUser && noPosts && (
+                {showNoPosts && (
                   <NotificationMessage
-                    notification={error}
+                    notification={notification}
                     errorType="is-warning"
                     data="NoPostsYet"
                   />
                 )}
 
-                {!isLoading && !loadingError
-                && selectedUser && !noPosts && (
+                {showList && (
                   <PostsList
                     posts={userPosts}
                     onPostOpen={handleSelectedPost}
@@ -126,9 +131,7 @@ export const App: React.FC = () => {
           </div>
 
           {selectedPost && (
-            <Sidebar
-              post={selectedPost}
-            />
+            <Sidebar post={selectedPost} />
           )}
         </div>
       </div>
