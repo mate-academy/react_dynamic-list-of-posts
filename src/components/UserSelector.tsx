@@ -17,17 +17,17 @@ export const UserSelector: React.FC = () => {
   } = React.useContext(PostsContext);
   const dropdown = createRef<HTMLButtonElement>();
 
-  useEffect(() => {
-    function hideDropdown(event: MouseEvent) {
-      if (!isDropdownActive) {
-        return;
-      }
-
-      if (!dropdown.current?.contains(event.target as Node)) {
-        setIsDropdownActive(false);
-      }
+  const hideDropdown = React.useCallback((event: MouseEvent) => {
+    if (!isDropdownActive) {
+      return;
     }
 
+    if (!dropdown.current?.contains(event.target as Node)) {
+      setIsDropdownActive(false);
+    }
+  }, [isDropdownActive]);
+
+  useEffect(() => {
     document.addEventListener('click', hideDropdown);
 
     return () => {

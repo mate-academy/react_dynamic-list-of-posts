@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { deleteComment, getCommentsByPostId } from '../api/comments.api';
 import { Comment } from '../types/Comment';
+import { PostsContext } from '../context/postsContext';
 
 interface Props {
   post: Post;
@@ -14,6 +15,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [createNewComment, setCreateNewComment] = useState(false);
+  const { selectedPost } = useContext(PostsContext);
 
   useEffect(() => {
     setLoading(true);
@@ -39,7 +41,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     setCreateNewComment(false);
-  }, [post.id]);
+  }, [selectedPost]);
 
   return (
     <div className="content" data-cy="PostDetails">
