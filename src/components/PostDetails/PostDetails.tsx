@@ -31,6 +31,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setIsLoading(true);
     setShowForm(false);
     setShowButton(true);
+    setNoComments(false);
     client
       .get<Comment[]>(`/comments?postId=${post.id}`)
       .then((data) => {
