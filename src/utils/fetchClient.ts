@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const BASE_URL = 'https://mate.academy/students-api';
 
 // a promise resolved after a given delay
@@ -13,6 +14,7 @@ type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 function request<T>(
   url: string,
   method: RequestMethod = 'GET',
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any = null, // we can send any data to the server
 ): Promise<T> {
   const options: RequestInit = { method };
