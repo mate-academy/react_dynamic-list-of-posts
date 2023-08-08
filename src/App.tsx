@@ -1,15 +1,35 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
+import { DispatchContext, StateContext } from './reducer/store';
+import { Notifications } from './components/Notifications/Notifications';
+import { UserSelector } from './components/UserData/UserSelector';
+import { PostsList } from './components/PostData/PostsList';
 import { Loader } from './components/Loader';
+import { Sidebar } from './components/Sidebar/Sidebar';
+import { userService } from './services/user.service';
+import { postService } from './services/post.service';
 
 export const App: React.FC = () => {
+  const dispatch = useContext(DispatchContext);
+  const [showSpinner, setShowSpinner] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const { selectedUser, postsList } = useContext(StateContext);
+
+  useEffect(() => {
+    const { getUsers } = userService(dispatch);
+
+    getUsers(setShowNotification);
+  }, []);
+
+  useEffect(() => {
+    const { setPosts } = postService(dispatch);
+
+    setPosts(setShowNotification, selectedUser, setShowSpinner);
+  }, [selectedUser]);
+
   return (
     <main className="section">
       <div className="container">
@@ -21,42 +41,22 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {showNotification && <Notifications />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {showSpinner && <Loader />}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                {postsList && <PostsList postsList={postsList} />}
               </div>
             </div>
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
-          </div>
+          <Sidebar />
         </div>
       </div>
     </main>
