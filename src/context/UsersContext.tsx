@@ -10,14 +10,17 @@ type Props = {
 
 export const UsersProvider: React.FC<Props> = ({ children }) => {
   const [users, setUsers] = useState<User[]>([]);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    getUsers().then(setUsers);
+    getUsers()
+      .then(setUsers)
+      .catch(() => setError('Failed to fetch users.'));
   }, []);
 
   return (
     <UsersContext.Provider value={users}>
-      {children}
+      {error ? <div>{error}</div> : children}
     </UsersContext.Provider>
   );
 };

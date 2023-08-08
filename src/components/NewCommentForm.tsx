@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 import classNames from 'classnames';
 import React, { useState } from 'react';
 
@@ -58,7 +59,7 @@ export const NewCommentForm: React.FC<Props> = ({
         await onAddNewComment(selectedPostId, name, email, body);
         setBody('');
       } catch {
-        throw new Error();
+        throw new Error('Could not submit the form');
       } finally {
         setLoading(false);
       }
@@ -77,7 +78,6 @@ export const NewCommentForm: React.FC<Props> = ({
   return (
     <form
       data-cy="NewCommentForm"
-      method="POST"
       onSubmit={handleSubmit}
     >
       <div className="field" data-cy="NameField">
@@ -195,7 +195,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control">
           <button
-            type="button"
+            type="reset"
             className="button is-link is-light"
             onClick={reset}
           >

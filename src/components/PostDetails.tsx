@@ -50,50 +50,46 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {comments?.length === 0 && (
+          {!comments?.length && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {comments && comments?.length > 0 && (
+          {comments && (
             <>
               <p className="title is-4">Comments:</p>
-              {comments.map(comment => {
-                const {
-                  id,
-                  name,
-                  email,
-                  body,
-                } = comment;
+              {comments.map(({
+                id,
+                name,
+                email,
+                body,
+              }) => (
+                <article
+                  className="message is-small"
+                  data-cy="Comment"
+                  key={id}
+                >
+                  <div className="message-header">
+                    <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                      {name}
+                    </a>
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={() => onDeleteComment(id)}
+                    >
+                      delete button
+                    </button>
+                  </div>
 
-                return (
-                  <article
-                    className="message is-small"
-                    data-cy="Comment"
-                    key={id}
-                  >
-                    <div className="message-header">
-                      <a href={`mailto:${email}`} data-cy="CommentAuthor">
-                        {name}
-                      </a>
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
-                        onClick={() => onDeleteComment(id)}
-                      >
-                        delete button
-                      </button>
-                    </div>
-
-                    <div className="message-body" data-cy="CommentBody">
-                      {body}
-                    </div>
-                  </article>
-                );
-              })}
+                  <div className="message-body" data-cy="CommentBody">
+                    {body}
+                  </div>
+                </article>
+              ))}
             </>
           )}
 

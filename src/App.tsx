@@ -77,12 +77,12 @@ export const App: React.FC = () => {
     setComments([...filteredComments, newComment]);
   };
 
-  const handleDeleteComment = (commentId: number) => {
+  const handleDeleteComment = async (commentId: number) => {
     const filteredComments
       = comments.filter(comment => comment.id !== commentId);
 
     setComments(filteredComments);
-    deleteComment(commentId);
+    await deleteComment(commentId);
   };
 
   return (
@@ -107,7 +107,7 @@ export const App: React.FC = () => {
 
                 {isLoading && (<Loader />)}
 
-                {isError && isLoading && (
+                {isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"

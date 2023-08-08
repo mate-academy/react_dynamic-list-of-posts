@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useUsers } from '../context/UsersContext';
 import { User } from '../types/User';
+import { SelectUser } from './SelectUser';
 
 type Props = {
   selectedUser: User | null;
@@ -9,10 +9,14 @@ type Props = {
 
 export const UserSelector: React.FC<Props> = ({ selectedUser, selectUser }) => {
   const [open, setOpen] = useState(false);
-  const users = useUsers();
 
   const handleOpen = () => {
-    setOpen(!open);
+    setOpen((prev) => !prev);
+  };
+
+  const handleClick = (user: User) => {
+    selectUser(user);
+    handleOpen();
   };
 
   return (
@@ -42,23 +46,7 @@ export const UserSelector: React.FC<Props> = ({ selectedUser, selectUser }) => {
 
         <div className="dropdown-content">
           {open ? (
-            users.map(user => {
-              const { id, name } = user;
-
-              return (
-                <a
-                  href={`#user-${id}`}
-                  className="dropdown-item"
-                  key={id}
-                  onClick={() => {
-                    selectUser(user);
-                    handleOpen();
-                  }}
-                >
-                  {name}
-                </a>
-              );
-            })
+            <SelectUser handleClick={handleClick} />
           ) : (null)}
         </div>
 
