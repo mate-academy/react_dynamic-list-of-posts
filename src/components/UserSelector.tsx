@@ -2,29 +2,36 @@ import React, { useEffect, useRef, useState } from 'react';
 import cn from 'classnames';
 import { User } from '../types/User';
 import { Post } from '../types/Post';
-import { getPostsByUser } from '../utils/api';
+import { getPostsByUser, usersFromApi } from '../utils/api';
 
 interface Props {
-  users: User[];
   selectedUser: User | null;
 
   setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>;
   setPosts: React.Dispatch<React.SetStateAction<Post[] | null>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setPostsLoadingError: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>
 }
 
 export const UserSelector: React.FC<Props> = ({
-  users,
   selectedUser,
   setSelectedUser,
   setPosts,
   setIsLoading,
   setPostsLoadingError,
+  setSelectedPost,
 }) => {
   const [isActive, setIsActive] = useState<boolean>(false);
-
+  const [users, setUsers] = useState<User[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    usersFromApi
+      .then((newUsers) => {
+        setUsers(newUsers);
+      });
+  }, []);
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
@@ -46,6 +53,7 @@ export const UserSelector: React.FC<Props> = ({
     setIsActive(false);
     setIsLoading(true);
     setPosts(null);
+    setSelectedPost(null);
 
     getPostsByUser(user.id)
       .then((postsFromAPI) => {

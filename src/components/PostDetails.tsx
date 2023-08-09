@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment } from '../types/Comment';
@@ -22,7 +22,7 @@ export const PostDetails: React.FC<Props> = ({
 }) => {
   const [isFormOpened, setIsFormOpened] = useState<boolean>(false);
 
-  useMemo(() => {
+  useEffect(() => {
     setIsFormOpened(false);
   }, [selectedPost]);
 

@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useCallback, useState } from 'react';
 import cn from 'classnames';
 import isEmail from 'validator/lib/isEmail';
@@ -21,38 +20,66 @@ export const NewCommentForm: React.FC<Props> = ({
   setComments,
   selectedPost,
 }) => {
-  const [name, setName] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [body, setBody] = useState<string>('');
-  const [isCommentAddLoading,
-    setIsCommentAddLoading] = useState<boolean>(false);
+  const [fields, setFields] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
 
-  const [nameError, setNameError] = useState<boolean>(false);
-  const [emailError, setEmailError] = useState<boolean>(false);
-  const [bodyError, setBodyError] = useState<boolean>(false);
+  const [errors, setErrors] = useState({
+    nameError: false,
+    emailError: false,
+    bodyError: false,
+  });
+
+  const [
+    isCommentAddLoading,
+    setIsCommentAddLoading,
+  ] = useState<boolean>(false);
 
   const handleInput = useCallback((event: React.ChangeEvent<HTMLInputElement
   | HTMLTextAreaElement>,
   type: InputType) => {
     switch (type) {
       case InputType.NAME: {
-        setName(event.target.value);
-        if (nameError) {
-          setNameError(false);
-        }
+        setFields((prevFields) => ({
+          ...prevFields,
+          name: event.target.value,
+        }));
+
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          nameError: false,
+        }));
 
         break;
       }
 
       case InputType.EMAIL: {
-        setEmail(event.target.value);
-        setEmailError(false);
+        setFields((prevFields) => ({
+          ...prevFields,
+          email: event.target.value,
+        }));
+
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          emailError: false,
+        }));
+
         break;
       }
 
       case InputType.BODY: {
-        setBody(event.target.value);
-        setBodyError(false);
+        setFields((prevFields) => ({
+          ...prevFields,
+          body: event.target.value,
+        }));
+
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          bodyError: false,
+        }));
+
         break;
       }
 
@@ -60,25 +87,36 @@ export const NewCommentForm: React.FC<Props> = ({
         break;
       }
     }
-  }, [name, email, body]);
+  }, []);
+
+  const { name, email, body } = fields;
+  const { nameError, emailError, bodyError } = errors;
 
   const formSubmit = useCallback((event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     const validName = name.replace(/\s/g, '') !== '';
     const validEmail = isEmail(email);
     const validBody = body.replace(/\s/g, '') !== '';
 
     if (!validName) {
-      setNameError(true);
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        nameError: true,
+      }));
     }
 
     if (!validEmail) {
-      setEmailError(true);
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        emailError: true,
+      }));
     }
 
     if (!validBody) {
-      setBodyError(true);
+      setErrors(prevErrors => ({
+        ...prevErrors,
+        bodyError: true,
+      }));
     }
 
     if (validName && validEmail && validBody && selectedPost) {
@@ -98,24 +136,32 @@ export const NewCommentForm: React.FC<Props> = ({
             createdComment,
           ]);
         })
-        .catch((error) => {
-          console.error('Error posting comment:', error);
+        .catch(() => {
+          throw new Error('Failed to create comment');
         })
         .finally(() => {
           setIsCommentAddLoading(false);
-          setBody('');
+          setFields({
+            name: '',
+            email: '',
+            body: '',
+          });
         });
     }
   }, [name, email, body, selectedPost]);
 
   const formReset = useCallback(() => {
-    setName('');
-    setEmail('');
-    setBody('');
+    setFields({
+      name: '',
+      email: '',
+      body: '',
+    });
 
-    setNameError(false);
-    setEmailError(false);
-    setBodyError(false);
+    setErrors({
+      nameError: false,
+      emailError: false,
+      bodyError: false,
+    });
   }, []);
 
   return (

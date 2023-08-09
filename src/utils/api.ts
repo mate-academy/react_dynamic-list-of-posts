@@ -22,3 +22,9 @@ export const postComment = (postId: number, comment: Comment) => {
 export const deleteComment = (commentId: number) => {
   return client.delete(`/comments/${commentId}`);
 };
+
+export const usersFromApi = getUsers('/users')
+  .then((users) => users)
+  .catch(() => {
+    throw new Error('Unable to get users');
+  });
