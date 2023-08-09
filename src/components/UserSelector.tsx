@@ -25,7 +25,7 @@ export const UserSelector: React.FC<Props> = ({
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={classNames('dropdown', { 'is-active': activeMenu })}
     >
       <div className="dropdown-trigger">
         <button
