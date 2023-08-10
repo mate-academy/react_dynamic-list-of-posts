@@ -214,19 +214,6 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
           </button>
         </div>
       </div>
-
-      {/* {isCommentWasAdded === false && (
-        <p className="help is-danger">
-          Unable to add comment. Please try again.
-        </p>
-      )}
-
-      {isCommentWasAdded && (
-        <p className="help is-success">
-          Comment was added successfully.
-        </p>
-      )} */}
-
     </form>
   );
 });

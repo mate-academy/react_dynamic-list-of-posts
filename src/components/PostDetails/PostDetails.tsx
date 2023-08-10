@@ -23,7 +23,6 @@ export const PostDetails: React.FC<Props> = ({
   const [isCommentsLOading, setIsCommentsLoading] = useState(false);
   const [isPostCommentsEmpty, setIsPostCommentsEmpty] = useState(false);
   const [errorMessage, setErrorMessage] = useState<ErrorMessage | null>(null);
-  // const [isNewCommentFormActive, setIsNewCommentFormActive] = useState(false);
 
   const showError = (message: ErrorMessage) => {
     setErrorMessage(message);
@@ -34,19 +33,23 @@ export const PostDetails: React.FC<Props> = ({
   };
 
   const locallyDeleteComment = (commentId: number) => {
+    const reserveComments = postComments;
+    const updatedComments = postComments?.filter(
+      (comment) => comment.id !== commentId,
+    );
+
+    if (updatedComments?.length === 0) {
+      setIsPostCommentsEmpty(true);
+    }
+
+    setPostComments(updatedComments || []);
+
     client.delete(`/comments/${commentId}`)
-      .then(() => {
-        const updatedComments = postComments?.filter(
-          (comment) => comment.id !== commentId,
-        );
-
-        if (updatedComments?.length === 0) {
-          setIsPostCommentsEmpty(true);
-        }
-
-        setPostComments(updatedComments || []);
-      })
-      .catch(() => setErrorMessage(ErrorMessage.Delete));
+      .then()
+      .catch(() => {
+        setErrorMessage(ErrorMessage.Delete);
+        setPostComments(reserveComments);
+      });
   };
 
   const locallyAddNewComment = (newComment: Comment) => {
@@ -109,7 +112,6 @@ export const PostDetails: React.FC<Props> = ({
                 <CommentsList
                   comments={postComments}
                   setCommentIdToDelete={locallyDeleteComment}
-                  // setErrorMessage={showError}
                 />
               )}
 
