@@ -17,7 +17,7 @@ export const PostsList: React.FC<Props> = ({
   openSidebar,
   setEnableForm,
 }) => {
-  const [sidebarId, setSidebarId] = useState(0);
+  const [sidebarId, setSidebarId] = useState<number>(0);
 
   const handleButtonClick = (post: Post) => {
     if (openSidebar && post.id === sidebarId) {
@@ -47,27 +47,35 @@ export const PostsList: React.FC<Props> = ({
         </thead>
 
         <tbody>
-          {posts.map(post => (
-            <tr data-cy="Post" key={post.id}>
-              <td data-cy="PostId">{post.id}</td>
+          {posts.map(({
+            id, title, userId, body,
+          }) => {
+            const isSidebarOpen = sidebarId === id;
 
-              <td data-cy="PostTitle">
-                {post.title}
-              </td>
+            return (
+              <tr data-cy="Post" key={id}>
+                <td data-cy="PostId">{id}</td>
 
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={classNames('button is-link',
-                    { 'is-light': sidebarId !== post.id })}
-                  onClick={() => handleButtonClick(post)}
-                >
-                  {sidebarId === post.id ? 'Close' : 'Open'}
-                </button>
-              </td>
-            </tr>
-          ))}
+                <td data-cy="PostTitle">
+                  {title}
+                </td>
+
+                <td className="has-text-right is-vcentered">
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={classNames('button is-link',
+                      { 'is-light': !isSidebarOpen })}
+                    onClick={() => handleButtonClick({
+                      id, title, userId, body,
+                    })}
+                  >
+                    {isSidebarOpen ? 'Close' : 'Open'}
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

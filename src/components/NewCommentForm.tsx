@@ -9,9 +9,9 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [body, setBody] = useState<string>('');
 
   const [nameError, setNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);

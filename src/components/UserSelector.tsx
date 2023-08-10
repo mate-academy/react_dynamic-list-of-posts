@@ -12,7 +12,7 @@ export const UserSelector: React.FC<Props> = ({
   getPosts,
 }) => {
   const [activeMenu, setActieMenu] = useState(false);
-  const [selectName, setSelectName] = useState('');
+  const [selectName, setSelectName] = useState<string>('');
   const [isActive, setIsActive] = useState<number | null>(null);
 
   const handleUserClick = (user: User) => {
@@ -48,16 +48,20 @@ export const UserSelector: React.FC<Props> = ({
       {activeMenu && (
         <div className="dropdown-menu" id="dropdown-menu" role="menu">
           <div className="dropdown-content">
-            {users.map(user => (
+            {users.map(({
+              id, name, email, phone,
+            }) => (
               <a
-                key={user.id}
-                href={`#user-${user.id}`}
+                key={id}
+                href={`#user-${id}`}
                 className={classNames('dropdown-item', {
-                  'is-active': isActive === user.id,
+                  'is-active': isActive === id,
                 })}
-                onClick={() => handleUserClick(user)}
+                onClick={() => handleUserClick({
+                  id, name, email, phone,
+                })}
               >
-                {user.name}
+                {name}
               </a>
             ))}
           </div>
