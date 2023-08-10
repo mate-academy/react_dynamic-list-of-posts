@@ -44,6 +44,21 @@ export const NewCommentForm: React.FC<Props> = ({
     setHasBodyError(false);
   }
 
+  const handleNameInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+    setHasNameError(false);
+  };
+
+  const handleEmailInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+    setHasEmailError(false);
+  };
+
+  const handleBodyInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setBody(event.target.value);
+    setHasBodyError(false);
+  };
+
   return (
     <form
       data-cy="NewCommentForm"
@@ -63,10 +78,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Name Surname"
             className={cn('input', { 'is-danger': hasNameError })}
             value={name}
-            onChange={event => {
-              setName(event.target.value);
-              setHasNameError(false);
-            }}
+            onChange={handleNameInput}
           />
 
           <span className="icon is-small is-left">
@@ -103,10 +115,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="email@test.com"
             className={cn('input', { 'is-danger': hasEmailError })}
             value={email}
-            onChange={event => {
-              setEmail(event.target.value);
-              setHasEmailError(false);
-            }}
+            onChange={handleEmailInput}
           />
 
           <span className="icon is-small is-left">
@@ -142,10 +151,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Type comment here"
             className={cn('input', { 'is-danger': hasBodyError })}
             value={body}
-            onChange={event => {
-              setBody(event.target.value);
-              setHasBodyError(false);
-            }}
+            onChange={handleBodyInput}
           />
         </div>
 

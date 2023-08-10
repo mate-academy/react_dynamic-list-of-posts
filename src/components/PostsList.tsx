@@ -14,13 +14,13 @@ export const PostsList: React.FC<Props> = ({
   selectedPost,
   setSelectedPost,
 }) => {
-  function onButtonClick(post: Post) {
+  const onButtonClick = (post: Post) => () => {
     if (post.id === selectedPost?.id) {
       setSelectedPost(null);
     } else {
       setSelectedPost(post);
     }
-  }
+  };
 
   return (
     <div data-cy="PostsList">
@@ -51,7 +51,7 @@ export const PostsList: React.FC<Props> = ({
                   className={cn('button is-link', {
                     'is-light': post.id !== selectedPost?.id,
                   })}
-                  onClick={() => onButtonClick(post)}
+                  onClick={onButtonClick(post)}
                 >
                   {post.id === selectedPost?.id ? 'Close' : 'Open'}
                 </button>
