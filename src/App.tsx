@@ -38,6 +38,10 @@ export const App: React.FC = () => {
     }
   }, [selectedUser]);
 
+  const isLoadedSuccessfully = selectedUser
+    && !isLoading
+    && !isError;
+
   return (
     <main className="section">
       <div className="container">
@@ -72,9 +76,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUser
-                  && !isLoading
-                  && !isError
+                {isLoadedSuccessfully
                   && posts.length === 0
                   && (
                     <div
@@ -85,9 +87,7 @@ export const App: React.FC = () => {
                     </div>
                   )}
 
-                {selectedUser
-                  && !isLoading
-                  && !isError
+                {isLoadedSuccessfully
                   && posts.length > 0
                   && (
                     <PostsList

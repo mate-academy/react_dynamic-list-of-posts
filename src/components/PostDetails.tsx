@@ -33,7 +33,7 @@ export const PostDetails: React.FC<Props> = ({
       .then(setComments)
       .catch(() => setIsError(true))
       .finally(() => setIsLoading(false));
-  }, [post]);
+  }, [id]);
 
   const createComment = (
     comment: CommentData,
