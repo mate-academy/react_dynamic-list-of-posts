@@ -67,8 +67,11 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const handleClear = () => {
     setName('');
+    setIsNameError(false);
     setEmail('');
+    setIsEmailError(false);
     setBody('');
+    setIsBodyError(false);
   };
 
   return (
@@ -194,8 +197,9 @@ export const NewCommentForm: React.FC<Props> = ({
         </div>
 
         <div className="control">
+           {/* eslint-disable-next-line react/button-has-type */}
           <button
-            type="button"
+            type="reset"
             className="button is-link is-light"
             onClick={handleClear}
           >

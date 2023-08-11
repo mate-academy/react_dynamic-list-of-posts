@@ -62,6 +62,8 @@ export const PostDetails: React.FC<Props> = ({
       .catch(() => setIsError(true));
   };
 
+  const isLoadedSuccessfully = !isLoading && !isError;
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -86,13 +88,13 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {!isLoading && comments.length === 0 && (
+          {isLoadedSuccessfully && comments.length === 0 && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {!isLoading && comments.length > 0 && (
+          {isLoadedSuccessfully && comments.length > 0 && (
             <>
               <p className="title is-4">Comments:</p>
 
@@ -103,7 +105,7 @@ export const PostDetails: React.FC<Props> = ({
             </>
           )}
 
-          {!isLoading && !isFormOpen && (
+          {isLoadedSuccessfully && !isFormOpen && (
             <button
               data-cy="WriteCommentButton"
               type="button"

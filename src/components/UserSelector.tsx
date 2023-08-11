@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import cn from 'classnames';
 import { User } from '../types/User';
 
@@ -14,6 +14,22 @@ export const UserSelector: React.FC<Props> = ({
   setSelectedUser,
 }) => {
   const [isDropdownActive, setIsDropdownActive] = useState(false);
+  const dropdown = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (dropdown.current
+        && !(dropdown.current).contains(event.target as Node)) {
+        setIsDropdownActive(false);
+      }
+    };
+
+    document.addEventListener('click', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
 
   const hasUserSelected = (user: User) => (
     selectedUser && (selectedUser.id === user.id)
@@ -42,6 +58,7 @@ export const UserSelector: React.FC<Props> = ({
         'dropdown',
         { 'is-active': isDropdownActive },
       )}
+      ref={dropdown}
     >
       <div className="dropdown-trigger">
         <button

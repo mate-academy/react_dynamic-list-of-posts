@@ -30,6 +30,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (selectedUser) {
       setIsLoading(true);
+      setSelectedPost(null);
 
       getPosts(selectedUser.id)
         .then(setPosts)
