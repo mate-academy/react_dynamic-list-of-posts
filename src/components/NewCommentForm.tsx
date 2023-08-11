@@ -197,7 +197,7 @@ export const NewCommentForm: React.FC<Props> = ({
         </div>
 
         <div className="control">
-           {/* eslint-disable-next-line react/button-has-type */}
+          {/* eslint-disable-next-line react/button-has-type */}
           <button
             type="reset"
             className="button is-link is-light"
