@@ -29,6 +29,7 @@ export const PostsList: React.FC<Props> = ({
         <tbody>
           {posts.map(post => (
             <PostInfo
+              key={post.id}
               post={post}
               selectedPost={selectedPost}
               setSelectedPost={setSelectedPost}

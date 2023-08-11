@@ -11,7 +11,7 @@ type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 function request<T>(
   url: string,
   method: RequestMethod = 'GET',
-  data: any | null = null,
+  data: Record<string, unknown> | null = null,
 ): Promise<T> {
   const options: RequestInit = { method };
 
@@ -29,7 +29,11 @@ function request<T>(
 
 export const client = {
   get: <T>(url: string) => request<T>(url),
-  post: <T>(url: string, data: any) => request<T>(url, 'POST', data),
-  patch: <T>(url: string, data: any) => request<T>(url, 'PATCH', data),
+  post: <T>(url: string, data: Record<string, unknown>) => (
+    request<T>(url, 'POST', data)
+  ),
+  patch: <T>(url: string, data: Record<string, unknown>) => (
+    request<T>(url, 'PATCH', data)
+  ),
   delete: (url: string) => request(url, 'DELETE'),
 };

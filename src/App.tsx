@@ -12,23 +12,19 @@ import { User } from './types/User';
 import { getUsers } from './api/users';
 import { getPosts } from './api/posts';
 import { Post } from './types/Post';
-import { getComments } from './api/comments';
-import { CommentData } from './types/Comment';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [comments, setComments] = useState<CommentData[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [isPostsError, setIsPostsError] = useState(false);
-  const [isCommentsError, setIsCommentsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     getUsers()
       .then(setUsers)
-      .catch(() => { });
+      .catch(() => setIsError(true));
   }, []);
 
   useEffect(() => {
@@ -37,18 +33,10 @@ export const App: React.FC = () => {
 
       getPosts(selectedUser.id)
         .then(setPosts)
-        .catch(() => setIsPostsError(true))
+        .catch(() => setIsError(true))
         .finally(() => setIsLoading(false));
     }
   }, [selectedUser]);
-
-  useEffect(() => {
-    if (selectedPost) {
-      getComments(selectedPost.id)
-        .then(setComments)
-        .catch(() => setIsCommentsError(true));
-    }
-  }, [selectedPost]);
 
   return (
     <main className="section">
@@ -61,7 +49,6 @@ export const App: React.FC = () => {
                   users={users}
                   selectedUser={selectedUser}
                   setSelectedUser={setSelectedUser}
-                  setIsPostsError={setIsPostsError}
                 />
               </div>
 
@@ -76,7 +63,7 @@ export const App: React.FC = () => {
                   <Loader />
                 )}
 
-                {!isLoading && isPostsError && (
+                {!isLoading && isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -87,7 +74,7 @@ export const App: React.FC = () => {
 
                 {selectedUser
                   && !isLoading
-                  && !isPostsError
+                  && !isError
                   && posts.length === 0
                   && (
                     <div
@@ -100,7 +87,7 @@ export const App: React.FC = () => {
 
                 {selectedUser
                   && !isLoading
-                  && !isPostsError
+                  && !isError
                   && posts.length > 0
                   && (
                     <PostsList
@@ -128,8 +115,6 @@ export const App: React.FC = () => {
               <div className="tile is-child box is-success ">
                 <PostDetails
                   post={selectedPost}
-                  comments={comments}
-                  isCommentsError={isCommentsError}
                 />
               </div>
             )}

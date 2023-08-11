@@ -6,14 +6,12 @@ type Props = {
   users: User[],
   selectedUser: User | null,
   setSelectedUser: (user: User) => void,
-  setIsPostsError: (status: boolean) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   selectedUser,
   setSelectedUser,
-  setIsPostsError,
 }) => {
   const [isDropdownActive, setIsDropdownActive] = useState(false);
 
@@ -31,7 +29,6 @@ export const UserSelector: React.FC<Props> = ({
   ) => {
     event.preventDefault();
     toggleDropdown();
-    setIsPostsError(false);
 
     if (!hasUserSelected(user)) {
       setSelectedUser(user);
