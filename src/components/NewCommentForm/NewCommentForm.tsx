@@ -5,7 +5,7 @@ import { addComment } from '../../api/posts';
 
 type Props = {
   setIsErrorComments: (v: boolean) => void,
-  setComments: React.Dispatch<React.SetStateAction<Comment[]>>
+  setComments: React.Dispatch<React.SetStateAction<Comment[] | null>>
   postId: number,
 };
 
@@ -14,17 +14,17 @@ export const NewCommentForm: React.FC<Props> = ({
   setComments,
   postId,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [name, setName] = useState('');
-  const [isNameError, setIsNameError] = useState(false);
+  const [name, setName] = useState<string>('');
+  const [isNameError, setIsNameError] = useState<boolean>(false);
 
-  const [email, setEmail] = useState('');
-  const [errorMessage, setErrorMessage] = useState('Email is required');
-  const [isEmailError, setIsEmailError] = useState(false);
+  const [email, setEmail] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>('Email is required');
+  const [isEmailError, setIsEmailError] = useState<boolean>(false);
 
-  const [commentText, setCommentText] = useState('');
-  const [isCommentError, setIsCommentError] = useState(false);
+  const [commentText, setCommentText] = useState<string>('');
+  const [isCommentError, setIsCommentError] = useState<boolean>(false);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -41,7 +41,7 @@ export const NewCommentForm: React.FC<Props> = ({
       return;
     }
 
-    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/i.test(email)) {
       setIsEmailError(true);
       setErrorMessage('Email is invalid');
       setIsLoading(false);
@@ -58,7 +58,9 @@ export const NewCommentForm: React.FC<Props> = ({
 
     addComment(comment)
       .then(newComment => {
-        setComments((prevState) => [...prevState, newComment]);
+        setComments(
+          currComments => currComments && [...currComments, newComment],
+        );
       })
       .catch(() => setIsErrorComments(true))
       .finally(() => {
@@ -73,6 +75,23 @@ export const NewCommentForm: React.FC<Props> = ({
     setCommentText('');
     setIsNameError(false);
     setIsEmailError(false);
+    setIsCommentError(false);
+  };
+
+  const handleNameInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+    setIsNameError(false);
+  };
+
+  const handleEmailInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+    setIsEmailError(false);
+  };
+
+  const handleCommentInput = (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    setCommentText(event.target.value);
     setIsCommentError(false);
   };
 
@@ -97,10 +116,7 @@ export const NewCommentForm: React.FC<Props> = ({
               { 'is-danger': isNameError },
             )}
             value={name}
-            onChange={(event) => {
-              setName(event.target.value);
-              setIsNameError(false);
-            }}
+            onChange={handleNameInput}
           />
 
           <span className="icon is-small is-left">
@@ -140,10 +156,7 @@ export const NewCommentForm: React.FC<Props> = ({
               { 'is-danger': isEmailError },
             )}
             value={email}
-            onChange={(event) => {
-              setEmail(event.target.value);
-              setIsEmailError(false);
-            }}
+            onChange={handleEmailInput}
           />
 
           <span className="icon is-small is-left">
@@ -182,10 +195,7 @@ export const NewCommentForm: React.FC<Props> = ({
               { 'is-danger': isCommentError },
             )}
             value={commentText}
-            onChange={(event) => {
-              setCommentText(event.target.value);
-              setIsCommentError(false);
-            }}
+            onChange={handleCommentInput}
           />
         </div>
 

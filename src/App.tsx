@@ -16,16 +16,16 @@ import { Comment } from './types/Comment';
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
-  const [isErrorPosts, setIsErrorPosts] = useState(false);
+  const [isLoadingUsers, setIsLoadingUsers] = useState<boolean>(false);
+  const [isErrorPosts, setIsErrorPosts] = useState<boolean>(false);
 
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [isErrorComments, setIsErrorComments] = useState(false);
-  const [isLoadingComments, setIsLoadingComments] = useState(false);
-  const [isFormShown, setIsFormShown] = useState(false);
+  const [comments, setComments] = useState<Comment[] | null>(null);
+  const [isErrorComments, setIsErrorComments] = useState<boolean>(false);
+  const [isLoadingComments, setIsLoadingComments] = useState<boolean>(false);
+  const [isFormShown, setIsFormShown] = useState<boolean>(false);
 
   useEffect(() => {
     getUsers()
@@ -77,6 +77,8 @@ export const App: React.FC = () => {
                   users={users}
                   selectedUser={selectedUser}
                   setSelectedUser={setSelectedUser}
+                  setSelectedPost={setSelectedPost}
+                  setComments={setComments}
                 />
               </div>
 
@@ -89,7 +91,7 @@ export const App: React.FC = () => {
 
                 {isLoadingUsers && <Loader />}
 
-                {isErrorPosts && (
+                {!isLoadingUsers && isErrorPosts && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -98,20 +100,21 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {posts && posts.length < 1 && (
+                {!isLoadingUsers && posts && posts.length < 1 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {posts && posts.length > 0 && (
+                {!isLoadingUsers && posts && posts.length > 0 && (
                   <PostsList
                     posts={posts}
-                    setIsFormShown={setIsFormShown}
                     selectedPost={selectedPost}
+                    setIsFormShown={setIsFormShown}
                     setSelectedPost={setSelectedPost}
                     setIsLoadingComments={setIsLoadingComments}
                     setIsErrorComments={setIsErrorComments}
+                    setComments={setComments}
                   />
                 )}
 
@@ -129,16 +132,18 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails
-                selectedPost={selectedPost}
-                comments={comments}
-                isErrorComments={isErrorComments}
-                isLoadingComments={isLoadingComments}
-                setComments={setComments}
-                setIsErrorComments={setIsErrorComments}
-                setIsFormShown={setIsFormShown}
-                isFormShown={isFormShown}
-              />
+              {comments && selectedPost && (
+                <PostDetails
+                  selectedPost={selectedPost}
+                  comments={comments}
+                  isErrorComments={isErrorComments}
+                  isLoadingComments={isLoadingComments}
+                  setComments={setComments}
+                  setIsErrorComments={setIsErrorComments}
+                  setIsFormShown={setIsFormShown}
+                  isFormShown={isFormShown}
+                />
+              )}
             </div>
           </div>
         </div>

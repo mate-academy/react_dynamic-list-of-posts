@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import { Post } from '../../types/Post';
+import { Comment } from '../../types/Comment';
 
 type Props = {
   posts: Post[],
@@ -9,6 +10,7 @@ type Props = {
   setIsLoadingComments: (v: boolean) => void,
   setIsErrorComments: (v: boolean) => void,
   setIsFormShown: (v: boolean) => void,
+  setComments: (post: Comment[] | null) => void,
 };
 
 export const PostsList: React.FC<Props> = ({
@@ -18,6 +20,7 @@ export const PostsList: React.FC<Props> = ({
   setIsLoadingComments,
   setIsErrorComments,
   setIsFormShown,
+  setComments,
 }) => {
   const handleSelectPost = (post: Post) => {
     if (selectedPost?.id !== post.id) {
@@ -30,6 +33,13 @@ export const PostsList: React.FC<Props> = ({
 
     setIsErrorComments(false);
     setSelectedPost(null);
+    setComments(null);
+  };
+
+  const handleButtonTitle = (id: number) => {
+    return selectedPost && selectedPost.id === id
+      ? 'Close'
+      : 'Open';
   };
 
   return (
@@ -69,7 +79,7 @@ export const PostsList: React.FC<Props> = ({
                     )}
                     onClick={() => handleSelectPost(post)}
                   >
-                    {selectedPost?.id === id ? 'Close' : 'Open'}
+                    {handleButtonTitle(id)}
                   </button>
                 </td>
               </tr>

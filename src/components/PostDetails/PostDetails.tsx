@@ -9,10 +9,10 @@ type Props = {
   selectedPost: Post | null,
   isErrorComments: boolean,
   isLoadingComments: boolean,
-  setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
+  isFormShown: boolean,
+  setComments: React.Dispatch<React.SetStateAction<Comment[] | null>>,
   setIsErrorComments: (v: boolean) => void,
   setIsFormShown: (v: boolean) => void,
-  isFormShown: boolean,
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -20,17 +20,16 @@ export const PostDetails: React.FC<Props> = ({
   selectedPost,
   isErrorComments,
   isLoadingComments,
+  isFormShown,
   setComments,
   setIsErrorComments,
   setIsFormShown,
-  isFormShown,
 }) => {
   const handleDeleteComment = (commentId: number) => {
-    setComments(currentComments => currentComments
+    setComments(currentComments => currentComments && currentComments
       .filter(comment => comment.id !== commentId));
 
     deleteComment(commentId)
-      .then()
       .catch(() => {
         setIsErrorComments(true);
       });
@@ -117,7 +116,7 @@ export const PostDetails: React.FC<Props> = ({
               })}
             </>
           )}
-          {!isFormShown && (
+          {!isErrorComments && !isLoadingComments && !isFormShown && (
             <button
               data-cy="WriteCommentButton"
               type="button"

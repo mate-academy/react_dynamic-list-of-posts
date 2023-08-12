@@ -1,19 +1,25 @@
 import classNames from 'classnames';
 import { useEffect, useRef, useState } from 'react';
 import { User } from '../../types/User';
+import { Post } from '../../types/Post';
+import { Comment } from '../../types/Comment';
 
 type Props = {
   users: User[],
   selectedUser: User | null,
   setSelectedUser: (user: User) => void,
+  setSelectedPost: (post: Post | null) => void,
+  setComments: (comments: Comment[] | null) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   selectedUser,
   setSelectedUser,
+  setSelectedPost,
+  setComments,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
@@ -35,8 +41,10 @@ export const UserSelector: React.FC<Props> = ({
 
   const handleSelectUser = (user: User) => {
     if (user.id !== selectedUser?.id) {
-      setSelectedUser(user);
       setIsOpen(false);
+      setSelectedPost(null);
+      setComments(null);
+      setSelectedUser(user);
     }
   };
 
@@ -86,7 +94,7 @@ export const UserSelector: React.FC<Props> = ({
                 href={`#user-${id}`}
                 className={classNames(
                   'dropdown-item',
-                  { 'si-active': id === selectedUser?.id },
+                  { 'is-active': id === selectedUser?.id },
                 )}
                 onClick={() => handleSelectUser(user)}
               >
