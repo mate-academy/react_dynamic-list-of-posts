@@ -9,7 +9,7 @@ type Props = {
   selectedUser: User | null,
   setSelectedUser: (user: User) => void,
   setSelectedPost: (post: Post | null) => void,
-  setComments: (comments: Comment[] | null) => void,
+  setComments: (comments: Comment[]) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
@@ -43,7 +43,7 @@ export const UserSelector: React.FC<Props> = ({
     if (user.id !== selectedUser?.id) {
       setIsOpen(false);
       setSelectedPost(null);
-      setComments(null);
+      setComments([]);
       setSelectedUser(user);
     }
   };

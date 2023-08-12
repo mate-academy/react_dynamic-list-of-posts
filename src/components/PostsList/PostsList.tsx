@@ -7,24 +7,21 @@ type Props = {
   posts: Post[],
   selectedPost: Post | null,
   setSelectedPost: (post: Post | null) => void,
-  setIsLoadingComments: (v: boolean) => void,
   setIsErrorComments: (v: boolean) => void,
   setIsFormShown: (v: boolean) => void,
-  setComments: (post: Comment[] | null) => void,
+  setComments: (post: Comment[]) => void,
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
   selectedPost,
   setSelectedPost,
-  setIsLoadingComments,
   setIsErrorComments,
   setIsFormShown,
   setComments,
 }) => {
   const handleSelectPost = (post: Post) => {
     if (selectedPost?.id !== post.id) {
-      setIsLoadingComments(true);
       setSelectedPost(post);
       setIsFormShown(false);
 
@@ -33,7 +30,7 @@ export const PostsList: React.FC<Props> = ({
 
     setIsErrorComments(false);
     setSelectedPost(null);
-    setComments(null);
+    setComments([]);
   };
 
   const handleButtonTitle = (id: number) => {

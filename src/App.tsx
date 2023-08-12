@@ -22,7 +22,7 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  const [comments, setComments] = useState<Comment[] | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [isErrorComments, setIsErrorComments] = useState<boolean>(false);
   const [isLoadingComments, setIsLoadingComments] = useState<boolean>(false);
   const [isFormShown, setIsFormShown] = useState<boolean>(false);
@@ -51,6 +51,8 @@ export const App: React.FC = () => {
   }, [selectedUser]);
 
   useEffect(() => {
+    setIsErrorComments(false);
+    setIsLoadingComments(true);
     if (selectedPost) {
       getComments(selectedPost.id)
         .then((resolve) => {
@@ -112,7 +114,6 @@ export const App: React.FC = () => {
                     selectedPost={selectedPost}
                     setIsFormShown={setIsFormShown}
                     setSelectedPost={setSelectedPost}
-                    setIsLoadingComments={setIsLoadingComments}
                     setIsErrorComments={setIsErrorComments}
                     setComments={setComments}
                   />
@@ -132,7 +133,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {comments && selectedPost && (
+              {selectedPost && (
                 <PostDetails
                   selectedPost={selectedPost}
                   comments={comments}

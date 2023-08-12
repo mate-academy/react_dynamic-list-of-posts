@@ -5,7 +5,7 @@ import { addComment } from '../../api/posts';
 
 type Props = {
   setIsErrorComments: (v: boolean) => void,
-  setComments: React.Dispatch<React.SetStateAction<Comment[] | null>>
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>
   postId: number,
 };
 
@@ -58,9 +58,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
     addComment(comment)
       .then(newComment => {
-        setComments(
-          currComments => currComments && [...currComments, newComment],
-        );
+        setComments(currComments => [...currComments, newComment]);
       })
       .catch(() => setIsErrorComments(true))
       .finally(() => {
