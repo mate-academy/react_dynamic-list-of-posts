@@ -28,43 +28,34 @@ export const App: React.FC = () => {
   const [isFormShown, setIsFormShown] = useState<boolean>(false);
 
   useEffect(() => {
+    setIsErrorPosts(false);
+
     getUsers()
       .then(setUsers)
       .catch(() => setIsErrorPosts(true));
   }, []);
 
   useEffect(() => {
+    setIsErrorPosts(false);
+
     if (selectedUser) {
       setIsLoadingUsers(true);
-
       getPosts(selectedUser.id)
-        .then((resolve) => {
-          setPosts(resolve);
-        })
-        .catch(() => {
-          setIsErrorPosts(true);
-        })
-        .finally(() => {
-          setIsLoadingUsers(false);
-        });
+        .then(setPosts)
+        .catch(() => setIsErrorPosts(true))
+        .finally(() => setIsLoadingUsers(false));
     }
   }, [selectedUser]);
 
   useEffect(() => {
     setIsErrorComments(false);
     setIsLoadingComments(true);
+
     if (selectedPost) {
       getComments(selectedPost.id)
-        .then((resolve) => {
-          setComments(resolve);
-        })
-        .catch((error: PromiseRejectedResult) => {
-          setIsErrorComments(true);
-          throw new Error(error.status);
-        })
-        .finally(() => {
-          setIsLoadingComments(false);
-        });
+        .then(setComments)
+        .catch(() => setIsErrorComments(true))
+        .finally(() => setIsLoadingComments(false));
     }
   }, [selectedPost]);
 

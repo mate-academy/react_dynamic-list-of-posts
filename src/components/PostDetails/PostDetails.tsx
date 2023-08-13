@@ -26,11 +26,10 @@ export const PostDetails: React.FC<Props> = ({
   setIsFormShown,
 }) => {
   const handleDeleteComment = (commentId: number) => {
-    setComments(currentComments => currentComments.filter(
-      comment => comment.id !== commentId,
-    ));
-
     deleteComment(commentId)
+      .then(() => setComments(currentComments => (
+        currentComments.filter(comment => comment.id !== commentId)
+      )))
       .catch(() => {
         setIsErrorComments(true);
       });

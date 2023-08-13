@@ -33,7 +33,7 @@ export const PostsList: React.FC<Props> = ({
     setComments([]);
   };
 
-  const handleButtonTitle = (id: number) => {
+  const getButtonTitle = (id: number) => {
     return selectedPost && selectedPost.id === id
       ? 'Close'
       : 'Open';
@@ -76,7 +76,7 @@ export const PostsList: React.FC<Props> = ({
                     )}
                     onClick={() => handleSelectPost(post)}
                   >
-                    {handleButtonTitle(id)}
+                    {getButtonTitle(id)}
                   </button>
                 </td>
               </tr>

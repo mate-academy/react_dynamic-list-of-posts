@@ -31,11 +31,11 @@ export const NewCommentForm: React.FC<Props> = ({
     setErrorMessage('Email is required');
     setIsLoading(true);
 
-    setIsNameError(!name);
-    setIsEmailError(!email);
-    setIsCommentError(!commentText);
+    setIsNameError(!name.trim());
+    setIsEmailError(!email.trim());
+    setIsCommentError(!commentText.trim());
 
-    if (!name || !email || !commentText) {
+    if (!name.trim() || !email.trim() || !commentText.trim()) {
       setIsLoading(false);
 
       return;
