@@ -5,13 +5,15 @@ import { User } from '../types/User';
 import { getUsers } from '../api/ApiMethods';
 
 type Props = {
-  setSelectUser: (v: User) => void,
-  selectUser: User | null,
+  setSelectedUser: (user: User) => void,
+  selectedUser: User | null,
+  setOpenPost: (value: null) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
-  setSelectUser,
-  selectUser,
+  setSelectedUser,
+  selectedUser,
+  setOpenPost,
 }) => {
   const [allUsers, setAllUsers] = useState<null | User[]>(null);
   const [dropdownTrigger, setDropdownTrigger] = useState(true);
@@ -21,8 +23,9 @@ export const UserSelector: React.FC<Props> = ({
   };
 
   const handleSelect = (user: User) => {
-    setSelectUser(user);
+    setSelectedUser(user);
     setDropdownTrigger(true);
+    setOpenPost(null);
   };
 
   useEffect(() => {
@@ -42,7 +45,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={handleTrigger}
         >
-          <span>{selectUser ? selectUser.name : 'Choose a user'}</span>
+          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -57,7 +60,7 @@ export const UserSelector: React.FC<Props> = ({
               href={`#user-${user.id}`}
               key={user.id}
               className={classNames('dropdown-item', {
-                'is-active': user.id === selectUser?.id,
+                'is-active': user.id === selectedUser?.id,
               })}
               onClick={() => handleSelect(user)}
             >

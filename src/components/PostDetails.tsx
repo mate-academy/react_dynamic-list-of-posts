@@ -8,14 +8,14 @@ import { NewCommentForm } from './NewCommentForm';
 
 type Props = {
   openPost: Post | null,
-  setOpenForm: (v: boolean) => void,
-  openForm: boolean,
+  setIsFormOpen: (value: boolean) => void,
+  isFormOpen: boolean,
 };
 
 export const PostDetails: React.FC<Props> = ({
   openPost,
-  setOpenForm,
-  openForm,
+  setIsFormOpen,
+  isFormOpen,
 }) => {
   const [postComments, setPostComments] = useState<Comment[]>([]);
   const [hasError, setHasError] = useState(false);
@@ -39,7 +39,7 @@ export const PostDetails: React.FC<Props> = ({
       setHasError(false);
 
       getComment(openPost.id)
-        .then(PostComments => setPostComments(PostComments))
+        .then(resolvedPostComments => setPostComments(resolvedPostComments))
         .catch(() => setHasError(true))
         .finally(() => setLoading(false));
     }
@@ -67,44 +67,44 @@ export const PostDetails: React.FC<Props> = ({
                 ) : (
                   <>
                     <p className="title is-4">Comments:</p>
-                    {postComments.map((com) => (
+                    {postComments.map((comment) => (
                       <article
                         className="message is-small"
                         data-cy="Comment"
-                        key={com.id}
+                        key={comment.id}
                       >
                         <div className="message-header">
                           <a
-                            href={`mailto:${com.email}`}
+                            href={`mailto:${comment.email}`}
                             data-cy="CommentAuthor"
                           >
-                            {com.name}
+                            {comment.name}
                           </a>
                           <button
                             data-cy="CommentDelete"
                             type="button"
                             className="delete is-small"
                             aria-label="delete"
-                            onClick={() => handleDeleteComments(com.id)}
+                            onClick={() => handleDeleteComments(comment.id)}
                           >
                             delete button
                           </button>
                         </div>
 
                         <div className="message-body" data-cy="CommentBody">
-                          {com.body}
+                          {comment.body}
                         </div>
                       </article>
                     ))}
                   </>
                 )}
 
-                {!openForm && (
+                {!isFormOpen && (
                   <button
                     data-cy="WriteCommentButton"
                     type="button"
                     className="button is-link"
-                    onClick={() => setOpenForm(true)}
+                    onClick={() => setIsFormOpen(true)}
                   >
                     Write a comment
                   </button>
@@ -120,12 +120,12 @@ export const PostDetails: React.FC<Props> = ({
           </div>
         )}
 
-        {openForm && (
+        {isFormOpen && (
           <NewCommentForm
             openPost={openPost}
             setPostComments={setPostComments}
             setHasError={setHasError}
-            setOpenForm={setOpenForm}
+            setOpenForm={setIsFormOpen}
           />
         )}
       </div>

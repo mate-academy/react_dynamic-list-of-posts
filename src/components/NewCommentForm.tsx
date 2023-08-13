@@ -8,8 +8,8 @@ import { addComment } from '../api/ApiMethods';
 type Props = {
   openPost: Post | null,
   setPostComments: React.Dispatch<React.SetStateAction<Comment[]>>,
-  setHasError: (v: boolean) => void,
-  setOpenForm: (v: boolean) => void,
+  setHasError: (value: boolean) => void,
+  setOpenForm: (value: boolean) => void,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
@@ -24,7 +24,7 @@ export const NewCommentForm: React.FC<Props> = ({
     body: '',
   });
   const [loading, setLoading] = useState(false);
-  const [tuched, setTuched] = useState(false);
+  const [tuched, setTouched] = useState(false);
 
   const checkInputName = !formInputs.name.trim() && tuched;
   const checkEmailName = !formInputs.email.trim() && tuched;
@@ -34,7 +34,7 @@ export const NewCommentForm: React.FC<Props> = ({
   | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
 
-    setTuched(false);
+    setTouched(false);
     setFormInputs(prev => ({
       ...prev,
       [name]: value,
@@ -42,6 +42,7 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const handleClear = () => {
+    setTouched(false);
     setFormInputs({
       name: '',
       email: '',
@@ -61,7 +62,7 @@ export const NewCommentForm: React.FC<Props> = ({
         .then(res => {
           setPostComments(prev => ([...prev, res]));
           setFormInputs(prev => ({ ...prev, body: '' }));
-          setTuched(false);
+          setTouched(false);
         })
         .catch(() => {
           setHasError(true);
@@ -72,7 +73,7 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   return (
-    <form data-cy="NewCommentForm" onSubmit={(e) => handleSubmitForm(e)}>
+    <form data-cy="NewCommentForm" onSubmit={handleSubmitForm}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -86,7 +87,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': checkInputName })}
             value={formInputs.name}
-            onChange={(e) => handleChange(e)}
+            onChange={handleChange}
             required
           />
 
@@ -124,7 +125,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': checkEmailName })}
             value={formInputs.email}
-            onChange={(e) => handleChange(e)}
+            onChange={handleChange}
             required
           />
 
@@ -161,7 +162,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': checkBodyName })}
             value={formInputs.body}
-            onChange={(e) => handleChange(e)}
+            onChange={handleChange}
             required
           />
         </div>
@@ -177,7 +178,7 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control">
           <button
             type="submit"
-            onClick={() => setTuched(true)}
+            onClick={() => setTouched(true)}
             className={classNames('button', 'is-link', {
               'is-loading': loading,
             })}

@@ -15,28 +15,24 @@ import { Post } from './types/Post';
 import { getPosts } from './api/ApiMethods';
 
 export const App: React.FC = () => {
-  const [selectUser, setSelectUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
-  const [hasSelect, setHasSelect] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [openPost, setOpenPost] = useState<Post | null>(null);
-  const [openForm, setOpenForm] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   useEffect(() => {
-    if (selectUser) {
+    if (selectedUser) {
       setLoading(true);
       setHasError(false);
 
-      getPosts(selectUser.id)
+      getPosts(selectedUser.id)
         .then(posts => setUserPosts(posts))
         .catch(() => setHasError(true))
-        .finally(() => {
-          setLoading(false);
-          setHasSelect(true);
-        });
+        .finally(() => setLoading(false));
     }
-  }, [selectUser]);
+  }, [selectedUser]);
 
   return (
     <main className="section">
@@ -46,8 +42,9 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  setSelectUser={setSelectUser}
-                  selectUser={selectUser}
+                  setSelectedUser={setSelectedUser}
+                  selectedUser={selectedUser}
+                  setOpenPost={setOpenPost}
                 />
               </div>
 
@@ -55,7 +52,7 @@ export const App: React.FC = () => {
                 <Loader />
               ) : (
                 <div className="block" data-cy="MainContent">
-                  {!selectUser && (
+                  {!selectedUser && (
                     <p data-cy="NoSelectedUser">No user selected</p>
                   )}
 
@@ -68,7 +65,7 @@ export const App: React.FC = () => {
                     </div>
                   )}
 
-                  {userPosts.length === 0 && hasSelect && (
+                  {userPosts.length === 0 && selectedUser && (
                     <div
                       className="notification is-warning"
                       data-cy="NoPostsYet"
@@ -82,7 +79,7 @@ export const App: React.FC = () => {
                       userPosts={userPosts}
                       setOpenPost={setOpenPost}
                       openPost={openPost}
-                      setOpenForm={setOpenForm}
+                      setIsFormOpen={setIsFormOpen}
                     />
                   )}
                 </div>
@@ -103,8 +100,8 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success ">
               <PostDetails
                 openPost={openPost}
-                setOpenForm={setOpenForm}
-                openForm={openForm}
+                setIsFormOpen={setIsFormOpen}
+                isFormOpen={isFormOpen}
               />
             </div>
           </div>
