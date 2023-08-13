@@ -17,6 +17,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     setLoading(true);
+    setFormIsActive(false);
+
     getComments(post.id)
       .then(setComments)
       .catch(() => setIsError(true))
@@ -26,10 +28,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const toggleFormActive = () => setFormIsActive(true);
 
   const deleteCommentHandler = useCallback((commentId: number) => {
+    setComments(currentComments => currentComments
+      .filter(currComment => currComment.id !== commentId));
+
     deleteComment(commentId)
-      .then(() => setComments(currentComments => currentComments
-        .filter(currComment => currComment.id !== commentId)))
-      .catch(() => { });
+      .catch(() => setIsError(true));
   }, []);
 
   const addComment = useCallback(async (
@@ -81,13 +84,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   </div>
                 )}
 
-                {!isError && comments.length === 0 && (
+                {!isError && !loading && comments.length === 0 && (
                   <p className="title is-4" data-cy="NoCommentsMessage">
                     No comments yet
                   </p>
                 )}
 
-                {!isError && comments.length !== 0 && (
+                {!isError && !loading && comments.length !== 0 && (
                   <>
                     <p className="title is-4">Comments:</p>
 
@@ -119,18 +122,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
                       ))
                     }
-
-                    {!formIsActive && (
-                      <button
-                        data-cy="WriteCommentButton"
-                        type="button"
-                        className="button is-link"
-                        onClick={toggleFormActive}
-                      >
-                        Write a comment
-                      </button>
-                    )}
                   </>
+                )}
+                {!formIsActive && !isError && !loading && (
+                  <button
+                    data-cy="WriteCommentButton"
+                    type="button"
+                    className="button is-link"
+                    onClick={toggleFormActive}
+                  >
+                    Write a comment
+                  </button>
                 )}
               </>
             )}
