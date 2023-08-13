@@ -7,13 +7,13 @@ import { getUsers } from '../api/ApiMethods';
 type Props = {
   setSelectedUser: (user: User) => void,
   selectedUser: User | null,
-  setOpenPost: (value: null) => void,
+  setIsPostOpen: (value: null) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
   setSelectedUser,
   selectedUser,
-  setOpenPost,
+  setIsPostOpen,
 }) => {
   const [allUsers, setAllUsers] = useState<null | User[]>(null);
   const [dropdownTrigger, setDropdownTrigger] = useState(true);
@@ -25,7 +25,7 @@ export const UserSelector: React.FC<Props> = ({
   const handleSelect = (user: User) => {
     setSelectedUser(user);
     setDropdownTrigger(true);
-    setOpenPost(null);
+    setIsPostOpen(null);
   };
 
   useEffect(() => {

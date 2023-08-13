@@ -19,7 +19,7 @@ export const App: React.FC = () => {
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [openPost, setOpenPost] = useState<Post | null>(null);
+  const [isPostOpen, setIsPostOpen] = useState<Post | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   setSelectedUser={setSelectedUser}
                   selectedUser={selectedUser}
-                  setOpenPost={setOpenPost}
+                  setIsPostOpen={setIsPostOpen}
                 />
               </div>
 
@@ -77,8 +77,8 @@ export const App: React.FC = () => {
                   {userPosts.length !== 0 && (
                     <PostsList
                       userPosts={userPosts}
-                      setOpenPost={setOpenPost}
-                      openPost={openPost}
+                      setIsPostOpen={setIsPostOpen}
+                      isPostOpen={isPostOpen}
                       setIsFormOpen={setIsFormOpen}
                     />
                   )}
@@ -94,16 +94,18 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': openPost },
+              { 'Sidebar--open': isPostOpen },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails
-                openPost={openPost}
-                setIsFormOpen={setIsFormOpen}
-                isFormOpen={isFormOpen}
-              />
-            </div>
+            {isPostOpen && (
+              <div className="tile is-child box is-success ">
+                <PostDetails
+                  isPostOpen={isPostOpen}
+                  setIsFormOpen={setIsFormOpen}
+                  isFormOpen={isFormOpen}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

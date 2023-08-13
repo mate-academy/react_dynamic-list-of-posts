@@ -7,13 +7,13 @@ import { getComment, deleteComment } from '../api/ApiMethods';
 import { NewCommentForm } from './NewCommentForm';
 
 type Props = {
-  openPost: Post | null,
+  isPostOpen: Post | null,
   setIsFormOpen: (value: boolean) => void,
   isFormOpen: boolean,
 };
 
 export const PostDetails: React.FC<Props> = ({
-  openPost,
+  isPostOpen,
   setIsFormOpen,
   isFormOpen,
 }) => {
@@ -34,24 +34,24 @@ export const PostDetails: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    if (openPost) {
+    if (isPostOpen) {
       setLoading(true);
       setHasError(false);
 
-      getComment(openPost.id)
+      getComment(isPostOpen.id)
         .then(resolvedPostComments => setPostComments(resolvedPostComments))
         .catch(() => setHasError(true))
         .finally(() => setLoading(false));
     }
-  }, [openPost]);
+  }, [isPostOpen]);
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">{`#${openPost?.id}: ${openPost?.title}`}</h2>
+          <h2 data-cy="PostTitle">{`#${isPostOpen?.id}: ${isPostOpen?.title}`}</h2>
 
-          <p data-cy="PostBody">{openPost?.body}</p>
+          <p data-cy="PostBody">{isPostOpen?.body}</p>
         </div>
 
         {!hasError && (
@@ -122,7 +122,7 @@ export const PostDetails: React.FC<Props> = ({
 
         {isFormOpen && (
           <NewCommentForm
-            openPost={openPost}
+            openPost={isPostOpen}
             setPostComments={setPostComments}
             setHasError={setHasError}
             setOpenForm={setIsFormOpen}

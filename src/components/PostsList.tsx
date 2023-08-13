@@ -3,14 +3,14 @@ import { Post } from '../types/Post';
 
 type Props = {
   userPosts: Post[],
-  setOpenPost: (post: Post | null) => void,
-  openPost: Post | null,
+  setIsPostOpen: (post: Post | null) => void,
+  isPostOpen: Post | null,
   setIsFormOpen: (value: boolean) => void,
 };
 export const PostsList: React.FC<Props> = ({
   userPosts,
-  setOpenPost,
-  openPost,
+  setIsPostOpen,
+  isPostOpen,
   setIsFormOpen,
 }) => (
   <div data-cy="PostsList">
@@ -37,12 +37,12 @@ export const PostsList: React.FC<Props> = ({
               className="has-text-right is-vcentered"
               onClick={() => setIsFormOpen(false)}
             >
-              {openPost && openPost.id === post.id ? (
+              {isPostOpen && isPostOpen.id === post.id ? (
                 <button
                   type="button"
                   data-cy="PostButton"
                   className="button is-link"
-                  onClick={() => setOpenPost(null)}
+                  onClick={() => setIsPostOpen(null)}
                 >
                   Close
                 </button>
@@ -51,7 +51,7 @@ export const PostsList: React.FC<Props> = ({
                   type="button"
                   data-cy="PostButton"
                   className="button is-link is-light"
-                  onClick={() => setOpenPost(post)}
+                  onClick={() => setIsPostOpen(post)}
                 >
                   Open
                 </button>
