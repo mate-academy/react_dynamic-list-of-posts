@@ -16,19 +16,16 @@ import { getPosts } from './api/posts';
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
-  // const [isUserError, setIsUserError] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const [posts, setPosts] = useState<Post[]>([]);
-  const [isPostError, setIsPostError] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
-    setLoading(true);
     getUsers()
       .then(setUsers)
-      .catch(() => { })
-      .finally(() => setLoading(false));
+      .catch(() => setIsError(true));
   }, []);
 
   useEffect(() => {
@@ -37,7 +34,7 @@ export const App: React.FC = () => {
     if (selectedUser) {
       getPosts(selectedUser.id)
         .then(setPosts)
-        .catch(() => setIsPostError(true))
+        .catch(() => setIsError(true))
         .finally(() => setLoading(false));
     }
   }, [selectedUser]);
@@ -71,7 +68,7 @@ export const App: React.FC = () => {
                     ? <Loader />
                     : (
                       <>
-                        {isPostError && (
+                        {isError && (
                           <div
                             className="notification is-danger"
                             data-cy="PostsLoadingError"
@@ -80,7 +77,7 @@ export const App: React.FC = () => {
                           </div>
                         )}
 
-                        {posts.length === 0 && selectedUser && !isPostError && (
+                        {posts.length === 0 && selectedUser && !isError && (
                           <div
                             className="notification is-warning"
                             data-cy="NoPostsYet"
@@ -89,7 +86,7 @@ export const App: React.FC = () => {
                           </div>
                         )}
 
-                        {posts.length !== 0 && selectedUser && !isPostError && (
+                        {posts.length !== 0 && selectedUser && !isError && (
                           <PostsList
                             posts={posts}
                             selectedPost={selectedPost}

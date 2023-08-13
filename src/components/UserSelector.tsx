@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import classNames from 'classnames';
 
 import { User } from '../types/User';
@@ -24,6 +24,8 @@ export const UserSelector: React.FC<Props> = (
     setDropDownActive(false);
   };
 
+  const dropdown = useRef(null);
+
   return (
     <div
       data-cy="UserSelector"
@@ -33,12 +35,12 @@ export const UserSelector: React.FC<Props> = (
     >
       <div className="dropdown-trigger">
         <button
+          ref={dropdown}
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={toggleDropdown}
-          // onBlur={() => setDropDownActive(false)}
         >
           <span>
             {selectedUser?.name || 'Choose a user'}
