@@ -22,7 +22,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     client.get<User[]>('/users')
-      .then(data => setUsers(data))
+      .then(setUsers)
       .catch(() => setErrorMessage('Fail to load users'));
   }, []);
 
