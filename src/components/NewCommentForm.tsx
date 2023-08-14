@@ -103,7 +103,6 @@ export const NewCommentForm: React.FC<Props> = ({
     <form
       data-cy="NewCommentForm"
       onSubmit={handlerSubmit}
-      onReset={handlerReset}
     >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
