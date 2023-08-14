@@ -17,17 +17,23 @@ export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [errorMess, setErrorMess] = useState<ErrMessage>(ErrMessage.Empty);
+  const [errorOfServer, setErrorOfServer] = useState<string>('');
   const [isLoadingPosts, setIsLoadingPosts] = useState<boolean>(false);
-  const [posts, setPosts] = useState<Post[] | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
     if (selectedUser) {
       setIsLoadingPosts(true);
+      setErrorMess(ErrMessage.Empty);
+      setErrorOfServer('');
 
       getPosts(selectedUser.id)
         .then(setPosts)
-        .catch(() => setErrorMess(ErrMessage.GetPosts))
+        .catch((errMess) => {
+          setErrorMess(ErrMessage.GetPosts);
+          setErrorOfServer(errMess);
+        })
         .finally(() => setIsLoadingPosts(false));
     }
   }, [selectedUser]);
@@ -35,7 +41,10 @@ export const App: React.FC = () => {
   useEffect(() => {
     getUsers()
       .then(setUsers)
-      .catch(() => setErrorMess(ErrMessage.GetUsers));
+      .catch((errMess) => {
+        setErrorMess(ErrMessage.GetUsers);
+        setErrorOfServer(errMess);
+      });
   }, []);
 
   return (
@@ -66,11 +75,11 @@ export const App: React.FC = () => {
                       className="notification is-danger"
                       data-cy="PostsLoadingError"
                     >
-                      {errorMess}
+                      {`${errorMess}. ${errorOfServer}`}
                     </div>
                   )}
 
-                  {posts !== null && posts.length < 1 && (
+                  {selectedUser !== null && posts.length < 1 && (
                     <div
                       className="notification is-warning"
                       data-cy="NoPostsYet"
@@ -79,7 +88,7 @@ export const App: React.FC = () => {
                     </div>
                   )}
 
-                  {posts !== null && posts.length > 0 && (
+                  {selectedUser !== null && posts.length > 0 && (
                     <PostsList
                       posts={posts}
                       selectedPost={selectedPost}

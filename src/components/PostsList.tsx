@@ -13,9 +13,11 @@ export const PostsList: React.FC<Props> = ({
   onSetSelectedPost,
 }) => {
   const handlerOpenPost = (newSelectedPost: Post) => {
-    return (selectedPost === newSelectedPost)
-      ? onSetSelectedPost(null)
-      : onSetSelectedPost(newSelectedPost);
+    if (selectedPost === newSelectedPost) {
+      onSetSelectedPost(null);
+    } else {
+      onSetSelectedPost(newSelectedPost);
+    }
   };
 
   return (

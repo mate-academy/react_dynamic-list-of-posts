@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Loader } from './Loader/Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
@@ -6,6 +6,12 @@ import { Comment } from '../types/Comment';
 import { ErrMessage } from '../types/ErrMessage';
 import { CommentsList } from './CommentsList';
 import { addComment, deleteComment, getComments } from '../api';
+
+function getMaxId(arrayComments: Comment[]) {
+  return (arrayComments.length > 0)
+    ? Math.max(...arrayComments.map(c => c.id)) + 1
+    : 1;
+}
 
 type Props = {
   selectedPost: Post,
@@ -32,13 +38,13 @@ export const PostDetails: React.FC<Props> = ({
     setErrorMess(ErrMessage.Empty);
   };
 
-  const addComments = (
+  const handlerAddComment = useCallback((
     newName: string,
     newEmail: string,
     newText: string,
   ) => {
     const newComment = {
-      id: Math.max(...comments.map(c => c.id)) + 1,
+      id: getMaxId(comments),
       postId: id,
       name: newName,
       email: newEmail,
@@ -64,9 +70,9 @@ export const PostDetails: React.FC<Props> = ({
       .finally(() => {
         setIsLoadingAddComment(false);
       });
-  };
+  }, [comments]);
 
-  const deleteComments = (commentId: number) => {
+  const handlerDeleteComment = useCallback((commentId: number) => {
     setComments(currentComments => currentComments.filter(comment => {
       return comment.id !== commentId;
     }));
@@ -77,7 +83,7 @@ export const PostDetails: React.FC<Props> = ({
         setComments(comments);
         setErrorMess(ErrMessage.DeleteComment);
       });
-  };
+  }, [comments]);
 
   useEffect(() => {
     setIsShowingForm(false);
@@ -127,7 +133,7 @@ export const PostDetails: React.FC<Props> = ({
               {comments.length > 0 && (
                 <CommentsList
                   comments={comments}
-                  deleteComments={deleteComments}
+                  deleteComment={handlerDeleteComment}
                 />
               )}
 
@@ -139,7 +145,7 @@ export const PostDetails: React.FC<Props> = ({
                   onSetFormEmail={setFormEmail}
                   commentText={formText}
                   onSetCommentText={setFormText}
-                  addComments={addComments}
+                  addComment={handlerAddComment}
                   isLoadingNewComment={isLoadingAddComment}
                   onSetErrorInPostDetails={setErrorMess}
                 />

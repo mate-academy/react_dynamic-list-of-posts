@@ -9,7 +9,7 @@ type Props = {
   onSetFormEmail: (email: string) => void,
   commentText: string,
   onSetCommentText: (commentText: string) => void,
-  addComments: (name: string, email: string, text: string) => void,
+  addComment: (name: string, email: string, text: string) => void,
   isLoadingNewComment: boolean,
   onSetErrorInPostDetails: (errorMessage: ErrMessage) => void,
 };
@@ -21,7 +21,7 @@ export const NewCommentForm: React.FC<Props> = ({
   onSetFormEmail,
   commentText,
   onSetCommentText,
-  addComments,
+  addComment,
   isLoadingNewComment,
   onSetErrorInPostDetails,
 }) => {
@@ -85,7 +85,7 @@ export const NewCommentForm: React.FC<Props> = ({
       return;
     }
 
-    addComments(trimedName, trimedEmail, trimedCommentText);
+    addComment(trimedName, trimedEmail, trimedCommentText);
   };
 
   const handlerReset = () => {

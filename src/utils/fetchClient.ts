@@ -21,7 +21,9 @@ function request<T>(
   return fetch(BASE_URL + url, options)
     .then(response => {
       if (!response.ok) {
-        throw new Error('Unable to connect from the server');
+        throw new Error(`Unable to connect from the server: 
+        - response status = ${response.status};
+        - status text = ${response.statusText}`);
       }
 
       return response.json();

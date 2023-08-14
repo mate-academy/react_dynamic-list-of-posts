@@ -2,11 +2,11 @@ import { Comment } from '../types/Comment';
 
 type Props = {
   comments: Comment[],
-  deleteComments: (commentId: number) => void,
+  deleteComment: (commentId: number) => void,
 };
 
 export const CommentsList: React.FC<Props> = ({
-  comments, deleteComments,
+  comments, deleteComment,
 }) => {
   return (
     <>
@@ -28,7 +28,7 @@ export const CommentsList: React.FC<Props> = ({
                 type="button"
                 className="delete is-small"
                 aria-label="delete"
-                onClick={() => deleteComments(id)}
+                onClick={() => deleteComment(id)}
               >
                 delete button
               </button>
