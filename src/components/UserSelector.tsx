@@ -11,7 +11,7 @@ type Props = {
 
 export const UserSelector: React.FC<Props> = ({ users, onUserSelect }) => {
   const [isDropdown, setIsDropdown] = useState(false);
-  const [currentUser, setCurrentUser] = useState('Choose a user');
+  const [currentUser, setCurrentUser] = useState<string | null>(null);
   const dropdown = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export const UserSelector: React.FC<Props> = ({ users, onUserSelect }) => {
           onClick={handleOpenDrop}
         >
           <span>
-            {currentUser}
+            {currentUser || 'Choose a user'}
           </span>
 
           <span className="icon is-small">

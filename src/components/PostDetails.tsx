@@ -18,12 +18,14 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
 
   const fetchComments = async () => {
     setLoading(true);
+    setError(false);
     try {
       const commentsFromServer = await getComments(selectedPost.id);
 
       setComments(commentsFromServer);
     } catch {
       setError(true);
+      setComments([]);
     } finally {
       setLoading(false);
     }
@@ -51,10 +53,10 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const deleteComment = useCallback(
     async (commentId: number) => {
       try {
-        setComments(currentComments => {
-          return currentComments.filter(post => post.id !== commentId);
-        });
         await removeComment(commentId);
+        setComments(currentComments => {
+          return currentComments.filter(comment => comment.id !== commentId);
+        });
       } catch {
         setError(true);
       }
