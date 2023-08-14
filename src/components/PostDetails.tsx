@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { deleteComment } from '../api/comment';
 import { Post } from '../types/Post';
 import { PostContext } from './context/PostContext';
@@ -7,17 +7,21 @@ import { NewCommentForm } from './NewCommentForm';
 
 type Props = {
   selectedPost: Post | null,
+  isCommentFormActive: boolean,
+  setIsCommentFormActive: React.Dispatch<React.SetStateAction<boolean>>,
 };
 
-export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
+export const PostDetails: React.FC<Props> = React.memo(({
+  selectedPost,
+  isCommentFormActive,
+  setIsCommentFormActive,
+}) => {
   const {
     error,
     comments,
     setComments,
     isLoading,
   } = useContext(PostContext);
-
-  const [isCommentFormActive, setIsCommentFormActive] = useState(false);
 
   const removeComment = (id: number) => {
     setComments(currentComments => currentComments.filter(
@@ -105,4 +109,4 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       </div>
     </div>
   );
-};
+});

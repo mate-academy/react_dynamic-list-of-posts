@@ -28,6 +28,7 @@ export const PostApp: React.FC = () => {
     = useState<Post | null>(null);
   const [error, setError] = useState(Error.None);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCommentFormActive, setIsCommentFormActive] = useState(false);
 
   useEffect(() => {
     setError(Error.None);
@@ -40,8 +41,8 @@ export const PostApp: React.FC = () => {
 
   useEffect(() => {
     setError(Error.None);
-    setIsLoading(true);
     if (selectedUser) {
+      setIsLoading(true);
       getPosts(selectedUser?.id)
         .then(setPosts)
         .catch(() => setError(Error.Load))
@@ -51,7 +52,6 @@ export const PostApp: React.FC = () => {
 
   useEffect(() => {
     setError(Error.None);
-    setIsLoading(true);
     if (selectedPost) {
       getComments(selectedPost?.id)
         .then(setComments)
@@ -110,6 +110,7 @@ export const PostApp: React.FC = () => {
                         posts={posts}
                         selectedPost={selectedPost}
                         setSelectedPost={setSelectedPost}
+                        setIsCommentFormActive={setIsCommentFormActive}
                       />
                     )}
                   </>
@@ -130,7 +131,11 @@ export const PostApp: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails selectedPost={selectedPost} />
+              <PostDetails
+                selectedPost={selectedPost}
+                isCommentFormActive={isCommentFormActive}
+                setIsCommentFormActive={setIsCommentFormActive}
+              />
             </div>
           </div>
         </div>

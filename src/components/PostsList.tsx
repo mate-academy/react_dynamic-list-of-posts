@@ -1,23 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Post } from '../types/Post';
+import { PostContext } from './context/PostContext';
 
 type Props = {
   posts: Post [],
   selectedPost: Post | null,
   setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>,
+  setIsCommentFormActive: React.Dispatch<React.SetStateAction<boolean>>,
 };
 
 export const PostsList: React.FC<Props> = React.memo(({
   posts,
   selectedPost,
   setSelectedPost,
+  setIsCommentFormActive,
 }) => {
   const [isFirstClick, setIsFirstClick] = useState(false);
 
+  const {
+    setIsLoading,
+  } = React.useContext(PostContext);
+
   const handleSelectPost = (post: Post) => {
+    setIsLoading(true);
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+
     setSelectedPost(post);
     setIsFirstClick(true);
   };
+
+  useEffect(() => {
+    setIsCommentFormActive(false);
+  }, [selectedPost?.id]);
 
   return (
     <div data-cy="PostsList">

@@ -10,7 +10,9 @@ type Props = {
   selectedPost: Post | null,
 };
 
-export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
+export const NewCommentForm: React.FC<Props> = React.memo(({
+  selectedPost,
+}) => {
   const {
     setError,
     setComments,
@@ -86,7 +88,7 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
     setCommentText('');
   };
 
-  const reset = () => {
+  const resetForm = () => {
     setIsNameError(false);
     setIsEmailError(false);
     setIsCommentError(false);
@@ -235,7 +237,7 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={() => reset()}
+            onClick={() => resetForm()}
           >
             Clear
           </button>
@@ -243,4 +245,4 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
       </div>
     </form>
   );
-};
+});
