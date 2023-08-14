@@ -1,15 +1,46 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
+import cn from 'classnames';
 
-import classNames from 'classnames';
+import { UserSelector } from './components/UserSelector';
+import { client } from './utils/fetchClient';
+import { User } from './types/User';
+import { Loader } from './components/Loader';
+import { Post } from './types/Post';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
 
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  useEffect(() => {
+    client.get<User[]>('/users')
+      .then(setUsers)
+      .catch(() => setErrorMessage('Fail to load users'));
+  }, []);
+
+  useEffect(() => {
+    if (!selectedUser) {
+      return;
+    }
+
+    setErrorMessage('');
+    setLoading(true);
+    setSelectedPost(null);
+
+    client.get<Post[]>(`/posts?userId=${selectedUser.id}`)
+      .then(data => setPosts(data))
+      .catch(() => setErrorMessage('Fail to load posts'))
+      .finally(() => setLoading(false));
+  }, [selectedUser?.id]);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,45 +48,74 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  users={users}
+                  selectedUser={selectedUser}
+                  setSelectedUser={setSelectedUser}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {loading && selectedUser && (<Loader />)}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {errorMessage && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    {errorMessage}
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {
+                  selectedUser
+                  && posts.length === 0
+                  && !loading
+                  && !errorMessage
+                  && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  )
+                }
 
-                <PostsList />
+                {posts.length > 0 && !loading && !errorMessage && (
+                  <PostsList
+                    posts={posts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
+                  />
+                )}
               </div>
             </div>
           </div>
 
           <div
             data-cy="Sidebar"
-            className={classNames(
+            className={cn(
               'tile',
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPost },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
+            {selectedPost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails
+                  post={selectedPost}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
