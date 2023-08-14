@@ -4,8 +4,7 @@ import {
 import classNames from 'classnames';
 import { TextField } from './TextField';
 import { CommentData, Field, FieldIcon } from '../../types';
-import { useCommentsContext } from '../../hooks/useCommentsContext';
-import { useGlobalContext } from '../../hooks/useGlobalContext';
+import { useGlobalContext, useCommentsContext } from '../../hooks';
 
 export const NewCommentForm: FC = () => {
   const { resetError } = useGlobalContext();

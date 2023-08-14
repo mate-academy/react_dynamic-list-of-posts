@@ -1,5 +1,5 @@
 import {
-  FC, createContext, useState, useEffect, ReactNode,
+  FC, createContext, useState, useEffect, ReactNode, useMemo,
 } from 'react';
 import {
   User, Post, Comment, CommentData,
@@ -72,10 +72,19 @@ export const ListProvider: FC<Props> = ({ children }) => {
     setError(false);
     setIsUsersLoading(true);
 
-    getUsers()
-      .then((usersList) => setUsers(usersList))
-      .catch(() => setError(true))
-      .finally(() => setIsUsersLoading(false));
+    const loadUsers = async () => {
+      try {
+        const usersList = await getUsers();
+
+        setUsers(usersList);
+      } catch {
+        setError(true);
+      } finally {
+        setIsUsersLoading(false);
+      }
+    };
+
+    loadUsers();
   }, []);
 
   /* load posts for selected user */
@@ -160,32 +169,32 @@ export const ListProvider: FC<Props> = ({ children }) => {
       });
   };
 
-  const globalValue: IGlobalContext = {
+  const globalValue: IGlobalContext = useMemo(() => ({
     error,
     resetError: () => setError(false),
-  };
+  }), [error]);
 
-  const postsValue: IPostsContext = {
+  const postsValue: IPostsContext = useMemo(() => ({
     posts,
     selectedPost,
     isPostsLoading,
     onSelectPost,
-  };
+  }), [posts, selectedPost, isPostsLoading]);
 
-  const usersValue: IUsersContext = {
+  const usersValue: IUsersContext = useMemo(() => ({
     users,
     selectedUser,
     isUsersLoading,
     onSelectUser,
-  };
+  }), [users, selectedUser, isUsersLoading]);
 
-  const commentsValue: ICommentsContext = {
+  const commentsValue: ICommentsContext = useMemo(() => ({
     comments,
     isCommentsLoading,
     commentIsProcessing,
     onAddNewComment,
     onDeleteComment,
-  };
+  }), [comments, isCommentsLoading, commentIsProcessing]);
 
   return (
     <GlobalContext.Provider value={globalValue}>

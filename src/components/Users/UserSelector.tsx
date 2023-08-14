@@ -2,7 +2,7 @@ import {
   FC, useState, useEffect, useRef,
 } from 'react';
 import classNames from 'classnames';
-import { useUsersContext } from '../../hooks/useUsersContext';
+import { useUsersContext } from '../../hooks';
 import { Loader } from '../Loader';
 import { UsersList } from './UsersList';
 
@@ -11,7 +11,7 @@ export const UserSelector: FC = () => {
 
   const [dropdownIsActive, setDropdownIsActive] = useState(false);
 
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
     setDropdownIsActive(prevState => !prevState);
@@ -19,15 +19,15 @@ export const UserSelector: FC = () => {
 
   const closeDropdown = () => setDropdownIsActive(false);
 
-  const handleClickOutsideDropdown = (event: MouseEvent) => {
-    const dropdown = dropdownRef.current;
-
-    if (dropdown && !dropdown.contains(event.target as Node)) {
-      closeDropdown();
-    }
-  };
-
   useEffect(() => {
+    const handleClickOutsideDropdown = (event: MouseEvent) => {
+      const dropdown = dropdownRef.current;
+
+      if (dropdown && !dropdown.contains(event.target as Node)) {
+        closeDropdown();
+      }
+    };
+
     document.addEventListener('click', handleClickOutsideDropdown);
 
     return () => {

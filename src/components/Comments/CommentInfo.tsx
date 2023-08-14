@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { Comment } from '../../types';
-import { useCommentsContext } from '../../hooks/useCommentsContext';
+import { useCommentsContext } from '../../hooks';
 
 type Props = {
   comment: Comment;
@@ -22,9 +22,7 @@ export const CommentInfo: FC<Props> = ({ comment }) => {
           className="delete is-small"
           aria-label="delete"
           onClick={() => onDeleteComment(comment.id)}
-        >
-          delete button
-        </button>
+        />
       </div>
 
       <div className="message-body" data-cy="CommentBody">

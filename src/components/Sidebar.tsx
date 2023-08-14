@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import classNames from 'classnames';
-import { usePostsContext } from '../hooks/usePostsContext';
+import { usePostsContext } from '../hooks';
 import { PostDetails } from './Posts/PostDetails';
 
 export const Sidebar: FC = () => {

@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { UserSelector } from './Users/UserSelector';
 import { Sidebar } from './Sidebar';
 import { PostList } from './Posts/PostList';
-import { useUsersContext } from '../hooks/useUsersContext';
+import { useUsersContext } from '../hooks';
 
 export const ListApp: FC = () => {
   const { selectedUser } = useUsersContext();

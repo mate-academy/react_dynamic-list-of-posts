@@ -1,24 +1,24 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 import { Loader } from '../Loader';
-import { usePostsContext } from '../../hooks/usePostsContext';
-import { useGlobalContext } from '../../hooks/useGlobalContext';
+import { useGlobalContext, usePostsContext } from '../../hooks';
 import { Notification } from '../Notification';
 import { NotificationType } from '../../types';
 import { PostInfo } from './PostInfo';
 
 export const PostList: FC = () => {
   const { error } = useGlobalContext();
-
   const { posts, isPostsLoading } = usePostsContext();
 
-  if (posts.length === 0 && !isPostsLoading) {
-    if (error) {
-      return (
-        <Notification type={NotificationType.PostsError} />
-      );
-    }
+  const noPosts = !posts.length && !isPostsLoading;
 
+  if (noPosts && error) {
+    return (
+      <Notification type={NotificationType.PostsError} />
+    );
+  }
+
+  if (noPosts) {
     return (
       <Notification
         type={NotificationType.PostsWarning}

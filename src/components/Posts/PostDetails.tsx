@@ -1,12 +1,14 @@
 import { FC, useState, useEffect } from 'react';
 import { Loader } from '../Loader';
 import { NewCommentForm } from '../Comments/NewCommentForm';
-import { useCommentsContext } from '../../hooks/useCommentsContext';
-import { usePostsContext } from '../../hooks/usePostsContext';
 import { CommentList } from '../Comments/CommentList';
 import { Notification } from '../Notification';
 import { NotificationType } from '../../types';
-import { useGlobalContext } from '../../hooks/useGlobalContext';
+import {
+  useGlobalContext,
+  usePostsContext,
+  useCommentsContext,
+} from '../../hooks';
 
 export const PostDetails: FC = () => {
   const { error } = useGlobalContext();

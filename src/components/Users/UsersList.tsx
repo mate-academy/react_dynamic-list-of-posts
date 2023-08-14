@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import classNames from 'classnames';
-import { useUsersContext } from '../../hooks/useUsersContext';
+import { useUsersContext } from '../../hooks';
 import { User } from '../../types';
 
 type Props = {

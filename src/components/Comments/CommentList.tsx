@@ -1,6 +1,5 @@
 import { FC } from 'react';
-import { useCommentsContext } from '../../hooks/useCommentsContext';
-import { useGlobalContext } from '../../hooks/useGlobalContext';
+import { useGlobalContext, useCommentsContext } from '../../hooks';
 import { CommentInfo } from './CommentInfo';
 
 type Props = {
@@ -14,23 +13,27 @@ export const CommentList: FC<Props> = (props) => {
   const { error } = useGlobalContext();
   const { comments } = useCommentsContext();
 
+  const noError = !error;
+  const commentsExist = comments.length;
+
+  const noComments = !commentsExist && noError;
+  const canAddNewComment = !writingNewPost && (noError || commentsExist);
+
   return (
     <>
-      {(comments.length > 0 && !error) && (
-        <p className="title is-4">Comments:</p>
-      )}
-
-      {(comments.length === 0 && !error) && (
+      {noComments ? (
         <p className="title is-4" data-cy="NoCommentsMessage">
           No comments yet
         </p>
+      ) : (
+        <p className="title is-4">Comments:</p>
       )}
 
       {comments.map((comment) => (
         <CommentInfo comment={comment} key={comment.id} />
       ))}
 
-      {(!writingNewPost && (!error || comments.length > 0)) && (
+      {canAddNewComment && (
         <button
           data-cy="WriteCommentButton"
           type="button"

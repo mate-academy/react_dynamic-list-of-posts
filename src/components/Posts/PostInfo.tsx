@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 import { Post } from '../../types';
-import { usePostsContext } from '../../hooks/usePostsContext';
+import { usePostsContext } from '../../hooks';
 
 type Props = {
   post: Post;

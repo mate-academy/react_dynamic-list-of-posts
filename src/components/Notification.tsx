@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import classNames from 'classnames';
 import { NotificationType } from '../types/NotificationType';
-import { useGlobalContext } from '../hooks/useGlobalContext';
+import { useGlobalContext } from '../hooks';
 
 type Props = {
   type: NotificationType;
