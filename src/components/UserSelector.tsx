@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 
 import { User } from '../types/User';
@@ -17,14 +17,29 @@ export const UserSelector: React.FC<Props> = (
   },
 ) => {
   const [dropDownActive, setDropDownActive] = useState(false);
+  const dropdown = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const closeDropdown = (e: MouseEvent) => {
+      if (dropdown.current
+        && dropDownActive
+        && !dropdown.current.contains(e.target as Node)) {
+        setDropDownActive(false);
+      }
+    };
+
+    document.addEventListener('click', closeDropdown);
+
+    return () => {
+      document.removeEventListener('click', closeDropdown);
+    };
+  }, [dropDownActive]);
 
   const toggleDropdown = () => setDropDownActive(prev => !prev);
   const selectUserHandler = (user: User) => {
     selectUser(user);
     setDropDownActive(false);
   };
-
-  const dropdown = useRef(null);
 
   return (
     <div
@@ -33,9 +48,8 @@ export const UserSelector: React.FC<Props> = (
         'is-active': dropDownActive,
       })}
     >
-      <div className="dropdown-trigger">
+      <div className="dropdown-trigger" ref={dropdown}>
         <button
-          ref={dropdown}
           type="button"
           className="button"
           aria-haspopup="true"

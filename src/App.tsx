@@ -31,11 +31,14 @@ export const App: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     setSelectedPost(null);
+
     if (selectedUser) {
       getPosts(selectedUser.id)
         .then(setPosts)
         .catch(() => setIsError(true))
         .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
     }
   }, [selectedUser]);
 
