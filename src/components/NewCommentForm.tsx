@@ -18,46 +18,53 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
   isLoading,
   setError,
 }) => {
-  const [authorName, setAuthorName] = useState('');
-  const [isNameError, setIsNameError] = useState(false);
-
-  const [authorEmail, setAuthorEmail] = useState('');
-  const [isEmailError, setIsEmailError] = useState(false);
-
-  const [commentText, setCommentText] = useState('');
-  const [isCommentError, setIsCommentError] = useState(false);
-
-  const handleAuthorName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsNameError(false);
-    setAuthorName(e.target.value);
+  const initialCommentState = {
+    authorName: '',
+    authorEmail: '',
+    authorComment: '',
   };
 
-  const handleAuthorEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsEmailError(false);
-    setAuthorEmail(e.target.value);
+  const initialErrorState = {
+    isNameError: false,
+    isEmailError: false,
+    isCommentError: false,
   };
 
-  const handleCommentText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setIsCommentError(false);
-    setCommentText(e.target.value);
+  const [comment, setComment] = useState(initialCommentState);
+  const [commentError, setCommentError] = useState(initialErrorState);
+
+  const handleInputChange = (key: string, value: string) => {
+    setComment(prevComment => ({
+      ...prevComment,
+      [key]: value,
+    }));
+
+    setCommentError(prevError => ({
+      ...prevError,
+      [`is${key}Error`]: value === '',
+    }));
   };
 
   const handleSubmitForm = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    if (!authorName) {
-      setIsNameError(true);
+    if (!comment) {
+      setCommentError({
+        ...commentError,
+        isNameError: true,
+        isEmailError: true,
+        isCommentError: true,
+      });
     }
 
-    if (!authorEmail) {
-      setIsEmailError(true);
-    }
+    if (!comment.authorName || !comment.authorEmail || !comment.authorComment) {
+      setCommentError(prevError => ({
+        ...prevError,
+        isNameError: !comment.authorName,
+        isEmailError: !comment.authorEmail,
+        isCommentError: !comment.authorComment,
+      }));
 
-    if (!commentText) {
-      setIsCommentError(true);
-    }
-
-    if (!authorName || !authorEmail || !commentText) {
       return;
     }
 
@@ -67,30 +74,28 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
       if (selectedPost) {
         newComment = {
           postId: selectedPost.id,
-          name: authorName,
-          email: authorEmail,
-          body: commentText,
+          name: comment.authorName,
+          email: comment.authorEmail,
+          body: comment.authorComment,
         };
 
         await postComment(newComment);
         setComments(currentComments => [...currentComments,
           { ...newComment, id: +new Date() }]);
+
+        setComment({
+          ...comment,
+          authorComment: '',
+        });
       }
     } catch {
       setError(Error.Load);
-    } finally {
-      setCommentText('');
     }
   };
 
   const resetForm = () => {
-    setIsNameError(false);
-    setIsEmailError(false);
-    setIsCommentError(false);
-
-    setAuthorName('');
-    setAuthorEmail('');
-    setCommentText('');
+    setComment(initialCommentState);
+    setCommentError(initialErrorState);
   };
 
   return (
@@ -110,17 +115,17 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             id="comment-author-name"
             placeholder="Name Surname"
             className={cn('input', {
-              'is-danger': isNameError,
+              'is-danger': commentError.isNameError,
             })}
-            value={authorName}
-            onChange={(e) => handleAuthorName(e)}
+            value={comment.authorName}
+            onChange={(e) => handleInputChange('authorName', e.target.value)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {isNameError
+          {commentError.isNameError
             && (
               <span
                 className="icon is-small is-right has-text-danger"
@@ -131,7 +136,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             )}
         </div>
 
-        {isNameError
+        {commentError.isNameError
           && (
             <p
               className="help is-danger"
@@ -154,17 +159,17 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             id="comment-author-email"
             placeholder="email@test.com"
             className={cn('input', {
-              'is-danger': isEmailError,
+              'is-danger': commentError.isEmailError,
             })}
-            value={authorEmail}
-            onChange={(e) => handleAuthorEmail(e)}
+            value={comment.authorEmail}
+            onChange={(e) => handleInputChange('authorEmail', e.target.value)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {isEmailError
+          {commentError.isEmailError
             && (
               <span
                 className="icon is-small is-right has-text-danger"
@@ -175,7 +180,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             )}
         </div>
 
-        {isEmailError
+        {commentError.isEmailError
           && (
             <p
               className="help is-danger"
@@ -197,14 +202,14 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             name="body"
             placeholder="Type comment here"
             className={cn('textarea', {
-              'is-danger': isCommentError,
+              'is-danger': commentError.isCommentError,
             })}
-            value={commentText}
-            onChange={(e) => handleCommentText(e)}
+            value={comment.authorComment}
+            onChange={(e) => handleInputChange('authorComment', e.target.value)}
           />
         </div>
 
-        {isCommentError
+        {commentError.isCommentError
           && (
             <p
               className="help is-danger"
