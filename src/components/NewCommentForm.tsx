@@ -24,11 +24,11 @@ export const NewCommentForm: React.FC<Props> = ({
     body: '',
   });
   const [loading, setLoading] = useState(false);
-  const [tuched, setTouched] = useState(false);
+  const [touched, setTouched] = useState(false);
 
-  const checkInputName = !formInputs.name.trim() && tuched;
-  const checkEmailName = !formInputs.email.trim() && tuched;
-  const checkBodyName = !formInputs.body.trim() && tuched;
+  const checkInputName = !formInputs.name.trim() && touched;
+  const checkEmailName = !formInputs.email.trim() && touched;
+  const checkBodyName = !formInputs.body.trim() && touched;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement
   | HTMLTextAreaElement>) => {

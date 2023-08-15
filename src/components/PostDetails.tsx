@@ -21,14 +21,11 @@ export const PostDetails: React.FC<Props> = ({
   const [hasError, setHasError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleDeleteComments = (comId: number) => {
-    deleteComment(comId)
+  const handleDeleteComments = (commentId: number) => {
+    deleteComment(commentId)
       .then(() => {
-        const updatePostComments = [...postComments];
-        const index = updatePostComments.findIndex(com => com.id === comId);
-
-        updatePostComments.splice(index, 1);
-        setPostComments(updatePostComments);
+        setPostComments(prev => prev
+          .filter(comment => comment.id !== commentId));
       })
       .catch(() => setHasError(true));
   };
