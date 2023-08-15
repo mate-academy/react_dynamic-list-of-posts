@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Post } from '../types/Post';
-import { PostContext } from './context/PostContext';
 
 type Props = {
   posts: Post [],
   selectedPost: Post | null,
   setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>,
   setIsCommentFormActive: React.Dispatch<React.SetStateAction<boolean>>,
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
 };
 
 export const PostsList: React.FC<Props> = React.memo(({
@@ -15,26 +15,9 @@ export const PostsList: React.FC<Props> = React.memo(({
   setSelectedPost,
   setIsCommentFormActive,
 }) => {
-  const [isFirstClick, setIsFirstClick] = useState(false);
-
-  const {
-    setIsLoading,
-  } = React.useContext(PostContext);
-
-  const handleSelectPost = (post: Post) => {
-    setIsLoading(true);
-
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-
-    setSelectedPost(post);
-    setIsFirstClick(true);
-  };
-
   useEffect(() => {
     setIsCommentFormActive(false);
-  }, [selectedPost?.id]);
+  }, [selectedPost]);
 
   return (
     <div data-cy="PostsList">
@@ -61,7 +44,7 @@ export const PostsList: React.FC<Props> = React.memo(({
                 {post.title}
               </td>
 
-              {isFirstClick && selectedPost?.id === post.id
+              {selectedPost && selectedPost?.id === post.id
                 ? (
                   <td className="has-text-right is-vcentered">
                     <button
@@ -80,7 +63,7 @@ export const PostsList: React.FC<Props> = React.memo(({
                       type="button"
                       data-cy="PostButton"
                       className="button is-link is-light"
-                      onClick={() => handleSelectPost(post)}
+                      onClick={() => setSelectedPost(post)}
                     >
                       Open
                     </button>

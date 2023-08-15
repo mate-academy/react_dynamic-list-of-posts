@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import cn from 'classnames';
 import { User } from '../types/User';
 import { Post } from '../types/Post';
@@ -17,6 +17,7 @@ export const UserSelector: React.FC<Props> = React.memo(({
   setSelectedPost,
 }) => {
   const [isDropdownActive, setIsDropdownActive] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleUserChange = (user: User) => {
     setSelectedUser(user);
@@ -24,8 +25,33 @@ export const UserSelector: React.FC<Props> = React.memo(({
     setSelectedPost(null);
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current
+      && !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setIsDropdownActive(false);
+    }
+  };
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setIsDropdownActive(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
   return (
     <div
+      ref={dropdownRef}
       data-cy="UserSelector"
       className={cn('dropdown', {
         'is-active': isDropdownActive,

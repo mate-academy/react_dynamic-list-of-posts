@@ -11,32 +11,31 @@ import { UserSelector } from '../UserSelector';
 import { Loader } from '../Loader';
 import { getUsers } from '../../api/users';
 import { getPosts } from '../../api/posts';
-import { PostContext } from '../context/PostContext';
-import { getComments } from '../../api/comment';
 import { Post } from '../../types/Post';
 import { User } from '../../types/User';
+import { Comment } from '../../types/Comment';
+import { getComments } from '../../api/comment';
 
 export const PostApp: React.FC = () => {
-  const {
-    setComments,
-  } = React.useContext(PostContext);
-
   const [posts, setPosts] = useState<Post[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedPost, setSelectedPost]
     = useState<Post | null>(null);
+
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
   const [error, setError] = useState(Error.None);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const [comments, setComments] = useState<Comment[]>([]);
   const [isCommentFormActive, setIsCommentFormActive] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setError(Error.None);
-    setIsLoading(true);
     getUsers()
       .then(setUsers)
-      .catch(() => setError(Error.Load))
-      .finally(() => setIsLoading(false));
+      .catch(() => setError(Error.Load));
   }, []);
 
   useEffect(() => {
@@ -55,8 +54,7 @@ export const PostApp: React.FC = () => {
     if (selectedPost) {
       getComments(selectedPost?.id)
         .then(setComments)
-        .catch(() => setError(Error.Load))
-        .finally(() => setIsLoading(false));
+        .catch(() => setError(Error.Load));
     }
   }, [selectedPost?.id]);
 
@@ -77,7 +75,7 @@ export const PostApp: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUser
+                {!isLoading && !selectedUser
                   && (
                     <p data-cy="NoSelectedUser">
                       No user selected
@@ -86,7 +84,7 @@ export const PostApp: React.FC = () => {
 
                 {isLoading && <Loader />}
 
-                {error
+                {!isLoading && error
                   && (
                     <div
                       className="notification is-danger"
@@ -111,6 +109,7 @@ export const PostApp: React.FC = () => {
                         selectedPost={selectedPost}
                         setSelectedPost={setSelectedPost}
                         setIsCommentFormActive={setIsCommentFormActive}
+                        setIsLoading={setIsLoading}
                       />
                     )}
                   </>
@@ -131,11 +130,19 @@ export const PostApp: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails
-                selectedPost={selectedPost}
-                isCommentFormActive={isCommentFormActive}
-                setIsCommentFormActive={setIsCommentFormActive}
-              />
+              {selectedPost
+                && (
+                  <PostDetails
+                    error={error}
+                    setError={setError}
+                    comments={comments}
+                    setComments={setComments}
+                    selectedPost={selectedPost}
+                    isCommentFormActive={isCommentFormActive}
+                    setIsCommentFormActive={setIsCommentFormActive}
+                    isLoading={isLoading}
+                  />
+                )}
             </div>
           </div>
         </div>

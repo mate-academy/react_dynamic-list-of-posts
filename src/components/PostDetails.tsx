@@ -1,27 +1,41 @@
-import React, { useContext } from 'react';
-import { deleteComment } from '../api/comment';
+import React, { useEffect } from 'react';
+import { deleteComment, getComments } from '../api/comment';
 import { Post } from '../types/Post';
-import { PostContext } from './context/PostContext';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { Comment } from '../types/Comment';
+// import { getComments } from '../api/comment';
+import { Error } from '../types/Error';
 
 type Props = {
   selectedPost: Post | null,
   isCommentFormActive: boolean,
   setIsCommentFormActive: React.Dispatch<React.SetStateAction<boolean>>,
+  comments: Comment[],
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
+  isLoading: boolean,
+  error: Error,
+  setError: React.Dispatch<React.SetStateAction<Error>>,
 };
 
 export const PostDetails: React.FC<Props> = React.memo(({
   selectedPost,
   isCommentFormActive,
   setIsCommentFormActive,
+  comments,
+  setComments,
+  isLoading,
+  error,
+  setError,
 }) => {
-  const {
-    error,
-    comments,
-    setComments,
-    isLoading,
-  } = useContext(PostContext);
+  useEffect(() => {
+    setError(Error.None);
+    if (selectedPost) {
+      getComments(selectedPost?.id)
+        .then(setComments)
+        .catch(() => setError(Error.Load));
+    }
+  }, [selectedPost?.id]);
 
   const removeComment = (id: number) => {
     setComments(currentComments => currentComments.filter(
@@ -105,7 +119,15 @@ export const PostDetails: React.FC<Props> = React.memo(({
             )}
         </div>
 
-        {isCommentFormActive && <NewCommentForm selectedPost={selectedPost} />}
+        {isCommentFormActive
+          && (
+            <NewCommentForm
+              setError={setError}
+              selectedPost={selectedPost}
+              setComments={setComments}
+              isLoading={isLoading}
+            />
+          )}
       </div>
     </div>
   );

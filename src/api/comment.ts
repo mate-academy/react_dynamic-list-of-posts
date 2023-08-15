@@ -2,7 +2,9 @@ import { Comment } from '../types/Comment';
 import { client } from '../utils/fetchClient';
 
 export const getComments = (postId?: number) => {
-  return client.get<Comment[]>(`/comments?postId=${postId}`);
+  const url = postId !== undefined ? `/comments?postId=${postId}` : '/comments';
+
+  return client.get<Comment[]>(url);
 };
 
 export const postComment = (

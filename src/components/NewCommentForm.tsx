@@ -1,6 +1,5 @@
 import cn from 'classnames';
-import React, { useContext, useState } from 'react';
-import { PostContext } from './context/PostContext';
+import React, { useState } from 'react';
 import { Error } from '../types/Error';
 import { Comment } from '../types/Comment';
 import { postComment } from '../api/comment';
@@ -8,18 +7,17 @@ import { Post } from '../types/Post';
 
 type Props = {
   selectedPost: Post | null,
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
+  isLoading: boolean,
+  setError: React.Dispatch<React.SetStateAction<Error>>,
 };
 
 export const NewCommentForm: React.FC<Props> = React.memo(({
   selectedPost,
+  setComments,
+  isLoading,
+  setError,
 }) => {
-  const {
-    setError,
-    setComments,
-    isLoading,
-    setIsLoading,
-  } = useContext(PostContext);
-
   const [authorName, setAuthorName] = useState('');
   const [isNameError, setIsNameError] = useState(false);
 
@@ -68,13 +66,12 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
     try {
       if (selectedPost) {
         newComment = {
-          postId: selectedPost?.id,
+          postId: selectedPost.id,
           name: authorName,
           email: authorEmail,
           body: commentText,
         };
 
-        setIsLoading(true);
         await postComment(newComment);
         setComments(currentComments => [...currentComments,
           { ...newComment, id: +new Date() }]);
@@ -82,10 +79,8 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
     } catch {
       setError(Error.Load);
     } finally {
-      setIsLoading(false);
+      setCommentText('');
     }
-
-    setCommentText('');
   };
 
   const resetForm = () => {
