@@ -4,33 +4,23 @@ import { Error } from '../types/Error';
 import { Comment } from '../types/Comment';
 import { postComment } from '../api/comment';
 import { Post } from '../types/Post';
+import { initialCommentState } from '../utils/initialCommentState';
+import { initialErrorState } from '../utils/initialErrorState';
+import { isValidEmail } from '../utils/validEmail';
 
 type Props = {
   selectedPost: Post | null,
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
-  isLoading: boolean,
   setError: React.Dispatch<React.SetStateAction<Error>>,
 };
 
 export const NewCommentForm: React.FC<Props> = React.memo(({
   selectedPost,
   setComments,
-  isLoading,
   setError,
 }) => {
-  const initialCommentState = {
-    authorName: '',
-    authorEmail: '',
-    authorComment: '',
-  };
-
-  const initialErrorState = {
-    isNameError: false,
-    isEmailError: false,
-    isCommentError: false,
-  };
-
   const [comment, setComment] = useState(initialCommentState);
+  const [isCommentAdding, setIsCommentAdding] = useState(false);
   const [commentError, setCommentError] = useState(initialErrorState);
 
   const handleInputChange = (key: string, value: string) => {
@@ -39,11 +29,22 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
       [key]: value,
     }));
 
-    setCommentError(prevError => ({
-      ...prevError,
-      [`is${key}Error`]: value === '',
-    }));
+    if (key === 'authorEmail') {
+      setCommentError((prevError) => ({
+        ...prevError,
+        authorEmailError: !isValidEmail(value),
+      }));
+    } else {
+      setCommentError((prevError) => ({
+        ...prevError,
+        [`${key}Error`]: value === '',
+      }));
+    }
   };
+
+  const emailValidationError = commentError.authorEmailError || (
+    comment.authorEmail && !isValidEmail(comment.authorEmail)
+  );
 
   const handleSubmitForm = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -51,19 +52,19 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
     if (!comment) {
       setCommentError({
         ...commentError,
-        isNameError: true,
-        isEmailError: true,
-        isCommentError: true,
+        authorNameError: true,
+        authorEmailError: true,
+        authorCommentError: true,
       });
     }
 
     if (!comment.authorName || !comment.authorEmail || !comment.authorComment) {
-      setCommentError(prevError => ({
-        ...prevError,
-        isNameError: !comment.authorName,
-        isEmailError: !comment.authorEmail,
-        isCommentError: !comment.authorComment,
-      }));
+      setCommentError({
+        ...commentError,
+        authorNameError: !comment.authorName,
+        authorEmailError: !comment.authorEmail,
+        authorCommentError: !comment.authorComment,
+      });
 
       return;
     }
@@ -79,6 +80,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
           body: comment.authorComment,
         };
 
+        setIsCommentAdding(true);
         await postComment(newComment);
         setComments(currentComments => [...currentComments,
           { ...newComment, id: +new Date() }]);
@@ -87,6 +89,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
           ...comment,
           authorComment: '',
         });
+        setIsCommentAdding(false);
       }
     } catch {
       setError(Error.Load);
@@ -115,7 +118,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             id="comment-author-name"
             placeholder="Name Surname"
             className={cn('input', {
-              'is-danger': commentError.isNameError,
+              'is-danger': commentError.authorNameError,
             })}
             value={comment.authorName}
             onChange={(e) => handleInputChange('authorName', e.target.value)}
@@ -125,7 +128,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             <i className="fas fa-user" />
           </span>
 
-          {commentError.isNameError
+          {commentError.authorNameError
             && (
               <span
                 className="icon is-small is-right has-text-danger"
@@ -136,7 +139,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             )}
         </div>
 
-        {commentError.isNameError
+        {commentError.authorNameError
           && (
             <p
               className="help is-danger"
@@ -158,10 +161,10 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={cn('input', {
-              'is-danger': commentError.isEmailError,
-            })}
             value={comment.authorEmail}
+            className={cn('input', {
+              'is-danger': emailValidationError,
+            })}
             onChange={(e) => handleInputChange('authorEmail', e.target.value)}
           />
 
@@ -169,7 +172,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             <i className="fas fa-envelope" />
           </span>
 
-          {commentError.isEmailError
+          {emailValidationError
             && (
               <span
                 className="icon is-small is-right has-text-danger"
@@ -180,13 +183,15 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             )}
         </div>
 
-        {commentError.isEmailError
+        {emailValidationError
           && (
             <p
               className="help is-danger"
               data-cy="ErrorMessage"
             >
-              Email is required
+              {comment.authorEmail && !isValidEmail(comment.authorEmail)
+                ? 'Please enter valid email'
+                : 'Email is required'}
             </p>
           )}
       </div>
@@ -202,14 +207,14 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
             name="body"
             placeholder="Type comment here"
             className={cn('textarea', {
-              'is-danger': commentError.isCommentError,
+              'is-danger': commentError.authorCommentError,
             })}
             value={comment.authorComment}
             onChange={(e) => handleInputChange('authorComment', e.target.value)}
           />
         </div>
 
-        {commentError.isCommentError
+        {commentError.authorCommentError
           && (
             <p
               className="help is-danger"
@@ -225,7 +230,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
           <button
             type="submit"
             className={cn('button is-link', {
-              'is-loading': isLoading,
+              'is-loading': isCommentAdding,
             })}
           >
             Add

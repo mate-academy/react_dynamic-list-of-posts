@@ -4,7 +4,6 @@ import { Post } from '../types/Post';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment } from '../types/Comment';
-// import { getComments } from '../api/comment';
 import { Error } from '../types/Error';
 
 type Props = {
@@ -125,7 +124,6 @@ export const PostDetails: React.FC<Props> = React.memo(({
               setError={setError}
               selectedPost={selectedPost}
               setComments={setComments}
-              isLoading={isLoading}
             />
           )}
       </div>
