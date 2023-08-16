@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 
 import { User } from '../types/User';
+import { UserItem } from './UserItem';
 
 type Props = {
   users: User[];
@@ -36,7 +37,7 @@ export const UserSelector: React.FC<Props> = (
   }, [dropDownActive]);
 
   const toggleDropdown = () => setDropDownActive(prev => !prev);
-  const selectUserHandler = (user: User) => {
+  const selectUserFunction = (user: User) => {
     selectUser(user);
     setDropDownActive(false);
   };
@@ -70,16 +71,12 @@ export const UserSelector: React.FC<Props> = (
         <div className="dropdown-content">
           {
             users.map(user => (
-              <a
+              <UserItem
                 key={user.id}
-                href={`#user-${user.id}`}
-                className={classNames('dropdown-item', {
-                  'is-active': user.id === selectedUser?.id,
-                })}
-                onClick={() => selectUserHandler(user)}
-              >
-                {user.name}
-              </a>
+                user={user}
+                selectUserFunction={selectUserFunction}
+                selectedUser={selectedUser}
+              />
             ))
           }
         </div>

@@ -1,6 +1,6 @@
 import React from 'react';
-import classNames from 'classnames';
 import { Post } from '../types/Post';
+import { PostItem } from './PostItem';
 
 type Props = {
   posts: Post[];
@@ -13,7 +13,7 @@ export const PostsList: React.FC<Props> = ({
   selectedPost,
   selectPost,
 }) => {
-  const toggleSelectedPostHandler = (post: Post) => {
+  const toggleSelectedPostFunction = (post: Post) => {
     if (post.id === selectedPost?.id) {
       selectPost(null);
     } else {
@@ -37,26 +37,12 @@ export const PostsList: React.FC<Props> = ({
         <tbody>
           {
             posts.map(post => (
-              <tr data-cy="Post" key={post.id}>
-                <td data-cy="PostId">{post.id}</td>
-
-                <td data-cy="PostTitle">
-                  {post.title}
-                </td>
-
-                <td className="has-text-right is-vcentered">
-                  <button
-                    type="button"
-                    data-cy="PostButton"
-                    className={classNames('button is-link', {
-                      'is-light': post.id !== selectedPost?.id,
-                    })}
-                    onClick={() => toggleSelectedPostHandler(post)}
-                  >
-                    {post.id !== selectedPost?.id ? 'Open' : 'Close'}
-                  </button>
-                </td>
-              </tr>
+              <PostItem
+                key={post.id}
+                post={post}
+                toggleSelectedPostFunction={toggleSelectedPostFunction}
+                selectedPost={selectedPost}
+              />
             ))
           }
         </tbody>

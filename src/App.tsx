@@ -15,30 +15,41 @@ import { getPosts } from './api/posts';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [isError, setIsError] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
+  const getUsersFunc = async () => {
+    try {
+      setUsers(await getUsers());
+    } catch (error) {
+      setIsError(true);
+    }
+  };
+
+  const getPostsfunc = async (user: User) => {
+    try {
+      setPosts(await getPosts(user.id));
+    } catch (error) {
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    getUsers()
-      .then(setUsers)
-      .catch(() => setIsError(true));
+    getUsersFunc();
   }, []);
 
   useEffect(() => {
-    setLoading(true);
     setSelectedPost(null);
 
     if (selectedUser) {
-      getPosts(selectedUser.id)
-        .then(setPosts)
-        .catch(() => setIsError(true))
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
+      setIsLoading(true);
+      getPostsfunc(selectedUser);
     }
   }, [selectedUser]);
 
@@ -58,7 +69,8 @@ export const App: React.FC = () => {
 
               <div className="block" data-cy="MainContent">
                 {
-                  !selectedUser
+                  // eslint-disable-next-line no-extra-boolean-cast
+                  !!!selectedUser
                   && (
                     <p data-cy="NoSelectedUser">
                       No user selected
@@ -67,7 +79,7 @@ export const App: React.FC = () => {
                 }
 
                 {
-                  loading
+                  isLoading
                     ? <Loader />
                     : (
                       <>
@@ -79,8 +91,8 @@ export const App: React.FC = () => {
                             Something went wrong!
                           </div>
                         )}
-
-                        {posts.length === 0 && selectedUser && !isError && (
+                        {/* eslint-disable-next-line no-extra-boolean-cast */}
+                        {!!!posts.length && selectedUser && !isError && (
                           <div
                             className="notification is-warning"
                             data-cy="NoPostsYet"
@@ -89,7 +101,7 @@ export const App: React.FC = () => {
                           </div>
                         )}
 
-                        {posts.length !== 0 && selectedUser && !isError && (
+                        {!!posts.length && selectedUser && !isError && (
                           <PostsList
                             posts={posts}
                             selectedPost={selectedPost}

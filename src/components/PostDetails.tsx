@@ -4,6 +4,7 @@ import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { createComment, deleteComment, getComments } from '../api/comments';
 import { Comment } from '../types/Comment';
+import { CommentItem } from './CommentItem';
 
 type Props = {
   post: Post,
@@ -11,29 +12,28 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [formIsActive, setFormIsActive] = useState(false);
 
+  const getCommentsfunc = async (postId: number) => {
+    try {
+      setComments(await getComments(postId));
+    } catch (error) {
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    setLoading(true);
+    setIsLoading(true);
     setFormIsActive(false);
 
-    getComments(post.id)
-      .then(setComments)
-      .catch(() => setIsError(true))
-      .finally(() => setLoading(false));
+    getCommentsfunc(post.id);
   }, [post]);
 
   const toggleFormActive = () => setFormIsActive(true);
-
-  const deleteCommentHandler = useCallback((commentId: number) => {
-    setComments(currentComments => currentComments
-      .filter(currComment => currComment.id !== commentId));
-
-    deleteComment(commentId)
-      .catch(() => setIsError(true));
-  }, []);
 
   const addComment = useCallback(async (
     email: string,
@@ -57,6 +57,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       });
   }, []);
 
+  const deleteCommentFunction = useCallback(async (commentId: number) => {
+    setComments(currentComments => currentComments
+      .filter(currComment => currComment.id !== commentId));
+
+    try {
+      await deleteComment(commentId);
+    } catch (error) {
+      setIsError(true);
+    }
+  }, []);
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -71,7 +82,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         </div>
 
         <div className="block">
-          {loading
+          {isLoading
             ? <Loader />
             : (
               <>
@@ -84,47 +95,30 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   </div>
                 )}
 
-                {!isError && !loading && comments.length === 0 && (
+                {/* eslint-disable-next-line no-extra-boolean-cast */}
+                {!isLoading && !isError && !!!comments.length && (
                   <p className="title is-4" data-cy="NoCommentsMessage">
                     No comments yet
                   </p>
                 )}
 
-                {!isError && !loading && comments.length !== 0 && (
+                {!isLoading && !isError && !!comments.length && (
                   <>
                     <p className="title is-4">Comments:</p>
 
                     {
                       comments.map(comment => (
-                        <article className="message is-small" data-cy="Comment">
-                          <div className="message-header">
-                            <a
-                              href={`mailto:${comment.email}`}
-                              data-cy="CommentAuthor"
-                            >
-                              {comment.name}
-                            </a>
-                            <button
-                              data-cy="CommentDelete"
-                              type="button"
-                              className="delete is-small"
-                              aria-label="delete"
-                              onClick={() => deleteCommentHandler(comment.id)}
-                            >
-                              delete button
-                            </button>
-                          </div>
-
-                          <div className="message-body" data-cy="CommentBody">
-                            {comment.body}
-                          </div>
-                        </article>
+                        <CommentItem
+                          key={comment.id}
+                          comment={comment}
+                          deleteCommentFunction={deleteCommentFunction}
+                        />
 
                       ))
                     }
                   </>
                 )}
-                {!formIsActive && !isError && !loading && (
+                {!isLoading && !isError && !formIsActive && (
                   <button
                     data-cy="WriteCommentButton"
                     type="button"
