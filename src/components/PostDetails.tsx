@@ -6,8 +6,8 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 type Props = {
-  post: Post | null,
-  postSelected: Post | null,
+  post: Post | null;
+  postSelected: Post | null;
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -52,7 +52,7 @@ export const PostDetails: React.FC<Props> = ({
 
     try {
       deleteComment(id);
-      const preparedComments = comments.filter(comment => comment.id !== id);
+      const preparedComments = comments.filter((comment) => comment.id !== id);
 
       setComments(preparedComments);
     } catch {
@@ -68,7 +68,7 @@ export const PostDetails: React.FC<Props> = ({
     try {
       const comment = await addComment(preparedComment);
 
-      setComments(prev => [...prev, comment]);
+      setComments((prev) => [...prev, comment]);
     } catch {
       setHasError(true);
     } finally {
@@ -82,105 +82,92 @@ export const PostDetails: React.FC<Props> = ({
 
   if (hasError) {
     return (
-      <div
-        className="notification is-danger"
-        data-cy="CommentsError"
-      >
+      <div className="notification is-danger" data-cy="CommentsError">
         Something went wrong
       </div>
     );
   }
 
-  const isCommentsVisible = (comments.length > 0 && !isLoaderVisible);
+  const isCommentsVisible = comments.length > 0
+  && !isLoaderVisible && !isCommentErrorVisible;
   const isNoComments = comments.length === 0
-    && !isLoaderVisible && !isCommentErrorVisible;
+  && !isLoaderVisible && !isCommentErrorVisible;
 
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 data-cy="PostTitle">
-            {`#${post?.id}: ${post?.title}`}
-          </h2>
+      <div className="block">
+        <h2 data-cy="PostTitle">{`#${post?.id}: ${post?.title}`}</h2>
 
-          <p data-cy="PostBody">
-            {post?.body}
+        <p data-cy="PostBody">{post?.body}</p>
+      </div>
+
+      <div className="block">
+        {isLoaderVisible && <Loader />}
+
+        {isCommentErrorVisible && (
+          <div className="notification is-danger" data-cy="CommentsError">
+            Something went wrong!
+          </div>
+        )}
+
+        {isNoComments && (
+          <p className="title is-4" data-cy="NoCommentsMessage">
+            No comments yet
           </p>
-        </div>
+        )}
 
-        <div className="block">
-          {isLoaderVisible && <Loader />}
+        {isCommentsVisible && (
+          <>
+            <p className="title is-4">Comments:</p>
+            {comments.map((comment) => (
+              <article
+                key={comment.id}
+                className="message is-small"
+                data-cy="Comment"
+              >
+                <div className="message-header">
+                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                    {comment.name}
+                  </a>
+                  <button
+                    data-cy="CommentDelete"
+                    type="button"
+                    className="delete is-small"
+                    aria-label="delete"
+                    onClick={() => {
+                      handleOnDelete(comment.id);
+                    }}
+                  >
+                    delete button
+                  </button>
+                </div>
 
-          {isCommentErrorVisible && (
-            <div
-              className="notification is-danger"
-              data-cy="CommentsError"
-            >
-              Something went wrong!
-            </div>
-          )}
+                <div className="message-body" data-cy="CommentBody">
+                  {comment.body}
+                </div>
+              </article>
+            ))}
+          </>
+        )}
 
-          {isNoComments && (
-            <p className="title is-4" data-cy="NoCommentsMessage">
-              No comments yet
-            </p>
-          )}
+        {isNewFormVisible && (
+          <NewCommentForm
+            handleOnAdd={handleOnAdd}
+            isNewCommentLoading={isNewCommentLoading}
+            postSelected={postSelected}
+          />
+        )}
 
-          {isCommentsVisible && (
-            <>
-              <p className="title is-4">Comments:</p>
-              {comments.map(comment => (
-                <article
-                  key={comment.id}
-                  className="message is-small"
-                  data-cy="Comment"
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                      {comment.name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => {
-                        handleOnDelete(comment.id);
-                      }}
-                    >
-                      delete button
-                    </button>
-                  </div>
-
-                  <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
-                  </div>
-
-                </article>
-              ))}
-            </>
-          )}
-
-          {isNewFormVisible && (
-            <NewCommentForm
-              handleOnAdd={handleOnAdd}
-              isNewCommentLoading={isNewCommentLoading}
-              postSelected={postSelected}
-            />
-          )}
-
-          {(isWriteCommentVisible && !isNewFormVisible) && (
-            <button
-              data-cy="WriteCommentButton"
-              type="button"
-              className="button is-link"
-              onClick={handleShowNewForm}
-            >
-              Write a comment
-            </button>
-          )}
-        </div>
-
+        {isWriteCommentVisible && !isNewFormVisible && (
+          <button
+            data-cy="WriteCommentButton"
+            type="button"
+            className="button is-link"
+            onClick={handleShowNewForm}
+          >
+            Write a comment
+          </button>
+        )}
       </div>
     </div>
   );
