@@ -13,7 +13,7 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const { title, body, id } = post;
-  const [comments, setComments] = useState<Comment [] | null>(null);
+  const [comments, setComments] = useState<Comment []>([]);
   const [error, setError] = useState<ErrorMessage | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState<number | null>(null);
@@ -32,6 +32,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const deleteComment = (commentId: number) => () => {
     if (comments && comments?.length > 0) {
       const newComments = comments?.filter(comment => comment.id !== commentId);
+
+      setComments(newComments);
 
       deleteComments(commentId)
         .then(() => setComments(newComments));
@@ -96,7 +98,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
               <NewCommentForm
                 postId={id}
                 setComments={setComments}
-                // comments={comments}
               />
             )}
         </div>

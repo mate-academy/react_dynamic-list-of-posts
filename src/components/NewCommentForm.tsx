@@ -5,14 +5,12 @@ import { Comment } from '../types/Comment';
 
 type Props = {
   postId: number,
-  setComments: (comments: Comment [] | null) => void,
-  // comments: Comment [],
+  setComments: React.Dispatch<React.SetStateAction<Comment []>>,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   postId,
   setComments,
-  // comments,
 }) => {
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState(false);
@@ -35,6 +33,16 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleBodyEnter = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setBody(event.target.value);
     setBodyError(false);
+  };
+
+  const handleReset = () => {
+    setName('');
+    setEmail('');
+    setBody('');
+    setNameError(false);
+    setEmailError(false);
+    setBodyError(false);
+    setIsLoading(false);
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -70,18 +78,11 @@ export const NewCommentForm: React.FC<Props> = ({
     setIsLoading(true);
 
     addComment(newComment)
-      .then((res) => setComments(prev => [...prev, res]))
-      .finally(() => setIsLoading(false));
-  };
-
-  const handleReset = () => {
-    setName('');
-    setEmail('');
-    setBody('');
-    setNameError(false);
-    setEmailError(false);
-    setBodyError(false);
-    setIsLoading(false);
+      .then((addedComment) => setComments(prev => [...prev, addedComment]))
+      .finally(() => {
+        setIsLoading(false);
+        setBody('');
+      });
   };
 
   return (

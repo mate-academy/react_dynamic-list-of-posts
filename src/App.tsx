@@ -22,8 +22,6 @@ export const App: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<ErrorMessage | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  console.log('selectedPost', selectedPost);
-
   useEffect(() => {
     setIsLoading(true);
 
