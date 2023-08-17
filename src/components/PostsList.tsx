@@ -1,6 +1,18 @@
 import React from 'react';
+import { Post } from '../types/Post';
+import { PostItem } from './Post/Post';
 
-export const PostsList: React.FC = () => (
+type Props = {
+  userPosts: Post[] | null,
+  setSelectedPost: (post: Post | null) => void,
+  selectedPost: Post | null,
+};
+
+export const PostsList: React.FC<Props> = ({
+  userPosts,
+  setSelectedPost,
+  selectedPost,
+}) => (
   <div data-cy="PostsList">
     <p className="title">Posts:</p>
 
@@ -14,7 +26,15 @@ export const PostsList: React.FC = () => (
       </thead>
 
       <tbody>
-        <tr data-cy="Post">
+        {userPosts?.map(post => (
+          <PostItem
+            key={post.id}
+            post={post}
+            setSelectedPost={setSelectedPost}
+            selectedPost={selectedPost}
+          />
+        ))}
+        {/* <tr data-cy="Post">
           <td data-cy="PostId">17</td>
 
           <td data-cy="PostTitle">
@@ -78,7 +98,7 @@ export const PostsList: React.FC = () => (
               Open
             </button>
           </td>
-        </tr>
+        </tr> */}
       </tbody>
     </table>
   </div>
