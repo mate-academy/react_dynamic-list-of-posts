@@ -1,15 +1,80 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-
-import classNames from 'classnames';
+import cn from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
+
 import { Loader } from './components/Loader';
+import { User } from './types/User';
+import { getAllUsers } from './api/users';
+import { Post } from './types/Post';
+import { getPosts } from './api/posts';
+import { addComment, deleteCommentById, getCommentById } from './api/comments';
+import { Comment } from './types/Comment';
+
+const ERROR = 'Something went wrong!';
 
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [selectUser, setSelectUser] = useState<User | null>(null);
+  const [selectPost, setSelectPost] = useState<Post | null>(null);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    getAllUsers()
+      .then(setUsers)
+      .catch(() => setError(ERROR))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    if (selectUser !== null) {
+      getPosts(selectUser.id)
+        .then(setPosts)
+        .catch(() => setError(ERROR))
+        .finally(() => setIsLoading(false));
+    }
+  }, [selectUser?.id]);
+
+  useEffect(() => {
+    if (selectPost !== null) {
+      getCommentById(selectPost.id)
+        .then(setComments)
+        .catch(() => setError(ERROR));
+    }
+  }, [selectPost?.id]);
+
+  const deleteComment = (commentId: number) => {
+    deleteCommentById(commentId)
+      .then(() => {
+        setComments(comments.filter(comment => comment.id !== commentId));
+      })
+      .catch(() => setError(ERROR));
+  };
+
+  const addComments = (newComment: Omit<Comment, 'id'>) => {
+    const commentId = Math.random();
+
+    const commentWithId: Comment = {
+      id: commentId,
+      ...newComment,
+    };
+
+    addComment(commentWithId)
+      .then(() => {
+        setComments(prev => [...prev, commentWithId]);
+      })
+      .catch(() => setError(ERROR));
+  };
+
   return (
     <main className="section">
       <div className="container">
@@ -17,45 +82,67 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  users={users}
+                  selectUser={selectUser}
+                  setSelectUser={setSelectUser}
+                />
               </div>
-
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
+                {!isLoading && (<Loader />)}
 
-                <Loader />
-
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
-
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                {error && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    {error}
+                  </div>
+                )}
+                {posts.length === 0 ? (
+                  <div
+                    className={cn('notification is-warning',
+                      { 'is-hidden': !selectUser })}
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                ) : (
+                  <PostsList
+                    posts={posts}
+                    selectPost={selectPost}
+                    setSelectPost={setSelectPost}
+                  />
+                )}
               </div>
             </div>
           </div>
 
           <div
             data-cy="Sidebar"
-            className={classNames(
+            className={cn(
               'tile',
               'is-parent',
               'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
+              'Sidebar', { 'Sidebar--open': selectPost && posts.length > 0 },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
+            {selectPost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails
+                  comments={comments}
+                  selectPost={selectPost}
+                  error={error}
+                  deleteComment={deleteComment}
+                  addComments={addComments}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
