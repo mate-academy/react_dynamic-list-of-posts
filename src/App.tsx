@@ -15,8 +15,6 @@ import { getPosts } from './api/posts';
 import { addComment, deleteCommentById, getCommentById } from './api/comments';
 import { Comment } from './types/Comment';
 
-const ERROR = 'Something went wrong!';
-
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -30,16 +28,16 @@ export const App: React.FC = () => {
     setIsLoading(true);
     getAllUsers()
       .then(setUsers)
-      .catch(() => setError(ERROR))
+      .catch(() => setError('Something went wrong!'))
       .finally(() => setIsLoading(false));
-  }, []);
+  }, [setUsers]);
 
   useEffect(() => {
     setIsLoading(true);
-    if (selectUser !== null) {
+    if (selectUser) {
       getPosts(selectUser.id)
         .then(setPosts)
-        .catch(() => setError(ERROR))
+        .catch(() => setError('Something went wrong!'))
         .finally(() => setIsLoading(false));
     }
   }, [selectUser?.id]);
@@ -48,7 +46,7 @@ export const App: React.FC = () => {
     if (selectPost !== null) {
       getCommentById(selectPost.id)
         .then(setComments)
-        .catch(() => setError(ERROR));
+        .catch(() => setError('No posts yet'));
     }
   }, [selectPost?.id]);
 
@@ -57,10 +55,11 @@ export const App: React.FC = () => {
       .then(() => {
         setComments(comments.filter(comment => comment.id !== commentId));
       })
-      .catch(() => setError(ERROR));
+      .catch(() => setError('Can not delete comment'));
   };
 
   const addComments = (newComment: Omit<Comment, 'id'>) => {
+    setIsLoading(true);
     const commentId = Math.random();
 
     const commentWithId: Comment = {
@@ -72,7 +71,8 @@ export const App: React.FC = () => {
       .then(() => {
         setComments(prev => [...prev, commentWithId]);
       })
-      .catch(() => setError(ERROR));
+      .catch(() => setError('Can not add comment'))
+      .finally(() => setIsLoading(false));
   };
 
   return (
@@ -86,6 +86,7 @@ export const App: React.FC = () => {
                   users={users}
                   selectUser={selectUser}
                   setSelectUser={setSelectUser}
+                  setSelectPost={setSelectPost}
                 />
               </div>
               <div className="block" data-cy="MainContent">
@@ -94,7 +95,7 @@ export const App: React.FC = () => {
                     No user selected
                   </p>
                 )}
-                {!isLoading && (<Loader />)}
+                {isLoading && (<Loader />)}
 
                 {error && (
                   <div
@@ -104,10 +105,9 @@ export const App: React.FC = () => {
                     {error}
                   </div>
                 )}
-                {posts.length === 0 ? (
+                {!posts.length && !isLoading && selectUser ? (
                   <div
-                    className={cn('notification is-warning',
-                      { 'is-hidden': !selectUser })}
+                    className="notification is-warning"
                     data-cy="NoPostsYet"
                   >
                     No posts yet
@@ -117,6 +117,7 @@ export const App: React.FC = () => {
                     posts={posts}
                     selectPost={selectPost}
                     setSelectPost={setSelectPost}
+                    selectUser={selectUser}
                   />
                 )}
               </div>
@@ -140,6 +141,7 @@ export const App: React.FC = () => {
                   error={error}
                   deleteComment={deleteComment}
                   addComments={addComments}
+                  isLoading={isLoading}
                 />
               </div>
             )}

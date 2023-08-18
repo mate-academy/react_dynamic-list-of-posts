@@ -1,40 +1,81 @@
 import React, { useState } from 'react';
-import classNames from 'classnames';
+import cn from 'classnames';
 import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 
 type Props = {
   addComments:(addingComment: Omit<Comment, 'id'>) => void
   selectPost: Post | null
+  isLoading: boolean
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   addComments,
   selectPost,
+  isLoading,
 }) => {
   const [authorName, setAuthorName] = useState('');
   const [authorEmail, setAuthorEmail] = useState('');
   const [authorText, setAuthorText] = useState('');
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [nameError, setNameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [textError, setTextError] = useState(false);
 
-  const handleSubmit = () => {
-    if (authorName.trim() || authorEmail.trim() || authorText.trim()) {
-      setIsError(true);
-    } else {
-      const newComment: Omit<Comment, 'id'> = {
-        postId: selectPost?.id || 0,
-        name: authorName,
-        email: authorEmail,
-        body: authorText,
-      };
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
 
-      addComments(newComment);
-      setIsLoaded(false);
-      setIsError(false);
-      setAuthorText('');
+    let hasError = false;
+
+    if (!authorName) {
+      hasError = true;
+      setNameError(true);
     }
+
+    if (!authorEmail) {
+      hasError = true;
+      setEmailError(true);
+    }
+
+    if (!authorText) {
+      hasError = true;
+      setTextError(true);
+    }
+
+    if (hasError) {
+      return;
+    }
+
+    const newComment: Omit<Comment, 'id'> = {
+      postId: selectPost?.id || 0,
+      name: authorName,
+      email: authorEmail,
+      body: authorText,
+    };
+
+    addComments(newComment);
+    setAuthorName(newComment.name);
+    setAuthorEmail(newComment.email);
+    setAuthorText('');
+    setTextError(false);
   };
+
+  const handlerClear = () => {
+    setAuthorName('');
+    setAuthorEmail('');
+    setAuthorText('');
+    setNameError(false);
+    setEmailError(false);
+    setTextError(false);
+  };
+
+  const errorIcon = (
+    <span
+      className="icon is-small is-right has-text-danger"
+      data-cy="ErrorIcon"
+    >
+      <i className="fas fa-exclamation-triangle" />
+    </span>
+  );
 
   return (
     <form data-cy="NewCommentForm">
@@ -49,7 +90,8 @@ export const NewCommentForm: React.FC<Props> = ({
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            className={cn('input',
+              { 'is-danger': nameError && !authorName.trim() })}
             value={authorName}
             onChange={(e) => setAuthorName(e.target.value)}
           />
@@ -57,15 +99,9 @@ export const NewCommentForm: React.FC<Props> = ({
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {nameError && !authorName.trim() && errorIcon}
         </div>
-        {isError && (
+        {nameError && !authorName.trim() && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -83,7 +119,8 @@ export const NewCommentForm: React.FC<Props> = ({
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            className={cn('input',
+              { 'is-danger': emailError && !authorEmail.trim() })}
             value={authorEmail}
             onChange={(e) => setAuthorEmail(e.target.value)}
           />
@@ -91,16 +128,10 @@ export const NewCommentForm: React.FC<Props> = ({
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {emailError && !authorEmail.trim() && errorIcon}
         </div>
 
-        {isError && (
+        {emailError && !authorEmail.trim() && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -114,16 +145,17 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control">
           <textarea
-            id="comment-body"
+            id={authorText}
             name="body"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            className={cn('textarea',
+              { 'is-danger': textError && !authorText.trim() })}
             value={authorText}
             onChange={(e) => setAuthorText(e.target.value)}
           />
         </div>
 
-        {isError && (
+        {textError && !authorText.trim() && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -134,7 +166,7 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control">
           <button
             type="submit"
-            className={classNames('button is-link', { 'is-loaded': isLoaded })}
+            className={cn('button is-link', { 'is-loading': isLoading })}
             onClick={handleSubmit}
           >
             Add
@@ -146,6 +178,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="reset"
             className="button is-link is-light"
+            onClick={handlerClear}
           >
             Clear
           </button>

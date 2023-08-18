@@ -1,17 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 import cn from 'classnames';
 import { User } from '../types/User';
+import { Post } from '../types/Post';
 
 type Props = {
   users: User[]
   selectUser: User | null
   setSelectUser: (selectUser: User | null) => void
+  setSelectPost: Dispatch<SetStateAction<Post | null>>
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   selectUser,
   setSelectUser,
+  setSelectPost,
 }) => {
   const [isActive, setIsActive] = useState(false);
   const hanlderMenuUsers = () => {
@@ -36,6 +44,7 @@ export const UserSelector: React.FC<Props> = ({
 
   const handleSelectUser = (user : User) => {
     setSelectUser(user);
+    setSelectPost(null);
   };
 
   return (

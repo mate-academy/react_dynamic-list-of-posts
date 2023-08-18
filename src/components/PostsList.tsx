@@ -1,10 +1,12 @@
 import React from 'react';
 import cn from 'classnames';
 import { Post } from '../types/Post';
+import { User } from '../types/User';
 
 type Props = {
   posts: Post[]
   selectPost: Post | null
+  selectUser: User | null
   setSelectPost: (selectPost: Post | null) => void
 };
 
@@ -12,12 +14,13 @@ export const PostsList: React.FC<Props> = ({
   posts,
   selectPost,
   setSelectPost,
+  selectUser,
 }) => {
   const handlerOpen = (post: Post) => {
     setSelectPost(selectPost === post ? null : post);
   };
 
-  return (
+  return selectUser && posts.length ? (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
 
@@ -55,5 +58,5 @@ export const PostsList: React.FC<Props> = ({
         </tbody>
       </table>
     </div>
-  );
+  ) : null;
 };

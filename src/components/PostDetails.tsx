@@ -10,6 +10,7 @@ type Props = {
   error: string
   deleteComment: (id: number) => void
   addComments:(Comment: Omit<Comment, 'id'>) => void
+  isLoading: boolean
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -18,6 +19,7 @@ export const PostDetails: React.FC<Props> = ({
   error,
   deleteComment,
   addComments,
+  isLoading,
 }) => {
   const [isActive, setIsActive] = useState(false);
 
@@ -39,43 +41,47 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {!error ? (
-            <Loader />
-
-          ) : (
+          {isLoading && <Loader /> }
+          {error && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
           )}
-          {comments.length === 0 ? (
+
+          {!comments.length ? (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           ) : (
             <p className="title is-4">Comments:</p>)}
-          {comments.map(comment => (
+          {comments.map(({
+            id,
+            name,
+            email,
+            body,
+          }) => (
             <article
-              key={comment.id}
+              key={id}
               className="message is-small"
               data-cy="Comment"
             >
               <div className="message-header">
-                <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                  {comment.name}
+                <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                  {name}
                 </a>
                 <button
                   data-cy="CommentDelete"
                   type="button"
                   className="delete is-small"
                   aria-label="delete"
-                  onClick={() => deleteComment(comment.id)}
+                  onClick={() => deleteComment(id)}
                 >
                   delete button
                 </button>
               </div>
 
               <div className="message-body" data-cy="CommentBody">
-                {comment.body}
+                {body}
               </div>
             </article>
           ))}
@@ -95,6 +101,7 @@ export const PostDetails: React.FC<Props> = ({
           <NewCommentForm
             addComments={addComments}
             selectPost={selectPost}
+            isLoading={isLoading}
           />
         )}
       </div>
