@@ -15,6 +15,7 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
   const [isNamePresent, setIsNamePresent] = useState<boolean>(true);
   const [isEmailPresent, setIsEmailPresent] = useState<boolean>(true);
   const [isTextPresent, setIsTextPresent] = useState<boolean>(true);
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [comment, setComment] = useState(emptyComment);
   const { name, email, text } = comment;
@@ -25,6 +26,15 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
     setIsNamePresent(true);
     setIsEmailPresent(true);
     setIsTextPresent(true);
+  };
+
+  const handleChange = (
+    event: React.ChangeEvent <HTMLTextAreaElement | HTMLInputElement>,
+  ) => {
+    const title = event.target.name;
+    const { value } = event.target;
+
+    setComment(prevState => ({ ...prevState, [title]: value }));
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -59,9 +69,7 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
               'is-danger': !isNamePresent,
             })}
             value={name}
-            onChange={(e) => {
-              setComment(prevValue => ({ ...prevValue, name: e.target.value }));
-            }}
+            onChange={handleChange}
           />
 
           <span className="icon is-small is-left">
@@ -100,11 +108,7 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
               'is-danger': !isEmailPresent,
             })}
             value={email}
-            onChange={(e) => {
-              setComment(
-                prevValue => ({ ...prevValue, email: e.target.value }),
-              );
-            }}
+            onChange={handleChange}
           />
 
           <span className="icon is-small is-left">
@@ -136,15 +140,13 @@ export const NewCommentForm: React.FC<Props> = ({ addNewComment }) => {
         <div className="control">
           <textarea
             id="comment-body"
-            name="body"
+            name="text"
             placeholder="Type comment here"
             className={classNames('textarea', {
               'is-danger': !isTextPresent,
             })}
             value={text}
-            onChange={(e) => {
-              setComment(prevValue => ({ ...prevValue, text: e.target.value }));
-            }}
+            onChange={handleChange}
           />
         </div>
 
