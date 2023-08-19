@@ -17,10 +17,14 @@ export const UserSelector: React.FC<Props> = (
     <div
       data-cy="UserSelector"
       className={cn('dropdown', { 'is-active': isDropdownActive })}
+      role="button"
+      tabIndex={0}
+      onFocus={() => setIsDropdownActive(true)}
+      onBlur={() => setIsDropdownActive(false)}
+      onMouseDown={() => setIsDropdownActive(!isDropdownActive)}
     >
       <div className="dropdown-trigger">
         <button
-          onClick={() => (setIsDropdownActive(true))}
           type="button"
           className="button"
           aria-haspopup="true"
@@ -59,11 +63,6 @@ export const UserSelector: React.FC<Props> = (
               </a>
             );
           })}
-          {/* <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a> */}
         </div>
       </div>
     </div>

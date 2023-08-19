@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Comment } from '../types/Comment';
 import { Errors } from '../types/Errors';
 import { Post } from '../types/Post';
@@ -29,6 +29,15 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const isAnyComments = postComments.length > 0;
 
+  const isShow = useMemo(() => {
+    return {
+      commentsError: commentsError && !isCommentsLoading,
+      noCommentsYet: !isAnyComments && !commentsError && !isCommentsLoading,
+      comments: isAnyComments && !commentsError && !isCommentsLoading,
+      writeCommentButton: !isForm && !commentsError && !isCommentsLoading,
+    };
+  }, [commentsError, isAnyComments, isCommentsLoading, isForm]);
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -45,20 +54,21 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         <div className="block">
           {isCommentsLoading && <Loader />}
 
-          {(commentsError && !isCommentsLoading) && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              {commentsError}
-            </div>
-          )}
+          {isShow.commentsError
+            && (
+              <div className="notification is-danger" data-cy="CommentsError">
+                {commentsError}
+              </div>
+            )}
 
-          {(!isAnyComments && !commentsError && !isCommentsLoading)
+          {isShow.noCommentsYet
             && (
               <p className="title is-4" data-cy="NoCommentsMessage">
                 No comments yet
               </p>
             )}
 
-          {(isAnyComments && !commentsError && !isCommentsLoading)
+          {isShow.comments
             && (
               <>
                 <p className="title is-4">Comments:</p>
@@ -102,7 +112,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                 })}
               </>
             )}
-          {(!isForm && !commentsError && !isCommentsLoading) && (
+          {isShow.writeCommentButton && (
             <button
               onClick={() => setIsForm(true)}
               data-cy="WriteCommentButton"

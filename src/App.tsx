@@ -20,6 +20,7 @@ export const App: React.FC = () => {
 
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [isPostsLoading, setIsPostsLoading] = useState(false);
+
   const isAnyPosts = useMemo(() => (
     userPosts.length > 0
   ), [userPosts]);
@@ -30,6 +31,7 @@ export const App: React.FC = () => {
   const [postsError, setPostsError] = useState(Errors.None);
 
   const getPosts = (user: User) => {
+    setSelectedPost(null);
     setPostsError(Errors.None);
     setIsPostsLoading(true);
     setSelectedUser(user);
@@ -43,6 +45,13 @@ export const App: React.FC = () => {
   const getPost = (post: Post) => {
     setSelectedPost(post);
   };
+
+  const isShow = useMemo(() => {
+    return {
+      noPostYet: !isAnyPosts && selectedUser && !isPostsLoading && !postsError,
+      postList: isAnyPosts && selectedUser && !isPostsLoading && !postsError,
+    };
+  }, [isAnyPosts, selectedUser, isPostsLoading, postsError]);
 
   useEffect(() => {
     apiActions.getAllUsers()
@@ -95,7 +104,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(!isAnyPosts && selectedUser && !isPostsLoading && !postsError)
+                {isShow.noPostYet
                   && (
                     <div
                       className="notification is-warning"
@@ -105,7 +114,7 @@ export const App: React.FC = () => {
                     </div>
                   )}
 
-                {(isAnyPosts && selectedUser && !isPostsLoading && !postsError)
+                {isShow.postList
                   && (
                     <PostsList
                       posts={userPosts}
@@ -130,7 +139,13 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
+              {selectedPost
+                && (
+                  <PostDetails
+                    post={selectedPost}
+                    key={selectedPost.id}
+                  />
+                )}
             </div>
           </div>
         </div>

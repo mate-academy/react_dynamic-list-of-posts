@@ -1,3 +1,4 @@
+/* eslint-disable react/button-has-type */
 import React, { useState } from 'react';
 import cn from 'classnames';
 
@@ -219,7 +220,7 @@ export const NewCommentForm: React.FC<Props> = ({ onComments, id }) => {
         <div className="control">
           <button
             onClick={handleReset}
-            type="button"
+            type="reset"
             className="button is-link is-light"
           >
             Clear
