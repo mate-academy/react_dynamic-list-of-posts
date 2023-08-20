@@ -63,7 +63,7 @@ export const PostDetails: React.FC<Props> = ({
 
       handleGetComments();
     }
-  }, [selectedPostId]);
+  }, [selectedPostId, setComments]);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -144,6 +144,7 @@ export const PostDetails: React.FC<Props> = ({
 
         {isOpen && (
           <NewCommentForm
+            setComments={setComments}
             selectedPostId={selectedPostId}
             key={selectedPostId}
           />

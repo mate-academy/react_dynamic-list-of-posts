@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import { addComment } from '../Api/Api';
+import { Comment } from '../types/Comment';
 
 type Props = {
   selectedPostId: number | undefined
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>
 };
 
-export const NewCommentForm: React.FC<Props> = ({ selectedPostId }) => {
+export const NewCommentForm: React.FC<Props> = ({
+  selectedPostId,
+  setComments,
+}) => {
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [text, setText] = useState<string>('');
@@ -64,7 +69,11 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPostId }) => {
 
     try {
       if (selectedPostId) {
-        await addComment(selectedPostId, newComment);
+        const addedComment = await addComment(selectedPostId, newComment);
+
+        setComments(
+          (currentComments: Comment[]) => [...currentComments, addedComment],
+        );
         setText('');
         setIsLoading(false);
       }

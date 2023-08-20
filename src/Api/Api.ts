@@ -22,8 +22,8 @@ export const postData = (url: string, data: Post) => {
   return client.post(url, data);
 };
 
-export const updateComments = (id: number, data: Comment) => {
-  return client.patch(`/comments?postId=${id}`, data);
+export const updateComments = (data: Comment[]) => {
+  return client.patch('/comments', data);
 };
 
 export const deleteData = (url: string) => {
