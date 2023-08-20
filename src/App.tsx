@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -21,9 +21,7 @@ export const App: React.FC = () => {
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [isPostsLoading, setIsPostsLoading] = useState(false);
 
-  const isAnyPosts = useMemo(() => (
-    userPosts.length > 0
-  ), [userPosts]);
+  const isAnyPosts = userPosts.length > 0;
 
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
@@ -37,7 +35,7 @@ export const App: React.FC = () => {
     setSelectedUser(user);
 
     apiActions.getUserPosts(user.id)
-      .then((userPostsFromServer) => setUserPosts(userPostsFromServer))
+      .then(setUserPosts)
       .catch(() => setPostsError(Errors.Posts))
       .finally(() => setIsPostsLoading(false));
   };
@@ -46,12 +44,10 @@ export const App: React.FC = () => {
     setSelectedPost(post);
   };
 
-  const isShow = useMemo(() => {
-    return {
-      noPostYet: !isAnyPosts && selectedUser && !isPostsLoading && !postsError,
-      postList: isAnyPosts && selectedUser && !isPostsLoading && !postsError,
-    };
-  }, [isAnyPosts, selectedUser, isPostsLoading, postsError]);
+  const isShow = {
+    noPostYet: !isAnyPosts && selectedUser && !isPostsLoading && !postsError,
+    postList: isAnyPosts && selectedUser && !isPostsLoading && !postsError,
+  };
 
   useEffect(() => {
     apiActions.getAllUsers()

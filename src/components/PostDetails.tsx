@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Comment } from '../types/Comment';
 import { Errors } from '../types/Errors';
 import { Post } from '../types/Post';
@@ -29,14 +29,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const isAnyComments = postComments.length > 0;
 
-  const isShow = useMemo(() => {
-    return {
-      commentsError: commentsError && !isCommentsLoading,
-      noCommentsYet: !isAnyComments && !commentsError && !isCommentsLoading,
-      comments: isAnyComments && !commentsError && !isCommentsLoading,
-      writeCommentButton: !isForm && !commentsError && !isCommentsLoading,
-    };
-  }, [commentsError, isAnyComments, isCommentsLoading, isForm]);
+  const isShow = {
+    commentsError: commentsError && !isCommentsLoading,
+    noCommentsYet: !isAnyComments && !commentsError && !isCommentsLoading,
+    comments: isAnyComments && !commentsError && !isCommentsLoading,
+    writeCommentButton: !isForm && !commentsError && !isCommentsLoading,
+  };
 
   return (
     <div className="content" data-cy="PostDetails">

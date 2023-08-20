@@ -43,7 +43,7 @@ export const NewCommentForm: React.FC<Props> = ({ onComments, id }) => {
     setCommentError(FormErrors.None);
   };
 
-  const validation = (value: string) => {
+  const validate = (value: string) => {
     const trimValue = value.trim();
 
     return trimValue.length > 0;
@@ -62,9 +62,9 @@ export const NewCommentForm: React.FC<Props> = ({ onComments, id }) => {
   };
 
   const submit = () => {
-    const isNameValid = validation(name);
-    const isEmailValid = validation(email);
-    const isCommentValid = validation(comment);
+    const isNameValid = validate(name);
+    const isEmailValid = validate(email);
+    const isCommentValid = validate(comment);
 
     if (!isNameValid) {
       setNameError(FormErrors.Name);
