@@ -10,14 +10,30 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUsers } from './services/user';
 import { User } from './types/User';
+import { getPosts } from './services/post';
+import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [posts, setPosts] = useState<Post[] | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
     getUsers().then(setUsers);
   }, []);
+
+  useEffect(() => {
+    if (selectedUser) {
+      setIsLoading(true);
+      getPosts(selectedUser.id)
+        .then(setPosts)
+        .catch(() => setErrorMessage('Something went wrong!'))
+        .finally(() => setIsLoading(false));
+    }
+  }, [selectedUser]);
 
   return (
     <main className="section">
@@ -30,6 +46,7 @@ export const App: React.FC = () => {
                   users={users}
                   selectedUser={selectedUser}
                   setSelectedUser={setSelectedUser}
+                  setSelectedPost={setSelectedPost}
                 />
               </div>
 
@@ -40,20 +57,31 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                <Loader />
+                {isLoading && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {errorMessage && (
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <PostsList />
+                {(posts && !posts.length && !isLoading) && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
+
+                {(posts && posts.length > 0 && !isLoading) && (
+                  <PostsList
+                    posts={posts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -64,12 +92,17 @@ export const App: React.FC = () => {
               'tile',
               'is-parent',
               'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
+              'Sidebar', {
+                'Sidebar--open': selectedPost,
+              },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {selectedPost && (
+                <PostDetails
+                  post={selectedPost}
+                />
+              )}
             </div>
           </div>
         </div>

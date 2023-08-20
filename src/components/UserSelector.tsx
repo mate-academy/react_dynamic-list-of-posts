@@ -1,23 +1,27 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
+import { Post } from '../types/Post';
 
 type Props = {
   users: User[],
   selectedUser: User | null,
   setSelectedUser: (value: User) => void,
+  setSelectedPost: (value: Post | null) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   selectedUser,
   setSelectedUser,
+  setSelectedPost,
 }) => {
   const [isActive, setIsActive] = useState(false);
 
-  const handleClick = (user: User) => {
+  const handleSelectUser = (user: User) => () => {
     setSelectedUser(user);
     setIsActive(false);
+    setSelectedPost(null);
   };
 
   return (
@@ -57,7 +61,7 @@ export const UserSelector: React.FC<Props> = ({
                 className={classNames('dropdown-item', {
                   'is-active': user.id === selectedUser?.id,
                 })}
-                onClick={() => handleClick(user)}
+                onClick={handleSelectUser(user)}
               >
                 {user.name}
               </a>
