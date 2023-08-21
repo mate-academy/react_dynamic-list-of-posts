@@ -19,7 +19,7 @@ export const App: React.FC = () => {
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
-  const [isPostOpen, setIsPostOpen] = useState<Post | null>(null);
+  const [openedPost, setOpenedPost] = useState<Post | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export const App: React.FC = () => {
       setHasError(false);
 
       getPosts(selectedUser.id)
-        .then(posts => setUserPosts(posts))
+        .then(setUserPosts)
         .catch(() => setHasError(true))
         .finally(() => setLoading(false));
     }
@@ -44,7 +44,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   setSelectedUser={setSelectedUser}
                   selectedUser={selectedUser}
-                  setIsPostOpen={setIsPostOpen}
+                  setOpenedPost={setOpenedPost}
                 />
               </div>
 
@@ -77,8 +77,8 @@ export const App: React.FC = () => {
                   {userPosts.length !== 0 && (
                     <PostsList
                       userPosts={userPosts}
-                      setIsPostOpen={setIsPostOpen}
-                      isPostOpen={isPostOpen}
+                      setOpenedPost={setOpenedPost}
+                      openedPost={openedPost}
                       setIsFormOpen={setIsFormOpen}
                     />
                   )}
@@ -94,18 +94,16 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': isPostOpen },
+              { 'Sidebar--open': openedPost },
             )}
           >
-            {isPostOpen && (
-              <div className="tile is-child box is-success ">
-                <PostDetails
-                  isPostOpen={isPostOpen}
-                  setIsFormOpen={setIsFormOpen}
-                  isFormOpen={isFormOpen}
-                />
-              </div>
-            )}
+            <div className="tile is-child box is-success ">
+              <PostDetails
+                openedPost={openedPost}
+                setIsFormOpen={setIsFormOpen}
+                isFormOpen={isFormOpen}
+              />
+            </div>
           </div>
         </div>
       </div>
