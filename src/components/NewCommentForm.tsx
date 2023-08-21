@@ -53,7 +53,11 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (openPost) {
+    if (openPost
+      && formInputs.name.trim()
+      && formInputs.email.trim()
+      && formInputs.body.trim()
+    ) {
       const newComment = { ...formInputs, postId: openPost.id };
 
       setLoading(true);
@@ -119,7 +123,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"

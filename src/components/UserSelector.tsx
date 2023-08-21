@@ -15,7 +15,7 @@ export const UserSelector: React.FC<Props> = ({
   selectedUser,
   setOpenedPost,
 }) => {
-  const [allUsers, setAllUsers] = useState<null | User[]>(null);
+  const [allUsers, setAllUsers] = useState<User[]>([]);
   const [dropdownTrigger, setDropdownTrigger] = useState(true);
 
   const handleTrigger = () => {
@@ -29,7 +29,7 @@ export const UserSelector: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    getUsers().then(users => setAllUsers(users));
+    getUsers().then(setAllUsers);
   }, []);
 
   return (
@@ -45,7 +45,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={handleTrigger}
         >
-          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
+          <span>{selectedUser?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -55,7 +55,7 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content" hidden={dropdownTrigger}>
-          {allUsers?.map(user => (
+          {allUsers.map(user => (
             <a
               href={`#user-${user.id}`}
               key={user.id}
