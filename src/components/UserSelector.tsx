@@ -9,14 +9,8 @@ type Props = {
 
 export const UserSelector: React.FC<Props> = ({ users, onSetUser }) => {
   const [dropdown, setDropdown] = useState(false);
-  const [userName, setUserName] = useState('Choose a user');
+  const [userName, setUserName] = useState<string | null>(null);
   const dropdownSelect = useRef<HTMLDivElement>(null);
-
-  function handleSelectUser(user: User) {
-    setUserName(user.name);
-    onSetUser(user);
-    setDropdown(false);
-  }
 
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
@@ -31,6 +25,12 @@ export const UserSelector: React.FC<Props> = ({ users, onSetUser }) => {
     return () => document.removeEventListener('mousedown', onClick);
   }, []);
 
+  const handleSelectUser = (user: User) => {
+    setUserName(user.name);
+    onSetUser(user);
+    setDropdown(false);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -44,7 +44,7 @@ export const UserSelector: React.FC<Props> = ({ users, onSetUser }) => {
           aria-controls="dropdown-menu"
           onClick={() => setDropdown(current => !current)}
         >
-          <span>{userName}</span>
+          <span>{userName || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />

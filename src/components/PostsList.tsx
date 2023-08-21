@@ -10,7 +10,7 @@ type Props = {
 export const PostsList: React.FC<Props> = ({ posts, onSetPost }) => {
   const selectedPostId = useRef<number | null>(null);
 
-  function handleSelectPost(post: Post) {
+  const handleSelectPost = (post: Post) => {
     if (selectedPostId.current === post.id) {
       onSetPost(null);
       selectedPostId.current = null;
@@ -18,7 +18,7 @@ export const PostsList: React.FC<Props> = ({ posts, onSetPost }) => {
       onSetPost(post);
       selectedPostId.current = post.id;
     }
-  }
+  };
 
   return (
     <div data-cy="PostsList">
