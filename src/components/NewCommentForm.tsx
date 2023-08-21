@@ -6,12 +6,14 @@ import { addComment } from '../services/comment';
 
 type Props = {
   selectedPost: Post;
-  setComments: (value: Comment[] | { (prev: Comment[]) : Comment[] }) => void,
+  setComments: (value: Comment[] | { (prev: Comment[]): Comment[] }) => void,
+  setErrorMessage: (value: string) => void;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   selectedPost,
   setComments,
+  setErrorMessage,
 }) => {
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState(false);
@@ -19,7 +21,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const [emailError, setEmailError] = useState(false);
   const [comment, setComment] = useState('');
   const [commentError, setCommentError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -42,8 +44,11 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const handleReset = () => {
     setName('');
+    setNameError(false);
     setEmail('');
+    setEmailError(false);
     setComment('');
+    setCommentError(false);
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -55,6 +60,10 @@ export const NewCommentForm: React.FC<Props> = ({
     setEmailError(!emailPattern.test(normilizedEmail));
     setCommentError(!comment);
 
+    if (!normilizedName || !emailPattern.test(normilizedEmail) || !comment) {
+      return;
+    }
+
     const newComment = {
       id: 0,
       postId: selectedPost.id,
@@ -63,14 +72,15 @@ export const NewCommentForm: React.FC<Props> = ({
       body: comment,
     };
 
-    setIsLoading(true);
+    setIsSubmitting(true);
 
     addComment(newComment)
       .then(response => {
         setComments((prev: Comment[]) => [...prev, response]);
       })
+      .catch(() => setErrorMessage('Can not add a comment, try again later'))
       .finally(() => {
-        setIsLoading(false);
+        setIsSubmitting(false);
         setComment('');
       });
   };
@@ -79,7 +89,6 @@ export const NewCommentForm: React.FC<Props> = ({
     <form
       data-cy="NewCommentForm"
       onSubmit={handleSubmit}
-      // onBlur={handleSubmit}
     >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
@@ -184,7 +193,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="submit"
             className={classNames('button is-link', {
-              'is-loading': isLoading,
+              'is-loading': isSubmitting,
             })}
           >
             Add

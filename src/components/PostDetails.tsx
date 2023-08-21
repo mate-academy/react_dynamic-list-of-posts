@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
-import { getComments } from '../services/comment';
+import { deleteComment, getComments } from '../services/comment';
 import { Comment } from '../types/Comment';
 
 type Props = {
@@ -30,6 +30,17 @@ export const PostDetails: React.FC<Props> = ({
 
   const handleWriteComment = () => {
     setIsFormShown(true);
+  };
+
+  const handleDeleteComment = (commentId: number) => () => {
+    setComments(currentComments => {
+      return currentComments.filter(comment => comment.id !== commentId);
+    });
+    deleteComment(commentId)
+      .catch(() => {
+        setComments(comments);
+        setErrorMessage('Can not add a comment, try again later');
+      });
   };
 
   return (
@@ -67,7 +78,11 @@ export const PostDetails: React.FC<Props> = ({
               <p className="title is-4">Comments:</p>
 
               {comments.map(comment => (
-                <article className="message is-small" data-cy="Comment">
+                <article
+                  key={comment.id}
+                  className="message is-small"
+                  data-cy="Comment"
+                >
                   <div className="message-header">
                     <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                       {comment.name}
@@ -77,6 +92,7 @@ export const PostDetails: React.FC<Props> = ({
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
+                      onClick={handleDeleteComment(comment.id)}
                     >
                       delete button
                     </button>
@@ -106,6 +122,7 @@ export const PostDetails: React.FC<Props> = ({
           <NewCommentForm
             selectedPost={selectedPost}
             setComments={setComments}
+            setErrorMessage={setErrorMessage}
           />
         )}
       </div>

@@ -57,6 +57,7 @@ export const UserSelector: React.FC<Props> = ({
           <div className="dropdown-content">
             {users.map(user => (
               <a
+                key={user.id}
                 href={`#user-${user.id}`}
                 className={classNames('dropdown-item', {
                   'is-active': user.id === selectedUser?.id,
