@@ -20,6 +20,7 @@ export const App: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [isFormShown, setIsFormShown] = useState(false);
 
   useEffect(() => {
     getUsers().then(setUsers);
@@ -80,6 +81,7 @@ export const App: React.FC = () => {
                     posts={posts}
                     selectedPost={selectedPost}
                     setSelectedPost={setSelectedPost}
+                    setIsFormShown={setIsFormShown}
                   />
                 )}
               </div>
@@ -100,7 +102,9 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success ">
               {selectedPost && (
                 <PostDetails
-                  post={selectedPost}
+                  selectedPost={selectedPost}
+                  isFormShown={isFormShown}
+                  setIsFormShown={setIsFormShown}
                 />
               )}
             </div>

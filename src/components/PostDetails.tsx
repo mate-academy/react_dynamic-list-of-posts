@@ -3,25 +3,30 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { getComments } from '../services/comment';
-import { CommentData } from '../types/Comment';
+import { Comment } from '../types/Comment';
 
 type Props = {
-  post: Post;
+  selectedPost: Post;
+  isFormShown: boolean;
+  setIsFormShown: (value: boolean) => void;
 };
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<CommentData[]>([]);
+export const PostDetails: React.FC<Props> = ({
+  selectedPost,
+  isFormShown,
+  setIsFormShown,
+}) => {
+  const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [isFormShown, setIsFormShown] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
-    getComments(post.id)
+    getComments(selectedPost.id)
       .then(setComments)
       .catch(() => setErrorMessage('Something went wrong'))
       .finally(() => setIsLoading(false));
-  }, [post]);
+  }, [selectedPost]);
 
   const handleWriteComment = () => {
     setIsFormShown(true);
@@ -32,12 +37,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {`#${post.id}: ${post.title}`}
+            {`#${selectedPost.id}: ${selectedPost.title}`}
           </h2>
 
           <p data-cy="PostBody">
             {
-              post.body
+              selectedPost.body
             }
           </p>
         </div>
@@ -97,7 +102,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           )}
         </div>
 
-        {isFormShown && <NewCommentForm />}
+        {isFormShown && (
+          <NewCommentForm
+            selectedPost={selectedPost}
+            setComments={setComments}
+          />
+        )}
       </div>
     </div>
   );
