@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -9,7 +9,31 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 
+import { User } from './types/User';
+import { Post } from './types/Post';
+
+import { getPosts } from './api/ApiMethods';
+
 export const App: React.FC = () => {
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [openedPost, setOpenedPost] = useState<Post | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
+  useEffect(() => {
+    if (selectedUser) {
+      setLoading(true);
+      setHasError(false);
+
+      getPosts(selectedUser.id)
+        .then(setUserPosts)
+        .catch(() => setHasError(true))
+        .finally(() => setLoading(false));
+    }
+  }, [selectedUser]);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,29 +41,49 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  setSelectedUser={setSelectedUser}
+                  selectedUser={selectedUser}
+                  setOpenedPost={setOpenedPost}
+                />
               </div>
 
-              <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
-
+              {loading ? (
                 <Loader />
+              ) : (
+                <div className="block" data-cy="MainContent">
+                  {!selectedUser && (
+                    <p data-cy="NoSelectedUser">No user selected</p>
+                  )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
+                  {hasError && (
+                    <div
+                      className="notification is-danger"
+                      data-cy="PostsLoadingError"
+                    >
+                      Something went wrong!
+                    </div>
+                  )}
+
+                  {userPosts.length === 0 && selectedUser && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  )}
+
+                  {userPosts.length !== 0 && (
+                    <PostsList
+                      userPosts={userPosts}
+                      setOpenedPost={setOpenedPost}
+                      openedPost={openedPost}
+                      setIsFormOpen={setIsFormOpen}
+                    />
+                  )}
                 </div>
-
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
-              </div>
+              )}
             </div>
           </div>
 
@@ -50,11 +94,15 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': openedPost },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              <PostDetails
+                openedPost={openedPost}
+                setIsFormOpen={setIsFormOpen}
+                isFormOpen={isFormOpen}
+              />
             </div>
           </div>
         </div>
