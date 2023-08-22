@@ -27,6 +27,7 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    setErrorMessage('');
     if (selectedUser) {
       setIsLoading(true);
       getPosts(selectedUser.id)

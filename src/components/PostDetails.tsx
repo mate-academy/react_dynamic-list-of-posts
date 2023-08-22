@@ -21,6 +21,7 @@ export const PostDetails: React.FC<Props> = ({
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
+    setErrorMessage('');
     setIsLoading(true);
     getComments(selectedPost.id)
       .then(setComments)
