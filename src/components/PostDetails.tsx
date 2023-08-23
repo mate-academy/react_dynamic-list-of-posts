@@ -66,15 +66,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           <Loader />
         ) : (
           <div className="block">
-            {commentsLoadError && (
-              <div
-                className="notification is-danger"
-                data-cy="PostsLoadingError"
-              >
-                {commentsLoadError}
-              </div>
-            )}
-
             {showComments && (!comments.length ? (
               <p className="title is-4" data-cy="NoCommentsMessage">
                 No comments yet
@@ -87,7 +78,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
               />
             ))}
 
-            {!addNewComment && !commentsLoadError && (
+            {commentsLoadError ? (
+              <div
+                className="notification is-danger"
+                data-cy="PostsLoadingError"
+              >
+                {commentsLoadError}
+              </div>
+            ) : !addNewComment && (
               <button
                 data-cy="WriteCommentButton"
                 type="button"
