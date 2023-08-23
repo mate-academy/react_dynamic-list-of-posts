@@ -82,7 +82,7 @@ export const App: React.FC = () => {
                 />
               </div>
 
-              <div className="block" data-cy="MainContent">
+              <div className="block " data-cy="MainContent">
                 {isError && (
                   <>
                     <div
@@ -135,7 +135,7 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': isShowPostDetails },
             )}
           >
             {isShowPostDetails && (
