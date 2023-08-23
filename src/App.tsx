@@ -65,16 +65,14 @@ export const App: React.FC = () => {
                   <Loader />
                 )}
 
-                {errorMessage && (
+                {errorMessage ? (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
                     {errorMessage}
                   </div>
-                )}
-
-                {!selectedUserId && !errorMessage && !loading && (
+                ) : !selectedUserId && !loading && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
