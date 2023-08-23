@@ -38,7 +38,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     client.delete(`/comments/${commentId}`)
       .then(() => {
         setComments(
-          current => current?.filter(item => item.id !== commentId) || null,
+          current => current.filter(item => item.id !== commentId),
         );
         setCommentsDelError([]);
       })
@@ -46,7 +46,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   };
 
   const handleAddNewComment = (newComment: Comment) => {
-    setComments(current => (current ? [...current, newComment] : [newComment]));
+    setComments(current => [...current, newComment]);
   };
 
   return (
