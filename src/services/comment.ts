@@ -5,18 +5,8 @@ export function getComments(postId: number) {
   return client.get<Comment[]>(`/comments?postId=${postId}`);
 }
 
-export function addComment({
-  postId,
-  name,
-  email,
-  body,
-}: Comment) {
-  return client.post<Comment>('/comments', {
-    postId,
-    name,
-    email,
-    body,
-  });
+export function addComment(comment: Comment) {
+  return client.post<Comment>('/comments', comment);
 }
 
 export function deleteComment(commentId: number) {
