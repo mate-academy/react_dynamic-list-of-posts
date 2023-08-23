@@ -4,12 +4,12 @@ import { User } from '../types/User';
 
 type Props = {
   users: User[];
-  onSetUser: (user: User) => void;
+  onSetUser: (userId: number) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({ users, onSetUser }) => {
   const [dropdown, setDropdown] = useState(false);
-  const [userName, setUserName] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const dropdownSelect = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -26,8 +26,8 @@ export const UserSelector: React.FC<Props> = ({ users, onSetUser }) => {
   }, []);
 
   const handleSelectUser = (user: User) => {
-    setUserName(user.name);
-    onSetUser(user);
+    setSelectedUser(user);
+    onSetUser(user.id);
     setDropdown(false);
   };
 
@@ -44,7 +44,7 @@ export const UserSelector: React.FC<Props> = ({ users, onSetUser }) => {
           aria-controls="dropdown-menu"
           onClick={() => setDropdown(current => !current)}
         >
-          <span>{userName || 'Choose a user'}</span>
+          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -65,7 +65,10 @@ export const UserSelector: React.FC<Props> = ({ users, onSetUser }) => {
               href={`#user-${i + 1}`}
               className={classNames(
                 'dropdown-item',
-                { 'is-active': user.name === userName },
+                {
+                  'is-active': user.id === (
+                    selectedUser ? selectedUser.id : null),
+                },
               )}
               onClick={() => handleSelectUser(user)}
             >

@@ -14,8 +14,9 @@ import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [user, setUser] = useState<User | null>(null);
-  const [posts, setPosts] = useState<Post[] | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [showPosts, setShowPosts] = useState(false);
   const [post, setPost] = useState<Post | null>(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,21 +31,21 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (user) {
+    if (selectedUserId) {
       setLoading(true);
-      setPosts(null);
+      setShowPosts(false);
       setPost(null);
+      setErrorMessage('');
 
-      if (errorMessage) {
-        setErrorMessage('');
-      }
-
-      client.get<Post[]>(`/posts?userId=${user.id}`)
-        .then(setPosts)
-        .catch(() => setErrorMessage(`Can't load posts from ${user.name}`))
+      client.get<Post[]>(`/posts?userId=${selectedUserId}`)
+        .then((response) => {
+          setPosts(response);
+          setShowPosts(true);
+        })
+        .catch(() => setErrorMessage("Can't load posts"))
         .finally(() => setLoading(false));
     }
-  }, [user]);
+  }, [selectedUserId]);
 
   return (
     <main className="section">
@@ -55,17 +56,11 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  onSetUser={setUser}
+                  onSetUser={setSelectedUserId}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!user && !errorMessage && (
-                  <p data-cy="NoSelectedUser">
-                    No user selected
-                  </p>
-                )}
-
                 {loading && (
                   <Loader />
                 )}
@@ -79,7 +74,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {posts && (!posts.length ? (
+                {!selectedUserId && !errorMessage && !loading && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
+
+                {showPosts && (!posts.length ? (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { CommentsList } from './CommentsList';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
 import { client } from '../utils/fetchClient';
@@ -11,7 +12,8 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const { id, title, body } = post;
-  const [comments, setComments] = useState<Comment[] | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [showComments, setShowComments] = useState(false);
   const [loading, setLoading] = useState(false);
   const [commentsLoadError, setCommentsLoadError] = useState('');
   const [commentsDelError, setCommentsDelError] = useState<number[]>([]);
@@ -19,20 +21,15 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     setLoading(true);
-    if (commentsLoadError) {
-      setCommentsLoadError('');
-    }
-
-    if (comments) {
-      setComments(null);
-    }
-
-    if (addNewComment) {
-      setAddNewComment(false);
-    }
+    setCommentsLoadError('');
+    setShowComments(false);
+    setAddNewComment(false);
 
     client.get<Comment[]>(`/comments?postId=${id}`)
-      .then(setComments)
+      .then(response => {
+        setComments(response);
+        setShowComments(true);
+      })
       .catch(() => setCommentsLoadError("Can't load comments for current post"))
       .finally(() => setLoading(false));
   }, [post]);
@@ -65,11 +62,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </p>
         </div>
 
-        {loading && (
+        {loading ? (
           <Loader />
-        )}
-
-        {!loading && (
+        ) : (
           <div className="block">
             {commentsLoadError && (
               <div
@@ -80,50 +75,16 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
               </div>
             )}
 
-            {comments && (!comments.length ? (
+            {showComments && (!comments.length ? (
               <p className="title is-4" data-cy="NoCommentsMessage">
                 No comments yet
               </p>
             ) : (
-              <>
-                <p className="title is-4">Comments:</p>
-
-                {comments.map(comment => (
-                  <article
-                    className="message is-small"
-                    data-cy="Comment"
-                    key={comment.id}
-                  >
-                    <div className="message-header">
-                      <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                        {comment.name}
-                      </a>
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
-                        onClick={() => handleDeleteComment(comment.id)}
-                      >
-                        delete button
-                      </button>
-                    </div>
-
-                    <div className="message-body" data-cy="CommentBody">
-                      {comment.body}
-                    </div>
-
-                    {commentsDelError.includes(comment.id) && (
-                      <div
-                        className="notification is-danger"
-                        data-cy="PostsLoadingError"
-                      >
-                        Can&apos;t delete comment. Try again later.
-                      </div>
-                    )}
-                  </article>
-                ))}
-              </>
+              <CommentsList
+                comments={comments}
+                commentsDelError={commentsDelError}
+                onDeleteComment={handleDeleteComment}
+              />
             ))}
 
             {!addNewComment && !commentsLoadError && (
@@ -140,7 +101,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         )}
 
         {addNewComment && (
-          <NewCommentForm post={post} onAddNewComment={handleAddNewComment} />
+          <NewCommentForm
+            postId={id}
+            onAddNewComment={handleAddNewComment}
+          />
         )}
       </div>
     </div>

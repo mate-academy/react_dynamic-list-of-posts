@@ -1,15 +1,17 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { client } from '../utils/fetchClient';
-import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
 
 type Props = {
-  post: Post;
+  postId: number;
   onAddNewComment: (comment: Comment) => void;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ post, onAddNewComment }) => {
+export const NewCommentForm: React.FC<Props> = ({
+  postId,
+  onAddNewComment,
+}) => {
   const [userName, setUserName] = useState('');
   const [hasUserNameError, setHasUserNameError] = useState(false);
 
@@ -58,7 +60,7 @@ export const NewCommentForm: React.FC<Props> = ({ post, onAddNewComment }) => {
     }
 
     const data = {
-      postId: post.id,
+      postId,
       name: userName,
       email: userEmail,
       body: commentText,
