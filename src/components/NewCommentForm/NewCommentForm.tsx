@@ -20,6 +20,8 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
 
   const [isAddingPost, setIsAddingPost] = useState<boolean>(false);
 
+  let areEmptyFields = false;
+
   const handlerClearFormFields = () => {
     setNameField('');
     setIsNameError(false);
@@ -58,17 +60,20 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
 
     if (!nameField) {
       setIsNameError(true);
+      areEmptyFields = true;
     }
 
     if (!emailField) {
       setIsEmailError(true);
+      areEmptyFields = true;
     }
 
     if (!textField) {
       setIsTextError(true);
+      areEmptyFields = true;
     }
 
-    if (isNameError || isEmailError || isTextError) {
+    if (areEmptyFields) {
       return;
     }
 
