@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Loader } from '../Loader';
-// import { NewCommentForm } from './NewCommentForm';
+import { NewCommentForm } from '../NewCommentForm';
 
 import { Post } from '../../types/Post';
 import { Comment } from '../../types/Comment';
-import { NewCommentForm } from '../NewCommentForm';
 
 type Props = {
   post: Post;
@@ -25,8 +24,12 @@ export const PostDetails: React.FC<Props> = ({
   onAddComment,
 }) => {
   const { id, title, body } = post;
-  const [isNewCommentFormShown, setIsNewCommentFormShown]
+  const [isFormShown, setIsFormShown]
     = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsFormShown(false);
+  }, [post]);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -52,13 +55,13 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {comments.length === 0 && !isLoading && (
+          {!comments.length && !isLoading && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {comments.length > 0 && !isLoading && (
+          {!!comments.length && !isLoading && (
             <>
               <p className="title is-4">Comments:</p>
               {comments.map(comment => (
@@ -94,20 +97,20 @@ export const PostDetails: React.FC<Props> = ({
 
           {!hasError
             && !isLoading
-            && !isNewCommentFormShown
+            && !isFormShown
             && (
               <button
                 data-cy="WriteCommentButton"
                 type="button"
                 className="button is-link"
-                onClick={() => setIsNewCommentFormShown(true)}
+                onClick={() => setIsFormShown(true)}
               >
                 Write a comment
               </button>
             )}
         </div>
 
-        {isNewCommentFormShown && (
+        {isFormShown && (
           <NewCommentForm
             postId={id}
             onAddComment={onAddComment}

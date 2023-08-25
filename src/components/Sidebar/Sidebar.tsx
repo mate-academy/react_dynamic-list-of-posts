@@ -17,26 +17,37 @@ const Sidebar: React.FC<Props> = ({ selectedPost }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
+  const [errorTimer, setErrorTimer] = useState<any>(null);
 
   useEffect(() => {
+    const getComments = async (requestPath: string) => {
+      try {
+        const receivedComments
+          = await client.get<Comment[]>(requestPath);
+
+        setComments(receivedComments);
+      } catch {
+        setHasError(true);
+        setComments([]);
+      } finally {
+        setIsLoadingComments(false);
+      }
+    };
+
     if (selectedPost) {
       const urlGetCommentById = COMMENTS_BY_POST + selectedPost.id;
 
       setIsLoadingComments(true);
 
-      client.get<Comment[]>(urlGetCommentById)
-        .then(setComments)
-        .catch(() => setHasError(true))
-        .finally(() => setIsLoadingComments(false));
+      getComments(urlGetCommentById);
     }
   }, [selectedPost]);
 
   useEffect(() => {
-    if (hasError) {
-      setTimeout(() => {
-        setHasError(false);
-      }, 3000);
-    }
+    clearInterval(errorTimer);
+    const timer = setTimeout(() => setHasError(false), 3000);
+
+    setErrorTimer(timer);
   }, [hasError]);
 
   const onDeleteComment = (commentId: number) => {

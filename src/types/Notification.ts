@@ -1,5 +1,10 @@
+export enum NotificationType {
+  'danger',
+  'warning',
+}
+
 export interface Notification {
-  typeNotification: 'danger' | 'warning';
+  typeNotification: NotificationType;
   text: string;
   dataCypress?: string;
 }

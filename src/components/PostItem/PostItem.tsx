@@ -13,12 +13,14 @@ export const PostItem: React.FC<Props> = ({
   handlerOpenComments,
   openedPostId,
 }) => {
+  const { id, title } = post;
+
   return (
     <tr data-cy="Post">
-      <td data-cy="PostId">{post.id}</td>
+      <td data-cy="PostId">{id}</td>
 
       <td data-cy="PostTitle">
-        {post.title}
+        {title}
       </td>
 
       <td className="has-text-right is-vcentered">
@@ -28,15 +30,11 @@ export const PostItem: React.FC<Props> = ({
           className={cn(
             'button',
             'is-link',
-            { 'is-light': openedPostId !== post.id },
+            { 'is-light': openedPostId !== id },
           )}
           onClick={() => handlerOpenComments(post)}
         >
-          {openedPostId === post.id ? (
-            'Close'
-          ) : (
-            'Open'
-          )}
+          {openedPostId === id ? 'Close' : 'Open'}
         </button>
       </td>
     </tr>

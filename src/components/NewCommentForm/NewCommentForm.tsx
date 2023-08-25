@@ -22,8 +22,6 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
 
   const [isAddingPost, setIsAddingPost] = useState<boolean>(false);
 
-  let areEmptyFields = false;
-
   const handlerClearFormFields = () => {
     setNameField('');
     setIsNameError(false);
@@ -59,6 +57,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
 
   const handlerSubmitForm = (event: React.FormEvent) => {
     event.preventDefault();
+    let areEmptyFields = false;
 
     if (!nameField) {
       setIsNameError(true);
@@ -209,9 +208,8 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button
-            type="reset"
+            type="button"
             className="button is-link is-light"
             onClick={handlerClearFormFields}
           >

@@ -13,7 +13,7 @@ import { client } from './utils/fetchClient';
 
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { Notification } from './types/Notification';
+import { Notification, NotificationType } from './types/Notification';
 
 if (!process.env.REACT_APP_URL_USERS) {
   throw new Error('Users Key in not defined');
@@ -36,35 +36,29 @@ export const App: React.FC = () => {
   const [notificationData, setNotificationData]
     = useState<Notification | null>(null);
 
-  // #region Load-users
-
   useEffect(() => {
-    client.get<User[]>(URL_GET_USERS)
-      .then(receivedUsers => {
-        const trimmedUsers = receivedUsers.slice(0, 25);
+    const getUsers = async () => {
+      try {
+        const usersList = await client.get<User[]>(URL_GET_USERS);
 
-        setUsers(trimmedUsers);
-      })
-      .catch(() => {
+        setUsers(usersList.slice(0, 25));
+      } catch {
         throw new Error('Something wrong');
-      });
+      }
+    };
+
+    getUsers();
   }, []);
 
-  // #endregion
-
-  // #region Select-user
   const onUserSelect = useCallback((userSelected: User) => {
     setSelectedUser(userSelected);
     setSelectedPost(null);
   }, []);
-  // #endregion
-
-  // #region Load-posts
 
   const handlerLoadedPosts = (receivedPosts: Post[], hasError = false) => {
     if (hasError) {
       const errorMessageData: Notification = {
-        typeNotification: 'danger',
+        typeNotification: NotificationType.danger,
         text: 'Error loading posts',
         dataCypress: 'PostsLoadingError',
       };
@@ -75,9 +69,9 @@ export const App: React.FC = () => {
       return;
     }
 
-    if (receivedPosts.length === 0 && !hasError) {
+    if (!receivedPosts.length && !hasError) {
       const errorMessageData: Notification = {
-        typeNotification: 'warning',
+        typeNotification: NotificationType.warning,
         text: 'No posts yet',
         dataCypress: 'NoPostsYet',
       };
@@ -93,34 +87,36 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
+    const getPosts = async (userId: number) => {
+      try {
+        const receivedPosts
+          = await client.get<Post[]>(URL_GET_POSTS + userId);
+
+        handlerLoadedPosts(receivedPosts, false);
+      } catch {
+        handlerLoadedPosts(posts, true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     if (selectedUser) {
       setIsError(false);
       setIsLoading(true);
-      client.get<Post[]>(URL_GET_POSTS + selectedUser.id)
-        .then((downloadedPosts) => {
-          handlerLoadedPosts(downloadedPosts, false);
-        })
-        .catch(() => handlerLoadedPosts(posts, true))
-        .finally(() => setIsLoading(false));
+
+      getPosts(selectedUser.id);
     }
   }, [selectedUser]);
 
-  // #endregion
-
-  // #region Select-post
   const onSelectPost = (post: Post) => {
-    if (selectedPost) {
-      if (selectedPost.id === post.id) {
-        setSelectedPost(null);
+    if (selectedPost && selectedPost.id === post.id) {
+      setSelectedPost(null);
 
-        return;
-      }
+      return;
     }
 
     setSelectedPost(post);
   };
-
-  // #endregion
 
   return (
     <main className="section">

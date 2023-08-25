@@ -19,8 +19,8 @@ export const NotificationMessage: React.FC<Props> = ({
     className={cn(
       'notification',
       {
-        'is-warning': typeNotification === 'warning',
-        'is-danger': typeNotification === 'danger',
+        'is-warning': typeNotification,
+        'is-danger': typeNotification,
       },
     )}
     data-cy={dataCypress}
