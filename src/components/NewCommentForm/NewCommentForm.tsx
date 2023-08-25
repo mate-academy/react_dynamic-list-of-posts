@@ -8,6 +8,8 @@ type Props = {
   onAddComment: (comment: Omit<Comment, 'id'>) => Promise<void>;
 };
 
+const REMOVE_SPACES_PATTERN = /^\s+|\s+$|\s+(?=\s)/g;
+
 export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
   const [nameField, setNameField] = useState<string>('');
   const [isNameError, setIsNameError] = useState<boolean>(false);
@@ -36,7 +38,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
       setIsNameError(false);
     }
 
-    setNameField(e.target.value.trim());
+    setNameField(e.target.value.replace(REMOVE_SPACES_PATTERN, ' '));
   };
 
   const handlerChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,7 +46,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
       setIsEmailError(false);
     }
 
-    setEmailField(e.target.value.trim());
+    setEmailField(e.target.value.replace(REMOVE_SPACES_PATTERN, ' '));
   };
 
   const handlerChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -52,7 +54,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
       setIsTextError(false);
     }
 
-    setTextField(e.target.value.trim());
+    setTextField(e.target.value.replace(REMOVE_SPACES_PATTERN, ' '));
   };
 
   const handlerSubmitForm = (event: React.FormEvent) => {
