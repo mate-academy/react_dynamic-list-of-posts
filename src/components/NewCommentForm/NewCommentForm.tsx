@@ -46,7 +46,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
       setIsEmailError(false);
     }
 
-    setEmailField(e.target.value.replace(REMOVE_SPACES_PATTERN, ' '));
+    setEmailField(e.target.value);
   };
 
   const handlerChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
