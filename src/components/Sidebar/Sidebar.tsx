@@ -17,7 +17,8 @@ const Sidebar: React.FC<Props> = ({ selectedPost }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
-  const [errorTimer, setErrorTimer] = useState<any>(null);
+  const [errorTimer, setErrorTimer]
+    = useState<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
     const getComments = async (requestPath: string) => {
@@ -44,8 +45,12 @@ const Sidebar: React.FC<Props> = ({ selectedPost }) => {
   }, [selectedPost]);
 
   useEffect(() => {
-    clearInterval(errorTimer);
-    const timer = setTimeout(() => setHasError(false), 3000);
+    if (errorTimer) {
+      clearInterval(errorTimer);
+    }
+
+    const timer: ReturnType<typeof setTimeout>
+      = setTimeout(() => setHasError(false), 3000);
 
     setErrorTimer(timer);
   }, [hasError]);
