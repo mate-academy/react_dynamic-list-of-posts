@@ -8,9 +8,13 @@ type Props = {
   dropdown: boolean,
   setDropdown: (value: boolean) => void,
   activeUserId: number,
+  user: string,
+  setUser: (name: string) => void
 };
 
 export const UserSelector: React.FC<Props> = ({
+  user,
+  setUser,
   users,
   loadPosts,
   dropdown,
@@ -30,7 +34,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-haspopup="true"
           aria-controls="dropdown-menu"
         >
-          <span>Choose a user</span>
+          <span>{user}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -40,16 +44,19 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
+          {users.map(({ id, name }) => (
             <a
-              key={user.id}
-              onClick={() => loadPosts(user.id)}
-              href={`#user-${user.id}`}
+              key={id}
+              onClick={() => {
+                setUser(name);
+                loadPosts(id);
+              }}
+              href={`#user-${id}`}
               className={classNames('dropdown-item', {
-                'is-active': activeUserId === user.id,
+                'is-active': activeUserId === id,
               })}
             >
-              {user.name}
+              {name}
             </a>
           ))}
         </div>

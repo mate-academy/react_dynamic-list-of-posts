@@ -47,18 +47,25 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleSubmitComment = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setNameError(!name);
-    setEmailError(!email);
-    setCommentError(!comment);
+    const trimName = name.trim();
+    const trimEmail = email.trim();
+    const trimComment = comment.trim();
 
-    if (!name || !email || !comment) {
+    setNameError(!trimName);
+    setEmailError(!trimEmail);
+    setCommentError(!trimComment);
+
+    if (!trimName || !trimEmail || !trimComment) {
       return;
     }
 
     setLoader(true);
 
     createCommentOnPost({
-      postId: currentPostId, name, email, body: comment,
+      postId: currentPostId,
+      name: trimName,
+      email: trimEmail,
+      body: trimComment,
     })
       .then(newComment => {
         setComments([...comments, newComment]);

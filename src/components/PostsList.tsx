@@ -6,12 +6,14 @@ type Props = {
   postsOfUser: Post[],
   loadComments: (postId: number) => void,
   currentPostId: number,
+  isOpenPosts: boolean,
 };
 
 export const PostsList: React.FC<Props> = ({
   postsOfUser,
   loadComments,
   currentPostId,
+  isOpenPosts,
 }) => (
   <div data-cy="PostsList">
     <p className="title">Posts:</p>
@@ -43,7 +45,7 @@ export const PostsList: React.FC<Props> = ({
                   'is-light': currentPostId !== post.id,
                 })}
               >
-                {currentPostId === post.id ? 'Close' : 'Open'}
+                {currentPostId === post.id && isOpenPosts ? 'Close' : 'Open'}
               </button>
             </td>
           </tr>

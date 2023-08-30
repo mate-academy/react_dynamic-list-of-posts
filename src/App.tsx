@@ -18,8 +18,10 @@ import {
 import { Comment } from './types/Comment';
 
 export const App: React.FC = () => {
+  const [user, setUser] = useState('Choose a user');
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [isOpenPosts, setIsOpenPosts] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(false);
   const [activeUserId, setActiveUserId] = useState(0);
   const [isNotPosts, setIsNotPosts] = useState(false);
@@ -62,6 +64,14 @@ export const App: React.FC = () => {
   };
 
   const handleClickLoadComments = (postId: number) => {
+    if (isOpenPosts) {
+      setIsOpenPosts(false);
+      setCurrentPostId(0);
+
+      return;
+    }
+
+    setIsOpenPosts(true);
     setOpenForm(false);
     setIsNotComments(false);
     setIsErrorComments(false);
@@ -120,6 +130,8 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
+                  user={user}
+                  setUser={setUser}
                   users={users}
                   loadPosts={handleClickLoadPosts}
                   dropdown={openDropdown}
@@ -157,13 +169,14 @@ export const App: React.FC = () => {
                     postsOfUser={posts}
                     loadComments={handleClickLoadComments}
                     currentPostId={currentPostId}
+                    isOpenPosts={isOpenPosts}
                   />
                 )}
               </div>
             </div>
           </div>
 
-          {!!currentPostId && (
+          {isOpenPosts && (
             <div
               data-cy="Sidebar"
               className={classNames(
@@ -171,7 +184,7 @@ export const App: React.FC = () => {
                 'is-parent',
                 'is-8-desktop',
                 'Sidebar',
-                { 'Sidebar--open': !!currentPostId },
+                { 'Sidebar--open': isOpenPosts },
               )}
             >
               <div className="tile is-child box is-success ">
