@@ -21,7 +21,7 @@ export const App: React.FC = () => {
   const [user, setUser] = useState('Choose a user');
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [isOpenPosts, setIsOpenPosts] = useState(false);
+  const [isOpenPost, setIsOpenPost] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(false);
   const [activeUserId, setActiveUserId] = useState(0);
   const [isNotPosts, setIsNotPosts] = useState(false);
@@ -64,14 +64,14 @@ export const App: React.FC = () => {
   };
 
   const handleClickLoadComments = (postId: number) => {
-    if (isOpenPosts) {
-      setIsOpenPosts(false);
+    if (isOpenPost && currentPostId === postId) {
+      setIsOpenPost(false);
       setCurrentPostId(0);
 
       return;
     }
 
-    setIsOpenPosts(true);
+    setIsOpenPost(true);
     setOpenForm(false);
     setIsNotComments(false);
     setIsErrorComments(false);
@@ -169,14 +169,14 @@ export const App: React.FC = () => {
                     postsOfUser={posts}
                     loadComments={handleClickLoadComments}
                     currentPostId={currentPostId}
-                    isOpenPosts={isOpenPosts}
+                    isOpenPost={isOpenPost}
                   />
                 )}
               </div>
             </div>
           </div>
 
-          {isOpenPosts && (
+          {isOpenPost && (
             <div
               data-cy="Sidebar"
               className={classNames(
@@ -184,7 +184,7 @@ export const App: React.FC = () => {
                 'is-parent',
                 'is-8-desktop',
                 'Sidebar',
-                { 'Sidebar--open': isOpenPosts },
+                { 'Sidebar--open': isOpenPost },
               )}
             >
               <div className="tile is-child box is-success ">
