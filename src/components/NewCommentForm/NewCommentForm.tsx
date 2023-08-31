@@ -8,7 +8,7 @@ import { addComments } from '../../services/comments';
 
 type Props = {
   selectedPost: Post;
-  setComments: (value: Comment[] | ((prev: Comment[]) => Comment[])) => void;
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
   setErrorMessage: (value: string) => void;
 };
 
