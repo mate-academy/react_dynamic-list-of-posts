@@ -17,6 +17,10 @@ import {
 } from './components/api/comments';
 import { Comment } from './types/Comment';
 
+const initialPost = {
+  id: 0, userId: 0, title: '', body: '',
+};
+
 export const App: React.FC = () => {
   const [user, setUser] = useState('Choose a user');
   const [users, setUsers] = useState<User[]>([]);
@@ -77,9 +81,7 @@ export const App: React.FC = () => {
       return neededPost;
     }
 
-    return {
-      id: 0, userId: 0, title: '', body: '',
-    };
+    return initialPost;
   }, [currentPostId]);
 
   const hendleDeleteComment = (commentId: number) => {
