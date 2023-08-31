@@ -28,24 +28,24 @@ export const PostsList: React.FC<Props> = ({
       </thead>
 
       <tbody>
-        {postsOfUser.map(post => (
-          <tr key={post.id} data-cy="Post">
-            <td data-cy="PostId">{post.id}</td>
+        {postsOfUser.map(({ id, title }) => (
+          <tr key={id} data-cy="Post">
+            <td data-cy="PostId">{id}</td>
 
             <td data-cy="PostTitle">
-              {post.title}
+              {title}
             </td>
 
             <td className="has-text-right is-vcentered">
               <button
-                onClick={() => loadComments(post.id)}
+                onClick={() => loadComments(id)}
                 type="button"
                 data-cy="PostButton"
                 className={classNames('button is-link', {
-                  'is-light': currentPostId !== post.id,
+                  'is-light': currentPostId !== id,
                 })}
               >
-                {currentPostId === post.id && isOpenPost ? 'Close' : 'Open'}
+                {currentPostId === id && isOpenPost ? 'Close' : 'Open'}
               </button>
             </td>
           </tr>

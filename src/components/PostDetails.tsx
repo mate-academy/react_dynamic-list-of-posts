@@ -31,6 +31,12 @@ export const PostDetails: React.FC<Props> = ({
   setIsErrorComments,
   hendleDeleteComment,
 }) => {
+  const conditionsNot = (
+    condition1: boolean, condition2: boolean, condition3: boolean,
+  ) => {
+    return !condition1 && !condition2 && !condition3;
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -59,11 +65,11 @@ export const PostDetails: React.FC<Props> = ({
             </p>
           )}
 
-          {!showSpinner && !isNotComments && !isErrorComments
+          {conditionsNot(showSpinner, isNotComments, isErrorComments)
             && <p className="title is-4">Comments:</p>}
 
-          {!isErrorComments
-            && comments.map(comment => (
+          {!isErrorComments && comments.map(
+            comment => (
               <article
                 key={comment.id}
                 className="message is-small"
@@ -88,9 +94,10 @@ export const PostDetails: React.FC<Props> = ({
                   {comment.body}
                 </div>
               </article>
-            ))}
+            ),
+          )}
 
-          {!showSpinner && !isErrorComments && !openForm && (
+          {conditionsNot(showSpinner, isErrorComments, openForm) && (
             <button
               onClick={() => setOpenForm(true)}
               data-cy="WriteCommentButton"

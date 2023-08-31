@@ -137,7 +137,8 @@ export const NewCommentForm: React.FC<Props> = ({
           <input
             value={email}
             onChange={handleChangeEmail}
-            type="text"
+            required
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
