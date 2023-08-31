@@ -1,117 +1,122 @@
 import React from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
 
-export const PostDetails: React.FC = () => {
+type Props = {
+  comments: Comment[],
+  currentPost: Post,
+  showSpinner: boolean,
+  isErrorComments: boolean,
+  openForm: boolean,
+  setOpenForm: (value: boolean) => void,
+  currentPostId: number,
+  setComments: (comments: Comment[]) => void
+  setIsErrorComments: (value: boolean) => void,
+  hendleDeleteComment: (commentId: number) => void,
+};
+
+export const PostDetails: React.FC<Props> = ({
+  currentPost,
+  comments,
+  showSpinner,
+  isErrorComments,
+  openForm,
+  setOpenForm,
+  currentPostId,
+  setComments,
+  setIsErrorComments,
+  hendleDeleteComment,
+}) => {
+  const conditionsNot = (
+    condition1: boolean, condition2: boolean, condition3: boolean,
+  ) => {
+    return !condition1 && !condition2 && !condition3;
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {`#${currentPost.id}: ${currentPost.title}`}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            {currentPost.body}
           </p>
         </div>
 
         <div className="block">
-          <Loader />
+          {showSpinner && <Loader />}
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
+          {isErrorComments && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
             </div>
+          )}
 
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
+          {!comments.length && !showSpinner && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
+          {conditionsNot(showSpinner, !comments.length, isErrorComments)
+            && <p className="title is-4">Comments:</p>}
+
+          {!isErrorComments && comments.map(
+            ({
+              id, email, name, body,
+            }) => (
+              <article
+                key={id}
+                className="message is-small"
+                data-cy="Comment"
               >
-                Misha Hrynko
-              </a>
+                <div className="message-header">
+                  <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                    {name}
+                  </a>
+                  <button
+                    onClick={() => hendleDeleteComment(id)}
+                    data-cy="CommentDelete"
+                    type="button"
+                    className="delete is-small"
+                    aria-label="delete"
+                  >
+                    delete button
+                  </button>
+                </div>
 
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
+                <div className="message-body" data-cy="CommentBody">
+                  {body}
+                </div>
+              </article>
+            ),
+          )}
+
+          {conditionsNot(showSpinner, isErrorComments, openForm) && (
+            <button
+              onClick={() => setOpenForm(true)}
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
             >
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
+        {openForm && !isErrorComments && (
+          <NewCommentForm
+            currentPostId={currentPostId}
+            setComments={setComments}
+            comments={comments}
+            setIsErrorComments={setIsErrorComments}
+          />
+        )}
       </div>
     </div>
   );
