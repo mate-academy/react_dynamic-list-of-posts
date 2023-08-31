@@ -24,13 +24,12 @@ export const App: React.FC = () => {
   const [isOpenPost, setIsOpenPost] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(false);
   const [activeUserId, setActiveUserId] = useState(0);
-  const [isNotPosts, setIsNotPosts] = useState(false);
   const [showSpinner, setShowSpinner] = useState(false);
   const [isError, setIsError] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [currentPostId, setCurrentPostId] = useState(0);
   const [showSpinnerComments, setShowSpinnerComments] = useState(false);
-  const [isNotComments, setIsNotComments] = useState(false);
+  // const [isNotComments, setIsNotComments] = useState(false);
   const [isErrorComments, setIsErrorComments] = useState(false);
   const [openForm, setOpenForm] = useState(false);
 
@@ -44,19 +43,8 @@ export const App: React.FC = () => {
     setCurrentPostId(0);
     setIsError(false);
     setShowSpinner(true);
-    setIsNotPosts(false);
     getPostsOfUser(userId)
-      .then(postsOfUsers => {
-        if (!postsOfUsers.length) {
-          setIsNotPosts(true);
-        }
-
-        if (postsOfUsers.length) {
-          setIsNotPosts(false);
-        }
-
-        setPosts(postsOfUsers);
-      })
+      .then(setPosts)
       .catch(() => setIsError(true))
       .finally(() => setShowSpinner(false));
     setOpenDropdown(false);
@@ -73,23 +61,12 @@ export const App: React.FC = () => {
 
     setIsOpenPost(true);
     setOpenForm(false);
-    setIsNotComments(false);
     setIsErrorComments(false);
     setComments([]);
     setShowSpinnerComments(true);
     setCurrentPostId(postId);
     getCommentsOfPost(postId)
-      .then(commentsPost => {
-        if (!commentsPost.length) {
-          setIsNotComments(true);
-        }
-
-        if (commentsPost.length) {
-          setIsNotComments(false);
-        }
-
-        setComments(commentsPost);
-      })
+      .then(setComments)
       .catch(() => setIsErrorComments(true))
       .finally(() => setShowSpinnerComments(false));
   };
@@ -107,16 +84,9 @@ export const App: React.FC = () => {
   }, [currentPostId]);
 
   const hendleDeleteComment = (commentId: number) => {
-    const copyComments = [...comments];
-    const deletedComment = copyComments
-      .find(comment => comment.id === commentId);
-
-    if (deletedComment) {
-      const index = copyComments.indexOf(deletedComment);
-
-      copyComments.splice(index, 1);
-      setComments(copyComments);
-    }
+    setComments(prevComments => prevComments.filter(comment => {
+      return comment.id !== commentId;
+    }));
 
     deleteCommentFromPost(commentId)
       .catch(() => setComments(comments));
@@ -158,7 +128,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {isNotPosts && (
+                {!posts.length && !showSpinner && !!activeUserId && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
@@ -192,7 +162,7 @@ export const App: React.FC = () => {
                   comments={comments}
                   currentPost={currentPost}
                   showSpinner={showSpinnerComments}
-                  isNotComments={isNotComments}
+                  // isNotComments={isNotComments}
                   isErrorComments={isErrorComments}
                   openForm={openForm}
                   setOpenForm={setOpenForm}

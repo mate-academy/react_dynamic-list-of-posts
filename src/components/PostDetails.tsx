@@ -8,7 +8,7 @@ type Props = {
   comments: Comment[],
   currentPost: Post,
   showSpinner: boolean,
-  isNotComments: boolean,
+  // isNotComments: boolean,
   isErrorComments: boolean,
   openForm: boolean,
   setOpenForm: (value: boolean) => void,
@@ -22,7 +22,7 @@ export const PostDetails: React.FC<Props> = ({
   currentPost,
   comments,
   showSpinner,
-  isNotComments,
+  // isNotComments,
   isErrorComments,
   openForm,
   setOpenForm,
@@ -59,13 +59,13 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {isNotComments && (
+          {!comments.length && !showSpinner && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {conditionsNot(showSpinner, isNotComments, isErrorComments)
+          {conditionsNot(showSpinner, !comments.length, isErrorComments)
             && <p className="title is-4">Comments:</p>}
 
           {!isErrorComments && comments.map(
