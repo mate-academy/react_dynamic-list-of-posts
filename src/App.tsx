@@ -23,8 +23,8 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [isLoading, setLoading] = useState(false);
-  const [isFormShowed, setFormShowed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFormShowed, setIsFormShowed] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
@@ -34,11 +34,11 @@ export const App: React.FC = () => {
   useEffect(() => {
     setErrorMessage('');
     if (selectedUser) {
-      setLoading(true);
+      setIsLoading(true);
       getPosts(selectedUser.id)
         .then(setPosts)
         .catch(() => setErrorMessage('Something went wrong!'))
-        .finally(() => setLoading(false));
+        .finally(() => setIsLoading(false));
     }
   }, [selectedUser]);
 
@@ -86,7 +86,7 @@ export const App: React.FC = () => {
                     posts={posts}
                     selectedPost={selectedPost}
                     setSelectedPost={setSelectedPost}
-                    setFormShowed={setFormShowed}
+                    setIsFormShowed={setIsFormShowed}
                   />
                 )}
               </div>
@@ -109,7 +109,7 @@ export const App: React.FC = () => {
                 <PostDetails
                   selectedPost={selectedPost}
                   isFormShowed={isFormShowed}
-                  setFormShowed={setFormShowed}
+                  setIsFormShowed={setIsFormShowed}
                 />
               )}
             </div>

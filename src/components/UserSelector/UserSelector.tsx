@@ -16,11 +16,11 @@ export const UserSelector: React.FC<Props> = ({
   setSelectedUser,
   setSelectedPost,
 }) => {
-  const [isActive, setActive] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
   const handleSelectedUser = (user: User) => () => {
     setSelectedUser(user);
-    setActive(false);
+    setIsActive(false);
     setSelectedPost(null);
   };
 
@@ -35,7 +35,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setActive(!isActive)}
+          onClick={() => setIsActive(!isActive)}
         >
           <span>
             {!selectedUser ? (

@@ -8,29 +8,29 @@ import { Comment } from '../../types/Comment';
 type Props = {
   selectedPost: Post;
   isFormShowed: boolean;
-  setFormShowed: (value: boolean) => void;
+  setIsFormShowed: (value: boolean) => void;
 };
 
 export const PostDetails: React.FC<Props> = ({
   selectedPost,
   isFormShowed,
-  setFormShowed,
+  setIsFormShowed,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     setErrorMessage('');
-    setLoading(true);
+    setIsLoading(true);
     getComments(selectedPost.id)
       .then(setComments)
       .catch(() => setErrorMessage('Something went wrong'))
-      .finally(() => setLoading(false));
+      .finally(() => setIsLoading(false));
   }, [selectedPost]);
 
   const handleWriteComment = () => {
-    setFormShowed(true);
+    setIsFormShowed(true);
   };
 
   const handleDeleteComment = (commentId: number) => () => {

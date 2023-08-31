@@ -5,18 +5,18 @@ type Props = {
   posts: Post[];
   selectedPost: Post | null;
   setSelectedPost: (value: Post | null) => void;
-  setFormShowed: (value: boolean) => void;
+  setIsFormShowed: (value: boolean) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
   selectedPost,
   setSelectedPost,
-  setFormShowed,
+  setIsFormShowed,
 }) => {
   const handleSelectPost = (post: Post) => () => {
     setSelectedPost(post);
-    setFormShowed(false);
+    setIsFormShowed(false);
   };
 
   const handleReset = () => {
