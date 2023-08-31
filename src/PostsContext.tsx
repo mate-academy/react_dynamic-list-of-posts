@@ -1,13 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { Post } from './types/Post';
-import { User } from './types/User';
 import { Comment } from './types/Comment';
 
 interface PostsGlobalContext {
-  users: User[],
-  setUsers: React.Dispatch<React.SetStateAction<User[]>>,
-  selectedUser: User | null,
-  setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>,
   userPosts: Post[],
   setUserPosts: React.Dispatch<React.SetStateAction<Post[]>>,
   selectedPost: Post | null,
@@ -16,11 +11,7 @@ interface PostsGlobalContext {
   setPostComments: React.Dispatch<React.SetStateAction<Comment[]>>,
 }
 
-export const PostsContext = React.createContext<PostsGlobalContext>({
-  users: [],
-  setUsers: () => {},
-  selectedUser: null,
-  setSelectedUser: () => {},
+const PostsContext = React.createContext<PostsGlobalContext>({
   userPosts: [],
   setUserPosts: () => {},
   selectedPost: null,
@@ -34,18 +25,12 @@ type Props = {
 };
 
 export const PostsProvider: React.FC<Props> = ({ children }) => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [postComments, setPostComments] = useState<Comment[]>([]);
 
   const value = useMemo(() => {
     return {
-      users,
-      setUsers,
-      selectedUser,
-      setSelectedUser,
       userPosts,
       setUserPosts,
       selectedPost,
@@ -53,7 +38,7 @@ export const PostsProvider: React.FC<Props> = ({ children }) => {
       postComments,
       setPostComments,
     };
-  }, [users, selectedUser, userPosts, selectedPost, postComments]);
+  }, [userPosts, selectedPost, postComments]);
 
   return (
     <PostsContext.Provider value={value}>
@@ -61,3 +46,9 @@ export const PostsProvider: React.FC<Props> = ({ children }) => {
     </PostsContext.Provider>
   );
 };
+
+export function usePosts() {
+  const posts = useContext(PostsContext);
+
+  return posts;
+}

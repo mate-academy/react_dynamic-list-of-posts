@@ -1,18 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './PostDetails.scss';
 import { getPostComments } from '../../services/postService';
 import { Loader } from '../Loader';
 import { NewCommentForm } from '../NewCommentForm';
 import { CommentList } from '../CommentList';
-import { PostsContext } from '../../PostsContext';
+import { usePosts } from '../../PostsContext';
 
 export const PostDetails: React.FC = () => {
   const {
     selectedPost,
     postComments,
     setPostComments,
-  } = useContext(PostsContext);
+  } = usePosts();
 
   const [isCommentLoading, setIsCommentLoading] = useState(false);
   const [isCommentError, setIsCommentError] = useState(false);

@@ -1,6 +1,5 @@
-import { useContext } from 'react';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import { PostsContext } from '../../PostsContext';
+import { usePosts } from '../../PostsContext';
 import { deleteComment } from '../../services/postService';
 
 type Props = {
@@ -8,7 +7,7 @@ type Props = {
 };
 
 export const CommentList: React.FC<Props> = ({ setIsDeleteError }) => {
-  const { postComments, setPostComments } = useContext(PostsContext);
+  const { postComments, setPostComments } = usePosts();
 
   const handleCommentDelete = (commentId: number) => {
     setIsDeleteError(false);

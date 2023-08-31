@@ -1,15 +1,13 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import cn from 'classnames';
-import { PostsContext } from '../PostsContext';
+import { usePosts } from '../PostsContext';
+import { useUsers } from '../UsersContext';
 import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
-  const {
-    users,
-    selectedUser,
-    setSelectedUser,
-    setSelectedPost,
-  } = useContext(PostsContext);
+  const { setSelectedPost } = usePosts();
+  const { users, selectedUser, setSelectedUser } = useUsers();
+
   const [isSelectActive, setIsSelectActive] = useState(false);
 
   const handleSelect = (user: User) => {

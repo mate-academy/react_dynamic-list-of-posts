@@ -1,11 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import cn from 'classnames';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import { PostsContext } from '../PostsContext';
+import { usePosts } from '../PostsContext';
 import { addComment } from '../services/postService';
 
 export const NewCommentForm: React.FC = () => {
-  const { selectedPost, setPostComments } = useContext(PostsContext);
+  const { selectedPost, setPostComments } = usePosts();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

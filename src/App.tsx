@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,17 +8,13 @@ import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUserPosts } from './services/postService';
-import { PostsContext } from './PostsContext';
+import { usePosts } from './PostsContext';
 import { PostDetails } from './components/PostDetails';
+import { useUsers } from './UsersContext';
 
 export const App: React.FC = () => {
-  const {
-    setUsers,
-    userPosts,
-    setUserPosts,
-    selectedUser,
-    selectedPost,
-  } = useContext(PostsContext);
+  const { userPosts, setUserPosts, selectedPost } = usePosts();
+  const { setUsers, selectedUser } = useUsers();
 
   const [isError, setIsError] = useState(false);
 
