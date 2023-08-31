@@ -29,7 +29,6 @@ export const App: React.FC = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [currentPostId, setCurrentPostId] = useState(0);
   const [showSpinnerComments, setShowSpinnerComments] = useState(false);
-  // const [isNotComments, setIsNotComments] = useState(false);
   const [isErrorComments, setIsErrorComments] = useState(false);
   const [openForm, setOpenForm] = useState(false);
 
@@ -162,7 +161,6 @@ export const App: React.FC = () => {
                   comments={comments}
                   currentPost={currentPost}
                   showSpinner={showSpinnerComments}
-                  // isNotComments={isNotComments}
                   isErrorComments={isErrorComments}
                   openForm={openForm}
                   setOpenForm={setOpenForm}
