@@ -195,7 +195,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={() => handleClear()}
+            onClick={handleClear}
           >
             Clear
           </button>
