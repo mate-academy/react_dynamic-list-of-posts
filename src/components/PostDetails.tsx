@@ -78,7 +78,7 @@ export const PostDetails: React.FC<PostDetailProps> = ({
               data-cy="WriteCommentButton"
               type="button"
               className="button is-link"
-              onClick={() => handleCommentWriting()}
+              onClick={handleCommentWriting}
             >
               Write a comment
             </button>
