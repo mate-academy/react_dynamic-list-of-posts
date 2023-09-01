@@ -12,11 +12,11 @@ export const Post: React.FC<PostProps> = ({
   selectedPost,
   setSelectedPost,
 }) => {
+  const isPostSelected = post.id === selectedPost?.id;
+
   const handleSelectPost = (newPost: PostInt | undefined) => {
     setSelectedPost(newPost);
   };
-
-  const isPostSelected = post.id === selectedPost?.id;
 
   return (
     <tr data-cy="Post">
@@ -33,11 +33,7 @@ export const Post: React.FC<PostProps> = ({
           className={classNames('button', 'is-link', {
             'is-light': !isPostSelected,
           })}
-          onClick={() => {
-            return isPostSelected
-              ? handleSelectPost(undefined)
-              : handleSelectPost(post);
-          }}
+          onClick={() => handleSelectPost(isPostSelected ? undefined : post)}
         >
           {isPostSelected ? 'Close' : 'Open'}
         </button>

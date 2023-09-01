@@ -61,6 +61,21 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
     setIsBodyAllright(true);
   };
 
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+    setIsNameAllright(true);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    setIsEmailAllright(true);
+  };
+
+  const handleBodyChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setBody(e.target.value);
+    setIsBodyAllright(true);
+  };
+
   return (
     <form
       data-cy="NewCommentForm"
@@ -81,10 +96,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             className={classNames('input', {
               'is-danger': !isNameAllright,
             })}
-            onChange={(e) => {
-              setName(e.target.value);
-              setIsNameAllright(true);
-            }}
+            onChange={handleNameChange}
           />
 
           <span className="icon is-small is-left">
@@ -123,10 +135,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             className={classNames('input', {
               'is-danger': !isEmailAllright,
             })}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setIsEmailAllright(true);
-            }}
+            onChange={handleEmailChange}
           />
 
           <span className="icon is-small is-left">
@@ -164,10 +173,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             className={classNames('textarea', {
               'is-danger': !isBodyAllright,
             })}
-            onChange={(e) => {
-              setBody(e.target.value);
-              setIsBodyAllright(true);
-            }}
+            onChange={handleBodyChange}
           />
         </div>
 
