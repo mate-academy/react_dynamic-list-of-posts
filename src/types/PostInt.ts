@@ -1,4 +1,4 @@
-export interface Post {
+export interface PostInt {
   id: number;
   userId: number;
   title: string;
