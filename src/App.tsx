@@ -2,9 +2,6 @@ import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-// import '@fortawesome/free-regular-svg-icons';
-// import '@fortawesome/free-solid-svg-icons';
-// import '@fortawesome/fontawesome-svg-core';
 
 import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
@@ -57,7 +54,6 @@ export const App: React.FC = () => {
                     data-cy="PostsLoadingError"
                   >
                     Something went wrong!
-                    {isError}
                   </div>
                 )}
 

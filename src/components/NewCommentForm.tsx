@@ -1,5 +1,5 @@
 /* eslint-disable react/button-has-type */
-import React, { FormEvent, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
 import cn from 'classnames';
 import { Store } from '../store';
 import { client } from '../utils/fetchClient';
@@ -12,59 +12,98 @@ export const NewCommentForm: React.FC = () => {
     setPostCommentsLoading,
   } = Store();
 
-  const [authorName, setAuthorName] = useState('');
-  const [isNameEmpty, setIsNameEmpty] = useState(false);
-  const [authorEmail, setAuthorEmail] = useState('');
-  const [isEmailEmpty, setIsEmailEmpty] = useState(false);
-  const [comment, setComment] = useState('');
-  const [isCommentEmpty, setIsCommentEmpty] = useState(false);
   const [sendLoading, setSendLoading] = useState(false);
+  const [{
+    authorName,
+    authorEmail,
+    comment,
+  }, setUserData] = useState({
+    authorName: '',
+    authorEmail: '',
+    comment: '',
+  });
+
+  const [{
+    isNameEmpty,
+    isEmailEmpty,
+    isCommentEmpty,
+  }, setIsInputEmpty] = useState({
+    isNameEmpty: false,
+    isEmailEmpty: false,
+    isCommentEmpty: false,
+  });
 
   const commentHandler = (e: React.FocusEvent<HTMLTextAreaElement>) => {
-    setComment(() => e.target.value.trim());
-    setIsCommentEmpty(false);
+    setUserData(userData => ({ ...userData, comment: e.target.value.trim() }));
+    setIsInputEmpty(state => ({ ...state, isCommentEmpty: false }));
   };
 
   const emailFieldHandler = (e: React.FocusEvent<HTMLInputElement>) => {
-    setAuthorEmail(() => e.target.value.trim());
-    setIsEmailEmpty(false);
+    setUserData(
+      userData => ({ ...userData, authorEmail: e.target.value.trim() }),
+    );
+    setIsInputEmpty(state => ({ ...state, isEmailEmpty: false }));
   };
 
   const nameHandler = (e: React.FocusEvent<HTMLInputElement>) => {
-    setAuthorName(() => e.target.value.trim());
-    setIsNameEmpty(false);
+    setUserData(
+      userData => ({ ...userData, authorName: e.target.value.trim() }),
+    );
+    setIsInputEmpty(state => ({ ...state, isNameEmpty: false }));
+  };
+
+  const onChangeNameHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setUserData((userData) => ({ ...userData, authorName: e.target.value }));
+  };
+
+  const onChangeEmailHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setUserData((userData) => ({ ...userData, authorEmail: e.target.value }));
+  };
+
+  const onChangeCommentHandler = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setUserData((userData) => ({ ...userData, comment: e.target.value }));
   };
 
   const resetForm = () => {
-    setAuthorName('');
-    setIsNameEmpty(false);
-    setAuthorEmail('');
-    setIsEmailEmpty(false);
-    setComment('');
-    setIsCommentEmpty(false);
+    setUserData({
+      authorName: '',
+      authorEmail: '',
+      comment: '',
+    });
+
+    setIsInputEmpty({
+      isNameEmpty: false,
+      isEmailEmpty: false,
+      isCommentEmpty: false,
+    });
   };
 
   const formHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    let formFieldsFilled = false;
+    const state = {
+      isNameEmpty: false,
+      isEmailEmpty: false,
+      isCommentEmpty: false,
+    };
 
     if (!authorName) {
-      formFieldsFilled = true;
-      setIsNameEmpty(true);
+      state.isNameEmpty = true;
     }
 
     if (!authorEmail) {
-      formFieldsFilled = true;
-      setIsEmailEmpty(true);
+      state.isEmailEmpty = true;
     }
 
     if (!comment) {
-      formFieldsFilled = true;
-      setIsCommentEmpty(true);
+      state.isCommentEmpty = true;
     }
 
-    if (formFieldsFilled) {
+    if (state.isNameEmpty
+        || state.isEmailEmpty
+        || state.isCommentEmpty) {
+      setIsInputEmpty(state);
+
       return;
     }
 
@@ -94,7 +133,7 @@ export const NewCommentForm: React.FC = () => {
             setPostCommentsLoading(false);
           });
       })
-      .then(() => setComment(''))
+      .then(() => setUserData(userData => ({ ...userData, comment: '' })))
       .catch(err => new Error(err.message))
       .finally(() => setSendLoading(false));
   };
@@ -117,7 +156,7 @@ export const NewCommentForm: React.FC = () => {
             placeholder="Name Surname"
             className={cn('input', { 'is-danger': isNameEmpty })}
             value={authorName}
-            onChange={e => setAuthorName(e.target.value)}
+            onChange={onChangeNameHandler}
             onBlur={nameHandler}
           />
 
@@ -156,7 +195,7 @@ export const NewCommentForm: React.FC = () => {
             placeholder="email@test.com"
             className={cn('input', { 'is-danger': isEmailEmpty })}
             value={authorEmail}
-            onChange={e => setAuthorEmail(e.target.value)}
+            onChange={onChangeEmailHandler}
             onBlur={emailFieldHandler}
           />
 
@@ -194,7 +233,7 @@ export const NewCommentForm: React.FC = () => {
             placeholder="Type comment here"
             value={comment}
             className={cn('textarea', { 'is-danger': isCommentEmpty })}
-            onChange={e => setComment(e.target.value)}
+            onChange={onChangeCommentHandler}
             onBlur={commentHandler}
           />
         </div>
