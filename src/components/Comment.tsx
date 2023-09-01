@@ -19,7 +19,7 @@ export const Comment: React.FC<CommentProps> = ({
   } = comment;
 
   const handleDeleteComment = (commentId: number) => {
-    setComments(prevCom => [...prevCom].filter(com => com.id !== commentId));
+    setComments(prevCom => prevCom.filter(com => com.id !== commentId));
     deleteComment(commentId);
   };
 
