@@ -1,3 +1,4 @@
+/* eslint-disable object-curly-newline */
 import React, { useContext, useEffect, useState } from 'react';
 import { deleteComment, getComments } from '../api/posts';
 import { PostContext } from '../PostProvider';
@@ -73,32 +74,32 @@ export const PostDetails: React.FC = () => {
                   ) : (
                     <>
                       <p className="title is-4">Comments:</p>
-                      {comments.map((comment) => (
+                      {comments.map(({ id, email, name, body }) => (
                         <article
                           className="message is-small"
                           data-cy="Comment"
-                          key={comment.id}
+                          key={id}
                         >
                           <div className="message-header">
                             <a
-                              href={`mailto:${comment.email}`}
+                              href={`mailto:${email}`}
                               data-cy="CommentAuthor"
                             >
-                              {comment.name}
+                              {name}
                             </a>
                             <button
                               data-cy="CommentDelete"
                               type="button"
                               className="delete is-small"
                               aria-label="delete"
-                              onClick={() => handleDelete(comment.id)}
+                              onClick={() => handleDelete(id)}
                             >
                               delete button
                             </button>
                           </div>
 
                           <div className="message-body" data-cy="CommentBody">
-                            {comment.body}
+                            {body}
                           </div>
                         </article>
                       ))}

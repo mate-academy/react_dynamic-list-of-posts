@@ -11,9 +11,9 @@ export const NewCommentForm: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [body, setBody] = useState<string>('');
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const [isSubmitError, setIsSubmitError] = useState(false);
+  const [isSubmitError, setIsSubmitError] = useState<boolean>(false);
   const [isNameError, setIsNameError] = useState<boolean>(false);
   const [isEmailError, setIsEmailError] = useState<boolean>(false);
   const [isBodyError, setIsBodyError] = useState<boolean>(false);

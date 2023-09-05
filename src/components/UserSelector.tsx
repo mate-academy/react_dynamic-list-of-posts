@@ -5,7 +5,7 @@ import { UserContext } from '../UserProvider';
 export const UserSelector: React.FC = () => {
   const { users, setSelectedUser, selectedUser } = useContext(UserContext);
 
-  const [isActiveDropdown, setIsActiveDropdown] = useState(false);
+  const [isActiveDropdown, setIsActiveDropdown] = useState<boolean>(false);
 
   return (
     <div
