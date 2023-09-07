@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +8,37 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { User } from './types/User';
+import { Post } from './types/Post';
+import { getUserPosts } from './api/posts';
 
 export const App: React.FC = () => {
+  const [chosenUser, setChosenUser] = useState<User | null>(null);
+  const [chosenPost, setChosenPost] = useState<Post | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [updateAt, setUpdateAt] = useState(new Date());
+  const firstRender = useRef(true);
+
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+
+      return;
+    }
+
+    if (chosenUser) {
+      setIsLoading(true);
+      setHasError(false);
+
+      getUserPosts(chosenUser.id)
+        .then(setPosts)
+        .catch(() => setHasError(true))
+        .finally(() => setIsLoading(false));
+    }
+  }, [chosenUser, updateAt]);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,28 +46,67 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  chosenUser={chosenUser}
+                  onChangeUser={setChosenUser}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!chosenUser && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-                <Loader />
+                {isLoading ? (
+                  <Loader />
+                ) : (
+                  <>
+                    {hasError && (
+                      <div
+                        className="notification is-danger"
+                        data-cy="PostsLoadingError"
+                      >
+                        <span
+                          style={{ display: 'block', marginBottom: '12px' }}
+                        >
+                          Something went wrong!
+                        </span>
+                        <div className="control">
+                          <button
+                            type="button"
+                            className={classNames('button is-link is-light', {
+                              'is-loading': isLoading,
+                            })}
+                            onClick={() => setUpdateAt(new Date())}
+                          >
+                            Retry Loading...
+                          </button>
+                        </div>
+                      </div>
+                    )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                    {chosenUser && (
+                      <>
+                        {!posts.length && !hasError && (
+                          <div
+                            className="notification is-warning"
+                            data-cy="NoPostsYet"
+                          >
+                            No posts yet
+                          </div>
+                        )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                        {!!posts.length && !hasError && (
+                          <PostsList
+                            posts={posts}
+                            chosenPost={chosenPost}
+                            onPostChange={setChosenPost}
+                          />
+                        )}
+                      </>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -50,11 +118,11 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': chosenPost && !hasError },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {chosenPost && <PostDetails post={chosenPost} />}
             </div>
           </div>
         </div>
