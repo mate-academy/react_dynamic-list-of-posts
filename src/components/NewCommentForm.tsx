@@ -40,19 +40,19 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!name) {
+    if (!name.trim()) {
       setNameError(true);
     }
 
-    if (!email) {
+    if (!email.trim()) {
       setEmailError(true);
     }
 
-    if (!body) {
+    if (!body.trim()) {
       setBodyError(true);
     }
 
-    if (!name || !email || !body) {
+    if (!name.trim() || !email.trim() || !body.trim()) {
       return;
     }
 

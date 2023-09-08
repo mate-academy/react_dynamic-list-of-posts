@@ -31,6 +31,7 @@ export const App: React.FC = () => {
     if (chosenUser) {
       setIsLoading(true);
       setHasError(false);
+      setChosenPost(null);
 
       getUserPosts(chosenUser.id)
         .then(setPosts)
