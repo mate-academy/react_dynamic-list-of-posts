@@ -5,6 +5,7 @@ type Props = {
   setOpenSidebar: (value: boolean) => void,
   selectedPost: Post | null,
   setSelectedPost: (value: Post | null) => void,
+  getComments: (post: Post) => void,
 };
 
 export const PostsList: React.FC<Props> = ({
@@ -12,10 +13,12 @@ export const PostsList: React.FC<Props> = ({
   setOpenSidebar,
   selectedPost,
   setSelectedPost,
+  getComments,
 }) => {
   const handleOpenClick = (post: Post) => {
     setOpenSidebar(true);
     setSelectedPost(post);
+    getComments(post);
   };
 
   const handleCloseClick = () => {
@@ -68,71 +71,6 @@ export const PostsList: React.FC<Props> = ({
               </td>
             </tr>
           ))}
-          {/* <tr data-cy="Post">
-            <td data-cy="PostId">17</td>
-
-            <td data-cy="PostTitle">
-              fugit voluptas sed molestias voluptatem provident
-            </td>
-
-            <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className="button is-link is-light"
-              >
-                Open
-              </button>
-            </td>
-          </tr>
-
-          <tr data-cy="Post">
-            <td data-cy="PostId">18</td>
-
-            <td data-cy="PostTitle">
-              voluptate et itaque vero tempora molestiae
-            </td>
-
-            <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className="button is-link"
-              >
-                Close
-              </button>
-            </td>
-          </tr>
-
-          <tr data-cy="Post">
-            <td data-cy="PostId">19</td>
-            <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
-
-            <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className="button is-link is-light"
-              >
-                Open
-              </button>
-            </td>
-          </tr>
-
-          <tr data-cy="Post">
-            <td data-cy="PostId">20</td>
-            <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-            <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className="button is-link is-light"
-              >
-                Open
-              </button>
-            </td>
-          </tr> */}
         </tbody>
       </table>
     </div>

@@ -1,28 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 
 type Props = {
+  isListOpen: boolean,
+  setIsListOpen: (value: boolean) => void,
   users: User[],
   selectedUser: User | null,
   setSelectedUser: (user: User) => void,
-  // setPosts: (value: null) => void,
   getPosts: (user: User) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
+  isListOpen,
+  setIsListOpen,
   users,
   selectedUser,
   setSelectedUser,
-  // setPosts,
   getPosts,
 }) => {
-  const [isListOpen, setIsListOpen] = useState(false);
+  const handleListOpening = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    setIsListOpen(!isListOpen);
+  };
 
   const handleItemClick = (user: User) => {
     setSelectedUser(user);
     setIsListOpen(false);
-    // setPosts(null);
     getPosts(user);
   };
 
@@ -42,7 +46,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setIsListOpen(!isListOpen)}
+          onClick={handleListOpening}
         >
           <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
