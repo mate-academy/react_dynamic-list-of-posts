@@ -39,12 +39,13 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const emailRegex = /[a-z0-9]+@[a-z]+\.[a-z]{2,3}/;
 
     if (!name.trim()) {
       setNameError(true);
     }
 
-    if (!email.trim()) {
+    if (!email.trim() || !emailRegex.test(email)) {
       setEmailError(true);
     }
 
@@ -52,7 +53,11 @@ export const NewCommentForm: React.FC<Props> = ({
       setBodyError(true);
     }
 
-    if (!name.trim() || !email.trim() || !body.trim()) {
+    if (!name.trim()
+      || !email.trim()
+      || !emailRegex.test(email)
+      || !body.trim()
+    ) {
       return;
     }
 

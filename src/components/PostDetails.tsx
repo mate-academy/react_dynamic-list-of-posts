@@ -100,6 +100,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                             >
                               {comment.name}
                             </a>
+
                             <button
                               data-cy="CommentDelete"
                               type="button"
