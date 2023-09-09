@@ -27,6 +27,8 @@ export const PostDetails: React.FC<Props> = ({
 }) => {
   const [showForm, setShowForm] = useState(false);
 
+  const areCommentsShown = !areCommentsLoading && !hasCommentsLoadingError;
+
   const addComment = (data: any) => {
     return addingCommentRequest(data, selectedPost.id)
       .then(result => setComments([...comments, result]))
@@ -72,15 +74,13 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {!areCommentsLoading && !hasCommentsLoadingError
-            && comments.length === 0 && (
+          {areCommentsShown && comments.length === 0 && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {!areCommentsLoading && !hasCommentsLoadingError
-            && comments.length !== 0 && (
+          {areCommentsShown && comments.length !== 0 && (
             <>
               <p className="title is-4">Comments:</p>
 
