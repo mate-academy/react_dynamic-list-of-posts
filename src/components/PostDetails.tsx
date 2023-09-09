@@ -3,7 +3,10 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
-import { client } from '../utils/fetchClient';
+import {
+  addingCommentRequest,
+  deletingCommentRequest,
+} from '../utils/apiRequests';
 
 type Props = {
   selectedPost: Post,
@@ -25,10 +28,7 @@ export const PostDetails: React.FC<Props> = ({
   const [showForm, setShowForm] = useState(false);
 
   const addComment = (data: any) => {
-    return client.post<Comment>(
-      '/comments',
-      { ...data, postId: selectedPost.id },
-    )
+    return addingCommentRequest(data, selectedPost.id)
       .then(result => setComments([...comments, result]))
       .catch(() => {
         setHasCommentsLoadingError(true);
@@ -39,7 +39,7 @@ export const PostDetails: React.FC<Props> = ({
   const deleteComment = (id: number) => {
     setHasCommentsLoadingError(false);
 
-    client.delete(`/comments/${id}`)
+    deletingCommentRequest(id)
       .then(() => {
         if (comments) {
           setComments(comments.filter(comment => {

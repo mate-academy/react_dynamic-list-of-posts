@@ -34,27 +34,34 @@ export const NewCommentForm: React.FC<Props> = ({ onAdd }) => {
     });
   };
 
-  const checkField = (fieldName: keyof typeof fields) => {
-    if (!fields[fieldName]) {
-      setFieldsErrors(prevErrors => ({ ...prevErrors, [fieldName]: true }));
+  const checkFields = <T extends unknown>(trimmedFields: T, key: keyof T) => {
+    if (!trimmedFields[key]) {
+      setFieldsErrors(prevErrors => ({ ...prevErrors, [key]: true }));
+      setFields(prevFields => ({ ...prevFields, [key]: trimmedFields[key] }));
     }
   };
 
   const addComment = (event: React.FormEvent) => {
     event.preventDefault();
 
-    checkField('name');
-    checkField('email');
-    checkField('body');
+    const trimmedFields = {
+      name: fields.name.trim(),
+      email: fields.email.trim(),
+      body: fields.body.trim(),
+    };
 
-    if (!fields.name || !fields.email || !fields.body) {
+    checkFields(trimmedFields, 'name');
+    checkFields(trimmedFields, 'email');
+    checkFields(trimmedFields, 'body');
+
+    if (!trimmedFields.name || !trimmedFields.email || !trimmedFields.body) {
       return;
     }
 
     setIsCommentPosting(true);
 
-    onAdd(fields)
-      .then(() => setFields({ ...fields, body: '' }))
+    onAdd(trimmedFields)
+      .then(() => setFields({ ...trimmedFields, body: '' }))
       .finally(() => setIsCommentPosting(false));
   };
 

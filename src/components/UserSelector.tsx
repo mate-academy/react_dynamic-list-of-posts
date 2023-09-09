@@ -8,7 +8,7 @@ type Props = {
   users: User[],
   selectedUser: User | null,
   setSelectedUser: (user: User) => void,
-  getPosts: (user: User) => void,
+  loadPosts: (user: User) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
@@ -17,7 +17,7 @@ export const UserSelector: React.FC<Props> = ({
   users,
   selectedUser,
   setSelectedUser,
-  getPosts,
+  loadPosts,
 }) => {
   const handleListOpening = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -27,7 +27,7 @@ export const UserSelector: React.FC<Props> = ({
   const handleItemClick = (user: User) => {
     setSelectedUser(user);
     setIsListOpen(false);
-    getPosts(user);
+    loadPosts(user);
   };
 
   return (

@@ -8,10 +8,10 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { client } from './utils/fetchClient';
 import { User } from './types/User';
 import { Post } from './types/Post';
 import { Comment } from './types/Comment';
+import { getUsers, getPosts, getComments } from './utils/apiRequests';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -21,35 +21,38 @@ export const App: React.FC = () => {
   const [isListOpen, setIsListOpen] = useState(false);
   const [arePostsLoading, setArePostsLoading] = useState(false);
   const [hasPostsLoadingError, setHasPostsLoadingError] = useState(false);
-  const [openSidebar, setOpenSidebar] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [areCommentsLoading, setAreCommentsLoading] = useState(false);
   const [hasCommentsLoadingError, setHasCommentsLoadingError] = useState(false);
 
+  const arePostsShown = selectedUser
+    && !arePostsLoading
+    && !hasPostsLoadingError;
+
   useEffect(() => {
-    client.get<User[]>('/users')
-      .then(setUsers);
+    getUsers().then(setUsers);
 
     document.addEventListener('click', () => setIsListOpen(false));
   }, []);
 
-  const getPosts = (user: User) => {
+  const loadPosts = (user: User) => {
     setSelectedPost(null);
-    setOpenSidebar(false);
+    setIsSidebarOpen(false);
     setHasPostsLoadingError(false);
     setArePostsLoading(true);
 
-    client.get<Post[]>(`/posts?userId=${user.id}`)
+    getPosts(user.id)
       .then(setPosts)
       .catch(() => setHasPostsLoadingError(true))
       .finally(() => setArePostsLoading(false));
   };
 
-  const getComments = (post: Post) => {
+  const loadComments = (post: Post) => {
     setHasCommentsLoadingError(false);
     setAreCommentsLoading(true);
 
-    client.get<Comment[]>(`/comments?postId=${post.id}`)
+    getComments(post.id)
       .then(setComments)
       .catch(() => setHasCommentsLoadingError(true))
       .finally(() => setAreCommentsLoading(false));
@@ -68,7 +71,7 @@ export const App: React.FC = () => {
                   users={users}
                   selectedUser={selectedUser}
                   setSelectedUser={setSelectedUser}
-                  getPosts={getPosts}
+                  loadPosts={loadPosts}
                 />
               </div>
 
@@ -88,8 +91,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUser && !arePostsLoading && !hasPostsLoadingError
-                  && posts.length === 0 && (
+                {arePostsShown && posts.length === 0 && (
                   <div
                     className="notification is-warning"
                     data-cy="NoPostsYet"
@@ -98,14 +100,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUser && !arePostsLoading && !hasPostsLoadingError
-                  && posts.length !== 0 && (
+                {arePostsShown && posts.length !== 0 && (
                   <PostsList
                     posts={posts}
-                    setOpenSidebar={setOpenSidebar}
+                    setOpenSidebar={setIsSidebarOpen}
                     selectedPost={selectedPost}
                     setSelectedPost={setSelectedPost}
-                    getComments={getComments}
+                    loadComments={loadComments}
                   />
                 )}
               </div>
@@ -120,7 +121,7 @@ export const App: React.FC = () => {
               'is-8-desktop',
               'Sidebar',
               {
-                'Sidebar--open': openSidebar,
+                'Sidebar--open': isSidebarOpen,
               },
             )}
           >

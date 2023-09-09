@@ -5,7 +5,7 @@ type Props = {
   setOpenSidebar: (value: boolean) => void,
   selectedPost: Post | null,
   setSelectedPost: (value: Post | null) => void,
-  getComments: (post: Post) => void,
+  loadComments: (post: Post) => void,
 };
 
 export const PostsList: React.FC<Props> = ({
@@ -13,12 +13,12 @@ export const PostsList: React.FC<Props> = ({
   setOpenSidebar,
   selectedPost,
   setSelectedPost,
-  getComments,
+  loadComments,
 }) => {
   const handleOpenClick = (post: Post) => {
     setOpenSidebar(true);
     setSelectedPost(post);
-    getComments(post);
+    loadComments(post);
   };
 
   const handleCloseClick = () => {
