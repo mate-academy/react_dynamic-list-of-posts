@@ -1,85 +1,96 @@
-import React from 'react';
+import classNames from 'classnames';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { loadApiPosts } from '../features/postsSlice';
+import { Loader } from './Loader';
+import { Post } from '../types/Post';
+import { setSelectedPost } from '../features/selectedPostSlice';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+export const PostsList = () => {
+  const dispatch = useAppDispatch();
+  const selectedPost = useAppSelector(store => store.selectedPost.selectedPost);
+  const loaded = useAppSelector(store => store.posts.loaded);
+  const hasError = useAppSelector(store => store.posts.hasError);
+  const author = useAppSelector(store => store.author.author);
+  const posts = useAppSelector(store => store.posts.items);
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+  useEffect(() => {
+    if (!author) {
+      return;
+    }
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+    dispatch(loadApiPosts(author?.id));
+  }, [author]);
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+  const handleSelectPost = (post: Post | null) => {
+    dispatch(setSelectedPost(post));
+  };
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+  const IS_NO_ERROR = author && loaded && !hasError;
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+  return (
+    <>
+      {author && !loaded && (
+        <Loader />
+      )}
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+      {author && loaded && hasError && (
+        <div
+          className="notification is-danger"
+          data-cy="PostsLoadingError"
+        >
+          Something went wrong!
+        </div>
+      )}
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
+      {(IS_NO_ERROR && !posts.length) && (
+        <div className="notification is-warning" data-cy="NoPostsYet">
+          No posts yet
+        </div>
+      )}
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
+      {IS_NO_ERROR && !!posts.length && (
+        <div data-cy="PostsList">
+          <p className="title">Posts:</p>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+          <table
+            className="table is-fullwidth is-striped is-hoverable is-narrow"
+          >
+            <thead>
+              <tr className="has-background-link-light">
+                <th>#</th>
+                <th>Title</th>
+                <th> </th>
+              </tr>
+            </thead>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+            <tbody>
+              {posts.map(post => (
+                <tr key={post.id} data-cy="Post">
+                  <td data-cy="PostId">{post.id}</td>
+                  <td data-cy="PostTitle">{post.title}</td>
+                  <td className="has-text-right is-vcentered">
+                    <button
+                      type="button"
+                      data-cy="PostButton"
+                      className={classNames(
+                        'button',
+                        'is-link',
+                        {
+                          'is-light': post.id !== selectedPost?.id,
+                        },
+                      )}
+                      onClick={() => handleSelectPost(post)}
+                    >
+                      {post.id === selectedPost?.id ? 'Close' : 'Open'}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </>
+  );
+};
