@@ -7,6 +7,7 @@ import { User } from '../types/User';
 import { setSelectedPost } from '../features/selectedPostSlice';
 
 export const UserSelector: React.FC = () => {
+  const [expanded, setExpanded] = useState(false);
   const dispatch = useAppDispatch();
 
   const selectedUser = useAppSelector(store => store.author.author);
@@ -14,15 +15,6 @@ export const UserSelector: React.FC = () => {
   useEffect(() => {
     dispatch(getUsersAsync());
   }, []);
-
-  const handleChange = useCallback((author: User | null | undefined) => {
-    dispatch(setAuthor(author));
-    dispatch(setSelectedPost(null));
-  }, []);
-
-  const users = useAppSelector(store => store.users.users);
-
-  const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
     if (!expanded) {
@@ -41,6 +33,13 @@ export const UserSelector: React.FC = () => {
     };
   }, [expanded]);
 
+  const handleChange = useCallback((author: User | null | undefined) => {
+    dispatch(setAuthor(author));
+    dispatch(setSelectedPost(null));
+  }, []);
+
+  const users = useAppSelector(store => store.users.users);
+
   return (
     <div
       data-cy="UserSelector"
@@ -52,7 +51,8 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
             setExpanded(current => !current);
           }}
         >
