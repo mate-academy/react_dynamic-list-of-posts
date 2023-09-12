@@ -39,4 +39,4 @@ form to add new comments.
 - Implement a solution following the [React task guideline](https://github.com/mate-academy/react_task-guideline#react-tasks-guideline).
 - Use the [React TypeScript cheat sheet](https://mate-academy.github.io/fe-program/js/extra/react-typescript).
 - This task does not have tests yet!
-- Replace `<your_account>` with your Github username in the [DEMO LINK](https://defaultgituser.github.io/react_redux-list-of-posts/) and add it to the PR description.
+- Replace `<your_account>` with your Github username in the [DEMO LINK](https://defaultgituser.github.io/react_dynamic-list-of-posts/) and add it to the PR description.
