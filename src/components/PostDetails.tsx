@@ -47,17 +47,13 @@ export const PostDetails: React.FC<Props> = ({
   };
 
   const deleteCommentHandler = (id: number) => {
-    setIsCommentsLoading(true);
-    setPostsComments(prew => prew.filter(CurentComment => (
-      id !== CurentComment.id
+    setPostsComments(prew => prew.filter(curentComment => (
+      id !== curentComment.id
     )));
 
     removeComment(id)
       .catch(() => {
         setCommentErrorMessage('delete error');
-      })
-      .finally(() => {
-        setIsCommentsLoading(false);
       });
   };
 
@@ -83,15 +79,22 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {postsComments.length === 0
-            ? (
-              <p className="title is-4" data-cy="NoCommentsMessage">
-                No comments yet
-              </p>
-            )
-            : <p className="title is-4">Comments:</p>}
+          {(!postsComments.length
+          && !commentErrorMessage
+          && !isCommentsLoading
+          ) && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
+          {(postsComments.length > 0
+          && !commentErrorMessage
+          && !isCommentsLoading
+          ) && (
+            <p className="title is-4">Comments:</p>
+          )}
 
-          {!isCommentsLoading && (
+          {(!isCommentsLoading && postsComments.length > 0) && (
             postsComments.map(comment => (
               <article
                 className="message is-small"
@@ -119,7 +122,10 @@ export const PostDetails: React.FC<Props> = ({
               </article>
             )))}
 
-          {!isCommentButtonClicked && (
+          {(!isCommentButtonClicked
+          && !commentErrorMessage
+          && !isCommentsLoading
+          ) && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -131,7 +137,7 @@ export const PostDetails: React.FC<Props> = ({
           )}
         </div>
 
-        {isCommentButtonClicked && (
+        {(isCommentButtonClicked && !isCommentsLoading) && (
           <NewCommentForm
             selectedPost={selectedPost}
             setPostsComments={setPostsComments}

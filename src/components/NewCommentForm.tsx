@@ -25,9 +25,9 @@ export const NewCommentForm: React.FC<Props> = ({
     text: '',
   });
 
-  const isEmptyField = commentText.length === 0
-    || commentEmail.length === 0
-    || commentName.length === 0;
+  const isEmptyField = !commentText.length
+  || !commentEmail.length
+  || !commentName.length;
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCommentName(event.target.value);

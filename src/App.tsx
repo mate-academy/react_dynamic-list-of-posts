@@ -30,14 +30,12 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
-    setIsLoading(true);
     getAllUsers()
       .then(usersFromServer => {
         if (usersFromServer) {
           setUsers(usersFromServer);
         }
-      })
-      .finally(() => setIsLoading(false));
+      });
   }, []);
 
   const getUsersPosts = () => {
@@ -48,14 +46,16 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
-    setIsLoading(true);
-    getUsersPosts()
-      .then(postsFromServer => {
-        if (postsFromServer) {
-          setUsersPosts(postsFromServer);
-        }
-      })
-      .finally(() => setIsLoading(false));
+    if (selectedUser) {
+      setIsLoading(true);
+      getUsersPosts()
+        .then(postsFromServer => {
+          if (postsFromServer) {
+            setUsersPosts(postsFromServer);
+          }
+        })
+        .finally(() => setIsLoading(false));
+    }
   }, [selectedUser]);
 
   return (
@@ -93,7 +93,12 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(usersPosts.length === 0 && selectedUser) && (
+                {(!usersPosts.length
+                && selectedUser
+                && !errorMessage
+                && !isLoading
+                && !isDropDownActive
+                ) && (
                   <div
                     className="notification is-warning"
                     data-cy="NoPostsYet"
@@ -102,7 +107,10 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(usersPosts.length > 0 && selectedUser) && (
+                {(usersPosts.length > 0
+                && selectedUser
+                && !isLoading
+                ) && (
                   <PostsList
                     usersPosts={usersPosts}
                     selectedPost={selectedPost}
