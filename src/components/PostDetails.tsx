@@ -38,6 +38,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     dispatch(apiDeleteComment(commentId));
   };
 
+  const isLoadedWithoutErrors = (() => {
+    return loaded && !hasError;
+  })();
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
@@ -55,19 +59,19 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           <Loader />
         )}
 
-        {loaded && hasError && (
+        {!isLoadedWithoutErrors && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
 
-        {loaded && !hasError && comments.length === 0 && (
+        {isLoadedWithoutErrors && !comments.length && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {!isLoadedWithoutErrors && comments.length && (
           <>
             <p className="title is-4">Comments:</p>
 

@@ -40,6 +40,13 @@ export const UserSelector: React.FC = () => {
 
   const users = useAppSelector(store => store.users.users);
 
+  const handleButtonClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.stopPropagation();
+    setExpanded(current => !current);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -51,10 +58,7 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={(e) => {
-            e.stopPropagation();
-            setExpanded(current => !current);
-          }}
+          onClick={handleButtonClick}
         >
           <span>
             {selectedUser?.name || 'Choose a user'}
