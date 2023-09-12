@@ -1,10 +1,56 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import classNames from 'classnames';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { getUsersAsync } from '../features/userSlice';
+import { setAuthor } from '../features/authorSlice';
+import { User } from '../types/User';
+import { setSelectedPost } from '../features/selectedPostSlice';
 
 export const UserSelector: React.FC = () => {
+  const [expanded, setExpanded] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const selectedUser = useAppSelector(store => store.author.author);
+
+  useEffect(() => {
+    dispatch(getUsersAsync());
+  }, []);
+
+  useEffect(() => {
+    if (!expanded) {
+      return;
+    }
+
+    const handleDocumentClick = () => {
+      setExpanded(false);
+    };
+
+    document.addEventListener('click', handleDocumentClick);
+
+    // eslint-disable-next-line consistent-return
+    return () => {
+      document.removeEventListener('click', handleDocumentClick);
+    };
+  }, [expanded]);
+
+  const handleChange = useCallback((author: User | null | undefined) => {
+    dispatch(setAuthor(author));
+    dispatch(setSelectedPost(null));
+  }, []);
+
+  const users = useAppSelector(store => store.users.users);
+
+  const handleButtonClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.stopPropagation();
+    setExpanded(current => !current);
+  };
+
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={classNames('dropdown', { 'is-active': expanded })}
     >
       <div className="dropdown-trigger">
         <button
@@ -12,8 +58,11 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={handleButtonClick}
         >
-          <span>Choose a user</span>
+          <span>
+            {selectedUser?.name || 'Choose a user'}
+          </span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -23,11 +72,18 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+          {users.map(user => (
+            <a
+              key={user.id}
+              href={`#user-${user.id}`}
+              onClick={() => handleChange(user)}
+              className={classNames('dropdown-item', {
+                'is-active': user.id === selectedUser?.id,
+              })}
+            >
+              {user.name}
+            </a>
+          ))}
         </div>
       </div>
     </div>
