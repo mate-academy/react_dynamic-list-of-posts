@@ -1,22 +1,21 @@
 import React, { useContext, useState } from 'react';
-import { UserContext, UserIdContext } from './UserContext/UserContext';
+import { UsersContext, UserContext } from './UserContext/UserContext';
 import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
-  const users = useContext(UserContext);
+  const users = useContext(UsersContext);
   const [isOpen, setIsOpen] = useState(false);
 
-  const userIdContext = useContext(UserIdContext);
+  const { handleUserSelect, user } = useContext(UserContext);
 
   const handleMenu = () => {
     setIsOpen(prev => !prev);
   };
 
-  const handleUserId
-    = (userId: User) => {
-      userIdContext.handleUserSelect(userId);
-      handleMenu();
-    };
+  const handleUserId = (userId: User) => {
+    handleUserSelect(userId);
+    handleMenu();
+  };
 
   return (
     <div
@@ -31,8 +30,8 @@ export const UserSelector: React.FC = () => {
           aria-controls="dropdown-menu"
           onClick={handleMenu}
         >
-          {userIdContext.userId ? (
-            <span>{userIdContext.userId.name}</span>
+          {user ? (
+            <span>{user.name}</span>
           ) : (
             <span>Choose a user</span>
           )}
@@ -46,14 +45,14 @@ export const UserSelector: React.FC = () => {
       {isOpen && (
         <div className="dropdown-menu" id="dropdown-menu" role="menu">
           <div className="dropdown-content">
-            {(users?.map(user => (
+            {(users?.map(item => (
               <a
-                href={`#user-${user.id}`}
+                href={`#user-${item.id}`}
                 className="dropdown-item"
-                key={user.id}
-                onClick={() => handleUserId(user)}
+                key={item.id}
+                onClick={() => handleUserId(item)}
               >
-                {user.name}
+                {item.name}
               </a>
             )))}
           </div>

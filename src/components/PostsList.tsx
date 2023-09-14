@@ -4,7 +4,7 @@ import { PostDataContext, PostsContext } from './UserContext/UserContext';
 
 export const PostsList: React.FC = () => {
   const posts = useContext(PostsContext);
-  const postDetails = useContext(PostDataContext);
+  const { postData, handlePost } = useContext(PostDataContext);
 
   return (
     <div data-cy="PostsList">
@@ -34,11 +34,11 @@ export const PostsList: React.FC = () => {
                   className={classNames(
                     'button',
                     'is-link',
-                    { 'is-light': postDetails.postData?.id !== post.id },
+                    { 'is-light': postData?.id !== post.id },
                   )}
-                  onClick={() => postDetails.handlePost(post)}
+                  onClick={() => handlePost(post)}
                 >
-                  {postDetails.postData?.id === post.id ? 'Close' : 'Open'}
+                  {postData?.id === post.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

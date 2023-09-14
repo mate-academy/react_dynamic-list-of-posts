@@ -12,15 +12,15 @@ type ErrorContextType = {
   isLoadingPosts: boolean,
 };
 
-type UserIdType = {
-  userId: User | null,
+type UserType = {
+  user: User | null,
   handleUserSelect: (id: User) => void,
 };
 
 type ComentsDataType = {
   comments: Comment[],
   newCommentSelect: (newComment: Comment) => void,
-  hendleRemoveComment: (id: number) => void,
+  handleRemoveComment: (id: number) => void,
 };
 
 type PostDataType = {
@@ -32,10 +32,10 @@ type Props = {
   children: React.ReactNode;
 };
 
-export const UserContext = React.createContext<User[] | null>(null);
+export const UsersContext = React.createContext<User[] | null>(null);
 export const ErrorContext
   = React.createContext<ErrorContextType>({} as ErrorContextType);
-export const UserIdContext = React.createContext<UserIdType>({} as UserIdType);
+export const UserContext = React.createContext<UserType>({} as UserType);
 export const PostsContext
   = React.createContext<Post[]>([]);
 export const CommentsContext
@@ -48,13 +48,13 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
   const [isLoading, setIsloading] = useState(false);
   const [isLoadingPosts, setIsLoaidingPosts] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [userId, setUserId] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
   const [postData, setPostData] = useState<Post | null>(null);
 
   const handleUserSelect = (id: User) => {
-    setUserId(id);
+    setUser(id);
 
     setPostData(null);
   };
@@ -84,7 +84,7 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
   const loadPostsFromServer = async () => {
     try {
       setIsLoaidingPosts(true);
-      const getPostsFromServer = await getPosts(userId);
+      const getPostsFromServer = await getPosts(user);
 
       setPosts(getPostsFromServer);
     } catch (error) {
@@ -111,7 +111,7 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-  const hendleRemoveComment = async (id: number) => {
+  const handleRemoveComment = async (id: number) => {
     try {
       await deleteComment(id);
       const visibleComments = comments.filter(comment => {
@@ -133,10 +133,10 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (userId) {
+    if (user) {
       loadPostsFromServer();
     }
-  }, [userId]);
+  }, [user]);
 
   useEffect(() => {
     if (postData) {
@@ -145,23 +145,23 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
   }, [postData]);
 
   return (
-    <UserContext.Provider value={users}>
+    <UsersContext.Provider value={users}>
       <ErrorContext.Provider value={{ isLoading, isError, isLoadingPosts }}>
-        <UserIdContext.Provider value={{ userId, handleUserSelect }}>
+        <UserContext.Provider value={{ user, handleUserSelect }}>
           <PostsContext.Provider value={posts}>
             <PostDataContext.Provider value={{ postData, handlePost }}>
               <CommentsContext.Provider value={{
                 comments,
                 newCommentSelect,
-                hendleRemoveComment,
+                handleRemoveComment,
               }}
               >
                 {children}
               </CommentsContext.Provider>
             </PostDataContext.Provider>
           </PostsContext.Provider>
-        </UserIdContext.Provider>
+        </UserContext.Provider>
       </ErrorContext.Provider>
-    </UserContext.Provider>
+    </UsersContext.Provider>
   );
 };

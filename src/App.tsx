@@ -8,16 +8,15 @@ import {
   ErrorContext,
   PostDataContext,
   PostsContext,
-  UserIdContext,
+  UserContext,
 } from './components/UserContext/UserContext';
 import { Loader } from './components/Loader';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 
 export const App: React.FC = () => {
-  const { isLoadingPosts } = useContext(ErrorContext);
-  const { isError } = useContext(ErrorContext);
-  const { userId } = useContext(UserIdContext);
+  const { isError, isLoadingPosts } = useContext(ErrorContext);
+  const { user } = useContext(UserContext);
   const posts = useContext(PostsContext);
   const postDetails = useContext(PostDataContext);
 
@@ -32,7 +31,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!userId && (
+                {!user && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
@@ -48,11 +47,11 @@ export const App: React.FC = () => {
 
                 {isLoadingPosts ? <Loader /> : (
                   <>
-                    {(posts?.length > 0 && userId && !isError) && (
+                    {(posts?.length > 0 && user && !isError) && (
                       <PostsList />
                     )}
 
-                    {(posts?.length === 0 && userId && !isError) && (
+                    {(posts?.length === 0 && user && !isError) && (
                       <div
                         className="notification is-warning"
                         data-cy="NoPostsYet"

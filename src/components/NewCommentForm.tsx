@@ -20,9 +20,9 @@ type NewCommentFormProps = {
 
 export const NewCommentForm: React.FC<NewCommentFormProps> = ({ postId }) => {
   const [submitting, setSubmitting] = useState(false);
-  const commentsData = useContext(CommentsContext);
+  const { newCommentSelect } = useContext(CommentsContext);
 
-  const error = useContext(ErrorContext);
+  const { isError } = useContext(ErrorContext);
 
   const onAddComment = async ({ name, email, body }: CommentData) => {
     const newComment = {
@@ -32,7 +32,14 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({ postId }) => {
       postId: postId.id,
     };
 
-    createComment(newComment);
+    try {
+      setSubmitting(true);
+      await createComment(newComment);
+    } catch (error) {
+      setSubmitting(false);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const [hasNameError, setHasNameError] = useState(false);
@@ -88,12 +95,10 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({ postId }) => {
       setHasBodyError(true);
     }
 
-    if (hasBodyError || hasEmailError || hasNameError
-      || emailValidationError) {
+    if (!validateEmail(email) || !email.trim().length
+      || !name.trim().length || !body.length) {
       return;
     }
-
-    setSubmitting(true);
 
     await onAddComment({ name, email, body });
 
@@ -105,9 +110,8 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({ postId }) => {
       id: Date.now(),
     };
 
-    commentsData.newCommentSelect(newComment);
+    newCommentSelect(newComment);
 
-    setSubmitting(false);
     setValues(current => ({ ...current, body: '' }));
   };
 
@@ -267,7 +271,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({ postId }) => {
           </div>
         </div>
       </form>
-      {error.isError && (
+      {isError && (
         <div className="notification is-danger is-light has-text-weight-normal">
           Unable to add a comment
         </div>

@@ -11,7 +11,7 @@ export const PostDetails: React.FC = () => {
   const postDetails = useContext(PostDataContext);
   const { isLoading } = useContext(ErrorContext);
   const { isError } = useContext(ErrorContext);
-  const commentsData = useContext(CommentsContext);
+  const { comments, handleRemoveComment } = useContext(CommentsContext);
   const [click, setClick] = useState(false);
 
   return (
@@ -36,7 +36,7 @@ export const PostDetails: React.FC = () => {
             </div>
           )}
 
-          {!commentsData.comments.length && !isLoading && (
+          {!comments.length && !isLoading && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -47,7 +47,7 @@ export const PostDetails: React.FC = () => {
           )}
 
           {!isLoading && (
-            commentsData.comments.map(comment => (
+            comments.map(comment => (
               <article
                 className="message is-small"
                 data-cy="Comment"
@@ -62,7 +62,7 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => commentsData.hendleRemoveComment(comment.id)}
+                    onClick={() => handleRemoveComment(comment.id)}
                   >
                     delete button
                   </button>
