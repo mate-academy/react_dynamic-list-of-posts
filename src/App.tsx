@@ -13,6 +13,7 @@ import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [isNewCommentActive, setIsNewCommentActive] = useState(false);
 
   const { selectedUser } = useSelectedUser();
   const { error } = useError();
@@ -45,6 +46,7 @@ export const App: React.FC = () => {
                   <PostsList
                     selectedPost={selectedPost}
                     onSelectPost={(post) => setSelectedPost(post)}
+                    onAddComment={setIsNewCommentActive}
                   />
                 )}
               </div>
@@ -64,6 +66,8 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success ">
               <PostDetails
                 selectedPost={selectedPost}
+                isNewComment={isNewCommentActive}
+                onAddComment={setIsNewCommentActive}
               />
             </div>
           </div>

@@ -9,11 +9,13 @@ import { Loader } from './Loader';
 type Props = {
   selectedPost: Post | null,
   onSelectPost: (post: Post | null) => void,
+  onAddComment: (status: boolean) => void,
 };
 
 export const PostsList: React.FC<Props> = ({
   selectedPost,
   onSelectPost,
+  onAddComment,
 }) => {
   const { posts, setPosts } = usePosts();
   const { selectedUser } = useSelectedUser();
@@ -35,6 +37,7 @@ export const PostsList: React.FC<Props> = ({
       return;
     }
 
+    onAddComment(false);
     onSelectPost(post);
   };
 

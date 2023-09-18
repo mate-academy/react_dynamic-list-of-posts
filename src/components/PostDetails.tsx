@@ -7,14 +7,16 @@ import { getComments } from '../api/comments';
 
 type Props = {
   selectedPost: Post | null
+  isNewComment: boolean,
+  onAddComment: (status: boolean) => void,
 };
 
 export const PostDetails: React.FC<Props> = ({
   selectedPost,
+  isNewComment,
+  onAddComment,
 }) => {
   const { comments, setComments } = useComments();
-
-  const [isNewCommentActive, setIsNewCommentActive] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,7 +30,7 @@ export const PostDetails: React.FC<Props> = ({
   }, [selectedPost]);
 
   const toggleAddCommentForm = () => {
-    setIsNewCommentActive(true);
+    onAddComment(true);
   };
 
   return (
@@ -89,7 +91,7 @@ export const PostDetails: React.FC<Props> = ({
                 No comments yet
               </p>
             )}
-            {isNewCommentActive ? (
+            {isNewComment ? (
               <NewCommentForm />
             ) : (
               <button
