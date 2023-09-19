@@ -7,25 +7,46 @@ import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
 import { useSelectedUser } from './components/Contexts/UserContext';
-import { useError } from './components/Contexts/ErrorContext';
 import { PostDetails } from './components/PostDetails';
 import { Post } from './types/Post';
+import { User } from './types/User';
 
 export const App: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [isNewCommentActive, setIsNewCommentActive] = useState(false);
 
-  const { selectedUser } = useSelectedUser();
-  const { error } = useError();
+  const [isNewCommentActive, setIsNewCommentActive] = useState(false);
+  const [isDropDownActive, setIsDropDownActive] = useState(false);
+
+  const [postsLoadingError, setPostsLoadingError] = useState(false);
+
+  const { selectedUser, setSelectedUser } = useSelectedUser();
+
+  const changeSelectedUser = (newUser: User) => {
+    setSelectedPost(null);
+    setSelectedUser(null);
+    setSelectedUser(newUser);
+  };
 
   return (
-    <main className="section">
+    <main
+      className="section"
+      role="presentation"
+      onClick={() => {
+        if (isDropDownActive) {
+          setIsDropDownActive(false);
+        }
+      }}
+    >
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  isDropDownActive={isDropDownActive}
+                  onCloseDropDown={setIsDropDownActive}
+                  onChangeUser={changeSelectedUser}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -34,7 +55,7 @@ export const App: React.FC = () => {
                     No user selected
                   </p>
                 )}
-                {error && (
+                {postsLoadingError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -42,11 +63,13 @@ export const App: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-                {!!selectedUser && (
+                {(selectedUser && !postsLoadingError) && (
                   <PostsList
                     selectedPost={selectedPost}
+                    selectedUser={selectedUser}
                     onSelectPost={(post) => setSelectedPost(post)}
                     onAddComment={setIsNewCommentActive}
+                    onError={setPostsLoadingError}
                   />
                 )}
               </div>
@@ -63,13 +86,15 @@ export const App: React.FC = () => {
               { 'Sidebar--open': !!selectedPost },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails
-                selectedPost={selectedPost}
-                isNewComment={isNewCommentActive}
-                onAddComment={setIsNewCommentActive}
-              />
-            </div>
+            {selectedPost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails
+                  selectedPost={selectedPost}
+                  isNewComment={isNewCommentActive}
+                  onAddComment={setIsNewCommentActive}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

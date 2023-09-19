@@ -4,21 +4,28 @@ import { User } from '../types/User';
 import { getUsers } from '../api/user';
 import { useSelectedUser } from './Contexts/UserContext';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  isDropDownActive: boolean,
+  onCloseDropDown: (status: boolean) => void,
+  onChangeUser: (newUser: User) => void,
+};
+
+export const UserSelector: React.FC<Props> = ({
+  isDropDownActive,
+  onCloseDropDown,
+  onChangeUser,
+}) => {
   const [allUsers, setAllUsers] = useState<User[]>([]);
-  const { selectedUser, setSelectedUser } = useSelectedUser();
-  const [isDropDownActive, setIsDropDownActive] = useState(false);
+  const { selectedUser } = useSelectedUser();
 
   useEffect(() => {
     getUsers()
-      .then(setAllUsers)
-      // eslint-disable-next-line no-console
-      .catch(console.info);
+      .then(setAllUsers);
   }, []);
 
   const handleSelectUser = (user: User) => {
-    setSelectedUser(user);
-    setIsDropDownActive(false);
+    onChangeUser(user);
+    onCloseDropDown(false);
   };
 
   return (
@@ -34,7 +41,7 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setIsDropDownActive(!isDropDownActive)}
+          onClick={() => onCloseDropDown(!isDropDownActive)}
         >
           <span>{selectedUser?.name || 'Choose a user'}</span>
 
@@ -44,12 +51,19 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+      <div
+        className="dropdown-menu"
+        id="dropdown-menu"
+        role="menu"
+        tabIndex={0}
+        onBlur={() => onCloseDropDown(false)}
+      >
         <div className="dropdown-content">
           {allUsers.map((user) => (
             <a
               href={`#user-${user.id}`}
-              className="dropdown-item"
+              className={classNames('dropdown-item',
+                { 'is-active': selectedUser?.id === user.id })}
               onClick={() => handleSelectUser(user)}
               key={user.id}
             >
