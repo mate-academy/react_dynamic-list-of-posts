@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import classNames from 'classnames';
 import { PostDetails } from '../PostDetails';
 import { ModalPostContext } from '../ModalPostContext';
+import { CommentsProvider } from '../CommentsContext';
 
 export const Sidebar: React.FC = () => {
   const { modalPost } = useContext(ModalPostContext);
@@ -21,7 +22,9 @@ export const Sidebar: React.FC = () => {
     >
       {!!modalPost && (
         <div className="tile is-child box is-success ">
-          <PostDetails post={modalPost} />
+          <CommentsProvider>
+            <PostDetails post={modalPost} />
+          </CommentsProvider>
         </div>
       )}
     </div>

@@ -1,11 +1,26 @@
+import { useContext } from 'react';
 import { Comment } from '../../types/Comment';
+import { CommentsContext } from '../CommentsContext';
+import { deleteCommentById } from '../../api/api';
 
 type Props = {
   comment: Comment;
 };
 
 export const CommentItem: React.FC<Props> = ({ comment }) => {
-  const { email, name, body } = comment;
+  const {
+    id,
+    email,
+    name,
+    body,
+  } = comment;
+  const { comments, setComments } = useContext(CommentsContext);
+
+  const handleDeleteComment = async () => {
+    setComments(comments.filter(({ id: comId }) => comId !== id));
+
+    deleteCommentById(id);
+  };
 
   return (
     <article className="message is-small" data-cy="Comment">
@@ -18,6 +33,7 @@ export const CommentItem: React.FC<Props> = ({ comment }) => {
           type="button"
           className="delete is-small"
           aria-label="delete"
+          onClick={handleDeleteComment}
         >
           delete button
         </button>
@@ -29,52 +45,3 @@ export const CommentItem: React.FC<Props> = ({ comment }) => {
     </article>
   );
 };
-/* <article className="message is-small" data-cy="Comment">
-        <div className="message-header">
-          <a
-            href="mailto:misha@mate.academy"
-            data-cy="CommentAuthor"
-          >
-            Misha Hrynko
-          </a>
-
-          <button
-            data-cy="CommentDelete"
-            type="button"
-            className="delete is-small"
-            aria-label="delete"
-          >
-            delete button
-          </button>
-        </div>
-        <div
-          className="message-body"
-          data-cy="CommentBody"
-        >
-          One more comment
-        </div>
-      </article>
-
-      <article className="message is-small" data-cy="Comment">
-        <div className="message-header">
-          <a
-            href="mailto:misha@mate.academy"
-            data-cy="CommentAuthor"
-          >
-            Misha Hrynko
-          </a>
-
-          <button
-            data-cy="CommentDelete"
-            type="button"
-            className="delete is-small"
-            aria-label="delete"
-          >
-            delete button
-          </button>
-        </div>
-
-        <div className="message-body" data-cy="CommentBody">
-          {'Multi\nline\ncomment'}
-        </div>
-      </article> */

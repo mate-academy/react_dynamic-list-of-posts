@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 // import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
-import { Comment } from '../types/Comment';
 import { getCommentsByPostId } from '../api/api';
 import { CommentList } from './CommentList';
+import { CommentsContext } from './CommentsContext';
 
 type Props = {
   post: Post;
@@ -12,7 +12,7 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const { id, title, body } = post;
-  const [comments, setComments] = useState<Comment[]>([]);
+  const { comments, setComments } = useContext(CommentsContext);
   const [isError, setIsError] = useState(false);
   const [isLoad, setIsLoad] = useState(false);
 
@@ -25,6 +25,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   useEffect(() => {
     setIsError(false);
     setIsLoad(true);
+    setComments([]);
     (async () => {
       try {
         const serverComments = await getCommentsByPostId(id);
