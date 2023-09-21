@@ -49,7 +49,7 @@ export const PostsList: React.FC<Props> = ({
         <Loader />
       ) : (
         <div data-cy="PostsList">
-          {posts.length > 0 ? (
+          {posts.length ? (
             <>
               <p className="title">Posts:</p>
               <table

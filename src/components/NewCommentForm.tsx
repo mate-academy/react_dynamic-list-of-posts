@@ -8,42 +8,50 @@ type Props = {
   selectedPost: Post,
 };
 
+const initialCommentForm = {
+  name: '',
+  email: '',
+  commentText: '',
+};
+
 export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
   const { setComments } = useComments();
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [commentText, setCommentText] = useState('');
+  const [commentForm, setCommentForm] = useState(initialCommentForm);
+  const { name, email, commentText } = commentForm;
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitted(true);
     if (name && email && commentText) {
       setIsLoading(true);
-      createComment({
+      const newComment = await createComment({
         name,
         email,
         body: commentText,
         postId: selectedPost.id,
-      }).then((newComment) => {
-        setComments(prev => [...prev, newComment]);
-      }).finally(() => {
-        setCommentText('');
-        setIsSubmitted(false);
-        setIsLoading(false);
       });
+
+      try {
+        setComments(prev => [...prev, newComment]);
+      } catch {
+        // eslint-disable-next-line no-console
+        console.info('Something went wrong.');
+      }
+
+      setCommentForm(prev => ({ ...prev, commentText: '' }));
+      setIsSubmitted(false);
+      setIsLoading(false);
     }
   };
 
   const onClear = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setEmail('');
-    setName('');
-    setCommentText('');
+    setCommentForm(initialCommentForm);
     setIsSubmitted(false);
   };
 
@@ -52,17 +60,17 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
   const nameHasError = !name && isSubmitted;
 
   const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
+    setCommentForm(prev => ({ ...prev, name: event.target.value }));
   };
 
   const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
+    setCommentForm(prev => ({ ...prev, email: event.target.value }));
   };
 
   const handleChangeComment = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
-    setCommentText(event.target.value);
+    setCommentForm(prev => ({ ...prev, commentText: event.target.value }));
   };
 
   return (

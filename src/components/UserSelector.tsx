@@ -20,7 +20,11 @@ export const UserSelector: React.FC<Props> = ({
 
   useEffect(() => {
     getUsers()
-      .then(setAllUsers);
+      .then(setAllUsers)
+      .catch(() => {
+        // eslint-disable-next-line no-console
+        console.info('Something went wrong');
+      });
   }, []);
 
   const handleSelectUser = (user: User) => {
@@ -69,7 +73,6 @@ export const UserSelector: React.FC<Props> = ({
             >
               {user.name}
             </a>
-
           ))}
         </div>
       </div>

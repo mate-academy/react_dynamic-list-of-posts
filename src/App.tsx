@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
 import { useSelectedUser } from './components/Contexts/UserContext';
-import { PostDetails } from './components/PostDetails';
+import { PostDetailsSidebar } from './components/PostDetailsSidebar';
 import { Post } from './types/Post';
 import { User } from './types/User';
 
@@ -27,15 +27,19 @@ export const App: React.FC = () => {
     setSelectedUser(newUser);
   };
 
+  const handleHideOnBlur = () => {
+    if (isDropDownActive) {
+      setIsDropDownActive(false);
+    }
+  };
+
+  const isUserValid = selectedUser && !postsLoadingError;
+
   return (
     <main
       className="section"
       role="presentation"
-      onClick={() => {
-        if (isDropDownActive) {
-          setIsDropDownActive(false);
-        }
-      }}
+      onClick={handleHideOnBlur}
     >
       <div className="container">
         <div className="tile is-ancestor">
@@ -63,7 +67,7 @@ export const App: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-                {(selectedUser && !postsLoadingError) && (
+                {isUserValid && (
                   <PostsList
                     selectedPost={selectedPost}
                     selectedUser={selectedUser}
@@ -88,7 +92,7 @@ export const App: React.FC = () => {
           >
             {selectedPost && (
               <div className="tile is-child box is-success ">
-                <PostDetails
+                <PostDetailsSidebar
                   selectedPost={selectedPost}
                   isNewComment={isNewCommentActive}
                   onAddComment={setIsNewCommentActive}
