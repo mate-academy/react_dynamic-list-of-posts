@@ -175,7 +175,7 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar', {
-                'Sidebar--open': selectedUser,
+                'Sidebar--open': selectedPost,
               },
             )}
           >
