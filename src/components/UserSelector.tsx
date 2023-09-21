@@ -41,6 +41,7 @@ export const UserSelector: React.FC<Props> = ({ users }) => {
         <div className="dropdown-content">
           {users.map((user) => (
             <UserItem
+              key={user.id}
               user={user}
               onActiveToggle={setIsActive}
             />

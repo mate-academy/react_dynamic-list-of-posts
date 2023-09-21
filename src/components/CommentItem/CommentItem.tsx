@@ -16,7 +16,7 @@ export const CommentItem: React.FC<Props> = ({ comment }) => {
   } = comment;
   const { comments, setComments } = useContext(CommentsContext);
 
-  const handleDeleteComment = async () => {
+  const handleDeleteComment = () => {
     setComments(comments.filter(({ id: comId }) => comId !== id));
 
     deleteCommentById(id);

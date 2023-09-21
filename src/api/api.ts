@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 import { Comment } from '../types/Comment';
@@ -17,4 +18,8 @@ export const getCommentsByPostId = (postId: number) => {
 
 export const deleteCommentById = (commId: number) => {
   return client.delete<Comment>(`/comments/${commId}`);
+};
+
+export const addComment = (data: any) => {
+  return client.post<Comment>('/comments', data);
 };

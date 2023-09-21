@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Loader } from './Loader';
-// import { NewCommentForm } from './NewCommentForm';
+import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { getCommentsByPostId } from '../api/api';
 import { CommentList } from './CommentList';
@@ -14,18 +14,20 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const { id, title, body } = post;
   const { comments, setComments } = useContext(CommentsContext);
   const [isError, setIsError] = useState(false);
-  const [isLoad, setIsLoad] = useState(false);
+  const [isLoader, setIsLoader] = useState(false);
+  const [isWriting, setIsWriting] = useState(false);
 
-  const isShowComments = !!comments.length && !isError && !isLoad;
-  const isShowError = !comments.length && isError && !isLoad;
-  const isShowLoader = !comments.length && !isError && isLoad;
-  const isNoComments = !comments.length && !isError && !isLoad;
-  const isShowWriteButton = isNoComments || isShowComments;
+  const isShowComments = !!comments.length && !isError && !isLoader;
+  const isShowError = !comments.length && isError && !isLoader;
+  const isShowLoader = !comments.length && !isError && isLoader;
+  const isNoComments = !comments.length && !isError && !isLoader;
+  const isShowWriteButton = (isNoComments || isShowComments) && !isWriting;
 
   useEffect(() => {
     setIsError(false);
-    setIsLoad(true);
+    setIsLoader(true);
     setComments([]);
+    setIsWriting(false);
     (async () => {
       try {
         const serverComments = await getCommentsByPostId(id);
@@ -34,7 +36,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       } catch {
         setIsError(true);
       } finally {
-        setIsLoad(false);
+        setIsLoader(false);
       }
     })();
   }, [post]);
@@ -74,13 +76,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
               data-cy="WriteCommentButton"
               type="button"
               className="button is-link"
+              onClick={() => setIsWriting(true)}
             >
               Write a comment
             </button>
           )}
         </div>
 
-        {/* <NewCommentForm /> */}
+        {isWriting && <NewCommentForm />}
       </div>
     </div>
   );
