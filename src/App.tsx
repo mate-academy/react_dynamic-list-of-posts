@@ -1,15 +1,39 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
+/* eslint-disable */
 import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
+// import { PostsList } from './components/PostsList';
+// import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
+import { getAllUsers } from './utils/loadutil';
+import { User } from './types/User';
+import { PostsList } from './components/PostsList';
+import { Post } from './types/Post';
+import { StateContext } from './components/AppContext';
+import { PostDetails } from './components/PostDetails';
+// import { Loader } from './components/Loader';
+// import { UserList } from './components/User/UserList';
 
 export const App: React.FC = () => {
+  const [users, setAllUsers] = useState([] as User[]);
+  const [postsByUser, setPostByUser] = useState([] as Post[]);
+  const { state } = useContext(StateContext)
+
+  console.log(postsByUser);
+  const getPosts = (posts: Post[]) => {
+    setPostByUser(posts);
+  }
+
+  useEffect(() => {
+    getAllUsers()
+      .then(res => {
+        setAllUsers(res)
+      });
+  }, []);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,31 +41,42 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector allUsers={users} setPosts={getPosts} />
               </div>
 
               <div className="block" data-cy="MainContent">
                 <p data-cy="NoSelectedUser">
-                  No user selected
+                  {postsByUser.length === 0 && (
+                    'No user selected'
+                  )}
                 </p>
+                {postsByUser.length > 0 && (
+                  <div className="tile is-child box is-success ">
+                    <PostsList usersPosts={postsByUser} />
+                  </div>
+                )}
+                {/* <Loader /> */}
 
-                <Loader />
-
-                <div
+                {/* <div
                   className="notification is-danger"
                   data-cy="PostsLoadingError"
                 >
                   Something went wrong!
-                </div>
+                </div> */}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
+                {/* <div className="notification is-warning" data-cy="NoPostsYet">
                   No posts yet
-                </div>
+                </div> */}
+                {/* {postsByUser.length > 0 && (
+                   <div className="tile is-child box is-success ">
+                  <PostsList usersPosts={postsByUser} />
+                  </div>
+                )} */}
 
-                <PostsList />
               </div>
             </div>
           </div>
+
 
           <div
             data-cy="Sidebar"
@@ -49,13 +84,15 @@ export const App: React.FC = () => {
               'tile',
               'is-parent',
               'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
+              'Sidebar', {
+              'Sidebar--open': state.selectedPost.id,
+            }
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              <PostDetails post={state.selectedPost} />
             </div>
+
           </div>
         </div>
       </div>
