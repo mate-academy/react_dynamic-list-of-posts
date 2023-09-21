@@ -46,6 +46,7 @@ export const NewCommentForm: React.FC = () => {
       // eslint-disable-next-line no-console
       console.error(err);
     } finally {
+      setIsError(false);
       setIsLoading(false);
     }
   };
