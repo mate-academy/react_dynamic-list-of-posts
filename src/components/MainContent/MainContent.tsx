@@ -3,7 +3,7 @@ import { Loader } from '../Loader';
 import { PostsList } from '../PostsList';
 import { ModalUserContext } from '../ModalUserContext';
 import { Post } from '../../types/Post';
-import { getPostsByUserId } from '../../api/users';
+import { getPostsByUserId } from '../../api/api';
 
 export const MainContent = () => {
   const [posts, setPosts] = useState<Post[]>([]);

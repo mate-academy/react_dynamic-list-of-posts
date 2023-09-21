@@ -1,11 +1,27 @@
+import { useContext } from 'react';
+import classNames from 'classnames';
 import { Post } from '../../types/Post';
+import { ModalPostContext } from '../ModalPostContext';
 
 type Props = {
   post: Post;
 };
 
 export const PostItem: React.FC<Props> = ({ post }) => {
+  const { modalPost, setModalPost } = useContext(ModalPostContext);
   const { id, title } = post;
+
+  const isOpen = id !== modalPost?.id;
+
+  const handlePostButtonClick = () => {
+    if (isOpen) {
+      setModalPost(post);
+
+      return;
+    }
+
+    setModalPost(null);
+  };
 
   return (
     <tr data-cy="Post">
@@ -21,9 +37,12 @@ export const PostItem: React.FC<Props> = ({ post }) => {
         <button
           type="button"
           data-cy="PostButton"
-          className="button is-link is-light"
+          className={classNames('button', 'is-link', {
+            'is-light': isOpen,
+          })}
+          onClick={handlePostButtonClick}
         >
-          Open
+          {isOpen ? 'Open' : 'Close'}
         </button>
       </td>
     </tr>
