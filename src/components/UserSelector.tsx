@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { UserItem } from './UserItem';
+import { ModalUserContext } from './ModalUserContext';
 
 type Props = {
   users: User[];
 };
 
 export const UserSelector: React.FC<Props> = ({ users }) => {
+  const { modalUser } = useContext(ModalUserContext);
   const [isActive, setIsActive] = useState(false);
 
   return (
@@ -25,7 +27,9 @@ export const UserSelector: React.FC<Props> = ({ users }) => {
           aria-controls="dropdown-menu"
           onClick={() => setIsActive(!isActive)}
         >
-          <span>Choose a user</span>
+          <span>
+            {modalUser ? modalUser.name : 'Choose a user'}
+          </span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />

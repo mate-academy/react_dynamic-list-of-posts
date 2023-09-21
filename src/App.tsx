@@ -4,10 +4,9 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 // import classNames from 'classnames';
-// import { PostsList } from './components/PostsList';
 // import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-// import { Loader } from './components/Loader';
+import { MainContent } from './components/MainContent';
 
 import { User } from './types/User';
 import { getUsers } from './api/users';
@@ -16,12 +15,16 @@ export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
 
   useEffect(() => {
-    getUsers()
-      .then(setUsers)
-      .catch((error) => {
+    (async () => {
+      try {
+        const serverUsers = await getUsers();
+
+        setUsers(serverUsers);
+      } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
-      });
+      }
+    })();
   }, []);
 
   return (
@@ -34,26 +37,8 @@ export const App: React.FC = () => {
                 <UserSelector users={users} />
               </div>
 
-              <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+              <MainContent />
 
-                {/* <Loader />
-
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
-
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList /> */}
-              </div>
             </div>
           </div>
 
