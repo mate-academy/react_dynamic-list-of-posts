@@ -4,6 +4,7 @@ import { PostsList } from '../PostsList';
 import { ModalUserContext } from '../ModalUserContext';
 import { Post } from '../../types/Post';
 import { getPostsByUserId } from '../../api/api';
+import { getWhatToShow } from '../../utils/helpers';
 
 export const MainContent = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -11,10 +12,12 @@ export const MainContent = () => {
   const [isLoad, setIsLoad] = useState(false);
   const { modalUser } = useContext(ModalUserContext);
 
-  const showLoad = isLoad && !isError && !posts.length;
-  const showError = !isLoad && isError && !posts.length;
-  const showPostList = !isLoad && !isError && !!posts.length;
-  const showNoPostsYet = !isLoad && !isError && !posts.length;
+  const {
+    isShowLoad,
+    isShowError,
+    isShowContent,
+    isShowNoContent,
+  } = getWhatToShow(isError, isLoad, !!posts.length);
 
   useEffect(() => {
     setIsError(false);
@@ -38,9 +41,9 @@ export const MainContent = () => {
     <div className="block" data-cy="MainContent">
       {modalUser ? (
         <>
-          {showLoad && <Loader />}
+          {isShowLoad && <Loader />}
 
-          {showError && (
+          {isShowError && (
             <div
               className="notification is-danger"
               data-cy="PostsLoadingError"
@@ -49,9 +52,9 @@ export const MainContent = () => {
             </div>
           )}
 
-          {showPostList && <PostsList posts={posts} />}
+          {isShowContent && <PostsList posts={posts} />}
 
-          {showNoPostsYet && (
+          {isShowNoContent && (
             <div
               className="notification is-warning"
               data-cy="NoPostsYet"

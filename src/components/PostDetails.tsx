@@ -5,6 +5,7 @@ import { Post } from '../types/Post';
 import { getCommentsByPostId } from '../api/api';
 import { CommentList } from './CommentList';
 import { CommentsContext } from './CommentsContext';
+import { getWhatToShow } from '../utils/helpers';
 
 type Props = {
   post: Post;
@@ -17,11 +18,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [isLoader, setIsLoader] = useState(false);
   const [isWriting, setIsWriting] = useState(false);
 
-  const isShowComments = !!comments.length && !isError && !isLoader;
-  const isShowError = !comments.length && isError && !isLoader;
-  const isShowLoader = !comments.length && !isError && isLoader;
-  const isNoComments = !comments.length && !isError && !isLoader;
-  const isShowWriteButton = (isNoComments || isShowComments) && !isWriting;
+  const {
+    isShowError,
+    isShowLoad,
+    isShowContent,
+    isShowNoContent,
+  } = getWhatToShow(isError, isLoader, !!comments.length);
+
+  const isShowWriteButton = (isShowNoContent || isShowContent) && !isWriting;
 
   useEffect(() => {
     setIsError(false);
@@ -55,7 +59,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         </div>
 
         <div className="block">
-          {isShowLoader && <Loader />}
+          {isShowLoad && <Loader />}
 
           {isShowError && (
             <div className="notification is-danger" data-cy="CommentsError">
@@ -63,13 +67,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </div>
           )}
 
-          {isNoComments && (
+          {isShowNoContent && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {isShowComments && <CommentList comments={comments} />}
+          {isShowContent && <CommentList comments={comments} />}
 
           {isShowWriteButton && (
             <button
