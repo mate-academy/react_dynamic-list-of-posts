@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { Comment } from '../../types/Comment';
 
-type CC = {
+type CommentsContextType = {
   comments: Comment[];
   setComments: (comments: Comment[]) => void;
 };
 
-const DEFAULT_COMMENTS: CC = {
+const DEFAULT_COMMENTS: CommentsContextType = {
   comments: [],
   setComments: () => { },
 };
 
-export const CommentsContext = React.createContext<CC>(DEFAULT_COMMENTS);
+export const CommentsContext = React
+  .createContext<CommentsContextType>(DEFAULT_COMMENTS);
 
 type Props = {
   children: React.ReactNode;

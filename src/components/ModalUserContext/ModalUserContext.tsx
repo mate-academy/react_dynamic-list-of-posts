@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { User } from '../../types/User';
 
-type MUC = {
+type ModalUserContextType = {
   modalUser: User | null;
   setModalUser: (user: User | null) => void;
 };
 
-const DEFAULT_MODAL_USER: MUC = {
+const DEFAULT_MODAL_USER: ModalUserContextType = {
   modalUser: null,
   setModalUser: () => { },
 };
 
-export const ModalUserContext = React.createContext<MUC>(DEFAULT_MODAL_USER);
+export const ModalUserContext = React
+  .createContext<ModalUserContextType>(DEFAULT_MODAL_USER);
 
 type Props = {
   children: React.ReactNode;

@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { Post } from '../../types/Post';
 
-type MPC = {
+type ModalPostContextType = {
   modalPost: Post | null;
   setModalPost: (post: Post | null) => void;
 };
 
-const DEFAULT_MODAL_POST: MPC = {
+const DEFAULT_MODAL_POST: ModalPostContextType = {
   modalPost: null,
   setModalPost: () => { },
 };
 
-export const ModalPostContext = React.createContext<MPC>(DEFAULT_MODAL_POST);
+export const ModalPostContext = React
+  .createContext<ModalPostContextType>(DEFAULT_MODAL_POST);
 
 type Props = {
   children: React.ReactNode;

@@ -18,11 +18,11 @@ export const NewCommentForm: React.FC = () => {
   const { comments, setComments } = useContext(CommentsContext);
   const { modalPost } = useContext(ModalPostContext);
 
-  const errorCondition = (key: keyof CommentData) => {
+  const checkForErrors = (key: keyof CommentData) => {
     return isError && !formFields[key];
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!formFields.name || !formFields.email || !formFields.body) {
@@ -51,13 +51,13 @@ export const NewCommentForm: React.FC = () => {
     }
   };
 
-  const handleReset = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleResetForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsError(false);
     setFormFields(DEFAULT_FIELDS);
   };
 
-  const handleFieldChange = (
+  const handleFormFieldChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     key: keyof CommentData,
   ) => {
@@ -67,8 +67,8 @@ export const NewCommentForm: React.FC = () => {
   return (
     <form
       data-cy="NewCommentForm"
-      onSubmit={handleSubmit}
-      onReset={handleReset}
+      onSubmit={handleSubmitForm}
+      onReset={handleResetForm}
     >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
@@ -82,17 +82,17 @@ export const NewCommentForm: React.FC = () => {
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', {
-              'is-danger': errorCondition('name'),
+              'is-danger': checkForErrors('name'),
             })}
             value={formFields.name}
-            onChange={event => handleFieldChange(event, 'name')}
+            onChange={event => handleFormFieldChange(event, 'name')}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {errorCondition('name') && (
+          {checkForErrors('name') && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -102,7 +102,7 @@ export const NewCommentForm: React.FC = () => {
           )}
         </div>
 
-        {errorCondition('name') && (
+        {checkForErrors('name') && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -121,17 +121,17 @@ export const NewCommentForm: React.FC = () => {
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', {
-              'is-danger': errorCondition('email'),
+              'is-danger': checkForErrors('email'),
             })}
             value={formFields.email}
-            onChange={event => handleFieldChange(event, 'email')}
+            onChange={event => handleFormFieldChange(event, 'email')}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {errorCondition('email') && (
+          {checkForErrors('email') && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -141,7 +141,7 @@ export const NewCommentForm: React.FC = () => {
           )}
         </div>
 
-        {errorCondition('email') && (
+        {checkForErrors('email') && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -159,14 +159,14 @@ export const NewCommentForm: React.FC = () => {
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', {
-              'is-danger': errorCondition('body'),
+              'is-danger': checkForErrors('body'),
             })}
             value={formFields.body}
-            onChange={event => handleFieldChange(event, 'body')}
+            onChange={event => handleFormFieldChange(event, 'body')}
           />
         </div>
 
-        {errorCondition('body') && (
+        {checkForErrors('body') && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>

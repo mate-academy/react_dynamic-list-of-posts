@@ -11,6 +11,11 @@ export const MainContent = () => {
   const [isLoad, setIsLoad] = useState(false);
   const { modalUser } = useContext(ModalUserContext);
 
+  const showLoad = isLoad && !isError && !posts.length;
+  const showError = !isLoad && isError && !posts.length;
+  const showPostList = !isLoad && !isError && !!posts.length;
+  const showNoPostsYet = !isLoad && !isError && !posts.length;
+
   useEffect(() => {
     setIsError(false);
     setIsLoad(true);
@@ -33,30 +38,26 @@ export const MainContent = () => {
     <div className="block" data-cy="MainContent">
       {modalUser ? (
         <>
-          {isLoad ? <Loader /> : (
-            <>
-              {isError ? (
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
-              ) : (
-                <>
-                  {posts.length ? (
-                    <PostsList posts={posts} />
-                  ) : (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )}
-                </>
-              )}
-            </>
+          {showLoad && <Loader />}
+
+          {showError && (
+            <div
+              className="notification is-danger"
+              data-cy="PostsLoadingError"
+            >
+              Something went wrong!
+            </div>
+          )}
+
+          {showPostList && <PostsList posts={posts} />}
+
+          {showNoPostsYet && (
+            <div
+              className="notification is-warning"
+              data-cy="NoPostsYet"
+            >
+              No posts yet
+            </div>
           )}
         </>
       ) : (
