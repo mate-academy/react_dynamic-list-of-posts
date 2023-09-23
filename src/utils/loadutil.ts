@@ -1,17 +1,28 @@
-import { Comment } from "../types/Comment";
-import { Post } from "../types/Post";
-import { User } from "../types/User";
-import { client } from "./fetchClient";
+import { Comment, CommentData } from '../types/Comment';
+import { Post } from '../types/Post';
+import { User } from '../types/User';
+import { client } from './fetchClient';
 
 export const getAllUsers = () => {
   return client.get<User[]>('/users');
-}
+};
+
 export const getPost = (userId: number) => {
   return client.get<Post[]>(`/posts?userId=${userId}`);
-}
+};
+
 export const getComments = (postId: number) => {
   return client.get<Comment[]>(`/comments?postId=${postId}`);
-}
+};
+
 export const getAllComments = () => {
-  return client.get<Comment[]>(`/comments`);
-}
+  return client.get<Comment[]>('/comments');
+};
+
+export const addComment = (data: CommentData) => {
+  return client.post<Comment>('/comments', data);
+};
+
+export const deleteComment = (commentId: number) => {
+  return client.delete(`/comments/${commentId}`);
+};

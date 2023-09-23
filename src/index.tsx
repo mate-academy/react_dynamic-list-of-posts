@@ -14,7 +14,6 @@
 //     </AppContextProvider>,
 //   );
 
-
 import ReactDOM from 'react-dom';
 
 import { App } from './App';
@@ -22,7 +21,7 @@ import { AppContextProvider } from './components/AppContext';
 
 ReactDOM.render(
   <AppContextProvider>
-  <App />
+    <App />
   </AppContextProvider>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );

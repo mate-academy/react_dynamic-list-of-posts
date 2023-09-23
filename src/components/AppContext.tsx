@@ -6,15 +6,30 @@ import { ACTIONS } from "../utils/enums"
 import React from "react"
 import { User } from "../types/User"
 import { Comment } from "../types/Comment"
+import { cloneDeep } from "lodash";
 
 type Action = { type: ACTIONS.SET_SELECTED_POST, payload: Post }
 | { type: ACTIONS.SET_SELECTED_USER, payload: User }
 | { type: ACTIONS.SET_COMMENTS, payload: Comment[] }
+| { type: ACTIONS.IS_LOADING, payload: boolean }
+| { type: ACTIONS.SHOWFORM, payload: boolean }
+| { type: ACTIONS.DELETE_COMMENT, payload: Comment }
 
 interface Data {
   selectedPost: Post,
   selectedUser: User,
   comments: Comment[],
+  isLoading: boolean,
+  showForm: boolean,
+}
+
+function remove(state: Data, comment: Comment): Comment[] {
+  const copyList = cloneDeep(state.comments);
+  const index = copyList.findIndex(elem => elem.id === comment.id);
+
+  copyList.splice(index, 1);
+
+  return copyList;
 }
 
 function reducer(state: Data, action: Action): Data {
@@ -34,6 +49,21 @@ function reducer(state: Data, action: Action): Data {
         ...state,
         comments: action.payload,
       }
+    case ACTIONS.IS_LOADING:
+      return {
+        ...state,
+        isLoading: action.payload,
+      }
+    case ACTIONS.SHOWFORM:
+      return {
+        ...state,
+        showForm: action.payload,
+      }
+    case ACTIONS.DELETE_COMMENT:
+      return {
+        ...state,
+        comments: [...remove(state, action.payload)],
+      }
     default:
       return state;
   }
@@ -49,6 +79,8 @@ const initialState: State = {
     selectedPost: {} as Post,
     selectedUser: {} as User,
     comments: [] as Comment[],
+    isLoading: false,
+    showForm: false,
   },
   dispatch: () => { },
 };
@@ -62,13 +94,6 @@ type Props = {
 export const AppContextProvider: React.FC<Props> = ({ children }) => {
 
   const [state, dispatch] = useReducer(reducer, initialState.state);
-  console.log(state.selectedPost,dispatch);
-  // dispatch({ type: ACTIONS.SET_SELECTED_POST, payload: {
-  //   id: 0,
-  //   userId: 3554,
-  //   title: 'string',
-  //   body: 'string',
-  // } as Post })
 
   return (
     <StateContext.Provider value={{

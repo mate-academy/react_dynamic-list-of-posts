@@ -1,3 +1,4 @@
+/* eslint-disable */
 const BASE_URL = 'https://mate.academy/students-api';
 
 // a promise resolved after a given delay

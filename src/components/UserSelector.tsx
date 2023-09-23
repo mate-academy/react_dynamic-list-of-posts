@@ -1,15 +1,16 @@
 /* eslint-disable */
 // eslint-disable
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  useContext,
+  useState
+} from 'react';
 import {
-  getAllUsers,
   getPost,
 } from '../utils/loadutil';
 import { User } from '../types/User';
 import { Post } from '../types/Post';
 import { StateContext } from './AppContext';
 import { ACTIONS } from '../utils/enums';
-// import { PostsList } from './PostsList';
 
 type Props = {
   allUsers: User[],
@@ -18,34 +19,22 @@ type Props = {
 
 export const UserSelector: React.FC<Props> = ({ allUsers, setPosts }) => {
   const [showUsers, setShowUsers] = useState(false);
-  const [choosenUser, setChoosenUser] = useState(0);
-  const [_users, setAllUsers] = useState([] as User[]);
   const [_postsByUser, _setPostByUser] = useState([] as Post[]);
   const [isUserSelected, setIsUserSelected] = useState('Choose a user');
   const { dispatch } = useContext(StateContext);
 
   function chooseUser(user: User) {
-    setChoosenUser(user.id);
     setShowUsers(!showUsers)
     setIsUserSelected(user.name)
-    // setPostByUser(allUsers.filter(user => user.id === userId));
     dispatch({ type: ACTIONS.SET_SELECTED_USER, payload: user })
     getPost(user.id)
       .then(res => setPosts(res))
+      dispatch({ type: ACTIONS.SET_SELECTED_POST, payload: {} as Post })
   }
-
-  useEffect(() => {
-    getAllUsers()
-      .then(res => {
-        setAllUsers(res)
-      });
-  }, []);
 
   function handleUserSelect() {
     setShowUsers(!showUsers);
   }
-  console.log(choosenUser);
-
 
   return (
     <div
