@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
-import { Comment } from '../../types/Comment';
+import { CommentType } from '../../types/Comment';
 
 interface CommentsContextType {
-  comments: Comment[],
-  setComments: React.Dispatch<React.SetStateAction<Comment[]>>
+  comments: CommentType[],
+  setComments: React.Dispatch<React.SetStateAction<CommentType[]>>
 }
 
 const CommentsContext = React.createContext({} as CommentsContextType);
@@ -13,7 +13,7 @@ type Props = {
 };
 
 export const CommentsContextProvider: React.FC<Props> = ({ children }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<CommentType[]>([]);
 
   const value = {
     comments,
@@ -27,8 +27,4 @@ export const CommentsContextProvider: React.FC<Props> = ({ children }) => {
   );
 };
 
-export const useComments = () => {
-  const comments = useContext(CommentsContext);
-
-  return comments;
-};
+export const useComments = () => useContext(CommentsContext);

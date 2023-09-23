@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import { User } from '../types/User';
-import { getUsers } from '../api/user';
-import { useSelectedUser } from './Contexts/UserContext';
+import { User } from '../../types/User';
+import { getUsers } from '../../api/user';
+import { useSelectedUser } from '../Contexts/UserContext';
 
 type Props = {
   isDropDownActive: boolean,

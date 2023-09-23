@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import classNames from 'classnames';
-import { usePosts } from './Contexts/PostsContext';
-import { getPosts } from '../api/posts';
-import { Post } from '../types/Post';
-import { Loader } from './Loader';
-import { User } from '../types/User';
+import { usePosts } from '../Contexts/PostsContext';
+import { getPosts } from '../../api/posts';
+import { PostType } from '../../types/Post';
+import { Loader } from '../Loader';
+import { User } from '../../types/User';
+import { Post } from '../Post/Post';
 
 type Props = {
-  selectedPost: Post | null,
+  selectedPost: PostType | null,
   selectedUser: User,
-  onSelectPost: (post: Post | null) => void,
+  onSelectPost: (post: PostType | null) => void,
   onAddComment: (status: boolean) => void,
   onError: (status: boolean) => void,
 };
@@ -32,7 +32,7 @@ export const PostsList: React.FC<Props> = ({
       .finally(() => setIsLoading(false));
   }, [selectedUser]);
 
-  const handleSelectPost = (post: Post) => {
+  const handleSelectPost = (post: PostType) => {
     if (selectedPost && post.id === selectedPost.id) {
       onSelectPost(null);
 
@@ -66,26 +66,11 @@ export const PostsList: React.FC<Props> = ({
                 <tbody>
                   {posts.map((post) => {
                     return (
-                      <tr data-cy="Post" key={post.id}>
-                        <td data-cy="PostId">{post.id}</td>
-
-                        <td data-cy="PostTitle">
-                          {post.title}
-                        </td>
-
-                        <td className="has-text-right is-vcentered">
-                          <button
-                            type="button"
-                            data-cy="PostButton"
-                            className={classNames('button is-link', {
-                              'is-light': selectedPost?.id !== post.id,
-                            })}
-                            onClick={() => handleSelectPost(post)}
-                          >
-                            {selectedPost?.id !== post.id ? 'Open' : 'Close'}
-                          </button>
-                        </td>
-                      </tr>
+                      <Post
+                        post={post}
+                        selectedPost={selectedPost}
+                        onSelectPost={handleSelectPost}
+                      />
                     );
                   })}
                 </tbody>

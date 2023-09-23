@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import { createComment } from '../api/comments';
-import { Post } from '../types/Post';
-import { useComments } from './Contexts/CommentsContext';
+import { createComment } from '../../api/comments';
+import { PostType } from '../../types/Post';
+import { useComments } from '../Contexts/CommentsContext';
 
 type Props = {
-  selectedPost: Post,
+  selectedPost: PostType,
 };
 
 const initialCommentForm = {
-  name: '',
+  userName: '',
   email: '',
   commentText: '',
 };
@@ -18,7 +18,7 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
   const { setComments } = useComments();
 
   const [commentForm, setCommentForm] = useState(initialCommentForm);
-  const { name, email, commentText } = commentForm;
+  const { userName, email, commentText } = commentForm;
 
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -26,16 +26,16 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSubmitted(true);
-    if (name && email && commentText) {
+    if (userName && email && commentText) {
       setIsLoading(true);
-      const newComment = await createComment({
-        name,
-        email,
-        body: commentText,
-        postId: selectedPost.id,
-      });
-
       try {
+        const newComment = await createComment({
+          name: userName,
+          email,
+          body: commentText,
+          postId: selectedPost.id,
+        });
+
         setComments(prev => [...prev, newComment]);
       } catch {
         // eslint-disable-next-line no-console
@@ -57,20 +57,14 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
 
   const commentHasError = !commentText && isSubmitted;
   const emailHasError = !email && isSubmitted;
-  const nameHasError = !name && isSubmitted;
+  const nameHasError = !userName && isSubmitted;
 
-  const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCommentForm(prev => ({ ...prev, name: event.target.value }));
-  };
-
-  const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCommentForm(prev => ({ ...prev, email: event.target.value }));
-  };
-
-  const handleChangeComment = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setCommentForm(prev => ({ ...prev, commentText: event.target.value }));
+    const { name, value } = event.target;
+
+    setCommentForm(prev => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -87,12 +81,12 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
-            name="name"
+            name="userName"
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': nameHasError })}
-            value={name}
-            onChange={handleChangeName}
+            value={userName}
+            onChange={handleChange}
           />
 
           <span className="icon is-small is-left">
@@ -127,7 +121,7 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': emailHasError })}
             value={email}
-            onChange={handleChangeEmail}
+            onChange={handleChange}
           />
 
           <span className="icon is-small is-left">
@@ -158,11 +152,11 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
         <div className="control">
           <textarea
             id="comment-body"
-            name="body"
+            name="commentText"
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': commentHasError })}
             value={commentText}
-            onChange={handleChangeComment}
+            onChange={handleChange}
           />
         </div>
         {commentHasError && (

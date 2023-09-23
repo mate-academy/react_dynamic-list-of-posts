@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Loader } from './Loader';
-import { useComments } from './Contexts/CommentsContext';
-import { Post } from '../types/Post';
-import { deleteComment, getComments } from '../api/comments';
-import { PostDetails } from './PostDetails';
+import { Loader } from '../Loader';
+import { useComments } from '../Contexts/CommentsContext';
+import { PostType } from '../../types/Post';
+import { deleteComment, getComments } from '../../api/comments';
+import { PostDetails } from '../PostDetails/PostDetails';
 
 type Props = {
-  selectedPost: Post,
+  selectedPost: PostType,
   isNewComment: boolean,
   onAddComment: (status: boolean) => void,
 };
@@ -23,12 +23,11 @@ export const PostDetailsSidebar: React.FC<Props> = ({
 
   useEffect(() => {
     setIsLoading(true);
-    if (selectedPost) {
-      getComments(selectedPost.id)
-        .then(setComments)
-        .catch(() => setHasError(true))
-        .finally(() => setIsLoading(false));
-    }
+
+    getComments(selectedPost.id)
+      .then(setComments)
+      .catch(() => setHasError(true))
+      .finally(() => setIsLoading(false));
   }, [selectedPost]);
 
   return (
@@ -36,11 +35,11 @@ export const PostDetailsSidebar: React.FC<Props> = ({
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {`#${selectedPost?.id}: ${selectedPost?.title}`}
+            {`#${selectedPost.id}: ${selectedPost.title}`}
           </h2>
 
           <p data-cy="PostBody">
-            {selectedPost?.body}
+            {selectedPost.body}
           </p>
         </div>
 

@@ -1,16 +1,16 @@
-import { Comment } from '../types/Comment';
-import { Post } from '../types/Post';
-import { Comments } from './Comments';
-import { useComments } from './Contexts/CommentsContext';
-import { NewCommentForm } from './NewCommentForm';
+import { CommentType } from '../../types/Comment';
+import { PostType } from '../../types/Post';
+import { CommentsList } from '../CommentsList/CommentsList';
+import { useComments } from '../Contexts/CommentsContext';
+import { NewCommentForm } from '../NewCommentForm/NewCommentForm';
 
 type Props = {
   onAddComment: (status: boolean) => void,
   onDeleteComment: (id: number) => void,
-  comments: Comment[],
+  comments: CommentType[],
   isNewComment: boolean,
   hasError: boolean,
-  selectedPost: Post,
+  selectedPost: PostType,
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -36,7 +36,7 @@ export const PostDetails: React.FC<Props> = ({
     <>
       {!hasError ? (
         <>
-          <Comments
+          <CommentsList
             comments={comments}
             onDelete={handleDeleteComment}
           />

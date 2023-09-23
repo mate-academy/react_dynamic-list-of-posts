@@ -27,8 +27,4 @@ export const UserContextProvider: React.FC<Props> = ({ children }) => {
   );
 };
 
-export const useSelectedUser = () => {
-  const selectedUser = useContext(UserContext);
-
-  return selectedUser;
-};
+export const useSelectedUser = () => useContext(UserContext);

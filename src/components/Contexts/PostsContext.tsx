@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
-import { Post } from '../../types/Post';
+import { PostType } from '../../types/Post';
 
 interface PostsContextType {
-  posts: Post[],
-  setPosts: React.Dispatch<React.SetStateAction<Post[]>>
+  posts: PostType[],
+  setPosts: React.Dispatch<React.SetStateAction<PostType[]>>
 }
 
 const PostsContext = React.createContext({} as PostsContextType);
@@ -13,7 +13,7 @@ type Props = {
 };
 
 export const PostsContextProvider: React.FC<Props> = ({ children }) => {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<PostType[]>([]);
 
   const value = {
     posts,
@@ -27,8 +27,4 @@ export const PostsContextProvider: React.FC<Props> = ({ children }) => {
   );
 };
 
-export const usePosts = () => {
-  const posts = useContext(PostsContext);
-
-  return posts;
-};
+export const usePosts = () => useContext(PostsContext);
