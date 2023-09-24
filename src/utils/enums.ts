@@ -7,4 +7,5 @@ export enum ACTIONS {
   IS_LOADING,
   SHOWFORM,
   DELETE_COMMENT,
+  SET_ERROR,
 }

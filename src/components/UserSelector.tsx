@@ -25,10 +25,22 @@ export const UserSelector: React.FC<Props> = ({ allUsers, setPosts }) => {
 
   function chooseUser(user: User) {
     setShowUsers(!showUsers)
+    dispatch({ type: ACTIONS.IS_LOADING, payload: true })
     setIsUserSelected(user.name)
     dispatch({ type: ACTIONS.SET_SELECTED_USER, payload: user })
     getPost(user.id)
-      .then(res => setPosts(res))
+      .then(res => {
+        if ('error' in res) {
+          console.log('WTF');
+          dispatch({ type: ACTIONS.SET_ERROR, payload: 'error' })
+        }
+
+        setPosts(res)})
+      .catch((err) => {
+        console.log(err);
+
+        })
+      .finally(() =>     dispatch({ type: ACTIONS.IS_LOADING, payload: false }))
       dispatch({ type: ACTIONS.SET_SELECTED_POST, payload: {} as Post })
   }
 

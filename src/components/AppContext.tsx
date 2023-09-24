@@ -14,6 +14,7 @@ type Action = { type: ACTIONS.SET_SELECTED_POST, payload: Post }
 | { type: ACTIONS.IS_LOADING, payload: boolean }
 | { type: ACTIONS.SHOWFORM, payload: boolean }
 | { type: ACTIONS.DELETE_COMMENT, payload: Comment }
+| { type: ACTIONS.SET_ERROR, payload: string }
 
 interface Data {
   selectedPost: Post,
@@ -21,6 +22,7 @@ interface Data {
   comments: Comment[],
   isLoading: boolean,
   showForm: boolean,
+  error: string
 }
 
 function remove(state: Data, comment: Comment): Comment[] {
@@ -48,6 +50,11 @@ function reducer(state: Data, action: Action): Data {
       return {
         ...state,
         comments: action.payload,
+      }
+    case ACTIONS.SET_ERROR:
+      return {
+        ...state,
+        error: action.payload,
       }
     case ACTIONS.IS_LOADING:
       return {
@@ -81,6 +88,7 @@ const initialState: State = {
     comments: [] as Comment[],
     isLoading: false,
     showForm: false,
+    error: '',
   },
   dispatch: () => { },
 };

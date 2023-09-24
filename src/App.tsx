@@ -14,7 +14,8 @@ import { PostsList } from './components/PostsList';
 import { Post } from './types/Post';
 import { StateContext } from './components/AppContext';
 import { PostDetails } from './components/PostDetails';
-// import { Loader } from './components/Loader';
+// import { ACTIONS } from './utils/enums';
+import { Loader } from './components/Loader';
 // import { UserList } from './components/User/UserList';
 
 export const App: React.FC = () => {
@@ -26,12 +27,14 @@ export const App: React.FC = () => {
   const getPosts = (posts: Post[]) => {
     setPostByUser(posts);
   }
+  console.log(state.error);
+
 
   useEffect(() => {
     getAllUsers()
       .then(res => {
         setAllUsers(res)
-      });
+      })
   }, []);
 
   return (
@@ -46,7 +49,7 @@ export const App: React.FC = () => {
 
               <div className="block" data-cy="MainContent">
                 <p data-cy="NoSelectedUser">
-                  {postsByUser.length === 0 && (
+                  {(!state.selectedUser.id) && (
                     'No user selected'
                   )}
                 </p>
@@ -55,24 +58,22 @@ export const App: React.FC = () => {
                     <PostsList usersPosts={postsByUser} />
                   </div>
                 )}
-                {/* <Loader /> */}
-
-                {/* <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div> */}
-
-                {/* <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div> */}
-                {/* {postsByUser.length > 0 && (
-                   <div className="tile is-child box is-success ">
-                  <PostsList usersPosts={postsByUser} />
+                {state.isLoading && (
+                  <Loader />
+                )}
+                {(postsByUser.length === 0 && state.selectedUser.id && !state.isLoading) && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
                   </div>
-                )} */}
-
+                )}
+                {state.error === 'error' && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
               </div>
             </div>
           </div>
