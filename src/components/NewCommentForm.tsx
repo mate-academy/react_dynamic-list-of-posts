@@ -40,6 +40,21 @@ export const NewCommentForm: React.FC<Props> = ({
     }));
   };
 
+  // const handleChange23
+  // = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  //   const { value, name } = event.target;
+
+  //   setFormError({
+  //     ...formError,
+  //     [name]: '',
+  //   });
+
+  //   setNewComment(prevNewComment => ({
+  //     ...prevNewComment,
+  //     [name]: value,
+  //   }));
+  // };
+
   const isEmptyField = !newComment.text.length
     || !newComment.email.length
     || !newComment.name.length;
@@ -192,7 +207,7 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control">
           <textarea
             id="comment-body"
-            name="body"
+            name="text"
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': formError.text })}
             value={newComment.text}
