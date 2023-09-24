@@ -40,21 +40,6 @@ export const NewCommentForm: React.FC<Props> = ({
     }));
   };
 
-  // const handleChange23
-  // = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-  //   const { value, name } = event.target;
-
-  //   setFormError({
-  //     ...formError,
-  //     [name]: '',
-  //   });
-
-  //   setNewComment(prevNewComment => ({
-  //     ...prevNewComment,
-  //     [name]: value,
-  //   }));
-  // };
-
   const isEmptyField = !newComment.text.length
     || !newComment.email.length
     || !newComment.name.length;

@@ -94,18 +94,11 @@ export const App: React.FC = () => {
                 && (
                   <PostsList
                     posts={posts}
-                    // isSidebarOpen={openSidebar}
                     handleOpenSidebar={setOpenSidebar}
                     selectedPost={selectedPost}
                     handleSelectedPost={setSelectedPost}
                   />
                 )}
-
-                {/* <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList /> */}
               </div>
             </div>
           </div>

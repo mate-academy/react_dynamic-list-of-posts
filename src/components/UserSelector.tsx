@@ -8,7 +8,6 @@ type Props = {
   handleDropdown: (isDropdown: boolean) => void,
   selectedUser: User | null,
   handleSelectedUser: (selectedUserId: User) => void,
-  // setSelectedPost: (value: Post[]) => void,
 };
 
 export const UserSelector: React.FC<Props> = ({
@@ -19,7 +18,6 @@ export const UserSelector: React.FC<Props> = ({
     if (user !== selectedUser) {
       handleDropdown(false);
       handleSelectedUser(user);
-      // setSelectedPost([]);
     }
   };
 
@@ -54,7 +52,6 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={() => handleDropdown(!isDropdown)}
         >
-          {/* <span>Choose a user</span> */}
           <span>
             {selectedUser?.name ? selectedUser.name : 'Choose a user'}
           </span>
