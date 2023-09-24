@@ -56,7 +56,6 @@ export const App: React.FC = () => {
                   handleDropdown={setIsDropdownOpen}
                   selectedUser={selectedUser}
                   handleSelectedUser={setSelectedUser}
-                  // setSelectedPost={setPosts}
                 />
               </div>
 
