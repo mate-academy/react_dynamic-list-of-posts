@@ -1,6 +1,23 @@
-import React from 'react';
+import { useContext, useEffect, useState } from 'react';
+import classnames from 'classnames';
+import { UsersContext } from '../context/UsersContext';
+import { getUsers } from '../api/users';
+import { ErrorContext } from '../context/ErrorContext';
 
 export const UserSelector: React.FC = () => {
+  const {
+    users, setUsers, user, setUser,
+  } = useContext(UsersContext);
+  const { setIsErrorHappen } = useContext(ErrorContext);
+
+  const [isUsersOpen, setIsUsersOpen] = useState(false);
+
+  useEffect(() => {
+    getUsers()
+      .then(setUsers)
+      .catch(() => setIsErrorHappen(true));
+  }, []);
+
   return (
     <div
       data-cy="UserSelector"
@@ -12,8 +29,11 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setIsUsersOpen(prev => !prev)}
         >
-          <span>Choose a user</span>
+          <span>
+            {!user ? 'Choose a user' : user.name }
+          </span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -21,15 +41,38 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+      {isUsersOpen && (
+        <div
+          className="dropdown-menu"
+          id="dropdown-menu"
+          role="menu"
+          onBlur={() => setIsUsersOpen(false)}
+        >
+          <div className="dropdown-content">
+            {users.map(currentUser => {
+              const { id, name } = currentUser;
+
+              return (
+                <a
+                  key={id}
+                  href={`#user-${id}`}
+                  className={classnames(
+                    'dropdown-item', {
+                      'is-active': id === user?.id,
+                    },
+                  )}
+                  onClick={() => {
+                    setIsUsersOpen(prev => !prev);
+                    setUser(currentUser);
+                  }}
+                >
+                  {name}
+                </a>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
