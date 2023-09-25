@@ -31,6 +31,9 @@ export const App: React.FC = () => {
     }
   }, [user]);
 
+  const isPostListShown = (posts.length > 0 && user);
+  const isPostsExist = user && posts.length === 0;
+
   return (
     <main className="section">
       <div className="container">
@@ -52,18 +55,18 @@ export const App: React.FC = () => {
                   <Loader />
                 ) : (
                   <>
-                    {user && posts.length === 0 ? (
+                    {isPostsExist && (
                       <div
                         className="notification is-warning"
                         data-cy="NoPostsYet"
                       >
                         No posts yet
                       </div>
-                    ) : null}
+                    )}
 
-                    {posts.length > 0 && user ? (
+                    {isPostListShown && (
                       <PostsList />
-                    ) : null}
+                    )}
                   </>
                 )}
 

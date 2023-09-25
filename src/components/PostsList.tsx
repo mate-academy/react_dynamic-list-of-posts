@@ -1,20 +1,9 @@
 import { useContext } from 'react';
-import classnames from 'classnames';
 import { PostsContext } from '../context/PostsContext';
-import { Post } from '../types/Post';
+import { CurrentPost } from './CurrentPost';
 
 export const PostsList: React.FC = () => {
-  const { posts, post, setPost } = useContext(PostsContext);
-
-  const handleSelectPost = (currentPost: Post | null) => {
-    if (post?.id !== currentPost?.id) {
-      setPost(currentPost);
-
-      return;
-    }
-
-    setPost(null);
-  };
+  const { posts } = useContext(PostsContext);
 
   return (
     <div data-cy="PostsList">
@@ -30,34 +19,12 @@ export const PostsList: React.FC = () => {
         </thead>
 
         <tbody>
-          {posts.map(currentPost => {
-            const { id, title } = currentPost;
-
-            return (
-              <tr data-cy="Post" key={id}>
-                <td data-cy="PostId">{id}</td>
-
-                <td data-cy="PostTitle">
-                  {title}
-                </td>
-
-                <td className="has-text-right is-vcentered">
-                  <button
-                    type="button"
-                    data-cy="PostButton"
-                    className={classnames('button is-link', {
-                      'is-light': post?.id !== id,
-                    })}
-                    onClick={() => handleSelectPost(currentPost)}
-                  >
-                    {(post?.id === id)
-                      ? 'Close'
-                      : 'Open'}
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
+          {posts.map(currentPost => (
+            <CurrentPost
+              currentPost={currentPost}
+              key={currentPost.id}
+            />
+          ))}
         </tbody>
       </table>
     </div>

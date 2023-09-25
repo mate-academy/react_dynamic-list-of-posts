@@ -21,9 +21,13 @@ export const NewCommentForm: React.FC = () => {
   const handleChangeForm = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    event.preventDefault();
+    const { name, value } = event.target;
 
-    setFormData(prev => ({ ...prev, [event.target.name]: event.target.value }));
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleReset = () => {
+    setFormData(defaultFormData);
   };
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -53,10 +57,7 @@ export const NewCommentForm: React.FC = () => {
     }
 
     setHasErrorForm(false);
-  };
-
-  const handleReset = () => {
-    setFormData(defaultFormData);
+    handleReset();
   };
 
   const hasEmailError = !formData.email.trim() && hasErrorForm;
@@ -177,7 +178,6 @@ export const NewCommentForm: React.FC = () => {
             Add
           </button>
         </div>
-        {/* is-loading */}
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}

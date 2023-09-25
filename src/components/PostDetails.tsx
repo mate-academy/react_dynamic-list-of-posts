@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { PostsContext } from '../context/PostsContext';
-import { deleteCommentById, getCommentsById } from '../api/comments';
+import { getCommentsById } from '../api/comments';
 import { NewCommentForm } from './NewCommentForm';
 import { CommentsContext } from '../context/CommentsContext';
+import { CurrentComment } from './CurrentComment';
 
 export const PostDetails: React.FC = () => {
   const { post } = useContext(PostsContext);
@@ -12,15 +13,6 @@ export const PostDetails: React.FC = () => {
   const [hasCommentsError, setHasCommentsError] = useState(false);
   const [isLoasding, setIsLoading] = useState(false);
   const [isWriteCommentExist, setIsWriteCommentExist] = useState(false);
-
-  const handleDeleteComment = (commentId: number) => {
-    deleteCommentById(commentId)
-      .then(() => {
-        setComments(prevComments => {
-          return prevComments.filter(({ id }) => id !== commentId);
-        });
-      });
-  };
 
   useEffect(() => {
     if (post) {
@@ -63,34 +55,12 @@ export const PostDetails: React.FC = () => {
           )}
 
           {comments.length > 0 && <p className="title is-4">Comments:</p>}
-          {comments.map(currentComment => {
-            const {
-              id, email, name, body,
-            } = currentComment;
-
-            return (
-              <article className="message is-small" data-cy="Comment" key={id}>
-                <div className="message-header">
-                  <a href={`mailto:${email}`} data-cy="CommentAuthor">
-                    {name}
-                  </a>
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                    onClick={() => handleDeleteComment(id)}
-                  >
-                    delete button
-                  </button>
-                </div>
-
-                <div className="message-body" data-cy="CommentBody">
-                  {body}
-                </div>
-              </article>
-            );
-          })}
+          {comments.map(currentComment => (
+            <CurrentComment
+              currentComment={currentComment}
+              key={currentComment.id}
+            />
+          ))}
 
           {!isWriteCommentExist && (
             <button
