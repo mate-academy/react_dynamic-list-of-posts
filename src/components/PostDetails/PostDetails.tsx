@@ -29,7 +29,12 @@ export const PostDetails: React.FC<Props> = ({
 
   const handleDeleteComment = (commentId: number) => {
     setComments(prev => prev.filter(({ id }) => id !== commentId));
-    onDeleteComment(commentId);
+    try {
+      onDeleteComment(commentId);
+    } catch {
+      // eslint-disable-next-line no-console
+      console.info('Something went wrong when trying to delete a comment');
+    }
   };
 
   return (

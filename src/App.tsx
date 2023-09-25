@@ -24,7 +24,6 @@ export const App: React.FC = () => {
 
   const changeSelectedUser = (newUser: User) => {
     setSelectedPost(null);
-    setSelectedUser(null);
     setSelectedUser(newUser);
   };
 
@@ -72,7 +71,7 @@ export const App: React.FC = () => {
                   <PostsList
                     selectedPost={selectedPost}
                     selectedUser={selectedUser}
-                    onSelectPost={(post) => setSelectedPost(post)}
+                    onSelectPost={setSelectedPost}
                     onAddComment={setIsNewCommentActive}
                     onError={setIsPostsLoadingError}
                   />

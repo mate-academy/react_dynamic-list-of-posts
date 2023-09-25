@@ -40,11 +40,11 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
       } catch {
         // eslint-disable-next-line no-console
         console.info('Something went wrong.');
+      } finally {
+        setCommentForm(prev => ({ ...prev, commentText: '' }));
+        setIsSubmitted(false);
+        setIsLoading(false);
       }
-
-      setCommentForm(prev => ({ ...prev, commentText: '' }));
-      setIsSubmitted(false);
-      setIsLoading(false);
     }
   };
 
