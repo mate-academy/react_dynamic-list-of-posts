@@ -1,30 +1,22 @@
-/* eslint-disable */
 import React, {
-  // useCallback,
-  useContext, useState } from 'react';
+  useContext,
+  useState,
+} from 'react';
 import classNames from 'classnames';
-// import { Comment } from '../types/Comment';
 import { StateContext } from './AppContext';
 import { addComment, getComments } from '../utils/loadutil';
 import { ACTIONS } from '../utils/enums';
 
 export const NewCommentForm: React.FC = () => {
-  // const [isLoading, setIsLoading] = useState(false);
-
-  const [_addButtonState, _setAddButtonState] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
   const { state, dispatch } = useContext(StateContext);
-  // const commentId = Math.max(...state.comments.map(comment => comment.id));
-  const [newComment, setNewComment] = useState({
-    // id: commentId,
+  const initialComment = {
     name: '',
     body: '',
     email: '',
     postId: state.selectedPost.id,
-  })
+  };
+
+  const [newComment, setNewComment] = useState(initialComment);
 
   const [isNameError, setIsNameError] = useState(false);
   const [isEmailError, setIsEmailError] = useState(false);
@@ -35,7 +27,7 @@ export const NewCommentForm: React.FC = () => {
     setNewComment({
       ...newComment,
       name: e.currentTarget.value,
-    })
+    });
     setIsNameError(false);
   }
 
@@ -54,48 +46,54 @@ export const NewCommentForm: React.FC = () => {
       ...newComment,
       body: e.currentTarget.value,
     });
-    setIsCommentTextError(false)
+    setIsCommentTextError(false);
+  }
+
+  function handleClear() {
+    setNewComment(initialComment);
   }
 
   function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
-    // setIsLoading(true);
     if (newComment.body.length === 0) {
       setIsCommentTextError(true);
     }
+
     if (newComment.name.length === 0) {
       setIsNameError(true);
     }
+
     if (newComment.email.length === 0) {
       setIsEmailError(true);
     }
+    /* eslint-disable */
+    // disabling next eslint rules : unnecessary return statement no-useless-return Unnecessary 'else' after 'return'. I need these return & else.
     if ((newComment.body.length === 0)
       || (newComment.name.length === 0)
       || (newComment.email.length === 0)
     ) {
       return;
     } else {
-      // console.log(newComment, 'uuii');
-
+      dispatch({ type: ACTIONS.IS_LOADING, payload: true });
       addComment(newComment)
-       .then((res) => {
-        console.log(res, '1 res');
-        getComments(state.selectedPost.id)
-        .then(res => {
-          dispatch({ type: ACTIONS.SET_COMMENTS, payload: res })
-          console.log(res, 'res')
+        .then((res) => {
+          if ('error' in res) {
+            dispatch({ type: ACTIONS.SET_ERROR, payload: 'error' });
+          }
+          /* eslint-enable */
+
+          getComments(state.selectedPost.id)
+            .then(resp => {
+              dispatch({ type: ACTIONS.SET_COMMENTS, payload: resp });
+            });
         })
-       })
-       setNewComment({
+        .finally(() => dispatch({ type: ACTIONS.IS_LOADING, payload: false }));
+      setNewComment({
         ...newComment,
-        body:'',
-       })
-      //  setIsLoading(false);
+        body: '',
+      });
     }
   }
-
-  // console.log(isLoading);
-
 
   return (
     <form
@@ -209,8 +207,6 @@ export const NewCommentForm: React.FC = () => {
           <button
             type="submit"
             className="button is-link "
-          // onClick={}
-            // disabled={isLoading}
           >
             Add
           </button>
@@ -218,7 +214,11 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={handleClear}
+          >
             Clear
           </button>
         </div>

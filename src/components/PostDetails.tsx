@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, {
   useContext,
   useEffect,
@@ -10,10 +9,11 @@ import { StateContext } from './AppContext';
 import { ACTIONS } from '../utils/enums';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment } from '../types/Comment';
+import { Loader } from './Loader';
 
 type Props = {
   post: Post,
-}
+};
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const { state, dispatch } = useContext(StateContext);
@@ -21,15 +21,23 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   function handleShowCommentForm() {
     setShowNewCommentForm(!showNewCommentForm);
-    dispatch({ type: ACTIONS.SHOWFORM, payload: true })
+    dispatch({ type: ACTIONS.SHOWFORM, payload: true });
   }
+
   useEffect(() => {
     if (state.selectedPost.id) {
+      dispatch({ type: ACTIONS.IS_LOADING, payload: true });
       getComments(state.selectedPost.id)
         .then(res => {
-          dispatch({ type: ACTIONS.SET_COMMENTS, payload: res })
-          console.log(res, 'res')
+          if ('error' in res) {
+            dispatch({ type: ACTIONS.SET_ERROR, payload: 'error' });
+          }
+
+          dispatch({ type: ACTIONS.SET_COMMENTS, payload: res });
+          dispatch({ type: ACTIONS.IS_LOADING, payload: true });
         })
+        .catch(() => dispatch({ type: ACTIONS.SET_ERROR, payload: 'error' }))
+        .finally(() => dispatch({ type: ACTIONS.IS_LOADING, payload: false }));
     }
   }, [post.id, state.selectedPost.id]);
 
@@ -37,12 +45,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     dispatch({ type: ACTIONS.DELETE_COMMENT, payload: comment });
     deleteComment(comment.id);
   }
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {`#${post.id}: `}{post.title}
+            {`#${post.id}: `}
+            {post.title}
           </h2>
 
           <p data-cy="PostBody">
@@ -51,23 +61,26 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         </div>
 
         <div className="block">
-          {/* <Loader /> */}
+          {state.isLoading && (
+            <Loader />
+          )}
 
-          {/* <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p> */}
-
+          {state.error === 'error' && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
+            </div>
+          )}
 
           <p className="title is-4">Comments:</p>
           {state.comments.map(comment => {
             return (
-              <article className="message is-small" data-cy="Comment" key={comment.id}>
+              <article
+                className="message is-small"
+                data-cy="Comment"
+                key={comment.id}
+              >
                 <div className="message-header">
-                  <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
+                  <a href={comment.email} data-cy="CommentAuthor">
                     {comment.name}
                   </a>
                   <button
@@ -85,60 +98,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   {comment.body}
                 </div>
               </article>
-            )
-          }
-
-          )}
-
-          {/* <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
-            >
-              One more comment
-            </div>
-          </article> */}
-
-          {/* <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article> */}
+            );
+          })}
 
           {!state.showForm ? (
             <button
@@ -152,14 +113,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           ) : (
             <NewCommentForm />
           )}
-
-
         </div>
-
 
       </div>
     </div>
   );
 };
-
-

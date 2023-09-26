@@ -1,12 +1,9 @@
-/* eslint-disable */
-// eslint-disable
-import { Dispatch, useReducer } from "react"
-import { Post } from "../types/Post"
-import { ACTIONS } from "../utils/enums"
-import React from "react"
-import { User } from "../types/User"
-import { Comment } from "../types/Comment"
-import { cloneDeep } from "lodash";
+import React, { Dispatch, useReducer } from 'react';
+import { cloneDeep } from 'lodash';
+import { Post } from '../types/Post';
+import { ACTIONS } from '../utils/enums';
+import { User } from '../types/User';
+import { Comment } from '../types/Comment';
 
 type Action = { type: ACTIONS.SET_SELECTED_POST, payload: Post }
 | { type: ACTIONS.SET_SELECTED_USER, payload: User }
@@ -14,7 +11,7 @@ type Action = { type: ACTIONS.SET_SELECTED_POST, payload: Post }
 | { type: ACTIONS.IS_LOADING, payload: boolean }
 | { type: ACTIONS.SHOWFORM, payload: boolean }
 | { type: ACTIONS.DELETE_COMMENT, payload: Comment }
-| { type: ACTIONS.SET_ERROR, payload: string }
+| { type: ACTIONS.SET_ERROR, payload: string };
 
 interface Data {
   selectedPost: Post,
@@ -40,37 +37,37 @@ function reducer(state: Data, action: Action): Data {
       return {
         ...state,
         selectedPost: action.payload,
-      }
+      };
     case ACTIONS.SET_SELECTED_USER:
       return {
         ...state,
         selectedUser: action.payload,
-      }
+      };
     case ACTIONS.SET_COMMENTS:
       return {
         ...state,
         comments: action.payload,
-      }
+      };
     case ACTIONS.SET_ERROR:
       return {
         ...state,
         error: action.payload,
-      }
+      };
     case ACTIONS.IS_LOADING:
       return {
         ...state,
         isLoading: action.payload,
-      }
+      };
     case ACTIONS.SHOWFORM:
       return {
         ...state,
         showForm: action.payload,
-      }
+      };
     case ACTIONS.DELETE_COMMENT:
       return {
         ...state,
         comments: [...remove(state, action.payload)],
-      }
+      };
     default:
       return state;
   }
@@ -79,7 +76,7 @@ function reducer(state: Data, action: Action): Data {
 type State = {
   state: Data,
   dispatch: Dispatch<Action>,
-}
+};
 
 const initialState: State = {
   state: {
@@ -100,7 +97,6 @@ type Props = {
 };
 
 export const AppContextProvider: React.FC<Props> = ({ children }) => {
-
   const [state, dispatch] = useReducer(reducer, initialState.state);
 
   return (
@@ -109,8 +105,9 @@ export const AppContextProvider: React.FC<Props> = ({ children }) => {
         ...state,
       },
       dispatch,
-    }}>
+    }}
+    >
       {children}
     </StateContext.Provider>
-  )
-}
+  );
+};
