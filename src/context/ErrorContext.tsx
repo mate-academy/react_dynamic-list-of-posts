@@ -1,9 +1,13 @@
-import { createContext, useState, useMemo } from 'react';
+import {
+  createContext, useState, useMemo, useContext,
+} from 'react';
 
-export const ErrorContext = createContext<{
+interface ErrorContextType {
   isErrorHappen: boolean;
   setIsErrorHappen: React.Dispatch<React.SetStateAction<boolean>>;
-}>({
+}
+
+export const ErrorContext = createContext<ErrorContextType>({
   isErrorHappen: false,
   setIsErrorHappen: () => {},
 });
@@ -21,4 +25,8 @@ export const ErrorProvider = ({ children }: { children: React.ReactNode }) => {
       {children}
     </ErrorContext.Provider>
   );
+};
+
+export const useError = (): ErrorContextType => {
+  return useContext(ErrorContext);
 };

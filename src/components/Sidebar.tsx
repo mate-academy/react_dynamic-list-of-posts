@@ -1,10 +1,9 @@
-import { useContext } from 'react';
 import classNames from 'classnames';
 import { PostDetails } from './PostDetails';
-import { PostsContext } from '../context/PostsContext';
+import { usePosts } from '../context/PostsContext';
 
 export const Sidebar = () => {
-  const { post } = useContext(PostsContext);
+  const { post } = usePosts();
 
   return (
     <div

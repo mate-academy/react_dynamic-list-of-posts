@@ -1,14 +1,14 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Loader } from './Loader';
-import { PostsContext } from '../context/PostsContext';
+import { usePosts } from '../context/PostsContext';
 import { getCommentsById } from '../api/comments';
 import { NewCommentForm } from './NewCommentForm';
-import { CommentsContext } from '../context/CommentsContext';
+import { useComments } from '../context/CommentsContext';
 import { CurrentComment } from './CurrentComment';
 
 export const PostDetails: React.FC = () => {
-  const { post } = useContext(PostsContext);
-  const { comments, setComments } = useContext(CommentsContext);
+  const { post } = usePosts();
+  const { comments, setComments } = useComments();
 
   const [hasCommentsError, setHasCommentsError] = useState(false);
   const [isLoasding, setIsLoading] = useState(false);

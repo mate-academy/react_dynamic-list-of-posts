@@ -1,8 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import classnames from 'classnames';
 import { createComment } from '../api/comments';
-import { PostsContext } from '../context/PostsContext';
-import { CommentsContext } from '../context/CommentsContext';
+import { usePosts } from '../context/PostsContext';
+import { useComments } from '../context/CommentsContext';
 import { Comment } from '../types/Comment';
 
 const defaultFormData = {
@@ -12,8 +12,8 @@ const defaultFormData = {
 };
 
 export const NewCommentForm: React.FC = () => {
-  const { post } = useContext(PostsContext);
-  const { setComments } = useContext(CommentsContext);
+  const { post } = usePosts();
+  const { setComments } = useComments();
 
   const [formData, setFormData] = useState(defaultFormData);
   const [hasErrorForm, setHasErrorForm] = useState(false);

@@ -1,10 +1,14 @@
-import { createContext, useState, useMemo } from 'react';
+import {
+  createContext, useState, useMemo, useContext,
+} from 'react';
 import { Comment } from '../types/Comment';
 
-export const CommentsContext = createContext<{
+interface CommentsContextType {
   comments: Comment[];
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
-}>({
+}
+
+export const CommentsContext = createContext<CommentsContextType>({
   comments: [],
   setComments: () => {},
 });
@@ -24,4 +28,8 @@ export const CommentsProvider = ({ children }: {
       {children}
     </CommentsContext.Provider>
   );
+};
+
+export const useComments = (): CommentsContextType => {
+  return useContext(CommentsContext);
 };

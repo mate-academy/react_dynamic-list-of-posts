@@ -1,14 +1,14 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import classnames from 'classnames';
-import { UsersContext } from '../context/UsersContext';
+import { useUsers } from '../context/UsersContext';
 import { getUsers } from '../api/users';
-import { ErrorContext } from '../context/ErrorContext';
+import { useError } from '../context/ErrorContext';
 
 export const UserSelector: React.FC = () => {
   const {
     users, setUsers, user, setUser,
-  } = useContext(UsersContext);
-  const { setIsErrorHappen } = useContext(ErrorContext);
+  } = useUsers();
+  const { setIsErrorHappen } = useError();
 
   const [isUsersOpen, setIsUsersOpen] = useState(false);
 

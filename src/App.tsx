@@ -1,21 +1,21 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
-import { UsersContext } from './context/UsersContext';
+import { useUsers } from './context/UsersContext';
 import { getPostsById } from './api/posts';
-import { PostsContext } from './context/PostsContext';
+import { usePosts } from './context/PostsContext';
 import { Loader } from './components/Loader';
-import { ErrorContext } from './context/ErrorContext';
+import { useError } from './context/ErrorContext';
 import { Sidebar } from './components/Sidebar';
 
 export const App: React.FC = () => {
-  const { user } = useContext(UsersContext);
-  const { posts, setPosts } = useContext(PostsContext);
-  const { isErrorHappen, setIsErrorHappen } = useContext(ErrorContext);
+  const { user } = useUsers();
+  const { posts, setPosts } = usePosts();
+  const { isErrorHappen, setIsErrorHappen } = useError();
 
   const [isLoading, setIsLoading] = useState(false);
 

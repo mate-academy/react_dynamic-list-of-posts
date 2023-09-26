@@ -1,6 +1,5 @@
-import { useContext } from 'react';
 import classnames from 'classnames';
-import { PostsContext } from '../context/PostsContext';
+import { usePosts } from '../context/PostsContext';
 import { Post } from '../types/Post';
 
 type Props = {
@@ -8,7 +7,7 @@ type Props = {
 };
 
 export const CurrentPost: React.FC<Props> = ({ currentPost }) => {
-  const { post, setPost } = useContext(PostsContext);
+  const { post, setPost } = usePosts();
   const { id, title } = currentPost;
 
   const handleSelectPost = (selectedPost: Post | null) => {

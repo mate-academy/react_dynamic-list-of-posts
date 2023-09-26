@@ -1,7 +1,6 @@
-import { useContext } from 'react';
 import { Comment } from '../types/Comment';
 import { deleteCommentById } from '../api/comments';
-import { CommentsContext } from '../context/CommentsContext';
+import { useComments } from '../context/CommentsContext';
 
 type Props = {
   currentComment: Comment;
@@ -12,7 +11,7 @@ export const CurrentComment: React.FC<Props> = ({ currentComment }) => {
     email, name, id, body,
   } = currentComment;
 
-  const { setComments } = useContext(CommentsContext);
+  const { setComments } = useComments();
 
   const handleDeleteComment = (commentId: number) => {
     deleteCommentById(commentId)
