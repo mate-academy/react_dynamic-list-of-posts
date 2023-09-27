@@ -16,11 +16,11 @@ export const PostsList: React.FC<Props> = ({ usersPosts }) => {
 
   function openPost(post: Post) {
     setClose(!close);
-    dispatch({ type: ACTIONS.SET_SELECTED_POST, payload: post });
-    dispatch({ type: ACTIONS.SHOWFORM, payload: false });
-
-    if (close) {
+    if ((post.id === state.selectedPost.id)) {
       dispatch({ type: ACTIONS.SET_SELECTED_POST, payload: {} as Post });
+    } else {
+      dispatch({ type: ACTIONS.SET_SELECTED_POST, payload: post });
+      dispatch({ type: ACTIONS.SHOWFORM, payload: false });
     }
   }
 

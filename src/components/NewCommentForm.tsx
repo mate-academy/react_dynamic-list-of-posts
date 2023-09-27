@@ -17,18 +17,19 @@ export const NewCommentForm: React.FC = () => {
   };
 
   const [newComment, setNewComment] = useState(initialComment);
-
   const [isNameError, setIsNameError] = useState(false);
   const [isEmailError, setIsEmailError] = useState(false);
   const [isCommentTextError, setIsCommentTextError] = useState(false);
 
   function hanldeInputName(e: React.ChangeEvent<HTMLInputElement>) {
     e.preventDefault();
-    setNewComment({
-      ...newComment,
-      name: e.currentTarget.value,
-    });
-    setIsNameError(false);
+    if (!e.target.value.split('').every(element => element === ' ')) {
+      setNewComment({
+        ...newComment,
+        name: e.currentTarget.value,
+      });
+      setIsNameError(false);
+    }
   }
 
   function hanldeInputEmail(e: React.ChangeEvent<HTMLInputElement>) {
@@ -66,33 +67,31 @@ export const NewCommentForm: React.FC = () => {
     if (newComment.email.length === 0) {
       setIsEmailError(true);
     }
-    /* eslint-disable */
-    // disabling next eslint rules : unnecessary return statement no-useless-return Unnecessary 'else' after 'return'. I need these return & else.
+
     if ((newComment.body.length === 0)
       || (newComment.name.length === 0)
       || (newComment.email.length === 0)
     ) {
       return;
-    } else {
-      dispatch({ type: ACTIONS.IS_LOADING, payload: true });
-      addComment(newComment)
-        .then((res) => {
-          if ('error' in res) {
-            dispatch({ type: ACTIONS.SET_ERROR, payload: 'error' });
-          }
-          /* eslint-enable */
-
-          getComments(state.selectedPost.id)
-            .then(resp => {
-              dispatch({ type: ACTIONS.SET_COMMENTS, payload: resp });
-            });
-        })
-        .finally(() => dispatch({ type: ACTIONS.IS_LOADING, payload: false }));
-      setNewComment({
-        ...newComment,
-        body: '',
-      });
     }
+
+    dispatch({ type: ACTIONS.IS_LOADING, payload: true });
+    addComment(newComment)
+      .then((res) => {
+        if ('error' in res) {
+          dispatch({ type: ACTIONS.SET_ERROR, payload: 'error' });
+        }
+
+        getComments(state.selectedPost.id)
+          .then(resp => {
+            dispatch({ type: ACTIONS.SET_COMMENTS, payload: resp });
+          });
+      })
+      .finally(() => dispatch({ type: ACTIONS.IS_LOADING, payload: false }));
+    setNewComment({
+      ...newComment,
+      body: '',
+    });
   }
 
   return (

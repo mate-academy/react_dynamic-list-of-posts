@@ -11,21 +11,32 @@ import { Post } from './types/Post';
 import { StateContext } from './components/AppContext';
 import { PostDetails } from './components/PostDetails';
 import { Loader } from './components/Loader';
+import { ACTIONS } from './utils/enums';
 
 export const App: React.FC = () => {
   const [users, setAllUsers] = useState([] as User[]);
   const [postsByUser, setPostByUser] = useState([] as Post[]);
-  const { state } = useContext(StateContext);
+  const { state, dispatch } = useContext(StateContext);
 
   const getPosts = (posts: Post[]) => {
     setPostByUser(posts);
   };
 
+  function checkPosts() {
+    if (postsByUser.length === 0 && state.selectedUser.id
+      && !state.isLoading) {
+      return true;
+    }
+
+    return false;
+  }
+
   useEffect(() => {
     getAllUsers()
       .then(res => {
         setAllUsers(res);
-      });
+      })
+      .catch(() => dispatch({ type: ACTIONS.SET_ERROR, payload: 'error' }));
   }, []);
 
   return (
@@ -52,8 +63,7 @@ export const App: React.FC = () => {
                 {state.isLoading && (
                   <Loader />
                 )}
-                {(postsByUser.length === 0 && state.selectedUser.id
-                  && !state.isLoading) && (
+                {checkPosts() && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
