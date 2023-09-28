@@ -39,6 +39,10 @@ export const NewCommentForm: React.FC<Props> = ({
       ...prevData,
       [name]: value,
     }));
+    setFormError((prevError) => ({
+      ...prevError,
+      [name]: '',
+    }));
   };
 
   const createComment = ({
