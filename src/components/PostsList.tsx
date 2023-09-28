@@ -1,85 +1,73 @@
+import classNames from 'classnames';
 import React from 'react';
+import { usePosts } from '../PostsContext';
+import { Post } from '../types/Post';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+export const PostsList: React.FC = () => {
+  const {
+    posts,
+    selectedPost,
+    setSelectedPost,
+    getPostDetails,
+    setOpenForm,
+  } = usePosts();
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+  const handlePostSelect = (chosenPost: Post) => {
+    if (selectedPost === chosenPost) {
+      setSelectedPost(null);
+    } else {
+      setSelectedPost(chosenPost);
+      getPostDetails(chosenPost.id);
+      setOpenForm(false);
+    }
+  };
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+  return (
+    ((posts.length === 0) ? (
+      <div className="notification is-warning" data-cy="NoPostsYet">
+        No posts yet
+      </div>
+    ) : (
+      <div data-cy="PostsList">
+        <p className="title">Posts:</p>
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+        <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+          <thead>
+            <tr className="has-background-link-light">
+              <th>#</th>
+              <th>Title</th>
+              <th> </th>
+            </tr>
+          </thead>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+          <tbody>
+            {posts.map((post: Post) => (
+              <tr data-cy="Post">
+                <td data-cy="PostId">
+                  {post.id}
+                </td>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+                <td data-cy="PostTitle">
+                  {post.title}
+                </td>
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+                <td className="has-text-right is-vcentered">
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={classNames('button is-link', {
+                      'is-light': selectedPost !== post,
+                    })}
+                    onClick={() => handlePostSelect(post)}
+                  >
+                    {selectedPost !== post ? 'Open' : 'Close'}
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+    ));
+};
