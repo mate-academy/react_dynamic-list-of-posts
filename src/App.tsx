@@ -22,23 +22,23 @@ export const App: React.FC = () => {
   const [isDropdownActive, setIsDropdownActive] = useState(false);
   const [isCommentButtonClicked, setIsCommentButtonClicked] = useState(false);
 
+  const displayNoPostsMessage = !posts.length
+  && selectedUser
+  && !errorMessage
+  && !isLoading;
+
   const getAllUsers = () => {
-    return client.get<User[]>('/users')
-      .catch(() => setErrorMessage('Something went wrong!'));
+    return client.get<User[]>('/users');
   };
 
   useEffect(() => {
     getAllUsers()
-      .then(usersFromServer => {
-        if (usersFromServer) {
-          setUsers(usersFromServer);
-        }
-      });
+      .then(setUsers)
+      .catch(() => setErrorMessage('Error loading users'));
   }, []);
 
   const getUserPosts = () => {
-    return client.get<Post[]>(`/posts?userId=${selectedUser?.id}`)
-      .catch(() => setErrorMessage('Something went wrong!'));
+    return client.get<Post[]>(`/posts?userId=${selectedUser?.id}`);
   };
 
   useEffect(() => {
@@ -50,9 +50,19 @@ export const App: React.FC = () => {
             setPosts(postsFromServer);
           }
         })
+        .catch(() => setErrorMessage('Error loading posts'))
         .finally(() => setIsLoading(false));
     }
   }, [selectedUser]);
+
+  const selectedPostHandler = (post: Post) => {
+    if (post !== selectedPost) {
+      setSelectedPost(post);
+      setIsCommentButtonClicked(false);
+    } else {
+      setSelectedPost(null);
+    }
+  };
 
   return (
     <main className="section">
@@ -91,12 +101,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(!posts.length
-                  && selectedUser
-                  && !errorMessage
-                  && !isLoading
-                  && !isDropdownActive
-                ) && (
+                {displayNoPostsMessage && (
                   <div
                     className="notification is-warning"
                     data-cy="NoPostsYet"
@@ -112,8 +117,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}
-                    setSelectedPost={setSelectedPost}
-                    setIsCommentButtonClicked={setIsCommentButtonClicked}
+                    setSelectedPostHandler={selectedPostHandler}
                   />
                 )}
 

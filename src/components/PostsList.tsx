@@ -4,25 +4,14 @@ import { Post } from '../types/Post';
 type Props = {
   posts: Post[],
   selectedPost: Post | null,
-  setSelectedPost: (value: Post | null) => void,
-  setIsCommentButtonClicked: (value: boolean) => void,
+  setSelectedPostHandler: (value: Post) => void,
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
   selectedPost,
-  setSelectedPost,
-  setIsCommentButtonClicked,
+  setSelectedPostHandler,
 }) => {
-  const selectedPostHandler = (post: Post) => {
-    if (post !== selectedPost) {
-      setSelectedPost(post);
-      setIsCommentButtonClicked(false);
-    } else {
-      setSelectedPost(null);
-    }
-  };
-
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -53,7 +42,7 @@ export const PostsList: React.FC<Props> = ({
                     className={classNames('button is-link', {
                       'is-light': selectedPost !== post,
                     })}
-                    onClick={() => selectedPostHandler(post)}
+                    onClick={() => setSelectedPostHandler(post)}
                   >
                     {selectedPost !== post ? 'Open' : 'Close'}
                   </button>

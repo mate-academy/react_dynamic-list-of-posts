@@ -46,7 +46,7 @@ export const PostDetails: React.FC<Props> = ({
     return client.delete(`/comments/${id}`);
   };
 
-  const handleDeletingComment = (id: number) => {
+  const handleDeleteComment = (id: number) => {
     setPostComments(prev => prev.filter(currentComment => (
       currentComment.id !== id
     )));
@@ -111,7 +111,7 @@ export const PostDetails: React.FC<Props> = ({
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
-                      onClick={() => handleDeletingComment(comment.id)}
+                      onClick={() => handleDeleteComment(comment.id)}
                     >
                       delete button
                     </button>

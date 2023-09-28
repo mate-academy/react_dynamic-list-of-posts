@@ -21,18 +21,16 @@ export const UserSelector: React.FC<Props> = ({
   setSelectedPost,
 }) => {
   const dropdownHandler = () => setIsDropdownActive(!isDropdownActive);
-
   const dropdown = useRef<HTMLDivElement>(null);
+  const closeDropdown = (e: MouseEvent) => {
+    if (dropdown.current
+      && isDropdownActive
+      && !dropdown.current.contains(e.target as Node)) {
+      setIsDropdownActive(false);
+    }
+  };
 
   useEffect(() => {
-    const closeDropdown = (e: MouseEvent) => {
-      if (dropdown.current
-        && isDropdownActive
-        && !dropdown.current.contains(e.target as Node)) {
-        setIsDropdownActive(false);
-      }
-    };
-
     document.addEventListener('click', closeDropdown);
 
     return () => {

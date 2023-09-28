@@ -16,32 +16,29 @@ export const NewCommentForm: React.FC<Props> = ({
   setCommentErrorMessage,
 }) => {
   const [isFormLoading, setIsFormLoading] = useState(false);
-  const [commentName, setCommentName] = useState('');
-  const [commentEmail, setCommentEmail] = useState('');
-  const [commentText, setCommentText] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    text: '',
+  });
   const [formError, setFormError] = useState({
     name: '',
     email: '',
     text: '',
   });
 
-  const isEmptyField = !!commentName.length
-    || !commentEmail.length
-    || !commentText.length;
+  const isEmptyField = !formData.name.trim()
+    || !formData.email.trim()
+    || !formData.text.trim();
 
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCommentName(event.target.value);
-    setFormError({ ...formError, name: '' });
-  };
+  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement
+  | HTMLInputElement>) => {
+    const { name, value } = event.target;
 
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCommentEmail(event.target.value);
-    setFormError({ ...formError, email: '' });
-  };
-
-  const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCommentText(event.target.value);
-    setFormError({ ...formError, text: '' });
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   const createComment = ({
@@ -58,35 +55,50 @@ export const NewCommentForm: React.FC<Props> = ({
   const addComment = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!commentName) {
-      setFormError(rest => ({ ...rest, name: 'Name is required' }));
+    if (!formData.name.trim()) {
+      setFormError((prevErrors) => ({
+        ...prevErrors,
+        name: 'Name is required',
+      }));
     }
 
-    if (!commentEmail) {
-      setFormError(rest => ({ ...rest, name: 'Email is required' }));
+    if (!formData.email.trim()) {
+      setFormError((prevErrors) => ({
+        ...prevErrors,
+        email: 'Email is required',
+      }));
     }
 
-    if (!commentText) {
-      setFormError(rest => ({ ...rest, name: 'Enter some text' }));
+    if (!formData.text.trim()) {
+      setFormError((prevErrors) => ({
+        ...prevErrors,
+        text: 'Enter some text',
+      }));
     }
 
     if (selectedPost?.id && !isEmptyField) {
       setIsFormLoading(true);
 
       createComment({
-        postId: selectedPost?.id,
-        name: commentName,
-        email: commentEmail,
-        body: commentText,
+        postId: selectedPost.id,
+        name: formData.name,
+        email: formData.email,
+        body: formData.text,
       })
-        .then(newComment => {
-          setPostsComments(currentComments => [...currentComments, newComment]);
+        .then((newComment) => {
+          setPostsComments((currentComments) => [
+            ...currentComments, newComment,
+          ]);
         })
         .catch(() => {
           setCommentErrorMessage('Can not load comments');
         })
         .finally(() => {
-          setCommentText('');
+          setFormData({
+            name: '',
+            email: '',
+            text: '',
+          });
           setIsFormLoading(false);
         });
     }
@@ -99,9 +111,11 @@ export const NewCommentForm: React.FC<Props> = ({
       text: '',
     });
 
-    setCommentName('');
-    setCommentEmail('');
-    setCommentText('');
+    setFormData({
+      name: '',
+      email: '',
+      text: '',
+    });
   };
 
   return (
@@ -123,8 +137,8 @@ export const NewCommentForm: React.FC<Props> = ({
             className={classNames('input', {
               'is-danger': formError.name,
             })}
-            value={commentName}
-            onChange={handleNameChange}
+            value={formData.name}
+            onChange={handleInputChange}
           />
 
           <span className="icon is-small is-left">
@@ -162,8 +176,8 @@ export const NewCommentForm: React.FC<Props> = ({
             className={classNames('input', {
               'is-danger': formError.email,
             })}
-            value={commentEmail}
-            onChange={handleEmailChange}
+            value={formData.email}
+            onChange={handleInputChange}
           />
 
           <span className="icon is-small is-left">
@@ -199,10 +213,11 @@ export const NewCommentForm: React.FC<Props> = ({
             className={classNames('textarea', {
               'is-danger': formError.text,
             })}
-            value={commentText}
-            onChange={handleTextChange}
+            value={formData.text}
+            onChange={handleInputChange}
           />
         </div>
+
         {formError.text && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
