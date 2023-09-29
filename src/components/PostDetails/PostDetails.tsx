@@ -1,14 +1,15 @@
 import React from 'react';
-import { usePosts } from '../PostsContext';
-import { CommentItem } from './CommentItem/CommentItem';
-import { Loader } from './Loader';
-import { NewCommentForm } from './NewCommentForm';
+import { usePosts } from '../../PostsContext';
+import { Errors } from '../../types/Errors';
+import { CommentItem } from '../CommentItem/CommentItem';
+import { Loader } from '../Loader';
+import { NewCommentForm } from '../NewCommentForm/NewCommentForm';
 
 export const PostDetails: React.FC = () => {
   const {
     selectedPost,
-    isLoading,
-    hasError,
+    loadingComments,
+    errorMessage,
     comments,
     openForm,
     setOpenForm,
@@ -19,7 +20,7 @@ export const PostDetails: React.FC = () => {
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {selectedPost?.title}
+            {`#${selectedPost?.id}: ${selectedPost?.title}`}
           </h2>
 
           <p data-cy="PostBody">
@@ -28,23 +29,31 @@ export const PostDetails: React.FC = () => {
         </div>
 
         <div className="block">
-          {isLoading && (<Loader />)}
+          {loadingComments && (<Loader />)}
 
-          {hasError && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
+          {errorMessage === Errors.loadingComments && (
+            <div
+              className="notification is-danger"
+              data-cy="CommentsError"
+            >
+              {Errors.loadingComments}
             </div>
           )}
 
-          {!comments.length && !isLoading && !hasError && (
-            <p className="title is-4" data-cy="NoCommentsMessage">
+          {!comments.length && !loadingComments && !errorMessage && (
+            <p
+              className="title is-4"
+              data-cy="NoCommentsMessage"
+            >
               No comments yet
             </p>
           )}
 
-          {comments.length && !isLoading && !hasError && (
+          {comments.length > 0 && !loadingComments && !errorMessage && (
             <>
-              <p className="title is-4">Comments:</p>
+              <p className="title is-4">
+                Comments:
+              </p>
               {comments.map(comment => (
                 <CommentItem key={comment.id} comment={comment} />
               ))}

@@ -1,9 +1,15 @@
 import React, {
   useContext,
-  useEffect,
   useState,
 } from 'react';
-import { getComments, getPosts, getUsers } from './api/posts';
+
+import {
+  getComments,
+  getPosts,
+} from './api/posts';
+
+import { Comment } from './types/Comment';
+import { Errors } from './types/Errors';
 import { Post } from './types/Post';
 import { PostsContextType } from './types/PostsContextType';
 import { User } from './types/User';
@@ -14,17 +20,17 @@ type Props = {
 
 export const PostsContext = React.createContext<PostsContextType>({
   selectedUser: null,
-  setSelectedUser: () => { },
-  users: [],
-  hasError: false,
-  setHasError: () => {},
+  setSelectedUser: () => {},
+  errorMessage: '',
+  setErrorMessage: () => {},
   removeError: () => {},
   posts: [],
-  isLoading: false,
-  setIsLoading: () => {},
-  getAllUserPosts: () => { },
+  loadingPosts: false,
+  loadingComments: false,
+  setLoadingComments: () => {},
+  getAllUserPosts: () => {},
   selectedPost: null,
-  setSelectedPost: () => { },
+  setSelectedPost: () => {},
   getPostDetails: () => {},
   comments: [],
   setComments: () => {},
@@ -33,65 +39,56 @@ export const PostsContext = React.createContext<PostsContextType>({
 });
 
 export const PostsProvider: React.FC<Props> = ({ children }) => {
-  const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [hasError, setHasError] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [loadingComments, setLoadingComments] = useState<boolean>(false);
+  const [loadingPosts, setLoadingPosts] = useState<boolean>(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [openForm, setOpenForm] = useState<boolean>(false);
 
   const removeError = (time = 3000) => {
     setTimeout(() => {
-      setHasError(false);
+      setErrorMessage('');
     }, time);
   };
 
-  useEffect(() => {
-    getUsers()
-      .then(setUsers)
-      .catch(() => {
-        setHasError(true);
-        removeError();
-      });
-  }, []);
-
   const getAllUserPosts = (userId: number) => {
-    setIsLoading(true);
+    setLoadingPosts(true);
 
     getPosts(userId)
       .then(setPosts)
       .catch(() => {
-        setHasError(true);
+        setErrorMessage(Errors.loadingPosts);
         removeError();
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => setLoadingPosts(false));
   };
 
   const getPostDetails = (postId: number) => {
-    setIsLoading(true);
+    setLoadingComments(true);
 
     getComments(postId)
       .then(setComments)
       .catch(() => {
-        setHasError(true);
+        setErrorMessage(Errors.loadingComments);
         removeError();
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => setLoadingComments(false));
   };
 
   return (
     <PostsContext.Provider value={{
       selectedUser,
       setSelectedUser,
-      users,
-      hasError,
-      setHasError,
+      errorMessage,
+      setErrorMessage,
       removeError,
       posts,
-      isLoading,
-      setIsLoading,
+      loadingPosts,
+      loadingComments,
+      setLoadingComments,
       getAllUserPosts,
       selectedPost,
       setSelectedPost,

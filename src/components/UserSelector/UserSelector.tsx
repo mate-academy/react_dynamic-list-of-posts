@@ -1,20 +1,27 @@
-import classNames from 'classnames';
 import React, { useState } from 'react';
-import { usePosts } from '../PostsContext';
-import { User } from '../types/User';
+import classNames from 'classnames';
 
-export const UserSelector: React.FC = () => {
+import { usePosts } from '../../PostsContext';
+import { User } from '../../types/User';
+
+type Props = {
+  users: User[],
+};
+
+export const UserSelector: React.FC<Props> = ({ users }) => {
   const {
-    users,
     selectedUser,
     setSelectedUser,
     getAllUserPosts,
+    setSelectedPost,
   } = usePosts();
+
   const [isDropdownActive, setIsDropdownActive] = useState(false);
 
   const handleUserSelect = (chosenUser: User) => {
     setSelectedUser(chosenUser);
     setIsDropdownActive(false);
+    setSelectedPost(null);
     getAllUserPosts(chosenUser.id);
   };
 

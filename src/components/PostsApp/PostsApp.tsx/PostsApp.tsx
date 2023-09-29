@@ -1,18 +1,35 @@
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
-import React from 'react';
+
 import { usePosts } from '../../../PostsContext';
 import { Loader } from '../../Loader';
-import { PostDetails } from '../../PostDetails';
-import { PostsList } from '../../PostsList';
-import { UserSelector } from '../../UserSelector';
+import { PostDetails } from '../../PostDetails/PostDetails';
+import { PostsList } from '../../PostsList/PostsList';
+import { UserSelector } from '../../UserSelector/UserSelector';
+import { Errors } from '../../../types/Errors';
+import { getUsers } from '../../../api/posts';
+import { User } from '../../../types/User';
 
 export const PostsApp: React.FC = () => {
   const {
-    isLoading,
-    hasError,
+    loadingPosts,
+    errorMessage,
+    setErrorMessage,
+    removeError,
     selectedUser,
     selectedPost,
   } = usePosts();
+
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    getUsers()
+      .then(setUsers)
+      .catch(() => {
+        setErrorMessage(Errors.loadingUsers);
+        removeError();
+      });
+  }, []);
 
   return (
     <main className="section">
@@ -21,28 +38,31 @@ export const PostsApp: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector users={users} />
               </div>
 
-              <div className="block" data-cy="MainContent">
-                {!selectedUser && !isLoading && (
+              <div
+                className="block"
+                data-cy="MainContent"
+              >
+                {!selectedUser && !loadingPosts && !errorMessage && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {isLoading && (<Loader />)}
+                {loadingPosts && (<Loader />)}
 
-                {hasError && (
+                {errorMessage === Errors.loadingUsers && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    Something went wrong!
+                    {Errors.loadingUsers}
                   </div>
                 )}
 
-                {selectedUser && (!isLoading) && (<PostsList />)}
+                {selectedUser && (!loadingPosts) && (<PostsList />)}
               </div>
             </div>
           </div>

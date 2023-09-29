@@ -1,17 +1,18 @@
 import React from 'react';
+import { Comment } from './Comment';
 import { Post } from './Post';
 import { User } from './User';
 
 export type PostsContextType = {
   selectedUser: User | null,
   setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>,
-  users: User[],
-  hasError: boolean,
-  setHasError: React.Dispatch<React.SetStateAction<boolean>>,
+  errorMessage: string,
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>,
   removeError: (time?: number) => void,
   posts: Post[],
-  isLoading: boolean,
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
+  loadingPosts: boolean,
+  loadingComments: boolean,
+  setLoadingComments: React.Dispatch<React.SetStateAction<boolean>>,
   getAllUserPosts: (userId: number) => void,
   selectedPost: Post | null,
   setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>,

@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
-import { usePosts } from '../PostsContext';
-import { Post } from '../types/Post';
+import { usePosts } from '../../PostsContext';
+import { Post } from '../../types/Post';
 
 export const PostsList: React.FC = () => {
   const {
