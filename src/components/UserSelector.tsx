@@ -21,11 +21,12 @@ export const UserSelector: React.FC<Props> = ({
   setSelectedPost,
 }) => {
   const dropdownHandler = () => setIsDropdownActive(!isDropdownActive);
-  const dropdown = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   const closeDropdown = (e: MouseEvent) => {
-    if (dropdown.current
+    if (dropdownRef.current
       && isDropdownActive
-      && !dropdown.current.contains(e.target as Node)) {
+      && !dropdownRef.current.contains(e.target as Node)) {
       setIsDropdownActive(false);
     }
   };
@@ -55,7 +56,7 @@ export const UserSelector: React.FC<Props> = ({
     >
       <div
         className="dropdown-trigger"
-        ref={dropdown}
+        ref={dropdownRef}
       >
         <button
           type="button"

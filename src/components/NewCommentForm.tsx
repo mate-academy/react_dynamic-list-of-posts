@@ -80,7 +80,7 @@ export const NewCommentForm: React.FC<Props> = ({
       }));
     }
 
-    if (selectedPost?.id && !isEmptyField) {
+    if (selectedPost && selectedPost?.id !== null && !isEmptyField) {
       setIsFormLoading(true);
 
       createComment({
