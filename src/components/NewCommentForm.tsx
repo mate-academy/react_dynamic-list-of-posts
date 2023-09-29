@@ -15,7 +15,7 @@ export const NewCommentForm: React.FC<Props> = ({
   setPostsComments,
   setCommentErrorMessage,
 }) => {
-  const [isFormLoading, setIsFormLoading] = useState(false);
+  const [isFormLoading, setIsFormLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -84,13 +84,13 @@ export const NewCommentForm: React.FC<Props> = ({
       setIsFormLoading(true);
 
       createComment({
-        postId: selectedPost.id,
+        postId: selectedPost?.id,
         name: formData.name,
         email: formData.email,
         body: formData.text,
       })
-        .then((newComment) => {
-          setPostsComments((currentComments) => [
+        .then(newComment => {
+          setPostsComments(currentComments => [
             ...currentComments, newComment,
           ]);
         })
@@ -212,7 +212,7 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control">
           <textarea
             id="comment-body"
-            name="body"
+            name="text"
             placeholder="Type comment here"
             className={classNames('textarea', {
               'is-danger': formError.text,

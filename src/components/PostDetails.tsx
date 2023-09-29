@@ -3,7 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
-import { client } from '../utils/fetchClient';
+import { deleteComment, getPostComments } from '../utils/httpsClient';
 
 type Props = {
   selectedPost: Post | null,
@@ -24,27 +24,19 @@ export const PostDetails: React.FC<Props> = ({
     setIsCommentButtonClicked(true);
   };
 
-  const getPostComments = () => {
-    return client.get<Comment[]>(`/comments?postId=${selectedPost?.id}`)
-      .catch(() => {
-        setCommentErrorMessage('Something went wrong!');
-      });
-  };
-
   useEffect(() => {
     setIsCommentsLoading(true);
-    getPostComments()
-      .then(commentsFromServer => {
-        if (commentsFromServer) {
+    getPostComments(selectedPost)
+      .then((commentsFromServer) => {
+        if (Array.isArray(commentsFromServer)) {
           setPostComments(commentsFromServer);
         }
       })
+      .catch(() => {
+        setCommentErrorMessage('Something went wrong!');
+      })
       .finally(() => setIsCommentsLoading(false));
   }, [selectedPost]);
-
-  const deleteComment = (id: number) => {
-    return client.delete(`/comments/${id}`);
-  };
 
   const handleDeleteComment = (id: number) => {
     setPostComments(prev => prev.filter(currentComment => (

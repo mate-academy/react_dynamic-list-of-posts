@@ -10,26 +10,23 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { client } from './utils/fetchClient';
+import { getAllUsers, getUserPosts } from './utils/httpsClient';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isDropdownActive, setIsDropdownActive] = useState(false);
-  const [isCommentButtonClicked, setIsCommentButtonClicked] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isDropdownActive, setIsDropdownActive] = useState<boolean>(false);
+  const [isCommentButtonClicked,
+    setIsCommentButtonClicked] = useState<boolean>(false);
 
   const displayNoPostsMessage = !posts.length
   && selectedUser
   && !errorMessage
   && !isLoading;
-
-  const getAllUsers = () => {
-    return client.get<User[]>('/users');
-  };
 
   useEffect(() => {
     getAllUsers()
@@ -37,14 +34,10 @@ export const App: React.FC = () => {
       .catch(() => setErrorMessage('Error loading users'));
   }, []);
 
-  const getUserPosts = () => {
-    return client.get<Post[]>(`/posts?userId=${selectedUser?.id}`);
-  };
-
   useEffect(() => {
     if (selectedUser) {
       setIsLoading(true);
-      getUserPosts()
+      getUserPosts(selectedUser)
         .then(postsFromServer => {
           if (postsFromServer) {
             setPosts(postsFromServer);
@@ -110,7 +103,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(posts.length > 0
+                {(!!posts.length
                   && selectedUser
                   && !isLoading
                 ) && (
@@ -132,11 +125,11 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': selectedPost !== null },
+              { 'Sidebar--open': selectedPost },
             )}
           >
 
-            {selectedPost !== null && (
+            {selectedPost && (
               <div className="tile is-child box is-success ">
                 <PostDetails
                   selectedPost={selectedPost}
