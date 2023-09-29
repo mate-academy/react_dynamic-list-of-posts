@@ -21,3 +21,8 @@
 .message-body {
   white-space: pre-line;
 }
+
+.dropdown-content {
+  max-height: 13em;
+  overflow: auto;
+}
