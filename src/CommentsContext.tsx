@@ -9,6 +9,8 @@ type CommentsState = {
   setIsCommentLoading: (value: boolean) => void,
   isCommentLoadError: boolean,
   setIsCommentLoadError: (value: boolean) => void,
+  isCommentDeleteError: boolean,
+  setIsCommentDeleteError: (value: boolean) => void,
   isFormShown: boolean,
   setIsFormShown: (value: boolean) => void,
   hadnleCommentDelete: (id: number) => void;
@@ -21,6 +23,8 @@ export const CommentsContext = React.createContext<CommentsState>({
   setIsCommentLoading: () => {},
   isCommentLoadError: false,
   setIsCommentLoadError: () => {},
+  isCommentDeleteError: false,
+  setIsCommentDeleteError: () => {},
   isFormShown: false,
   setIsFormShown: () => {},
   hadnleCommentDelete: () => {},
@@ -34,13 +38,18 @@ export const CommentsProvider: React.FC<Props> = ({ children }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
   const [isCommentLoadError, setIsCommentLoadError] = useState(false);
+  const [isCommentDeleteError, setIsCommentDeleteError] = useState(false);
   const [isFormShown, setIsFormShown] = useState(false);
 
   const hadnleCommentDelete = (id: number) => {
+    setIsCommentDeleteError(false);
     deleteComment(id)
       .then(() => setComments(
         currentComments => currentComments.filter(comment => comment.id !== id),
-      ));
+      ))
+      .catch(() => {
+        setIsCommentDeleteError(true);
+      });
   };
 
   const value = useMemo(() => ({
@@ -50,10 +59,18 @@ export const CommentsProvider: React.FC<Props> = ({ children }) => {
     setIsCommentLoading,
     isCommentLoadError,
     setIsCommentLoadError,
+    isCommentDeleteError,
+    setIsCommentDeleteError,
     isFormShown,
     setIsFormShown,
     hadnleCommentDelete,
-  }), [comments, isCommentLoading, isCommentLoadError, isFormShown]);
+  }), [
+    comments,
+    isCommentLoading,
+    isCommentLoadError,
+    isCommentDeleteError,
+    isFormShown,
+  ]);
 
   return (
     <CommentsContext.Provider value={value}>

@@ -51,6 +51,7 @@ export const NewCommentForm: React.FC = () => {
       return;
     }
 
+    setIsCommentLoadError(false);
     setIsSubmitting(true);
 
     if (selectedPost) {
@@ -67,7 +68,7 @@ export const NewCommentForm: React.FC = () => {
         })
         .finally(() => {
           setIsSubmitting(false);
-          setBody('');
+          reset();
         });
     }
   };
@@ -123,7 +124,7 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"

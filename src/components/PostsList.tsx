@@ -11,6 +11,7 @@ export const PostsList: React.FC = () => {
     setComments,
     setIsCommentLoading,
     setIsCommentLoadError,
+    setIsCommentDeleteError,
     setIsFormShown,
   } = useContext(CommentsContext);
 
@@ -72,7 +73,11 @@ export const PostsList: React.FC = () => {
                     className={cn('button is-link', {
                       'is-light': !isPostSelected,
                     })}
-                    onClick={() => handleOpenPostClick(post)}
+                    onClick={() => {
+                      handleOpenPostClick(post);
+                      setIsCommentLoadError(false);
+                      setIsCommentDeleteError(false);
+                    }}
                   >
                     {isPostSelected
                       ? 'Close'

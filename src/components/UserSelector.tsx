@@ -31,6 +31,7 @@ export const UserSelector: React.FC<Props> = ({
     setSelectedUser(user);
     setIsSelectOpen(false);
     setIsPostLoading(true);
+    setIsPostLoadError(false);
     getPosts(user.id)
       .then(setPosts)
       .catch(() => {
