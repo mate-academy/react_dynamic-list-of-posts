@@ -20,6 +20,7 @@ export const UserSelector: React.FC<Props> = ({
     setPosts,
     setIsPostLoading,
     setIsPostLoadError,
+    setSelectedPost,
   } = useContext(PostContext);
 
   useEffect(() => {
@@ -32,6 +33,8 @@ export const UserSelector: React.FC<Props> = ({
     setIsSelectOpen(false);
     setIsPostLoading(true);
     setIsPostLoadError(false);
+    setSelectedPost(null);
+
     getPosts(user.id)
       .then(setPosts)
       .catch(() => {

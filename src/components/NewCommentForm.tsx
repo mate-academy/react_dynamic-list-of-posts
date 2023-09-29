@@ -20,7 +20,8 @@ export const NewCommentForm: React.FC = () => {
   const {
     comments,
     setComments,
-    setIsCommentLoadError,
+    setIsCommentDeleteError,
+    setIsCommentUpdateError,
   } = useContext(CommentsContext);
 
   const reset = () => {
@@ -34,6 +35,9 @@ export const NewCommentForm: React.FC = () => {
 
   const handleCommentSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+
+    setIsCommentDeleteError(false);
+    setIsCommentUpdateError(false);
 
     if (!name.trim()) {
       setIsNameError(true);
@@ -51,7 +55,6 @@ export const NewCommentForm: React.FC = () => {
       return;
     }
 
-    setIsCommentLoadError(false);
     setIsSubmitting(true);
 
     if (selectedPost) {
@@ -63,12 +66,15 @@ export const NewCommentForm: React.FC = () => {
         .then(newComment => {
           setComments([...comments, newComment]);
         })
-        .catch(() => {
-          setIsCommentLoadError(true);
+        .catch((err) => {
+          setIsCommentUpdateError(true);
+          throw (err);
+        })
+        .then(() => {
+          setBody('');
         })
         .finally(() => {
           setIsSubmitting(false);
-          reset();
         });
     }
   };

@@ -10,6 +10,7 @@ export const PostDetails: React.FC = () => {
     isCommentLoading,
     isCommentLoadError,
     isCommentDeleteError,
+    isCommentUpdateError,
     isFormShown,
     setIsFormShown,
     hadnleCommentDelete,
@@ -35,7 +36,9 @@ export const PostDetails: React.FC = () => {
             <Loader />
           ) : (
             <>
-              {(isCommentLoadError || isCommentDeleteError) && (
+              {(isCommentLoadError
+              || isCommentDeleteError
+              || isCommentUpdateError) && (
                 <div className="notification is-danger" data-cy="CommentsError">
                   Something went wrong
                 </div>
