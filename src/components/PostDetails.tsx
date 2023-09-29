@@ -54,7 +54,7 @@ export const PostDetails: React.FC = () => {
             </p>
           )}
 
-          {comments.length > 0 && <p className="title is-4">Comments:</p>}
+          {!!comments.length && <p className="title is-4">Comments:</p>}
           {comments.map(currentComment => (
             <CurrentComment
               currentComment={currentComment}
