@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -29,37 +29,32 @@ export const App: React.FC = () => {
   const [isCommentsLoading, setIsCommentsLoading] = useState(false);
 
   const [isFormVisible, setIsFormVisible] = useState(false);
+
   const [apiErrors, setApiErrors] = useState({
     userError: false,
     postError: false,
     commentsError: false,
-    deleteCommentError: false,
   });
 
   const {
     userError,
     postError,
     commentsError,
-    deleteCommentError,
   } = apiErrors;
 
-  const deleteCommentFromList = (deletedId: number) => {
-    setCcomments(comments.filter(comment => comment.id !== deletedId));
-  };
+  const deleteCommentFromList = useCallback((deletedId: number) => {
+    setCcomments(prevComments => prevComments.filter(comment => comment.id
+      !== deletedId));
+  }, []);
 
   const addCommentToList = (newComment: Comment) => {
-    setCcomments((prevComments) => [...prevComments, newComment]);
+    setCcomments(prevComments => [...prevComments, newComment]);
   };
 
   const removeComment = (commentId: number) => {
-    setApiErrors((prevState) => ({ ...prevState, deleteCommentError: false }));
     deleteCommentFromList(commentId);
     deleteComment(commentId)
       .catch(() => {
-        setCcomments(comments);
-        setApiErrors(
-          (prevState) => ({ ...prevState, deleteCommentError: true }),
-        );
       });
   };
 
@@ -71,10 +66,6 @@ export const App: React.FC = () => {
     setSelectedUser(user);
   };
 
-  const handleIsForm = (isForm: boolean) => {
-    setIsFormVisible(isForm);
-  };
-
   const handleSelectPost = (post: Post | null) => {
     if (selectedPost?.id === post?.id) {
       setSelectedPost(null);
@@ -84,7 +75,6 @@ export const App: React.FC = () => {
 
     setSelectedPost(post);
     setIsFormVisible(false);
-    setApiErrors((prevState) => ({ ...prevState, deleteCommentError: false }));
   };
 
   const loadUsers = async () => {
@@ -93,7 +83,7 @@ export const App: React.FC = () => {
 
       setUsers(usersFromServer);
     } catch {
-      setApiErrors((prevState) => ({ ...prevState, userError: true }));
+      setApiErrors(prevState => ({ ...prevState, userError: true }));
     }
   };
 
@@ -101,13 +91,13 @@ export const App: React.FC = () => {
     if (selectedUser) {
       setIsUserLoading(true);
 
-      setApiErrors((prevState) => ({ ...prevState, postError: false }));
+      setApiErrors(prevState => ({ ...prevState, postError: false }));
       try {
         const postsFromServer = await getPosts(selectedUser.id);
 
         setPosts(postsFromServer);
       } catch {
-        setApiErrors((prevState) => ({ ...prevState, postError: true }));
+        setApiErrors(prevState => ({ ...prevState, postError: true }));
       } finally {
         setIsUserLoading(false);
       }
@@ -116,7 +106,7 @@ export const App: React.FC = () => {
 
   const loadComments = async () => {
     if (selectedPost) {
-      setApiErrors((prevState) => ({ ...prevState, commentsError: false }));
+      setApiErrors(prevState => ({ ...prevState, commentsError: false }));
 
       setIsCommentsLoading(true);
       setCcomments([]);
@@ -126,7 +116,7 @@ export const App: React.FC = () => {
 
         setCcomments(commentsFromServer);
       } catch {
-        setApiErrors((prevState) => ({ ...prevState, commentsError: true }));
+        setApiErrors(prevState => ({ ...prevState, commentsError: true }));
       } finally {
         setIsCommentsLoading(false);
       }
@@ -145,6 +135,12 @@ export const App: React.FC = () => {
     loadComments();
   }, [selectedPost]);
 
+  const isUserError = userError;
+  const isNoSelectedUser = !selectedUser && !userError;
+  const isLoadingPosts = isUserLoading;
+  const isNoPostsYet = !isUserLoading && !posts?.length;
+  const hasPosts = !isUserLoading && !!posts?.length;
+
   return (
     <main className="section">
       <div className="container">
@@ -160,7 +156,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {userError && (
+                {isUserError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -169,7 +165,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!selectedUser && !userError && (
+                {isNoSelectedUser && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
@@ -177,7 +173,7 @@ export const App: React.FC = () => {
 
                 {selectedUser && (
                   <>
-                    {isUserLoading && (
+                    {isLoadingPosts && (
                       <Loader />
                     )}
 
@@ -190,16 +186,15 @@ export const App: React.FC = () => {
                       </div>
                     ) : (
                       <>
-                        {!isUserLoading && !posts?.length
-                            && (
-                              <div
-                                className="notification is-warning"
-                                data-cy="NoPostsYet"
-                              >
-                                No posts yet
-                              </div>
-                            )}
-                        {!isUserLoading && !!posts?.length && (
+                        {isNoPostsYet && (
+                          <div
+                            className="notification is-warning"
+                            data-cy="NoPostsYet"
+                          >
+                            No posts yet
+                          </div>
+                        )}
+                        {hasPosts && (
                           <PostsList
                             posts={posts}
                             selectedPost={selectedPost}
@@ -232,10 +227,10 @@ export const App: React.FC = () => {
                   isCommentsError={commentsError}
                   isLoading={isCommentsLoading}
                   isFormVisible={isFormVisible}
-                  isDeleteError={deleteCommentError}
+                  isDeleteError={commentsError}
                   onDelete={removeComment}
                   onAdd={addCommentToList}
-                  showForm={handleIsForm}
+                  showForm={() => setIsFormVisible(true)}
                 />
               </div>
             )}

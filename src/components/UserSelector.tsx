@@ -17,6 +17,11 @@ export const UserSelector: React.FC<Props> = ({
 
   const handleDropdownButton = () => setIsClicked(!isClicked);
 
+  const handleUserSelectClick = (user: User) => {
+    onUserSelect(user);
+    setIsClicked(false);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -57,10 +62,7 @@ export const UserSelector: React.FC<Props> = ({
                     'is-active': user.id === selectedUser?.id,
                   },
                 )}
-                onClick={() => {
-                  onUserSelect(user);
-                  setIsClicked(false);
-                }}
+                onClick={() => handleUserSelectClick(user)}
               >
                 {user.name}
               </a>
