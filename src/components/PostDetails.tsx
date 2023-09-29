@@ -11,7 +11,7 @@ export const PostDetails: React.FC = () => {
   const { comments, setComments } = useComments();
 
   const [hasCommentsError, setHasCommentsError] = useState(false);
-  const [isLoasding, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isWriteCommentExist, setIsWriteCommentExist] = useState(false);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export const PostDetails: React.FC = () => {
         </div>
 
         <div className="block">
-          {isLoasding && <Loader />}
+          {isLoading && <Loader />}
 
           {hasCommentsError && (
             <div className="notification is-danger" data-cy="CommentsError">

@@ -32,7 +32,7 @@ export const CurrentPost: React.FC<Props> = ({ currentPost }) => {
         <button
           type="button"
           data-cy="PostButton"
-          className={classnames('button is-link', {
+          className={classnames('button', 'is-link', {
             'is-light': post?.id !== id,
           })}
           onClick={() => handleSelectPost(currentPost)}

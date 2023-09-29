@@ -174,7 +174,7 @@ export const NewCommentForm: React.FC = () => {
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link ">
+          <button type="submit" className="button is-link">
             Add
           </button>
         </div>
