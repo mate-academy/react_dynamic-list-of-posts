@@ -48,7 +48,7 @@ export const PostDetails: React.FC = () => {
             </div>
           )}
 
-          {comments.length === 0 && (
+          {!comments.length && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
