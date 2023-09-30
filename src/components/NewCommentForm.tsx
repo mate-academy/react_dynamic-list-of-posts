@@ -79,6 +79,27 @@ export const NewCommentForm: React.FC = () => {
     }
   };
 
+  const handleNameInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setName(event.target.value);
+    setIsNameError(false);
+  };
+
+  const handleEmailInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setEmail(event.target.value);
+    setIsEmailError(false);
+  };
+
+  const handleBodyInputChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    setBody(event.target.value);
+    setIsBodyError(false);
+  };
+
   return (
     <form data-cy="NewCommentForm" onSubmit={handleCommentSubmit}>
       <div className="field" data-cy="NameField">
@@ -96,10 +117,7 @@ export const NewCommentForm: React.FC = () => {
               'is-danger': isNameError,
             })}
             value={name}
-            onChange={event => {
-              setName(event.target.value);
-              setIsNameError(false);
-            }}
+            onChange={handleNameInputChange}
           />
 
           <span className="icon is-small is-left">
@@ -138,10 +156,7 @@ export const NewCommentForm: React.FC = () => {
               'is-danger': isEmailError,
             })}
             value={email}
-            onChange={event => {
-              setEmail(event.target.value);
-              setIsEmailError(false);
-            }}
+            onChange={handleEmailInputChange}
 
           />
 
@@ -180,10 +195,7 @@ export const NewCommentForm: React.FC = () => {
               'is-danger': isBodyError,
             })}
             value={body}
-            onChange={event => {
-              setBody(event.target.value);
-              setIsBodyError(false);
-            }}
+            onChange={handleBodyInputChange}
 
           />
         </div>

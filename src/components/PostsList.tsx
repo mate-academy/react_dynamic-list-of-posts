@@ -11,6 +11,7 @@ export const PostsList: React.FC = () => {
     setComments,
     setIsCommentLoading,
     setIsCommentLoadError,
+    setIsCommentUpdateError,
     setIsCommentDeleteError,
     setIsFormShown,
   } = useContext(CommentsContext);
@@ -23,15 +24,19 @@ export const PostsList: React.FC = () => {
 
   const handleOpenPostClick = (post: Post) => {
     setIsFormShown(false);
+    setIsCommentLoadError(false);
+    setIsCommentUpdateError(false);
+    setIsCommentDeleteError(false);
+
     if (selectedPost && selectedPost.id === post.id) {
       setSelectedPost(null);
     } else {
       setSelectedPost(post);
       setIsCommentLoading(true);
+
       getComments(post.id)
         .then(setComments)
         .catch(() => {
-          setIsCommentLoading(false);
           setIsCommentLoadError(true);
         })
         .finally(() => {
@@ -73,11 +78,7 @@ export const PostsList: React.FC = () => {
                     className={cn('button is-link', {
                       'is-light': !isPostSelected,
                     })}
-                    onClick={() => {
-                      handleOpenPostClick(post);
-                      setIsCommentLoadError(false);
-                      setIsCommentDeleteError(false);
-                    }}
+                    onClick={() => handleOpenPostClick(post)}
                   >
                     {isPostSelected
                       ? 'Close'
