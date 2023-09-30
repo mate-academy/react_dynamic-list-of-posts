@@ -16,7 +16,7 @@ form to add new comments.
     - if the user has no posts show the `No posts yet` notification.
 1. Add the `Sidebar--open` class to the sidebar when a post is selected;
     - the post details should appear there immediately;
-    - the post commnets should be loaded from the API;
+    - the post comments should be loaded from the API;
     - the `Loader` is shown before comments are loaded;
     - `CommentsError` notification is show on loading error;
     - `NoComments` message is shown if the post does not have comments yet;
@@ -32,5 +32,6 @@ form to add new comments.
     - Add the `is-loading` class to the submit button while waiting for a response;
     - Add the new comment received as a response from the `API` to the end of the list;
 1. Implement comment deletion
-    - Delete the commnet immediately not waiting for the server response to improve the UX.
+    - Delete the comment immediately not waiting for the server response to improve the UX.
 1. (*) Handle `Add` and `Delete` errors so the user can retry
+[DEMO](https://ilona-borkovska.github.io/react_dynamic-list-of-posts/)
