@@ -22,7 +22,9 @@ export const App: React.FC = () => {
   const [createNewComment, setCreateNewComment] = useState<boolean>(false);
 
   useEffect(() => {
-    getUsersData().then(setUsers);
+    getUsersData()
+      .then(setUsers)
+      .catch(() => setErrorMessage(true));
   }, []);
 
   useEffect(() => {
