@@ -34,11 +34,17 @@ export const PostDetails: React.FC<Props> = ({
     setCreateNewComment(true);
   };
 
-  const deleteComment = (commentId: number) => {
+  const deleteComment = async (commentId: number) => {
+    const temporaryComments = [...postComments];
+
     setPostComments(prevComments => prevComments
       .filter(comment => comment.id !== commentId));
 
-    deleteCommentData(commentId);
+    try {
+      await deleteCommentData(commentId);
+    } catch {
+      setPostComments(temporaryComments);
+    }
   };
 
   const { id, title, body } = selectedPost;
