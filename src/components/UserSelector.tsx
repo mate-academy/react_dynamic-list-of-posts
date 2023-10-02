@@ -13,8 +13,8 @@ interface Props {
 export const UserSelector: React.FC<Props> = ({
   users,
   selectedUser,
-  setSelectedUser = () => { },
-  setSelectedPost = () => { },
+  setSelectedUser = () => {},
+  setSelectedPost = () => {},
 }) => {
   const [isActiveDropDown, setIsActiveDropDown] = useState<boolean>(false);
 
@@ -25,7 +25,7 @@ export const UserSelector: React.FC<Props> = ({
   const closeDropDown = () => {
     setTimeout(() => {
       setIsActiveDropDown(false);
-    }, 100);
+    }, 150); // Maybe more
   };
 
   const chooseUser = (user: User) => {

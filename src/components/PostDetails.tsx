@@ -14,7 +14,7 @@ interface Props {
 export const PostDetails: React.FC<Props> = ({
   selectedPost,
   createNewComment,
-  setCreateNewComment = () => { },
+  setCreateNewComment = () => {},
 }) => {
   const [postComments, setPostComments] = useState<Comment[]>([]);
   const [loader, setLoader] = useState<boolean>(false);
