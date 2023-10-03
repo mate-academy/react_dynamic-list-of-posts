@@ -1,15 +1,83 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
+import { UserSelector } from './components/UserSelector/UserSelector';
+import { client } from './utils/fetchClient';
+import { User } from './types/User';
+import { Post } from './types/Post';
+import { PostsList } from './components/PostsList/PostsList';
+import { Notification } from './types/Notification';
+import {
+  NotificationMessage,
+} from './components/NotificationMessage/NotificationMessage';
 import { Loader } from './components/Loader';
+import { Sidebar } from './components/Sidebar/Sidebar';
 
 export const App: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User>();
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
+
+  const [
+    notification,
+    setNotification,
+  ] = useState<Notification>(Notification.NoError);
+  const [loadingError, setLoadingError] = useState(false);
+
+  const [selectedPost, setSelectedPost] = useState<Post>();
+
+  const showList = !isLoading && !loadingError
+  && selectedUser && (notification !== Notification.NoPostsYet);
+
+  const showNoPosts = !isLoading && !loadingError
+  && selectedUser && (notification === Notification.NoPostsYet);
+
+  useEffect(() => {
+    client
+      .get<User[]>('/users')
+      .then((data) => setUsers(data));
+  }, []);
+
+  useEffect(() => {
+    if (selectedUser) {
+      setIsLoading(true);
+      setNotification(Notification.NoError);
+
+      client
+        .get<Post[]>(`/posts?userId=${selectedUser.id}`)
+        .then((data) => {
+          if (data.length === 0) {
+            setNotification(Notification.NoPostsYet);
+          }
+
+          setUserPosts(data);
+        })
+        .catch(() => {
+          setLoadingError(true);
+          setNotification(Notification.PostsLoadingError);
+        })
+        .finally(() => setIsLoading(false));
+    }
+  }, [selectedUser]);
+
+  const handleSelectedUser = (user: User) => {
+    setSelectedUser(user);
+    setIsLoading(true);
+    setSelectedPost(undefined);
+  };
+
+  const handleSelectedPost = (post: Post) => {
+    setSelectedPost(post);
+  };
+
+  const handleClosedPost = () => {
+    setSelectedPost(undefined);
+  };
+
   return (
     <main className="section">
       <div className="container">
@@ -17,46 +85,54 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  users={users}
+                  onUserClick={handleSelectedUser}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isLoading && (
+                  <Loader />
+                )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {!isLoading && loadingError && (
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                  <NotificationMessage
+                    notification={notification}
+                    errorType="is-danger"
+                    data="PostsLoadingError"
+                  />
+                )}
 
-                <PostsList />
+                {showNoPosts && (
+                  <NotificationMessage
+                    notification={notification}
+                    errorType="is-warning"
+                    data="NoPostsYet"
+                  />
+                )}
+
+                {showList && (
+                  <PostsList
+                    posts={userPosts}
+                    onPostOpen={handleSelectedPost}
+                    onPostClose={handleClosedPost}
+                  />
+                )}
               </div>
             </div>
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
-          </div>
+          {selectedPost && (
+            <Sidebar post={selectedPost} />
+          )}
         </div>
       </div>
     </main>
