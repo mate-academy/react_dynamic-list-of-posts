@@ -10,12 +10,18 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { usePosts } from './components/PostContext';
 import * as postService from './services/post';
+import * as userService from './services/user';
 
 export const PostApp: React.FC = () => {
   const {
-    selectedUser, posts, setPosts, errorMessage, setErrorMessage,
+    selectedUser,
+    posts,
+    setPosts,
+    selectedPost,
+    setUsers,
   } = usePosts();
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const getUserPosts = (id: number) => {
     setIsLoading(true);
@@ -29,6 +35,20 @@ export const PostApp: React.FC = () => {
       })
       .finally(() => setIsLoading(false));
   };
+
+  const loadUsers = () => {
+    return userService.getUsers()
+      .then((usersFromAPI) => {
+        setUsers(usersFromAPI);
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  };
+
+  useEffect(() => {
+    loadUsers();
+  });
 
   useEffect(() => {
     if (selectedUser) {
@@ -66,7 +86,7 @@ export const PostApp: React.FC = () => {
                   </div>
                 )}
 
-                {(selectedUser && !isLoading) && (
+                {(selectedUser && !isLoading && !errorMessage) && (
                   posts.length === 0 ? (
                     <div
                       className="notification is-warning"
@@ -83,20 +103,24 @@ export const PostApp: React.FC = () => {
             </div>
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
+          {selectedUser && (
+            <div
+              data-cy="Sidebar"
+              className={classNames(
+                'tile',
+                'is-parent',
+                'is-8-desktop',
+                'Sidebar',
+                {
+                  'Sidebar--open': selectedPost,
+                },
+              )}
+            >
+              <div className="tile is-child box is-success ">
+                <PostDetails />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </main>

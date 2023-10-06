@@ -1,37 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import { usePosts } from './PostContext';
-import * as userService from '../services/user';
 import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
   const {
-    users, setUsers, selectedUser, setSelectedUser,
+    users, selectedUser, setSelectedUser, setSelectedPost,
   } = usePosts();
   const [isListVisible, setIsListVisible] = useState(false);
-
-  const loadUsers = () => {
-    return userService.getUsers()
-      .then((usersFromAPI) => {
-        setUsers(usersFromAPI);
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
-  };
 
   const handleClick = () => {
     setIsListVisible(!isListVisible);
   };
 
   const handleSelect = (user: User) => {
+    if (user.id === selectedUser?.id) {
+      handleClick();
+
+      return;
+    }
+
     setSelectedUser(user);
     setIsListVisible(false);
+    setSelectedPost(null);
   };
-
-  useEffect(() => {
-    loadUsers();
-  }, []);
 
   return (
     <div
@@ -64,6 +56,7 @@ export const UserSelector: React.FC = () => {
                 className={classNames('dropdown-item', {
                   'is-active': selectedUser && selectedUser.id === user.id,
                 })}
+                key={user.id}
               >
                 {user.name}
               </a>
