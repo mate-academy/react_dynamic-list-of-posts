@@ -1,15 +1,39 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
+import { useUsers } from './context/UsersContext';
+import { getPostsById } from './api/posts';
+import { usePosts } from './context/PostsContext';
 import { Loader } from './components/Loader';
+import { useError } from './context/ErrorContext';
+import { Sidebar } from './components/Sidebar';
 
 export const App: React.FC = () => {
+  const { user } = useUsers();
+  const { posts, setPosts } = usePosts();
+  const { isErrorHappen, setIsErrorHappen } = useError();
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      setIsLoading(true);
+      getPostsById(user.id)
+        .then((postsFromServer) => {
+          setPosts(postsFromServer);
+        })
+        .catch(() => setIsErrorHappen(true))
+        .finally(() => setIsLoading(false));
+    }
+  }, [user]);
+
+  const isPostListShown = (posts.length > 0 && user);
+  const isPostsExist = user && posts.length === 0;
+
   return (
     <main className="section">
       <div className="container">
@@ -21,42 +45,45 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!user && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isLoading ? (
+                  <Loader />
+                ) : (
+                  <>
+                    {isPostsExist && (
+                      <div
+                        className="notification is-warning"
+                        data-cy="NoPostsYet"
+                      >
+                        No posts yet
+                      </div>
+                    )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                    {isPostListShown && (
+                      <PostsList />
+                    )}
+                  </>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {isErrorHappen && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <PostsList />
               </div>
             </div>
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
-          </div>
+          <Sidebar />
         </div>
       </div>
     </main>
