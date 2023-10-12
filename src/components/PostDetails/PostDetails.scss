@@ -1,0 +1,74 @@
+.fade-enter {
+  opacity: 0;
+  max-height: 0;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  max-height: 64px;
+  overflow: hidden;
+  transition: opacity 300ms ease-in, max-height 300ms ease-in;
+}
+
+.fade-exit {
+  opacity: 1;
+  max-height: 64px;
+  overflow: hidden;
+}
+
+.fade-exit-active {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 300ms ease-in, max-height 300ms ease-in;
+}
+
+.no-comments-enter {
+  opacity: 0;
+  max-height: 0;
+}
+
+.no-comments-enter-active {
+  opacity: 1;
+  max-height: 27px;
+  overflow: hidden;
+  transition: opacity 300ms ease-in, max-height 300ms ease-in;
+}
+
+.no-comments-exit {
+  opacity: 1;
+  max-height: 27px;
+  overflow: hidden;
+}
+
+.no-comments-exit-active {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 300ms ease-in, max-height 300ms ease-in;
+}
+
+.comments-enter {
+  opacity: 0;
+  max-height: 0;
+}
+
+.comments-enter-active {
+  opacity: 1;
+  max-height: 109px;
+  overflow: hidden;
+  transition: opacity 300ms ease-in, max-height 300ms ease-in;
+}
+
+.comments-exit {
+  opacity: 1;
+  max-height: 109px;
+  overflow: hidden;
+}
+
+.comments-exit-active {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 300ms ease-in, max-height 300ms ease-in;
+}
