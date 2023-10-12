@@ -1,117 +1,178 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { Post } from '../types/Post';
+import { getComments, deleteComment, postComment } from '../api';
+import { Comment } from '../types/Comment';
 
-export const PostDetails: React.FC = () => {
+type Props = {
+  openedPost: Post;
+};
+
+enum Error {
+  None,
+  CommentsLoadingError,
+  NoCommentsError,
+}
+
+export const PostDetails: React.FC<Props> = ({
+  openedPost,
+}) => {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isNewCommentForm, setIsNewCommentForm] = useState(false);
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
+  const [isCommentsLoaded, setIsCommentsLoaded] = useState(false);
+  const [isCommentsAdding, setIsCommentsAdding] = useState(false);
+  const [error, setError] = useState<Error>(Error.None);
+
+  const addComment = (newComment: Omit<Comment, 'id'>) => {
+    setIsCommentsAdding(true);
+    postComment(newComment)
+      .then((res) => {
+        setComments((oldComments) => (
+          [...oldComments, res]
+        ));
+        setError(Error.None);
+        setIsCommentsAdding(false);
+      })
+      .catch(() => {
+        setError(Error.CommentsLoadingError);
+        setIsCommentsAdding(false);
+        setTimeout(() => {
+          setError(Error.None);
+        }, 3000);
+      });
+  };
+
+  const onDelete = (id: number) => {
+    deleteComment(id)
+      .then(() => {
+        setComments((oldComments) => (
+          oldComments.filter(comm => (
+            comm.id !== id
+          ))
+        ));
+        setError(Error.None);
+
+        if (!comments.length) {
+          setError(Error.NoCommentsError);
+          setIsCommentsLoaded(false);
+        }
+      })
+      .catch(() => {
+        setError(Error.CommentsLoadingError);
+        setTimeout(() => {
+          setError(Error.None);
+        }, 3000);
+      });
+  };
+
+  const loadCommentsOfUser = (postId: number) => {
+    setIsCommentsLoading(true);
+    setIsCommentsLoaded(false);
+    getComments(postId)
+      .then(res => {
+        setComments(res);
+        setIsCommentsLoaded(true);
+
+        if (!res.length) {
+          setError(Error.NoCommentsError);
+          setIsCommentsLoaded(false);
+        }
+      })
+      .catch(() => {
+        setError(Error.CommentsLoadingError);
+        setComments([]);
+      })
+      .finally(() => {
+        setIsCommentsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    loadCommentsOfUser(openedPost.id);
+  }, [openedPost]);
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {`#${openedPost.id}: ${openedPost.title}`}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            {openedPost.body}
           </p>
         </div>
 
         <div className="block">
-          <Loader />
+          {isCommentsLoading && <Loader />}
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
+          {error === Error.CommentsLoadingError && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
             </div>
+          )}
 
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
+          {error === Error.NoCommentsError
+          && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
+          {isCommentsLoaded && (
+            <>
+              <p className="title is-4">Comments:</p>
+              {comments.map(comment => (
+                <article
+                  className="message is-small"
+                  data-cy="Comment"
+                  key={comment.id}
+                >
+                  <div className="message-header">
+                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                      {comment.name}
+                    </a>
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={() => onDelete(comment.id)}
+                    >
+                      delete button
+                    </button>
+                  </div>
 
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
+                  <div className="message-body" data-cy="CommentBody">
+                    {comment.body}
+                  </div>
+                </article>
+              ))}
+            </>
+          )}
+
+          {!isNewCommentForm && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setIsNewCommentForm(true)}
             >
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
+        {isNewCommentForm && (
+          <NewCommentForm
+            postId={openedPost.id}
+            addComment={addComment}
+            isCommentsAdding={isCommentsAdding}
+          />
+        )}
       </div>
     </div>
   );
