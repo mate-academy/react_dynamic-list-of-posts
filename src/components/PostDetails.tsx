@@ -15,6 +15,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [isNoComments, setIsNoComments] = useState(false);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [isWriteComment, setIsWriteComment] = useState(false);
+  const [errorLoad, setErrorLoad] = useState(false);
 
   useEffect(() => {
     setErrorMessage('');
@@ -48,9 +49,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }, [comments]);
 
   const handleDeleteComment = (commentId: number) => {
-    setComments((currentComments: Comment[]) => currentComments
-      .filter(elem => elem.id !== commentId));
-    delComment(commentId);
+    delComment(commentId)
+      .then()
+      .catch(() => {
+        setErrorLoad(true);
+      })
+      .finally(() => {
+        if (!errorLoad) {
+          setComments((currentComments: Comment[]) => currentComments
+            .filter(elem => elem.id !== commentId));
+        }
+      });
   };
 
   return (
@@ -116,6 +125,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   >
                     {comment.body}
                   </div>
+
+                  {errorLoad && (
+                    <p className="help is-danger" data-cy="ErrorMessage">
+                      Something went wrong! Try again later!
+                    </p>
+                  )}
+
                 </article>
               ))}
             </>
