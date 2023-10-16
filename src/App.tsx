@@ -75,7 +75,7 @@ export const App: React.FC = () => {
                     No posts yet
                   </div>
                 )}
-                {posts.length > 0 && (
+                {!!posts.length && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}

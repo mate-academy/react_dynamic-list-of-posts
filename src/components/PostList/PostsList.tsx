@@ -26,33 +26,37 @@ export const PostsList: React.FC<Props> = ({
           </tr>
         </thead>
 
-        {posts.map(post => (
-          <tbody key={post.id}>
-            <tr data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
+        {posts.map(post => {
+          const { id, title } = post;
 
-              <td data-cy="PostTitle">
-                {post.title}
-              </td>
+          return (
+            <tbody key={id}>
+              <tr data-cy="Post">
+                <td data-cy="PostId">{id}</td>
 
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={classNames('button is-link', {
-                    'is-light': selectedPost?.id !== post.id,
-                  })}
-                  onClick={() => {
-                    setSelectedPost(selectedPost?.id !== post.id
-                      ? post : null);
-                  }}
-                >
-                  {selectedPost?.id === post.id ? 'Close' : 'Open'}
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        ))}
+                <td data-cy="PostTitle">
+                  {title}
+                </td>
+
+                <td className="has-text-right is-vcentered">
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={classNames('button is-link', {
+                      'is-light': selectedPost?.id !== id,
+                    })}
+                    onClick={() => {
+                      setSelectedPost(selectedPost?.id !== id
+                        ? post : null);
+                    }}
+                  >
+                    {selectedPost?.id === id ? 'Close' : 'Open'}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          );
+        })}
       </table>
     </div>
   );
