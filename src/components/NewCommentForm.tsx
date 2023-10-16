@@ -1,36 +1,36 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
-import { postCommentData } from '../api/api';
+import { createComment } from '../api/api';
 import { Comment } from '../types/Comment';
 
 type Props = {
   postId: number,
   setPostComments: React.Dispatch<React.SetStateAction<Comment[]>>,
-  setErrorMessage: React.Dispatch<React.SetStateAction<boolean>>,
+  setShowshowErrorMessage: React.Dispatch<React.SetStateAction<boolean>>,
 };
 
-type ObjectFields = {
+type FormFields = {
   [key: string]: string,
 };
 
-type ObjectErrors = {
+type FormErrors = {
   [key: string]: boolean,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   postId,
   setPostComments = () => {},
-  setErrorMessage = () => {},
+  setShowshowErrorMessage = () => {},
 }) => {
-  const [loader, setLoader] = useState<boolean>(false);
+  const [loader, setIsLoading] = useState<boolean>(false);
 
-  const [formComment, setFormComment] = useState<ObjectFields>({
+  const [formComment, setFormComment] = useState<FormFields>({
     name: '',
     email: '',
     body: '',
   });
 
-  const [formErrors, setFormErrors] = useState<ObjectErrors>({
+  const [formErrors, setFormErrors] = useState<FormErrors>({
     nameError: false,
     emailError: false,
     bodyError: false,
@@ -65,7 +65,7 @@ export const NewCommentForm: React.FC<Props> = ({
     });
   };
 
-  const resetFormAdd = () => {
+  const resetForm = () => {
     setFormComment(prev => ({
       ...prev,
       name: '',
@@ -80,27 +80,25 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const addNewComment = async () => {
-    setLoader(true);
+    setIsLoading(true);
 
     try {
       const { name, email, body } = formComment;
 
-      const newComment = {
+      const newComment = await createComment({
         postId,
         name: name.trim(),
         email: email.trim(),
         body: body.trim(),
-      };
+      });
 
-      const serverComment = await postCommentData(newComment);
+      setPostComments(prevComments => [...prevComments, newComment]);
 
-      setPostComments(prevComments => [...prevComments, serverComment]);
-
-      resetFormAdd();
+      resetForm();
     } catch {
-      setErrorMessage(true);
+      setShowshowErrorMessage(true);
     } finally {
-      setLoader(false);
+      setIsLoading(false);
     }
   };
 
@@ -108,15 +106,13 @@ export const NewCommentForm: React.FC<Props> = ({
   | React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
 
-    let error = false;
-
     if (!formComment.name.trim()) {
       setFormErrors(prev => ({
         ...prev,
         nameError: true,
       }));
 
-      error = true;
+      return;
     }
 
     if (!formComment.email.trim()) {
@@ -125,7 +121,7 @@ export const NewCommentForm: React.FC<Props> = ({
         emailError: true,
       }));
 
-      error = true;
+      return;
     }
 
     if (!formComment.body.trim()) {
@@ -134,10 +130,6 @@ export const NewCommentForm: React.FC<Props> = ({
         bodyError: true,
       }));
 
-      error = true;
-    }
-
-    if (error) {
       return;
     }
 
@@ -180,7 +172,7 @@ export const NewCommentForm: React.FC<Props> = ({
                 <i className="fas fa-exclamation-triangle" />
               </span>
 
-              <p className="help is-danger" data-cy="ErrorMessage">
+              <p className="help is-danger" data-cy="showErrorMessage">
                 Name is required
               </p>
             </>
@@ -219,7 +211,7 @@ export const NewCommentForm: React.FC<Props> = ({
               >
                 <i className="fas fa-exclamation-triangle" />
               </span>
-              <p className="help is-danger" data-cy="ErrorMessage">
+              <p className="help is-danger" data-cy="showErrorMessage">
                 Email is required
               </p>
             </>
@@ -246,7 +238,7 @@ export const NewCommentForm: React.FC<Props> = ({
         </div>
 
         {formErrors.bodyError && (
-          <p className="help is-danger" data-cy="ErrorMessage">
+          <p className="help is-danger" data-cy="showErrorMessage">
             Enter some text
           </p>
         )}

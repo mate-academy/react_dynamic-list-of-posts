@@ -9,7 +9,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { getPostsData, getUsersData } from './api/api';
+import { getPostsData, getUsers } from './api/api';
 import { Loader } from './components/Loader';
 
 export const App: React.FC = () => {
@@ -17,25 +17,25 @@ export const App: React.FC = () => {
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [selectedUser, setSelectedUser] = useState<User>();
   const [selectedPost, setSelectedPost] = useState<Post>();
-  const [loader, setLoader] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showErrorMessage, setShowErrorMessage] = useState<boolean>(false);
   const [createNewComment, setCreateNewComment] = useState<boolean>(false);
 
   useEffect(() => {
-    getUsersData()
+    getUsers()
       .then(setUsers)
-      .catch(() => setErrorMessage(true));
+      .catch(() => setShowErrorMessage(true));
   }, []);
 
   useEffect(() => {
     if (selectedUser) {
-      setLoader(true);
-      setErrorMessage(false);
+      setIsLoading(true);
+      setShowErrorMessage(false);
 
       getPostsData(selectedUser.id)
         .then(setUserPosts)
-        .catch(() => setErrorMessage(true))
-        .finally(() => setLoader(false));
+        .catch(() => setShowErrorMessage(true))
+        .finally(() => setIsLoading(false));
     }
   }, [selectedUser]);
 
@@ -61,11 +61,11 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                { loader && (
+                { isLoading && (
                   <Loader />
                 )}
 
-                {errorMessage && (
+                {showErrorMessage && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -76,7 +76,7 @@ export const App: React.FC = () => {
 
                 {
                   (selectedUser && userPosts.length === 0
-                    && !errorMessage && !loader) && (
+                    && !showErrorMessage && !isLoading) && (
                     <div
                       className="notification is-warning"
                       data-cy="NoPostsYet"
@@ -86,7 +86,7 @@ export const App: React.FC = () => {
                   )
                 }
 
-                {selectedUser && userPosts.length > 0 && (
+                {selectedUser && !!userPosts.length && (
                   <PostsList
                     userPosts={userPosts}
                     selectedPost={selectedPost}
@@ -112,7 +112,6 @@ export const App: React.FC = () => {
           >
             {selectedPost && (
               <div className="tile is-child box is-success ">
-
                 <PostDetails
                   selectedPost={selectedPost}
                   createNewComment={createNewComment}

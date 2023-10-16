@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
-import { deleteCommentData, getCommentsData } from '../api/api';
+import { deleteComment, getComments } from '../api/api';
 import { Comment } from '../types/Comment';
 
 type Props = {
@@ -16,34 +16,34 @@ export const PostDetails: React.FC<Props> = ({
   createNewComment,
   setCreateNewComment = () => {},
 }) => {
-  const [postComments, setPostComments] = useState<Comment[]>([]);
-  const [loader, setLoader] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<boolean>(false);
+  const [createComment, setCreateComment] = useState<Comment[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showErrorMessage, setShowErrorMessage] = useState<boolean>(false);
 
   useEffect(() => {
-    setLoader(true);
-    setErrorMessage(false);
+    setIsLoading(true);
+    setShowErrorMessage(false);
 
-    getCommentsData(selectedPost.id)
-      .then(setPostComments)
-      .catch(() => setErrorMessage(true))
-      .finally(() => setLoader(false));
+    getComments(selectedPost.id)
+      .then(setCreateComment)
+      .catch(() => setShowErrorMessage(true))
+      .finally(() => setIsLoading(false));
   }, [selectedPost]);
 
   const createNewCommentForm = () => {
     setCreateNewComment(true);
   };
 
-  const deleteComment = async (commentId: number) => {
-    const temporaryComments = [...postComments];
+  const handleDeleteComment = async (commentId: number) => {
+    const temporaryComments = [...createComment];
 
-    setPostComments(prevComments => prevComments
+    setCreateComment(prevComments => prevComments
       .filter(comment => comment.id !== commentId));
 
     try {
-      await deleteCommentData(commentId);
+      await deleteComment(commentId);
     } catch {
-      setPostComments(temporaryComments);
+      setCreateComment(temporaryComments);
     }
   };
 
@@ -63,29 +63,29 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {loader && (
+          {isLoading && (
             <Loader />
           )}
 
-          {errorMessage && (
+          {showErrorMessage && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
           )}
 
-          {(!loader && !errorMessage
-            && postComments && postComments.length === 0) && (
+          {(!isLoading && !showErrorMessage
+            && createComment && createComment.length === 0) && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {!errorMessage && postComments && postComments.length > 0 && (
+          {!showErrorMessage && createComment && createComment.length > 0 && (
             <>
               <p className="title is-4">Comments:</p>
 
               {
-                postComments.map(comment => {
+                createComment.map(comment => {
                   const {
                     id: commentId,
                     name,
@@ -111,7 +111,7 @@ export const PostDetails: React.FC<Props> = ({
                           type="button"
                           className="delete is-small"
                           aria-label="delete"
-                          onClick={() => deleteComment(commentId)}
+                          onClick={() => handleDeleteComment(commentId)}
                         >
                           delete button
                         </button>
@@ -127,13 +127,13 @@ export const PostDetails: React.FC<Props> = ({
             </>
           )}
 
-          {!errorMessage && (
+          {!showErrorMessage && (
             createNewComment
               ? (
                 <NewCommentForm
                   postId={id}
-                  setPostComments={setPostComments}
-                  setErrorMessage={setErrorMessage}
+                  setPostComments={setCreateComment}
+                  setShowshowErrorMessage={setShowErrorMessage}
                 />
               ) : (
                 <button
