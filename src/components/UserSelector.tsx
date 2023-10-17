@@ -1,6 +1,21 @@
 import React from 'react';
+import { User } from '../types/User';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  users: User[]
+  hendleSelector: () => void
+  openSelector: boolean
+  hendleUser: (user: User) => void
+  isUser: User | undefined
+};
+
+export const UserSelector: React.FC<Props> = ({
+  users,
+  hendleSelector,
+  openSelector,
+  hendleUser,
+  isUser,
+}) => {
   return (
     <div
       data-cy="UserSelector"
@@ -12,8 +27,11 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={hendleSelector}
         >
-          <span>Choose a user</span>
+          <span>
+            {isUser ? isUser.name : 'Choose a user'}
+          </span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -21,15 +39,24 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+      {openSelector && (
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div
+            className="dropdown-content"
+          >
+            {users.map(user => (
+              <a
+                key={user.id}
+                href={`#user-${user.id}`}
+                className="dropdown-item"
+                onClick={() => hendleUser(user)}
+              >
+                {user.name}
+              </a>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
