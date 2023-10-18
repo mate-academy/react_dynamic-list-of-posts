@@ -1,24 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 
-import { getUsers } from '../api/user';
 import { User } from '../types/User';
 
 type Props = {
+  users: User[],
   selectedUser: User | null,
   setSelectedUser: React.Dispatch<User>,
 };
 
 export const UserSelector: React.FC<Props> = ({
+  users,
   selectedUser,
   setSelectedUser,
 }) => {
-  const [users, setUsers] = useState<User[]>([]);
   const [isSelectingUser, setIsSelectingUser] = useState(false);
-
-  useEffect(() => {
-    getUsers().then(setUsers);
-  }, []);
 
   const handleUserSelector = () => {
     setIsSelectingUser(!isSelectingUser);

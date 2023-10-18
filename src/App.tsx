@@ -11,24 +11,37 @@ import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { Post } from './types/Post';
 import { getUserPosts } from './api/post';
+import { getUsers } from './api/user';
 
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
   const [posts, setPosts] = useState<Post[]>([]);
   const [chosenPost, setChosenPost] = useState<Post | null>(null);
 
-  const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isUserLoadingError, setIsUserLoadingError] = useState(false);
+  const [isPostsLoadingError, setIsPostsLoadingError] = useState(false);
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
+
+  useEffect(() => {
+    getUsers()
+      .then(setUsers)
+      .catch(() => {
+        setIsUserLoadingError(true);
+      });
+  }, []);
 
   useEffect(() => {
     if (selectedUser) {
       setChosenPost(null);
-      setIsLoading(true);
+      setIsPostsLoadingError(false);
+      setIsPostsLoading(true);
 
       getUserPosts(selectedUser.id)
         .then(setPosts)
-        .catch(() => setIsError(true))
-        .finally(() => setIsLoading(false));
+        .catch(() => setIsPostsLoadingError(true))
+        .finally(() => setIsPostsLoading(false));
     }
   }, [selectedUser]);
 
@@ -40,25 +53,33 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
+                  users={users}
                   selectedUser={selectedUser}
                   setSelectedUser={setSelectedUser}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUser && (
+                {!selectedUser && !isUserLoadingError && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
+                {isUserLoadingError && (
+                  <div className="notification is-danger">
+                    Unable to load users.
+                    Please, check your connection and reload page.
+                  </div>
+                )}
+
                 {selectedUser && (
                   <>
-                    {isLoading && (
+                    {isPostsLoading && (
                       <Loader />
                     )}
 
-                    {isError && (
+                    {isPostsLoadingError && (
                       <div
                         className="notification is-danger"
                         data-cy="PostsLoadingError"
@@ -67,19 +88,23 @@ export const App: React.FC = () => {
                       </div>
                     )}
 
-                    {!posts.length && !isLoading ? (
-                      <div
-                        className="notification is-warning"
-                        data-cy="NoPostsYet"
-                      >
-                        No posts yet
-                      </div>
-                    ) : (
-                      <PostsList
-                        posts={posts}
-                        chosenPost={chosenPost}
-                        setChosenPost={setChosenPost}
-                      />
+                    {!isPostsLoadingError && !isPostsLoading && (
+                      <>
+                        {!posts.length ? (
+                          <div
+                            className="notification is-warning"
+                            data-cy="NoPostsYet"
+                          >
+                            No posts yet
+                          </div>
+                        ) : (
+                          <PostsList
+                            posts={posts}
+                            chosenPost={chosenPost}
+                            setChosenPost={setChosenPost}
+                          />
+                        )}
+                      </>
                     )}
                   </>
                 )}

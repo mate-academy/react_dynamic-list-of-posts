@@ -37,7 +37,10 @@ export const PostsList: React.FC<Props> = ({
 
         <tbody>
           {posts.map(post => (
-            <tr data-cy="Post">
+            <tr
+              key={post.id}
+              data-cy="Post"
+            >
               <td data-cy="PostId">{post.id}</td>
 
               <td data-cy="PostTitle">

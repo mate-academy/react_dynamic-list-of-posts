@@ -13,22 +13,25 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ chosenPost }) => {
   const [comments, setComments] = useState<Comment[]>([]);
 
-  const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isCommentsError, setIsCommentsError] = useState(false);
+  const [isDeleteError, setIsDeleteError] = useState(false);
+
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [isEditingComment, setIsEditingComment] = useState(false);
 
   useEffect(() => {
-    setIsEditing(false);
-    setIsLoading(true);
+    setIsEditingComment(false);
+    setIsCommentsError(false);
+    setIsLoadingComments(true);
 
     getPostComments(chosenPost.id)
       .then(setComments)
-      .catch(() => setIsError(true))
-      .finally(() => setIsLoading(false));
+      .catch(() => setIsCommentsError(true))
+      .finally(() => setIsLoadingComments(false));
   }, [chosenPost.id]);
 
   const handleNewComment = () => {
-    setIsEditing(true);
+    setIsEditingComment(true);
   };
 
   const handleAddingNewComment = (newComment: Comment) => {
@@ -39,9 +42,16 @@ export const PostDetails: React.FC<Props> = ({ chosenPost }) => {
   };
 
   const handleRemoveComment = (deleteId: number) => {
-    removeComment(deleteId);
-
     setComments(comments.filter(comment => comment.id !== deleteId));
+
+    removeComment(deleteId)
+      .catch(() => {
+        setIsDeleteError(true);
+        setTimeout(() => {
+          setIsDeleteError(false);
+          setComments([...comments]);
+        }, 3000);
+      });
   };
 
   return (
@@ -58,13 +68,13 @@ export const PostDetails: React.FC<Props> = ({ chosenPost }) => {
         </div>
 
         <div className="block">
-          {isLoading && (
+          {isLoadingComments && (
             <Loader />
           )}
 
-          {isError && (
+          {isCommentsError && (
             <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
+              Unable to load comments
             </div>
           )}
 
@@ -83,7 +93,7 @@ export const PostDetails: React.FC<Props> = ({ chosenPost }) => {
                   data-cy="Comment"
                 >
                   <div className="message-header">
-                    <a href={comment.email} data-cy="CommentAuthor">
+                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                       {comment.name}
                     </a>
                     <button
@@ -105,7 +115,13 @@ export const PostDetails: React.FC<Props> = ({ chosenPost }) => {
             </>
           )}
 
-          {!isEditing && (
+          {isDeleteError && (
+            <div className="notification is-danger">
+              Unable to delete a comment
+            </div>
+          )}
+
+          {!isEditingComment && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -117,10 +133,10 @@ export const PostDetails: React.FC<Props> = ({ chosenPost }) => {
           )}
         </div>
 
-        {isEditing && (
+        {isEditingComment && (
           <NewCommentForm
             chosenPostId={chosenPost.id}
-            addNewComment={(newComment) => handleAddingNewComment(newComment)}
+            addNewComment={handleAddingNewComment}
           />
         )}
       </div>

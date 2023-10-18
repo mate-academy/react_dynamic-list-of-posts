@@ -30,6 +30,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const [errors, setErrors] = useState(initialErrors);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmittingError, setIsSubmittingError] = useState(false);
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -54,7 +55,17 @@ export const NewCommentForm: React.FC<Props> = ({
 
     const { name, email, body } = newComment;
 
-    if (!name) {
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedBody = body.trim();
+
+    const trimmedComment: CommentData = {
+      name: trimmedName,
+      email: trimmedEmail,
+      body: trimmedBody,
+    };
+
+    if (!trimmedName) {
       setErrors((currentErrors) => {
         return {
           ...currentErrors,
@@ -63,7 +74,7 @@ export const NewCommentForm: React.FC<Props> = ({
       });
     }
 
-    if (!email) {
+    if (!trimmedEmail) {
       setErrors((currentErrors) => {
         return {
           ...currentErrors,
@@ -72,7 +83,7 @@ export const NewCommentForm: React.FC<Props> = ({
       });
     }
 
-    if (!body) {
+    if (!trimmedBody) {
       setErrors((currentErrors) => {
         return {
           ...currentErrors,
@@ -81,13 +92,13 @@ export const NewCommentForm: React.FC<Props> = ({
       });
     }
 
-    if (name && email && body) {
+    if (trimmedName && trimmedEmail && trimmedBody) {
       setIsSubmitting(true);
 
-      createComment(chosenPostId, newComment)
+      createComment(chosenPostId, trimmedComment)
         .then(() => {
           addNewComment({
-            ...newComment,
+            ...trimmedComment,
             postId: chosenPostId,
             id: +new Date(),
           });
@@ -95,6 +106,12 @@ export const NewCommentForm: React.FC<Props> = ({
             ...newComment,
             body: '',
           });
+        })
+        .catch(() => {
+          setIsSubmittingError(true);
+          setTimeout(() => {
+            setIsSubmittingError(false);
+          }, 3000);
         })
         .finally(() => setIsSubmitting(false));
     }
@@ -233,6 +250,11 @@ export const NewCommentForm: React.FC<Props> = ({
           </button>
         </div>
       </div>
+      {isSubmittingError && (
+        <div className="notification is-danger">
+          Unable to send a comment
+        </div>
+      )}
     </form>
   );
 };
