@@ -31,7 +31,7 @@ export const UserSelector: React.FC<Props> = ({
       .catch(() => {
         setErrorNotification((error) => ({ ...error, users: true }));
       });
-  }, []);
+  }, [setErrorNotification]);
 
   return (
     <div

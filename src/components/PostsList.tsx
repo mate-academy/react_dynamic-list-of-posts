@@ -40,7 +40,7 @@ export const PostsList: React.FC<Props> = ({
         }));
       })
       .finally(() => setIsPostsLoading(true));
-  }, [userSelected.id]);
+  }, [userSelected.id, setErrorNotification, setIsPostsLoading, setPosts]);
 
   const handleSelectPost = (post: Post) => {
     setSelectedPost((current) => (

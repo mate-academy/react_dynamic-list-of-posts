@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { ErrorNotification } from '../types/ErrorNotification';
 import { Comment, CommentData } from '../types/Comment';
 import { apiActions } from '../utils/apiAction';
+import { EMPTY_FORM_DATA } from '../utils/Empty-From-Data';
 
 type Props = {
   postId: number,
@@ -20,18 +21,10 @@ export const NewCommentForm: React.FC<Props> = ({
 }) => {
   const [isFormSubmit, setIsFormSubmit] = useState(false);
   const [hasEmptyField, setHasEmptyField] = useState(false);
-  const [formData, setFormData] = useState<CommentData>({
-    email: '',
-    name: '',
-    body: '',
-  });
+  const [formData, setFormData] = useState<CommentData>(EMPTY_FORM_DATA);
 
   const handleReset = () => {
-    setFormData({
-      email: '',
-      name: '',
-      body: '',
-    });
+    setFormData(EMPTY_FORM_DATA);
   };
 
   const handleUpdateInfo = (
@@ -111,7 +104,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-user" />
           </span>
 
-          {!name && hasEmptyField && (
+          {!name.trim() && hasEmptyField && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -121,7 +114,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {!name && hasEmptyField && (
+        {!name.trim() && hasEmptyField && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -150,7 +143,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-envelope" />
           </span>
 
-          {!email && hasEmptyField && (
+          {!email.trim() && hasEmptyField && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -160,7 +153,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {!email && hasEmptyField && (
+        {!email.trim() && hasEmptyField && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -185,7 +178,7 @@ export const NewCommentForm: React.FC<Props> = ({
           />
         </div>
 
-        {!body && hasEmptyField && (
+        {!body.trim() && hasEmptyField && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>

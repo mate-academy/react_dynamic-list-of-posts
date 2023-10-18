@@ -32,7 +32,7 @@ export const PostDetails: React.FC<Props> = ({
         (prevErr: ErrorNotification) => ({ ...prevErr, comments: true }),
       ))
       .finally(() => setIsLoading(false));
-  }, [selectedPost]);
+  }, [selectedPost, setErrorNotification]);
 
   const handleDeleteComment = (id: number) => {
     apiActions.deleteComment(id);
