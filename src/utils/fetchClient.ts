@@ -1,3 +1,7 @@
+import { CommentData } from '../types/Comment';
+import { Post } from '../types/Post';
+import { User } from '../types/User';
+
 const BASE_URL = 'https://mate.academy/students-api';
 
 // a promise resolved after a given delay
@@ -10,10 +14,19 @@ function wait(delay: number) {
 // To have autocompletion and avoid mistypes
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
+type MateApiData = Comment
+| Post
+| CommentData
+| User
+| Comment[]
+| Post[]
+| User[]
+| null;
+
 function request<T>(
   url: string,
   method: RequestMethod = 'GET',
-  data: any = null, // we can send any data to the server
+  data: MateApiData = null, // we can send any data to the server
 ): Promise<T> {
   const options: RequestInit = { method };
 
@@ -28,12 +41,18 @@ function request<T>(
   // for a demo purpose we emulate a delay to see if Loaders work
   return wait(300)
     .then(() => fetch(BASE_URL + url, options))
-    .then(response => response.json());
+    .then(response => {
+      if (!response.ok) {
+        throw new Error();
+      }
+
+      return response.json();
+    });
 }
 
 export const client = {
   get: <T>(url: string) => request<T>(url),
-  post: <T>(url: string, data: any) => request<T>(url, 'POST', data),
-  patch: <T>(url: string, data: any) => request<T>(url, 'PATCH', data),
+  post: <T>(url: string, data: MateApiData) => request<T>(url, 'POST', data),
+  patch: <T>(url: string, data: MateApiData) => request<T>(url, 'PATCH', data),
   delete: (url: string) => request(url, 'DELETE'),
 };
