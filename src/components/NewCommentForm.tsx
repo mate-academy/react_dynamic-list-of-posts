@@ -21,19 +21,19 @@ export const NewCommentForm: React.FC = () => {
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHasNameError(false);
-    setName(event.target.value);
+    setName(event.target.value.trimStart());
   };
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHasEmailError(false);
-    setEmail(event.target.value);
+    setEmail(event.target.value.trimStart());
   };
 
   const handleCommentChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     setHasCommentError(false);
-    setComment(event.target.value);
+    setComment(event.target.value.trimStart());
   };
 
   const reset = () => {
@@ -66,25 +66,28 @@ export const NewCommentForm: React.FC = () => {
 
     setIsLoading(true);
 
-    createComment({
+    const newComment = {
       postId: selectedPost?.id || 0,
       name,
       email,
       body: comment,
-    }).then(commentFromServer => {
-      setPostComments(prevComments => {
-        if (prevComments) {
-          return [...prevComments, commentFromServer];
-        }
+    };
 
-        return null;
+    createComment(newComment)
+      .then(commentFromServer => {
+        setPostComments(prevComments => {
+          if (prevComments) {
+            return [...prevComments, commentFromServer];
+          }
+
+          return null;
+        });
+      }).catch(() => {
+        setHasFormError(true);
+      }).finally(() => {
+        setIsLoading(false);
+        setComment('');
       });
-    }).catch(() => {
-      setHasFormError(true);
-    }).finally(() => {
-      setIsLoading(false);
-      setComment('');
-    });
   };
 
   return (

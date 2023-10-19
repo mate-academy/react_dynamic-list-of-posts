@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 
 import cn from 'classnames';
 import { PostsList } from './PostsList';
-// import { PostDetails } from './PostDetails';
 import { UserSelector } from './UserSelector';
 import { usePosts } from '../hooks/usePosts';
 import { getPosts, getUsers } from '../api/postService';
