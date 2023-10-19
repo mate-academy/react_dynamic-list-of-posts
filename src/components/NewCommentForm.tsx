@@ -47,6 +47,10 @@ export const NewCommentForm: React.FC<Props> = ({
       return;
     }
 
+    onError(error => ({
+      ...error,
+      newComment: false,
+    }));
     setIsFormSubmit(true);
     setHasEmptyField(false);
 
