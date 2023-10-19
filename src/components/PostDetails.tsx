@@ -35,10 +35,21 @@ export const PostDetails: React.FC<Props> = ({
   }, [selectedPost, setErrorNotification]);
 
   const handleDeleteComment = (id: number) => {
-    apiActions.deleteComment(id);
-    setComments((current) => (
-      current.filter(comment => comment.id !== id)
-    ));
+    setErrorNotification(
+      (prevErr: ErrorNotification) => (
+        { ...prevErr, deleteComment: false }
+      ),
+    );
+
+    apiActions.deleteComment(id)
+      .then(() => {
+        setComments((current) => (
+          current.filter(comment => comment.id !== id)
+        ));
+      })
+      .catch(() => setErrorNotification(
+        (prevErr: ErrorNotification) => ({ ...prevErr, deleteComment: true }),
+      ));
   };
 
   return (
@@ -62,6 +73,12 @@ export const PostDetails: React.FC<Props> = ({
           {errorNotification.comments && !isLoading && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
+            </div>
+          )}
+
+          {errorNotification.deleteComment && !isLoading && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong with deleting comment
             </div>
           )}
 

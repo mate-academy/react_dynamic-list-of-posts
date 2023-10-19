@@ -22,6 +22,7 @@ export const App: React.FC = () => {
       posts: false,
       comments: false,
       newComment: false,
+      deleteComment: false,
     });
 
   return (

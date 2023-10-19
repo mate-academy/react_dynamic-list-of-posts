@@ -43,6 +43,11 @@ export const PostsList: React.FC<Props> = ({
   }, [userSelected.id, setErrorNotification, setIsPostsLoading, setPosts]);
 
   const handleSelectPost = (post: Post) => {
+    setErrorNotification((errorNotification) => ({
+      ...errorNotification,
+      comments: false,
+    }));
+
     setSelectedPost((current) => (
       current?.id === post.id ? null : post
     ));

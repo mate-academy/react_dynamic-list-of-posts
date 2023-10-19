@@ -3,4 +3,5 @@ export interface ErrorNotification {
   posts: boolean,
   comments: boolean,
   newComment: boolean,
+  deleteComment: boolean
 }
