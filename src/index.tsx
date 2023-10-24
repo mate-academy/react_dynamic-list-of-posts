@@ -1,8 +1,11 @@
 import ReactDOM from 'react-dom';
+import { UsersProvider } from './components/UsersContext';
 
 import { App } from './App';
 
 ReactDOM.render(
-  <App />,
+  <UsersProvider>
+    <App />
+  </UsersProvider>,
   document.getElementById('root'),
 );
