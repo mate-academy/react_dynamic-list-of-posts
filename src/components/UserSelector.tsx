@@ -1,6 +1,22 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
+import { UsersContext, UserContext } from './UserContext/UserContext';
+import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
+  const users = useContext(UsersContext);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const { handleUserSelect, user } = useContext(UserContext);
+
+  const handleMenu = () => {
+    setIsOpen(prev => !prev);
+  };
+
+  const handleUserId = (userId: User) => {
+    handleUserSelect(userId);
+    handleMenu();
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -12,8 +28,13 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={handleMenu}
         >
-          <span>Choose a user</span>
+          {user ? (
+            <span>{user.name}</span>
+          ) : (
+            <span>Choose a user</span>
+          )}
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -21,15 +42,22 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+      {isOpen && (
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div className="dropdown-content">
+            {(users?.map(item => (
+              <a
+                href={`#user-${item.id}`}
+                className="dropdown-item"
+                key={item.id}
+                onClick={() => handleUserId(item)}
+              >
+                {item.name}
+              </a>
+            )))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
