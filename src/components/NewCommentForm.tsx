@@ -27,13 +27,9 @@ export const NewCommentForm: React.FC<Props> = ({
     body: false,
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
 
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -119,7 +115,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': formError.name,
             })}
             value={formData.name}
-            onChange={handleInputChange}
+            onChange={handleChange}
           />
 
           <span className="icon is-small is-left">
@@ -158,7 +154,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': formError.email,
             })}
             value={formData.email}
-            onChange={handleInputChange}
+            onChange={handleChange}
           />
 
           <span className="icon is-small is-left">
@@ -196,7 +192,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': formError.body,
             })}
             value={formData.body}
-            onChange={handleTextChange}
+            onChange={handleChange}
           />
         </div>
         {formError.body && (
@@ -211,7 +207,6 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control">
           <button
             type="submit"
-            // className="button is-link is-loading"
             className={classNames('button is-link', {
               'is-loading': isLoading,
             })}
