@@ -83,7 +83,11 @@ export const PostDetails: React.FC<Props> = ({ postId, posts }) => {
           <p className="title is-4">Comments:</p>
 
           {comments?.map(comment => (
-            <article className="message is-small" data-cy="Comment">
+            <article
+              className="message is-small"
+              data-cy="Comment"
+              key={comment.id}
+            >
               <div className="message-header">
                 <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                   {comment.name}

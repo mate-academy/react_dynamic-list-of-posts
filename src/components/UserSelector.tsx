@@ -11,6 +11,8 @@ type Props = {
 export const UserSelector: React.FC<Props> = ({ users, userId, setUserId }) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const selectedUser = users?.find(item => item.id === userId);
+
   return (
     <>
 
@@ -28,7 +30,11 @@ export const UserSelector: React.FC<Props> = ({ users, userId, setUserId }) => {
             aria-controls="dropdown-menu"
             onClick={() => setIsOpen(!isOpen)}
           >
-            <span>Choose a user</span>
+            <span>
+              {userId
+                ? selectedUser?.name
+                : 'Choose a user'}
+            </span>
 
             <span className="icon is-small">
               <i className="fas fa-angle-down" aria-hidden="true" />

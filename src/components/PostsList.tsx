@@ -11,6 +11,14 @@ type Props = {
 export const PostsList: React.FC<Props> = ({
   postId, setPostId, posts,
 }) => {
+  const handleClick = (id: number) => {
+    if (postId === id) {
+      setPostId(0);
+    } else {
+      setPostId(id);
+    }
+  };
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -43,13 +51,7 @@ export const PostsList: React.FC<Props> = ({
                   className={classNames('button is-link', {
                     'is-light': postId !== post.id,
                   })}
-                  onClick={() => {
-                    if (postId === post.id) {
-                      setPostId(0);
-                    } else {
-                      setPostId(post.id);
-                    }
-                  }}
+                  onClick={() => handleClick(post.id)}
                 >
                   {postId !== post.id
                     ? 'Open'
