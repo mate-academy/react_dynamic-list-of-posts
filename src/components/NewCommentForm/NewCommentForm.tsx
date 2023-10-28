@@ -2,23 +2,15 @@ import React, { useState, useContext } from 'react';
 import cn from 'classnames';
 import * as getService from '../../services/AppServices';
 import { AppContext } from '../AppContext';
+import * as formDefault from '../../variables/formDefaults';
 
 type Props = {
   setErrorMessage: (message: string) => void;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ setErrorMessage }) => {
-  const [formDate, setFormDate] = useState({
-    name: '',
-    email: '',
-    body: '',
-  });
-
-  const [formErrors, setFormErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
-  });
+  const [formDate, setFormDate] = useState(formDefault.DEFAULT_FORM_DATA);
+  const [formErrors, setFormErrors] = useState(formDefault.DEFAULT_FORM_ERRORS);
 
   const [loading, setLoading] = useState(false);
   const { setComments, selectedPost } = useContext(AppContext);
@@ -179,7 +171,9 @@ export const NewCommentForm: React.FC<Props> = ({ setErrorMessage }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={cn('input', { 'is-danger': formErrors.body })}
+            className={cn(
+              'textarea has-fixed-size', { 'is-danger': formErrors.body },
+            )}
             value={formDate.body}
             onChange={handleInputChange}
           />

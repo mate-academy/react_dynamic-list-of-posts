@@ -4,7 +4,8 @@ import { AppContext } from '../AppContext';
 import { User } from '../../types/User';
 
 export const UserSelector: React.FC = React.memo(() => {
-  const [showUsers, setShowUsers] = useState(false);
+  const [showAllUsers, setAllShowUsers] = useState(false);
+
   const {
     users,
     selectedUser,
@@ -15,7 +16,7 @@ export const UserSelector: React.FC = React.memo(() => {
 
   const handleUserClick = (user: User) => {
     setSelectedUser(user);
-    setShowUsers(false);
+    setAllShowUsers(false);
     setSelectedPost(null);
     setComments([]);
   };
@@ -23,7 +24,7 @@ export const UserSelector: React.FC = React.memo(() => {
   return (
     <div
       data-cy="UserSelector"
-      className={cn('dropdown', { 'is-active': showUsers })}
+      className={cn('dropdown', { 'is-active': showAllUsers })}
     >
       <div className="dropdown-trigger">
         <button
@@ -31,7 +32,7 @@ export const UserSelector: React.FC = React.memo(() => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setShowUsers(!showUsers)}
+          onClick={() => setAllShowUsers(!showAllUsers)}
         >
           <span>
             {!selectedUser

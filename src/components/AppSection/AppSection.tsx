@@ -16,8 +16,8 @@ export const AppSection: React.FC = () => {
     setUserPosts,
     selectedPost,
   } = useContext(AppContext);
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [isloading, setisLoading] = useState(false);
+  const [hasErrorMessage, setHasErrorMessage] = useState('');
 
   useEffect(() => {
     getService.getUsers()
@@ -27,13 +27,13 @@ export const AppSection: React.FC = () => {
 
   useEffect(() => {
     if (selectedUser) {
-      setErrorMessage('');
-      setLoading(true);
+      setHasErrorMessage('');
+      setisLoading(true);
 
       getService.getUserPosts(selectedUser.id)
         .then(setUserPosts)
-        .catch(() => setErrorMessage('Something went wrong!'))
-        .finally(() => setLoading(false));
+        .catch(() => setHasErrorMessage('Something went wrong!'))
+        .finally(() => setisLoading(false));
     }
   }, [setUserPosts, selectedUser]);
 
@@ -48,7 +48,7 @@ export const AppSection: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!errorMessage && (
+                {!hasErrorMessage && (
                   <>
                     {!selectedUser ? (
                       <p data-cy="NoSelectedUser">
@@ -56,9 +56,9 @@ export const AppSection: React.FC = () => {
                       </p>
                     ) : (
                       <>
-                        {loading && <Loader />}
+                        {isloading && <Loader />}
 
-                        {!loading && userPosts.length === 0 ? (
+                        {!isloading && !userPosts.length ? (
                           <div
                             className="notification is-warning"
                             data-cy="NoPostsYet"
@@ -71,12 +71,12 @@ export const AppSection: React.FC = () => {
                   </>
                 )}
 
-                {errorMessage && (
+                {hasErrorMessage && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    {errorMessage}
+                    {hasErrorMessage}
                   </div>
                 )}
               </div>

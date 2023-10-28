@@ -5,37 +5,37 @@ import { AppContext } from '../AppContext';
 import * as getServices from '../../services/AppServices';
 
 export const PostDetails: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [activeButton, setActiveButton] = useState(true);
+  const [isloading, setIsLoading] = useState(false);
+  const [hasErrorMessage, setHasErrorMessage] = useState('');
+  const [isActiveButton, setIsActiveButton] = useState(true);
 
   const { selectedPost, setComments, comments } = useContext(AppContext);
 
   useEffect(() => {
-    setErrorMessage('');
-    setActiveButton(true);
+    setHasErrorMessage('');
+    setIsActiveButton(true);
 
     if (selectedPost) {
-      setLoading(true);
-      setErrorMessage('');
+      setIsLoading(true);
+      setHasErrorMessage('');
 
       getServices.getPostComments(selectedPost.id)
         .then(setComments)
-        .catch(() => setErrorMessage('Something went wrong!'))
-        .finally(() => setLoading(false));
+        .catch(() => setHasErrorMessage('Something went wrong!'))
+        .finally(() => setIsLoading(false));
     }
   }, [selectedPost, setComments]);
 
   const handleFormComments = () => {
-    setActiveButton(false);
+    setIsActiveButton(false);
   };
 
   const handleDeleteComment = (commentId: number) => {
-    setErrorMessage('');
+    setHasErrorMessage('');
     setComments(prev => prev.filter(comment => comment.id !== commentId));
 
     getServices.getDeleteComment(commentId)
-      .catch(() => setErrorMessage('Something went wrong!'));
+      .catch(() => setHasErrorMessage('Something went wrong!'));
   };
 
   return (
@@ -54,11 +54,11 @@ export const PostDetails: React.FC = () => {
             </div>
 
             <div className="block">
-              {!errorMessage && (
+              {!hasErrorMessage && (
                 <>
-                  {loading && <Loader />}
+                  {isloading && <Loader />}
 
-                  {!loading && comments?.length === 0 ? (
+                  {!isloading && !comments?.length ? (
                     <p className="title is-4" data-cy="NoCommentsMessage">
                       No comments yet
                     </p>
@@ -66,28 +66,33 @@ export const PostDetails: React.FC = () => {
                     <>
                       <p className="title is-4">Comments: </p>
                       <>
-                        {comments?.map(comment => (
+                        {comments?.map(({
+                          id, name, email, body,
+                        }) => (
                           <article
                             className="message is-small"
                             data-cy="Comment"
-                            key={comment.id}
+                            key={id}
                           >
                             <div className="message-header">
-                              <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                                {comment.name}
+                              <a
+                                href={`mailto:${email}`}
+                                data-cy="CommentAuthor"
+                              >
+                                {name}
                               </a>
                               <button
                                 data-cy="CommentDelete"
                                 type="button"
                                 className="delete is-small"
                                 aria-label="delete"
-                                onClick={() => handleDeleteComment(comment.id)}
+                                onClick={() => handleDeleteComment(id)}
                               >
                                 delete button
                               </button>
                             </div>
                             <div className="message-body" data-cy="CommentBody">
-                              {comment.body}
+                              {body}
                             </div>
                           </article>
                         ))}
@@ -95,7 +100,7 @@ export const PostDetails: React.FC = () => {
                     </>
                   )}
 
-                  {!loading && activeButton && (
+                  {!isloading && isActiveButton && (
                     <button
                       data-cy="WriteCommentButton"
                       type="button"
@@ -108,16 +113,16 @@ export const PostDetails: React.FC = () => {
                 </>
               )}
 
-              {errorMessage && (
+              {hasErrorMessage && (
                 <div className="notification is-danger" data-cy="CommentsError">
-                  {errorMessage}
+                  {hasErrorMessage}
                 </div>
               )}
             </div>
 
-            {!activeButton && !errorMessage && (
+            {!isActiveButton && !hasErrorMessage && (
               <NewCommentForm
-                setErrorMessage={(message) => setErrorMessage(message)}
+                setErrorMessage={(message) => setHasErrorMessage(message)}
               />
             )}
           </div>
