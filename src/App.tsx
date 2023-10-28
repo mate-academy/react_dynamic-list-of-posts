@@ -20,6 +20,8 @@ export const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const conditionForNoPostsYet = !loading && !errorMessage
+    && !userPosts.length && selectedUser;
 
   const handleButtonClick = (post: Post) => {
     if (selectedPost?.id === post.id) {
@@ -79,14 +81,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!loading && !errorMessage
-                && userPosts.length === 0 && selectedUser && (
+                {conditionForNoPostsYet && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {!loading && userPosts.length > 0 && (
+                {!loading && !!userPosts.length && (
                   <PostsList
                     userPosts={userPosts}
                     selectedPost={selectedPost}

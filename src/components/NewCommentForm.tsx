@@ -71,11 +71,11 @@ export const NewCommentForm: React.FC<Props>
     const handleAdd = (event: React.FormEvent) => {
       event.preventDefault();
 
-      setHasNameError(!name);
-      setHasEmailError(!email);
-      setHasCommentError(!comment);
+      setHasNameError(!name.trim());
+      setHasEmailError(!email.trim());
+      setHasCommentError(!comment.trim());
 
-      if (!name || !email || !comment) {
+      if (!name.trim() || !email.trim() || !comment.trim()) {
         return;
       }
 
@@ -86,6 +86,12 @@ export const NewCommentForm: React.FC<Props>
         email,
         body: comment,
       });
+    };
+
+    const handleClear = () => {
+      setName('');
+      setEmail('');
+      setComment('');
     };
 
     return (
@@ -209,7 +215,11 @@ export const NewCommentForm: React.FC<Props>
 
           <div className="control">
             {/* eslint-disable-next-line react/button-has-type */}
-            <button type="reset" className="button is-link is-light">
+            <button
+              type="reset"
+              className="button is-link is-light"
+              onClick={handleClear}
+            >
               Clear
             </button>
           </div>
