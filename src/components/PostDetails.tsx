@@ -45,6 +45,10 @@ export const PostDetails: React.FC<Props> = ({
     }
   }, []);
 
+  const toggleFormActive = () => {
+    setFormIsActive(currValue => !currValue);
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -99,7 +103,7 @@ export const PostDetails: React.FC<Props> = ({
                     data-cy="WriteCommentButton"
                     type="button"
                     className="button is-link"
-                    // onClick={toggleFormActive}
+                    onClick={toggleFormActive}
                   >
                     Write a comment
                   </button>
@@ -108,7 +112,12 @@ export const PostDetails: React.FC<Props> = ({
             )}
         </div>
 
-        <NewCommentForm />
+        {formIsActive && (
+          <NewCommentForm
+            postId={post.id}
+            setComments={setComments}
+          />
+        )}
       </div>
     </div>
   );

@@ -40,10 +40,10 @@ export const PostsList: React.FC<Props> = ({
         </thead>
 
         <tbody>
-          <tr data-cy="Post">
-            {
-              posts.map(post => (
-                <>
+          {
+            posts.map(post => (
+              <>
+                <tr data-cy="Post">
                   <td data-cy="PostId">{post.id}</td>
 
                   <td data-cy="PostTitle">
@@ -62,13 +62,12 @@ export const PostsList: React.FC<Props> = ({
                       {post.id !== selectedPost?.id
                         ? 'Open'
                         : 'Close'}
-
                     </button>
                   </td>
-                </>
-              ))
-            }
-          </tr>
+                </tr>
+              </>
+            ))
+          }
         </tbody>
       </table>
     </div>
