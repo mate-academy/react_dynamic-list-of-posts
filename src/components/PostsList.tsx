@@ -4,14 +4,14 @@ import { Post } from '../types/Post';
 
 type Prop = {
   posts: Post[] | null,
-  handlePostDetailsId: (id: number) => void,
-  isPostsId: number | null,
+  handlePostSelect: (post: Post) => void,
+  selectedPostId: number,
 };
 
 export const PostsList: React.FC<Prop> = React.memo(({
   posts,
-  handlePostDetailsId,
-  isPostsId,
+  handlePostSelect,
+  selectedPostId,
 }) => (
   <div
     data-cy="PostsList"
@@ -27,36 +27,38 @@ export const PostsList: React.FC<Prop> = React.memo(({
       </thead>
 
       <tbody>
-        {posts?.map(post => (
-          <tr key={post.id} data-cy="Post">
-            <td data-cy="PostId">{post.id}</td>
+        {posts?.map(post => {
+          const { id, title } = post;
 
-            <td data-cy="PostTitle">
-              {post.title}
-            </td>
+          return (
+            <tr key={id} data-cy="Post">
+              <td data-cy="PostId">{id}</td>
 
-            <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className={cn(
-                  'button',
-                  'is-link',
-                  { 'is-light': isPostsId === post.id },
-                )}
-                onClick={() => {
-                  handlePostDetailsId(post.id);
-                }}
-              >
-                {isPostsId === post.id ? (
-                  'close'
-                ) : (
-                  'open'
-                )}
-              </button>
-            </td>
-          </tr>
-        ))}
+              <td data-cy="PostTitle">
+                {title}
+              </td>
+
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className={cn(
+                    'button',
+                    'is-link',
+                    { 'is-light': selectedPostId === id },
+                  )}
+                  onClick={() => handlePostSelect(post)}
+                >
+                  {selectedPostId === id ? (
+                    'close'
+                  ) : (
+                    'open'
+                  )}
+                </button>
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   </div>

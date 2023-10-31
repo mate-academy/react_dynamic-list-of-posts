@@ -1,30 +1,60 @@
-import React from 'react';
+import React, {
+  useEffect,
+  useState,
+} from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
+import { deleteComment, getComments } from '../api/posts';
 
 type Props = {
-  post: Post | undefined,
+  post: Post,
+  setIsError: (error: boolean) => void,
   error: boolean,
-  isLoadingPost: boolean,
-  comments: Comment[],
-  setComments: (comments: Comment[]) => void,
-  wrtCommentBtnClk: boolean,
-  handleWrtCommentBtnClk: () => void;
-  handleCommentDelete: (id: number) => void;
 };
 
 export const PostDetails: React.FC<Props> = React.memo(({
   post,
+  setIsError,
   error,
-  isLoadingPost,
-  comments,
-  wrtCommentBtnClk,
-  handleWrtCommentBtnClk,
-  handleCommentDelete,
-  setComments,
 }) => {
+  const [comments, setComments] = useState<Comment[] | null>(null);
+  const [writeCommentButtonClick, setWriteCommentButtonClick] = useState(false);
+
+  const loadComments = async () => {
+    const loadingUsers = await getComments(post.id);
+
+    setComments(loadingUsers);
+  };
+
+  useEffect(() => {
+    setComments(null);
+    loadComments();
+    setWriteCommentButtonClick(false);
+  }, [post.id]);
+
+  const handleCommentDelete = (id: number) => {
+    setIsError(false);
+    try {
+      deleteComment(id);
+
+      setComments(state => {
+        if (state) {
+          return [...state.filter(comment => comment.id !== id)];
+        }
+
+        return [];
+      });
+    } catch {
+      setIsError(true);
+    }
+  };
+
+  const handleWriteCommentButtonClick = () => {
+    setWriteCommentButtonClick(true);
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -39,65 +69,73 @@ export const PostDetails: React.FC<Props> = React.memo(({
         </div>
 
         <div className="block">
-          {isLoadingPost && (
+          {!comments ? (
             <Loader />
-          )}
-          {error && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
-            </div>
-          )}
-
-          <p className="title is-4">Comments:</p>
-
-          {!comments.length ? (
-            <p className="title is-4" data-cy="NoCommentsMessage">
-              No comments yet
-            </p>
           ) : (
-            comments.map(comment => (
-              <article
-                key={comment.id}
-                className="message is-small"
-                data-cy="Comment"
-              >
-                <div className="message-header">
-                  <a href={comment.email} data-cy="CommentAuthor">
-                    {comment.name}
-                  </a>
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                    onClick={() => {
-                      handleCommentDelete(comment.id);
-                    }}
-                  >
-                    delete button
-                  </button>
+            <>
+              {error && (
+                <div className="notification is-danger" data-cy="CommentsError">
+                  Something went wrong
                 </div>
-                <div className="message-body" data-cy="CommentBody">
-                  {comment.body}
-                </div>
-              </article>
-            ))
+              )}
+
+              <p className="title is-4">Comments:</p>
+
+              {!comments?.length ? (
+                <p className="title is-4" data-cy="NoCommentsMessage">
+                  No comments yet
+                </p>
+              ) : (
+                comments?.map(comment => {
+                  const {
+                    id,
+                    email,
+                    name,
+                    body,
+                  } = comment;
+
+                  return (
+                    <article
+                      key={id}
+                      className="message is-small"
+                      data-cy="Comment"
+                    >
+                      <div className="message-header">
+                        <a href={email} data-cy="CommentAuthor">
+                          {name}
+                        </a>
+                        <button
+                          data-cy="CommentDelete"
+                          type="button"
+                          className="delete is-small"
+                          aria-label="delete"
+                          onClick={() => handleCommentDelete(id)}
+                        >
+                          delete button
+                        </button>
+                      </div>
+                      <div className="message-body" data-cy="CommentBody">
+                        {body}
+                      </div>
+                    </article>
+                  );
+                })
+              )}
+            </>
           )}
-          {!wrtCommentBtnClk && (
+          {!writeCommentButtonClick && (
             <button
               data-cy="WriteCommentButton"
               type="button"
               className="button is-link"
-              onClick={() => {
-                handleWrtCommentBtnClk();
-              }}
+              onClick={() => handleWriteCommentButtonClick()}
             >
               Write a comment
             </button>
           )}
         </div>
 
-        {wrtCommentBtnClk && (
+        {writeCommentButtonClick && (
           <NewCommentForm
             setComments={setComments}
             postId={post?.id}

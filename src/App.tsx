@@ -1,6 +1,5 @@
 import React, {
   useEffect,
-  useMemo,
   useState,
 } from 'react';
 import 'bulma/bulma.sass';
@@ -13,28 +12,18 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import {
-  deleteComment,
-  getComments,
   getPosts,
   getUsers,
 } from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { Comment } from './types/Comment';
 
 export const App: React.FC = () => {
-  const [users, setUsers] = useState<User[] | null>(null);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [isPickerOpen, setIsPickerOpen] = useState(false);
-  const [isLoadingPosts, setIsLoadingPosts] = useState(false);
-  const [isLoadingPost, setIsLoadingPost] = useState(false);
-  const [isErrorPosts, setIsErrorPosts] = useState(false);
-  const [isErrorPost, setIsErrorPost] = useState(false);
-  const [isPosts, setIsPosts] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[] | null>(null);
+  const [isError, setIsError] = useState(false);
   const [choosenUser, setChoosenUser] = useState<User | null>(null);
-  const [isPostsId, setIsPostsId] = useState<number | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [wrtCommentBtnClk, setWrtCommentBtnClk] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const loadUsers = async () => {
     const loadingUsers = await getUsers();
@@ -42,79 +31,34 @@ export const App: React.FC = () => {
     setUsers(loadingUsers);
   };
 
+  const loadPosts = async () => {
+    if (choosenUser) {
+      const loadingPosts = await getPosts(choosenUser.id);
+
+      setPosts(loadingPosts);
+    }
+  };
+
   useEffect(() => {
     loadUsers();
   }, []);
 
-  const handlePickerClick = () => {
-    setIsPickerOpen(state => !state);
+  useEffect(() => {
+    setPosts(null);
+    setIsError(false);
+    loadPosts();
+  }, [choosenUser]);
+
+  const handleUserSelect = (user: User) => {
+    setSelectedPost(null);
+    setChoosenUser(user);
   };
 
-  const handleChoosenUser = async (user: User) => {
-    setIsPostsId(null);
-
-    try {
-      setWrtCommentBtnClk(false);
-      setIsPosts(false);
-      setIsErrorPosts(false);
-      setIsLoadingPosts(true);
-      setIsPickerOpen(false);
-      setChoosenUser(user);
-      const loadingPosts = await getPosts(user.id);
-
-      setPosts(() => {
-        return [...loadingPosts as Post[]];
-      });
-      setIsLoadingPosts(false);
-      if (!loadingPosts?.length) {
-        setIsPosts(true);
-      }
-    } catch {
-      setIsLoadingPosts(false);
-      setIsErrorPosts(true);
-    }
-  };
-
-  const visiblePost = useMemo(() => {
-    return posts.find(postO => postO.id === isPostsId);
-  }, [isPostsId, posts]);
-
-  const handlePostDetailsId = async (id: number | null) => {
-    setWrtCommentBtnClk(false);
-
-    if (id === isPostsId) {
-      setIsPostsId(null);
-      setComments([]);
+  const handlePostSelect = (post: Post) => {
+    if (selectedPost?.id === post.id) {
+      setSelectedPost(null);
     } else {
-      setIsPostsId(id);
-      try {
-        setComments([]);
-        setIsLoadingPost(true);
-        const loadingComment: unknown = await getComments(id);
-
-        setComments(() => {
-          return [...loadingComment as Comment[]];
-        });
-        setIsLoadingPost(false);
-      } catch {
-        setIsErrorPost(true);
-      }
-    }
-  };
-
-  const handleWrtCommentBtnClk = () => {
-    setWrtCommentBtnClk(true);
-  };
-
-  const handleCommentDelete = (id: number) => {
-    try {
-      deleteComment(id);
-
-      setComments(state => {
-        return [...state.filter(comment => comment.id !== id)];
-      });
-    } catch {
-      setIsErrorPosts(true);
+      setSelectedPost(post);
     }
   };
 
@@ -128,9 +72,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   users={users}
                   choosenUser={choosenUser}
-                  handleChoosenUser={handleChoosenUser}
-                  handlePickerClick={handlePickerClick}
-                  isPickerOpen={isPickerOpen}
+                  handleUserSelect={handleUserSelect}
                 />
               </div>
               <div className="block" data-cy="MainContent">
@@ -139,11 +81,11 @@ export const App: React.FC = () => {
                     No user selected
                   </p>
                 )}
-                {isLoadingPosts && (
+                {!posts && choosenUser && (
                   <Loader />
                 )}
 
-                {isErrorPosts && (
+                {isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -152,7 +94,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {isPosts && (
+                {!posts?.length && posts !== null && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
@@ -161,8 +103,8 @@ export const App: React.FC = () => {
                 {!!posts?.length && (
                   <PostsList
                     posts={posts}
-                    handlePostDetailsId={handlePostDetailsId}
-                    isPostsId={isPostsId}
+                    handlePostSelect={handlePostSelect}
+                    selectedPostId={selectedPost?.id || 0}
                   />
                 )}
               </div>
@@ -176,20 +118,15 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': isPostsId },
+              { 'Sidebar--open': selectedPost?.id },
             )}
           >
-            {isPostsId && (
+            {selectedPost && (
               <div className="tile is-child box is-success ">
                 <PostDetails
-                  post={visiblePost}
-                  error={isErrorPost}
-                  isLoadingPost={isLoadingPost}
-                  comments={comments}
-                  handleWrtCommentBtnClk={handleWrtCommentBtnClk}
-                  wrtCommentBtnClk={wrtCommentBtnClk}
-                  handleCommentDelete={handleCommentDelete}
-                  setComments={setComments}
+                  post={selectedPost}
+                  setIsError={setIsError}
+                  error={isError}
                 />
               </div>
             )}

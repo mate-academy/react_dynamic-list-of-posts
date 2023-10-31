@@ -1,22 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import cn from 'classnames';
 import { User } from '../types/User';
 
 type Props = {
-  users: User[] | null,
+  users: User[],
   choosenUser: User | null,
-  handleChoosenUser: (user: User) => void,
-  handlePickerClick: () => void,
-  isPickerOpen: boolean;
+  handleUserSelect: (user: User) => void,
+  // handlePickerClick: () => void,
+  // isPickerOpen: boolean;
 };
 
 export const UserSelector: React.FC<Props> = React.memo(({
   users,
   choosenUser,
-  handleChoosenUser,
-  handlePickerClick,
-  isPickerOpen,
+  handleUserSelect,
+  // handlePickerClick,
+  // isPickerOpen,
 }) => {
+  const [isPickerOpen, setIsPickerOpen] = useState<boolean>(false);
+
   return (
     <div
       data-cy="UserSelector"
@@ -29,7 +31,7 @@ export const UserSelector: React.FC<Props> = React.memo(({
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => {
-            handlePickerClick();
+            setIsPickerOpen((state) => !state);
           }}
         >
           {choosenUser ? (
@@ -48,7 +50,7 @@ export const UserSelector: React.FC<Props> = React.memo(({
           <div
             className="dropdown-content"
           >
-            {users?.map(user => {
+            {users.map(user => {
               return (
                 <a
                   key={user.id}
@@ -57,7 +59,8 @@ export const UserSelector: React.FC<Props> = React.memo(({
                     'is-active': user.name === choosenUser?.name,
                   })}
                   onClick={() => {
-                    handleChoosenUser(user);
+                    handleUserSelect(user);
+                    setIsPickerOpen(false);
                   }}
                 >
                   {user.name}

@@ -16,7 +16,7 @@ export const getPost = (id: number | null) => {
 };
 
 export const getComments = (id: number | null) => {
-  return client.get<Comment>(`/comments?postId=${id}`);
+  return client.get<Comment[]>(`/comments?postId=${id}`);
 };
 
 export const deleteComment = (id: number) => {
@@ -24,5 +24,5 @@ export const deleteComment = (id: number) => {
 };
 
 export const addComment = (data: any) => {
-  return client.post('/comments', data);
+  return client.post<Comment>('/comments', data);
 };

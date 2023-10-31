@@ -1,14 +1,14 @@
 import cn from 'classnames';
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { Comment } from '../types/Comment';
 import { addComment } from '../api/posts';
 
 type Props = {
   postId: number | undefined,
-  setComments: (comment: any) => void,
+  setComments: React.Dispatch<React.SetStateAction<Comment[] | null>>,
 };
 
-export const NewCommentForm: React.FC<Props> = ({
+export const NewCommentForm: React.FC<Props> = React.memo(({
   setComments,
   postId,
 }) => {
@@ -36,6 +36,10 @@ export const NewCommentForm: React.FC<Props> = ({
     setCheckFieldEmail(false);
     setCheckFieldBody(false);
   };
+
+  useEffect(() => {
+    handleClear();
+  }, [postId]);
 
   const nameTrim = name.trim();
   const emailTrim = email.trim();
@@ -66,8 +70,12 @@ export const NewCommentForm: React.FC<Props> = ({
 
       const loadComment = await addComment(newComment);
 
-      setComments((state: Comment[]) => {
-        return [...state, loadComment];
+      setComments((state) => {
+        if (state) {
+          return [...state, loadComment];
+        }
+
+        return [loadComment];
       });
       setCheckFieldBody(false);
       setBody('');
@@ -80,7 +88,6 @@ export const NewCommentForm: React.FC<Props> = ({
 
   return (
     <>
-
       <div>
         {error}
       </div>
@@ -226,4 +233,4 @@ export const NewCommentForm: React.FC<Props> = ({
       </form>
     </>
   );
-};
+});
