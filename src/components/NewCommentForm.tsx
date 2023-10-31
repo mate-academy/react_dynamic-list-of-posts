@@ -80,8 +80,8 @@ export const NewCommentForm: React.FC<Props> = ({
       setFormErrors(currValue => ({ ...currValue, isTextError: true }));
     }
 
-    if (!formFields.name.trim() 
-    || !formFields.email.trim() 
+    if (!formFields.name.trim()
+    || !formFields.email.trim()
     || !formFields.text.trim()
     ) {
       return;
