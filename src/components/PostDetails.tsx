@@ -126,7 +126,7 @@ export const PostDetails: React.FC<Props> = React.memo(({
               data-cy="WriteCommentButton"
               type="button"
               className="button is-link"
-              onClick={() => handleWriteCommentButtonClick()}
+              onClick={handleWriteCommentButtonClick}
             >
               Write a comment
             </button>
