@@ -86,14 +86,12 @@ export const PostDetails: React.FC<Props> = React.memo(({
                   No comments yet
                 </p>
               ) : (
-                comments?.map(comment => {
-                  const {
-                    id,
-                    email,
-                    name,
-                    body,
-                  } = comment;
-
+                comments?.map(({
+                  id,
+                  email,
+                  name,
+                  body,
+                }) => {
                   return (
                     <article
                       key={id}

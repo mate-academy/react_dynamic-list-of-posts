@@ -86,6 +86,27 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
     setIsLoading(false);
   };
 
+  const handleInputOnChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    input: string,
+  ) => {
+    switch (input) {
+      case 'name':
+        setCheckFieldName(false);
+        setName(event.target?.value);
+        break;
+      case 'email':
+        setCheckFieldEmail(false);
+        setEmail(event.target?.value);
+        break;
+      case 'body':
+        setCheckFieldBody(false);
+        setBody(event.target?.value);
+        break;
+      default: break;
+    }
+  };
+
   return (
     <>
       <div>
@@ -112,8 +133,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
                 })}
               value={name}
               onChange={(event) => {
-                setCheckFieldName(false);
-                setName(event.target.value);
+                handleInputOnChange(event, 'name');
               }}
             />
 
@@ -153,8 +173,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
                 })}
               value={email}
               onChange={(event) => {
-                setCheckFieldEmail(false);
-                setEmail(event.target.value);
+                handleInputOnChange(event, 'email');
               }}
             />
 
@@ -193,8 +212,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
                 })}
               value={body}
               onChange={(event) => {
-                setCheckFieldBody(false);
-                setBody(event.target.value);
+                handleInputOnChange(event, 'body');
               }}
             />
           </div>

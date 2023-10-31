@@ -6,18 +6,19 @@ type Props = {
   users: User[],
   choosenUser: User | null,
   handleUserSelect: (user: User) => void,
-  // handlePickerClick: () => void,
-  // isPickerOpen: boolean;
 };
 
 export const UserSelector: React.FC<Props> = React.memo(({
   users,
   choosenUser,
   handleUserSelect,
-  // handlePickerClick,
-  // isPickerOpen,
 }) => {
   const [isPickerOpen, setIsPickerOpen] = useState<boolean>(false);
+
+  const handleUserSelectClick = (user: User) => {
+    handleUserSelect(user);
+    setIsPickerOpen(false);
+  };
 
   return (
     <div
@@ -59,8 +60,7 @@ export const UserSelector: React.FC<Props> = React.memo(({
                     'is-active': user.name === choosenUser?.name,
                   })}
                   onClick={() => {
-                    handleUserSelect(user);
-                    setIsPickerOpen(false);
+                    handleUserSelectClick(user);
                   }}
                 >
                   {user.name}
