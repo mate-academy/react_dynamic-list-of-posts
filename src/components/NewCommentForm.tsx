@@ -87,21 +87,23 @@ export const NewCommentForm: React.FC<Props> = React.memo(({
   };
 
   const handleInputOnChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
+    event:
+    React.ChangeEvent<HTMLInputElement>
+    | React.ChangeEvent<HTMLTextAreaElement>,
     input: string,
   ) => {
     switch (input) {
       case 'name':
         setCheckFieldName(false);
-        setName(event.target?.value);
+        setName(event.target.value);
         break;
       case 'email':
         setCheckFieldEmail(false);
-        setEmail(event.target?.value);
+        setEmail(event.target.value);
         break;
       case 'body':
         setCheckFieldBody(false);
-        setBody(event.target?.value);
+        setBody(event.target.value);
         break;
       default: break;
     }
