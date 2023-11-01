@@ -38,7 +38,7 @@ export const App: React.FC = () => {
       setLoadingPosts(true);
       getPosts(selectUser.id)
         .then((pOsts: Post[]) => {
-          if (pOsts.length === 0) {
+          if (!pOsts.length) {
             setMessageHasNotPosts('No posts yet');
           } else {
             setPosts(pOsts);

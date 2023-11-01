@@ -111,7 +111,7 @@ export const PostDetails: React.FC<Props> = ({
             && (
               <>
                 {
-                  comments.length > 0 && (
+                  !!comments.length && (
                     <p className="title is-4">Comments:</p>
                   )
                 }
