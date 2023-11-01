@@ -115,8 +115,8 @@ export const App: React.FC = () => {
                     && selectUser
                   ) && (
                     <PostsList
-                      posts={posts}
                       selectPost={selectPost}
+                      posts={posts}
                       onSelectedPost={setSelecedPost}
                       openedSidebar={openedSideBar}
                       setOpenedSidebar={setOpenedSidebar}

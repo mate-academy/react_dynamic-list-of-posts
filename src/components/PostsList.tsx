@@ -1,8 +1,8 @@
 import { Post } from '../types/Post';
 
 type Props = {
-  posts: Post[],
   selectPost: Post | null,
+  posts: Post[],
   onSelectedPost: (post: Post | null) => void,
   openedSidebar: boolean,
   setOpenedSidebar: (open: boolean) => void,
@@ -10,8 +10,8 @@ type Props = {
 };
 
 export const PostsList: React.FC<Props> = ({
-  posts,
   selectPost,
+  posts,
   onSelectedPost = () => {},
   openedSidebar,
   setOpenedSidebar = () => {},
