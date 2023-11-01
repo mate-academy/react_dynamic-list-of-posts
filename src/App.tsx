@@ -1,15 +1,54 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { User } from './types/User';
+import { getPosts } from './services/getPostsByUserIS';
+import { Post } from './types/Post';
+import { getUsers } from './services/users';
 
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectUser, setSelectUser] = useState<User | null>(null);
+  const [errorLoadUsers, setErrorLoadingUsers] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loadingPosts, setLoadingPosts] = useState(false);
+  const [messageHasNotPosts, setMessageHasNotPosts] = useState('');
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [selectPost, setSelecedPost] = useState<Post | null>(null);
+  const [openedSideBar, setOpenedSidebar] = useState(false);
+  const [openedCommentForm, setOpenedCommentForm] = useState(false);
+
+  useEffect(() => {
+    getUsers()
+      .then(setUsers)
+      .catch(() => setErrorLoadingUsers('Unable to load users.'));
+  }, []);
+
+  useEffect(() => {
+    if (selectUser?.id) {
+      setErrorMessage('');
+      setMessageHasNotPosts('');
+
+      setLoadingPosts(true);
+      getPosts(selectUser.id)
+        .then((pOsts: Post[]) => {
+          if (pOsts.length === 0) {
+            setMessageHasNotPosts('No posts yet');
+          } else {
+            setPosts(pOsts);
+          }
+        })
+        .catch(() => setErrorMessage('Something went wrong!'))
+        .finally(() => setLoadingPosts(false));
+    }
+  }, [selectUser?.id]);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,44 +56,94 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  users={users}
+                  onSelectUser={setSelectUser}
+                  selectUser={selectUser}
+                  setOpenedSidebar={setOpenedSidebar}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {
+                  !selectUser && !errorLoadUsers && (
+                    <p data-cy="NoSelectedUser">
+                      No user selected
+                    </p>
+                  )
+                }
 
-                <Loader />
+                {errorLoadUsers && (
+                  <div className="notification is-danger">
+                    {errorLoadUsers}
+                  </div>
+                )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {
+                  loadingPosts && (
+                    <Loader />
+                  )
+                }
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {
+                  errorMessage && (
+                    <div
+                      className="notification is-danger"
+                      data-cy="PostsLoadingError"
+                    >
+                      {errorMessage}
+                    </div>
+                  )
+                }
 
-                <PostsList />
+                {
+                  messageHasNotPosts && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      {messageHasNotPosts}
+                    </div>
+                  )
+                }
+
+                {
+                  (
+                    !errorMessage
+                    && !loadingPosts
+                    && !messageHasNotPosts
+                    && selectUser
+                  ) && (
+                    <PostsList
+                      posts={posts}
+                      selectPost={selectPost}
+                      onSelectedPost={setSelecedPost}
+                      openedSidebar={openedSideBar}
+                      setOpenedSidebar={setOpenedSidebar}
+                      setOpenedCommentForm={setOpenedCommentForm}
+                    />
+                  )
+                }
               </div>
             </div>
           </div>
 
           <div
             data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
-            )}
+            className={openedSideBar && selectPost
+              ? 'tile is-parent is-8-desktop Sidebar Sidebar--open'
+              : 'tile is-parent is-8-desktop Sidebar'}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {
+                openedSideBar && (
+                  <PostDetails
+                    post={selectPost}
+                    setOpenedCommentForm={setOpenedCommentForm}
+                    openedCommentForm={openedCommentForm}
+                  />
+                )
+              }
             </div>
           </div>
         </div>
