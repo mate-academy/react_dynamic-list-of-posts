@@ -17,9 +17,14 @@ export const App: React.FC = () => {
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [selectedUser, setSelectedUser] = useState<User>();
   const [selectedPost, setSelectedPost] = useState<Post>();
-  const [loader, setLoader] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<boolean>(false);
   const [createNewComment, setCreateNewComment] = useState<boolean>(false);
+
+  const shouldShowPosts = selectedUser
+                  && !userPosts.length
+                  && !errorMessage
+                  && !isLoading;
 
   useEffect(() => {
     getUsersData()
@@ -29,13 +34,13 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     if (selectedUser) {
-      setLoader(true);
+      setLoading(true);
       setErrorMessage(false);
 
       getPostsData(selectedUser.id)
         .then(setUserPosts)
         .catch(() => setErrorMessage(true))
-        .finally(() => setLoader(false));
+        .finally(() => setLoading(false));
     }
   }, [selectedUser]);
 
@@ -59,7 +64,7 @@ export const App: React.FC = () => {
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {loader && <Loader />}
+                {isLoading && <Loader />}
 
                 {errorMessage && (
                   <div
@@ -70,10 +75,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUser
-                  && !userPosts.length
-                  && !errorMessage
-                  && !loader && (
+                {shouldShowPosts && (
                   <div
                     className="notification is-warning"
                     data-cy="NoPostsYet"

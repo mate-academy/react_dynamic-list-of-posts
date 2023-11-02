@@ -23,9 +23,7 @@ export const UserSelector: React.FC<Props> = ({
   };
 
   const closeDropDown = () => {
-    setTimeout(() => {
-      setIsActiveDropDown(false);
-    }, 150); // Maybe more
+    setIsActiveDropDown(false);
   };
 
   const chooseUser = (user: User) => {
