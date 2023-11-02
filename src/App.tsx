@@ -71,7 +71,7 @@ export const App: React.FC = () => {
                 )}
 
                 {selectedUser
-                  && userPosts.length === 0
+                  && !userPosts.length
                   && !errorMessage
                   && !loader && (
                   <div
@@ -82,7 +82,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUser && userPosts.length > 0 && (
+                {selectedUser && !!userPosts.length && (
                   <PostsList
                     userPosts={userPosts}
                     selectedPost={selectedPost}
