@@ -72,8 +72,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const resetFormAdd = () => {
     setFormComment((prev) => ({
       ...prev,
-      name: '',
-      email: '',
+      body: '',
     }));
 
     setFormErrors((prev) => ({

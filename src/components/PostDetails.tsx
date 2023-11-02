@@ -73,7 +73,7 @@ export const PostDetails: React.FC<Props> = ({
             </p>
           )}
 
-          {!errorMessage && postComments && postComments.length > 0 && (
+          {!errorMessage && postComments && !!postComments.length && (
             <>
               <p className="title is-4">Comments:</p>
 
