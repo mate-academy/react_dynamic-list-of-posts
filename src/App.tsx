@@ -4,35 +4,40 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import classNames from 'classnames';
-// import { PostsList } from './components/PostsList';
-// import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
-import { getUsers } from './api/users';
-import { User } from './types/User';
-import { getPosts } from './api/posts';
-import { Post } from './types/Post';
 import { PostsList } from './components/PostsList';
-
-// import { Loader } from './components/Loader';
+import { PostDetails } from './components/PostDetails';
+import { UserSelector } from './components/UserSelector';
+import { Loader } from './components/Loader';
+import { User } from './types/User';
+import { getPostsData, getUsersData } from './api/posts';
+import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [userId, setUserId] = useState<User['id']>(0);
-
-  const loadPosts = () => {
-    getPosts(userId).then((postsFromServer) => setPosts(postsFromServer));
-  };
-
-  const loadUsers = () => {
-    getUsers().then((usersFromserver) => setUsers(usersFromserver));
-  };
-
-  loadPosts();
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User>();
+  const [selectedPost, setSelectedPost] = useState<Post>();
+  const [loader, setLoader] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<boolean>(false);
+  const [createNewComment, setCreateNewComment] = useState<boolean>(false);
 
   useEffect(() => {
-    loadUsers();
+    getUsersData()
+      .then(setUsers)
+      .catch(() => setErrorMessage(true));
   }, []);
+
+  useEffect(() => {
+    if (selectedUser) {
+      setLoader(true);
+      setErrorMessage(false);
+
+      getPostsData(selectedUser.id)
+        .then(setUserPosts)
+        .catch(() => setErrorMessage(true))
+        .finally(() => setLoader(false));
+    }
+  }, [selectedUser]);
 
   return (
     <main className="section">
@@ -41,27 +46,49 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector users={users} />
+                <UserSelector
+                  users={users}
+                  selectedUser={selectedUser}
+                  setSelectedUser={setSelectedUser}
+                  setSelectedPost={setSelectedPost}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-                {/* <Loader /> */}
+                {loader && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {errorMessage && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                {posts.length === 0 ? (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
+                {selectedUser
+                  && userPosts.length === 0
+                  && !errorMessage
+                  && !loader && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
                     No posts yet
                   </div>
-                ) : (
-                  <PostsList posts={posts} />
+                )}
+
+                {selectedUser && userPosts.length > 0 && (
+                  <PostsList
+                    userPosts={userPosts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
+                    setCreateNewComment={setCreateNewComment}
+                  />
                 )}
               </div>
             </div>
@@ -74,12 +101,20 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              {
+                'Sidebar--open': selectedPost,
+              },
             )}
           >
-            <div className="tile is-child box is-success ">
-              {/* <PostDetails /> */}
-            </div>
+            {selectedPost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails
+                  selectedPost={selectedPost}
+                  createNewComment={createNewComment}
+                  setCreateNewComment={setCreateNewComment}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
