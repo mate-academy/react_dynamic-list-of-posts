@@ -44,7 +44,7 @@ export const App: React.FC = () => {
   }, [isLoaderActive, activeUser, userPosts]);
 
   const isPostListShow = useMemo(() => {
-    return !isLoaderActive && userPosts.length > 0;
+    return !isLoaderActive && userPosts.length;
   }, [isLoaderActive, userPosts]);
 
   const getUserPost = useCallback((userId: number) => {
