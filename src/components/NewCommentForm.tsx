@@ -9,10 +9,7 @@ interface Props {
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
 }
 
-export const NewCommentForm: React.FC<Props> = ({
-  postId,
-  setComments = () => {},
-}) => {
+export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');

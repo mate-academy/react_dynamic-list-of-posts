@@ -14,7 +14,7 @@ interface Props {
 export const PostDetails: React.FC<Props> = ({
   post,
   isFormActive,
-  setIsFormActive = () => {},
+  setIsFormActive,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loadCommentsError, setLoadCommentsError] = useState(false);

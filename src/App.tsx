@@ -29,10 +29,7 @@ export const App: React.FC = () => {
   const [loadPostsError, setLoadPostsError] = useState(false);
 
   useEffect(() => {
-    getUsers()
-      .then(setUsers)
-      .catch(() => {})
-      .finally(() => {});
+    getUsers().then(setUsers);
   }, []);
 
   const isDangerErrorShow = useMemo(() => {

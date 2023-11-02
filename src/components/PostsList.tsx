@@ -11,7 +11,7 @@ interface Props {
 export const PostsList: React.FC<Props> = ({
   userPosts,
   activePost,
-  setActivePost = () => {},
+  setActivePost,
 }) => {
   const selectPost = (post: Post) => {
     if (post.id === activePost?.id) {
