@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -9,40 +10,56 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
-import { getPostsData, getUsersData } from './api/posts';
+import { apiActions } from './utils/apiActions';
+import { Errors } from './types/Errors';
 import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
   const [userPosts, setUserPosts] = useState<Post[]>([]);
-  const [selectedUser, setSelectedUser] = useState<User>();
-  const [selectedPost, setSelectedPost] = useState<Post>();
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<boolean>(false);
-  const [createNewComment, setCreateNewComment] = useState<boolean>(false);
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
 
-  const shouldShowPosts = selectedUser
-                  && !userPosts.length
-                  && !errorMessage
-                  && !isLoading;
+  const isAnyPosts = userPosts.length > 0;
+
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  const [usersError, setUsersError] = useState(Errors.None);
+  const [postsError, setPostsError] = useState(Errors.None);
+
+  const getPosts = (user: User) => {
+    setSelectedPost(null);
+    setPostsError(Errors.None);
+    setIsPostsLoading(true);
+    setSelectedUser(user);
+
+    apiActions
+      .getUserPosts(user.id)
+      .then(setUserPosts)
+      .catch(() => setPostsError(Errors.Posts))
+      .finally(() => setIsPostsLoading(false));
+  };
+
+  const getPost = (post: Post) => {
+    setSelectedPost(post);
+  };
+
+  const isShow = {
+    noPostYet: !isAnyPosts && selectedUser && !isPostsLoading && !postsError,
+    postList: isAnyPosts && selectedUser && !isPostsLoading && !postsError,
+  };
 
   useEffect(() => {
-    getUsersData()
-      .then(setUsers)
-      .catch(() => setErrorMessage(true));
+    apiActions
+      .getAllUsers()
+      .then((usersFromServer) => {
+        setUsers(usersFromServer);
+      })
+      .catch(() => {
+        setUsersError(Errors.Users);
+      });
   }, []);
-
-  useEffect(() => {
-    if (selectedUser) {
-      setLoading(true);
-      setErrorMessage(false);
-
-      getPostsData(selectedUser.id)
-        .then(setUserPosts)
-        .catch(() => setErrorMessage(true))
-        .finally(() => setLoading(false));
-    }
-  }, [selectedUser]);
 
   return (
     <main className="section">
@@ -53,9 +70,8 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   users={users}
+                  onPost={getPosts}
                   selectedUser={selectedUser}
-                  setSelectedUser={setSelectedUser}
-                  setSelectedPost={setSelectedPost}
                 />
               </div>
 
@@ -64,32 +80,38 @@ export const App: React.FC = () => {
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {isLoading && <Loader />}
+                {isPostsLoading && <Loader />}
 
-                {errorMessage && (
+                {usersError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="UsersLoadingError"
+                  >
+                    {usersError}
+                  </div>
+                )}
+
+                {postsError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    Something went wrong!
+                    {postsError}
                   </div>
                 )}
 
-                {shouldShowPosts && (
-                  <div
-                    className="notification is-warning"
-                    data-cy="NoPostsYet"
-                  >
+                {isShow.noPostYet && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {selectedUser && !!userPosts.length && (
+                {isShow.postList && (
                   <PostsList
-                    userPosts={userPosts}
+                    posts={userPosts}
+                    onPost={getPost}
                     selectedPost={selectedPost}
-                    setSelectedPost={setSelectedPost}
-                    setCreateNewComment={setCreateNewComment}
+                    onSelectedPost={setSelectedPost}
                   />
                 )}
               </div>
@@ -103,20 +125,14 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              {
-                'Sidebar--open': selectedPost,
-              },
+              { 'Sidebar--open': selectedPost },
             )}
           >
-            {selectedPost && (
-              <div className="tile is-child box is-success ">
-                <PostDetails
-                  selectedPost={selectedPost}
-                  createNewComment={createNewComment}
-                  setCreateNewComment={setCreateNewComment}
-                />
-              </div>
-            )}
+            <div className="tile is-child box is-success ">
+              {selectedPost && (
+                <PostDetails post={selectedPost} key={selectedPost.id} />
+              )}
+            </div>
           </div>
         </div>
       </div>

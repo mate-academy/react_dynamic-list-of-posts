@@ -1,29 +1,19 @@
 import React from 'react';
 import { Post } from '../types/Post';
 
-interface Props {
-  userPosts: Post[];
-  selectedPost: Post | undefined;
-  setSelectedPost: React.Dispatch<React.SetStateAction<Post | undefined>>;
-  setCreateNewComment: React.Dispatch<React.SetStateAction<boolean>>;
-}
+type Props = {
+  posts: Post[];
+  onPost: (data: Post) => void;
+  selectedPost: Post | null;
+  onSelectedPost: (post: Post | null) => void;
+};
 
 export const PostsList: React.FC<Props> = ({
-  userPosts,
+  posts,
+  onPost,
   selectedPost,
-  setSelectedPost = () => {},
-  setCreateNewComment = () => {},
+  onSelectedPost,
 }) => {
-  const selectPost = (post: Post) => {
-    setSelectedPost(post);
-    setCreateNewComment(false);
-  };
-
-  const resetSelectedPost = () => {
-    setSelectedPost(undefined);
-    setCreateNewComment(false);
-  };
-
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -33,38 +23,38 @@ export const PostsList: React.FC<Props> = ({
           <tr className="has-background-link-light">
             <th>#</th>
             <th>Title</th>
-            <th> </th>
+            <th>.</th>
           </tr>
         </thead>
 
         <tbody>
-          {userPosts.map((post) => {
-            const { id, title } = post;
+          {posts.map((post) => {
+            const isButtonOpen = selectedPost !== post;
 
             return (
-              <tr data-cy="Post" key={id}>
-                <td data-cy="PostId">{id}</td>
+              <tr data-cy="Post" key={post.id}>
+                <td data-cy="PostId">{post.id}</td>
 
-                <td data-cy="PostTitle">{title}</td>
+                <td data-cy="PostTitle">{post.title}</td>
 
                 <td className="has-text-right is-vcentered">
-                  {selectedPost && selectedPost.id === id ? (
+                  {isButtonOpen ? (
                     <button
-                      type="button"
-                      data-cy="PostButton"
-                      className="button is-link is-blue"
-                      onClick={resetSelectedPost}
-                    >
-                      Close
-                    </button>
-                  ) : (
-                    <button
+                      onClick={() => onPost(post)}
                       type="button"
                       data-cy="PostButton"
                       className="button is-link is-light"
-                      onClick={() => selectPost(post)}
                     >
                       Open
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => onSelectedPost(null)}
+                      type="button"
+                      data-cy="PostButton"
+                      className="button is-link"
+                    >
+                      Close
                     </button>
                   )}
                 </td>

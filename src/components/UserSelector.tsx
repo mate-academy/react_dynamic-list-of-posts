@@ -1,42 +1,29 @@
 import React, { useState } from 'react';
-import classNames from 'classnames';
+import cn from 'classnames';
 import { User } from '../types/User';
-import { Post } from '../types/Post';
 
-interface Props {
+type Props = {
   users: User[];
-  selectedUser: User | undefined;
-  setSelectedUser: React.Dispatch<React.SetStateAction<User | undefined>>;
-  setSelectedPost: React.Dispatch<React.SetStateAction<Post | undefined>>;
-}
+  onPost: (data: User) => void;
+  selectedUser: User | null;
+};
 
 export const UserSelector: React.FC<Props> = ({
   users,
+  onPost,
   selectedUser,
-  setSelectedUser = () => {},
-  setSelectedPost = () => {},
 }) => {
-  const [isActiveDropDown, setIsActiveDropDown] = useState<boolean>(false);
-
-  const changeDropDownState = () => {
-    setIsActiveDropDown(!isActiveDropDown);
-  };
-
-  const closeDropDown = () => {
-    setIsActiveDropDown(false);
-  };
-
-  const chooseUser = (user: User) => {
-    setSelectedUser(user);
-    setSelectedPost(undefined);
-  };
+  const [isDropdownActive, setIsDropdownActive] = useState(false);
 
   return (
     <div
       data-cy="UserSelector"
-      className={classNames('dropdown', {
-        'is-active': isActiveDropDown,
-      })}
+      className={cn('dropdown', { 'is-active': isDropdownActive })}
+      role="button"
+      tabIndex={0}
+      onFocus={() => setIsDropdownActive(true)}
+      onBlur={() => setIsDropdownActive(false)}
+      onMouseDown={() => setIsDropdownActive(!isDropdownActive)}
     >
       <div className="dropdown-trigger">
         <button
@@ -44,10 +31,12 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={changeDropDownState}
-          onBlur={closeDropDown}
         >
-          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
+          {selectedUser ? (
+            <span>{selectedUser.name}</span>
+          ) : (
+            <span>Choose a user</span>
+          )}
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -58,16 +47,24 @@ export const UserSelector: React.FC<Props> = ({
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
           {users.map((user) => {
-            const { id, name } = user;
+            const handleUserLinkClick = (
+              e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+            ) => {
+              e.preventDefault();
+              onPost(user);
+              setIsDropdownActive(false);
+            };
 
             return (
               <a
-                key={id}
-                href={`#user-${id}`}
-                className="dropdown-item"
-                onClick={() => chooseUser(user)}
+                key={user.id}
+                onClick={handleUserLinkClick}
+                href={`user-${user.id}`}
+                className={cn('dropdown-item', {
+                  'is-active': user === selectedUser,
+                })}
               >
-                {name}
+                {user.name}
               </a>
             );
           })}
