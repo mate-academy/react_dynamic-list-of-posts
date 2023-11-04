@@ -67,13 +67,16 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
               {postComments.map((comment) => {
                 const handleCommentDeleteClick = () => {
-                  const newComments = [...postComments].filter(
+                  const prevComments = [...postComments];
+                  const newComments = prevComments.filter(
                     (c) => c.id !== comment.id,
                   );
 
-                  setPostComments(newComments);
+                  setPostComments(() => newComments);
 
-                  apiActions.deleteComment(comment.id);
+                  apiActions.deleteComment(comment.id).catch(() => {
+                    setPostComments(() => prevComments);
+                  });
                 };
 
                 return (

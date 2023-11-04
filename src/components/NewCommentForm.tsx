@@ -64,7 +64,8 @@ export const NewCommentForm: React.FC<Props> = ({ onComments, id }) => {
       setNameError(FormErrors.Name);
     }
 
-    if (!isEmailValid) {
+    // eslint-disable-next-line no-useless-escape
+    if (!isEmailValid || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
       setEmailError(FormErrors.Email);
     }
 
@@ -146,7 +147,7 @@ export const NewCommentForm: React.FC<Props> = ({ onComments, id }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
