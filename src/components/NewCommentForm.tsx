@@ -59,6 +59,10 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
       setHasTextError(true);
     }
 
+    if (!trimmedName || !trimmedEmail || !trimmedText) {
+      return;
+    }
+
     if (!postId) {
       return;
     }
