@@ -1,17 +1,20 @@
 import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
+import { Post } from '../types/Post';
 
 interface Props {
   users: User[],
   selectedUser: User | null,
   setSelectedUser: (user: User | null) => void,
+  setSelectedPost: (post: Post | null) => void,
 }
 
 export const UserSelector: React.FC<Props> = ({
   users,
   selectedUser,
   setSelectedUser,
+  setSelectedPost,
 }) => {
   const [dropdownIsActive, setDropdownIsActive] = useState(false);
 
@@ -19,6 +22,7 @@ export const UserSelector: React.FC<Props> = ({
 
   const handleUserSelect = (user: User) => {
     setSelectedUser(user);
+    setSelectedPost(null);
     setDropdownIsActive(false);
   };
 
