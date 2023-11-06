@@ -11,11 +11,12 @@ type Props = {
 export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdd }) => {
   const [author, setAuthor] = useState('');
   const [authorError, setAuthorError] = useState(false);
+
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState(false);
+
   const [commentBody, setCommentBody] = useState('');
   const [commentError, setCommentError] = useState(false);
-
   const [commentLoading, setCommentLoading] = useState(false);
 
   const handleReset = () => {

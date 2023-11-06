@@ -11,9 +11,10 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
+  const [addComment, setAddComment] = useState(false);
+
   const [loadingComments, setLoadingComments] = useState(false);
   const [loadingCommentsError, setLoadingCommentsError] = useState(false);
-  const [addComment, setAddComment] = useState(false);
 
   useEffect(() => {
     setLoadingComments(true);

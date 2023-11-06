@@ -18,9 +18,10 @@ export const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const [posts, setPosts] = useState<Post[] | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
   const [loadingPosts, setLoadingPosts] = useState(false);
   const [loadingPostsError, setLoadingPostsError] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
     getUsers()
