@@ -5,6 +5,7 @@ import cn from 'classnames';
 import { Comment } from '../types/Comment';
 import { FormErrors } from '../types/FormError';
 import { apiActions } from '../utils/apiActions';
+import { RegEx } from '../utils/RegEx';
 
 type Props = {
   onComments: React.Dispatch<React.SetStateAction<Comment[]>>;
@@ -65,8 +66,12 @@ export const NewCommentForm: React.FC<Props> = ({ onComments, id }) => {
     }
 
     // eslint-disable-next-line no-useless-escape
-    if (!isEmailValid || !/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+    if (!isEmailValid) {
       setEmailError(FormErrors.Email);
+    }
+
+    if (!RegEx.test(email)) {
+      setEmailError(FormErrors.EmailValid);
     }
 
     if (!isCommentValid) {
