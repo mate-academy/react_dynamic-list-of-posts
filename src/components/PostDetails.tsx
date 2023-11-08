@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import cn from 'classnames';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
@@ -15,6 +16,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [isLoadingError, setIsLoadingError] = useState(false);
   const [isWritingComment, setIsWritingComment] = useState(false);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
+  // eslint-disable-next-line max-len
+  const [deletingCommentId, setDeletingCommentID] = useState<number | null>(null);
 
   const loadComments = useCallback(async () => {
     setArePostsLoading(true);
@@ -31,15 +34,19 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     }
   }, [post.id]);
 
-  const handleCommentDelete = (commentId: number) => {
+  const handleCommentDelete = async (commentId: number) => {
+    setDeletingCommentID(commentId);
+
     try {
-      deleteComment(commentId);
+      await deleteComment(commentId);
 
       setComments(prevComments => (
         prevComments.filter(comment => comment.id !== commentId)
       ));
-    } catch (e) {
-      throw new Error(`Error deleting comment: ${e}`);
+    } catch {
+      setIsLoadingError(true);
+    } finally {
+      setDeletingCommentID(null);
     }
   };
 
@@ -106,7 +113,15 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
                             {comments.map(comment => (
                               <article
-                                className="message is-small"
+                                className={cn(
+                                  'message',
+                                  'is-small',
+                                  {
+                                    'is-loading-custom': (
+                                      deletingCommentId === comment.id
+                                    ),
+                                  },
+                                )}
                                 data-cy="Comment"
                                 key={comment.id}
                               >
