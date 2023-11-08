@@ -19,34 +19,33 @@ export const NewCommentForm: React.FC<Props> = ({
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');
 
-  // const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const [nameError, setNameError] = useState(false);
-  const [emailError, serEmailError] = useState(false);
-  const [commentError, setCommentError] = useState(false);
+  const [isNameInputError, setNameInputError] = useState(false);
+  const [isEmailInputError, setEmailInputError] = useState(false);
+  const [isCommentInputError, setCommentInputError] = useState(false);
 
   const cleanFormHandler = () => {
     setName('');
     setEmail('');
     setComment('');
-    setNameError(false);
-    serEmailError(false);
-    setCommentError(false);
+    setNameInputError(false);
+    setEmailInputError(false);
+    setCommentInputError(false);
   };
 
   const onSetName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNameError(false);
+    setNameInputError(false);
     setName(event.target.value);
   };
 
   const onSetEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    serEmailError(false);
+    setEmailInputError(false);
     setEmail(event.target.value);
   };
 
   const onSetComment = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCommentError(false);
+    setCommentInputError(false);
     setComment(event.target.value);
   };
 
@@ -56,15 +55,15 @@ export const NewCommentForm: React.FC<Props> = ({
     event.preventDefault();
 
     if (!name) {
-      setNameError(true);
+      setNameInputError(true);
     }
 
     if (!email) {
-      serEmailError(true);
+      setEmailInputError(true);
     }
 
     if (!comment) {
-      setCommentError(true);
+      setCommentInputError(true);
     }
 
     if (!name || !email || !comment) {
@@ -116,7 +115,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Name Surname"
             className={cn(
               'input',
-              { 'is-danger': nameError },
+              { 'is-danger': isNameInputError },
             )}
             onChange={onSetName}
           />
@@ -125,7 +124,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-user" />
           </span>
 
-          {nameError
+          {isNameInputError
             && (
               <span
                 className="icon is-small is-right has-text-danger"
@@ -136,7 +135,7 @@ export const NewCommentForm: React.FC<Props> = ({
             )}
         </div>
 
-        {nameError
+        {isNameInputError
           && (
             <p className="help is-danger" data-cy="ErrorMessage">
               Name is required
@@ -158,7 +157,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="email@test.com"
             className={cn(
               'input',
-              { 'is-danger': emailError },
+              { 'is-danger': isEmailInputError },
             )}
             onChange={onSetEmail}
           />
@@ -167,7 +166,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-envelope" />
           </span>
 
-          {nameError
+          {isNameInputError
             && (
               <span
                 className="icon is-small is-right has-text-danger"
@@ -178,7 +177,7 @@ export const NewCommentForm: React.FC<Props> = ({
             )}
         </div>
 
-        {emailError
+        {isEmailInputError
           && (
             <p className="help is-danger" data-cy="ErrorMessage">
               Email is required
@@ -199,13 +198,13 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Type comment here"
             className={cn(
               'textarea',
-              { 'is-danger': commentError },
+              { 'is-danger': isCommentInputError },
             )}
             onChange={onSetComment}
           />
         </div>
 
-        {commentError
+        {isCommentInputError
           && (
             <p className="help is-danger" data-cy="ErrorMessage">
               Enter some text

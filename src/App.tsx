@@ -13,7 +13,7 @@ import { getPosts, getUsers } from './api/services';
 import { Post } from './types/Post';
 
 export const App: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[] | null>(null);
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -28,18 +28,19 @@ export const App: React.FC = () => {
     setSelectedPost(post);
   };
 
-  const loadUserFromServer = async () => {
-    try {
-      const usersFromServer = await getUsers();
-
-      setUsers(usersFromServer);
-    } catch {
-      setError(true);
-    }
-  };
-
   useEffect(() => {
     setError(false);
+
+    const loadUserFromServer = async () => {
+      try {
+        const usersFromServer = await getUsers();
+
+        setUsers(usersFromServer);
+      } catch {
+        setError(true);
+      }
+    };
+
     loadUserFromServer();
   }, []);
 
@@ -70,6 +71,10 @@ export const App: React.FC = () => {
     }
   }, [selectedUser]);
 
+  const toRenderPostsList = (selectedUser && posts?.length !== 0 && !loading);
+  const toRenderNoPostsYet = (posts?.length === 0 && selectedUser && !loading);
+  const toRenderNoSelectedUser = (!selectedUser && !loading);
+
   return (
     <main className="section">
       <div className="container">
@@ -94,14 +99,14 @@ export const App: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-                {!selectedUser && !loading
+                {Boolean(toRenderNoSelectedUser)
                   && (
                     <p data-cy="NoSelectedUser">
                       No user selected
                     </p>
                   )}
 
-                {selectedUser && posts?.length !== 0 && !loading
+                {Boolean(toRenderPostsList)
                   && (
                     <PostsList
                       posts={posts}
@@ -110,7 +115,7 @@ export const App: React.FC = () => {
                     />
                   )}
 
-                {posts?.length === 0 && selectedUser && !loading
+                {Boolean(toRenderNoPostsYet)
                   && (
                     <div
                       className="notification is-warning"

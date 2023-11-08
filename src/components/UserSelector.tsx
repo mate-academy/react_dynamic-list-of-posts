@@ -3,7 +3,7 @@ import cn from 'classnames';
 import { User } from '../types/User';
 
 type Props = {
-  users: User[];
+  users: User[] | null;
   userSelector(user: User): void;
   selectedUser: User | null;
 };
@@ -46,7 +46,7 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
+          {users?.map(user => (
             <a
               key={user.id}
               href={String(user.id)}
