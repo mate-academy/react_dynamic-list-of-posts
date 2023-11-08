@@ -4,6 +4,7 @@ import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
 import { deleteComment, getComments } from '../api/comments';
+import { OneComment } from './OneComment';
 
 type Props = {
   post: Post;
@@ -59,46 +60,24 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </div>
           )}
 
-          {comments.length === 0
-            ? (
-              <p className="title is-4" data-cy="NoCommentsMessage">
-                No comments yet
-              </p>
-            ) : (
-              <>
-                <p className="title is-4">Comments:</p>
+          {!loadingComments && comments.length === 0 && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
 
-                {comments.map(comment => (
-                  <article
-                    key={comment.id}
-                    data-cy="Comment"
-                    className="message is-small"
-                  >
-                    <div className="message-header">
-                      <a
-                        href={`mailto:${comment.email}`}
-                        data-cy="CommentAuthor"
-                      >
-                        {comment.name}
-                      </a>
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
-                        onClick={() => handleCommentDelete(comment.id)}
-                      >
-                        delete button
-                      </button>
-                    </div>
+          {!loadingComments && comments.length !== 0 && (
+            <>
+              <p className="title is-4">Comments:</p>
 
-                    <div className="message-body" data-cy="CommentBody">
-                      {comment.body}
-                    </div>
-                  </article>
-                ))}
-              </>
-            )}
+              {comments.map(comment => (
+                <OneComment
+                  comment={comment}
+                  deleteComment={handleCommentDelete}
+                />
+              ))}
+            </>
+          )}
 
           {!addComment && (
             <button

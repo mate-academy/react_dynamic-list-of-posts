@@ -74,6 +74,11 @@ export const App: React.FC = () => {
     );
   }
 
+  const handleUserSelect = (user: User) => {
+    setSelectedUser(user);
+    setSelectedPost(null);
+  };
+
   return (
     <main className="section">
       <div className="container">
@@ -83,7 +88,7 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  onUserSelect={setSelectedUser}
+                  onUserSelect={handleUserSelect}
                   userSelected={selectedUser}
                 />
               </div>
@@ -111,7 +116,7 @@ export const App: React.FC = () => {
               )}
             >
               <div className="tile is-child box is-success ">
-                <PostDetails post={selectedPost} />
+                {selectedPost && <PostDetails post={selectedPost} />}
               </div>
             </div>
           )}

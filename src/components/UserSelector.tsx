@@ -4,7 +4,7 @@ import { User } from '../types/User';
 
 type Props = {
   users: User[];
-  onUserSelect: React.Dispatch<React.SetStateAction<User | null>>;
+  onUserSelect: (user: User) => void;
   userSelected: User | null;
 };
 
