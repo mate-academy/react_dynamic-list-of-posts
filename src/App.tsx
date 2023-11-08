@@ -58,6 +58,19 @@ export const App: React.FC = () => {
     loadUsers();
   }, []);
 
+  const noPostCondition = (
+    !arePostLoading
+    && !isLoadingError
+    && !posts.length
+    && selectedUser
+  );
+
+  const postListCondition = (
+    !arePostLoading
+    && !!posts.length
+    && !isLoadingError
+  );
+
   return (
     <main className="section">
       <div className="container">
@@ -73,48 +86,39 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {arePostLoading
-                  ? <Loader />
-                  : (
-                    <>
-                      {!selectedUser
-                        ? (
-                          <p data-cy="NoSelectedUser">
-                            No user selected
-                          </p>
-                        )
-                        : (
-                          <>
-                            {isLoadingError && (
-                              <div
-                                className="notification is-danger"
-                                data-cy="PostsLoadingError"
-                              >
-                                Something went wrong!
-                              </div>
-                            )}
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                            {posts.length > 0
-                              ? (
-                                <PostsList
-                                  posts={posts}
-                                  selectedPost={selectedPost}
-                                  setSelectedPost={setSelectedPost}
-                                />
-                              )
-                              : (
-                                <div
-                                  className="notification is-warning"
-                                  data-cy="NoPostsYet"
-                                >
-                                  No posts yet
-                                </div>
-                              )}
-                          </>
-                        )}
-                    </>
-                  )}
+                {arePostLoading && <Loader />}
 
+                {(!arePostLoading && isLoadingError) && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
+
+                {noPostCondition && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                )}
+
+                {postListCondition && (
+                  <PostsList
+                    posts={posts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
+                  />
+                )}
               </div>
             </div>
           </div>
