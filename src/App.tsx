@@ -1,19 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-// import classNames from 'classnames';
-// import { PostsList } from './components/PostsList';
-// import { PostDetails } from './components/PostDetails';
+import classNames from 'classnames';
+import { PostsList } from './components/PostsList';
+import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { User } from './types/User';
 import { getUsers } from './api/users';
-// import { Loader } from './components/Loader';
+import { Loader } from './components/Loader';
+import { Post } from './types/Post';
+import { getPosts } from './api/posts';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [arePostLoading, setArePostLoading] = useState(false);
+  const [isLoadingError, setIsLoadingError] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const loadUsers = async () => {
     try {
@@ -24,6 +30,29 @@ export const App: React.FC = () => {
       throw new Error('Failed to load users');
     }
   };
+
+  const loadPosts = useCallback(async () => {
+    if (selectedUser) {
+      setArePostLoading(true);
+
+      try {
+        const loadedPosts = await getPosts(selectedUser?.id);
+
+        setPosts(loadedPosts);
+        setIsLoadingError(false);
+      } catch {
+        setIsLoadingError(true);
+      } finally {
+        setArePostLoading(false);
+      }
+    }
+  }, [selectedUser]);
+
+  useEffect(() => {
+    loadPosts();
+
+    setSelectedPost(null);
+  }, [selectedUser, loadPosts]);
 
   useEffect(() => {
     loadUsers();
@@ -44,42 +73,70 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {arePostLoading
+                  ? <Loader />
+                  : (
+                    <>
+                      {!selectedUser
+                        ? (
+                          <p data-cy="NoSelectedUser">
+                            No user selected
+                          </p>
+                        )
+                        : (
+                          <>
+                            {isLoadingError && (
+                              <div
+                                className="notification is-danger"
+                                data-cy="PostsLoadingError"
+                              >
+                                Something went wrong!
+                              </div>
+                            )}
 
-                {/* <Loader /> */}
+                            {posts.length > 0
+                              ? (
+                                <PostsList
+                                  posts={posts}
+                                  selectedPost={selectedPost}
+                                  setSelectedPost={setSelectedPost}
+                                />
+                              )
+                              : (
+                                <div
+                                  className="notification is-warning"
+                                  data-cy="NoPostsYet"
+                                >
+                                  No posts yet
+                                </div>
+                              )}
+                          </>
+                        )}
+                    </>
+                  )}
 
-                {/* <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div> */}
-
-                {/* <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div> */}
-
-                {/* <PostsList /> */}
               </div>
             </div>
           </div>
 
-          {/* <div
+          <div
             data-cy="Sidebar"
             className={classNames(
               'tile',
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPost },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
-          </div> */}
+            {selectedPost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails
+                  post={selectedPost}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </main>
