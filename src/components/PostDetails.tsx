@@ -10,14 +10,27 @@ type Props = {
   post: Post;
 };
 
+type DelComment = number | null;
+
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [arePostsLoading, setArePostsLoading] = useState(true);
   const [isLoadingError, setIsLoadingError] = useState(false);
   const [isWritingComment, setIsWritingComment] = useState(false);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
-  // eslint-disable-next-line max-len
-  const [deletingCommentId, setDeletingCommentID] = useState<number | null>(null);
+  const [deletingCommentId, setDeletingCommentID] = useState<DelComment>(null);
+
+  const noCommentCondtion = (
+    !arePostsLoading
+    && !isLoadingError
+    && comments.length === 0
+  );
+
+  const showCommentsCondition = (
+    !arePostsLoading
+    && !isLoadingError
+    && comments.length > 0
+  );
 
   const loadComments = useCallback(async () => {
     setArePostsLoading(true);
@@ -86,89 +99,71 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         </div>
 
         <div className="block">
-          {arePostsLoading
-            ? <Loader />
-            : (
-              <>
-                {isLoadingError
-                  ? (
-                    <div
-                      className="notification is-danger"
-                      data-cy="CommentsError"
-                    >
-                      Something went wrong
-                    </div>
-                  )
-                  : (
-                    <>
-                      {comments.length === 0
-                        ? (
-                          <p className="title is-4" data-cy="NoCommentsMessage">
-                            No comments yet
-                          </p>
-                        )
-                        : (
-                          <>
-                            <p className="title is-4">Comments:</p>
+          {arePostsLoading && <Loader />}
 
-                            {comments.map(comment => (
-                              <article
-                                className={cn(
-                                  'message',
-                                  'is-small',
-                                  {
-                                    'is-loading-custom': (
-                                      deletingCommentId === comment.id
-                                    ),
-                                  },
-                                )}
-                                data-cy="Comment"
-                                key={comment.id}
-                              >
-                                <div className="message-header">
-                                  <a
-                                    href={`mailto:${comment.email}`}
-                                    data-cy="CommentAuthor"
-                                  >
-                                    {comment.name}
-                                  </a>
-                                  <button
-                                    data-cy="CommentDelete"
-                                    type="button"
-                                    className="delete is-small"
-                                    aria-label="delete"
-                                    onClick={() => {
-                                      handleCommentDelete(comment.id);
-                                    }}
-                                  >
-                                    delete button
-                                  </button>
-                                </div>
+          {!arePostsLoading && isLoadingError && (
+            <div
+              className="notification is-danger"
+              data-cy="CommentsError"
+            >
+              Something went wrong
+            </div>
+          )}
 
-                                <div
-                                  className="message-body"
-                                  data-cy="CommentBody"
-                                >
-                                  {comment.body}
-                                </div>
-                              </article>
-                            ))}
-                          </>
-                        )}
-                      {!isWritingComment && (
-                        <button
-                          data-cy="WriteCommentButton"
-                          type="button"
-                          className="button is-link"
-                          onClick={() => setIsWritingComment(true)}
-                        >
-                          Write a comment
-                        </button>
-                      )}
-                    </>
+          {noCommentCondtion && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
+
+          {showCommentsCondition && (
+            <>
+              <p className="title is-4">Comments:</p>
+
+              {comments.map(comment => (
+                <article
+                  className={cn(
+                    'message',
+                    'is-small',
+                    {
+                      'is-loading-custom': (
+                        deletingCommentId === comment.id
+                      ),
+                    },
                   )}
-              </>
-            )}
+                  data-cy="Comment"
+                  key={comment.id}
+                >
+                  <div className="message-header">
+                    <a
+                      href={`mailto:${comment.email}`}
+                      data-cy="CommentAuthor"
+                    >
+                      {comment.name}
+                    </a>
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={() => {
+                        handleCommentDelete(comment.id);
+                      }}
+                    >
+                      delete button
+                    </button>
+                  </div>
+
+                  <div
+                    className="message-body"
+                    data-cy="CommentBody"
+                  >
+                    {comment.body}
+                  </div>
+                </article>
+              ))}
+            </>
+          )}
         </div>
 
         {(isWritingComment && !isLoadingError) && (
