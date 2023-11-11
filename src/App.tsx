@@ -58,6 +58,10 @@ export const App: React.FC = () => {
   const addComment = (commentData: CommentData) => {
     const { name, email, body } = commentData;
 
+    if (!selectedPost?.id) {
+      return;
+    }
+
     const newComment = {
       postId: selectedPost?.id,
       name,
