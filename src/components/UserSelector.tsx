@@ -4,17 +4,20 @@ import cn from 'classnames';
 import * as service from '../api/service';
 
 import { User } from '../types/User';
+import { Post } from '../types/Post';
 
 type Props = {
   onSelectUser: (userId: number) => void;
   selectedUser: User | null;
   setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>;
+  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
 };
 
 export const UserSelector: React.FC<Props> = ({
   onSelectUser,
   selectedUser,
   setSelectedUser,
+  setSelectedPost,
 }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
@@ -29,6 +32,7 @@ export const UserSelector: React.FC<Props> = ({
     setSelectedUser(user);
 
     if (selectedUser?.id !== user.id) {
+      setSelectedPost(null);
       onSelectUser(user.id);
     }
   };

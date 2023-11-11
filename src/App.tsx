@@ -87,6 +87,7 @@ export const App: React.FC = () => {
                   onSelectUser={loadUserPosts}
                   selectedUser={selectedUser}
                   setSelectedUser={setSelectedUser}
+                  setSelectedPost={setSelectedPost}
                 />
               </div>
 
