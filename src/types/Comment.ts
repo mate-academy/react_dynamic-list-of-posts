@@ -1,6 +1,6 @@
 export interface Comment {
   id: number;
-  postId: number;
+  postId: number | undefined; // костиль тре подумати як виправити!!!
   name: string;
   email: string;
   body: string;
