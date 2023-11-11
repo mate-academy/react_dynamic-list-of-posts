@@ -76,7 +76,7 @@ export const UserSelector: React.FC = () => {
 
       {showUsers && (
         <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          {(users !== undefined) && (
+          {users && (
             <div className="dropdown-content">
               {users?.map(user => (
                 <a

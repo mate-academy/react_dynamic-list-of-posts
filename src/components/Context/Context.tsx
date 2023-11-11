@@ -41,7 +41,7 @@ interface ValuesTypes {
 
 const UserContext = createContext<ValuesTypes | undefined>(undefined);
 
-if (UserContext === undefined) {
+if (!UserContext) {
   throw new Error('useUser must be used within a UserProvider');
 }
 
@@ -112,7 +112,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 export const useUserContext = (): ValuesTypes => {
   const context = useContext(UserContext);
 
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useUser must be used within a UserProvider');
   }
 

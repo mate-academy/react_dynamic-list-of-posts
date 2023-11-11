@@ -49,10 +49,6 @@ export const NewCommentForm: React.FC = () => {
         break;
     }
 
-    if (name === 'name') {
-      setNameError(false);
-    }
-
     setFormData(prevState => ({
       ...prevState,
       [name]: value,
@@ -68,30 +64,31 @@ export const NewCommentForm: React.FC = () => {
 
     let hasErrors = false;
 
-    if (name.trim() === '' || name === '') {
+    if (!name.trim() || !name) {
       setNameError(true);
       hasErrors = true;
     }
 
-    if (email.trim() === '' || email === '') {
+    if (!email.trim() || !email) {
       setEmailError(true);
       hasErrors = true;
     }
 
-    if (body.trim() === '' || body === '') {
+    if (!body.trim() || !body) {
       setMassageError(true);
       hasErrors = true;
     }
 
     if (hasErrors) {
+      setIsLoadingCommentSending(false);
+
       return;
     }
 
-    if (nameError === false && emailError === false
-      && messageError === false) {
+    if (!nameError && !emailError && !messageError) {
       const postId = postSelected?.id;
 
-      if (postId !== undefined) {
+      if (postId) {
         const newComment = {
           id: comments.length + 1,
           postId,
@@ -108,7 +105,7 @@ export const NewCommentForm: React.FC = () => {
 
       client.post<User[] | null>('/users', { name, email })
         .then((response: User[] | null) => {
-          if (response !== null) {
+          if (response) {
             setUsers(response);
           }
         })

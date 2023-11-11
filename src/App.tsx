@@ -49,9 +49,9 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(posts?.length === 0
+                {(!posts?.length
                   && userSelected
-                  && isLoadingPosts === false)
+                  && !isLoadingPosts)
                   && (
                     // eslint-disable-next-line max-len
                     <div className="notification is-warning" data-cy="NoPostsYet">

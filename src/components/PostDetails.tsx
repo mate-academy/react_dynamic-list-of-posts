@@ -44,7 +44,7 @@ export const PostDetails: React.FC = () => {
   const handleDeleteComment = (comment: Comment) => {
     setCommentToDelete(comment);
 
-    if (comments !== null) {
+    if (comments) {
       const newComments = comments
         .filter(currComment => currComment.id !== comment.id);
 
@@ -83,17 +83,16 @@ export const PostDetails: React.FC = () => {
             </div>
           )}
 
-          {comments?.length === 0 && isLoadingComments === false && (
+          {!comments?.length && !isLoadingComments && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
-          {comments?.length !== 0 && isLoadingComments === false && (
+          {comments?.length && !isLoadingComments && (
             <p className="title is-4">Comments:</p>
           )}
 
-          {comments?.length !== 0
-            && isLoadingComments === false
+          {comments?.length && !isLoadingComments
             && (comments?.map(comment => (
               <article
                 className="message is-small"
@@ -121,7 +120,7 @@ export const PostDetails: React.FC = () => {
               </article>
             )))}
 
-          {(isLoadingComments === false && showForm === false) && (
+          {(!isLoadingComments && !showForm) && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -133,7 +132,7 @@ export const PostDetails: React.FC = () => {
           )}
         </div>
 
-        {(isLoadingComments === false && showForm) && (
+        {(!isLoadingComments && showForm) && (
           <NewCommentForm />
         )}
       </div>
