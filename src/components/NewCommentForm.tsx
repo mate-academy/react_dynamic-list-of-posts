@@ -84,6 +84,8 @@ export const NewCommentForm: React.FC = () => {
     }
 
     if (hasErrors) {
+      setIsLoadingCommentSending(false);
+
       return;
     }
 
