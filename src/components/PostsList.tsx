@@ -43,7 +43,7 @@ export const PostsList: React.FC = () => {
 
   return (
     <>
-      {(posts?.length !== 0 && userSelected) && (
+      {(!!posts?.length && userSelected) && (
         <div data-cy="PostsList">
           <p className="title">Posts:</p>
 
