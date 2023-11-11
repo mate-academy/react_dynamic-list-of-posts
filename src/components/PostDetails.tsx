@@ -7,7 +7,7 @@ import { deleteComment, getComments } from '../Services/services';
 
 type Props = {
   selectedPost: Post | null,
-}
+};
 
 export const PostDetails: React.FC<Props> = ({
   selectedPost,

@@ -74,7 +74,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!loading&& !errorMessage
+                {!loading && !errorMessage
                   && !posts.length && selectedUser && (
                   <div
                     className="notification is-warning"

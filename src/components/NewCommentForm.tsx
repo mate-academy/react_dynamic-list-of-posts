@@ -8,7 +8,7 @@ type Props = {
   setPostComments: (comment: Comment[]) => void,
   setErrorMessage: (str: string) => void,
   selectedPostId: number,
-}
+};
 
 export const NewCommentForm: React.FC<Props> = ({
   postComments,
@@ -44,8 +44,7 @@ export const NewCommentForm: React.FC<Props> = ({
     name: commentName,
     email: commentEmail,
     body,
-  }: Comment ) => {
-  
+  }: Comment) => {
     setErrorMessage('');
     setLoading(true);
 
@@ -66,7 +65,7 @@ export const NewCommentForm: React.FC<Props> = ({
         setLoading(false);
         setTextarea('');
       });
-  }
+  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
