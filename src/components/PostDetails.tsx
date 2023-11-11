@@ -7,7 +7,7 @@ import { deleteComment, getComments } from '../Services/services';
 
 type Props = {
   selectedPost: Post | null,
-};
+}
 
 export const PostDetails: React.FC<Props> = ({
   selectedPost,
@@ -68,7 +68,7 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {!loading && !errorMessage && postComments.length === 0 && (
+          {!loading && !errorMessage && !postComments.length && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
