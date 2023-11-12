@@ -8,6 +8,7 @@ type Props = {
   selectedPost: Post | null;
   setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
   onSelectPost: (postId: number) => void;
+  setIsDisplayedForm: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const PostsList: React.FC<Props> = ({
@@ -15,8 +16,10 @@ export const PostsList: React.FC<Props> = ({
   selectedPost,
   setSelectedPost,
   onSelectPost,
+  setIsDisplayedForm,
 }) => {
   const handleClick = (post: Post) => {
+    setIsDisplayedForm(false);
     setSelectedPost(selectedPost?.id === post.id ? null : post);
     onSelectPost(post.id);
   };

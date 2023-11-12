@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment, CommentData } from '../types/Comment';
@@ -12,6 +12,8 @@ type Props = {
   onDeleteComment: (commentId: number) => void;
   onAddComment: (commentData: CommentData) => void;
   isAddingComment: boolean;
+  isDisplayedForm: boolean;
+  setIsDisplayedForm: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -22,9 +24,9 @@ export const PostDetails: React.FC<Props> = ({
   onDeleteComment,
   onAddComment,
   isAddingComment,
+  isDisplayedForm,
+  setIsDisplayedForm,
 }) => {
-  const [isDisplayedForm, setIsDisplayedForm] = useState(false);
-
   const handleDeleteComment = (commentId: number) => {
     onDeleteComment(commentId);
   };

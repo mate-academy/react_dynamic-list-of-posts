@@ -26,6 +26,7 @@ export const App: React.FC = () => {
   const [isPostsError, setIsPostsError] = useState(false);
   const [isCommentsError, setIsCommentsError] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [isDisplayedForm, setIsDisplayedForm] = useState(false);
 
   const loadUserPosts = (userId: number) => {
     setUserPosts(null);
@@ -130,6 +131,7 @@ export const App: React.FC = () => {
                     selectedPost={selectedPost}
                     setSelectedPost={setSelectedPost}
                     onSelectPost={loadPostComments}
+                    setIsDisplayedForm={setIsDisplayedForm}
                   />
                 )}
               </div>
@@ -157,6 +159,8 @@ export const App: React.FC = () => {
                   onDeleteComment={deleteComment}
                   onAddComment={addComment}
                   isAddingComment={isAddingComment}
+                  isDisplayedForm={isDisplayedForm}
+                  setIsDisplayedForm={setIsDisplayedForm}
                 />
               </div>
             )}
