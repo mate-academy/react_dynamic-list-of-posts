@@ -26,7 +26,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setLoading(true);
 
     client.get<Comment[]>(`/comments?postId=${post.id}`)
-      .then((data) => setComments(data))
+      .then(setComments)
       .catch(() => setErrorMessage('Something went wrong!'))
       .finally(() => setLoading(false));
   };

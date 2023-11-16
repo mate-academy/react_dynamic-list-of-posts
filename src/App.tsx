@@ -24,11 +24,11 @@ export const App: React.FC = () => {
   const fetchUsers = () => {
     setErrorMessage('');
 
-    client.get<User[]>('/users').then((data) => {
-      setUsers(data);
-    }).catch(() => {
-      setErrorMessage('Something went wrong!');
-    });
+    client.get<User[]>('/users')
+      .then(setUsers)
+      .catch(() => {
+        setErrorMessage('Something went wrong!');
+      });
   };
 
   const fetchPosts = () => {
