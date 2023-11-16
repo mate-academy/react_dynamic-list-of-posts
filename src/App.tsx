@@ -19,7 +19,6 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  // eslint-disable-next-line max-len
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const fetchUsers = () => {
@@ -86,7 +85,7 @@ export const App: React.FC = () => {
                 )}
 
                 {selectedUser
-                  && posts.length === 0
+                  && !posts.length
                   && !loading
                   && !errorMessage
                   && (
@@ -98,7 +97,7 @@ export const App: React.FC = () => {
                     </div>
                   )}
 
-                {posts.length > 0 && !loading && !errorMessage && (
+                {posts.length && !loading && !errorMessage && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}
