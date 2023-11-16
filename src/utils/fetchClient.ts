@@ -1,3 +1,5 @@
+import { Post } from '../types/Post';
+
 const BASE_URL = 'https://mate.academy/students-api';
 
 // a promise resolved after a given delay
@@ -10,10 +12,10 @@ function wait(delay: number) {
 // To have autocompletion and avoid mistypes
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
-function request<T>(
+function request<T, S>(
   url: string,
   method: RequestMethod = 'GET',
-  data: any = null, // we can send any data to the server
+  data: S | null = null, // we can send any data to the server
 ): Promise<T> {
   const options: RequestInit = { method };
 
@@ -32,8 +34,14 @@ function request<T>(
 }
 
 export const client = {
-  get: <T>(url: string) => request<T>(url),
-  post: <T>(url: string, data: any) => request<T>(url, 'POST', data),
-  patch: <T>(url: string, data: any) => request<T>(url, 'PATCH', data),
+  get: <T>(url: string) => request<T, null>(url),
+  post: <T>(
+    url: string,
+    data: Omit<Post, 'id'>,
+  ) => request<T, Omit<Post, 'id'>>(url, 'POST', data),
+  patch: <T>(
+    url: string,
+    data: Partial<Post>,
+  ) => request<T, Partial<Post>>(url, 'PATCH', data),
   delete: (url: string) => request(url, 'DELETE'),
 };

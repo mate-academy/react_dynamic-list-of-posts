@@ -19,6 +19,7 @@ export const CommentsList: React.FC<Props> = ({
 
       {comments?.map(comment => (
         <CommentItem
+          key={comment.id}
           comment={comment}
           setComments={setComments}
         />
