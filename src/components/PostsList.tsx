@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import React from 'react';
 import classNames from 'classnames';
 import { Post } from '../types/Post';
@@ -30,6 +31,7 @@ export const PostsList: React.FC<Props> = ({
           <tr className="has-background-link-light">
             <th>#</th>
             <th>Title</th>
+            <th> </th>
           </tr>
         </thead>
 
@@ -54,8 +56,8 @@ export const PostsList: React.FC<Props> = ({
                   onClick={() => handleOpenPost(post)}
                 >
                   {selectedPost?.id !== post.id
-                    ? 'Close'
-                    : 'Open'}
+                    ? 'Open'
+                    : 'Close'}
                 </button>
               </td>
             </tr>

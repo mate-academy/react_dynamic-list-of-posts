@@ -1,8 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import cn from 'classnames';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
@@ -29,14 +25,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [deletingCommentId, setDeletingCommentID] = useState<DelComment>(null);
 
   const noCommentCondtion
-  = !arePostsLoading && !isLoadingError && comments.length === 0;
+    = !arePostsLoading && !isLoadingError && comments.length === 0;
 
   const showCommentsCondition
-  = !arePostsLoading && !isLoadingError && comments.length > 0;
+    = !arePostsLoading && !isLoadingError && comments.length > 0;
 
   const loadComments = useCallback(async () => {
     setArePostsLoading(true);
-
     try {
       setIsLoadingError(false);
       const loadedComments = await getComments(post.id);
@@ -48,14 +43,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       setArePostsLoading(false);
     }
   }, [post.id]);
-
   const handleCommentDelete = async (commentId: number) => {
     setDeletingCommentID(commentId);
-
     try {
       await deleteComment(commentId);
-
-      setComments(prevComments => prevComments.filter(
+      setComments((prevComments) => prevComments.filter(
         comment => comment.id !== commentId,
       ));
     } catch {
@@ -67,7 +59,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const handleCreateComment = async (newComment: CommentData) => {
     setIsCommentLoading(true);
-
     try {
       const newPost = await addComment({
         ...newComment,
@@ -92,7 +83,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">{post.title}</h2>
-
           <p data-cy="PostBody">{post.body}</p>
         </div>
 
@@ -148,6 +138,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </>
           )}
         </div>
+
+        {(!isWritingComment || isLoadingError) && (
+          <button
+            data-cy="WriteCommentButton"
+            type="button"
+            className="button is-link"
+            onClick={() => setIsWritingComment(true)}
+          >
+            Write a comment
+          </button>
+        )}
 
         {isWritingComment && !isLoadingError && (
           <NewCommentForm
