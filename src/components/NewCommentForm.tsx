@@ -29,7 +29,7 @@ export const NewCommentForm: React.FC = () => {
           </span>
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
+        <p className="help is-danger" data-cy="errorMessagePosts">
           Name is required
         </p>
       </div>
@@ -60,7 +60,7 @@ export const NewCommentForm: React.FC = () => {
           </span>
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
+        <p className="help is-danger" data-cy="errorMessagePosts">
           Email is required
         </p>
       </div>
@@ -79,7 +79,7 @@ export const NewCommentForm: React.FC = () => {
           />
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
+        <p className="help is-danger" data-cy="errorMessagePosts">
           Enter some text
         </p>
       </div>
