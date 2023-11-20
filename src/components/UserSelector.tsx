@@ -4,8 +4,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import cl from 'classnames';
 import { User } from '../types/User';
+import UserItem from './UserItem';
 
 interface Props {
   users: User[],
@@ -64,17 +64,11 @@ export const UserSelector: React.FC<Props> = ({
         <div className="dropdown-menu" id="dropdown-menu" role="menu">
           <div className="dropdown-content">
             {users.map(user => (
-              <a
-                key={user.id}
-                href={`#user-${user.id}`}
-                className={cl(
-                  'dropdown-item',
-                  { 'is-active': selectedUser?.id === user.id },
-                )}
-                onClick={() => userSelectionHandler(user)}
-              >
-                {user.name}
-              </a>
+              <UserItem
+                user={user}
+                selectedUser={selectedUser}
+                onUserSelect={() => userSelectionHandler(user)}
+              />
             ))}
           </div>
         </div>

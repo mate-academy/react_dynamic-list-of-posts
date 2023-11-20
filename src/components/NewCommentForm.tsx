@@ -26,10 +26,13 @@ export const NewCommentForm: React.FC<Props> = ({
   ) => {
     e.preventDefault();
 
-    if (!name || !email || !text) {
-      setHasNameError(!name);
-      setHasEmailError(!email);
-      setHasTextError(!text);
+    if (!name.trim() || !email.trim() || !text.trim()) {
+      setHasNameError(!name.trim());
+      setHasEmailError(!email.trim());
+      setHasTextError(!text.trim());
+      setName(n => n.trim());
+      setEmail(em => em.trim());
+      setText(t => t.trim());
 
       return;
     }
@@ -57,6 +60,27 @@ export const NewCommentForm: React.FC<Props> = ({
     setHasTextError(false);
   }, []);
 
+  const nameChangeHandler = useCallback((
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setName(e.target.value);
+    setHasNameError(false);
+  }, []);
+
+  const emailChangeHandler = useCallback((
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setEmail(e.target.value);
+    setHasEmailError(false);
+  }, []);
+
+  const textChangeHandler = useCallback((
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    setText(e.target.value);
+    setHasTextError(false);
+  }, []);
+
   return (
     <form data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
@@ -75,10 +99,7 @@ export const NewCommentForm: React.FC<Props> = ({
               { 'is-danger': hasNameError },
             )}
             value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              setHasNameError(false);
-            }}
+            onChange={nameChangeHandler}
           />
 
           <span className="icon is-small is-left">
@@ -118,10 +139,7 @@ export const NewCommentForm: React.FC<Props> = ({
               { 'is-danger': hasEmailError },
             )}
             value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setHasEmailError(false);
-            }}
+            onChange={emailChangeHandler}
           />
 
           <span className="icon is-small is-left">
@@ -160,10 +178,7 @@ export const NewCommentForm: React.FC<Props> = ({
               { 'is-danger': hasTextError },
             )}
             value={text}
-            onChange={(e) => {
-              setText(e.target.value);
-              setHasTextError(false);
-            }}
+            onChange={textChangeHandler}
           />
         </div>
 

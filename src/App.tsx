@@ -39,6 +39,52 @@ export const App: React.FC = () => {
       .finally(() => setIsPostsLoading(false));
   }, [selectedUser]);
 
+  const renderMainContent = () => {
+    if (!selectedUser) {
+      return (
+        <p data-cy="NoSelectedUser">
+          No user selected
+        </p>
+      );
+    }
+
+    if (isPostsLoading) {
+      return (
+        <Loader />
+      );
+    }
+
+    if (hasPostsError) {
+      return (
+        <div
+          className="notification is-danger"
+          data-cy="PostsLoadingError"
+        >
+          Something went wrong!
+        </div>
+      );
+    }
+
+    if (!userPosts.length) {
+      return (
+        <div
+          className="notification is-warning"
+          data-cy="NoPostsYet"
+        >
+          No posts yet
+        </div>
+      );
+    }
+
+    return (
+      <PostsList
+        posts={userPosts}
+        onPostOpen={(value) => setSelectedPost(value)}
+        selectedPost={selectedPost}
+      />
+    );
+  };
+
   return (
     <main className="section">
       <div className="container">
@@ -54,51 +100,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {(() => {
-                  if (!selectedUser) {
-                    return (
-                      <p data-cy="NoSelectedUser">
-                        No user selected
-                      </p>
-                    );
-                  }
-
-                  if (isPostsLoading) {
-                    return (
-                      <Loader />
-                    );
-                  }
-
-                  if (hasPostsError) {
-                    return (
-                      <div
-                        className="notification is-danger"
-                        data-cy="PostsLoadingError"
-                      >
-                        Something went wrong!
-                      </div>
-                    );
-                  }
-
-                  if (!userPosts.length) {
-                    return (
-                      <div
-                        className="notification is-warning"
-                        data-cy="NoPostsYet"
-                      >
-                        No posts yet
-                      </div>
-                    );
-                  }
-
-                  return (
-                    <PostsList
-                      posts={userPosts}
-                      onPostOpen={(value) => setSelectedPost(value)}
-                      selectedPost={selectedPost}
-                    />
-                  );
-                })()}
+                {renderMainContent()}
               </div>
             </div>
           </div>

@@ -4,6 +4,7 @@ import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
 import { client } from '../utils/fetchClient';
+import CommentItem from './CommentItem';
 
 interface Props {
   selectedPost: Post
@@ -30,6 +31,68 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       .finally(() => setIsCommentsLoading(false));
   }, [selectedPost]);
 
+  const renderCommentsBlock = () => {
+    if (isCommentsLoading) {
+      return (
+        <Loader />
+      );
+    }
+
+    if (hasCommentsError) {
+      return (
+        <div className="notification is-danger" data-cy="CommentsError">
+          Something went wrong
+        </div>
+      );
+    }
+
+    if (!comments.length) {
+      return (
+        <>
+          <p className="title is-4" data-cy="NoCommentsMessage">
+            No comments yet
+          </p>
+
+          {!isFormVisible && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setIsFormVisible(true)}
+            >
+              Write a comment
+            </button>
+          )}
+        </>
+      );
+    }
+
+    return (
+      <>
+        <p className="title is-4">Comments:</p>
+
+        {comments.map(comment => (
+          <CommentItem
+            key={comment.id}
+            comment={comment}
+            onCommentDelete={() => commentDeleteHandler(comment)}
+          />
+        ))}
+
+        {!isFormVisible && (
+          <button
+            data-cy="WriteCommentButton"
+            type="button"
+            className="button is-link"
+            onClick={() => setIsFormVisible(true)}
+          >
+            Write a comment
+          </button>
+        )}
+      </>
+    );
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -44,82 +107,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         </div>
 
         <div className="block">
-          {(() => {
-            if (isCommentsLoading) {
-              return (
-                <Loader />
-              );
-            }
-
-            if (hasCommentsError) {
-              return (
-                <div className="notification is-danger" data-cy="CommentsError">
-                  Something went wrong
-                </div>
-              );
-            }
-
-            if (!comments.length) {
-              return (
-                <>
-                  <p className="title is-4" data-cy="NoCommentsMessage">
-                    No comments yet
-                  </p>
-
-                  {!isFormVisible && (
-                    <button
-                      data-cy="WriteCommentButton"
-                      type="button"
-                      className="button is-link"
-                      onClick={() => setIsFormVisible(true)}
-                    >
-                      Write a comment
-                    </button>
-                  )}
-                </>
-              );
-            }
-
-            return (
-              <>
-                <p className="title is-4">Comments:</p>
-
-                {comments.map(comment => (
-                  <article className="message is-small" data-cy="Comment">
-                    <div className="message-header">
-                      <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                        {comment.name}
-                      </a>
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
-                        onClick={() => commentDeleteHandler(comment)}
-                      >
-                        delete button
-                      </button>
-                    </div>
-
-                    <div className="message-body" data-cy="CommentBody">
-                      {comment.body}
-                    </div>
-                  </article>
-                ))}
-
-                {!isFormVisible && (
-                  <button
-                    data-cy="WriteCommentButton"
-                    type="button"
-                    className="button is-link"
-                    onClick={() => setIsFormVisible(true)}
-                  >
-                    Write a comment
-                  </button>
-                )}
-              </>
-            );
-          })()}
+          {renderCommentsBlock()}
         </div>
 
         {isFormVisible && (
