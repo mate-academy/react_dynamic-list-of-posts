@@ -3,19 +3,18 @@ import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
-import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { ListProvider } from './components/ListContext';
 import { MainContent } from './components/MainContent';
+import { Sidebar } from './components/Sidebar';
 
 export const App: React.FC = () => {
   return (
     <main className="section">
       <div className="container">
-        <div className="tile is-ancestor">
-          <div className="tile is-parent">
-            <ListProvider>
+        <ListProvider>
+          <div className="tile is-ancestor">
+            <div className="tile is-parent">
               <div className="tile is-child box is-success">
                 <div className="block">
                   <UserSelector />
@@ -23,25 +22,12 @@ export const App: React.FC = () => {
 
                 <MainContent />
               </div>
-            </ListProvider>
 
-          </div>
-
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
             </div>
+
+            <Sidebar />
           </div>
-        </div>
+        </ListProvider>
       </div>
     </main>
   );

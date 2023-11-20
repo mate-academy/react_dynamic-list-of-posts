@@ -9,22 +9,23 @@ export const UserSelector: React.FC = () => {
   const [isUsersVisble, setIsUsersVisble] = useState(false);
   const {
     idUserActive,
+    setSelectedPost,
     setIdUserActive,
-    setIsLoading,
-    // setErrorMessagePosts,
   } = useContext(ListContext);
 
   useEffect(() => {
     getAllUsers().then(setUsers);
-    // .catch(() => {
-    //   setErrorMessagePosts('Something went wrong!');
-    // });
   }, []);
 
   const handleUserClick = (userId: number) => {
     if (userId !== idUserActive) {
       setIdUserActive(userId);
-      setIsLoading(true);
+      setSelectedPost({
+        id: -1,
+        userId: -1,
+        title: '',
+        body: '',
+      });
     }
 
     setIsUsersVisble(!isUsersVisble);

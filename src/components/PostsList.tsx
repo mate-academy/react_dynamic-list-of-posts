@@ -9,14 +9,25 @@ type Props = {
 };
 
 export const PostsList: React.FC<Props> = ({ posts }) => {
-  const { idSelectedPost, setIdSelectedPost } = useContext(ListContext);
+  const {
+    selectedPost,
+    setSelectedPost,
+    setIsCommentFormVisible,
+  } = useContext(ListContext);
 
-  const handleOpenPost = (postId: number) => {
-    if (postId === idSelectedPost) {
-      setIdSelectedPost(-1);
+  const handleOpenPost = (postId: number, post: Post) => {
+    if (postId === selectedPost.id) {
+      setSelectedPost({
+        id: -1,
+        userId: -1,
+        title: '',
+        body: '',
+      });
     } else {
-      setIdSelectedPost(postId);
+      setSelectedPost(post);
     }
+
+    setIsCommentFormVisible(false);
   };
 
   return (
@@ -50,12 +61,12 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
                     type="button"
                     data-cy="PostButton"
                     className={classNames('button is-link', {
-                      'is-light': post.id !== idSelectedPost,
+                      'is-light': post.id !== selectedPost.id,
                     })}
-                    onClick={() => handleOpenPost(post.id)}
+                    onClick={() => handleOpenPost(post.id, post)}
                   >
                     {
-                      post.id === idSelectedPost ? (
+                      post.id === selectedPost.id ? (
                         'Close'
                       ) : (
                         'Open'
