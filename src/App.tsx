@@ -10,7 +10,6 @@ import { Loader } from './components/Loader';
 import { client } from './utils/fetchClient';
 import { User } from './types/User';
 import { Post } from './types/Post';
-// import { Comment } from './types/Comment';
 
 export const App: React.FC = () => {
   const [errorMsg, setErrorMsg] = useState('');
