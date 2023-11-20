@@ -65,6 +65,7 @@ export const UserSelector: React.FC<Props> = ({
           <div className="dropdown-content">
             {users.map(user => (
               <UserItem
+                key={user.id}
                 user={user}
                 selectedUser={selectedUser}
                 onUserSelect={() => userSelectionHandler(user)}

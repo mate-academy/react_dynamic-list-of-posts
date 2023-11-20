@@ -26,7 +26,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
     setHasCommentsError(false);
 
     client.get<Comment[]>(`/comments?postId=${selectedPost.id}`)
-      .then(comms => setComments(comms))
+      .then(setComments)
       .catch(() => setHasCommentsError(true))
       .finally(() => setIsCommentsLoading(false));
   }, [selectedPost]);
@@ -112,7 +112,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
 
         {isFormVisible && (
           <NewCommentForm
-            onCommentAdd={(value) => setComments(value)}
+            onCommentAdd={setComments}
             currentPost={selectedPost}
           />
         )}
