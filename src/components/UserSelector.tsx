@@ -33,9 +33,7 @@ export const UserSelector: React.FC<Props> = ({
           onBlur={() => setBtnActive(false)}
         >
           <span>
-            {selectedUser
-              ? <span>{selectedUser.name}</span>
-              : <span>Choose a user</span>}
+            {selectedUser ? selectedUser.name : 'Choose a user'}
           </span>
 
           <span className="icon is-small">

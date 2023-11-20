@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import cn from 'classnames';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
 import {
   addComment,
@@ -11,12 +10,14 @@ import {
 } from '../services/PostComments';
 
 type Props = {
-  post: Post;
+  title: string;
+  body: string;
+  id: number;
 };
 
 type DelComment = number | null;
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
+export const PostDetails: React.FC<Props> = ({ title, body, id }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [arePostsLoading, setArePostsLoading] = useState(true);
   const [isLoadingError, setIsLoadingError] = useState(false);
@@ -34,7 +35,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setArePostsLoading(true);
     try {
       setIsLoadingError(false);
-      const loadedComments = await getComments(post.id);
+      const loadedComments = await getComments(id);
 
       setComments(loadedComments);
     } catch {
@@ -42,7 +43,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     } finally {
       setArePostsLoading(false);
     }
-  }, [post.id]);
+  }, [id]);
   const handleCommentDelete = async (commentId: number) => {
     setDeletingCommentID(commentId);
     try {
@@ -62,7 +63,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     try {
       const newPost = await addComment({
         ...newComment,
-        postId: post.id,
+        postId: id,
       });
 
       setComments((prevComments) => [...prevComments, newPost]);
@@ -76,14 +77,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   useEffect(() => {
     loadComments();
     setIsWritingComment(false);
-  }, [loadComments, post.id]);
+  }, [loadComments, id]);
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">{post.title}</h2>
-          <p data-cy="PostBody">{post.body}</p>
+          <h2 data-cy="PostTitle">{title}</h2>
+          <p data-cy="PostBody">{body}</p>
         </div>
 
         <div className="block">
@@ -105,17 +106,22 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             <>
               <p className="title is-4">Comments:</p>
 
-              {comments.map((comment) => (
+              {comments.map(({
+                id: commentId,
+                email,
+                name,
+                body: commentBody,
+              }) => (
                 <article
                   className={cn('message', 'is-small', {
-                    'is-loading-custom': deletingCommentId === comment.id,
+                    'is-loading-custom': deletingCommentId === commentId,
                   })}
                   data-cy="Comment"
-                  key={comment.id}
+                  key={commentId}
                 >
                   <div className="message-header">
-                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                      {comment.name}
+                    <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                      {name}
                     </a>
                     <button
                       data-cy="CommentDelete"
@@ -123,7 +129,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                       className="delete is-small"
                       aria-label="delete"
                       onClick={() => {
-                        handleCommentDelete(comment.id);
+                        handleCommentDelete(commentId);
                       }}
                     >
                       delete button
@@ -131,7 +137,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   </div>
 
                   <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
+                    {commentBody}
                   </div>
                 </article>
               ))}
