@@ -13,11 +13,8 @@ export const CommentItem: React.FC<Props> = ({ comment }) => {
   const handleDeleteButton = (commentId: number) => {
     deleteComment(commentId)
       .then(() => {
-        const newComments = [...comments];
-        const deleteIndex = newComments.findIndex(currentComment => (
-          currentComment.id === commentId));
-
-        newComments.splice(deleteIndex, 1);
+        const newComments = comments.filter(currentComment => (
+          currentComment.id !== commentId));
 
         setComments(newComments);
       });

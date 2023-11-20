@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import classNames from 'classnames';
-import { User } from '../types/User';
+import { User as UserType } from '../types/User';
 import { getAllUsers } from '../api/users';
 import { ListContext } from './ListContext';
+import { User } from './User';
 
 export const UserSelector: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserType[]>([]);
   const [isUsersVisble, setIsUsersVisble] = useState(false);
   const {
     idUserActive,
@@ -65,16 +65,12 @@ export const UserSelector: React.FC = () => {
           <div className="dropdown-content">
             {
               users.map(user => (
-                <a
-                  href={`#user-${user.id}`}
-                  className={classNames('dropdown-item', {
-                    'is-active': idUserActive === user.id,
-                  })}
+                <User
+                  user={user}
                   key={user.id}
-                  onClick={() => handleUserClick(user.id)}
-                >
-                  {user.name}
-                </a>
+                  selectUser={handleUserClick}
+                  idUserActive={idUserActive}
+                />
               ))
             }
           </div>

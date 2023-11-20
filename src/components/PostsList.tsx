@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useContext } from 'react';
-import classNames from 'classnames';
 import { Post } from '../types/Post';
 import { ListContext } from './ListContext';
+import { PostItem } from './PostItem';
 
 type Props = {
   posts: Post[],
@@ -46,35 +46,12 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
         <tbody>
           {
             posts.map(post => (
-              <tr
-                data-cy="Post"
+              <PostItem
+                post={post}
+                selectedPost={selectedPost}
+                openPost={handleOpenPost}
                 key={post.id}
-              >
-                <td data-cy="PostId">{post.id}</td>
-
-                <td data-cy="PostTitle">
-                  {post.title}
-                </td>
-
-                <td className="has-text-right is-vcentered">
-                  <button
-                    type="button"
-                    data-cy="PostButton"
-                    className={classNames('button is-link', {
-                      'is-light': post.id !== selectedPost.id,
-                    })}
-                    onClick={() => handleOpenPost(post.id, post)}
-                  >
-                    {
-                      post.id === selectedPost.id ? (
-                        'Close'
-                      ) : (
-                        'Open'
-                      )
-                    }
-                  </button>
-                </td>
-              </tr>
+              />
             ))
           }
         </tbody>

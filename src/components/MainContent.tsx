@@ -31,31 +31,45 @@ export const MainContent: React.FC = () => {
     }
   }, [idUserActive]);
 
-  let content;
-
   if (idUserActive === -1) {
-    content = <p data-cy="NoSelectedUser">No user selected</p>;
-  } else if (isLoading) {
-    content = <Loader />;
-  } else if (isError) {
-    content = (
-      <div className="notification is-danger" data-cy="PostsLoadingError">
-        Something went wrong!
+    return (
+      <div className="block" data-cy="MainContent">
+        <p data-cy="NoSelectedUser">No user selected</p>
       </div>
     );
-  } else if (posts.length === 0) {
-    content = (
-      <div className="notification is-warning" data-cy="NoPostsYet">
-        No posts yet
+  }
+
+  if (isLoading) {
+    return (
+      <div className="block" data-cy="MainContent">
+        <Loader />
       </div>
     );
-  } else {
-    content = <PostsList posts={posts} />;
+  }
+
+  if (isError) {
+    return (
+      <div className="block" data-cy="MainContent">
+        <div className="notification is-danger" data-cy="PostsLoadingError">
+          Something went wrong!
+        </div>
+      </div>
+    );
+  }
+
+  if (posts.length === 0) {
+    return (
+      <div className="block" data-cy="MainContent">
+        <div className="notification is-warning" data-cy="NoPostsYet">
+          No posts yet
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="block" data-cy="MainContent">
-      {content}
+      <PostsList posts={posts} />
     </div>
   );
 };

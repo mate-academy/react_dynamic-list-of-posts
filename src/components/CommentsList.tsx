@@ -29,49 +29,50 @@ export const CommentsList: React.FC = () => {
         setIsErrorComment(true);
         setComments([]);
       });
-  }, [selectedPost]);
-
-  let content;
+  }, [selectedPost, setComments, setIsErrorComment]);
 
   if (isLoading) {
-    content = <Loader />;
-  } else if (isErrorComment) {
-    content = (
-      <div className="notification is-danger" data-cy="CommentsError">
-        Something went wrong
+    return (
+      <div className="block">
+        <Loader />
       </div>
     );
-  } else if (comments?.length === 0) {
-    content = (
-      <>
+  }
+
+  if (isErrorComment) {
+    return (
+      <div className="block">
+        <div className="notification is-danger" data-cy="CommentsError">
+          Something went wrong
+        </div>
+      </div>
+    );
+  }
+
+  if (comments?.length === 0) {
+    return (
+      <div className="block">
         <p className="title is-4" data-cy="NoCommentsMessage">
           No comments yet
         </p>
 
         <WriteCommentButton />
-      </>
-
-    );
-  } else {
-    content = (
-      <>
-        <p className="title is-4">Comments:</p>
-
-        {comments?.map(comment => (
-          <CommentItem
-            key={comment.id}
-            comment={comment}
-          />
-        ))}
-
-        <WriteCommentButton />
-      </>
+      </div>
     );
   }
 
   return (
     <div className="block">
-      {content}
+      <p className="title is-4">Comments:</p>
+
+      {comments?.map(comment => (
+        <CommentItem
+          key={comment.id}
+          comment={comment}
+        />
+      ))}
+
+      <WriteCommentButton />
     </div>
   );
 };
