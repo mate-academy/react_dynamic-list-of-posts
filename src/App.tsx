@@ -19,10 +19,14 @@ export const App: React.FC = () => {
   const [isDropdownMenu, setIsDropdownMenu] = useState(false);
 
   const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   // const [comments, setComments] = useState([]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const isPostsWarning = !posts.length && selectedUser && !isLoading;
+  const isPostsDisplayed = posts.length > 0 && !isLoading;
 
   const loadUsers = async () => {
     try {
@@ -58,13 +62,17 @@ export const App: React.FC = () => {
   }, [selectedUser, loadPosts]);
 
   const onUserSelect = (user: User) => {
-    setIsLoading(true);
-    setSelectedUser(user);
+    if (selectedUser !== user) {
+      setIsLoading(true);
+      setSelectedUser(user);
+    }
+
     setIsDropdownMenu(false);
   };
 
-  const isPostsWarning = !posts.length && selectedUser && !isLoading;
-  const isPostsDisplayed = posts.length > 0 && !isLoading;
+  const onPostSelect = (post: Post) => {
+    setSelectedPost(selectedPost === post ? null : post);
+  };
 
   return (
     <main className="section">
@@ -110,7 +118,11 @@ export const App: React.FC = () => {
                 )}
 
                 {isPostsDisplayed && (
-                  <PostsList posts={posts} />
+                  <PostsList
+                    posts={posts}
+                    onPostSelect={onPostSelect}
+                    selectedPost={selectedPost}
+                  />
                 )}
               </div>
             </div>
@@ -122,13 +134,16 @@ export const App: React.FC = () => {
               'tile',
               'is-parent',
               'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
+              'Sidebar', {
+                'Sidebar--open': selectedPost,
+              },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
+            {selectedPost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails />
+              </div>
+            )}
           </div>
         </div>
       </div>
