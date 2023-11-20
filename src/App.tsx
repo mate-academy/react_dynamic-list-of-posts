@@ -39,6 +39,14 @@ export const App: React.FC = () => {
       .finally(() => setIsPostsLoading(false));
   }, [selectedUser]);
 
+  const postOpenHandler = (value: Post) => {
+    if (selectedPost === value) {
+      return setSelectedPost(null);
+    }
+
+    return setSelectedPost(value);
+  };
+
   const renderMainContent = () => {
     if (!selectedUser) {
       return (
@@ -79,10 +87,15 @@ export const App: React.FC = () => {
     return (
       <PostsList
         posts={userPosts}
-        onPostOpen={(value) => setSelectedPost(value)}
+        onPostOpen={postOpenHandler}
         selectedPost={selectedPost}
       />
     );
+  };
+
+  const userSelectHandler = (user: User) => {
+    setSelectedUser(user);
+    setSelectedPost(null);
   };
 
   return (
@@ -95,7 +108,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   selectedUser={selectedUser}
                   users={users}
-                  onSelect={(user) => setSelectedUser(user)}
+                  onSelect={userSelectHandler}
                 />
               </div>
 

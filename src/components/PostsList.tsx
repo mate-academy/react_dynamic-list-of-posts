@@ -47,7 +47,9 @@ export const PostsList: React.FC<Props> = ({
                   'is-link',
                   { 'is-light': selectedPost !== post },
                 )}
-                onClick={() => onPostOpen(post)}
+                onClick={() => {
+                  onPostOpen(post);
+                }}
               >
                 {selectedPost === post ? 'Close' : 'Open'}
               </button>
