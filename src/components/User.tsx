@@ -9,15 +9,17 @@ type Props = {
 };
 
 export const User: React.FC<Props> = ({ user, selectUser, idUserActive }) => {
+  const { id, name } = user;
+
   return (
     <a
-      href={`#user-${user.id}`}
+      href={`#user-${id}`}
       className={classNames('dropdown-item', {
-        'is-active': idUserActive === user.id,
+        'is-active': idUserActive === id,
       })}
-      onClick={() => selectUser(user.id)}
+      onClick={() => selectUser(id)}
     >
-      {user.name}
+      {name}
     </a>
   );
 };

@@ -9,12 +9,18 @@ type Props = {
 
 export const CommentItem: React.FC<Props> = ({ comment }) => {
   const { comments, setComments } = useContext(ListContext);
+  const {
+    id,
+    email,
+    name,
+    body,
+  } = comment;
 
   const handleDeleteButton = (commentId: number) => {
     deleteComment(commentId)
       .then(() => {
-        const newComments = comments.filter(currentComment => (
-          currentComment.id !== commentId));
+        const newComments = comments.filter(({ id: currentCommentId }) => (
+          currentCommentId !== commentId));
 
         setComments(newComments);
       });
@@ -26,22 +32,22 @@ export const CommentItem: React.FC<Props> = ({ comment }) => {
       data-cy="Comment"
     >
       <div className="message-header">
-        <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-          {comment.name}
+        <a href={`mailto:${email}`} data-cy="CommentAuthor">
+          {name}
         </a>
         <button
           data-cy="CommentDelete"
           type="button"
           className="delete is-small"
           aria-label="delete"
-          onClick={() => handleDeleteButton(comment.id)}
+          onClick={() => handleDeleteButton(id)}
         >
           delete button
         </button>
       </div>
 
       <div className="message-body" data-cy="CommentBody">
-        {comment.body}
+        {body}
       </div>
     </article>
   );

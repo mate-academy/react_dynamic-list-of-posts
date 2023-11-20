@@ -57,7 +57,7 @@ export const MainContent: React.FC = () => {
     );
   }
 
-  if (posts.length === 0) {
+  if (!posts.length) {
     return (
       <div className="block" data-cy="MainContent">
         <div className="notification is-warning" data-cy="NoPostsYet">

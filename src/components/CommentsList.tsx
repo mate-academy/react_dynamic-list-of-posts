@@ -49,7 +49,7 @@ export const CommentsList: React.FC = () => {
     );
   }
 
-  if (comments?.length === 0) {
+  if (!comments?.length) {
     return (
       <div className="block">
         <p className="title is-4" data-cy="NoCommentsMessage">
