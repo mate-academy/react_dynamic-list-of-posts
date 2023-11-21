@@ -26,8 +26,9 @@ export const App: React.FC = () => {
     try {
       const loadedUsers = await getUsers();
       setUsers(loadedUsers);
+      setIsLoadingError(false);
     } catch {
-      throw new Error('Failed to load users');
+      setIsLoadingError(true);
     }
   };
 
@@ -73,48 +74,41 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {arePostLoading
-                  ? <Loader />
-                  : (
-                    <>
-                      {!selectedUser
-                        ? (
-                          <p data-cy="NoSelectedUser">
-                            No user selected
-                          </p>
-                        )
-                        : (
-                          <>
-                            {isLoadingError && (
-                              <div
-                                className="notification is-danger"
-                                data-cy="PostsLoadingError"
-                              >
-                                Something went wrong!
-                              </div>
-                            )}
+                {arePostLoading && <Loader />}
 
-                            {posts.length > 0
-                              ? (
-                                <PostsList
-                                  posts={posts}
-                                  selectedPost={selectedPost}
-                                  setSelectedPost={setSelectedPost}
-                                />
-                              )
-                              : (
-                                <div
-                                  className="notification is-warning"
-                                  data-cy="NoPostsYet"
-                                >
-                                  No posts yet
-                                </div>
-                              )}
-                          </>
-                        )}
-                    </>
-                  )}
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
+                {selectedUser && !arePostLoading && (
+                  <>
+                    {isLoadingError && (
+                      <div
+                        className="notification is-danger"
+                        data-cy="PostsLoadingError"
+                      >
+                        Something went wrong!
+                      </div>
+                    )}
+
+                    {posts.length > 0 ? (
+                      <PostsList
+                        posts={posts}
+                        selectedPost={selectedPost}
+                        setSelectedPost={setSelectedPost}
+                      />
+                    ) : (
+                      <div
+                        className="notification is-warning"
+                        data-cy="NoPostsYet"
+                      >
+                        No posts yet
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           </div>
