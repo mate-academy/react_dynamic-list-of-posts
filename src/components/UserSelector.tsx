@@ -1,6 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { User as UserType } from '../types/User';
+import { getAllUsers } from '../api/users';
+import { ListContext } from './ListContext';
+import { User } from './User';
 
 export const UserSelector: React.FC = () => {
+  const [users, setUsers] = useState<UserType[]>([]);
+  const [isUsersVisble, setIsUsersVisble] = useState(false);
+  const {
+    idUserActive,
+    setSelectedPost,
+    setIdUserActive,
+  } = useContext(ListContext);
+
+  useEffect(() => {
+    getAllUsers().then(setUsers);
+  }, []);
+
+  const handleUserClick = (userId: number) => {
+    if (userId !== idUserActive) {
+      setIdUserActive(userId);
+      setSelectedPost({
+        id: -1,
+        userId: -1,
+        title: '',
+        body: '',
+      });
+    }
+
+    setIsUsersVisble(!isUsersVisble);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -12,8 +42,17 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setIsUsersVisble(!isUsersVisble)}
         >
-          <span>Choose a user</span>
+          <span>
+            {
+              idUserActive !== -1 ? (
+                users.find(user => user.id === idUserActive)?.name
+              ) : (
+                'Choose a user'
+              )
+            }
+          </span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -21,15 +60,23 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+      {isUsersVisble && (
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div className="dropdown-content">
+            {
+              users.map(user => (
+                <User
+                  user={user}
+                  key={user.id}
+                  selectUser={handleUserClick}
+                  idUserActive={idUserActive}
+                />
+              ))
+            }
+          </div>
         </div>
-      </div>
+      )}
+
     </div>
   );
 };
