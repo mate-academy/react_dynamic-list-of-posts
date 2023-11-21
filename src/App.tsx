@@ -1,4 +1,7 @@
-import React from 'react';
+import React, {
+  useState,
+  useEffect,
+} from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +11,44 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { User } from './types/User';
+import { getUsers } from './api/users';
+import { Post } from './types/Post';
+import { getPosts } from './api/posts';
 
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [isVisibleUsers, setIsVisibleUsers] = useState<boolean>(false);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingError, setLoadingError] = useState(false);
+
+  useEffect(() => {
+    getUsers()
+      .then(setUsers)
+  }, []);
+
+  const handleDropdown = () => {
+    setIsVisibleUsers(!isVisibleUsers)
+  };
+
+  const handleUserClick = (user: User) => {
+    setIsVisibleUsers(false);
+    setIsLoading(true)
+    setSelectedUser(user)
+
+    getPosts(user.id)
+      .then(setPosts)
+      .catch(() => {
+        setLoadingError(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      })
+  };
+
   return (
     <main className="section">
       <div className="container">
@@ -17,28 +56,47 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  usersFromServer={users}
+                  onUserClick={handleUserClick}
+                  onDropdown={handleDropdown}
+                  isVisibleUsers={isVisibleUsers}
+                  selectedUser={selectedUser}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isLoading &&  <Loader />}
 
-                <div
+                {loadingError && (
+                  <div
                   className="notification is-danger"
                   data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {!posts.length && selectedUser && !isLoading && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                <PostsList />
+                {posts.length > 0 && selectedUser && !loadingError && (
+                  <PostsList
+                    postsFromServer={posts}
+                    onSelectedPost={setSelectedPost}
+                    selectedPost={selectedPost}
+
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -50,11 +108,16 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {selectedPost && (
+                <PostDetails
+                  currentPost={selectedPost}
+                  setCommentError={setLoadingError}
+                />
+              )}
             </div>
           </div>
         </div>
