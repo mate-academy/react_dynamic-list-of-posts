@@ -1,14 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
+import { Fields } from '../types/Fields';
 
 type Props = {
   comments: Comment[];
   post: Post;
   error: string;
   isLoading: boolean;
+  onAddComment: (event: React.FormEvent<HTMLFormElement>) => void;
+  isSubmit: boolean;
+  onCommentDelete: (id: number) => void;
+  name: string;
+  email: string;
+  body: string;
+  handleChangeField: (value: string, field: keyof typeof Fields) => void;
+  // setName: (name: string) => void;
+  // setEmail: (email: string) => void;
+  // setBody: (body: string) => void;
+  errorName: boolean;
+  errorEmail: boolean;
+  errorBody: boolean;
+  isFormDisplayed: boolean;
+  setIsFormDisplayed: (arg: boolean) => void;
+  reset: () => void;
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -16,9 +33,23 @@ export const PostDetails: React.FC<Props> = ({
   post,
   error,
   isLoading,
+  onAddComment,
+  isSubmit,
+  onCommentDelete,
+  name,
+  email,
+  body,
+  handleChangeField,
+  // setName,
+  // setEmail,
+  // setBody,
+  errorName,
+  errorEmail,
+  errorBody,
+  isFormDisplayed,
+  setIsFormDisplayed,
+  reset,
 }) => {
-  const [isFormDisplayed, setIsFormDisplayed] = useState(false);
-
   const commentsContent = !comments.length
     ? (
       <p className="title is-4" data-cy="NoCommentsMessage">
@@ -49,6 +80,7 @@ export const PostDetails: React.FC<Props> = ({
                   type="button"
                   className="delete is-small"
                   aria-label="delete"
+                  onClick={() => onCommentDelete(comment.id)}
                 >
                   delete button
                 </button>
@@ -107,7 +139,23 @@ export const PostDetails: React.FC<Props> = ({
 
         </div>
 
-        {isFormDisplayed && <NewCommentForm />}
+        {isFormDisplayed && (
+          <NewCommentForm
+            onAddComment={onAddComment}
+            isSubmit={isSubmit}
+            name={name}
+            email={email}
+            body={body}
+            handleChangeField={handleChangeField}
+            // setName={setName}
+            // setEmail={setEmail}
+            // setBody={setBody}
+            errorName={errorName}
+            errorEmail={errorEmail}
+            errorBody={errorBody}
+            reset={reset}
+          />
+        )}
       </div>
     </div>
   );

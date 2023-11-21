@@ -11,9 +11,10 @@ import { Loader } from './components/Loader';
 import { getUsers } from './api/users';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { Comment } from './types/Comment';
+import { Comment, CommentData } from './types/Comment';
 import { getPosts } from './api/posts';
-import { getComments } from './api/comments';
+import { createComment, deleteComment, getComments } from './api/comments';
+import { Fields } from './types/Fields';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -25,13 +26,29 @@ export const App: React.FC = () => {
 
   const [comments, setComments] = useState<Comment[]>([]);
   const [isCommentsLoading, setIsCommentsLoading] = useState(true);
-  // const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
+  const [isCommentSubmit, setIsCommentSubmit] = useState(false);
+
+  const [isFormDisplayed, setIsFormDisplayed] = useState(false);
+  const [commentName, setCommentName] = useState('');
+  const [commentEmail, setCommentEmail] = useState('');
+  const [commentBody, setCommentBody] = useState('');
+  const [errorName, setErrorName] = useState(false);
+  const [errorEmail, setErrorEmail] = useState(false);
+  const [errorBody, setErrorBody] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   const isPostsWarning = !posts.length && selectedUser && !isLoading;
   const isPostsDisplayed = posts.length > 0 && !isLoading;
+
+  const normalizedValue = (value: string) => value.trim();
+
+  const newComment: CommentData = {
+    name: normalizedValue(commentName),
+    email: normalizedValue(commentEmail),
+    body: normalizedValue(commentBody),
+  };
 
   const loadUsers = async () => {
     try {
@@ -85,6 +102,81 @@ export const App: React.FC = () => {
     }
   }, [selectedPost, loadComments]);
 
+  const onAddComment = async (
+    event: React.FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+    setErrorName(!newComment.name);
+    setErrorEmail(!newComment.email);
+    setErrorBody(!newComment.body);
+
+    if (newComment.name
+      && newComment.email
+      && newComment.body
+      && selectedPost) {
+      setIsCommentSubmit(true);
+
+      try {
+        const data = await createComment({
+          ...newComment,
+          postId: selectedPost?.id,
+        });
+
+        setComments(prev => [...prev, data]);
+        setCommentBody('');
+      } catch (error) {
+        throw new Error();
+      } finally {
+        setIsCommentSubmit(false);
+      }
+    }
+  };
+
+  const onCommentDelete = async (commentId: number) => {
+    const defaultComments = comments;
+
+    setComments(prev => prev.filter(comment => comment.id !== commentId));
+    try {
+      await deleteComment(commentId);
+    } catch (error) {
+      setComments(defaultComments);
+    }
+  };
+
+  const resetForm = () => {
+    setCommentName('');
+    setCommentEmail('');
+    setCommentBody('');
+    setErrorName(false);
+    setErrorEmail(false);
+    setErrorBody(false);
+  };
+
+  const handleChangeField = (
+    value: string,
+    field: keyof typeof Fields,
+  ) => {
+    switch (field) {
+      case Fields.Name:
+        setCommentName(value);
+        setErrorName(false);
+        break;
+
+      case Fields.Email:
+        setCommentEmail(value);
+        setErrorEmail(false);
+        break;
+
+      case Fields.Body:
+        setCommentBody(value);
+        setErrorBody(false);
+        break;
+
+      default:
+        break;
+    }
+  };
+
   const onUserSelect = (user: User) => {
     if (selectedUser !== user) {
       setIsLoading(true);
@@ -96,6 +188,8 @@ export const App: React.FC = () => {
 
   const onPostSelect = (post: Post) => {
     setIsCommentsLoading(true);
+    setIsFormDisplayed(false);
+    resetForm();
     setSelectedPost(selectedPost === post ? null : post);
   };
 
@@ -171,6 +265,19 @@ export const App: React.FC = () => {
                   post={selectedPost}
                   error={errorMessage}
                   isLoading={isCommentsLoading}
+                  onAddComment={onAddComment}
+                  isSubmit={isCommentSubmit}
+                  onCommentDelete={onCommentDelete}
+                  name={commentName}
+                  email={commentEmail}
+                  body={commentBody}
+                  handleChangeField={handleChangeField}
+                  errorName={errorName}
+                  errorEmail={errorEmail}
+                  errorBody={errorBody}
+                  isFormDisplayed={isFormDisplayed}
+                  setIsFormDisplayed={setIsFormDisplayed}
+                  reset={resetForm}
                 />
               </div>
             )}
