@@ -10,8 +10,10 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUsers } from './api/users';
 import { User } from './types/User';
-import { getPosts } from './api/posts';
 import { Post } from './types/Post';
+import { Comment } from './types/Comment';
+import { getPosts } from './api/posts';
+import { getComments } from './api/comments';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -20,10 +22,13 @@ export const App: React.FC = () => {
 
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  // const [comments, setComments] = useState([]);
+
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isCommentsLoading, setIsCommentsLoading] = useState(true);
+  // const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const isPostsWarning = !posts.length && selectedUser && !isLoading;
   const isPostsDisplayed = posts.length > 0 && !isLoading;
@@ -50,6 +55,18 @@ export const App: React.FC = () => {
     }
   }, [selectedUser]);
 
+  const loadComments = useCallback(async () => {
+    try {
+      const data = await getComments(selectedPost?.id);
+
+      setComments(data);
+    } catch (error) {
+      setErrorMessage('Something went wrong');
+    } finally {
+      setIsCommentsLoading(false);
+    }
+  }, [selectedPost]);
+
   useEffect(() => {
     loadUsers();
   }, []);
@@ -61,6 +78,13 @@ export const App: React.FC = () => {
     }
   }, [selectedUser, loadPosts]);
 
+  useEffect(() => {
+    if (selectedPost) {
+      setErrorMessage('');
+      loadComments();
+    }
+  }, [selectedPost, loadComments]);
+
   const onUserSelect = (user: User) => {
     if (selectedUser !== user) {
       setIsLoading(true);
@@ -71,6 +95,7 @@ export const App: React.FC = () => {
   };
 
   const onPostSelect = (post: Post) => {
+    setIsCommentsLoading(true);
     setSelectedPost(selectedPost === post ? null : post);
   };
 
@@ -141,7 +166,12 @@ export const App: React.FC = () => {
           >
             {selectedPost && (
               <div className="tile is-child box is-success ">
-                <PostDetails />
+                <PostDetails
+                  comments={comments}
+                  post={selectedPost}
+                  error={errorMessage}
+                  isLoading={isCommentsLoading}
+                />
               </div>
             )}
           </div>
