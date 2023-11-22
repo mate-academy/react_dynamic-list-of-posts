@@ -18,65 +18,69 @@ type Props = {
 type DelComment = number | null;
 
 export const PostDetails: React.FC<Props> = ({ title, body, id }) => {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [arePostsLoading, setArePostsLoading] = useState(true);
-  const [isLoadingError, setIsLoadingError] = useState(false);
-  const [isWritingComment, setIsWritingComment] = useState(false);
-  const [isCommentLoading, setIsCommentLoading] = useState(false);
-  const [deletingCommentId, setDeletingCommentID] = useState<DelComment>(null);
+  const [state, setState] = useState({
+    comments: [] as Comment[],
+    arePostsLoading: true,
+    isLoadingError: false,
+    isWritingComment: false,
+    isCommentLoading: false,
+    deletingCommentId: null as DelComment,
+  });
 
-  const noCommentCondtion
-    = !arePostsLoading && !isLoadingError && comments.length === 0;
+  const noCommentCondtion = !state.arePostsLoading
+  && !state.isLoadingError && state.comments.length === 0;
 
-  const showCommentsCondition
-    = !arePostsLoading && !isLoadingError && comments.length > 0;
+  const showCommentsCondition = !state.arePostsLoading
+  && !state.isLoadingError && state.comments.length > 0;
 
   const loadComments = useCallback(async () => {
-    setArePostsLoading(true);
+    setState((prev) => ({ ...prev, arePostsLoading: true }));
     try {
-      setIsLoadingError(false);
+      setState((prev) => ({ ...prev, isLoadingError: false }));
       const loadedComments = await getComments(id);
 
-      setComments(loadedComments);
+      setState((prev) => ({ ...prev, comments: loadedComments }));
     } catch {
-      setIsLoadingError(true);
+      setState((prev) => ({ ...prev, isLoadingError: true }));
     } finally {
-      setArePostsLoading(false);
+      setState((prev) => ({ ...prev, arePostsLoading: false }));
     }
   }, [id]);
+
   const handleCommentDelete = async (commentId: number) => {
-    setDeletingCommentID(commentId);
+    setState((prev) => ({ ...prev, deletingCommentId: commentId }));
     try {
       await deleteComment(commentId);
-      setComments((prevComments) => prevComments.filter(
-        comment => comment.id !== commentId,
-      ));
+      setState((prev) => ({
+        ...prev,
+        comments: prev.comments.filter((comment) => comment.id !== commentId),
+      }));
     } catch {
-      setIsLoadingError(true);
+      setState((prev) => ({ ...prev, isLoadingError: true }));
     } finally {
-      setDeletingCommentID(null);
+      setState((prev) => ({ ...prev, deletingCommentId: null }));
     }
   };
 
   const handleCreateComment = async (newComment: CommentData) => {
-    setIsCommentLoading(true);
+    setState((prev) => ({ ...prev, isCommentLoading: true }));
     try {
       const newPost = await addComment({
         ...newComment,
         postId: id,
       });
 
-      setComments((prevComments) => [...prevComments, newPost]);
+      setState((prev) => ({ ...prev, comments: [...prev.comments, newPost] }));
     } catch {
-      setIsLoadingError(true);
+      setState((prev) => ({ ...prev, isLoadingError: true }));
     } finally {
-      setIsCommentLoading(false);
+      setState((prev) => ({ ...prev, isCommentLoading: false }));
     }
   };
 
   useEffect(() => {
     loadComments();
-    setIsWritingComment(false);
+    setState((prev) => ({ ...prev, isWritingComment: false }));
   }, [loadComments, id]);
 
   return (
@@ -88,9 +92,9 @@ export const PostDetails: React.FC<Props> = ({ title, body, id }) => {
         </div>
 
         <div className="block">
-          {arePostsLoading && <Loader />}
+          {state.arePostsLoading && <Loader />}
 
-          {!arePostsLoading && isLoadingError && (
+          {!state.arePostsLoading && state.isLoadingError && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
@@ -106,60 +110,64 @@ export const PostDetails: React.FC<Props> = ({ title, body, id }) => {
             <>
               <p className="title is-4">Comments:</p>
 
-              {comments.map(({
-                id: commentId,
-                email,
-                name,
-                body: commentBody,
-              }) => (
-                <article
-                  className={cn('message', 'is-small', {
-                    'is-loading-custom': deletingCommentId === commentId,
-                  })}
-                  data-cy="Comment"
-                  key={commentId}
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${email}`} data-cy="CommentAuthor">
-                      {name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => {
-                        handleCommentDelete(commentId);
-                      }}
-                    >
-                      delete button
-                    </button>
-                  </div>
+              {state.comments
+                .map(({
+                  id: commentId,
+                  email,
+                  name,
+                  body: commentBody,
+                }) => (
+                  <article
+                    className={cn('message', 'is-small', {
+                      'is-loading-custom':
+                      state.deletingCommentId === commentId,
+                    })}
+                    data-cy="Comment"
+                    key={commentId}
+                  >
+                    <div className="message-header">
+                      <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                        {name}
+                      </a>
+                      <button
+                        data-cy="CommentDelete"
+                        type="button"
+                        className="delete is-small"
+                        aria-label="delete"
+                        onClick={() => {
+                          handleCommentDelete(commentId);
+                        }}
+                      >
+                        delete button
+                      </button>
+                    </div>
 
-                  <div className="message-body" data-cy="CommentBody">
-                    {commentBody}
-                  </div>
-                </article>
-              ))}
+                    <div className="message-body" data-cy="CommentBody">
+                      {commentBody}
+                    </div>
+                  </article>
+                ))}
             </>
           )}
         </div>
 
-        {(!isWritingComment || isLoadingError) && (
+        {(!state.isWritingComment || state.isLoadingError) && (
           <button
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => setIsWritingComment(true)}
+            onClick={
+              () => setState((prev) => ({ ...prev, isWritingComment: true }))
+            }
           >
             Write a comment
           </button>
         )}
 
-        {isWritingComment && !isLoadingError && (
+        {state.isWritingComment && !state.isLoadingError && (
           <NewCommentForm
             handleCreateComment={handleCreateComment}
-            isCommentLoading={isCommentLoading}
+            isCommentLoading={state.isCommentLoading}
           />
         )}
       </div>

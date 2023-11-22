@@ -13,14 +13,14 @@ export const UserSelector: React.FC<Props> = ({
   selectedUser,
   setSelectedUser,
 }) => {
-  const [btnActive, setBtnActive] = useState<boolean>(false);
+  const [isBtnActive, setIsBtnActive] = useState<boolean>(false);
 
   return (
     <div
       data-cy="UserSelector"
       className={classNames(
         'dropdown',
-        { 'is-active': btnActive },
+        { 'is-active': isBtnActive },
       )}
     >
       <div className="dropdown-trigger">
@@ -29,8 +29,8 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setBtnActive(!btnActive)}
-          onBlur={() => setBtnActive(false)}
+          onClick={() => setIsBtnActive(!isBtnActive)}
+          onBlur={() => setIsBtnActive(false)}
         >
           <span>
             {selectedUser ? selectedUser.name : 'Choose a user'}
