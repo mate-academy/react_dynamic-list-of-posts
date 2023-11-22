@@ -1,6 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { User } from '../types/User';
+import { getPosts } from '../utils/helpers';
+import { Post } from '../types/Post';
+import { LoadingItems } from '../types/LoadingItems';
+import { HasErrorItem } from '../types/ErrorMessage';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  users: User[] | null,
+  selectedUser: User | null,
+  setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>,
+  setPosts: React.Dispatch<React.SetStateAction<Post[] | null>>,
+  setIsLoading: React.Dispatch<React.SetStateAction<LoadingItems>>,
+  setHasError: React.Dispatch<React.SetStateAction<HasErrorItem>>,
+};
+
+export const UserSelector: React.FC<Props> = ({
+  users,
+  selectedUser,
+  setSelectedUser,
+  setPosts,
+  setIsLoading,
+  setHasError,
+}) => {
+  const [isListVisible, setIsListVisible] = useState(false);
+
+  const handleSelectedUser = async (user: User) => {
+    try {
+      setSelectedUser(user);
+      setIsListVisible(false);
+      setIsLoading('Posts');
+
+      const postsFromServer = await getPosts(user.id);
+
+      setPosts(postsFromServer);
+    } catch {
+      setHasError('Posts');
+    } finally {
+      setIsLoading('');
+    }
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -12,8 +51,15 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setIsListVisible(prev => !prev)}
         >
-          <span>Choose a user</span>
+          <span>
+            {selectedUser
+              ? selectedUser.name
+              : (
+                'Choose a user'
+              )}
+          </span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -21,15 +67,22 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+      {isListVisible && (
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div className="dropdown-content">
+            {users?.map(user => (
+              <a
+                key={user.id}
+                href={`#user-${user.id}`}
+                className="dropdown-item"
+                onClick={() => handleSelectedUser(user)}
+              >
+                {user.name}
+              </a>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
