@@ -9,9 +9,6 @@ type Props = {
   email: string;
   body: string;
   handleChangeField: (value: string, field: keyof typeof Fields) => void;
-  // setName: (name: string) => void;
-  // setEmail: (email: string) => void;
-  // setBody: (body: string) => void;
   errorName: boolean;
   errorEmail: boolean;
   errorBody: boolean;
@@ -25,9 +22,6 @@ export const NewCommentForm: React.FC<Props> = ({
   email,
   body,
   handleChangeField,
-  // setName,
-  // setEmail,
-  // setBody,
   errorName,
   errorEmail,
   errorBody,

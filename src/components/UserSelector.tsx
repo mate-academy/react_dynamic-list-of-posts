@@ -47,7 +47,7 @@ export const UserSelector: React.FC<Props> = ({
             return (
               <a
                 key={user.id}
-                href={`#${user.email}`}
+                href={`#user-${user.id}`}
                 className={classNames('dropdown-item', {
                   'is-active': user === selectedUser,
                 })}
