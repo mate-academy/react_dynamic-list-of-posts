@@ -1,4 +1,5 @@
 export interface Comment {
+  statusCode: any;
   id: number;
   postId: number;
   name: string;
