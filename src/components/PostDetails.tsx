@@ -1,117 +1,112 @@
-import React from 'react';
-import { Loader } from './Loader';
+/* eslint-disable @typescript-eslint/no-shadow */
+import React, { useEffect, useState } from 'react';
+// import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { Post } from '../types/Post';
+import { deletePostComment, getPostComments } from '../utils/api';
+import { Comment } from '../types/Comment';
 
-export const PostDetails: React.FC = () => {
+type Props = {
+  post: Post,
+};
+
+export const PostDetails: React.FC<Props> = ({ post }) => {
+  const { id, title, body } = post;
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [formOpened, setFormOpened] = useState(false);
+
+  useEffect(() => {
+    getPostComments(id)
+      .then(setComments);
+  }, [id]);
+
+  const handleDelete = (id: number) => {
+    deletePostComment(id)
+      .then(() => {
+        setComments((prevComments: Comment[]) => {
+          const copy = [...prevComments];
+          const index = copy.findIndex(comment => comment.id === id);
+
+          copy.splice(index, 1);
+
+          return copy;
+        });
+      });
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {`#${id}: ${title}`}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            {body}
           </p>
         </div>
 
         <div className="block">
-          <Loader />
+          {/* <Loader /> */}
 
-          <div className="notification is-danger" data-cy="CommentsError">
+          {/* <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
-          </div>
+          </div> */}
 
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
+          {!comments.length && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
 
-          <p className="title is-4">Comments:</p>
+          {comments.length > 0 && comments.map(comment => (
+            <>
+              <p className="title is-4">Comments:</p>
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
+              <article className="message is-small" data-cy="Comment">
+                <div className="message-header">
+                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                    {comment.name}
+                  </a>
+                  <button
+                    data-cy="CommentDelete"
+                    type="button"
+                    className="delete is-small"
+                    aria-label="delete"
+                    onClick={() => handleDelete(comment.id)}
+                  >
+                    delete button
+                  </button>
+                </div>
+                <div
+                  className="message-body"
+                  data-cy="CommentBody"
+                >
+                  {comment.body}
+                </div>
+              </article>
+            </>
+          ))}
 
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
+          {!formOpened && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setFormOpened(true)}
             >
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
+        {formOpened && (
+          <NewCommentForm
+            postId={id}
+            setComments={setComments}
+          />
+        )}
       </div>
     </div>
   );
