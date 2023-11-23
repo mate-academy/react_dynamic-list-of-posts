@@ -21,3 +21,7 @@
 .message-body {
   white-space: pre-line;
 }
+
+a.dropdown-item.is-active {
+  pointer-events: none;
+}
