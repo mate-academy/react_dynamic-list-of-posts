@@ -1,9 +1,10 @@
 import React from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { Comment } from '../types/Comment';
+import { Comment, CommentData, CommentError } from '../types/Comment';
 import { Post } from '../types/Post';
 import { Fields } from '../types/Fields';
+import { CommentsList } from './CommentsList';
 
 type Props = {
   comments: Comment[];
@@ -13,13 +14,9 @@ type Props = {
   onAddComment: (event: React.FormEvent<HTMLFormElement>) => void;
   isSubmit: boolean;
   onCommentDelete: (id: number) => void;
-  name: string;
-  email: string;
-  body: string;
+  newComment: CommentData | null;
   handleChangeField: (value: string, field: keyof typeof Fields) => void;
-  errorName: boolean;
-  errorEmail: boolean;
-  errorBody: boolean;
+  commentError: CommentError | null;
   isFormDisplayed: boolean;
   setIsFormDisplayed: (arg: boolean) => void;
   reset: () => void;
@@ -33,13 +30,9 @@ export const PostDetails: React.FC<Props> = ({
   onAddComment,
   isSubmit,
   onCommentDelete,
-  name,
-  email,
-  body,
+  newComment,
   handleChangeField,
-  errorName,
-  errorEmail,
-  errorBody,
+  commentError,
   isFormDisplayed,
   setIsFormDisplayed,
   reset,
@@ -50,46 +43,7 @@ export const PostDetails: React.FC<Props> = ({
         No comments yet
       </p>
     )
-    : (
-      <>
-        <p className="title is-4">Comments:</p>
-
-        {comments.map(comment => {
-          return (
-            <article
-              key={comment.id}
-              className="message is-small"
-              data-cy="Comment"
-            >
-              <div className="message-header">
-                <a
-                  href={`mailto:${comment.email}`}
-                  data-cy="CommentAuthor"
-                >
-                  {comment.name}
-                </a>
-
-                <button
-                  data-cy="CommentDelete"
-                  type="button"
-                  className="delete is-small"
-                  aria-label="delete"
-                  onClick={() => onCommentDelete(comment.id)}
-                >
-                  delete button
-                </button>
-              </div>
-              <div
-                className="message-body"
-                data-cy="CommentBody"
-              >
-                {comment.body}
-              </div>
-            </article>
-          );
-        })}
-      </>
-    );
+    : <CommentsList comments={comments} onCommentDelete={onCommentDelete} />;
 
   const newCommentButton = !isFormDisplayed && (
     <button
@@ -137,13 +91,9 @@ export const PostDetails: React.FC<Props> = ({
           <NewCommentForm
             onAddComment={onAddComment}
             isSubmit={isSubmit}
-            name={name}
-            email={email}
-            body={body}
+            newComment={newComment}
             handleChangeField={handleChangeField}
-            errorName={errorName}
-            errorEmail={errorEmail}
-            errorBody={errorBody}
+            commentError={commentError}
             reset={reset}
           />
         )}

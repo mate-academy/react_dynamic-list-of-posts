@@ -1,30 +1,23 @@
 import React from 'react';
 import classNames from 'classnames';
 import { Fields } from '../types/Fields';
+import { CommentData, CommentError } from '../types/Comment';
 
 type Props = {
   onAddComment: (event: React.FormEvent<HTMLFormElement>) => void;
   isSubmit: boolean;
-  name: string;
-  email: string;
-  body: string;
+  newComment: CommentData | null;
   handleChangeField: (value: string, field: keyof typeof Fields) => void;
-  errorName: boolean;
-  errorEmail: boolean;
-  errorBody: boolean;
+  commentError: CommentError | null;
   reset: () => void;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   onAddComment,
   isSubmit,
-  name,
-  email,
-  body,
+  newComment,
   handleChangeField,
-  errorName,
-  errorEmail,
-  errorBody,
+  commentError,
   reset,
 }) => {
   return (
@@ -39,12 +32,14 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control has-icons-left has-icons-right">
           <input
-            value={name}
+            value={newComment?.name}
             type="text"
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': errorName })}
+            className={classNames('input', {
+              'is-danger': commentError?.errorName,
+            })}
             onChange={(event) => {
               handleChangeField(event.target.value, Fields.Name);
             }}
@@ -54,7 +49,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-user" />
           </span>
 
-          {errorName && (
+          {commentError?.errorName && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -64,7 +59,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {errorName && (
+        {commentError?.errorName && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -78,12 +73,14 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control has-icons-left has-icons-right">
           <input
-            value={email}
+            value={newComment?.email}
             type="text"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': errorEmail })}
+            className={classNames('input', {
+              'is-danger': commentError?.errorEmail,
+            })}
             onChange={(event) => {
               handleChangeField(event.target.value, Fields.Email);
             }}
@@ -93,7 +90,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-envelope" />
           </span>
 
-          {errorEmail && (
+          {commentError?.errorEmail && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -103,7 +100,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {errorEmail && (
+        {commentError?.errorEmail && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -117,18 +114,20 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control">
           <textarea
-            value={body}
+            value={newComment?.body || ''}
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': errorBody })}
+            className={classNames('textarea', {
+              'is-danger': commentError?.errorBody,
+            })}
             onChange={(event) => {
               handleChangeField(event.target.value, Fields.Body);
             }}
           />
         </div>
 
-        {errorBody && (
+        {commentError?.errorBody && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
