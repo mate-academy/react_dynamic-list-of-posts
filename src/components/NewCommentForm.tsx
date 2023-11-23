@@ -1,19 +1,11 @@
 import React, { useState } from 'react';
 import cn from 'classnames';
-import { Comment } from '../types/Comment';
-// eslint-disable-next-line import/no-cycle
+import { Comment, NewComment } from '../types/Comment';
 import { addPostComment } from '../utils/api';
 
 type Props = {
   postId: number,
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
-};
-
-export type NewComment = {
-  postId: number,
-  name: string,
-  email: string,
-  body: string,
 };
 
 export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
@@ -23,6 +15,8 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
   const [nameError, setNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [commentError, setCommentError] = useState(false);
+  const [loadProcessing, setLoadProcessing] = useState(false);
+  const [addCommentError, setAddCommentError] = useState(false);
 
   const handleClear = () => {
     setName('');
@@ -52,6 +46,8 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
       return;
     }
 
+    setLoadProcessing(true);
+
     const newComment: NewComment = {
       postId,
       name,
@@ -68,6 +64,14 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
         );
 
         setComment('');
+      })
+      .catch(() => setAddCommentError(true))
+      .finally(() => {
+        setLoadProcessing(false);
+
+        setTimeout(() => {
+          setAddCommentError(false);
+        }, 3000);
       });
   };
 
@@ -190,8 +194,14 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
 
       <div className="field is-grouped">
         <div className="control">
-          {/* must have is-loading class when processing */}
-          <button type="submit" className="button is-link">
+          <button
+            type="submit"
+            className={cn({
+              button: true,
+              'is-link': true,
+              'is-loading': loadProcessing,
+            })}
+          >
             Add
           </button>
         </div>
@@ -207,6 +217,15 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
           </button>
         </div>
       </div>
+
+      {addCommentError && (
+        <div
+          className="notification is-danger"
+          data-cy="PostsLoadingError"
+        >
+          Something went wrong!
+        </div>
+      )}
     </form>
   );
 };

@@ -1,6 +1,4 @@
-// eslint-disable-next-line import/no-cycle
-import { NewComment } from '../components/NewCommentForm';
-import { Comment } from '../types/Comment';
+import { Comment, NewComment } from '../types/Comment';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 import { client } from './fetchClient';

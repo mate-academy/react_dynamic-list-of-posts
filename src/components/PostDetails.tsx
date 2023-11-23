@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import React, { useEffect, useState } from 'react';
-// import { Loader } from './Loader';
+import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { deletePostComment, getPostComments } from '../utils/api';
@@ -14,23 +14,44 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const { id, title, body } = post;
   const [comments, setComments] = useState<Comment[]>([]);
   const [formOpened, setFormOpened] = useState(false);
+  const [loadProcessing, setLoadProcessing] = useState(false);
+  const [commentsError, setCommentsError] = useState(false);
+  const [commentDeletionError, setCommentDeletionError] = useState(false);
 
   useEffect(() => {
+    setFormOpened(false);
+    setComments([]);
+    setCommentsError(false);
+    setLoadProcessing(true);
+    setCommentDeletionError(false);
+
     getPostComments(id)
-      .then(setComments);
+      .then(setComments)
+      .catch(() => setCommentsError(true))
+      .finally(() => {
+        setLoadProcessing(false);
+        setTimeout(() => {
+          setCommentsError(false);
+        }, 3000);
+      });
   }, [id]);
 
   const handleDelete = (id: number) => {
+    setComments((prevComments: Comment[]) => {
+      const copy = [...prevComments];
+      const index = copy.findIndex(comment => comment.id === id);
+
+      copy.splice(index, 1);
+
+      return copy;
+    });
+
     deletePostComment(id)
-      .then(() => {
-        setComments((prevComments: Comment[]) => {
-          const copy = [...prevComments];
-          const index = copy.findIndex(comment => comment.id === id);
-
-          copy.splice(index, 1);
-
-          return copy;
-        });
+      .catch(() => setCommentDeletionError(true))
+      .finally(() => {
+        setTimeout(() => {
+          setCommentDeletionError(false);
+        }, 3000);
       });
   };
 
@@ -48,48 +69,63 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         </div>
 
         <div className="block">
-          {/* <Loader /> */}
+          {loadProcessing && <Loader />}
 
-          {/* <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div> */}
+          {commentsError && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
+            </div>
+          )}
 
-          {!comments.length && (
+          {!comments.length && !loadProcessing && !commentsError && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {comments.length > 0 && comments.map(comment => (
-            <>
-              <p className="title is-4">Comments:</p>
+          {comments.length > 0 && (
+            <p className="title is-4">Comments:</p>
+          )}
 
-              <article className="message is-small" data-cy="Comment">
-                <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                    {comment.name}
-                  </a>
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                    onClick={() => handleDelete(comment.id)}
-                  >
-                    delete button
-                  </button>
-                </div>
-                <div
-                  className="message-body"
-                  data-cy="CommentBody"
+          {comments.length > 0 && comments.map(comment => (
+            <article
+              className="message is-small"
+              data-cy="Comment"
+              key={comment.id}
+            >
+              <div className="message-header">
+                <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                  {comment.name}
+                </a>
+                <button
+                  data-cy="CommentDelete"
+                  type="button"
+                  className="delete is-small"
+                  aria-label="delete"
+                  onClick={() => handleDelete(comment.id)}
                 >
-                  {comment.body}
-                </div>
-              </article>
-            </>
+                  delete button
+                </button>
+              </div>
+              <div
+                className="message-body"
+                data-cy="CommentBody"
+              >
+                {comment.body}
+              </div>
+            </article>
           ))}
 
-          {!formOpened && (
+          {commentDeletionError && (
+            <div
+              className="notification is-danger"
+              data-cy="PostsLoadingError"
+            >
+              Something went wrong!
+            </div>
+          )}
+
+          {!formOpened && !loadProcessing && !commentsError && (
             <button
               data-cy="WriteCommentButton"
               type="button"
