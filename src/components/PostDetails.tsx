@@ -1,5 +1,5 @@
 import React from 'react';
-import { Loader } from './Loader';
+// import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 export const PostDetails: React.FC = () => {
@@ -20,7 +20,7 @@ export const PostDetails: React.FC = () => {
         </div>
 
         <div className="block">
-          <Loader />
+          {/* <Loader /> */}
 
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong

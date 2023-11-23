@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -7,9 +7,23 @@ import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
+import { UserContext } from './components/UserContext';
+import { PostContext } from './components/PostContext';
 import { Loader } from './components/Loader';
 
 export const App: React.FC = () => {
+  const {
+    selectedUser,
+  } = useContext(UserContext);
+
+  const {
+    posts,
+    hasError,
+    isLoading,
+  } = useContext(PostContext);
+
+  const hasErroMsg = selectedUser && !isLoading && !hasError && !posts.length;
+
   return (
     <main className="section">
       <div className="container">
@@ -17,32 +31,43 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
+
                 <UserSelector />
+
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
 
-                <Loader />
+                {!selectedUser
+                  && (
+                    <p data-cy="NoSelectedUser">
+                      No user selected
+                    </p>
+                  )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {isLoading && <Loader />}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {hasError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <PostsList />
+                {!!posts.length
+                   && <PostsList />}
+
+                {hasErroMsg && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
+
               </div>
             </div>
           </div>
-
           <div
             data-cy="Sidebar"
             className={classNames(

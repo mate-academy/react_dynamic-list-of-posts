@@ -1,38 +1,44 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { PostContext } from './PostContext';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+export const PostsList: React.FC = () => {
+  const { posts } = useContext(PostContext);
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            <th> </th>
+          </tr>
+        </thead>
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+        <tbody>
+          {posts.map(post => (
+            <tr data-cy="Post" key={post.id}>
+              <td data-cy="PostId">{post.id}</td>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+              <td data-cy="PostTitle">
+                {post.title}
+              </td>
 
-        <tr data-cy="Post">
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className="button is-link is-light"
+                >
+                  Open
+                </button>
+              </td>
+            </tr>
+          ))}
+
+          {/* <tr data-cy="Post">
           <td data-cy="PostId">18</td>
 
           <td data-cy="PostTitle">
@@ -78,8 +84,9 @@ export const PostsList: React.FC = () => (
               Open
             </button>
           </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+        </tr> */}
+        </tbody>
+      </table>
+    </div>
+  );
+};
