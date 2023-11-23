@@ -1,10 +1,65 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import classNames from 'classnames';
+import { Loader } from './Loader';
 
-export const UserSelector: React.FC = () => {
+import { client } from '../utils/fetchClient';
+import { User } from '../types/User';
+import { Error } from '../types/Error';
+import { Post } from '../types/Post';
+
+type Props = {
+  selectedUser: User | null,
+  onSelectUser: (user: User) => void,
+  onSelectPost: (post: Post | null) => void,
+  onError: (error: (prevError: Error) => Error) => void,
+};
+
+export const UserSelector: React.FC<Props> = ({
+  selectedUser,
+  onSelectUser,
+  onSelectPost,
+  onError,
+}) => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    client.get<User[]>('/users')
+      .then(setUsers)
+      .catch(() => {
+        onError(error => ({
+          ...error,
+          users: true,
+        }));
+      });
+  }, []);
+
+  const handleDropdown = () => {
+    setIsDropdownVisible((current) => !current);
+  };
+
+  const handleSelectUser = (user: User) => {
+    onSelectUser(user);
+    onSelectPost(null);
+    handleDropdown();
+  };
+
+  const handleBlur = (e: React.FocusEvent) => {
+    const { current } = dropdownRef;
+
+    if (current && !current.contains(e.relatedTarget)) {
+      setIsDropdownVisible(false);
+    }
+  };
+
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={classNames('dropdown', {
+        'is-active': isDropdownVisible,
+      })}
+      ref={dropdownRef}
     >
       <div className="dropdown-trigger">
         <button
@@ -12,8 +67,12 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={handleDropdown}
+          onBlur={handleBlur}
         >
-          <span>Choose a user</span>
+          <span>
+            {selectedUser ? selectedUser.name : 'Choose a user'}
+          </span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -23,11 +82,26 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+          {!users.length ? (
+            <Loader />
+          ) : (
+            users?.map(user => {
+              const { id, name } = user;
+
+              return (
+                <a
+                  key={id}
+                  href={`#user-${id}`}
+                  onClick={() => handleSelectUser(user)}
+                  className={classNames('dropdown-item', {
+                    'is-active': selectedUser?.id === id,
+                  })}
+                >
+                  {name}
+                </a>
+              );
+            })
+          )}
         </div>
       </div>
     </div>
