@@ -6,7 +6,7 @@ form to add new comments.
 
 > Here is [the working version](https://mate-academy.github.io/react_dynamic-list-of-posts/)
 
-1. Learn the `utils/fetchClient.ts` and use it to interact with the API (tests expect that you each API request is sent after 300 ms delay);
+1. Learn the `utils/fetchClient.ts` and use it to interact with the API (tests expect that your each API request is sent after 300 ms delay);
 1. Initially the `App` shows the `UserSelector` and a paragraph `No user selected` in the main content block.
     - load users from the API on page load;
     - implement the `UserSelector` as a dropdown using the given markup;
@@ -16,7 +16,7 @@ form to add new comments.
     - if the user has no posts show the `No posts yet` notification.
 1. Add the `Sidebar--open` class to the sidebar when a post is selected;
     - the post details should appear there immediately;
-    - the post commnets should be loaded from the API;
+    - the post comments should be loaded from the API;
     - the `Loader` is shown before comments are loaded;
     - `CommentsError` notification is show on loading error;
     - `NoComments` message is shown if the post does not have comments yet;
