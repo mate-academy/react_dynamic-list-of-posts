@@ -2,14 +2,16 @@ import React, { useContext, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { PostContext } from './PostContext';
+import { CommentContext } from './CommentContext';
 
 export const PostDetails: React.FC = () => {
+  const { selectedPost } = useContext(PostContext);
+
   const {
-    selectedPost,
     comments,
     isLoadingComments,
     hasCommentsError,
-  } = useContext(PostContext);
+  } = useContext(CommentContext);
 
   const [isOpenNewCommentForm, setIsOpenNewCommentForm] = useState(false);
 
@@ -90,7 +92,8 @@ export const PostDetails: React.FC = () => {
           </button>
         </div>
 
-        {isOpenNewCommentForm && <NewCommentForm />}
+        {isOpenNewCommentForm && selectedPost
+          && <NewCommentForm selectedPost={selectedPost} />}
       </div>
     </div>
   );

@@ -1,10 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Post } from '../types/Post';
-import { Comment } from '../types/Comment';
 import { PostsContext } from '../types/PostsContext';
 import { getPosts } from '../api/posts';
 import { UserContext } from './UserContext';
-import { getComments } from '../api/comments';
 
 const initialState = {
   posts: [],
@@ -15,12 +13,6 @@ const initialState = {
   setIsLoadingPosts: () => {},
   selectedPost: null,
   setSelectedPost: () => {},
-  comments: [],
-  setComments: () => {},
-  isLoadingComments: false,
-  setIsLoadingComments: () => {},
-  hasCommentsError: false,
-  setHasCommentsError: () => {},
 };
 
 export const PostContext = React.createContext<PostsContext>(initialState);
@@ -34,9 +26,6 @@ export const PostProvider: React.FC<Props> = ({ children }) => {
   const [hasPostsError, setHasPostsError] = useState(false);
   const [isLoadingPosts, setIsLoadingPosts] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [isLoadingComments, setIsLoadingComments] = useState(false);
-  const [hasCommentsError, setHasCommentsError] = useState(false);
 
   const { selectedUser } = useContext(UserContext);
 
@@ -52,18 +41,6 @@ export const PostProvider: React.FC<Props> = ({ children }) => {
   },
   [selectedUser]);
 
-  useEffect(() => {
-    if (selectedPost) {
-      setIsLoadingComments(true);
-
-      getComments(selectedPost.id)
-        .then(commentsData => setComments(commentsData))
-        .catch(() => setHasCommentsError(true))
-        .finally(() => setIsLoadingComments(false));
-    }
-  },
-  [selectedPost]);
-
   const value = {
     posts,
     setPosts,
@@ -73,12 +50,6 @@ export const PostProvider: React.FC<Props> = ({ children }) => {
     setIsLoadingPosts,
     selectedPost,
     setSelectedPost,
-    comments,
-    setComments,
-    isLoadingComments,
-    setIsLoadingComments,
-    hasCommentsError,
-    setHasCommentsError,
   };
 
   return (
