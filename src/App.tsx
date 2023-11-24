@@ -20,7 +20,7 @@ export const App: React.FC = () => {
     posts,
     hasPostsError,
     isLoadingPosts,
-    isSidebarOpen,
+    selectedPost,
   } = useContext(PostContext);
 
   const noPostsMsg
@@ -77,7 +77,7 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': isSidebarOpen },
+              { 'Sidebar--open': selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">

@@ -8,10 +8,8 @@ export interface PostsContext {
   setHasPostsError: (v: boolean) => void;
   isLoadingPosts: boolean;
   setIsLoadingPosts: (v: boolean) => void;
-  isSidebarOpen: boolean
-  setIsSidebarOpen: (v: boolean) => void;
   selectedPost: Post | null;
-  setSelectedPost: (v: Post) => void;
+  setSelectedPost: (v: Post | null) => void;
   comments: Comment[],
   setComments: (v: Comment[]) => void;
   isLoadingComments: boolean;

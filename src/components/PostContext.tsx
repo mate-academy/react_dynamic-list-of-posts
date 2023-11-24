@@ -13,8 +13,6 @@ const initialState = {
   setHasPostsError: () => {},
   isLoadingPosts: false,
   setIsLoadingPosts: () => {},
-  isSidebarOpen: false,
-  setIsSidebarOpen: () => {},
   selectedPost: null,
   setSelectedPost: () => {},
   comments: [],
@@ -35,7 +33,6 @@ export const PostProvider: React.FC<Props> = ({ children }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [hasPostsError, setHasPostsError] = useState(false);
   const [isLoadingPosts, setIsLoadingPosts] = useState(false);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
@@ -74,8 +71,6 @@ export const PostProvider: React.FC<Props> = ({ children }) => {
     setHasPostsError,
     isLoadingPosts,
     setIsLoadingPosts,
-    isSidebarOpen,
-    setIsSidebarOpen,
     selectedPost,
     setSelectedPost,
     comments,
