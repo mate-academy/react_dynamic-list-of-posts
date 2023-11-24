@@ -29,7 +29,7 @@ export const NewCommentForm: React.FC = () => {
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (newComment.name === '') {
+    if (newComment.name.trim() === '') {
       setFormError({
         ...formError,
         nameError: 'Name is required',
@@ -38,7 +38,7 @@ export const NewCommentForm: React.FC = () => {
       return;
     }
 
-    if (newComment.email === '') {
+    if (newComment.email.trim() === '') {
       setFormError({
         ...formError,
         emailError: 'Email is required',
@@ -47,7 +47,7 @@ export const NewCommentForm: React.FC = () => {
       return;
     }
 
-    if (newComment.body === '') {
+    if (newComment.body.trim() === '') {
       setFormError({
         ...formError,
         bodyError: 'Enter some text',
@@ -73,8 +73,7 @@ export const NewCommentForm: React.FC = () => {
         .finally(() => {
           setIsLoading(false);
           setNewComment({
-            name: '',
-            email: '',
+            ...newComment,
             body: '',
           });
         });
