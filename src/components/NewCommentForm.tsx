@@ -28,7 +28,7 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
   const { name, email, body } = formData;
 
   const handleFormDataChange = (e: any) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target;  // eslint-disable-line
 
     setHasError(prevState => ({ ...prevState, [name]: false }));
 
