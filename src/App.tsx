@@ -18,11 +18,13 @@ export const App: React.FC = () => {
 
   const {
     posts,
-    hasError,
-    isLoading,
+    hasPostsError,
+    isLoadingPosts,
+    isSidebarOpen,
   } = useContext(PostContext);
 
-  const hasErroMsg = selectedUser && !isLoading && !hasError && !posts.length;
+  const noPostsMsg
+   = selectedUser && !isLoadingPosts && !hasPostsError && !posts.length;
 
   return (
     <main className="section">
@@ -45,9 +47,9 @@ export const App: React.FC = () => {
                     </p>
                   )}
 
-                {isLoading && <Loader />}
+                {isLoadingPosts && <Loader />}
 
-                {hasError && (
+                {hasPostsError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -59,7 +61,7 @@ export const App: React.FC = () => {
                 {!!posts.length
                    && <PostsList />}
 
-                {hasErroMsg && (
+                {noPostsMsg && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
@@ -75,7 +77,7 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': isSidebarOpen },
             )}
           >
             <div className="tile is-child box is-success ">

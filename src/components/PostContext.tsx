@@ -1,16 +1,28 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Post } from '../types/Post';
+import { Comment } from '../types/Comment';
 import { PostsContext } from '../types/PostsContext';
 import { getPosts } from '../api/posts';
 import { UserContext } from './UserContext';
+import { getComments } from '../api/comments';
 
 const initialState = {
   posts: [],
   setPosts: () => {},
-  hasError: false,
-  setHasError: () => {},
-  isLoading: false,
-  setIsLoading: () => {},
+  hasPostsError: false,
+  setHasPostsError: () => {},
+  isLoadingPosts: false,
+  setIsLoadingPosts: () => {},
+  isSidebarOpen: false,
+  setIsSidebarOpen: () => {},
+  selectedPost: null,
+  setSelectedPost: () => {},
+  comments: [],
+  setComments: () => {},
+  isLoadingComments: false,
+  setIsLoadingComments: () => {},
+  hasCommentsError: false,
+  setHasCommentsError: () => {},
 };
 
 export const PostContext = React.createContext<PostsContext>(initialState);
@@ -21,30 +33,57 @@ type Props = {
 
 export const PostProvider: React.FC<Props> = ({ children }) => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [hasError, setHasError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [hasPostsError, setHasPostsError] = useState(false);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [hasCommentsError, setHasCommentsError] = useState(false);
 
   const { selectedUser } = useContext(UserContext);
 
   useEffect(() => {
     if (selectedUser) {
-      setIsLoading(true);
+      setIsLoadingPosts(true);
 
       getPosts(selectedUser.id)
         .then(postsData => setPosts(postsData))
-        .catch(() => setHasError(true))
-        .finally(() => setIsLoading(false));
+        .catch(() => setHasPostsError(true))
+        .finally(() => setIsLoadingPosts(false));
     }
   },
   [selectedUser]);
 
+  useEffect(() => {
+    if (selectedPost) {
+      setIsLoadingComments(true);
+
+      getComments(selectedPost.id)
+        .then(commentsData => setComments(commentsData))
+        .catch(() => setHasCommentsError(true))
+        .finally(() => setIsLoadingComments(false));
+    }
+  },
+  [selectedPost]);
+
   const value = {
     posts,
     setPosts,
-    hasError,
-    setHasError,
-    isLoading,
-    setIsLoading,
+    hasPostsError,
+    setHasPostsError,
+    isLoadingPosts,
+    setIsLoadingPosts,
+    isSidebarOpen,
+    setIsSidebarOpen,
+    selectedPost,
+    setSelectedPost,
+    comments,
+    setComments,
+    isLoadingComments,
+    setIsLoadingComments,
+    hasCommentsError,
+    setHasCommentsError,
   };
 
   return (

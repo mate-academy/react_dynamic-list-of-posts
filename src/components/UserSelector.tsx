@@ -4,7 +4,6 @@ import { User } from '../types/User';
 import { UserContext } from './UserContext';
 
 export const UserSelector: React.FC = () => {
-  // const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const {
     users,
     selectedUser,

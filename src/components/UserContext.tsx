@@ -20,10 +20,24 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
+  const loadUsers = async () => {
+    try {
+      const loadedUsers = await getUsers();
+
+      setUsers(loadedUsers);
+    } catch {
+      throw new Error('Failed to load users');
+    }
+  };
+
   useEffect(() => {
-    getUsers()
-      .then(usersData => setUsers(usersData));
+    loadUsers();
   }, []);
+
+  // useEffect(() => {
+  //   getUsers()
+  //     .then(usersData => setUsers(usersData));
+  // }, []);
 
   const value = {
     users,
