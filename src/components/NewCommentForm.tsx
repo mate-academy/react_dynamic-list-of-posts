@@ -94,6 +94,24 @@ export const NewCommentForm: React.FC = () => {
     });
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setNewComment({
+      ...newComment,
+      [name]: value,
+    });
+  };
+
+  const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+
+    setNewComment({
+      ...newComment,
+      [name]: value,
+    });
+  };
+
   return (
     <form
       data-cy="NewCommentForm"
@@ -112,10 +130,7 @@ export const NewCommentForm: React.FC = () => {
             placeholder="Name Surname"
             className={cn('input', { 'is-danger': formError.nameError })}
             value={newComment.name}
-            onChange={(e) => setNewComment({
-              ...newComment,
-              name: e.target.value,
-            })}
+            onChange={handleInputChange}
           />
 
           <span className="icon is-small is-left">
@@ -152,10 +167,7 @@ export const NewCommentForm: React.FC = () => {
             placeholder="email@test.com"
             className={cn('input', { 'is-danger': formError.emailError })}
             value={newComment.email}
-            onChange={(e) => setNewComment({
-              ...newComment,
-              email: e.target.value,
-            })}
+            onChange={handleInputChange}
           />
 
           <span className="icon is-small is-left">
@@ -192,10 +204,7 @@ export const NewCommentForm: React.FC = () => {
             className={cn('textarea',
               { 'is-danger': formError.bodyError })}
             value={newComment.body}
-            onChange={(e) => setNewComment({
-              ...newComment,
-              body: e.target.value,
-            })}
+            onChange={handleTextAreaChange}
           />
         </div>
 

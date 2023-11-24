@@ -7,7 +7,6 @@ import { PostContext } from '../PostsProvider';
 export const UserSelector: React.FC = () => {
   const {
     setError,
-    setIsLoading,
     setSelectedUser,
     selectedUser,
   } = useContext(PostContext);
@@ -37,7 +36,7 @@ export const UserSelector: React.FC = () => {
       .catch(() => {
         setError('Something went wrong');
       });
-  }, [setIsLoading, setError]);
+  }, [setError]);
 
   return (
     <div
