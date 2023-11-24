@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { User } from '../types/User';
-import { UsersContext } from '../types/UsersContext';
-import { getUsers } from '../api/users';
+import { User } from '../../types/User';
+import { UsersContext } from '../../types/UsersContext';
+import { getUsers } from '../../api/users';
 
 const initialState = {
   users: [],
@@ -33,11 +33,6 @@ export const UserProvider: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     loadUsers();
   }, []);
-
-  // useEffect(() => {
-  //   getUsers()
-  //     .then(usersData => setUsers(usersData));
-  // }, []);
 
   const value = {
     users,

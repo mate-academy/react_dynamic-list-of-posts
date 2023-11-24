@@ -1,9 +1,9 @@
 import ReactDOM from 'react-dom';
 
 import { App } from './App';
-import { UserProvider } from './components/UserContext';
-import { PostProvider } from './components/PostContext';
-import { CommentProvider } from './components/CommentContext';
+import { UserProvider } from './components/Context/UserContext';
+import { PostProvider } from './components/Context/PostContext';
+import { CommentProvider } from './components/Context/CommentContext';
 
 ReactDOM.render(
   <UserProvider>

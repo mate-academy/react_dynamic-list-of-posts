@@ -12,3 +12,7 @@ export const postComment = ({
     postId, name, email, body,
   });
 };
+
+export const deleteComment = (commentId: number) => {
+  return client.delete(`/comments/${commentId}`);
+};

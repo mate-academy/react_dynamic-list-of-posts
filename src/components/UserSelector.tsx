@@ -1,7 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, {
+  useContext,
+  useState,
+} from 'react';
 import cn from 'classnames';
 import { User } from '../types/User';
-import { UserContext } from './UserContext';
+import { UserContext } from './Context/UserContext';
 
 export const UserSelector: React.FC = () => {
   const {

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Post } from '../types/Post';
-import { PostsContext } from '../types/PostsContext';
-import { getPosts } from '../api/posts';
+import { Post } from '../../types/Post';
+import { PostsContext } from '../../types/PostsContext';
+import { getPosts } from '../../api/posts';
 import { UserContext } from './UserContext';
 
 const initialState = {

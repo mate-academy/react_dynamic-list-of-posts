@@ -1,4 +1,6 @@
-import React, { useContext } from 'react';
+import React, {
+  useContext,
+} from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -7,8 +9,8 @@ import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-import { UserContext } from './components/UserContext';
-import { PostContext } from './components/PostContext';
+import { UserContext } from './components/Context/UserContext';
+import { PostContext } from './components/Context/PostContext';
 import { Loader } from './components/Loader';
 
 export const App: React.FC = () => {

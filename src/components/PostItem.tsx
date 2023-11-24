@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
 import cn from 'classnames';
-import { PostContext } from './PostContext';
+import { PostContext } from './Context/PostContext';
 import { Post } from '../types/Post';
+import { CommentContext } from './Context/CommentContext';
 
 type Props = {
   post: Post;
@@ -18,12 +19,16 @@ export const PostItem: React.FC<Props> = ({ post }) => {
     setSelectedPost,
   } = useContext(PostContext);
 
+  const { setIsOpenNewCommentForm } = useContext(CommentContext);
+
   const handleSelectPost = () => {
     if (selectedPost && selectedPost.id === id) {
       setSelectedPost(null);
     } else {
       setSelectedPost(post);
     }
+
+    setIsOpenNewCommentForm(false);
   };
 
   return (

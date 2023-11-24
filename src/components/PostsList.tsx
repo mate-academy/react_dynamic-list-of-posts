@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
-// import cn from 'classnames';
-import { PostContext } from './PostContext';
+import { PostContext } from './Context/PostContext';
 import { PostItem } from './PostItem';
 
 export const PostsList: React.FC = () => {

@@ -1,8 +1,11 @@
-import React, { useContext, useState } from 'react';
+import React, {
+  useContext,
+} from 'react';
 import { Loader } from './Loader';
+import { PostContext } from './Context/PostContext';
+import { CommentContext } from './Context/CommentContext';
+import { CommentsList } from './CommentsList';
 import { NewCommentForm } from './NewCommentForm';
-import { PostContext } from './PostContext';
-import { CommentContext } from './CommentContext';
 
 export const PostDetails: React.FC = () => {
   const { selectedPost } = useContext(PostContext);
@@ -11,12 +14,12 @@ export const PostDetails: React.FC = () => {
     comments,
     isLoadingComments,
     hasCommentsError,
+    isOpenNewCommentForm,
+    setIsOpenNewCommentForm,
   } = useContext(CommentContext);
 
-  const [isOpenNewCommentForm, setIsOpenNewCommentForm] = useState(false);
-
   const noCommentsMsg
-  = !isLoadingComments && !hasCommentsError && !comments.length;
+    = !isLoadingComments && !hasCommentsError && !comments.length;
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -53,47 +56,24 @@ export const PostDetails: React.FC = () => {
               </p>
             )}
 
-          {!!comments.length && <p className="title is-4">Comments:</p>}
+          {!!comments.length && <CommentsList />}
 
-          {comments.map(comment => (
-            <article
-              className="message is-small"
-              data-cy="Comment"
-              key={comment.id}
-            >
-              <div className="message-header">
-                <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                  {comment.name}
-                </a>
+          {isOpenNewCommentForm && selectedPost
+            ? <NewCommentForm selectedPost={selectedPost} />
+            : (
+              <div className="block">
                 <button
-                  data-cy="CommentDelete"
+                  data-cy="WriteCommentButton"
                   type="button"
-                  className="delete is-small"
-                  aria-label="delete"
-                  disabled={isOpenNewCommentForm}
+                  className="button is-link"
+                  onClick={() => setIsOpenNewCommentForm(true)}
                 >
-                  delete button
+                  Write a comment
                 </button>
               </div>
+            )}
 
-              <div className="message-body" data-cy="CommentBody">
-                {comment.body}
-              </div>
-            </article>
-          ))}
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-            onClick={() => setIsOpenNewCommentForm(true)}
-          >
-            Write a comment
-          </button>
         </div>
-
-        {isOpenNewCommentForm && selectedPost
-          && <NewCommentForm selectedPost={selectedPost} />}
       </div>
     </div>
   );

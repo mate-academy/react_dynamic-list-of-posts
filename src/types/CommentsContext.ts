@@ -10,4 +10,8 @@ export interface CommentsContext {
   submitNewComment: (v: Omit<Comment, 'id'>) => void;
   isSubmittingComment: boolean;
   setisSubmittingComment: (v: boolean) => void;
+  deleteComment: (v: number) => void;
+  isOpenNewCommentForm: boolean,
+  setIsOpenNewCommentForm: (v: boolean) => void;
+
 }

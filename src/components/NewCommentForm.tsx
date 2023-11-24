@@ -1,14 +1,8 @@
 import React, { useContext, useState } from 'react';
 import cn from 'classnames';
-// import { PostContext } from './PostContext';
-import { CommentContext } from './CommentContext';
+import { CommentContext } from './Context/CommentContext';
 import { Post } from '../types/Post';
-
-type FormData = {
-  name: string;
-  email: string;
-  body: string;
-};
+import { CommentData } from '../types/Comment';
 
 type Props = {
   selectedPost: Post;
@@ -20,7 +14,7 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
     isSubmittingComment,
   } = useContext(CommentContext);
 
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<CommentData>({
     name: '',
     email: '',
     body: '',
@@ -34,9 +28,9 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
   const { name, email, body } = formData;
 
   const handleFormDataChange = (e: any) => {
-    const { name: inputName, value } = e.target;
+    const { name, value } = e.target;
 
-    setHasError(prevState => ({ ...prevState, [inputName]: false }));
+    setHasError(prevState => ({ ...prevState, [name]: false }));
 
     setFormData(prevData => (
       {
@@ -80,6 +74,20 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
     setFormData(prevData => ({ ...prevData, body: '' }));
   };
 
+  const reset = () => {
+    setFormData({
+      name: '',
+      email: '',
+      body: '',
+    });
+
+    setHasError({
+      name: false,
+      email: false,
+      body: false,
+    });
+  };
+
   return (
     <form
       data-cy="NewCommentForm"
@@ -107,10 +115,7 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
 
           {hasError.name && (
             <span
-              className={cn(
-                'icon is-small is-right',
-                { 'has-text-danger': hasError.name },
-              )}
+              className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
             >
               <i className="fas fa-exclamation-triangle" />
@@ -151,10 +156,7 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
 
           {hasError.email && (
             <span
-              className={cn(
-                'icon is-small is-right',
-                { 'has-text-danger': hasError.email },
-              )}
+              className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
             >
               <i className="fas fa-exclamation-triangle" />
@@ -218,6 +220,7 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
           <button
             type="reset"
             className="button is-link is-light"
+            onClick={reset}
           >
             Clear
           </button>
@@ -226,13 +229,3 @@ export const NewCommentForm: React.FC<Props> = ({ selectedPost }) => {
     </form>
   );
 };
-// 1. The form requires an author's name and email and a comment text.
-//     - show errors only after the form is submitted;
-//     - remove an error on the field change;
-//     - keep the `name` and `email` after the successful submit but clear a comment text;
-//     - The `Clear` button should also clear all errors;
-//     - Add the `is-loading` class to the submit button while waiting for a response;
-//     - Add the new comment received as a response from the `API` to the end of the list;
-// 1. Implement comment deletion
-//     - Delete the commnet immediately not waiting for the server response to improve the UX.
-// 1. (*) Handle `Add` and `Delete` errors so the user can retry
