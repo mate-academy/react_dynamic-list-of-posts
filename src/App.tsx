@@ -23,7 +23,7 @@ export const App: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingError, setLoadingError] = useState(false);
+  const [isLoadingError, setIsLoadingError] = useState(false);
 
   useEffect(() => {
     getUsers()
@@ -36,13 +36,14 @@ export const App: React.FC = () => {
 
   const handleUserClick = (user: User) => {
     setIsVisibleUsers(false);
-    setIsLoading(true)
-    setSelectedUser(user)
+    setIsLoading(true);
+    setSelectedUser(user);
+    setSelectedPost(null);
 
     getPosts(user.id)
       .then(setPosts)
       .catch(() => {
-        setLoadingError(true);
+        setIsLoadingError(true);
       })
       .finally(() => {
         setIsLoading(false);
@@ -74,7 +75,7 @@ export const App: React.FC = () => {
 
                 {isLoading &&  <Loader />}
 
-                {loadingError && (
+                {isLoadingError && (
                   <div
                   className="notification is-danger"
                   data-cy="PostsLoadingError"
@@ -89,7 +90,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {posts.length > 0 && selectedUser && !loadingError && (
+                {posts.length > 0 && selectedUser && !isLoadingError && (
                   <PostsList
                     postsFromServer={posts}
                     onSelectedPost={setSelectedPost}
@@ -115,7 +116,6 @@ export const App: React.FC = () => {
               {selectedPost && (
                 <PostDetails
                   currentPost={selectedPost}
-                  setCommentError={setLoadingError}
                 />
               )}
             </div>

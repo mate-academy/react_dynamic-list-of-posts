@@ -16,7 +16,6 @@ export const PostsList: React.FC<Props> = ({
 }) => {
 
   const handleSelectedPost = (post: Post) => {
-
     if (selectedPost?.id !== post.id) {
       onSelectedPost(post);
     } else {
@@ -55,7 +54,7 @@ export const PostsList: React.FC<Props> = ({
                   })}
                   onClick={() => handleSelectedPost(post)}
                 >
-                  {selectedPost ? 'Close' : 'Open'}
+                  {selectedPost?.id === post.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

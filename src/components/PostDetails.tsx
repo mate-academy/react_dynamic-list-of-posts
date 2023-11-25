@@ -8,32 +8,31 @@ import { Comment } from '../types/Comment';
 
 type Props = {
   currentPost: Post,
-  setCommentError: (arg: boolean) => void,
 }
 
 export const PostDetails: React.FC<Props> = ({
   currentPost,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [loadingComments, setLoadingComments] = useState(false);
-  const [loadingError, setLoadingError] = useState(false);
-  const [deletingError, setDeletingError] = useState(false);
-  const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [isLoadingError, setIsLoadingError] = useState(false);
+  const [isDeletingError, setIsDeletingError] = useState(false);
+  const [isFormVisible, setIsFormVisible] = useState(false);
 
   const handleFormVisibility = () => {
     setIsFormVisible(false);
   };
 
   useEffect(() => {
-    setLoadingComments(true)
+    setIsLoadingComments(true)
 
     CommentService.getComments(currentPost.id)
       .then(setComments)
       .catch(() => {
-        setLoadingError(true)
+        setIsLoadingError(true)
       })
       .finally(() => {
-        setLoadingComments(false);
+        setIsLoadingComments(false);
       })
   }, [currentPost]);
 
@@ -42,14 +41,14 @@ export const PostDetails: React.FC<Props> = ({
   };
 
   const handleDeleteComment = (commentId: number) => {
-    setDeletingError(false);
+    setIsDeletingError(false);
 
     CommentService.deleteComment(commentId)
       .then(() => {
         setComments(comments => comments.filter(comment => comment.id !== commentId));
       })
       .catch(() => {
-        setDeletingError(true);
+        setIsDeletingError(true);
       });
   }
 
@@ -67,9 +66,9 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {loadingComments && <Loader />}
+          {isLoadingComments && <Loader />}
 
-          {loadingError && (
+          {isLoadingError && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
@@ -86,7 +85,11 @@ export const PostDetails: React.FC<Props> = ({
               <p className="title is-4">Comments:</p>
 
               {comments.map(comment => (
-                <article className="message is-small" data-cy="Comment">
+                <article
+                  className="message is-small"
+                  data-cy="Comment"
+                  key={comment.id}
+                >
                   <div className="message-header">
                     <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
                       {comment.name}
@@ -111,7 +114,7 @@ export const PostDetails: React.FC<Props> = ({
             </>
           )}
 
-          {deletingError && (
+          {isDeletingError && (
             <p className="help is-danger" data-cy="ErrorMessage">
               Unable to add comment, try again.
             </p>

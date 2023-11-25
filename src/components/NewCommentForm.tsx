@@ -30,7 +30,7 @@ export const NewCommentForm: React.FC<Props> = ({
     body: false,
   });
 
-  const [responseError, setResponseError] = useState<boolean>(false);
+  const [isResponseError, setIsResponseError] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleFormChange = (field: string, value: string) => {
@@ -49,12 +49,10 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const handleFormSubmit: React.FormEventHandler = (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    const fields = Object.keys(formInfo) as (keyof FormInfo)[];
-
-    fields.forEach((field) => {
-      if (formInfo[field].trim() === '') {
+    Object.entries(formInfo).forEach(([field, value]) => {
+      if (!value.trim()) {
         setFormErrors((prevErrors) => ({ ...prevErrors, [field]: true }));
       } else {
         setFormErrors((prevErrors) => ({ ...prevErrors, [field]: false }));
@@ -74,7 +72,7 @@ export const NewCommentForm: React.FC<Props> = ({
         onAddComment(response);
       })
       .catch(() => {
-        setResponseError(true);
+        setIsResponseError(true);
       })
       .finally(() => {
         setIsLoading(false);
@@ -222,7 +220,7 @@ export const NewCommentForm: React.FC<Props> = ({
           </button>
         </div>
 
-        {responseError && (
+        {isResponseError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Unable to add comment, try again.
           </p>
