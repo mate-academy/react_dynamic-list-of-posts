@@ -52,7 +52,11 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleFormSubmit: React.FormEventHandler = (event) => {
     event.preventDefault();
 
+    const newFormInfo: Record<string, string> = {};
+
     Object.entries(formInfo).forEach(([field, value]) => {
+      newFormInfo[field] = value.trim();
+
       if (!value.trim()) {
         setFormErrors((prevErrors) => ({ ...prevErrors, [field]: true }));
       } else {
@@ -60,13 +64,13 @@ export const NewCommentForm: React.FC<Props> = ({
       }
     });
 
-    if (formInfo.name && formInfo.email && formInfo.body) {
+    if (newFormInfo.name && newFormInfo.email && newFormInfo.body) {
       setIsLoading(true);
 
       addComment({
         postId: currentPost.id,
         name: formInfo.name,
-        email: formInfo.name,
+        email: formInfo.email,
         body: formInfo.body,
       })
       .then((response) => {
@@ -77,7 +81,7 @@ export const NewCommentForm: React.FC<Props> = ({
       })
       .finally(() => {
         setIsLoading(false);
-        setFormInfo({...formInfo, body: ''})
+        setFormInfo((prevInfo) => ({ ...prevInfo, body: '' }));
       })
     }
   }
