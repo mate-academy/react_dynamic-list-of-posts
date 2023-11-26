@@ -7,17 +7,20 @@ type Props = {
   postsFromServer: Post[],
   onSelectedPost: (post: Post | null) => void,
   selectedPost: Post | null,
+  setIsFormVisible: (arg: boolean) => void,
 };
 
 export const PostsList: React.FC<Props> = ({
   postsFromServer,
   onSelectedPost,
   selectedPost,
+  setIsFormVisible,
 }) => {
 
   const handleSelectedPost = (post: Post) => {
     if (selectedPost?.id !== post.id) {
       onSelectedPost(post);
+      setIsFormVisible(false);
     } else {
       onSelectedPost(null);
     }

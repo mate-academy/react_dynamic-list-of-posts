@@ -9,20 +9,20 @@ import { Comment } from '../types/Comment';
 
 type Props = {
   currentPost: Post,
-  handleFormVisibility: () => void,
   onAddComment: (comment: Comment) => void,
 }
 
 export const NewCommentForm: React.FC<Props> = ({
   currentPost,
   onAddComment,
-  handleFormVisibility,
 }) => {
-  const [formInfo, setFormInfo] = useState<FormInfo>({
+  const initialFormInfo = {
     name: '',
     email: '',
     body: '',
-  });
+  };
+
+  const [formInfo, setFormInfo] = useState<FormInfo>(initialFormInfo);
 
   const [formErrors, setFormErrors] = useState<FormErrors>({
     name: false,
@@ -38,14 +38,15 @@ export const NewCommentForm: React.FC<Props> = ({
     setFormErrors((prevErrors) => ({ ...prevErrors, [field]: false }));
   }
 
-  const clearFormInfo = (form: FormInfo) => {
-    const clearedForm: Record<string, string> = {};
-
-    for (const field in form) {
-      clearedForm[field] = '';
-    }
-
-    handleFormVisibility();
+  const clearFormInfo = () => {
+    setFormInfo(initialFormInfo);
+    setFormErrors({
+      name: false,
+      email: false,
+      body: false,
+    });
+    setIsResponseError(false);
+    setIsLoading(false);
   };
 
   const handleFormSubmit: React.FormEventHandler = (event) => {
@@ -76,7 +77,7 @@ export const NewCommentForm: React.FC<Props> = ({
       })
       .finally(() => {
         setIsLoading(false);
-        clearFormInfo(formInfo);
+        setFormInfo({...formInfo, body: ''})
       })
     }
   }
@@ -134,7 +135,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
@@ -213,7 +214,7 @@ export const NewCommentForm: React.FC<Props> = ({
             type="reset"
             className="button is-link is-light"
             onClick={() => {
-              clearFormInfo(formInfo)
+              clearFormInfo()
             }}
           >
             Clear

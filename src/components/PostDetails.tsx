@@ -8,20 +8,19 @@ import { Comment } from '../types/Comment';
 
 type Props = {
   currentPost: Post,
+  isFormVisible: boolean,
+  setIsFormVisible: (arg: boolean) => void,
 }
 
 export const PostDetails: React.FC<Props> = ({
   currentPost,
+  isFormVisible,
+  setIsFormVisible,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [isLoadingError, setIsLoadingError] = useState(false);
   const [isDeletingError, setIsDeletingError] = useState(false);
-  const [isFormVisible, setIsFormVisible] = useState(false);
-
-  const handleFormVisibility = () => {
-    setIsFormVisible(false);
-  };
 
   useEffect(() => {
     setIsLoadingComments(true)
@@ -74,13 +73,13 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {!comments.length && (
+          {!comments.length && !isLoadingComments && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {!!comments.length && (
+          {!!comments.length && !isLoadingComments && (
             <>
               <p className="title is-4">Comments:</p>
 
@@ -120,7 +119,7 @@ export const PostDetails: React.FC<Props> = ({
             </p>
           )}
 
-          {!isFormVisible && (
+          {!isFormVisible && !isLoadingComments && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -135,7 +134,6 @@ export const PostDetails: React.FC<Props> = ({
         {isFormVisible && (
           <NewCommentForm
             currentPost={currentPost}
-            handleFormVisibility={handleFormVisibility}
             onAddComment={handleAddComment}
           />
         )}

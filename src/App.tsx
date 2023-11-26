@@ -24,6 +24,7 @@ export const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingError, setIsLoadingError] = useState(false);
+  const [isFormVisible, setIsFormVisible] = useState(false);
 
   useEffect(() => {
     getUsers()
@@ -95,7 +96,7 @@ export const App: React.FC = () => {
                     postsFromServer={posts}
                     onSelectedPost={setSelectedPost}
                     selectedPost={selectedPost}
-
+                    setIsFormVisible={setIsFormVisible}
                   />
                 )}
               </div>
@@ -116,6 +117,8 @@ export const App: React.FC = () => {
               {selectedPost && (
                 <PostDetails
                   currentPost={selectedPost}
+                  isFormVisible={isFormVisible}
+                  setIsFormVisible={setIsFormVisible}
                 />
               )}
             </div>
