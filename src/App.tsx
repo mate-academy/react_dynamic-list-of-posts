@@ -8,8 +8,17 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { useUserContext } from './components/Context/Context';
 
 export const App: React.FC = () => {
+  const {
+    errorPosts,
+    userSelected,
+    posts,
+    isLoadingPosts,
+    postSelected,
+  } = useUserContext();
+
   return (
     <main className="section">
       <div className="container">
@@ -21,28 +30,39 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!userSelected && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isLoadingPosts && (
+                  <Loader />
+                )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {errorPosts && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    {errorPosts}
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {(!posts?.length
+                  && userSelected
+                  && !isLoadingPosts)
+                  && (
+                    // eslint-disable-next-line max-len
+                    <div className="notification is-warning" data-cy="NoPostsYet">
+                      No posts yet
+                    </div>
+                  )}
 
                 <PostsList />
               </div>
             </div>
           </div>
-
           <div
             data-cy="Sidebar"
             className={classNames(
@@ -50,7 +70,9 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              {
+                'Sidebar--open': postSelected,
+              },
             )}
           >
             <div className="tile is-child box is-success ">
