@@ -15,63 +15,69 @@ export const NewCommentForm: React.FC<Props> = ({
   addNewComment,
   handleSetError,
 }) => {
-  const [queryName, setQueryName] = useState('');
-  const [queryEmail, setQueryEmail] = useState('');
-  const [queryComment, setQueryComment] = useState('');
+  const [newComment, setNewComment] = useState({
+    name: '',
+    email: '',
+    comment: '',
+  });
   const [isLoading, setIsLoading] = useState(false);
-
-  const [isNameInputError, setNameInputError] = useState(false);
-  const [isEmailInputError, setEmailInputError] = useState(false);
-  const [isCommentInputError, setCommentInputError] = useState(false);
+  const [hasInputError, setHasInputError] = useState({
+    name: '',
+    email: '',
+    comment: '',
+  });
 
   const handleReset = () => {
-    setQueryName('');
-    setQueryEmail('');
-    setQueryComment('');
+    setNewComment({ name: '', email: '', comment: '' });
+    setHasInputError({ name: '', email: '', comment: '' });
   };
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNameInputError(false);
-    setQueryName(event.target.value);
+    setHasInputError((prevState) => ({ ...prevState, name: '' }));
+    setNewComment((prevComment) => (
+      { ...prevComment, name: event.target.value }));
   };
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmailInputError(false);
-    setQueryEmail(event.target.value);
+    setHasInputError((prevState) => ({ ...prevState, email: '' }));
+    setNewComment((prevComment) => (
+      { ...prevComment, email: event.target.value }));
   };
 
-  const handleCommentChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
-    setCommentInputError(false);
-    setQueryComment(event.target.value);
+  const handleCommentChange
+  = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setHasInputError((prevState) => ({ ...prevState, comment: '' }));
+    setNewComment((prevComment) => (
+      { ...prevComment, comment: event.target.value }));
   };
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setNameInputError(!queryName);
-    setEmailInputError(!queryEmail);
-    setCommentInputError(!queryComment);
+    setHasInputError({
+      name: !newComment.name ? 'Name is required' : '',
+      email: !newComment.email ? 'Email is required' : '',
+      comment: !newComment.comment ? 'Enter some text' : '',
+    });
 
-    if (!queryName || !queryEmail || !queryComment) {
+    if (!newComment.name || !newComment.email || !newComment.comment) {
       return;
     }
 
     setIsLoading(true);
 
     if (selectedPost) {
-      const newComment: Omit<Comment, 'id'> = {
+      const commentToAdd: Omit<Comment, 'id'> = {
         postId: selectedPost.id,
-        name: queryName,
-        email: queryEmail,
-        body: queryComment,
+        name: newComment.name,
+        email: newComment.email,
+        body: newComment.comment,
       };
 
-      addComment(newComment)
+      addComment(commentToAdd)
         .then((newCommentFromServer) => {
           addNewComment(newCommentFromServer);
-          setQueryComment('');
+          setNewComment({ name: '', email: '', comment: '' });
         })
         .catch(() => handleSetError())
         .finally(() => setIsLoading(false));
@@ -97,8 +103,9 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Name Surname"
             className={classNames(
               'input',
-              { 'is-danger': isNameInputError },
+              { 'is-danger': hasInputError.name },
             )}
+            value={newComment.name}
             onChange={handleNameChange}
           />
 
@@ -106,7 +113,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-user" />
           </span>
 
-          {isNameInputError && (
+          {hasInputError.name && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -116,7 +123,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {isNameInputError && (
+        {hasInputError.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -135,9 +142,10 @@ export const NewCommentForm: React.FC<Props> = ({
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
+            value={newComment.email}
             className={classNames(
               'input',
-              { 'is-danger': isEmailInputError },
+              { 'is-danger': hasInputError.email },
             )}
             onChange={handleEmailChange}
           />
@@ -146,7 +154,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-envelope" />
           </span>
 
-          {isEmailInputError && (
+          {hasInputError.email && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -157,7 +165,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         </div>
 
-        {isEmailInputError && (
+        {hasInputError.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -177,13 +185,14 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Type comment here"
             className={classNames(
               'textarea',
-              { 'is-danger': isCommentInputError },
+              { 'is-danger': hasInputError.comment },
             )}
+            value={newComment.comment}
             onChange={handleCommentChange}
           />
         </div>
 
-        {isCommentInputError && (
+        {hasInputError.comment && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -209,7 +218,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={() => handleReset}
+            onClick={handleReset}
           >
             Clear
           </button>
