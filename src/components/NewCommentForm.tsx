@@ -35,18 +35,10 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>
   | React.ChangeEvent<HTMLTextAreaElement>) => {
-    // eslint-disable-next-line no-console
-    console.log('Before state update:', formValues); // Вывод текущего состояния перед обновлением
-    // eslint-disable-next-line no-console
-    console.log('Before errors update:', errors);
     setFormValues((prev) => ({
       ...prev, [event.target.name]: event.target.value,
     }));
     setErrors((prev) => ({ ...prev, [event.target.name]: '' }));
-    // eslint-disable-next-line no-console
-    console.log('After state update:', formValues); // Вывод состояния после обновления
-    // eslint-disable-next-line no-console
-    console.log('After errors update:', errors);
   };
 
   const handleReset = () => {
