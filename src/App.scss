@@ -21,3 +21,8 @@
 .message-body {
   white-space: pre-line;
 }
+
+.comm-area:not([rows]) {
+  resize: none;
+  height: 8em;
+}
