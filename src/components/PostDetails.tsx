@@ -15,7 +15,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = React.useState<Comment[]>([]);
   const [isCommentFormOpen, setIsCommentFormOpen] = React.useState(false);
 
-  const deleteCommentClickHandler = (comment: Comment) => {
+  const handleDeleteComment = (comment: Comment) => {
     const commentsCopy = [...comments];
 
     setComments((prevComments) => (
@@ -95,7 +95,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
-                      onClick={() => deleteCommentClickHandler(comment)}
+                      onClick={() => handleDeleteComment(comment)}
                     >
                       delete button
                     </button>

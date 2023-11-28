@@ -19,6 +19,13 @@ export const Main: React.FC = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [selectedPost, setSelectedPost] = React.useState<Post | null>(null);
 
+  const noPostsMessageVisible = React.useMemo(() => (
+    !isLoading
+    && selectedUser
+    && !userError
+    && !posts.length
+  ), [isLoading, posts.length, selectedUser, userError]);
+
   const onUserSelected = (user: User) => {
     setIsLoading(true);
     setPosts([]);
@@ -63,18 +70,14 @@ export const Main: React.FC = () => {
                   </div>
                 )}
 
-                {(!isLoading
-                  && selectedUser
-                  && !userError
-                  && !posts.length)
-                  && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )}
+                {noPostsMessageVisible && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                )}
 
                 {!!posts.length && (
                   <PostsList

@@ -13,7 +13,7 @@ export const PostsList: React.FC<Props> = ({
   selectedPost,
   setSelectedPost,
 }) => {
-  const postButtonClickHandler = useCallback((post: Post) => {
+  const handleOpenPostDetails = useCallback((post: Post) => {
     setSelectedPost((prevSelectedPost) => {
       if (prevSelectedPost?.id === post.id) {
         return null;
@@ -42,7 +42,7 @@ export const PostsList: React.FC<Props> = ({
               key={post.id}
               post={post}
               selectedPost={selectedPost}
-              postButtonClickHandler={postButtonClickHandler}
+              postButtonClickHandler={handleOpenPostDetails}
             />
           ))}
         </tbody>

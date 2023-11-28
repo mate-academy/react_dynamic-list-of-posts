@@ -9,39 +9,35 @@ type Props = {
   setError: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+const emptyInputs: CommentData = {
+  name: '',
+  email: '',
+  body: '',
+};
+
+const emptyErrors = {
+  name: false,
+  email: false,
+  body: false,
+};
+
 export const NewCommentForm: React.FC<Props> = ({
   postId,
   setComments,
   setError,
 }) => {
-  const [data, setData] = React.useState<CommentData>({
-    name: '',
-    email: '',
-    body: '',
-  });
-  const [errors, setErrors] = React.useState({
-    name: false,
-    email: false,
-    body: false,
-  });
+  const [data, setData] = React.useState<CommentData>(emptyInputs);
+  const [errors, setErrors] = React.useState(emptyErrors);
   const [isLoading, setIsLoading] = React.useState(false);
 
   const resetForm = useCallback(() => {
     setError(false);
 
-    setData({
-      name: '',
-      email: '',
-      body: '',
-    });
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
-    });
+    setData(emptyInputs);
+    setErrors(emptyErrors);
   }, [setError]);
 
-  const submitHandler = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(false);
 
@@ -59,7 +55,7 @@ export const NewCommentForm: React.FC<Props> = ({
     createComment({ ...data, postId })
       .then((comment) => {
         setComments((prevComments) => [...prevComments, comment]);
-        resetForm();
+        setData(prevData => ({ ...prevData, body: '' }));
       })
       .catch(() => setError(true))
       .finally(() => {
@@ -67,10 +63,25 @@ export const NewCommentForm: React.FC<Props> = ({
       });
   };
 
+  const onInputFocused = useCallback((field: keyof CommentData) => {
+    setErrors((prevErrors) => (
+      { ...prevErrors, [field]: false }
+    ));
+  }, []);
+
+  const onInputChanged = useCallback((
+    field: keyof CommentData,
+    value: string,
+  ) => {
+    setData((prevData) => (
+      { ...prevData, [field]: value.trimStart() }
+    ));
+  }, []);
+
   return (
     <form
       data-cy="NewCommentForm"
-      onSubmit={submitHandler}
+      onSubmit={handleSubmit}
     >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
@@ -84,12 +95,8 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             value={data.name}
-            onChange={(event) => setData((prevData) => (
-              { ...prevData, name: event.target.value }
-            ))}
-            onFocus={() => setErrors((prevErrors) => (
-              { ...prevErrors, name: false }
-            ))}
+            onChange={(event) => onInputChanged('name', event.target.value)}
+            onFocus={() => onInputFocused('name')}
             className={cn('input', { 'is-danger': errors.name })}
           />
 
@@ -127,12 +134,8 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="email@test.com"
             value={data.email}
             className={cn('input', { 'is-danger': errors.email })}
-            onChange={(event) => setData((prevData) => (
-              { ...prevData, email: event.target.value }
-            ))}
-            onFocus={() => setErrors((prevErrors) => (
-              { ...prevErrors, email: false }
-            ))}
+            onChange={(event) => onInputChanged('email', event.target.value)}
+            onFocus={() => onInputFocused('email')}
           />
 
           <span className="icon is-small is-left">
@@ -168,12 +171,8 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Type comment here"
             value={data.body}
             className={cn('input', 'comm-area', { 'is-danger': errors.body })}
-            onChange={(event) => setData((prevData) => (
-              { ...prevData, body: event.target.value }
-            ))}
-            onFocus={() => setErrors((prevErrors) => (
-              { ...prevErrors, body: false }
-            ))}
+            onChange={(event) => onInputChanged('body', event.target.value)}
+            onFocus={() => onInputFocused('body')}
           />
         </div>
 

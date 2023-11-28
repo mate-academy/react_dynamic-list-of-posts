@@ -15,7 +15,7 @@ export const UserSelector: React.FC<Props> = ({ onUserSelected }) => {
   } = React.useContext(PostsContext);
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const selectUser = (user: User) => {
+  const handleUserSelect = (user: User) => {
     setSelectedUser(user);
     setIsOpen(false);
     onUserSelected(user);
@@ -54,7 +54,7 @@ export const UserSelector: React.FC<Props> = ({ onUserSelected }) => {
                 className={cn('dropdown-item', {
                   'is-active': selectedUser?.id === user.id,
                 })}
-                onClick={() => selectUser(user)}
+                onClick={() => handleUserSelect(user)}
               >
                 {user.name}
               </a>
