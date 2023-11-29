@@ -17,7 +17,7 @@ export const PostsList: React.FC = () => {
   } = useContext(GlobalContext);
 
   const handleSetSelectedPost = (post: Post) => {
-    setError(ErrorType.none);
+    setError(ErrorType.None);
     setIsFormOpen(false);
 
     if (selectedPost?.id === post.id) {
@@ -28,7 +28,7 @@ export const PostsList: React.FC = () => {
       setSelectedPost(post);
       commentsService.getComments(post.id).then(setComments)
         .catch((err) => {
-          setError(ErrorType.commentsLoadingError);
+          setError(ErrorType.CommentsLoadingError);
           throw err;
         })
         .finally(() => setIsCommentsLoading(false));

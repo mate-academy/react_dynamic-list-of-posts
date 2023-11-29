@@ -24,15 +24,14 @@ export const UserSelector: React.FC = () => {
   };
 
   const handleSetUser = (user: User) => {
-    setError(ErrorType.none);
+    setError(ErrorType.None);
     setSelectedPost(null);
     setIsPostsLoading(true);
     setSelectedUser(user);
     setIsDropdownOpen(false);
     getPosts(user.id).then(setPosts)
-      .catch((err) => {
-        setError(ErrorType.postsLoadingError);
-        throw err;
+      .catch(() => {
+        setError(ErrorType.PostsLoadingError);
       })
       .finally(() => setIsPostsLoading(false));
   };

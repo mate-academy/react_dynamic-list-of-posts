@@ -39,17 +39,17 @@ export const NewCommentForm: React.FC = () => {
   const formValidate = () => {
     let isFormValid = true;
 
-    if (newName.trim() === '') {
+    if (!newName.trim()) {
       setIsNameValid(false);
       isFormValid = false;
     }
 
-    if (newEmail.trim() === '') {
+    if (!newEmail.trim()) {
       setIsEmailValid(false);
       isFormValid = false;
     }
 
-    if (newMessage.trim() === '') {
+    if (!newMessage.trim()) {
       setIsMessageValid(false);
       isFormValid = false;
     }

@@ -16,7 +16,7 @@ const State: Context = {
   setIsCommentsLoading: () => {},
   posts: [],
   setPosts: () => {},
-  error: ErrorType.none,
+  error: ErrorType.None,
   setError: () => {},
   selectedPost: null,
   setSelectedPost: () => {},
@@ -39,7 +39,7 @@ export const GlobalProvider: React.FC<Props> = ({ children }) => {
   const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [error, setError] = useState(ErrorType.none);
+  const [error, setError] = useState(ErrorType.None);
   const [comments, setComments] = useState<Comment[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
 

@@ -8,10 +8,6 @@ import { MainContent } from './components/MainContent';
 
 export const App: React.FC = () => (
   <GlobalProvider>
-    <main className="section">
-      <div className="container">
-        <MainContent />
-      </div>
-    </main>
+    <MainContent />
   </GlobalProvider>
 );

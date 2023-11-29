@@ -42,7 +42,7 @@ export const PostDetails: React.FC = () => {
         <div className="block">
           {isCommentsLoading && <Loader />}
 
-          {error === ErrorType.commentsLoadingError && (
+          {error === ErrorType.CommentsLoadingError && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
@@ -50,7 +50,7 @@ export const PostDetails: React.FC = () => {
 
           {selectedPost
           && !isCommentsLoading
-          && error === ErrorType.none
+          && error === ErrorType.None
           && (comments.length > 0
             ? (
               <>
