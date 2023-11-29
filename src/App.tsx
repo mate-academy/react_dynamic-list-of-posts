@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +8,19 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { User } from './types/User';
+import { getUsers } from './api/users';
 
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    getUsers()
+      .then((usersFromServer) => {
+        setUsers(usersFromServer.slice(0, 11));
+      });
+  }, []);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,7 +28,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector users={users} />
               </div>
 
               <div className="block" data-cy="MainContent">
