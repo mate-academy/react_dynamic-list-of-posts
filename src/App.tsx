@@ -1,15 +1,27 @@
-import React from 'react';
+/* eslint-disable max-len */
+import React, { useContext } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
+import cn from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { AppContext } from './components/Context';
 
 export const App: React.FC = () => {
+  const appContext = useContext(AppContext);
+
+  const {
+    selectedUser,
+    userPosts,
+    selectedPostId,
+    isLoadingList,
+    errorM,
+  } = appContext;
+
   return (
     <main className="section">
       <div className="container">
@@ -21,42 +33,58 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {selectedUser
+                  ? ''
+                  : <p data-cy="NoSelectedUser">No user selected</p>}
 
-                <Loader />
+                {isLoadingList
+                  && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {errorM
+                  && (
+                    <div
+                      className="notification is-danger"
+                      data-cy="PostsLoadingError"
+                    >
+                      Something went wrong!
+                    </div>
+                  )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                {!!selectedUser && !isLoadingList
+                  && (
+                    <>
+                      {userPosts.length > 0
+                        ? (
+                          <PostsList />
+                        )
+                        : (
+                          <div className="notification is-warning" data-cy="NoPostsYet">
+                            No posts yet
+                          </div>
+                        )}
+                    </>
+                  )}
               </div>
             </div>
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
+          {!!selectedPostId
+            && (
+              <div
+                data-cy="Sidebar"
+                className={cn(
+                  'tile',
+                  'is-parent',
+                  'is-8-desktop',
+                  'Sidebar',
+                  'Sidebar--open',
+                )}
+              >
+                <div className="tile is-child box is-success ">
+                  <PostDetails />
+                </div>
+              </div>
             )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
-          </div>
         </div>
       </div>
     </main>
