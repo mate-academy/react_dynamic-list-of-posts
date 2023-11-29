@@ -1,85 +1,83 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import classNames from 'classnames';
+import { GlobalContext } from './GeneralContext';
+import { Post } from '../types/Post';
+import * as commentsService from '../api/comments';
+import { ErrorType } from '../types/ErrorType';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+export const PostsList: React.FC = () => {
+  const {
+    posts,
+    selectedPost,
+    setSelectedPost,
+    setComments,
+    setError,
+    setIsCommentsLoading,
+    setIsFormOpen,
+  } = useContext(GlobalContext);
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          <th> </th>
-        </tr>
-      </thead>
+  const handleSetSelectedPost = (post: Post) => {
+    setError(ErrorType.none);
+    setIsFormOpen(false);
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+    if (selectedPost?.id === post.id) {
+      setSelectedPost(null);
+      setComments([]);
+    } else {
+      setIsCommentsLoading(true);
+      setSelectedPost(post);
+      commentsService.getComments(post.id).then(setComments)
+        .catch((err) => {
+          setError(ErrorType.commentsLoadingError);
+          throw err;
+        })
+        .finally(() => setIsCommentsLoading(false));
+    }
+  };
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            <th> </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {posts.map(post => (
+            <tr
+              key={post.id}
+              data-cy="Post"
             >
-              Open
-            </button>
-          </td>
-        </tr>
+              <td data-cy="PostId">{post.id}</td>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+              <td data-cy="PostTitle">
+                {post.title}
+              </td>
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  onClick={() => handleSetSelectedPost(post)}
+                  className={classNames(
+                    'button', 'is-link', {
+                      'is-light': selectedPost?.id !== post.id,
+                    },
+                  )}
+                >
+                  {selectedPost?.id === post.id ? 'Close' : 'Open'}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
