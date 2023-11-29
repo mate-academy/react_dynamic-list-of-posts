@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,40 +8,19 @@ import cn from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-import {
-  getAllUsers, getUserPosts, getUserPostById,
-} from './utils/requestService';
-import { User } from './types/User';
-import { Post } from './types/Post';
-// import { Comment } from './types/Comment';
 import { Loader } from './components/Loader';
+import { AppContext } from './components/Context';
 
 export const App: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [userPosts, setUserPosts] = useState<Post[]>([]);
-  const [selectedUser, setSelectedUser] = useState(0);
-  const [selectedPost, setSelectedPost] = useState(0);
-  const [postAside, setPostAside] = useState<Post>();
-  // const [errorM, setErrorM] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const appContext = useContext(AppContext);
 
-  useEffect(() => {
-    getAllUsers()
-      .then((data) => setUsers(data));
-  }, []);
-
-  useEffect(() => {
-    getUserPosts(selectedUser)
-      .then((data) => setUserPosts(data));
-  }, [selectedUser]);
-
-  useEffect(() => {
-    setIsLoading(true);
-
-    getUserPostById(selectedPost)
-      .then((data) => setPostAside(data))
-      .finally(() => setIsLoading(false));
-  }, [selectedPost]);
+  const {
+    selectedUser,
+    userPosts,
+    selectedPostId,
+    isLoadingList,
+    errorM,
+  } = appContext;
 
   return (
     <main className="section">
@@ -50,11 +29,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector
-                  usersFromServer={users}
-                  selectedUser={selectedUser}
-                  setSelectedUser={setSelectedUser}
-                />
+                <UserSelector />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -62,10 +37,10 @@ export const App: React.FC = () => {
                   ? ''
                   : <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {isLoading
+                {isLoadingList
                   && <Loader />}
 
-                {/* {errorM
+                {errorM
                   && (
                     <div
                       className="notification is-danger"
@@ -73,17 +48,14 @@ export const App: React.FC = () => {
                     >
                       Something went wrong!
                     </div>
-                  )} */}
+                  )}
 
-                {!!selectedUser
+                {!!selectedUser && !isLoadingList
                   && (
                     <>
                       {userPosts.length > 0
                         ? (
-                          <PostsList
-                            userPosts={userPosts}
-                            setSelectedPost={setSelectedPost}
-                          />
+                          <PostsList />
                         )
                         : (
                           <div className="notification is-warning" data-cy="NoPostsYet">
@@ -96,7 +68,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {!!selectedPost && !!postAside
+          {!!selectedPostId
             && (
               <div
                 data-cy="Sidebar"
@@ -109,10 +81,7 @@ export const App: React.FC = () => {
                 )}
               >
                 <div className="tile is-child box is-success ">
-                  <PostDetails
-                    post={postAside}
-                    selectedPost={selectedPost}
-                  />
+                  <PostDetails />
                 </div>
               </div>
             )}

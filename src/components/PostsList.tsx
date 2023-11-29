@@ -1,17 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
-import { Post } from '../types/Post';
 import { Button } from './Button';
+import { AppContext } from './Context';
 
-type Props = {
-  userPosts: Post[];
-  setSelectedPost: (number: number) => void;
-};
+type Props = {};
 
-export const PostsList: React.FC<Props> = ({
-  userPosts,
-  setSelectedPost,
-}) => {
+export const PostsList: React.FC<Props> = () => {
+  const appContext = useContext(AppContext);
+
+  const { userPosts } = appContext;
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -39,10 +37,7 @@ export const PostsList: React.FC<Props> = ({
                 </td>
 
                 <td className="has-text-right is-vcentered">
-                  <Button
-                    post={post}
-                    setSelectedPost={setSelectedPost}
-                  />
+                  <Button post={post} />
                 </td>
               </tr>
             );

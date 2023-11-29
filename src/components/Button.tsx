@@ -1,29 +1,30 @@
-import React, { useState } from 'react';
-import cn from 'classnames';
+import React, { useContext } from 'react';
+
 import { Post } from '../types/Post';
+import { AppContext } from './Context';
 
 type Props = {
-  post: Post
-  setSelectedPost: (number: number) => void
+  post: Post,
 };
 
-export const Button: React.FC<Props> = ({ post, setSelectedPost }) => {
-  const [asideShown, setAsideShown] = useState(false);
+export const Button: React.FC<Props> = ({
+  post,
+}) => {
+  const appContext = useContext(AppContext);
+
+  const { selectedPostId, setSelectedPostId } = appContext;
+  const openAside = selectedPostId === post.id;
 
   return (
-
     <button
       type="button"
       data-cy="PostButton"
       onClick={() => {
-        setAsideShown(!asideShown);
-        setSelectedPost(post.id);
+        setSelectedPostId(post.id);
       }}
-      className={cn('button', 'is-link', {
-        asideShown: 'is-light',
-      })}
+      className={`button is-link ${!openAside ? 'is-light' : ''}`}
     >
-      {asideShown
+      {openAside
         ? 'Close'
         : 'Open'}
     </button>

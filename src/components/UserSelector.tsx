@@ -1,17 +1,23 @@
 /* eslint-disable max-len */
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import cn from 'classnames';
-import { User } from '../types/User';
+import { AppContext } from './Context';
 
 type Props = {
-  usersFromServer: User[],
-  selectedUser: number,
-  setSelectedUser: (data: number) => void
 };
 
-export const UserSelector: React.FC<Props> = ({ usersFromServer, selectedUser, setSelectedUser }) => {
+export const UserSelector: React.FC<Props> = () => {
   const [menuShown, setMenuShown] = useState(false);
   const [userName, setUserName] = useState('');
+
+  const appContext = useContext(AppContext);
+
+  const {
+    users,
+    selectedUser,
+    setSelectedUser,
+    setSelectedPostId,
+  } = appContext;
 
   return (
     <div
@@ -40,7 +46,7 @@ export const UserSelector: React.FC<Props> = ({ usersFromServer, selectedUser, s
         && (
           <div className="dropdown-menu" id="dropdown-menu" role="menu">
             <div className="dropdown-content">
-              {usersFromServer.map(user => {
+              {users.map(user => {
                 return (
                   <a
                     key={user.id}
@@ -52,6 +58,7 @@ export const UserSelector: React.FC<Props> = ({ usersFromServer, selectedUser, s
                       setSelectedUser(user.id);
                       setMenuShown(false);
                       setUserName(user.name);
+                      setSelectedPostId(0);
                     }}
                   >
                     {user.name}
