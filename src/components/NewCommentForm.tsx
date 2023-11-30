@@ -50,6 +50,9 @@ export const NewCommentForm: React.FC<Props> = ({
       body: '',
       email: '',
     });
+    setHasBodyError(false);
+    setHasEmailError(false);
+    setHasNameError(false);
   };
 
   const clearAfterAdd = () => {
@@ -106,9 +109,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': hasNameError,
             })}
             value={comment.name}
-            onChange={e => {
-              handleChangeName(e);
-            }}
+            onChange={handleChangeName}
           />
 
           <span className="icon is-small is-left">
@@ -147,10 +148,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': hasEmailError,
             })}
             value={comment.email}
-            onChange={e => {
-              handleChangeEmail(e);
-            }}
-
+            onChange={handleChangeEmail}
           />
 
           <span className="icon is-small is-left">
@@ -188,9 +186,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': hasBodyError,
             })}
             value={comment.body}
-            onChange={e => {
-              handleChangeBody(e);
-            }}
+            onChange={handleChangeBody}
           />
         </div>
         {hasBodyError && (

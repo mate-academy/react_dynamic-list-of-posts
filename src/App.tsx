@@ -18,8 +18,8 @@ export const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isErrorMessage, setIsErrorMessage] = useState(false);
 
   const loadUsers = async () => {
     try {
@@ -27,23 +27,23 @@ export const App: React.FC = () => {
 
       setUsers(loadedUsers);
     } catch {
-      throw new Error('Failed to load users');
+      setIsErrorMessage(true);
     }
   };
 
   const loadPosts = useCallback(async () => {
     if (selectedUser) {
-      setLoading(true);
+      setIsLoading(true);
 
       try {
         const loadedPosts = await getUserPosts(selectedUser?.id);
 
         setPosts(loadedPosts);
-        setErrorMessage(false);
+        setIsErrorMessage(false);
       } catch {
-        setErrorMessage(true);
+        setIsErrorMessage(true);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     }
   }, [selectedUser]);
@@ -59,16 +59,16 @@ export const App: React.FC = () => {
   }, []);
 
   const noPostCondition = (
-    !loading
-    && !errorMessage
+    !isLoading
+    && !isErrorMessage
     && !posts.length
     && selectedUser
   );
 
   const postListCondition = (
-    !loading
+    !isLoading
     && !!posts.length
-    && !errorMessage
+    && !isErrorMessage
   );
 
   return (
@@ -92,9 +92,9 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {loading && <Loader />}
+                {isLoading && <Loader />}
 
-                {!loading && errorMessage && (
+                {!isLoading && isErrorMessage && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -134,9 +134,7 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success ">
               {selectedPost && (
                 <PostDetails
-                  title={selectedPost.title}
-                  body={selectedPost.body}
-                  id={selectedPost.id}
+                  post={selectedPost}
                 />
               )}
             </div>

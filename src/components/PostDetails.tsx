@@ -1,20 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import classNames from 'classnames';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import * as commentService from '../services/comments'
+import * as commentService from '../services/comments';
 import { Comment, CommentData } from '../types/Comment';
-import classNames from 'classnames';
+import { Post } from '../types/Post';
 
 type Props = {
-  title: string;
-  body: string;
-  id: number;
+  post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({
-  title,
-  body,
-  id,
+  post,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,7 +30,7 @@ export const PostDetails: React.FC<Props> = ({
     setLoading(true);
     try {
       setErrorMessage(false);
-      const loadedComments = await commentService.getUserComments(id);
+      const loadedComments = await commentService.getUserComments(post.id);
 
       setComments(loadedComments);
     } catch {
@@ -41,19 +38,19 @@ export const PostDetails: React.FC<Props> = ({
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [post.id]);
 
   useEffect(() => {
     getComments();
     setIsWritingComment(false);
-  }, [getComments, id]);
+  }, [getComments, post.id]);
 
   const handleAddComment = async (newComment: CommentData) => {
     setIsCommentLoading(true);
     try {
       const newPost = await commentService.addComment({
         ...newComment,
-        postId: id,
+        postId: post.id,
       });
 
       setComments(currentComments => [...currentComments, newPost]);
@@ -77,17 +74,16 @@ export const PostDetails: React.FC<Props> = ({
     }
   };
 
-
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {title}
+            {post.title}
           </h2>
 
           <p data-cy="PostBody">
-            {body}
+            {post.body}
           </p>
         </div>
 
