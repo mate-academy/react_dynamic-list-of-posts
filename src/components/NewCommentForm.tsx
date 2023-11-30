@@ -18,6 +18,8 @@ export const NewCommentForm: React.FC = () => {
   const {
     selectedPostId,
     setNewComment,
+    isLoadingComments,
+    setIsLoadingForm,
   } = appContext;
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -53,8 +55,14 @@ export const NewCommentForm: React.FC = () => {
       body,
     };
 
+    setIsLoadingForm(true);
+
     postComment(newComment)
-      .then(() => setNewComment(true));
+      .then(() => {
+        setNewComment(true);
+        setIsLoadingForm(false);
+        setBody('');
+      });
   };
 
   return (
@@ -186,7 +194,7 @@ export const NewCommentForm: React.FC = () => {
           <button
             type="submit"
             className={cn('button', 'is-link', {
-              kek: 'is-loading',
+              'is-loading': isLoadingComments,
             })}
           >
             Add
@@ -198,6 +206,11 @@ export const NewCommentForm: React.FC = () => {
           <button
             type="reset"
             className="button is-link is-light"
+            onClick={() => {
+              setBody('');
+              setName('');
+              setEmail('');
+            }}
           >
             Clear
           </button>

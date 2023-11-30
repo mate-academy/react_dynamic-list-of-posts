@@ -17,9 +17,11 @@ export interface ContextType {
   setIsLoadingComments: (x: boolean) => void;
   postComments: Comment[];
   setPostComments: (x: Comment[]) => void;
-  errorM: boolean;
-  setErrorM: (x: boolean) => void;
-  post: Post | undefined;
+  error: boolean;
+  setError: (x: boolean) => void;
+  post: Post | null;
   setPost: (x: Post) => void;
   setNewComment: (x: boolean) => void;
+  isLoadingForm: boolean;
+  setIsLoadingForm: (x: boolean) => void;
 }

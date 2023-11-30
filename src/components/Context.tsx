@@ -22,17 +22,17 @@ export const AppContext = React.createContext<ContextType>({
   setIsLoadingList: () => { },
   isLoadingComments: false,
   setIsLoadingComments: () => { },
-  postComments: [{
-    id: 0, postId: 0, name: '', email: '', body: '',
-  }],
+  postComments: [],
   setPostComments: () => { },
-  errorM: false,
-  setErrorM: () => { },
+  error: false,
+  setError: () => { },
   post: {
     id: 0, userId: 0, title: '', body: '',
   },
   setPost: () => { },
   setNewComment: () => { },
+  isLoadingForm: false,
+  setIsLoadingForm: () => { },
 });
 
 type Props = {
@@ -48,10 +48,11 @@ export const AppProvider: React.FC<Props> = ({ children }) => {
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [isLoadingList, setIsLoadingList] = useState(false);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [isLoadingForm, setIsLoadingForm] = useState(false);
   const [postComments, setPostComments] = useState<Comment[]>([]);
-  const [errorM, setErrorM] = useState(false);
+  const [error, setError] = useState(false);
   const [newComment, setNewComment] = useState(false);
-  const [post, setPost] = useState<Post | undefined>(undefined);
+  const [post, setPost] = useState<Post | null>(null);
 
   useEffect(() => {
     if (!selectedPostId) {
@@ -62,10 +63,11 @@ export const AppProvider: React.FC<Props> = ({ children }) => {
 
     getUserCommentsByPostId(selectedPostId)
       .then((data) => setPostComments(data))
-      .catch(() => setErrorM(true))
+      .catch(() => setError(true))
       .finally(() => {
-        setIsLoadingComments(false);
         setNewComment(false);
+        setIsLoadingComments(false);
+        setError(false);
       });
   }, [selectedPostId, newComment]);
 
@@ -74,12 +76,18 @@ export const AppProvider: React.FC<Props> = ({ children }) => {
       return;
     }
 
-    setPost(userPosts.find(p => p.id === selectedPostId));
+    const filteredPosts = userPosts.find(p => p.id === selectedPostId);
+
+    if (filteredPosts) {
+      setPost(filteredPosts);
+    }
   }, [userPosts, selectedPostId]);
 
   useEffect(() => {
     getAllUsers()
-      .then((data) => setUsers(data));
+      .then((data) => setUsers(data))
+      .catch(() => setError(true))
+      .finally(() => setError(false));
   }, []);
 
   useEffect(() => {
@@ -91,7 +99,11 @@ export const AppProvider: React.FC<Props> = ({ children }) => {
 
     getUserPosts(selectedUser)
       .then((data) => setUserPosts(data))
-      .finally(() => setIsLoadingList(false));
+      .catch(() => setError(true))
+      .finally(() => {
+        setIsLoadingList(false);
+        setError(false);
+      });
   }, [selectedUser]);
 
   return (
@@ -111,11 +123,13 @@ export const AppProvider: React.FC<Props> = ({ children }) => {
         setIsLoadingComments,
         postComments,
         setPostComments,
-        errorM,
-        setErrorM,
+        error,
+        setError,
         post,
         setPost,
         setNewComment,
+        isLoadingForm,
+        setIsLoadingForm,
       }}
     >
       {children}

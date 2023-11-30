@@ -19,7 +19,7 @@ export const App: React.FC = () => {
     userPosts,
     selectedPostId,
     isLoadingList,
-    errorM,
+    error,
   } = appContext;
 
   return (
@@ -40,7 +40,7 @@ export const App: React.FC = () => {
                 {isLoadingList
                   && <Loader />}
 
-                {errorM
+                {error
                   && (
                     <div
                       className="notification is-danger"

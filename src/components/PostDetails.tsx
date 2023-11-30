@@ -13,13 +13,13 @@ export const PostDetails: React.FC<Props> = () => {
   const {
     postComments,
     isLoadingComments,
-    errorM,
+    error,
     post,
     setNewComment,
   } = appContext;
 
   if (!post) {
-    return <></>;
+    return null;
   }
 
   return (
@@ -40,7 +40,7 @@ export const PostDetails: React.FC<Props> = () => {
           {isLoadingComments
             && <Loader />}
 
-          {errorM
+          {error
             && (
               <div className="notification is-danger" data-cy="CommentsError">
                 Something went wrong
@@ -57,12 +57,12 @@ export const PostDetails: React.FC<Props> = () => {
           <p className="title is-4">Comments:</p>
 
           <article className="message is-small" data-cy="Comment">
-            {postComments.map(coment => {
+            {postComments.map(comment => {
               return (
                 <>
                   <div className="message-header">
-                    <a href={`mailto:${coment.email}`} data-cy="CommentAuthor">
-                      {coment.name}
+                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                      {comment.name}
                     </a>
                     <button
                       data-cy="CommentDelete"
@@ -70,7 +70,7 @@ export const PostDetails: React.FC<Props> = () => {
                       className="delete is-small"
                       aria-label="delete"
                       onClick={() => {
-                        deleteComment(coment.id);
+                        deleteComment(comment.id);
                         setNewComment(true);
                       }}
                     >
@@ -78,7 +78,7 @@ export const PostDetails: React.FC<Props> = () => {
                     </button>
                   </div>
                   <div className="message-body" data-cy="CommentBody">
-                    {coment.body}
+                    {comment.body}
                   </div>
                 </>
               );
