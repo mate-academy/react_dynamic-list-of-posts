@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,18 +8,15 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { AppContext } from './AppContext';
 import { User } from './types/User';
-import { getUsers } from './api/users';
 
 export const App: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
+  const { users } = useContext(AppContext);
 
-  useEffect(() => {
-    getUsers()
-      .then((usersFromServer) => {
-        setUsers(usersFromServer.slice(0, 11));
-      });
-  }, []);
+  const onUserSelect = (user: User) => {
+
+  };
 
   return (
     <main className="section">
@@ -27,8 +24,11 @@ export const App: React.FC = () => {
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
+
               <div className="block">
-                <UserSelector users={users} />
+                <UserSelector
+                  onUserSelect={onUserSelect}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
