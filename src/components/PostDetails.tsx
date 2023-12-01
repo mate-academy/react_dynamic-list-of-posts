@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { deleteComment } from '../utils/requestService';
 import { AppContext } from './Context';
@@ -12,7 +11,6 @@ export const PostDetails: React.FC<Props> = () => {
   const appContext = useContext(AppContext);
   const {
     postComments,
-    isLoadingComments,
     error,
     post,
     setNewComment,
@@ -37,9 +35,6 @@ export const PostDetails: React.FC<Props> = () => {
 
         <div className="block">
 
-          {isLoadingComments
-            && <Loader />}
-
           {error
             && (
               <div className="notification is-danger" data-cy="CommentsError">
@@ -56,12 +51,18 @@ export const PostDetails: React.FC<Props> = () => {
 
           <p className="title is-4">Comments:</p>
 
-          <article className="message is-small" data-cy="Comment">
+          <article
+            className="message is-small"
+            data-cy="Comment"
+          >
             {postComments.map(comment => {
               return (
-                <>
+                <div key={comment.id}>
                   <div className="message-header">
-                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                    <a
+                      href={`mailto:${comment.email}`}
+                      data-cy="CommentAuthor"
+                    >
                       {comment.name}
                     </a>
                     <button
@@ -77,10 +78,13 @@ export const PostDetails: React.FC<Props> = () => {
                       delete button
                     </button>
                   </div>
-                  <div className="message-body" data-cy="CommentBody">
+                  <div
+                    className="message-body"
+                    data-cy="CommentBody"
+                  >
                     {comment.body}
                   </div>
-                </>
+                </div>
               );
             })}
           </article>

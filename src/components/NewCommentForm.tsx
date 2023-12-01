@@ -25,6 +25,15 @@ export const NewCommentForm: React.FC = () => {
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const bodyTrimmed = body.trim();
+
+    if (bodyTrimmed.length < 1) {
+      setBodyError(true);
+      setBody('');
+
+      return;
+    }
+
     if (!selectedPostId) {
       return;
     }
@@ -52,7 +61,7 @@ export const NewCommentForm: React.FC = () => {
       postId: selectedPostId,
       name,
       email,
-      body,
+      body: bodyTrimmed,
     };
 
     setIsLoadingForm(true);

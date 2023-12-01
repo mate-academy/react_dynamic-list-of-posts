@@ -12,16 +12,26 @@ export const Button: React.FC<Props> = ({
 }) => {
   const appContext = useContext(AppContext);
 
-  const { selectedPostId, setSelectedPostId } = appContext;
+  const {
+    selectedPostId,
+    setSelectedPostId,
+  } = appContext;
+
   const openAside = selectedPostId === post.id;
+
+  const handleButtonClick = () => {
+    if (selectedPostId === post.id) {
+      return setSelectedPostId(0);
+    }
+
+    return setSelectedPostId(post.id);
+  };
 
   return (
     <button
       type="button"
       data-cy="PostButton"
-      onClick={() => {
-        setSelectedPostId(post.id);
-      }}
+      onClick={handleButtonClick}
       className={`button is-link ${!openAside ? 'is-light' : ''}`}
     >
       {openAside
