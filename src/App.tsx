@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
+// import classNames from 'classnames';
+// import { PostsList } from './components/PostsList';
+// import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
+// import { Loader } from './components/Loader';
 
 export const App: React.FC = () => {
+  const [error] = useState(false);
+
   return (
     <main className="section">
       <div className="container">
@@ -25,25 +27,27 @@ export const App: React.FC = () => {
                   No user selected
                 </p>
 
-                <Loader />
+                {/* <Loader /> */}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {error && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
                 <div className="notification is-warning" data-cy="NoPostsYet">
                   No posts yet
                 </div>
 
-                <PostsList />
+                {/* <PostsList /> */}
               </div>
             </div>
           </div>
 
-          <div
+          {/* <div
             data-cy="Sidebar"
             className={classNames(
               'tile',
@@ -56,7 +60,7 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success ">
               <PostDetails />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </main>
