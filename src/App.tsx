@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React, { useContext } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -58,7 +57,10 @@ export const App: React.FC = () => {
                           <PostsList />
                         )
                         : (
-                          <div className="notification is-warning" data-cy="NoPostsYet">
+                          <div
+                            className="notification is-warning"
+                            data-cy="NoPostsYet"
+                          >
                             No posts yet
                           </div>
                         )}

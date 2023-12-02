@@ -26,9 +26,7 @@ export const AppContext = React.createContext<ContextType>({
   setPostComments: () => { },
   error: false,
   setError: () => { },
-  post: {
-    id: 0, userId: 0, title: '', body: '',
-  },
+  post: null,
   setPost: () => { },
   setNewComment: () => { },
   isLoadingForm: false,
