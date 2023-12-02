@@ -1,5 +1,6 @@
 import React, { useState, Dispatch, SetStateAction } from 'react';
 import classNames from 'classnames';
+import { Comment } from '../types/Comment';
 import { client } from '../utils/fetchClient';
 import { Post } from '../types/Post';
 
@@ -7,27 +8,35 @@ interface T {
   selectedPost: Post;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   isLoading: boolean;
+  setUserComments: Dispatch<SetStateAction<Comment[]>>;
+}
+
+enum Inputs {
+  Name = 'name',
+  Email = 'email',
+  Text = 'text',
 }
 
 export const NewCommentForm: React.FC<T> = ({
   selectedPost,
   setIsLoading,
   isLoading,
+  setUserComments,
 }) => {
   const [inputName, setInputName] = useState('');
   const [inputEmail, setInputEmail] = useState('');
   const [inputText, setInputText] = useState('');
-  const [inputNameSend, setInputNameSend] = useState(false);
-  const [inputEmailSend, setInputEmailSend] = useState(false);
-  const [inputTextSend, setInputTextSend] = useState(false);
+  const [isInputNameSent, setIsInputNameSent] = useState(false);
+  const [isInputEmailSent, setIsInputEmailSent] = useState(false);
+  const [isInputTextSent, setIsInputTextSent] = useState(false);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     setIsLoading(true);
-    setInputNameSend(true);
-    setInputEmailSend(true);
-    setInputTextSend(true);
+    setIsInputNameSent(true);
+    setIsInputEmailSent(true);
+    setIsInputTextSent(true);
 
     try {
       const newComment = {
@@ -37,36 +46,52 @@ export const NewCommentForm: React.FC<T> = ({
         body: inputText,
       };
 
-      if (inputName !== '' && inputEmail !== '' && inputText !== '') {
+      if (
+        inputName.trim()
+        && inputEmail.trim()
+        && inputText.trim()
+      ) {
         await client.post('/comments', newComment);
+        setUserComments((prev) => [...prev, newComment]);
+        setInputText('');
+        setIsInputTextSent(false);
       }
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleInputName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputName(event.target.value);
-    setInputNameSend(false);
-  };
+  const handleInputs
+    = (
+      event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+      type: Inputs,
+    ) => {
+      switch (type) {
+        case Inputs.Name:
+          setInputName(event.target.value);
+          setIsInputNameSent(false);
+          break;
+        case Inputs.Email:
+          setInputEmail(event.target.value);
+          setIsInputEmailSent(false);
+          break;
+        case Inputs.Text:
+          setInputText(event.target.value);
+          setIsInputTextSent(false);
+          break;
 
-  const handleInputEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputEmail(event.target.value);
-    setInputEmailSend(false);
-  };
-
-  const handleInputText = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInputText(event.target.value);
-    setInputTextSend(false);
-  };
+        default:
+          break;
+      }
+    };
 
   const handleInputsClear = () => {
     setInputName('');
-    setInputNameSend(false);
+    setIsInputNameSent(false);
     setInputEmail('');
-    setInputEmailSend(false);
+    setIsInputEmailSent(false);
     setInputText('');
-    setInputTextSend(false);
+    setIsInputTextSent(false);
   };
 
   return (
@@ -83,16 +108,16 @@ export const NewCommentForm: React.FC<T> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input',
-              { 'is-danger': inputName === '' && inputNameSend })}
+              { 'is-danger': inputName.trim() === '' && isInputNameSent })}
             value={inputName}
-            onChange={handleInputName}
+            onChange={(event) => handleInputs(event, Inputs.Name)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {inputName === '' && inputNameSend && (
+          {inputName.trim() === '' && isInputNameSent && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -102,7 +127,7 @@ export const NewCommentForm: React.FC<T> = ({
           )}
         </div>
 
-        {inputName === '' && inputNameSend && (
+        {inputName.trim() === '' && isInputNameSent && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -121,16 +146,16 @@ export const NewCommentForm: React.FC<T> = ({
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input',
-              { 'is-danger': inputEmail === '' && inputEmailSend })}
+              { 'is-danger': inputEmail.trim() === '' && isInputEmailSent })}
             value={inputEmail}
-            onChange={handleInputEmail}
+            onChange={(event) => handleInputs(event, Inputs.Email)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {inputEmail === '' && inputEmailSend && (
+          {inputEmail.trim() === '' && isInputEmailSent && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -140,7 +165,7 @@ export const NewCommentForm: React.FC<T> = ({
           )}
         </div>
 
-        {inputEmail === '' && inputEmailSend && (
+        {inputEmail.trim() === '' && isInputEmailSent && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -158,13 +183,13 @@ export const NewCommentForm: React.FC<T> = ({
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea',
-              { 'is-danger': inputText === '' && inputTextSend })}
+              { 'is-danger': inputText.trim() === '' && isInputTextSent })}
             value={inputText}
-            onChange={handleInputText}
+            onChange={(event) => handleInputs(event, Inputs.Text)}
           />
         </div>
 
-        {inputText === '' && inputTextSend && (
+        {inputText.trim() === '' && isInputTextSent && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>

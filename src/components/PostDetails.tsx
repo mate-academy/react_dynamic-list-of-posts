@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
@@ -14,7 +14,6 @@ export const PostDetails: React.FC<T> = ({
 }) => {
   const [userComments, setUserComments] = useState<Comment[]>([]);
   const [userCommentsError, setUserCommentsError] = useState(false);
-  const [isDeleted, setIsDeleted] = useState(false);
   const [isOpenCom, setIsOpenCom] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
@@ -32,49 +31,29 @@ export const PostDetails: React.FC<T> = ({
         return response.json();
       })
       .then(setUserComments)
-      .catch(() => setUserCommentsError(true)) // () => setUserCommentsError('error');
+      .catch(() => setUserCommentsError(true))
       .finally(() => {
-        setIsDeleted(false);
-
         setTimeout(() => {
           setIsLoading(false);
         }, 1000);
       });
   }, [selectedPost]);
 
-  useMemo(() => {
-    fetch(`https://mate.academy/students-api/comments?postId=${selectedPost.id}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        return response.json();
-      })
-      .then(setUserComments)
-      .catch(() => setUserCommentsError(true)) // () => setUserCommentsError('error');
-      .finally(() => {
-        setIsDeleted(false);
-
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 1000);
-      });
-  }, [isDeleted, isCommentLoading]);
-
-  const deleteComment = async (comId: number) => {
+  const deleteComment = async (comId: number | undefined) => {
     const comToDelete = userComments.find(com => com.id === comId);
 
     try {
       if (comToDelete) {
         await client.delete(`/comments/${comToDelete.id}`);
+
+        setUserComments((prev) => (
+          prev.filter(com => com.id !== comId)
+        ));
       } else {
         throw new Error('error');
       }
     } catch {
       setUserCommentsError(true);
-    } finally {
-      setIsDeleted(true);
     }
   };
 
@@ -154,6 +133,7 @@ export const PostDetails: React.FC<T> = ({
                   selectedPost={selectedPost}
                   setIsLoading={setIsCommentLoading}
                   isLoading={isCommentLoading}
+                  setUserComments={setUserComments}
                 />
               )}
             </>
