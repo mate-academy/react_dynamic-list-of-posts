@@ -25,21 +25,31 @@ export const PostsList: React.FC<T> = ({
       </thead>
 
       <tbody>
-        {userPosts.map(post => (
-          <tr data-cy="Post" key={post.id}>
-            <td data-cy="PostId">{post.id}</td>
+        {userPosts.map(({
+          id,
+          title,
+          userId,
+          body,
+        }) => (
+          <tr data-cy="Post" key={id}>
+            <td data-cy="PostId">{id}</td>
 
             <td data-cy="PostTitle">
-              {post.title}
+              {title}
             </td>
 
             <td className="has-text-right is-vcentered">
-              {selectedPost?.id === post.id ? (
+              {selectedPost?.id === id ? (
                 <button
                   type="button"
                   data-cy="PostButton"
                   className="button is-link"
-                  onClick={() => setSelectedPost(post)}
+                  onClick={() => setSelectedPost({
+                    id,
+                    title,
+                    userId,
+                    body,
+                  })}
                 >
                   Close
                 </button>
@@ -48,7 +58,12 @@ export const PostsList: React.FC<T> = ({
                   type="button"
                   data-cy="PostButton"
                   className="button is-link is-light"
-                  onClick={() => setSelectedPost(post)}
+                  onClick={() => setSelectedPost({
+                    id,
+                    title,
+                    userId,
+                    body,
+                  })}
                 >
                   Open
                 </button>

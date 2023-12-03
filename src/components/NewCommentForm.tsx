@@ -108,7 +108,7 @@ export const NewCommentForm: React.FC<T> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input',
-              { 'is-danger': inputName.trim() === '' && isInputNameSent })}
+              { 'is-danger': !inputName.trim() && isInputNameSent })}
             value={inputName}
             onChange={(event) => handleInputs(event, Inputs.Name)}
           />
@@ -117,7 +117,7 @@ export const NewCommentForm: React.FC<T> = ({
             <i className="fas fa-user" />
           </span>
 
-          {inputName.trim() === '' && isInputNameSent && (
+          {!inputName.trim() && isInputNameSent && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -127,7 +127,7 @@ export const NewCommentForm: React.FC<T> = ({
           )}
         </div>
 
-        {inputName.trim() === '' && isInputNameSent && (
+        {!inputName.trim() && isInputNameSent && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -146,7 +146,7 @@ export const NewCommentForm: React.FC<T> = ({
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input',
-              { 'is-danger': inputEmail.trim() === '' && isInputEmailSent })}
+              { 'is-danger': !inputEmail.trim() && isInputEmailSent })}
             value={inputEmail}
             onChange={(event) => handleInputs(event, Inputs.Email)}
           />
@@ -155,7 +155,7 @@ export const NewCommentForm: React.FC<T> = ({
             <i className="fas fa-envelope" />
           </span>
 
-          {inputEmail.trim() === '' && isInputEmailSent && (
+          {!inputEmail.trim() && isInputEmailSent && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -165,7 +165,7 @@ export const NewCommentForm: React.FC<T> = ({
           )}
         </div>
 
-        {inputEmail.trim() === '' && isInputEmailSent && (
+        {!inputEmail.trim() && isInputEmailSent && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -183,13 +183,13 @@ export const NewCommentForm: React.FC<T> = ({
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea',
-              { 'is-danger': inputText.trim() === '' && isInputTextSent })}
+              { 'is-danger': !inputText.trim() && isInputTextSent })}
             value={inputText}
             onChange={(event) => handleInputs(event, Inputs.Text)}
           />
         </div>
 
-        {inputText.trim() === '' && isInputTextSent && (
+        {!inputText.trim() && isInputTextSent && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
