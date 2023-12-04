@@ -114,15 +114,15 @@ const newCommentForm = {
   el: () => cy.byDataCy('NewCommentForm'),
 
   nameInput: () => newCommentForm.el().byDataCy('NameField').find('input'),
-  nameErrorMessage: () => newCommentForm.el().byDataCy('NameField').byDataCy('ErrorMessage'),
+  nameerrorPostMessage: () => newCommentForm.el().byDataCy('NameField').byDataCy('errorPostMessage'),
   nameErrorIcon: () => newCommentForm.el().byDataCy('NameField').byDataCy('ErrorIcon'),
 
   emailInput: () => newCommentForm.el().byDataCy('EmailField').find('input'),
-  emailErrorMessage: () => newCommentForm.el().byDataCy('EmailField').byDataCy('ErrorMessage'),
+  emailerrorPostMessage: () => newCommentForm.el().byDataCy('EmailField').byDataCy('errorPostMessage'),
   emailErrorIcon: () => newCommentForm.el().byDataCy('EmailField').byDataCy('ErrorIcon'),
 
   bodyArea: () => newCommentForm.el().byDataCy('BodyField').find('textarea'),
-  bodyErrorMessage: () => newCommentForm.el().byDataCy('BodyField').byDataCy('ErrorMessage'),
+  bodyerrorPostMessage: () => newCommentForm.el().byDataCy('BodyField').byDataCy('errorPostMessage'),
 
   submitButton: () => newCommentForm.el().find('button[type=submit]'),
   resetButton: () => newCommentForm.el().find('button[type=reset]'),
@@ -130,11 +130,11 @@ const newCommentForm = {
   assertNameError: (hasError) => {
     if (hasError) {
       newCommentForm.nameErrorIcon().should('exist');
-      newCommentForm.nameErrorMessage().should('exist');
+      newCommentForm.nameerrorPostMessage().should('exist');
       newCommentForm.nameInput().should('have.class', 'is-danger');
     } else {
       newCommentForm.nameErrorIcon().should('not.exist');
-      newCommentForm.nameErrorMessage().should('not.exist');
+      newCommentForm.nameerrorPostMessage().should('not.exist');
       newCommentForm.nameInput().should('not.have.class', 'is-danger');
     }
   },
@@ -142,21 +142,21 @@ const newCommentForm = {
   assertEmailError: (hasError) => {
     if (hasError) {
       newCommentForm.emailErrorIcon().should('exist');
-      newCommentForm.emailErrorMessage().should('exist');
+      newCommentForm.emailerrorPostMessage().should('exist');
       newCommentForm.emailInput().should('have.class', 'is-danger');
     } else {
       newCommentForm.emailErrorIcon().should('not.exist');
-      newCommentForm.emailErrorMessage().should('not.exist');
+      newCommentForm.emailerrorPostMessage().should('not.exist');
       newCommentForm.emailInput().should('not.have.class', 'is-danger');
     }
   },
 
   assertBodyError: (hasError) => {
     if (hasError) {
-      newCommentForm.bodyErrorMessage().should('exist');
+      newCommentForm.bodyerrorPostMessage().should('exist');
       newCommentForm.bodyArea().should('have.class', 'is-danger');
     } else {
-      newCommentForm.bodyErrorMessage().should('not.exist');
+      newCommentForm.bodyerrorPostMessage().should('not.exist');
       newCommentForm.bodyArea().should('not.have.class', 'is-danger');
     }
   },
