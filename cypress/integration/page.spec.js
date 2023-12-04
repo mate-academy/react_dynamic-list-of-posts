@@ -114,7 +114,7 @@ const newCommentForm = {
   el: () => cy.byDataCy('NewCommentForm'),
 
   nameInput: () => newCommentForm.el().byDataCy('NameField').find('input'),
-  nameerrorPostMessage: () => newCommentForm.el().byDataCy('NameField').byDataCy('errorPostMessage'),
+  nameErrorMessage: () => newCommentForm.el().byDataCy('NameField').byDataCy('errorPostMessage'),
   nameErrorIcon: () => newCommentForm.el().byDataCy('NameField').byDataCy('ErrorIcon'),
 
   emailInput: () => newCommentForm.el().byDataCy('EmailField').find('input'),
@@ -130,11 +130,11 @@ const newCommentForm = {
   assertNameError: (hasError) => {
     if (hasError) {
       newCommentForm.nameErrorIcon().should('exist');
-      newCommentForm.nameerrorPostMessage().should('exist');
+      newCommentForm.nameErrorMessage().should('exist');
       newCommentForm.nameInput().should('have.class', 'is-danger');
     } else {
       newCommentForm.nameErrorIcon().should('not.exist');
-      newCommentForm.nameerrorPostMessage().should('not.exist');
+      newCommentForm.nameErrorMessage().should('not.exist');
       newCommentForm.nameInput().should('not.have.class', 'is-danger');
     }
   },

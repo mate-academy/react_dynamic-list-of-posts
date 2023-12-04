@@ -4,11 +4,11 @@ import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
   const { users, selectedUser, setSelectedUser } = useContext(UsersContext);
-  const [isDrop, setIsDrop] = useState(false);
+  const [usersBeShown, shouldUsersBeShown] = useState(false);
 
   const handleClick = (user: User) => {
     setSelectedUser(user);
-    setIsDrop(false);
+    shouldUsersBeShown(false);
   };
 
   return (
@@ -22,7 +22,7 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setIsDrop(!isDrop)}
+          onClick={() => shouldUsersBeShown(!usersBeShown)}
         >
           <span>{selectedUser ? (selectedUser.name) : ('Choose a user')}</span>
 
@@ -33,7 +33,7 @@ export const UserSelector: React.FC = () => {
       </div>
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        {isDrop && (
+        {usersBeShown && (
           <div className="dropdown-content">
             {users.map(user => (
               <a
