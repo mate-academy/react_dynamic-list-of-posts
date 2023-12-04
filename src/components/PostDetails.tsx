@@ -1,30 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { Post } from '../types/Post';
+import * as service from '../api/api';
 
-export const PostDetails: React.FC = () => {
+interface Props {
+  selectedPost: Post,
+}
+
+export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    setIsError(false);
+    setIsLoading(true);
+
+    service.getComments(selectedPost.id)
+      .then(() => setComments)
+      .catch(() => setIsError(true))
+      .finally(() => setIsLoading(false));
+  }, [selectedPost]);
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {selectedPost.title}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            {selectedPost.body}
           </p>
         </div>
 
         <div className="block">
-          <Loader />
+          {isLoading && <Loader />}
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
+          {isError && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
+            </div>
+          )}
 
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet

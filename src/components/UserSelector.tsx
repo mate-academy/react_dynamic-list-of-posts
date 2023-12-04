@@ -7,11 +7,10 @@ interface Props {
   onUserSelect: (user: User) => void,
 }
 
-export const UserSelector: React.FC<Props> = ({
-  onUserSelect,
-}) => {
+export const UserSelector: React.FC<Props> = ({ onUserSelect }) => {
   const {
     users,
+    selectedUser,
     setSelectedUser,
   } = useContext(AppContext);
 
@@ -36,7 +35,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={() => setIsVisibleUserList(!isVisibleUserList)}
         >
-          <span>Choose a user</span>
+          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
