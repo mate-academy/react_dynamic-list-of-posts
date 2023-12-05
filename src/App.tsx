@@ -19,6 +19,7 @@ export const App: React.FC = () => {
     posts,
     setPosts,
     selectedPost,
+    setSelectedPost,
   } = useContext(AppContext);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -32,6 +33,7 @@ export const App: React.FC = () => {
   const onUserSelect = (user: User) => {
     setIsError(false);
     setIsLoading(true);
+    setSelectedPost(null);
 
     service.getPosts(user.id)
       .then(setPosts)
