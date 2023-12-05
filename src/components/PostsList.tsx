@@ -1,86 +1,99 @@
 import React from 'react';
+import classNames from 'classnames';
+import { Post } from '../types/Post';
+import { getCommentsByPostId } from '../api/comments';
+import { Comment } from '../types/Comment';
+import { ErrorMessage } from '../types/ErrorMessage';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+interface Props {
+  posts: Post[],
+  selectedPost: Post | null,
+  onSelectPost: React.Dispatch<React.SetStateAction<Post | null>>,
+  onSetComments: React.Dispatch<React.SetStateAction<Comment[]>>,
+  onSetCommentLoader: React.Dispatch<React.SetStateAction<boolean>>,
+  onSetErrorMessage: React.Dispatch<React.SetStateAction<ErrorMessage | null>>,
+}
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-          <th> </th>
-        </tr>
-      </thead>
+export const PostsList: React.FC<Props> = ({
+  posts,
+  selectedPost,
+  onSelectPost,
+  onSetComments,
+  onSetCommentLoader,
+  onSetErrorMessage,
+}) => {
+  const handleSelectPost = (post: Post) => {
+    if (selectedPost === post) {
+      onSelectPost(null);
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+      return;
+    }
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+    onSetErrorMessage(null);
+    onSelectPost(post);
+    onSetCommentLoader(true);
+    getCommentsByPostId(post.id)
+      .then(response => {
+        onSetComments(response);
+      })
+      .catch(() => {
+        onSetErrorMessage(ErrorMessage.GET_COMMENTS_ERROR);
+      })
+      .finally(() => {
+        onSetCommentLoader(false);
+      });
+  };
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+            <th> </th>
+          </tr>
+        </thead>
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+        <tbody>
+          {posts.map(post => {
+            const { id, title } = post;
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
+            return (
+              <tr
+                data-cy="Post"
+                key={id}
+              >
+                <td data-cy="PostId">{id}</td>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
+                <td data-cy="PostTitle">
+                  {title}
+                </td>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+                <td className="has-text-right is-vcentered">
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={classNames('button is-link', {
+                      'is-light': !(selectedPost?.id === id),
+                    })}
+                    onClick={() => {
+                      handleSelectPost(post);
+                    }}
+                  >
+                    {selectedPost?.id === id
+                      ? 'Close'
+                      : 'Open'}
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+};
