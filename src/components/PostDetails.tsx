@@ -40,6 +40,10 @@ export const PostDetails: React.FC<Props> = ({
       });
   };
 
+  const handleWriteCommentButtonClick = () => {
+    setIsAddFormShown(true);
+  };
+
   useEffect(() => {
     setIsAddFormShown(false);
   }, [selectedPost]);
@@ -78,15 +82,20 @@ export const PostDetails: React.FC<Props> = ({
             <>
               <p className="title is-4">Comments:</p>
 
-              {comments.map(comment => (
+              {comments.map(({
+                id,
+                email,
+                name,
+                body,
+              }) => (
                 <article
                   className="message is-small"
                   data-cy="Comment"
-                  key={comment.id}
+                  key={id}
                 >
                   <div className="message-header">
-                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                      {comment.name}
+                    <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                      {name}
                     </a>
                     <button
                       data-cy="CommentDelete"
@@ -94,7 +103,7 @@ export const PostDetails: React.FC<Props> = ({
                       className="delete is-small"
                       aria-label="delete"
                       onClick={() => {
-                        handleCommentDelete(comment.id);
+                        handleCommentDelete(id);
                       }}
                     >
                       delete button
@@ -102,7 +111,7 @@ export const PostDetails: React.FC<Props> = ({
                   </div>
 
                   <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
+                    {body}
                   </div>
                 </article>
               ))}
@@ -114,9 +123,7 @@ export const PostDetails: React.FC<Props> = ({
               data-cy="WriteCommentButton"
               type="button"
               className="button is-link"
-              onClick={() => {
-                setIsAddFormShown(true);
-              }}
+              onClick={handleWriteCommentButtonClick}
             >
               Write a comment
             </button>

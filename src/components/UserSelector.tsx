@@ -77,20 +77,24 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(user => (
-            <a
-              href={`#user-${user.id}`}
-              className={classNames('dropdown-item', {
-                'is-active': user.id === selectedUser?.id,
-              })}
-              key={user.id}
-              onClick={() => {
-                handleSelectUser(user);
-              }}
-            >
-              {user.name}
-            </a>
-          ))}
+          {users.map(user => {
+            const { id, name } = user;
+
+            return (
+              <a
+                href={`#user-${id}`}
+                className={classNames('dropdown-item', {
+                  'is-active': id === selectedUser?.id,
+                })}
+                key={id}
+                onClick={() => {
+                  handleSelectUser(user);
+                }}
+              >
+                {name}
+              </a>
+            );
+          })}
         </div>
       </div>
     </div>
