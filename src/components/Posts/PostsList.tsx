@@ -9,14 +9,12 @@ export const PostsList: React.FC = () => {
     posts,
     selectedPost,
     setSelectedPost,
-    setFormIsVisible,
   } = useContext(PostsContext);
 
   const selectPost = (item: Post) => {
-    selectedPost
+    (item.id === selectedPost?.id)
       ? setSelectedPost(null)
       : setSelectedPost(item);
-    setFormIsVisible(false);
   };
 
   return (

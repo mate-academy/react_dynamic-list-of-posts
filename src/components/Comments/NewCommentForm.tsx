@@ -28,19 +28,21 @@ export const NewCommentForm: React.FC = () => {
 
   const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setFormIsLoading(true);
+    const currentName = name.trim();
+    const currentEmail = email.trim();
+    const currentBody = body.trim();
 
-    setName(name.trim());
-    setEmail(email.trim());
-    setBody(body.trim());
+    setNameError(!currentName);
+    setEmailError(!currentEmail);
+    setBodyError(!currentBody);
 
-    setNameError(!name);
-    setEmailError(!email);
-    setBodyError(!body);
-
-    if (name && email && body && selectedPost) {
+    if (currentName && currentEmail && currentBody && selectedPost) {
+      setFormIsLoading(true);
       addComments({
-        postId: selectedPost.id, name, email, body,
+        postId: selectedPost.id,
+        name: currentName,
+        email: currentEmail,
+        body: currentBody,
       })
         .then((newComment) => {
           setBody('');
