@@ -63,7 +63,9 @@ export const NewCommentForm: React.FC<Props> = (
     setIsValidEmail(!!emailValue.trim().length);
     setIsValidComment(!!commentValue.trim().length);
 
-    if (isValidName && isValidEmail && isValidComment) {
+    if (!!nameValue.trim().length
+        && !!emailValue.trim().length
+        && !!commentValue.trim().length) {
       const newComment = {
         postId,
         name: nameValue,
@@ -76,7 +78,7 @@ export const NewCommentForm: React.FC<Props> = (
       client.post<Comment>('/comments', newComment)
         .then((createdComment) => {
           setComments(
-            (data) => [...data, createdComment],
+            (prevComments) => [...prevComments, createdComment],
           );
         })
         .catch(() => setIsError(true))
@@ -108,14 +110,13 @@ export const NewCommentForm: React.FC<Props> = (
             className={classNames('input', {
               'is-danger': !isValidName,
             })}
-            required
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {isValidName ?? (
+          {!isValidName && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -125,7 +126,7 @@ export const NewCommentForm: React.FC<Props> = (
           )}
         </div>
 
-        {isValidName ?? (
+        {!isValidName && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -148,14 +149,13 @@ export const NewCommentForm: React.FC<Props> = (
             className={classNames('input', {
               'is-danger': !isValidEmail,
             })}
-            required
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {isValidEmail ?? (
+          {!isValidEmail && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -165,7 +165,7 @@ export const NewCommentForm: React.FC<Props> = (
           )}
         </div>
 
-        {isValidEmail ?? (
+        {!isValidEmail && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -187,11 +187,10 @@ export const NewCommentForm: React.FC<Props> = (
             className={classNames('textarea', {
               'is-danger': !isValidComment,
             })}
-            required
           />
         </div>
 
-        {isValidComment ?? (
+        {!isValidComment && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
