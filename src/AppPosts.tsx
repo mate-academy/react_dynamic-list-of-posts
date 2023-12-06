@@ -77,7 +77,9 @@ export const AppPosts: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {!!postId && (
+                <PostDetails />
+              )}
             </div>
           </div>
         </div>

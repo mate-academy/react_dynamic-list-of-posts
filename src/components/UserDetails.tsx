@@ -10,16 +10,24 @@ type Props = {
 
 export const UserDetails: React.FC<Props> = ({
   user,
-  setIsActiveDropdown = () => {},
+  setIsActiveDropdown = () => { },
 }) => {
   const {
     setUserName,
     userId,
     setUserId,
     setIsLoadingPosts,
+    postId,
+    setComments,
+    setPostId,
   } = useContext(GlobalContext);
 
   const handleSelectUser = () => {
+    if (postId) {
+      setComments([]);
+      setPostId(0);
+    }
+
     setUserName(user.name);
     setIsActiveDropdown(false);
     setUserId(user.id);
