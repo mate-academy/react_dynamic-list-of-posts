@@ -82,7 +82,7 @@ export const PostDetails: React.FC<Props> = (
             <p className="title is-4">Comments:</p>
           ))}
 
-          {comments.map((comment) => {
+          {!isError && comments.map((comment) => {
             return (
               <article
                 className="message is-small"
@@ -110,7 +110,7 @@ export const PostDetails: React.FC<Props> = (
             );
           })}
 
-          {!isNewComment && (
+          {!isError && !isNewComment && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -122,7 +122,13 @@ export const PostDetails: React.FC<Props> = (
           )}
         </div>
 
-        {isNewComment && (<NewCommentForm />)}
+        {!isError && isNewComment && (
+          <NewCommentForm
+            postId={post?.id}
+            setComments={setComments}
+            setIsError={setIsError}
+          />
+        )}
       </div>
     </div>
   );
