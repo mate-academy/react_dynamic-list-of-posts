@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
@@ -17,8 +17,9 @@ export const PostDetails: React.FC<T> = ({
   const [isOpenCom, setIsOpenCom] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
+  // const [isDeleted, setIsDeleted] = useState(false);
 
-  useEffect(() => {
+  useMemo(() => {
     fetch(`https://mate.academy/students-api/comments?postId=${selectedPost.id}`)
       .then(response => {
         setIsOpenCom(false);
@@ -111,6 +112,7 @@ export const PostDetails: React.FC<T> = ({
                         type="button"
                         className="delete is-small"
                         aria-label="delete"
+                        // onClick={() => deleteComment(id)}
                         onClick={() => deleteComment(id)}
                       >
                         delete button

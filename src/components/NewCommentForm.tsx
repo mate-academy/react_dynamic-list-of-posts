@@ -39,7 +39,7 @@ export const NewCommentForm: React.FC<T> = ({
     setIsInputTextSent(true);
 
     try {
-      const newComment = {
+      const newComment: Comment = {
         postId: selectedPost.id,
         name: inputName,
         email: inputEmail,
@@ -51,8 +51,11 @@ export const NewCommentForm: React.FC<T> = ({
         && inputEmail.trim()
         && inputText.trim()
       ) {
-        await client.post('/comments', newComment);
+        const response: any = await client.post('/comments', newComment);
+
+        newComment.id = response.id;
         setUserComments((prev) => [...prev, newComment]);
+
         setInputText('');
         setIsInputTextSent(false);
       }

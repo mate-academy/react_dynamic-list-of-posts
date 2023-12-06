@@ -44,12 +44,7 @@ export const PostsList: React.FC<T> = ({
                   type="button"
                   data-cy="PostButton"
                   className="button is-link"
-                  onClick={() => setSelectedPost({
-                    id,
-                    title,
-                    userId,
-                    body,
-                  })}
+                  onClick={() => setSelectedPost(null)}
                 >
                   Close
                 </button>

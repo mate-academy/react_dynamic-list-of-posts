@@ -1,10 +1,12 @@
 import React, { useState, Dispatch, SetStateAction } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
+import { Post } from '../types/Post';
 
 interface T {
   users: User[],
   setSelectedUser: Dispatch<SetStateAction<null | User>>,
+  setSelectedPost: Dispatch<SetStateAction<null | Post>>,
   selectedUser: User | null,
 }
 
@@ -12,6 +14,7 @@ export const UserSelector: React.FC<T> = ({
   users,
   setSelectedUser,
   selectedUser,
+  setSelectedPost,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -21,6 +24,11 @@ export const UserSelector: React.FC<T> = ({
     }
 
     return setIsFocused(true);
+  };
+
+  const handleChangeUser = (user: User) => {
+    setSelectedUser(user);
+    setSelectedPost(null);
   };
 
   return (
@@ -55,7 +63,7 @@ export const UserSelector: React.FC<T> = ({
                   'is-active': user.id === selectedUser?.id,
                 })}
                 key={user.id}
-                onMouseDown={() => setSelectedUser(user)}
+                onMouseDown={() => handleChangeUser(user)}
               >
                 {user.name}
               </a>
