@@ -1,7 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
-import * as postsService from './api/posts';
 import * as userService from './api/users';
-import * as commentsService from './api/comments';
+import * as postsService from './api/posts';
 import { User } from './types/User';
 import { Post } from './types/Post';
 import { Comment } from './types/Comment';
@@ -27,6 +26,8 @@ type GlobalProps = {
   setIsLoadingComments: (b: boolean) => void;
   isErrorComments: boolean;
   setIsErrorComments: (b: boolean) => void;
+  isActiveDropdown: boolean;
+  setIsActiveDropdown: (b: boolean) => void;
 };
 
 export const GlobalContext = createContext<GlobalProps>({
@@ -50,6 +51,8 @@ export const GlobalContext = createContext<GlobalProps>({
   setIsLoadingComments: () => {},
   isErrorComments: false,
   setIsErrorComments: () => {},
+  isActiveDropdown: false,
+  setIsActiveDropdown: () => {},
 });
 
 type Props = {
@@ -67,6 +70,7 @@ export const GlobalProvider: React.FC<Props> = ({ children }) => {
   const [isVisibleError, setIsVisibleError] = useState(false);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [isErrorComments, setIsErrorComments] = useState(false);
+  const [isActiveDropdown, setIsActiveDropdown] = useState(false);
 
   useEffect(() => {
     userService.getUsers()
@@ -82,24 +86,12 @@ export const GlobalProvider: React.FC<Props> = ({ children }) => {
       .catch(() => {
         setIsVisibleError(true);
         setPosts([]);
+        setUserId(0);
       })
       .finally(() => {
         setIsLoadingPosts(false);
       });
   }, [userId]);
-
-  useEffect(() => {
-    commentsService.getComments(postId)
-      .then((newComments) => {
-        setComments(newComments);
-        setIsErrorComments(false);
-      })
-      .catch(() => {
-        setComments([]);
-        setIsErrorComments(true);
-      })
-      .finally(() => setIsLoadingComments(false));
-  }, [postId]);
 
   return (
     <GlobalContext.Provider value={{
@@ -123,6 +115,8 @@ export const GlobalProvider: React.FC<Props> = ({ children }) => {
       setIsLoadingComments,
       isErrorComments,
       setIsErrorComments,
+      isActiveDropdown,
+      setIsActiveDropdown,
     }}
     >
       {children}

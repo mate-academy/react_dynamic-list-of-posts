@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext } from 'react';
 import classNames from 'classnames';
 import { GlobalContext } from '../GlobalContetxt';
 import { UserDetails } from './UserDetails';
@@ -7,8 +7,9 @@ export const UserSelector: React.FC = () => {
   const {
     users,
     userName,
+    isActiveDropdown,
+    setIsActiveDropdown,
   } = useContext(GlobalContext);
-  const [isActiveDropdown, setIsActiveDropdown] = useState(false);
 
   return (
     <div
@@ -39,11 +40,7 @@ export const UserSelector: React.FC = () => {
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
           {users.map(user => (
-            <UserDetails
-              user={user}
-              key={user.id}
-              setIsActiveDropdown={setIsActiveDropdown}
-            />
+            <UserDetails user={user} key={user.id} />
           ))}
         </div>
       </div>

@@ -5,13 +5,9 @@ import { GlobalContext } from '../GlobalContetxt';
 
 type Props = {
   user: User;
-  setIsActiveDropdown: (b: boolean) => void;
 };
 
-export const UserDetails: React.FC<Props> = ({
-  user,
-  setIsActiveDropdown = () => { },
-}) => {
+export const UserDetails: React.FC<Props> = ({ user }) => {
   const {
     setUserName,
     userId,
@@ -20,6 +16,7 @@ export const UserDetails: React.FC<Props> = ({
     postId,
     setComments,
     setPostId,
+    setIsActiveDropdown,
   } = useContext(GlobalContext);
 
   const handleSelectUser = () => {

@@ -2,17 +2,35 @@ import React, { useContext } from 'react';
 import classNames from 'classnames';
 import { Post } from '../types/Post';
 import { GlobalContext } from '../GlobalContetxt';
+import * as commentsService from '../api/comments';
 
 type Props = {
   post: Post;
 };
 
 export const PostInfo: React.FC<Props> = ({ post }) => {
-  const { postId, setPostId, setIsLoadingComments } = useContext(GlobalContext);
+  const {
+    postId,
+    setPostId,
+    setIsLoadingComments,
+    setComments,
+    setIsErrorComments,
+  } = useContext(GlobalContext);
 
   const handleButtonClick = () => {
     setPostId(post.id === postId ? 0 : post.id);
     setIsLoadingComments(true);
+
+    commentsService.getComments(postId)
+      .then((newComments) => {
+        setComments(newComments);
+        setIsErrorComments(false);
+      })
+      .catch(() => {
+        setComments([]);
+        setIsErrorComments(true);
+      })
+      .finally(() => setIsLoadingComments(false));
   };
 
   return (

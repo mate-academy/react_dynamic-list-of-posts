@@ -18,6 +18,27 @@ export const NewCommentForm: React.FC = () => {
   const [isBodyError, setIsBodyError] = useState(false);
   const [isLoadingButton, setIsLoadingButton] = useState(false);
 
+  const handleChangeName = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setNameValue(event.target.value);
+    setIsNameError(false);
+  };
+
+  const handleChangeEmail = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setEmailValue(event.target.value);
+    setIsEmailError(false);
+  };
+
+  const handleChangeBody = (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    setBodyValue(event.target.value);
+    setIsBodyError(false);
+  };
+
   const handleClear = () => {
     setNameValue('');
     setEmailValue('');
@@ -78,7 +99,7 @@ export const NewCommentForm: React.FC = () => {
               { 'is-danger': isNameError },
             )}
             value={nameValue}
-            onChange={(event) => setNameValue(event.target.value)}
+            onChange={handleChangeName}
           />
 
           <span className="icon is-small is-left">
@@ -118,7 +139,7 @@ export const NewCommentForm: React.FC = () => {
               { 'is-danger': isEmailError },
             )}
             value={emailValue}
-            onChange={(event) => setEmailValue(event.target.value)}
+            onChange={handleChangeEmail}
           />
 
           <span className="icon is-small is-left">
@@ -157,7 +178,7 @@ export const NewCommentForm: React.FC = () => {
               { 'is-danger': isBodyError },
             )}
             value={bodyValue}
-            onChange={(event) => setBodyValue(event.target.value)}
+            onChange={handleChangeBody}
           />
         </div>
 

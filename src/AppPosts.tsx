@@ -30,7 +30,7 @@ export const AppPosts: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!userId && (
+                {!userId && !isVisibleError && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>

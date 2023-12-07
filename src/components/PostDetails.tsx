@@ -89,7 +89,7 @@ export const PostDetails: React.FC = () => {
             </article>
           ))}
 
-          {!createComment && (
+          {!createComment && !isErrorComments && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -101,7 +101,7 @@ export const PostDetails: React.FC = () => {
           )}
         </div>
 
-        {createComment && (
+        {createComment && !isErrorComments && (
           <NewCommentForm />
         )}
       </div>
