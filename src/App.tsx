@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -20,7 +20,7 @@ export const App: React.FC = () => {
   const [isError, setIsEroor] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  useMemo(() => {
+  useEffect(() => {
     const fetchData = async () => {
       if (selectedUser) {
         try {

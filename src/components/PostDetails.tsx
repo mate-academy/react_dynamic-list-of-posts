@@ -17,7 +17,6 @@ export const PostDetails: React.FC<T> = ({
   const [isOpenCom, setIsOpenCom] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
-  // const [isDeleted, setIsDeleted] = useState(false);
 
   useMemo(() => {
     fetch(`https://mate.academy/students-api/comments?postId=${selectedPost.id}`)
@@ -112,7 +111,6 @@ export const PostDetails: React.FC<T> = ({
                         type="button"
                         className="delete is-small"
                         aria-label="delete"
-                        // onClick={() => deleteComment(id)}
                         onClick={() => deleteComment(id)}
                       >
                         delete button

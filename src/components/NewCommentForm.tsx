@@ -51,7 +51,7 @@ export const NewCommentForm: React.FC<T> = ({
         && inputEmail.trim()
         && inputText.trim()
       ) {
-        const response: any = await client.post('/comments', newComment);
+        const response: Comment = await client.post('/comments', newComment);
 
         newComment.id = response.id;
         setUserComments((prev) => [...prev, newComment]);
