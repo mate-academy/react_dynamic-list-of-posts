@@ -11,11 +11,9 @@ type Props = {
 
 type Action = 'load' | 'delete';
 
-export const PostDetails: React.FC<Props> = (
-  {
-    post,
-  },
-) => {
+export const PostDetails: React.FC<Props> = ({
+  post,
+}) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -37,9 +35,7 @@ export const PostDetails: React.FC<Props> = (
       .finally(() => setIsLoading(false));
   };
 
-  const deleteComment = (
-    comment?: Comment,
-  ) => {
+  const deleteComment = (comment?: Comment) => {
     setIsLoading(true);
     const tempComment = comment || commentToDelete;
 
@@ -101,9 +97,7 @@ export const PostDetails: React.FC<Props> = (
     }
   };
 
-  const handleRefresh = () => {
-    window.location.reload();
-  };
+  const handleRefresh = () => window.location.reload();
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -154,7 +148,7 @@ export const PostDetails: React.FC<Props> = (
               </div>
             </div>
           )}
-          {!isError && (comments.length === 0 ? (
+          {!isError && (!comments.length ? (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -163,15 +157,19 @@ export const PostDetails: React.FC<Props> = (
           ))}
 
           {!isError && comments.map((comment) => {
+            const {
+              id, email, name, body,
+            } = comment;
+
             return (
               <article
                 className="message is-small"
                 data-cy="Comment"
-                key={comment.id}
+                key={id}
               >
                 <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                    {`${comment.name}`}
+                  <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                    {`${name}`}
                   </a>
                   <button
                     data-cy="CommentDelete"
@@ -184,7 +182,7 @@ export const PostDetails: React.FC<Props> = (
                   </button>
                 </div>
                 <div className="message-body" data-cy="CommentBody">
-                  {`${comment.body}`}
+                  {`${body}`}
                 </div>
               </article>
             );

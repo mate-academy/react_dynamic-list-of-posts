@@ -1,11 +1,9 @@
-import React, {
-  useEffect,
-  useState,
-} from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { client } from '../utils/fetchClient';
 import { Post } from '../types/Post';
+import { DropUser } from './DropUser';
 
 type Props = {
   users: User[],
@@ -17,17 +15,15 @@ type Props = {
   setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>,
 };
 
-export const UserSelector: React.FC<Props> = (
-  {
-    users,
-    setIsLoading,
-    setPostsLoadingError,
-    setPosts,
-    selectedUser,
-    setSelectedUser,
-    setSelectedPost,
-  },
-) => {
+export const UserSelector: React.FC<Props> = ({
+  users,
+  setIsLoading,
+  setPostsLoadingError,
+  setPosts,
+  selectedUser,
+  setSelectedUser,
+  setSelectedPost,
+}) => {
   const [active, setActive] = useState(false);
 
   useEffect(() => {
@@ -80,17 +76,14 @@ export const UserSelector: React.FC<Props> = (
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
           {users.length > 0 && users.map(user => {
+            const isActive = user.id === selectedUser?.id;
+
             return (
-              <a
-                href={`#user-${user.id}`}
-                className={classNames('dropdown-item', {
-                  'is-active': user.id === selectedUser?.id,
-                })}
-                key={user.id}
-                onClick={event => handleClick(event, user)}
-              >
-                {`${user.name}`}
-              </a>
+              <DropUser
+                user={user}
+                isActive={isActive}
+                chooseUser={handleClick}
+              />
             );
           })}
         </div>

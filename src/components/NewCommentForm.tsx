@@ -8,12 +8,10 @@ type Props = {
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
 };
 
-export const NewCommentForm: React.FC<Props> = (
-  {
-    postId,
-    setComments,
-  },
-) => {
+export const NewCommentForm: React.FC<Props> = ({
+  postId,
+  setComments,
+}) => {
   const [nameValue, setNameValue] = useState('');
   const [emailValue, setEmailValue] = useState('');
   const [commentValue, setCommentValue] = useState('');
@@ -99,9 +97,7 @@ export const NewCommentForm: React.FC<Props> = (
     postComment();
   };
 
-  const handleRefresh = () => {
-    window.location.reload();
-  };
+  const handleRefresh = () => window.location.reload();
 
   return (
     <>

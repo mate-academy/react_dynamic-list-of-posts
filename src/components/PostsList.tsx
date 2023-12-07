@@ -38,13 +38,15 @@ export const PostsList: React.FC<Props> = (
 
         <tbody>
           {posts.length > 0 && (posts.map((post: Post) => {
-            const chosen = selectedPost?.id !== post.id;
+            const { id, title } = post;
+
+            const chosen = selectedPost?.id !== id;
 
             return (
-              <tr data-cy="Post" key={post.id}>
-                <td data-cy="PostId">{post.id}</td>
+              <tr data-cy="Post" key={id}>
+                <td data-cy="PostId">{id}</td>
                 <td data-cy="PostTitle">
-                  {post.title}
+                  {title}
                 </td>
                 <td className="has-text-right is-vcentered">
                   <button
