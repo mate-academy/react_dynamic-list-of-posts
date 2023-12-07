@@ -1,13 +1,13 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { Post } from '../types/Post';
 
-interface T {
+interface PostsListType {
   userPosts: Post[];
   setSelectedPost: Dispatch<SetStateAction<null | Post>>;
   selectedPost: null | Post;
 }
 
-export const PostsList: React.FC<T> = ({
+export const PostsList: React.FC<PostsListType> = ({
   userPosts,
   setSelectedPost,
   selectedPost,

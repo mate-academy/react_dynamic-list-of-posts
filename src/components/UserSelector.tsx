@@ -3,14 +3,14 @@ import classNames from 'classnames';
 import { User } from '../types/User';
 import { Post } from '../types/Post';
 
-interface T {
+interface UserSelectorType {
   users: User[],
   setSelectedUser: Dispatch<SetStateAction<null | User>>,
   setSelectedPost: Dispatch<SetStateAction<null | Post>>,
   selectedUser: User | null,
 }
 
-export const UserSelector: React.FC<T> = ({
+export const UserSelector: React.FC<UserSelectorType> = ({
   users,
   setSelectedUser,
   selectedUser,
@@ -24,6 +24,10 @@ export const UserSelector: React.FC<T> = ({
     }
 
     return setIsFocused(true);
+  };
+
+  const handleFocus = () => {
+    setIsFocused(false);
   };
 
   const handleChangeUser = (user: User) => {
@@ -43,7 +47,7 @@ export const UserSelector: React.FC<T> = ({
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={focused}
-          onBlur={() => setIsFocused(false)}
+          onBlur={handleFocus}
         >
           <span>{!selectedUser ? 'Choose a user' : selectedUser.name}</span>
 

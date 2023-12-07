@@ -5,11 +5,11 @@ import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
 import { client } from '../utils/fetchClient';
 
-interface T {
+interface PostDetailsType {
   selectedPost: Post
 }
 
-export const PostDetails: React.FC<T> = ({
+export const PostDetails: React.FC<PostDetailsType> = ({
   selectedPost,
 }) => {
   const [userComments, setUserComments] = useState<Comment[]>([]);
@@ -18,8 +18,10 @@ export const PostDetails: React.FC<T> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
 
+  const url = `https://mate.academy/students-api/comments?postId=${selectedPost.id}`;
+
   useMemo(() => {
-    fetch(`https://mate.academy/students-api/comments?postId=${selectedPost.id}`)
+    fetch(`${url}`)
       .then(response => {
         setIsOpenCom(false);
         setIsLoading(true);
@@ -37,7 +39,7 @@ export const PostDetails: React.FC<T> = ({
           setIsLoading(false);
         }, 1000);
       });
-  }, [selectedPost]);
+  }, [url]);
 
   const deleteComment = async (comId: number | undefined) => {
     const comToDelete = userComments.find(com => com.id === comId);
@@ -55,6 +57,10 @@ export const PostDetails: React.FC<T> = ({
     } catch {
       setUserCommentsError(true);
     }
+  };
+
+  const handleOpenComment = () => {
+    setIsOpenCom(true);
   };
 
   return (
@@ -83,7 +89,7 @@ export const PostDetails: React.FC<T> = ({
                   </div>
                 )}
 
-                {userComments.length === 0 && (
+                {!userComments.length && (
                   <p className="title is-4" data-cy="NoCommentsMessage">
                     No comments yet
                   </p>
@@ -129,7 +135,7 @@ export const PostDetails: React.FC<T> = ({
                   data-cy="WriteCommentButton"
                   type="button"
                   className="button is-link"
-                  onClick={() => setIsOpenCom(true)}
+                  onClick={handleOpenComment}
                 >
                   Write a comment
                 </button>

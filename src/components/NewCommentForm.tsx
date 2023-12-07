@@ -4,7 +4,7 @@ import { Comment } from '../types/Comment';
 import { client } from '../utils/fetchClient';
 import { Post } from '../types/Post';
 
-interface T {
+interface NewCommentFormType {
   selectedPost: Post;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
   isLoading: boolean;
@@ -17,7 +17,7 @@ enum Inputs {
   Text = 'text',
 }
 
-export const NewCommentForm: React.FC<T> = ({
+export const NewCommentForm: React.FC<NewCommentFormType> = ({
   selectedPost,
   setIsLoading,
   isLoading,
