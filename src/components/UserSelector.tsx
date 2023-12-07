@@ -1,20 +1,15 @@
 import React, { useState, useContext } from 'react';
 import classNames from 'classnames';
 import { GlobalContext } from '../GlobalContext';
-import { User } from '../types/User';
+import { UserItem } from './UserItem';
 
 export const UserSelector: React.FC = () => {
-  const { users, selectedUser, setSelectedUser } = useContext(GlobalContext);
+  const { users, selectedUser } = useContext(GlobalContext);
 
   const [isActiveDropdown, setIsActiveDropdown] = useState(false);
 
   const handleDropdown = () => {
     setIsActiveDropdown(!isActiveDropdown);
-  };
-
-  const handleSelectedUser = (user: User) => {
-    setSelectedUser(user);
-    setIsActiveDropdown(false);
   };
 
   return (
@@ -49,20 +44,13 @@ export const UserSelector: React.FC = () => {
         style={{ maxHeight: '400px', overflowY: 'auto' }}
       >
         <div className="dropdown-content">
-          {users.map(user => {
-            return (
-              <a
-                key={user.id}
-                href={`#user-${user.id}`}
-                className={classNames('dropdown-item', {
-                  'is-active': user.id === selectedUser?.id,
-                })}
-                onClick={() => handleSelectedUser(user)}
-              >
-                {user.name}
-              </a>
-            );
-          })}
+          {users.map(user => (
+            <UserItem
+              key={user.id}
+              user={user}
+              setIsActiveDropdown={setIsActiveDropdown}
+            />
+          ))}
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { GlobalContext } from './GlobalContext';
+import { NoPostWarning } from './components/NoPostWarning';
 
 export const App: React.FC = () => {
   const {
@@ -23,11 +24,7 @@ export const App: React.FC = () => {
 
   if (selectedUser) {
     if (!posts.length && !isLoadingError && !isLoadingPosts) {
-      postListRender = (
-        <div className="notification is-warning" data-cy="NoPostsYet">
-          No posts yet
-        </div>
-      );
+      postListRender = <NoPostWarning />;
     }
 
     if (posts.length && !isLoadingError && !isLoadingPosts) {
@@ -68,7 +65,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {selectedPost && (
+          {selectedPost && selectedPost.userId === selectedUser?.id && (
             <div
               data-cy="Sidebar"
               className={classNames(
@@ -79,9 +76,7 @@ export const App: React.FC = () => {
                 'Sidebar--open',
               )}
             >
-              <div className="tile is-child box is-success ">
-                <PostDetails />
-              </div>
+              <PostDetails />
             </div>
           )}
         </div>
