@@ -41,19 +41,17 @@ export const App: React.FC = () => {
     }
   }, [selectedUser]);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await client.get<User[]>('/users');
+  const fetchUsers = async () => {
+    try {
+      const response = await client.get<User[]>('/users');
 
-        setUsers(response);
-      } catch {
-        setIsEroor(true);
-      }
-    };
+      setUsers(response);
+    } catch {
+      setIsEroor(true);
+    }
+  };
 
-    fetchUsers();
-  }, []);
+  fetchUsers();
 
   return (
     <main className="section">

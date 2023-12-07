@@ -64,7 +64,7 @@ export const NewCommentForm: React.FC<NewCommentFormType> = ({
     }
   };
 
-  const handleInputs
+  const handleInputChange
     = (
       event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
       type: Inputs,
@@ -88,7 +88,7 @@ export const NewCommentForm: React.FC<NewCommentFormType> = ({
       }
     };
 
-  const handleInputsClear = () => {
+  const clearForm = () => {
     setInputName('');
     setIsInputNameSent(false);
     setInputEmail('');
@@ -113,7 +113,7 @@ export const NewCommentForm: React.FC<NewCommentFormType> = ({
             className={classNames('input',
               { 'is-danger': !inputName.trim() && isInputNameSent })}
             value={inputName}
-            onChange={(event) => handleInputs(event, Inputs.Name)}
+            onChange={(event) => handleInputChange(event, Inputs.Name)}
           />
 
           <span className="icon is-small is-left">
@@ -151,7 +151,7 @@ export const NewCommentForm: React.FC<NewCommentFormType> = ({
             className={classNames('input',
               { 'is-danger': !inputEmail.trim() && isInputEmailSent })}
             value={inputEmail}
-            onChange={(event) => handleInputs(event, Inputs.Email)}
+            onChange={(event) => handleInputChange(event, Inputs.Email)}
           />
 
           <span className="icon is-small is-left">
@@ -188,7 +188,7 @@ export const NewCommentForm: React.FC<NewCommentFormType> = ({
             className={classNames('textarea',
               { 'is-danger': !inputText.trim() && isInputTextSent })}
             value={inputText}
-            onChange={(event) => handleInputs(event, Inputs.Text)}
+            onChange={(event) => handleInputChange(event, Inputs.Text)}
           />
         </div>
 
@@ -215,7 +215,7 @@ export const NewCommentForm: React.FC<NewCommentFormType> = ({
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={handleInputsClear}
+            onClick={clearForm}
           >
             Clear
           </button>
