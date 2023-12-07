@@ -28,6 +28,10 @@ export const App: React.FC = () => {
       .finally(() => setIsLoading(false));
   }, []);
 
+  const handleRefresh = () => {
+    window.location.reload();
+  };
+
   return (
     <main className="section">
       <div className="container">
@@ -60,7 +64,25 @@ export const App: React.FC = () => {
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    Something went wrong!
+                    <div className="level">
+                      <div className="level-left">
+                        <p>Something went wrong</p>
+                      </div>
+                      <div className="level-right">
+                        <button
+                          type="button"
+                          onClick={handleRefresh}
+                          className="button
+                            has-background-danger has-text-white"
+                          style={{ border: '1px solid white' }}
+                        >
+                          <span className="icon">
+                            <i className="fas fa-sync-alt" />
+                          </span>
+                          <span>Refresh Page</span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )}
                 {selectedUser && posts.length === 0 && !isError && (

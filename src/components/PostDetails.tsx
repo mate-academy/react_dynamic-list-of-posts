@@ -9,6 +9,8 @@ type Props = {
   post: Post | null,
 };
 
+type Action = 'load' | 'delete';
+
 export const PostDetails: React.FC<Props> = (
   {
     post,
@@ -18,17 +20,52 @@ export const PostDetails: React.FC<Props> = (
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isNewComment, setIsNewComment] = useState(false);
+  const [retryFunction, setRetryFunction] = useState<Action | null>(null);
+  const [commentToDelete, setCommentToDelete] = useState<Comment | null>(null);
+
+  const loadComments = () => {
+    setIsLoading(true);
+    client.get<Comment[]>(`/comments?postId=${post?.id}`)
+      .then((data) => {
+        setComments(data);
+        setIsError(false);
+      })
+      .catch(() => {
+        setIsError(true);
+        setRetryFunction('load');
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  const deleteComment = (
+    comment?: Comment,
+  ) => {
+    setIsLoading(true);
+    const tempComment = comment || commentToDelete;
+
+    if (tempComment) {
+      client.delete(`/comments/${tempComment.id}`)
+        .then(() => {
+          setComments(
+            prevComments => prevComments.filter(c => c.id !== tempComment.id),
+          );
+          setIsError(false);
+        })
+        .catch(() => {
+          setIsError(true);
+          setRetryFunction('delete');
+        })
+        .finally(() => {
+          setIsLoading(false);
+          setCommentToDelete(tempComment);
+        });
+    }
+  };
 
   useEffect(() => {
     if (post) {
-      setIsLoading(true);
-      client.get<Comment[]>(`/comments?postId=${post?.id}`)
-        .then((data) => setComments(data))
-        .catch(() => setIsError(true))
-        .finally(() => setIsLoading(false));
+      loadComments();
     }
-
-    setIsNewComment(false);
   }, [post]);
 
   const handleWriteComment = (
@@ -43,13 +80,29 @@ export const PostDetails: React.FC<Props> = (
     comment: Comment,
   ) => {
     event.preventDefault();
-    client.delete(`/comments/${comment.id}`)
-      .then(() => {
-        setComments(
-          prevComments => prevComments.filter(c => c.id !== comment.id),
-        );
-      })
-      .catch(() => setIsError(true));
+    deleteComment(comment);
+  };
+
+  const handleRetry = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    event.preventDefault();
+    switch (retryFunction) {
+      case 'load':
+        loadComments();
+        break;
+
+      case 'delete':
+        deleteComment();
+        break;
+
+      default:
+        break;
+    }
+  };
+
+  const handleRefresh = () => {
+    window.location.reload();
   };
 
   return (
@@ -70,10 +123,37 @@ export const PostDetails: React.FC<Props> = (
 
           {isError && (
             <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
+              <div className="level">
+                <div className="level-left">
+                  <p>Something went wrong</p>
+                </div>
+                <div className="level-right">
+                  <button
+                    type="button"
+                    onClick={event => handleRetry(event)}
+                    className="button has-background-danger has-text-white"
+                    style={{ marginRight: '20px' }}
+                  >
+                    <span className="icon">
+                      <i className="fas fa-redo-alt" />
+                    </span>
+                    <span>Retry</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRefresh}
+                    className="button has-background-danger has-text-white"
+                    style={{ border: '1px solid white' }}
+                  >
+                    <span className="icon">
+                      <i className="fas fa-sync-alt" />
+                    </span>
+                    <span>Refresh Page</span>
+                  </button>
+                </div>
+              </div>
             </div>
           )}
-
           {!isError && (comments.length === 0 ? (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
@@ -126,7 +206,6 @@ export const PostDetails: React.FC<Props> = (
           <NewCommentForm
             postId={post?.id}
             setComments={setComments}
-            setIsError={setIsError}
           />
         )}
       </div>
