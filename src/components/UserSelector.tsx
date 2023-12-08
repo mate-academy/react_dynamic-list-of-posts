@@ -5,25 +5,25 @@ import { getPosts, getUsers } from '../utils/api';
 import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
-const context = useContext(AppContext);
+  const context = useContext(AppContext);
 
-const {
-  users,
-  setUsers,
-  isDropdown,
-  setIsDropdown,
-  selectedUser,
-  setSelectedUser,
-  setPosts,
-  setSelectedPost,
-  setIsError,
-  setIsLoader
-} = context;
+  const {
+    users,
+    setUsers,
+    isDropdown,
+    setIsDropdown,
+    selectedUser,
+    setSelectedUser,
+    setPosts,
+    setSelectedPost,
+    setIsError,
+    setIsLoader,
+  } = context;
 
   useEffect(() => {
     getUsers()
       .then(user => setUsers(user));
-  }, [setUsers])
+  }, [setUsers]);
 
   const handleSelected = (user: User) => {
     setSelectedPost(null);
@@ -32,10 +32,10 @@ const {
     setSelectedUser(user);
 
     getPosts(user.id)
-    .then(post => setPosts(post))
-    .catch(() => setIsError(true) )
-    .finally(()=> setIsLoader(false))
-  }
+      .then(post => setPosts(post))
+      .catch(() => setIsError(true))
+      .finally(() => setIsLoader(false));
+  };
 
   return (
     <div
