@@ -1,11 +1,20 @@
 import React, { useContext } from 'react';
 import classNames from 'classnames';
 import { AppContext } from '../appContext';
+import { Post } from '../types/Post';
 
 export const PostsList: React.FC = () => {
   const context = useContext(AppContext);
 
   const { posts, setSelectedPost, selectedPost } = context;
+
+  const handleSelectedPost = (post: Post) => {
+    if (selectedPost?.id !== post.id) {
+      setSelectedPost(post);
+    } else {
+      setSelectedPost(null);
+    }
+  };
 
   return (
     <div data-cy="PostsList">
@@ -35,9 +44,9 @@ export const PostsList: React.FC = () => {
                   type="button"
                   data-cy="PostButton"
                   className={classNames('button is-link', {
-                    'is-light': selectedPost?.id === post.id,
+                  'is-light': !(selectedPost?.id === post.id),
                   })}
-                  onClick={() => setSelectedPost(post)}
+                  onClick={() => handleSelectedPost(post)}
                 >
                   {selectedPost?.id === post.id ? 'Close' : 'Open'}
                 </button>

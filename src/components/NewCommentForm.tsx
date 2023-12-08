@@ -84,6 +84,7 @@ export const NewCommentForm: React.FC = () => {
     setIsLoader(false);
     setHasEmailError(false);
     setBodyErrorMessage('');
+    setIsCommentError(false);
   };
 
   return (
@@ -206,7 +207,7 @@ export const NewCommentForm: React.FC = () => {
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={() => reset()}
+            onClick={reset}
           >
             Clear
           </button>
