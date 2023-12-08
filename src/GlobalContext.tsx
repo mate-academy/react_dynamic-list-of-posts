@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { User } from './types/User';
 import { Post } from './types/Post';
 import { Comment } from './types/Comment';
-import { client } from './utils/fetchClient';
+import { getUsers } from './api/users';
+import { getPosts } from './api/posts';
+import { getComments } from './api/comments';
 
 type GlobalType = {
   users: User[]
@@ -62,7 +64,7 @@ export const GlobalProvider: React.FC<Props> = ({ children }) => {
   const [isErrorComments, setIsErrorComments] = useState(false);
 
   useEffect(() => {
-    client.get<User[]>('/users')
+    getUsers()
       .then(setUsers);
   }, []);
 
@@ -70,7 +72,7 @@ export const GlobalProvider: React.FC<Props> = ({ children }) => {
     if (selectedUser) {
       setIsLoadingPosts(true);
 
-      client.get<Post[]>(`/posts?userId=${selectedUser.id}`)
+      getPosts(selectedUser.id)
         .then(userPosts => {
           setPosts(userPosts);
         })
@@ -83,7 +85,7 @@ export const GlobalProvider: React.FC<Props> = ({ children }) => {
     if (selectedPost) {
       setIsLoadingComments(true);
 
-      client.get<Comment[]>(`/comments?postId=${selectedPost.id}`)
+      getComments(selectedPost.id)
         .then(postComments => {
           setComments(postComments);
         })
@@ -97,28 +99,29 @@ export const GlobalProvider: React.FC<Props> = ({ children }) => {
     }
   }, [selectedPost]);
 
+  const contextValues = {
+    users,
+    posts,
+    comments,
+    selectedUser,
+    selectedPost,
+    isLoadingPosts,
+    isLoadingComments,
+    isLoadingError,
+    isErrorComments,
+    setUsers,
+    setComments,
+    setPosts,
+    setSelectedUser,
+    setSelectedPost,
+    setIsLoadingPosts,
+    setIsLoadingComments,
+    setIsLoadingError,
+    setIsErrorComments,
+  };
+
   return (
-    <GlobalContext.Provider value={{
-      users,
-      posts,
-      comments,
-      selectedUser,
-      selectedPost,
-      isLoadingPosts,
-      isLoadingComments,
-      isLoadingError,
-      isErrorComments,
-      setUsers,
-      setComments,
-      setPosts,
-      setSelectedUser,
-      setSelectedPost,
-      setIsLoadingPosts,
-      setIsLoadingComments,
-      setIsLoadingError,
-      setIsErrorComments,
-    }}
-    >
+    <GlobalContext.Provider value={contextValues}>
       {children}
     </GlobalContext.Provider>
   );

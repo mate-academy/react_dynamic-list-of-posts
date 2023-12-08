@@ -11,8 +11,8 @@ type Props = {
 export const UserItem: React.FC<Props> = ({ user, setIsActiveDropdown }) => {
   const { selectedUser, setSelectedUser } = useContext(GlobalContext);
 
-  const handleSelectedUser = (u: User) => {
-    setSelectedUser(u);
+  const handleSelectedUser = (clickedUser: User) => {
+    setSelectedUser(clickedUser);
     setIsActiveDropdown(false);
   };
 

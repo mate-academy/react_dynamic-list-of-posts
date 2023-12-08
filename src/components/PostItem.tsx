@@ -15,12 +15,13 @@ export const PostItem: React.FC<Props> = ({ post }) => {
   } = useContext(GlobalContext);
 
   const { id, title } = post;
+  const activePost = selectedPost?.id !== id;
 
-  const handleSelectedPost = (p: Post) => {
-    if (selectedPost && selectedPost.id === p?.id) {
+  const handleSelectedPost = (clickedPost: Post) => {
+    if (selectedPost && selectedPost.id === clickedPost?.id) {
       setSelectedPost(null);
     } else {
-      setSelectedPost(p);
+      setSelectedPost(clickedPost);
       setIsErrorComments(false);
     }
   };
@@ -40,11 +41,11 @@ export const PostItem: React.FC<Props> = ({ post }) => {
           type="button"
           data-cy="PostButton"
           className={classNames('button is-link', {
-            'is-light': selectedPost?.id !== id,
+            'is-light': activePost,
           })}
           onClick={() => handleSelectedPost(post)}
         >
-          {selectedPost?.id === id ? 'Close' : 'Open'}
+          {activePost ? 'Open' : 'Close'}
         </button>
       </td>
     </tr>

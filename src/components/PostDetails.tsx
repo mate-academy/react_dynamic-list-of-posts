@@ -3,7 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { GlobalContext } from '../GlobalContext';
 import { Post } from '../types/Post';
-import { client } from '../utils/fetchClient';
+import { deleteComment } from '../api/comments';
 
 export const PostDetails: React.FC = () => {
   const {
@@ -22,7 +22,7 @@ export const PostDetails: React.FC = () => {
   };
 
   const handleDeleteComment = (commentId: number) => {
-    client.delete(`/comments/${commentId}`)
+    deleteComment(commentId)
       .then(() => {
         const updatedComments = comments.filter(item => item.id !== commentId);
 
