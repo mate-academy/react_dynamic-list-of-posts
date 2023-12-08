@@ -1,13 +1,48 @@
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import cn from 'classnames';
-import { AppContext } from '../AppContext';
+// import { AppContext } from '../AppContext';
+import { Comment, CommentData, CommentField } from '../types/Comment';
 
-export const NewCommentForm: React.FC = () => {
-  const { setComments } = useContext(AppContext);
+interface Props {
+  selectedPostId: number,
+  setIsError: React.Dispatch<React.SetStateAction<boolean>>,
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
+}
+
+const notErrors = {
+  name: false,
+  email: false,
+  body: false,
+};
+
+const emptyFields = {
+  name: '',
+  email: '',
+  body: '',
+};
+
+export const NewCommentForm: React.FC<Props> = ({
+  setIsError,
+  setComments,
+  selectedPostId,
+}) => {
+  // const { setComments } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
-  const [isNameError, setIsNameError] = useState(false);
-  const [isEmailError, setIsEmailError] = useState(false);
-  const [isBodyError, setIsBodyError] = useState(false);
+  const [errors, setErrors] = useState(notErrors);
+  const [fields, setFields] = useState(emptyFields);
+
+  const onFieldFocus = useCallback((
+    key: keyof CommentData,
+  ) => {
+    setErrors((prev) => ({ ...prev, [key]: false }));
+  }, []);
+
+  const onFieldChange = useCallback((
+    key: keyof CommentData,
+    value: string,
+  ) => {
+    setFields((prev) => ({ ...prev, [key]: value.trimStart() }));
+  }, []);
 
   return (
     <form data-cy="NewCommentForm">
@@ -20,18 +55,21 @@ export const NewCommentForm: React.FC = () => {
           <input
             type="text"
             name="name"
+            value={fields.name}
             id="comment-author-name"
             placeholder="Name Surname"
             className={cn('input', {
-              'is-danger': isNameError,
+              'is-danger': errors.name,
             })}
+            onFocus={() => onFieldFocus(CommentField.Name)}
+            onChange={e => onFieldChange(CommentField.Name, e.target.value)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {isNameError && (
+          {errors.name && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -41,7 +79,7 @@ export const NewCommentForm: React.FC = () => {
           )}
         </div>
 
-        {isNameError && (
+        {errors.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -57,18 +95,21 @@ export const NewCommentForm: React.FC = () => {
           <input
             type="text"
             name="email"
+            value={fields.email}
             id="comment-author-email"
             placeholder="email@test.com"
             className={cn('input', {
-              'is-danger': isEmailError,
+              'is-danger': errors.email,
             })}
+            onFocus={() => onFieldFocus(CommentField.Email)}
+            onChange={e => onFieldChange(CommentField.Email, e.target.value)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {isEmailError && (
+          {errors.email && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -78,7 +119,7 @@ export const NewCommentForm: React.FC = () => {
           )}
         </div>
 
-        {isEmailError && (
+        {errors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -94,14 +135,17 @@ export const NewCommentForm: React.FC = () => {
           <textarea
             id="comment-body"
             name="body"
+            value={fields.body}
             placeholder="Type comment here"
             className={cn('input', {
-              'is-danger': isBodyError,
+              'is-danger': errors.body,
             })}
+            onFocus={() => onFieldFocus(CommentField.Body)}
+            onChange={e => onFieldChange(CommentField.Body, e.target.value)}
           />
         </div>
 
-        {isBodyError && (
+        {errors.body && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>

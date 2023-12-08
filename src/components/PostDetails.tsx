@@ -31,6 +31,12 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
 
   const handleDeleteComment = (comment: Comment) => {
     setComments((prev) => prev.filter(com => com.id !== comment.id));
+
+    service.deleteComments(comment.id)
+      .catch(() => {
+        setComments(comments)
+        setIsError(true)
+      })
   };
 
   return (
@@ -101,7 +107,13 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
           )}
         </div>
 
-        {isCommentFormOpen && !isError && <NewCommentForm />}
+        {isCommentFormOpen && !isError && (
+          <NewCommentForm
+            setIsError={setIsError}
+            setComments={setComments}
+            selectedPostId={selectedPost.id}
+          />
+        )}
       </div>
     </div>
   );
