@@ -15,6 +15,10 @@ export const getComments = (postId: number) => {
   return client.get<Comment[]>(`/comments?postId=${postId}`);
 };
 
-export const deleteComments = (commentId: number) => {
+export const deleteComment = (commentId: number) => {
   return client.delete(`/comments/${commentId}`);
+};
+
+export const createComment = (comment: Omit<Comment, 'id'>) => {
+  return client.post<Comment>('/comments', comment);
 };

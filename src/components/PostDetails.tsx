@@ -14,29 +14,29 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   // const { comments, setComments } = useContext(AppContext);
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [isCommentsError, setIsCommentsError] = useState(false);
   const [isCommentFormOpen, setIsCommentFormOpen] = useState(false);
   const isComments = comments.length > 0;
 
   useEffect(() => {
-    setIsError(false);
+    setIsCommentsError(false);
     setIsLoading(true);
     setIsCommentFormOpen(false);
 
     service.getComments(selectedPost.id)
       .then(setComments)
-      .catch(() => setIsError(true))
+      .catch(() => setIsCommentsError(true))
       .finally(() => setIsLoading(false));
   }, [selectedPost.id, setComments]);
 
   const handleDeleteComment = (comment: Comment) => {
     setComments((prev) => prev.filter(com => com.id !== comment.id));
 
-    service.deleteComments(comment.id)
+    service.deleteComment(comment.id)
       .catch(() => {
-        setComments(comments)
-        setIsError(true)
-      })
+        setComments(comments);
+        setIsCommentsError(true);
+      });
   };
 
   return (
@@ -55,23 +55,23 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         <div className="block">
           {isLoading && <Loader />}
 
-          {isError && (
+          {isCommentsError && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
           )}
 
-          {!isComments && !isLoading && !isError && (
+          {!isComments && !isLoading && !isCommentsError && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {isComments && !isLoading && !isError && (
+          {isComments && !isLoading && !isCommentsError && (
             <p className="title is-4">Comments:</p>
           )}
 
-          {!isError && (
+          {!isCommentsError && (
             comments.map(comment => (
               <article className="message is-small" data-cy="Comment">
                 <div className="message-header">
@@ -107,11 +107,11 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
           )}
         </div>
 
-        {isCommentFormOpen && !isError && (
+        {isCommentFormOpen && !isCommentsError && (
           <NewCommentForm
-            setIsError={setIsError}
+            setIsCommentsError={setIsCommentsError}
             setComments={setComments}
-            selectedPostId={selectedPost.id}
+            postId={selectedPost.id}
           />
         )}
       </div>

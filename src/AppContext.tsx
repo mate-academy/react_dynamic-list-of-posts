@@ -9,8 +9,8 @@ export const AppContext = React.createContext<Context>({
   users: [],
   posts: [],
   setPosts: () => { },
-  // comments: [],
-  // setComments: () => { },
+  isUserError: false,
+  setIsUserError: () => { },
   selectedUser: null,
   setSelectedUser: () => { },
   selectedPost: null,
@@ -24,7 +24,7 @@ interface Props {
 export const AppProvider: React.FC<Props> = ({ children }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
-  // const [comments, setComments] = useState<Comment[]>([]);
+  const [isUserError, setIsUserError] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
@@ -32,19 +32,18 @@ export const AppProvider: React.FC<Props> = ({ children }) => {
     users,
     posts,
     setPosts,
-    // comments,
-    // setComments,
+    isUserError,
+    setIsUserError,
     selectedUser,
     setSelectedUser,
     selectedPost,
     setSelectedPost,
-  }), [users, selectedUser, posts, selectedPost]);
+  }), [users, selectedUser, posts, selectedPost, isUserError]);
 
   useEffect(() => {
     service.getUsers()
-      .then((usersFromServer) => {
-        setUsers(usersFromServer.slice(0, 11));
-      });
+      .then(setUsers)
+      .catch(() => setIsUserError(true));
   }, []);
 
   return (

@@ -14,7 +14,8 @@ import * as service from './api/api';
 
 export const App: React.FC = () => {
   const {
-    // users,
+    isUserError,
+    setIsUserError,
     selectedUser,
     posts,
     setPosts,
@@ -23,21 +24,21 @@ export const App: React.FC = () => {
   } = useContext(AppContext);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+  // const [isError, setIsError] = useState(false);
 
   const noPostsMessage = useMemo(
-    () => (!isLoading && !isError && !posts.length && selectedUser),
-    [isLoading, isError, posts.length, selectedUser],
+    () => (!isLoading && !isUserError && !posts.length && selectedUser),
+    [isLoading, isUserError, posts.length, selectedUser],
   );
 
   const onUserSelect = (user: User) => {
-    setIsError(false);
+    setIsUserError(false);
     setIsLoading(true);
     setSelectedPost(null);
 
     service.getPosts(user.id)
       .then(setPosts)
-      .catch(() => setIsError(true))
+      .catch(() => setIsUserError(true))
       .finally(() => setIsLoading(false));
   };
 
@@ -65,7 +66,7 @@ export const App: React.FC = () => {
 
                 {isLoading && <Loader />}
 
-                {isError && (
+                {isUserError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
