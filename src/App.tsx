@@ -57,6 +57,19 @@ export const App: React.FC = () => {
     setSelectedPost(null);
   }, [selectedUser, loadPosts]);
 
+  const noPostCondition = (
+    !arePostLoading
+    && !isLoadingError
+    && !posts.length
+    && selectedUser
+  );
+
+  const postCondition = (
+    !!posts.length
+    && !isLoadingError
+    && !arePostLoading
+  );
+
   return (
     <main className="section">
       <div className="container">
@@ -89,8 +102,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(!arePostLoading && !isLoadingError
-                  && !posts.length && selectedUser) && (
+                {noPostCondition && (
                   <div
                     className="notification is-warning"
                     data-cy="NoPostsYet"
@@ -99,8 +111,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(!!posts.length && !isLoadingError
-                  && !arePostLoading) && (
+                {postCondition && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}

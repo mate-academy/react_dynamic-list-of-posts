@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import cn from 'classnames';
 import { User } from '../types/User';
+import { UserItem } from './UserItem';
 
 type Props = {
   users: User[];
@@ -45,17 +46,11 @@ export const UserSelector: React.FC<Props> = ({
 
             {
               users.map(user => (
-                <a
-                  key={user.id}
-                  href={`#user-${user.id}`}
-                  className={cn(
-                    'dropdown-item',
-                    { 'is-active': selectedUser?.id === user.id },
-                  )}
-                  onMouseDown={() => setSelectedUser(user)}
-                >
-                  {user.name}
-                </a>
+                <UserItem
+                  user={user}
+                  selectedUser={selectedUser}
+                  setSelectedUser={setSelectedUser}
+                />
               ))
             }
           </div>

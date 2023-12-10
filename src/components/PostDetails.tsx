@@ -3,7 +3,8 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
-import { addComment, getComments } from '../helpers/users';
+import { addComment, getComments, deleteComment } from '../helpers/users';
+import { CommentItem } from './CommentItem';
 
 type Props = {
   post: Post;
@@ -48,6 +49,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       const newComments = comments.filter(comment => comment.id !== commentId);
 
       setComments(newComments);
+      await deleteComment(commentId);
     } catch {
       setIsLoadingError(true);
     } finally {
@@ -108,30 +110,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           )}
 
           {comments.map(comment => (
-            <article
-              className="message is-small"
-              data-cy="Comment"
-              key={comment.id}
-            >
-              <div className="message-header">
-                <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                  {comment.name}
-                </a>
-                <button
-                  data-cy="CommentDelete"
-                  type="button"
-                  className="delete is-small"
-                  aria-label="delete"
-                  onClick={() => handleDeleteComment(comment.id)}
-                >
-                  delete button
-                </button>
-              </div>
-
-              <div className="message-body" data-cy="CommentBody">
-                {comment.body}
-              </div>
-            </article>
+            <CommentItem
+              comment={comment}
+              handleDeleteComment={handleDeleteComment}
+            />
           ))}
 
           {(!isFormVisible) && (
