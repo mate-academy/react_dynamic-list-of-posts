@@ -34,7 +34,6 @@ export const PostDetails: React.FC<Props> = ({
       setIsLoading(false);
     } catch {
       setHasError(true);
-    } finally {
       setIsLoading(false);
     }
   };

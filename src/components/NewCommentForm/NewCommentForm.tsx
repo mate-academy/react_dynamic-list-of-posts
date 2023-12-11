@@ -3,21 +3,6 @@ import React, { useState } from 'react';
 import { Comment } from '../../types/Comment';
 import { postComments } from '../../utils/commentsApi';
 
-export const IconError: React.FC = () => (
-  <span
-    className="icon is-small is-right has-text-danger"
-    data-cy="ErrorIcon"
-  >
-    <i className="fas fa-exclamation-triangle" />
-  </span>
-);
-
-export const ErrorMessage: React.FC<{ title: string }> = ({ title }) => (
-  <p className="help is-danger" data-cy="ErrorMessage">
-    {title}
-  </p>
-);
-
 type Props = {
   postId: number;
   onAddComment: (comment: Comment) => void;
@@ -89,7 +74,6 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
       setCommentValue('');
     } catch {
       setHasError(true);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -141,9 +125,20 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
-          {!hasInputValue.hasName && <IconError />}
+          {!hasInputValue.hasName && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
-        {!hasInputValue.hasName && <ErrorMessage title="Name is required" />}
+        {!hasInputValue.hasName && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Name is required
+          </p>
+        )}
 
       </div>
 
@@ -169,9 +164,20 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
-          {!hasInputValue.hasEmail && <IconError />}
+          {!hasInputValue.hasEmail && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
-        {!hasInputValue.hasEmail && <ErrorMessage title="Email is required" />}
+        {!hasInputValue.hasEmail && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -192,7 +198,11 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
             onChange={handleInputChange}
           />
         </div>
-        {!hasInputValue.hasComment && <ErrorMessage title="Enter some text" />}
+        {!hasInputValue.hasComment && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Enter some text
+          </p>
+        )}
       </div>
 
       <div className="field is-grouped">

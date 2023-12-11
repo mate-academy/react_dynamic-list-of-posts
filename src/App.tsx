@@ -22,7 +22,7 @@ export const App: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const loadUsers = async () => {
+  const loadUser = async () => {
     try {
       setHasError(false);
 
@@ -30,9 +30,8 @@ export const App: React.FC = () => {
 
       setUsers(userFromServer);
     } catch {
-      setHasError(true);
-    } finally {
       setIsLoading(false);
+      setHasError(true);
     }
   };
 
@@ -48,9 +47,8 @@ export const App: React.FC = () => {
       setPosts(postsFromServer);
       setIsLoading(false);
     } catch {
-      setHasError(true);
-    } finally {
       setIsLoading(false);
+      setHasError(true);
     }
   };
 
@@ -63,7 +61,7 @@ export const App: React.FC = () => {
   };
 
   useEffect(() => {
-    loadUsers();
+    loadUser();
   }, []);
 
   return (
@@ -97,19 +95,19 @@ export const App: React.FC = () => {
                 )}
 
                 {selectedUser && (
-                  posts?.length
+                  !posts?.length
                     ? (
-                      <PostsList
-                        posts={posts}
-                        handlePostInfo={handlePostInfo}
-                      />
-                    ) : (
                       <div
                         className="notification is-warning"
                         data-cy="NoPostsYet"
                       >
                         No posts yet
                       </div>
+                    ) : (
+                      <PostsList
+                        posts={posts}
+                        handlePostInfo={handlePostInfo}
+                      />
                     )
                 )}
               </div>
