@@ -3,7 +3,11 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
-import { addComment, getComments, deleteComment } from '../helpers/users';
+import {
+  addComment,
+  getComments,
+  deleteComment,
+} from '../helpers/commentsFunc';
 import { CommentItem } from './CommentItem';
 
 type Props = {
@@ -12,14 +16,14 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [arePostLoading, setArePostLoading] = useState(true);
+  const [isPostLoading, setIsPostLoading] = useState(true);
   const [isLoadingError, setIsLoadingError] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isCommentLoading, setIsCommentLoading] = useState(false);
   const [isWritingComment, setIsWritingComment] = useState(false);
 
   const loadComments = useCallback(async () => {
-    setArePostLoading(true);
+    setIsPostLoading(true);
 
     try {
       setIsLoadingError(false);
@@ -29,7 +33,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     } catch {
       setIsLoadingError(true);
     } finally {
-      setArePostLoading(false);
+      setIsPostLoading(false);
     }
   }, [post.id]);
 
@@ -93,9 +97,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         </div>
 
         <div className="block">
-          {arePostLoading && <Loader />}
+          {isPostLoading && <Loader />}
 
-          {!arePostLoading && isLoadingError && (
+          {!isPostLoading && isLoadingError && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>

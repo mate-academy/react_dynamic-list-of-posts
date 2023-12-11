@@ -39,6 +39,7 @@ export const PostsList: React.FC<Props> = ({
         <tbody>
           {posts?.map(post => (
             <PostItem
+              key={post.id}
               post={post}
               selectedPost={selectedPost}
               handleOpenPost={handleOpenPost}

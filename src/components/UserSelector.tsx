@@ -47,6 +47,7 @@ export const UserSelector: React.FC<Props> = ({
             {
               users.map(user => (
                 <UserItem
+                  key={user.id}
                   user={user}
                   selectedUser={selectedUser}
                   setSelectedUser={setSelectedUser}
