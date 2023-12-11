@@ -3,7 +3,6 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import * as service from '../api/api';
-// import { AppContext } from '../AppContext';
 import { Comment } from '../types/Comment';
 
 interface Props {
@@ -11,7 +10,6 @@ interface Props {
 }
 
 export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
-  // const { comments, setComments } = useContext(AppContext);
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isCommentsError, setIsCommentsError] = useState(false);

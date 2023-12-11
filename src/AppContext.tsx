@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { User } from './types/User';
 import { Context } from './types/Context';
-import * as service from './api/api';
 import { Post } from './types/Post';
-// import { Comment } from './types/Comment';
+import * as service from './api/api';
 
 export const AppContext = React.createContext<Context>({
   users: [],
@@ -28,7 +27,13 @@ export const AppProvider: React.FC<Props> = ({ children }) => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  const value = useMemo(() => ({
+  useEffect(() => {
+    service.getUsers()
+      .then(setUsers)
+      .catch(() => setIsUserError(true));
+  }, []);
+
+  const value = {
     users,
     posts,
     setPosts,
@@ -38,13 +43,7 @@ export const AppProvider: React.FC<Props> = ({ children }) => {
     setSelectedUser,
     selectedPost,
     setSelectedPost,
-  }), [users, selectedUser, posts, selectedPost, isUserError]);
-
-  useEffect(() => {
-    service.getUsers()
-      .then(setUsers)
-      .catch(() => setIsUserError(true));
-  }, []);
+  };
 
   return (
     <AppContext.Provider value={value}>

@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import cn from 'classnames';
-// import { AppContext } from '../AppContext';
 import { Comment, CommentData, CommentField } from '../types/Comment';
 import * as service from '../api/api';
 
@@ -27,16 +26,9 @@ export const NewCommentForm: React.FC<Props> = ({
   setComments,
   postId,
 }) => {
-  // const { setComments } = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState(notErrors);
   const [fields, setFields] = useState(emptyFields);
-
-  // const onFieldFocus = useCallback((
-  //   key: keyof CommentData,
-  // ) => {
-  //   setErrors((prev) => ({ ...prev, [key]: false }));
-  // }, []);
 
   const onFieldChange = useCallback((
     key: keyof CommentData,
@@ -96,7 +88,6 @@ export const NewCommentForm: React.FC<Props> = ({
             className={cn('input', {
               'is-danger': errors.name,
             })}
-            // onFocus={() => onFieldFocus(CommentField.Name)}
             onChange={e => onFieldChange(CommentField.Name, e.target.value)}
           />
 
@@ -136,7 +127,6 @@ export const NewCommentForm: React.FC<Props> = ({
             className={cn('input', {
               'is-danger': errors.email,
             })}
-            // onFocus={() => onFieldFocus(CommentField.Email)}
             onChange={e => onFieldChange(CommentField.Email, e.target.value)}
           />
 
@@ -175,7 +165,6 @@ export const NewCommentForm: React.FC<Props> = ({
             className={cn('textarea', {
               'is-danger': errors.body,
             })}
-            // onFocus={() => onFieldFocus(CommentField.Body)}
             onChange={e => onFieldChange(CommentField.Body, e.target.value)}
           />
         </div>

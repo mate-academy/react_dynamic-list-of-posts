@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -24,12 +24,11 @@ export const App: React.FC = () => {
   } = useContext(AppContext);
 
   const [isLoading, setIsLoading] = useState(false);
-  // const [isError, setIsError] = useState(false);
 
-  const noPostsMessage = useMemo(
-    () => (!isLoading && !isUserError && !posts.length && selectedUser),
-    [isLoading, isUserError, posts.length, selectedUser],
-  );
+  const noPostsMessage = !isLoading
+    && !isUserError
+    && !posts.length
+    && selectedUser;
 
   const onUserSelect = (user: User) => {
     setIsUserError(false);
@@ -41,8 +40,6 @@ export const App: React.FC = () => {
       .catch(() => setIsUserError(true))
       .finally(() => setIsLoading(false));
   };
-
-  // console.log(posts);
 
   return (
     <main className="section">

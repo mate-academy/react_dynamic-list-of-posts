@@ -4,11 +4,7 @@ import { AppContext } from '../AppContext';
 import { Post } from '../types/Post';
 
 export const PostsList: React.FC = () => {
-  const {
-    posts,
-    selectedPost,
-    setSelectedPost,
-  } = useContext(AppContext);
+  const { posts, selectedPost, setSelectedPost } = useContext(AppContext);
 
   const handlePostOpen = useCallback((post: Post) => {
     if (selectedPost?.id === post.id) {

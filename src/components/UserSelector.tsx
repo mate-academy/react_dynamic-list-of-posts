@@ -8,12 +8,7 @@ interface Props {
 }
 
 export const UserSelector: React.FC<Props> = ({ onUserSelect }) => {
-  const {
-    users,
-    selectedUser,
-    setSelectedUser,
-  } = useContext(AppContext);
-
+  const { users, selectedUser, setSelectedUser } = useContext(AppContext);
   const [isVisibleUserList, setIsVisibleUserList] = useState(false);
 
   const handleUserSelect = (user: User) => {
