@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,38 +8,42 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { AppContext } from './AppContext';
 import { User } from './types/User';
+import { Post } from './types/Post';
 import * as service from './api/api';
 
 export const App: React.FC = () => {
-  const {
-    isUserError,
-    setIsUserError,
-    selectedUser,
-    posts,
-    setPosts,
-    selectedPost,
-    setSelectedPost,
-  } = useContext(AppContext);
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-  const noPostsMessage = !isLoading
-    && !isUserError
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  const noPostsMessage = !isPostsLoading
+    && !isError
     && !posts.length
     && selectedUser;
 
   const onUserSelect = (user: User) => {
-    setIsUserError(false);
-    setIsLoading(true);
+    setIsError(false);
+    setIsPostsLoading(true);
     setSelectedPost(null);
+    setPosts([]);
 
     service.getPosts(user.id)
       .then(setPosts)
-      .catch(() => setIsUserError(true))
-      .finally(() => setIsLoading(false));
+      .catch(() => setIsError(true))
+      .finally(() => setIsPostsLoading(false));
   };
+
+  useEffect(() => {
+    service.getUsers()
+      .then(setUsers)
+      .catch(() => setIsError(true));
+  }, []);
 
   return (
     <main className="section">
@@ -50,6 +54,9 @@ export const App: React.FC = () => {
 
               <div className="block">
                 <UserSelector
+                  users={users}
+                  selectedUser={selectedUser}
+                  setSelectedUser={setSelectedUser}
                   onUserSelect={onUserSelect}
                 />
               </div>
@@ -61,9 +68,9 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {isLoading && <Loader />}
+                {isPostsLoading && <Loader />}
 
-                {isUserError && (
+                {isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -79,7 +86,11 @@ export const App: React.FC = () => {
                 )}
 
                 {posts.length > 0 && (
-                  <PostsList />
+                  <PostsList
+                    posts={posts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
+                  />
                 )}
               </div>
             </div>

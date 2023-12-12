@@ -1,14 +1,20 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import cn from 'classnames';
 import { User } from '../types/User';
-import { AppContext } from '../AppContext';
 
 interface Props {
+  users: User[],
+  selectedUser: User | null,
+  setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>,
   onUserSelect: (user: User) => void,
 }
 
-export const UserSelector: React.FC<Props> = ({ onUserSelect }) => {
-  const { users, selectedUser, setSelectedUser } = useContext(AppContext);
+export const UserSelector: React.FC<Props> = ({
+  users,
+  selectedUser,
+  setSelectedUser,
+  onUserSelect,
+}) => {
   const [isVisibleUserList, setIsVisibleUserList] = useState(false);
 
   const handleUserSelect = (user: User) => {

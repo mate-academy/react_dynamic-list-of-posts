@@ -1,11 +1,18 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import cn from 'classnames';
-import { AppContext } from '../AppContext';
 import { Post } from '../types/Post';
 
-export const PostsList: React.FC = () => {
-  const { posts, selectedPost, setSelectedPost } = useContext(AppContext);
+interface Props {
+  posts: Post[],
+  selectedPost: Post | null,
+  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>,
+}
 
+export const PostsList: React.FC<Props> = ({
+  posts,
+  selectedPost,
+  setSelectedPost,
+}) => {
   const handlePostOpen = useCallback((post: Post) => {
     if (selectedPost?.id === post.id) {
       setSelectedPost(null);

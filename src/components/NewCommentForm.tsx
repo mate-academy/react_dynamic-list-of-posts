@@ -5,7 +5,7 @@ import * as service from '../api/api';
 
 interface Props {
   postId: number,
-  setIsCommentsError: React.Dispatch<React.SetStateAction<boolean>>,
+  setIsError: React.Dispatch<React.SetStateAction<boolean>>,
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>,
 }
 
@@ -22,7 +22,7 @@ const emptyFields = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({
-  setIsCommentsError,
+  setIsError,
   setComments,
   postId,
 }) => {
@@ -64,7 +64,7 @@ export const NewCommentForm: React.FC<Props> = ({
         setComments((prev) => [...prev, comment]);
         setFields({ ...fields, body: '' });
       })
-      .catch(() => setIsCommentsError(true))
+      .catch(() => setIsError(true))
       .finally(() => setIsLoading(false));
   };
 
