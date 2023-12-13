@@ -44,10 +44,10 @@ export const PostDetails: React.FC<Props> = ({
 
       <div className="block">
         {showList && <Loader />}
-        {comments.length > 0 && !showList
+        {!!comments.length && !showList
         && <p className="title is-4">Comments:</p>}
 
-        {!showList && comments.length > 0 ? comments.map((comment) => (
+        {!showList && !!comments.length ? comments.map((comment) => (
           <article
             key={comment.id}
             className="message is-small"
