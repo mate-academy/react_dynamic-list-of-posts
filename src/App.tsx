@@ -80,18 +80,15 @@ export const App: React.FC = () => {
                 )}
 
                 <div className="block" data-cy="MainContent">
-                  {!loader && selectedUser && posts.length > 0 ? (
+                  {!loader && selectedUser && posts.length > 0 && (
                     <PostsList
                       posts={posts}
                       setActiveTab={setActiveCommentTab}
                       selectedPost={selectedPost}
                       setSelectedPost={setSelectedPost}
                     />
-                  ) : !loader && !selectedUser ? (
-                    <p data-cy="NoSelectedUser">
-                      No user selected
-                    </p>
-                  ) : (
+                  )}
+                  {!loader && posts.length === 0 && selectedUser && (
                     <div
                       className="notification is-warning"
                       data-cy="NoPostsYet"
@@ -99,8 +96,12 @@ export const App: React.FC = () => {
                       No posts yet
                     </div>
                   )}
+                  {!loader && !selectedUser && (
+                    <p data-cy="NoSelectedUser">
+                      No user selected
+                    </p>
+                  )}
                 </div>
-
               </div>
             </div>
           </div>
@@ -117,7 +118,6 @@ export const App: React.FC = () => {
           >
             {activeCommentTab && (
               <div className="tile is-child box is-success ">
-
                 <PostDetails
                   comments={comments}
                   selectedPost={selectedPost}
