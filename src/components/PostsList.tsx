@@ -1,6 +1,5 @@
-/* eslint-disable jsx-a11y/control-has-associated-label */
+import classNames from 'classnames';
 import React, { useCallback } from 'react';
-import cn from 'classnames';
 import { Post } from '../types/Post';
 
 interface Props {
@@ -33,8 +32,8 @@ export const PostsList: React.FC<Props> = ({
           <tr className="has-background-link-light">
             <th>#</th>
             <th>Title</th>
-
-            <th />
+            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+            <th> </th>
           </tr>
         </thead>
 
@@ -59,7 +58,7 @@ export const PostsList: React.FC<Props> = ({
                   <button
                     type="button"
                     data-cy="PostButton"
-                    className={cn('button is-link', {
+                    className={classNames('button is-link', {
                       'is-light': isSelected,
                     })}
                     onClick={() => handlePostOpen(post)}
