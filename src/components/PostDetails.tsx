@@ -11,10 +11,12 @@ interface Props {
 
 export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const [comments, setComments] = useState<Comment[]>([]);
+  const [isCommentFormOpen, setIsCommentFormOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [isCommentFormOpen, setIsCommentFormOpen] = useState(false);
-  const isComments = comments.length > 0;
+
+  const noErrorAndLoading = !isLoading && !isError;
+  const commentsMessage = !!comments.length;
 
   useEffect(() => {
     setIsError(false);
@@ -59,19 +61,23 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             </div>
           )}
 
-          {!isComments && !isLoading && !isError && (
+          {!commentsMessage && noErrorAndLoading && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {isComments && !isLoading && !isError && (
+          {commentsMessage && noErrorAndLoading && (
             <p className="title is-4">Comments:</p>
           )}
 
           {!isError && (
             comments.map(comment => (
-              <article className="message is-small" data-cy="Comment">
+              <article
+                key={comment.id}
+                className="message is-small"
+                data-cy="Comment"
+              >
                 <div className="message-header">
                   <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                     {comment.name}
