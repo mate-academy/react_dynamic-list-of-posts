@@ -7,3 +7,9 @@ export interface Comment {
 }
 
 export type CommentData = Pick<Comment, 'name' | 'email' | 'body'>;
+
+export enum CommentField {
+  Name = 'name',
+  Email = 'email',
+  Body = 'body',
+}
