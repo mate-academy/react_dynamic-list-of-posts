@@ -80,6 +80,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAdd = () => {} }) => {
       email: '',
       body: '',
     });
+
     setFormErrors({
       name: false,
       email: false,
