@@ -88,7 +88,7 @@ export const App: React.FC = () => {
                       setSelectedPost={setSelectedPost}
                     />
                   )}
-                  {!loader && posts.length === 0 && selectedUser && (
+                  {!loader && !posts.length && selectedUser && (
                     <div
                       className="notification is-warning"
                       data-cy="NoPostsYet"

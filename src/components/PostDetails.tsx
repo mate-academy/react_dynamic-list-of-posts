@@ -47,15 +47,17 @@ export const PostDetails: React.FC<Props> = ({
         {!!comments.length && !showList
         && <p className="title is-4">Comments:</p>}
 
-        {!showList && !!comments.length ? comments.map((comment) => (
+        {!showList && !!comments.length ? comments.map(({
+          id, email, name, body,
+        }) => (
           <article
-            key={comment.id}
+            key={id}
             className="message is-small"
             data-cy="Comment"
           >
             <div className="message-header">
-              <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                {comment.name}
+              <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                {name}
               </a>
               <button
                 data-cy="CommentDelete"
@@ -63,8 +65,8 @@ export const PostDetails: React.FC<Props> = ({
                 className="delete is-small"
                 aria-label="delete"
                 onClick={() => {
-                  if (comment.id !== undefined) {
-                    handleDeleteComment(comment.id);
+                  if (id) {
+                    handleDeleteComment(id);
                   }
                 }}
               >
@@ -73,7 +75,7 @@ export const PostDetails: React.FC<Props> = ({
             </div>
 
             <div className="message-body" data-cy="CommentBody">
-              {comment.body}
+              {body}
             </div>
           </article>
         ))
