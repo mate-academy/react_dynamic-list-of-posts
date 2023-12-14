@@ -21,6 +21,7 @@ export const PostsList: React.FC<Props> = ({
         <tr className="has-background-link-light">
           <th>#</th>
           <th>Title</th>
+          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
           <th> </th>
         </tr>
       </thead>
