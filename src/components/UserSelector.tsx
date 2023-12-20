@@ -1,10 +1,27 @@
-import React from 'react';
+import cn from 'classnames';
+import React, { useState } from 'react';
+import { User } from '../types/User';
 
-export const UserSelector: React.FC = () => {
+interface Props {
+  selectedUser: User | null;
+  setSelectedUser: (user: User) => void;
+  usersFromServer: User[] | null;
+}
+
+export const UserSelector: React.FC<Props> = ({
+  selectedUser,
+  setSelectedUser,
+  usersFromServer,
+}) => {
+  const [dropdownActive, setDropdownActive] = useState(false);
+
   return (
     <div
+      aria-hidden
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={cn('dropdown', { 'is-active': dropdownActive })}
+      onClick={() => setDropdownActive(state => !state)}
+      // onBlur={() => setDropdownActive(false)}
     >
       <div className="dropdown-trigger">
         <button
@@ -13,7 +30,7 @@ export const UserSelector: React.FC = () => {
           aria-haspopup="true"
           aria-controls="dropdown-menu"
         >
-          <span>Choose a user</span>
+          <span>{selectedUser?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -23,11 +40,19 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+          {usersFromServer && usersFromServer.map(user => (
+            <a
+              href="#user-2"
+              key={user.id}
+              className={cn(
+                'dropdown-item',
+                { 'is-active': user.id === selectedUser?.id },
+              )}
+              onClick={() => setSelectedUser(user)}
+            >
+              {user.name}
+            </a>
+          ))}
         </div>
       </div>
     </div>
