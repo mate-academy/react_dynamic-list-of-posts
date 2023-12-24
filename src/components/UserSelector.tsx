@@ -21,7 +21,6 @@ export const UserSelector: React.FC<Props> = ({
       data-cy="UserSelector"
       className={cn('dropdown', { 'is-active': dropdownActive })}
       onClick={() => setDropdownActive(state => !state)}
-      // onBlur={() => setDropdownActive(false)}
     >
       <div className="dropdown-trigger">
         <button

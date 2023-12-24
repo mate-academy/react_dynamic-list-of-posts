@@ -1,25 +1,30 @@
 import cn from 'classnames';
 import React, { useState } from 'react';
-import { Post } from '../types/Post';
-import { client } from '../utils/fetchClient';
-import { Comment } from '../types/Comment';
+import { Comment } from '../../types/Comment';
+import { Post } from '../../types/Post';
+import { client } from '../../utils/fetchClient';
+import { Form } from '../../types/Form';
+import { validateForm } from './helper';
 
 interface Props {
   selectedPost: Post | null;
-  setCommentsOfPost: (comments: Comment[] | null
-  | ((prevVar: Comment[] | null) => Comment[] | null)) => void;
-  setIsErrorShowing: (value: boolean) => void;
+  setCommentsOfPost: React.Dispatch<React.SetStateAction<Comment[] | null>>;
+  setIsErrorShowing: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+const EMPTY_FORM: Form<string> = {
+  author: '',
+  email: '',
+  text: '',
+};
 
 export const NewCommentForm: React.FC<Props> = ({
   selectedPost,
   setCommentsOfPost,
   setIsErrorShowing,
 }) => {
-  const [formInputs, setFormInputs] = useState({
-    author: '',
-    email: '',
-    text: '',
+  const [formInputs, setFormInputs] = useState<Form<string>>({
+    ...EMPTY_FORM,
   });
   const [formErrors, setFormErrors] = useState({
     author: false,
@@ -28,10 +33,7 @@ export const NewCommentForm: React.FC<Props> = ({
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChangeInput = (
-    value: string,
-    field: string,
-  ): void => {
+  const handleChangeInput = (value: string, field: string): void => {
     setFormInputs(prevForm => ({
       ...prevForm,
       [field]: value,
@@ -45,9 +47,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const handleReset = () => {
     setFormInputs({
-      author: '',
-      email: '',
-      text: '',
+      ...EMPTY_FORM,
     });
   };
 
@@ -55,21 +55,7 @@ export const NewCommentForm: React.FC<Props> = ({
     event.preventDefault();
     setIsErrorShowing(false);
 
-    const fields = Object.keys(formInputs);
-    let hasError = false;
-
-    fields.forEach((key) => {
-      if (!formInputs[key as keyof typeof formInputs]) {
-        setFormErrors(prevErrors => ({
-          ...prevErrors,
-          [key]: true,
-        }));
-
-        hasError = true;
-      }
-    });
-
-    if (hasError) {
+    if (!validateForm(formInputs, setFormErrors)) {
       return;
     }
 
@@ -81,14 +67,12 @@ export const NewCommentForm: React.FC<Props> = ({
     };
 
     setIsSubmitting(true);
-    client.post<Comment>('/comments', newComment)
-      .then((comment) => {
+    client
+      .post<Comment>('/comments', newComment)
+      .then(comment => {
         setCommentsOfPost(prevComments => {
-          if (prevComments !== null) {
-            return [
-              ...prevComments,
-              comment,
-            ];
+          if (prevComments) {
+            return [...prevComments, comment];
           }
 
           return null;
@@ -118,9 +102,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Name Surname"
             className={cn('input', { 'is-danger': formErrors.author })}
             value={formInputs.author}
-            onChange={(event) => handleChangeInput(
-              event.target.value, 'author',
-            )}
+            onChange={event => handleChangeInput(event.target.value, 'author')}
           />
 
           <span className="icon is-small is-left">
@@ -157,9 +139,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="email@test.com"
             className={cn('input', { 'is-danger': formErrors.email })}
             value={formInputs.email}
-            onChange={(event) => handleChangeInput(
-              event.target.value, 'email',
-            )}
+            onChange={event => handleChangeInput(event.target.value, 'email')}
           />
 
           <span className="icon is-small is-left">
@@ -195,9 +175,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Type comment here"
             className={cn('textarea', { 'is-danger': formErrors.text })}
             value={formInputs.text}
-            onChange={(event) => handleChangeInput(
-              event.target.value, 'text',
-            )}
+            onChange={event => handleChangeInput(event.target.value, 'text')}
           />
         </div>
 

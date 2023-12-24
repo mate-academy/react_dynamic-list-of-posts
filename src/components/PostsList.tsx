@@ -5,7 +5,7 @@ import { Post } from '../types/Post';
 interface Props {
   postsFromServer: Post[] | null;
   selectedPost: Post | null;
-  setSelectedPost: (post: Post | null) => void;
+  setSelectedPost: (React.Dispatch<React.SetStateAction<Post | null>>);
 }
 
 export const PostsList: React.FC<Props> = ({
@@ -30,8 +30,7 @@ export const PostsList: React.FC<Props> = ({
           <tr className="has-background-link-light">
             <th>#</th>
             <th>Title</th>
-            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-            <th> </th>
+            <th>⠀</th>
           </tr>
         </thead>
 

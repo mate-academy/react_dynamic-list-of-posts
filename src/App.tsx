@@ -9,8 +9,8 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
-import { client } from './utils/fetchClient';
 import { Post } from './types/Post';
+import { getPosts, getUsers } from './services/api';
 
 export const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -22,34 +22,17 @@ export const App: React.FC = () => {
 
   const [isErrorShowing, setIsErrorShowing] = useState(false);
 
-  const getUsers = () => {
-    setIsErrorShowing(false);
-
-    return client.get<User[]>('/users')
-      .then(setUsersFromServer)
-      .catch(() => setIsErrorShowing(true));
-  };
-
-  const getPosts = (userId: number) => {
-    setPostsFromServer(null);
-    setIsErrorShowing(false);
-
-    return client.get<Post[]>(`/posts?userId=${userId}`)
-      .then(setPostsFromServer)
-      .catch(() => setIsErrorShowing(true));
-  };
-
   const selectUser = (user: User) => {
     setSelectedUser(user);
     setSelectedPost(null);
 
     setIsPostsLoading(true);
-    getPosts(user.id)
+    getPosts(user.id, setIsErrorShowing, setPostsFromServer)
       .finally(() => setIsPostsLoading(false));
   };
 
   useEffect(() => {
-    getUsers();
+    getUsers(setIsErrorShowing, setUsersFromServer);
   }, []);
 
   return (

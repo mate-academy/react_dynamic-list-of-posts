@@ -1,57 +1,47 @@
 import React, { useEffect, useState } from 'react';
-import { Loader } from './Loader';
-import { NewCommentForm } from './NewCommentForm';
-import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
 import { client } from '../utils/fetchClient';
+import { Loader } from './Loader';
+import { NewCommentForm } from './NewCommentForm/NewCommentForm';
+import { getComments } from '../services/api';
 
 interface Props {
   selectedPost: Post | null;
 }
 
-export const PostDetails: React.FC<Props> = ({
-  selectedPost,
-}) => {
+export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const [commentsOfPost, setCommentsOfPost] = useState<Comment[] | null>(null);
 
   const [isErrorShowing, setIsErrorShowing] = useState(false);
   const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [isFormShowing, setIsFormShowing] = useState(false);
 
-  const getComments = (postId: number) => {
-    setCommentsOfPost(null);
-    setIsCommentsLoading(true);
-    setIsErrorShowing(false);
-
-    return client.get<Comment[]>(`/comments?postId=${postId}`)
-      .then(setCommentsOfPost)
-      .catch(() => setIsErrorShowing(true))
-      .finally(() => setIsCommentsLoading(false));
-  };
-
   const handleDeleteComment = (commentId: number) => {
     setIsErrorShowing(false);
 
-    client.delete(`/comments/${commentId}`)
+    client
+      .delete(`/comments/${commentId}`)
       .then(() => {
-        setCommentsOfPost(
-          (prevComments: Comment[] | null) => {
-            if (prevComments) {
-              return prevComments.filter(
-                comment => comment.id !== commentId,
-              );
-            }
+        setCommentsOfPost((prevComments: Comment[] | null) => {
+          if (prevComments) {
+            return prevComments.filter(comment => comment.id !== commentId);
+          }
 
-            return null;
-          },
-        );
+          return null;
+        });
       })
       .catch(() => setIsErrorShowing(true));
   };
 
   useEffect(() => {
     if (selectedPost) {
-      getComments(selectedPost.id);
+      getComments(
+        selectedPost.id,
+        setCommentsOfPost,
+        setIsCommentsLoading,
+        setIsErrorShowing,
+      );
     }
   }, [selectedPost]);
 
@@ -59,13 +49,9 @@ export const PostDetails: React.FC<Props> = ({
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">
-            {`#${selectedPost?.id}: ${selectedPost?.title}`}
-          </h2>
+          <h2 data-cy="PostTitle">{`#${selectedPost?.id}: ${selectedPost?.title}`}</h2>
 
-          <p data-cy="PostBody">
-            {selectedPost?.body}
-          </p>
+          <p data-cy="PostBody">{selectedPost?.body}</p>
         </div>
 
         <div className="block">
@@ -90,10 +76,7 @@ export const PostDetails: React.FC<Props> = ({
                       key={comment.id}
                     >
                       <div className="message-header">
-                        <a
-                          href={`mailto:${comment.email}`}
-                          data-cy="CommentAuthor"
-                        >
+                        <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                           {comment.name}
                         </a>
                         <button
