@@ -1,6 +1,6 @@
 import { client } from '../utils/fetchClient';
 import { Post } from '../types/Post';
 
-export const getUserPost = (userId: number) => {
+export const getUserPostsList = (userId: number) => {
   return client.get<Post[]>(`/posts?userId=${userId}`);
 };

@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import * as API_USERS from '../api/users';
 import * as API_POSTS from '../api/posts';
+import * as API_COMMENTS from '../api/comments';
 import { User } from '../types/User';
 import { Post } from '../types/Post';
+import { Comment } from '../types/Comment';
 
 type AppContexTypes = {
-  getUsersList: () => Promise<User[]>,
+  getUsers: () => Promise<User[]>,
   getUserPosts: (userId: number) => Promise<Post[]>,
+  getPostComments: (postId: number) => Promise<Comment[]>,
   users: User[],
   setUsers: (users: User[]) => void,
   selectedUser: User | null,
@@ -31,9 +34,14 @@ type AppProviderProps = {
 };
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-  const getUsersList = async (): Promise<User[]> => API_USERS.getUsers();
+  const getUsers = async (): Promise<User[]> => API_USERS.getUsersList();
+
   const getUserPosts = async (userId: number): Promise<Post[]> => {
-    return API_POSTS.getUserPost(userId);
+    return API_POSTS.getUserPostsList(userId);
+  };
+
+  const getPostComments = async (postId: number): Promise<Comment[]> => {
+    return API_COMMENTS.getPostCommentsList(postId);
   };
 
   const [users, setUsers] = useState<User[]>([]);
@@ -45,7 +53,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
-    getUsersList()
+    getUsers()
       .then(usersList => {
         setUsers(usersList);
         setIsError(false);
@@ -54,8 +62,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   }, []);
 
   const value = {
-    getUsersList,
+    getUsers,
     getUserPosts,
+    getPostComments,
     users,
     setUsers,
     selectedUser,
