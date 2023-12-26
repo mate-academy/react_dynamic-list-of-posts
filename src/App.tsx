@@ -1,15 +1,23 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
+// import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
+// import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { AppContext } from './components/AppContext';
 
 export const App: React.FC = () => {
+  const {
+    isLoading,
+    selectedUser,
+    userPosts,
+    error,
+  } = useContext(AppContext);
+
   return (
     <main className="section">
       <div className="container">
@@ -21,29 +29,42 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isLoading
+                  ? <Loader />
+                  : selectedUser && !error && (
+                    <>
+                      {userPosts?.length
+                        ? <PostsList />
+                        : (
+                          <div
+                            className="notification is-warning"
+                            data-cy="NoPostsYet"
+                          >
+                            No posts yet
+                          </div>
+                        )}
+                    </>
+                  )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
-
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                {error && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
-          <div
+          {/* <div
             data-cy="Sidebar"
             className={classNames(
               'tile',
@@ -56,7 +77,7 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success ">
               <PostDetails />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </main>
