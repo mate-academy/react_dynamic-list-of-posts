@@ -1,21 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { AppContext } from './AppContext';
 
 export const PostDetails: React.FC = () => {
+  const { selectedPost } = useContext(AppContext);
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {selectedPost?.title}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            {selectedPost?.body}
           </p>
         </div>
 

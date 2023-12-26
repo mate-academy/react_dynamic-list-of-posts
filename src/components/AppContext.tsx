@@ -13,10 +13,15 @@ type AppContexTypes = {
   setSelectedUser: (selectedUser: User | null) => void,
   userPosts: Post[] | null,
   setUserPosts: (userPosts: Post[] | null) => void,
-  isLoading: boolean,
-  setIsLoading: (isLoading: boolean) => void,
-  error: boolean,
-  setError: (error: boolean) => void,
+  isUserPostsLoading: boolean,
+  setIsUserPostsLoading: (isUserPostsLoading: boolean) => void,
+  isError: boolean,
+  setIsError: (error: boolean) => void,
+  isPostDetails: boolean,
+  setIsPostDetails: (isPostDetails: boolean
+  | ((isPostDetails: boolean) => boolean)) => void,
+  selectedPost: Post | null,
+  setSelectedPost: (selectedPost: Post | null) => void,
 };
 
 export const AppContext = React.createContext({} as AppContexTypes);
@@ -34,16 +39,18 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [userPosts, setUserPosts] = useState<Post[] | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [isUserPostsLoading, setIsUserPostsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isPostDetails, setIsPostDetails] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
     getUsersList()
       .then(usersList => {
         setUsers(usersList);
-        setError(false);
+        setIsError(false);
       })
-      .catch(() => setError(true));
+      .catch(() => setIsError(true));
   }, []);
 
   const value = {
@@ -55,10 +62,14 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setSelectedUser,
     userPosts,
     setUserPosts,
-    isLoading,
-    setIsLoading,
-    error,
-    setError,
+    isUserPostsLoading,
+    setIsUserPostsLoading,
+    isError,
+    setIsError,
+    isPostDetails,
+    setIsPostDetails,
+    selectedPost,
+    setSelectedPost,
   };
 
   return (

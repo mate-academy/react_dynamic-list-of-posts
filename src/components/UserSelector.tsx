@@ -11,8 +11,9 @@ export const UserSelector: React.FC = () => {
     setSelectedUser,
     getUserPosts,
     setUserPosts,
-    setError,
-    setIsLoading,
+    setIsError,
+    setIsUserPostsLoading,
+    setSelectedPost,
   } = useContext(AppContext);
   const [isDropdown, setIsDropdown] = useState(false);
 
@@ -21,17 +22,18 @@ export const UserSelector: React.FC = () => {
   };
 
   const handlerSelectedUserChange = (user: User) => {
-    setError(false);
-    setIsLoading(true);
+    setIsError(false);
+    setSelectedPost(null);
+    setIsUserPostsLoading(true);
     setSelectedUser(user);
 
     getUserPosts(user.id)
       .then((userPosts: Post[]) => {
         setUserPosts(userPosts);
-        setError(false);
+        setIsError(false);
       })
-      .catch(() => setError(true))
-      .finally(() => setIsLoading(false));
+      .catch(() => setIsError(true))
+      .finally(() => setIsUserPostsLoading(false));
   };
 
   return (
