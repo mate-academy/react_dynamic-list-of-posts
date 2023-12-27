@@ -10,12 +10,18 @@ type AppContexTypes = {
   getUsers: () => Promise<User[]>,
   getUserPosts: (userId: number) => Promise<Post[]>,
   getPostComments: (postId: number) => Promise<Comment[]>,
+  newComment: (data: Omit<Comment, 'id'>) => Promise<Comment>,
+  deleteComment: (commentId: number) => Promise<unknown>,
   users: User[],
   setUsers: (users: User[]) => void,
   selectedUser: User | null,
   setSelectedUser: (selectedUser: User | null) => void,
   userPosts: Post[] | null,
   setUserPosts: (userPosts: Post[] | null) => void,
+  comments: Comment[] | null,
+  // setComments: (comments: Comment[]
+  // | ((comments: Comment[]) => Comment[]) | null) => void,
+  setComments: (comments: Comment[] | null) => void,
   isUserPostsLoading: boolean,
   setIsUserPostsLoading: (isUserPostsLoading: boolean) => void,
   isError: boolean,
@@ -44,9 +50,21 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     return API_COMMENTS.getPostCommentsList(postId);
   };
 
+  const newComment = async (data: Omit<Comment, 'id'>): Promise<Comment> => {
+    return API_COMMENTS.postComment(data);
+  };
+
+  const deleteComment = async (commentId: number) => {
+    return API_COMMENTS.deleteCommentItem(commentId);
+  };
+
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [userPosts, setUserPosts] = useState<Post[] | null>(null);
+  // eslint-disable-next-line no-spaced-func
+  // const [comments, setComments] = useState<Comment[]
+  // | ((comments: Comment[]) => Comment[]) | null>(null);
+  const [comments, setComments] = useState<Comment[] | null>(null);
   const [isUserPostsLoading, setIsUserPostsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isPostDetails, setIsPostDetails] = useState(false);
@@ -65,11 +83,15 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     getUsers,
     getUserPosts,
     getPostComments,
+    newComment,
+    deleteComment,
     users,
     setUsers,
     selectedUser,
     setSelectedUser,
     userPosts,
+    comments,
+    setComments,
     setUserPosts,
     isUserPostsLoading,
     setIsUserPostsLoading,

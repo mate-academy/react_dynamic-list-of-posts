@@ -2,12 +2,18 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { AppContext } from './AppContext';
-import { Comment, CommentData } from '../types/Comment';
+import { Comment } from '../types/Comment';
 
 export const PostDetails: React.FC = () => {
-  const { selectedPost, getPostComments } = useContext(AppContext);
+  const {
+    selectedPost,
+    getPostComments,
+    deleteComment,
+    comments,
+    setComments,
+  } = useContext(AppContext);
+
   const [isCommentsLoaded, setIsCommentsLoaded] = useState(true);
-  const [comments, setComments] = useState<Comment[] | null>(null);
   const [commentFormVisible, setCommentFormVisible] = useState(false);
 
   useEffect(() => {
@@ -22,7 +28,23 @@ export const PostDetails: React.FC = () => {
         .catch(() => setComments(null))
         .finally(() => setIsCommentsLoaded(false));
     }
-  }, [selectedPost, getPostComments]);
+  }, [selectedPost]);
+
+  const handleCommentDeleteClick = (comment: Comment) => {
+    deleteComment(comment.id)
+      .then(() => {
+        // setComments((previousComments: Comment[]) => (
+        //   previousComments.filter(commentItem => (
+        //     commentItem.id !== comment.id
+        //   ))));
+        if (comments) {
+          setComments(comments.filter(commentItem => (
+            commentItem.id !== comment.id
+          )));
+        }
+      })
+      .catch();
+  };
 
   const renderComments = (commentsList: Comment[] | null) => {
     if (!commentsList) {
@@ -38,11 +60,16 @@ export const PostDetails: React.FC = () => {
         <>
           <p className="title is-4">Comments:</p>
 
-          {commentsList.map((comment: CommentData) => {
-            const { name, email, body } = comment;
+          {commentsList.map((comment: Comment) => {
+            const {
+              id,
+              name,
+              email,
+              body,
+            } = comment;
 
             return (
-              <article className="message is-small" data-cy="Comment">
+              <article key={id} className="message is-small" data-cy="Comment">
                 <div className="message-header">
                   <a href={`mailto:${email}`} data-cy="CommentAuthor">
                     {name}
@@ -52,6 +79,7 @@ export const PostDetails: React.FC = () => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
+                    onClick={() => handleCommentDeleteClick(comment)}
                   >
                     delete button
                   </button>
