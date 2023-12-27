@@ -7,8 +7,8 @@ export const NewCommentForm: React.FC = () => {
   const {
     selectedPost,
     newComment,
-    comments,
     setComments,
+    setIsAddDeleteCommentError,
   } = useContext(AppContext);
 
   const [author, setAuthor] = useState('');
@@ -31,6 +31,8 @@ export const NewCommentForm: React.FC = () => {
 
   const handleCommentSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+
+    setIsAddDeleteCommentError(false);
 
     if (selectedPost) {
       if (!author.trim()) {
@@ -57,22 +59,17 @@ export const NewCommentForm: React.FC = () => {
 
         newComment(commentData)
           .then((responseComment: Comment) => {
-            // setComments((previousComments: Comment[]) => {
-            //   if (!previousComments) {
-            //     return [responseComment];
-            //   }
+            setComments((previousComments: Comment[] | null) => {
+              if (!previousComments) {
+                return [responseComment];
+              }
 
-            //   return [...previousComments, responseComment];
-            // });
-            if (!comments) {
-              setComments([responseComment]);
-            } else {
-              setComments([...comments, responseComment]);
-            }
+              return [...previousComments, responseComment];
+            });
 
             setCommentText('');
           })
-          .catch()
+          .catch(() => setIsAddDeleteCommentError(true))
           .finally(() => setIsPostingComment(false));
       }
     }

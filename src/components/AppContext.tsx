@@ -19,9 +19,8 @@ type AppContexTypes = {
   userPosts: Post[] | null,
   setUserPosts: (userPosts: Post[] | null) => void,
   comments: Comment[] | null,
-  // setComments: (comments: Comment[]
-  // | ((comments: Comment[]) => Comment[]) | null) => void,
-  setComments: (comments: Comment[] | null) => void,
+  setComments: (comments: Comment[]
+  | ((comments: Comment[]) => Comment[]) | null) => void,
   isUserPostsLoading: boolean,
   setIsUserPostsLoading: (isUserPostsLoading: boolean) => void,
   isError: boolean,
@@ -31,6 +30,8 @@ type AppContexTypes = {
   | ((isPostDetails: boolean) => boolean)) => void,
   selectedPost: Post | null,
   setSelectedPost: (selectedPost: Post | null) => void,
+  isAddDeleteCommentError: boolean,
+  setIsAddDeleteCommentError: (isAddDeleteCommentError: boolean) => void,
 };
 
 export const AppContext = React.createContext({} as AppContexTypes);
@@ -62,11 +63,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [userPosts, setUserPosts] = useState<Post[] | null>(null);
   // eslint-disable-next-line no-spaced-func
-  // const [comments, setComments] = useState<Comment[]
-  // | ((comments: Comment[]) => Comment[]) | null>(null);
-  const [comments, setComments] = useState<Comment[] | null>(null);
+  const [comments, setComments] = useState<Comment[]
+  | ((comments: Comment[]) => Comment[]) | null>(null);
   const [isUserPostsLoading, setIsUserPostsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [isAddDeleteCommentError, setIsAddDeleteCommentError] = useState(false);
   const [isPostDetails, setIsPostDetails] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
@@ -101,10 +102,12 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setIsPostDetails,
     selectedPost,
     setSelectedPost,
+    isAddDeleteCommentError,
+    setIsAddDeleteCommentError,
   };
 
   return (
-    <AppContext.Provider value={value}>
+    <AppContext.Provider value={value as AppContexTypes}>
       { children }
     </AppContext.Provider>
   );

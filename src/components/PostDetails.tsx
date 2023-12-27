@@ -11,6 +11,8 @@ export const PostDetails: React.FC = () => {
     deleteComment,
     comments,
     setComments,
+    isAddDeleteCommentError,
+    setIsAddDeleteCommentError,
   } = useContext(AppContext);
 
   const [isCommentsLoaded, setIsCommentsLoaded] = useState(true);
@@ -19,6 +21,7 @@ export const PostDetails: React.FC = () => {
   useEffect(() => {
     if (selectedPost) {
       setIsCommentsLoaded(true);
+      setCommentFormVisible(false);
       setCommentFormVisible(false);
 
       getPostComments(selectedPost.id)
@@ -31,23 +34,20 @@ export const PostDetails: React.FC = () => {
   }, [selectedPost]);
 
   const handleCommentDeleteClick = (comment: Comment) => {
+    setIsAddDeleteCommentError(false);
+
     deleteComment(comment.id)
       .then(() => {
-        // setComments((previousComments: Comment[]) => (
-        //   previousComments.filter(commentItem => (
-        //     commentItem.id !== comment.id
-        //   ))));
-        if (comments) {
-          setComments(comments.filter(commentItem => (
+        setComments((previousComments: Comment[]) => (
+          previousComments.filter(commentItem => (
             commentItem.id !== comment.id
-          )));
-        }
+          ))));
       })
-      .catch();
+      .catch(() => setIsAddDeleteCommentError(true));
   };
 
   const renderComments = (commentsList: Comment[] | null) => {
-    if (!commentsList) {
+    if (!commentsList || isAddDeleteCommentError) {
       return (
         <div className="notification is-danger" data-cy="CommentsError">
           Something went wrong
@@ -133,7 +133,10 @@ export const PostDetails: React.FC = () => {
                 </button>
               )}
 
-              {commentFormVisible && comments && <NewCommentForm />}
+              {commentFormVisible
+              && comments
+              && !isAddDeleteCommentError
+              && <NewCommentForm />}
             </>
           )}
         </div>
