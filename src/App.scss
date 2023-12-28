@@ -21,3 +21,49 @@
 .message-body {
   white-space: pre-line;
 }
+
+input {
+  outline: none;
+  border: none;
+}
+
+.my-dropdown {
+  overflow: auto;
+  max-height: 500px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.my-dropdown-item {
+  max-width: 220px;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.my-notification {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  left: 50%;
+  z-index: 1; // To override bulma styles
+  animation: show-error 200ms ease-in-out;
+}
+
+@keyframes show-error {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.my-comment {
+  position: relative;
+  overflow: hidden;
+}

@@ -1,6 +1,32 @@
-import React from 'react';
+import React, {
+  useContext, useMemo, useRef, useState,
+} from 'react';
+import classNames from 'classnames';
+import { UsersContext } from '../store/UsersContext';
+import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
+  const { users, selectedUser, setSelectedUser } = useContext(UsersContext);
+  const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const queryElement = useRef<HTMLInputElement | null>(null);
+
+  const visibleUsers = useMemo(
+    () => users.filter(user => (
+      user.name?.toLowerCase().includes(query.toLowerCase())
+    )), [query, users],
+  );
+
+  const handleDropdownTriggerClick = () => {
+    setIsOpen(!isOpen);
+    queryElement.current?.focus();
+  };
+
+  const handleUserClick = (user: User) => {
+    setQuery(user.name);
+    setSelectedUser(user);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -12,8 +38,17 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          aria-label="Open dropdown menu"
+          onClick={handleDropdownTriggerClick}
         >
-          <span>Choose a user</span>
+          <input
+            placeholder="Choose a user"
+            ref={queryElement}
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            onFocus={() => setQuery('')}
+            onBlur={() => setIsOpen(false)}
+          />
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -21,15 +56,26 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+      {isOpen && (
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div className="dropdown-content my-dropdown">
+            {visibleUsers.map(user => (
+              <a
+                key={user.id}
+                href={`#user-${user.id}`}
+                onMouseDown={() => handleUserClick(user)}
+                className={classNames(
+                  'dropdown-item',
+                  'my-dropdown-item',
+                  { 'is-active': user.id === selectedUser?.id },
+                )}
+              >
+                {user.name}
+              </a>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
