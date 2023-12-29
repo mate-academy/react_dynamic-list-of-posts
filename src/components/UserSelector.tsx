@@ -1,6 +1,6 @@
 import React from 'react';
-import classNames from 'classnames';
 import { User } from '../types/User';
+import { UserList } from './UserList';
 
 type Props = {
   handleListDropDown: () => void;
@@ -20,10 +20,7 @@ export const UserSelector: React.FC<Props> = ({
   handleChoseUser,
 }) => {
   return (
-    <div
-      data-cy="UserSelector"
-      className="dropdown is-active"
-    >
+    <div data-cy="UserSelector" className="dropdown is-active">
       <div className="dropdown-trigger">
         <button
           type="button"
@@ -33,39 +30,24 @@ export const UserSelector: React.FC<Props> = ({
           onClick={handleListDropDown}
           onBlur={() => setTimeout(() => setIsDropDownList(false), 210)}
         >
-
           {selectedUser ? (
-            <span>(selected.name)</span>
+            <span>{selectedUser.name}</span>
           ) : (
             <span>Choose a user</span>
           )}
-
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
           </span>
         </button>
       </div>
 
-      {isDropDownList && (
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          <div
-            className="dropdown-content"
-          >
-            {' '}
-            {users.map(el => (
-              <a
-                href="#user-2"
-                className={classNames('dropdown-item', {
-                  'is-active': selectedUser?.id === el.id,
-                })}
-                onClick={() => handleChoseUser(el)}
-              >
-                {el.name}
-              </a>
-            ))}
-          </div>
-        </div>
-
+      {isDropDownList
+      && (
+        <UserList
+          users={users}
+          selectedUser={selectedUser}
+          handleChoseUser={handleChoseUser}
+        />
       )}
     </div>
   );
