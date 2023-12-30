@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -10,6 +10,8 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 
 export const App: React.FC = () => {
+  const [userId, setUserId] = useState<number>(-1);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,7 +19,10 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  userId={userId}
+                  setUserId={setUserId}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
