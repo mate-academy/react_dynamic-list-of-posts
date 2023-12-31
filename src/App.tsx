@@ -1,16 +1,39 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
+import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { Post } from './types/Post';
+import { getPosts } from './api/api';
 
 export const App: React.FC = () => {
-  const [userId, setUserId] = useState<number>(-1);
+  const [userId, setUserId] = useState<number | null>(null);
+  const [posts, setPosts] = useState<Post[] | null>(null);
+  const [postsListError, setPostsListError] = useState<boolean>(false);
+  const [postId, setPostId] = useState<number | null>(null);
+
+  useEffect(() => {
+    const getPostData = async () => {
+      if (userId) {
+        try {
+          const postData = await getPosts(userId);
+
+          setPostsListError(false);
+          setPosts(postData);
+        } catch (error) {
+          setPostsListError(true);
+          setPosts([]);
+        }
+      }
+    };
+
+    getPostData();
+  }, [userId]);
 
   return (
     <main className="section">
@@ -26,28 +49,65 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!userId && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {!postsListError && !posts && userId && (<Loader />)}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {postsListError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {userId && posts && posts.length === 0 && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                <PostsList />
+                {userId && posts && posts.length > 0
+                  && (
+                    <PostsList
+                      posts={posts}
+                      postId={postId}
+                      setPostId={setPostId}
+                    />
+                  )}
               </div>
             </div>
           </div>
 
+          {postId && (
+            <div
+              data-cy="Sidebar"
+              className={classNames(
+                'tile',
+                'is-parent',
+                'is-8-desktop',
+                'Sidebar',
+                'Sidebar--open',
+              )}
+            >
+              <div className="tile is-child box is-success ">
+                <PostDetails />
+              </div>
+            </div>
+          )}
+
+        </div>
+      </div>
+    </main>
+  );
+};
+
+/*
           <div
             data-cy="Sidebar"
             className={classNames(
@@ -62,8 +122,4 @@ export const App: React.FC = () => {
               <PostDetails />
             </div>
           </div>
-        </div>
-      </div>
-    </main>
-  );
-};
+*/

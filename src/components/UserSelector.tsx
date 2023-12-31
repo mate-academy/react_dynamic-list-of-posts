@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
-import { client } from '../utils/fetchClient';
+import { getUserList } from '../api/api';
 
 export type UserSelectorProps = {
-  userId: number
+  userId: number | null
   setUserId: (id: number) => void
 };
 
@@ -16,9 +16,9 @@ export const UserSelector: React.FC<UserSelectorProps>
 
   useEffect(() => {
     const getUsers = async () => {
-      const list = await client.get('/users');
+      const list = await getUserList();
 
-      setUsers(list as User[]);
+      setUsers(list);
     };
 
     getUsers();
@@ -34,17 +34,13 @@ export const UserSelector: React.FC<UserSelectorProps>
   };
 
   const getUserName = () => {
-    const name = [];
-
     const user = users.find((item) => item.id === userId);
 
     if (user) {
-      name.push(user.name);
-    } else {
-      name.push('Choose a user');
+      return (user.name);
     }
 
-    return name;
+    return ('Choose a user');
   };
 
   return (
@@ -81,6 +77,7 @@ export const UserSelector: React.FC<UserSelectorProps>
                 className={classNames('dropdown-item',
                   { 'is-active': item.id === userId })}
                 onClick={() => handleUserId(item.id)}
+                key={item.id}
               >
                 {item.name}
               </a>
