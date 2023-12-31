@@ -9,30 +9,35 @@ import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { Post } from './types/Post';
-import { getPosts } from './api/api';
+import { getPosts, getUserList } from './api/api';
+import { User } from './types/User';
 
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
   const [userId, setUserId] = useState<number | null>(null);
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [postsListError, setPostsListError] = useState<boolean>(false);
-  const [postId, setPostId] = useState<number | null>(null);
+  const [postId, setPostId] = useState<Post | null>(null);
 
   useEffect(() => {
-    const getPostData = async () => {
-      if (userId) {
-        try {
-          const postData = await getPosts(userId);
+    getUserList()
+      .then(response => setUsers(response));
+  }, []);
 
+  useEffect(() => {
+    setPostId(null);
+
+    if (userId) {
+      getPosts(userId)
+        .then((response) => {
           setPostsListError(false);
-          setPosts(postData);
-        } catch (error) {
+          setPosts(response);
+        })
+        .catch(() => {
           setPostsListError(true);
           setPosts([]);
-        }
-      }
-    };
-
-    getPostData();
+        });
+    }
   }, [userId]);
 
   return (
@@ -43,6 +48,7 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
+                  users={users}
                   userId={userId}
                   setUserId={setUserId}
                 />
@@ -96,7 +102,7 @@ export const App: React.FC = () => {
               )}
             >
               <div className="tile is-child box is-success ">
-                <PostDetails />
+                <PostDetails postId={postId} />
               </div>
             </div>
           )}
@@ -106,20 +112,3 @@ export const App: React.FC = () => {
     </main>
   );
 };
-
-/*
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
-          </div>
-*/

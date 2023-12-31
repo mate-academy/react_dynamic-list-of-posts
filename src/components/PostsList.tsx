@@ -3,8 +3,8 @@ import { Post } from '../types/Post';
 
 export type PostsListProps = {
   posts: Post[]
-  postId: number | null
-  setPostId: (id: number | null) => void
+  postId: Post | null
+  setPostId: (post: Post | null) => void
 };
 
 export const PostsList: React.FC<PostsListProps>
@@ -23,7 +23,9 @@ export const PostsList: React.FC<PostsListProps>
       </thead>
 
       <tbody>
-        {posts.map(({ id, title }) => (
+        {posts.map(({
+          id, title, userId, body,
+        }) => (
           <tr data-cy="Post" key={id}>
             <td data-cy="PostId">{id}</td>
 
@@ -32,7 +34,7 @@ export const PostsList: React.FC<PostsListProps>
             </td>
 
             <td className="has-text-right is-vcentered">
-              {id === postId ? (
+              {id === postId?.id ? (
                 <button
                   type="button"
                   data-cy="PostButton"
@@ -46,7 +48,9 @@ export const PostsList: React.FC<PostsListProps>
                   type="button"
                   data-cy="PostButton"
                   className="button is-link is-light"
-                  onClick={() => setPostId(id)}
+                  onClick={() => setPostId({
+                    id, title, userId, body,
+                  })}
                 >
                   Open
                 </button>

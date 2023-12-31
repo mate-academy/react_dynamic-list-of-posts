@@ -1,28 +1,17 @@
 /* eslint-disable jsx-a11y/interactive-supports-focus */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
-import { getUserList } from '../api/api';
 
 export type UserSelectorProps = {
+  users: User[]
   userId: number | null
   setUserId: (id: number) => void
 };
 
 export const UserSelector: React.FC<UserSelectorProps>
-= ({ userId, setUserId }) => {
-  const [users, setUsers] = useState<User[]>([]);
+= ({ users, userId, setUserId }) => {
   const [expandedList, setExpandedList] = useState<boolean>(false);
-
-  useEffect(() => {
-    const getUsers = async () => {
-      const list = await getUserList();
-
-      setUsers(list);
-    };
-
-    getUsers();
-  }, []);
 
   const handleList = () => {
     setExpandedList((prev) => !prev);

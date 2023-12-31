@@ -1,3 +1,4 @@
+import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 import { client } from '../utils/fetchClient';
@@ -10,6 +11,14 @@ export const getPosts = (userId: number) => {
   return client.get<Post[]>(`/posts?userId=${userId}`);
 };
 
-export const getPost = (postId: number) => {
-  return client.get<Post>(`/posts/${postId}`);
+export const getComments = (postId: number) => {
+  return client.get<Comment[]>(`/comments?postId=${postId}`);
+};
+
+export const addComment = (comment: Omit<Comment, 'id'>) => {
+  return client.post<Comment>('/comments', comment);
+};
+
+export const removeComment = (commentId: number) => {
+  return client.delete(`/comments/${commentId}`);
 };
