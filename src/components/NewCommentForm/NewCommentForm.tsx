@@ -1,10 +1,10 @@
 import cn from 'classnames';
 import React, { useState } from 'react';
 import { Comment } from '../../types/Comment';
-import { Post } from '../../types/Post';
-import { client } from '../../utils/fetchClient';
 import { Form } from '../../types/Form';
-import { validateForm } from './helper';
+import { Post } from '../../types/Post';
+import { validateField } from './helper';
+import { postComment } from '../../services/api';
 
 interface Props {
   selectedPost: Post | null;
@@ -12,7 +12,7 @@ interface Props {
   setIsErrorShowing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const EMPTY_FORM: Form<string> = {
+const EMPTY_FORM: Form = {
   author: '',
   email: '',
   text: '',
@@ -23,7 +23,7 @@ export const NewCommentForm: React.FC<Props> = ({
   setCommentsOfPost,
   setIsErrorShowing,
 }) => {
-  const [formInputs, setFormInputs] = useState<Form<string>>({
+  const [formInputs, setFormInputs] = useState<Form>({
     ...EMPTY_FORM,
   });
   const [formErrors, setFormErrors] = useState({
@@ -53,22 +53,42 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    setIsErrorShowing(false);
 
-    if (!validateForm(formInputs, setFormErrors)) {
+    if (!selectedPost) {
       return;
     }
 
-    const newComment = {
-      postId: selectedPost?.id,
+    setIsErrorShowing(false);
+    let isValidated = true;
+
+    Object.keys(formInputs).forEach(key => {
+      const hasError = validateField(
+        formInputs[key as keyof typeof formInputs],
+      );
+
+      setFormErrors(prevErrors => ({
+        ...prevErrors,
+        [key]: hasError,
+      }));
+
+      if (hasError) {
+        isValidated = false;
+      }
+    });
+
+    if (!isValidated) {
+      return;
+    }
+
+    const newComment: Omit<Comment, 'id'> = {
+      postId: selectedPost.id,
       name: formInputs.author,
       email: formInputs.email,
       body: formInputs.text,
     };
 
     setIsSubmitting(true);
-    client
-      .post<Comment>('/comments', newComment)
+    postComment(newComment)
       .then(comment => {
         setCommentsOfPost(prevComments => {
           if (prevComments) {
@@ -198,9 +218,8 @@ export const NewCommentForm: React.FC<Props> = ({
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button
-            type="reset"
+            type="button"
             className="button is-link is-light"
             onClick={handleReset}
           >

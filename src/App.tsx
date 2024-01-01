@@ -25,9 +25,13 @@ export const App: React.FC = () => {
   const selectUser = (user: User) => {
     setSelectedUser(user);
     setSelectedPost(null);
-
+    setPostsFromServer(null);
+    setIsErrorShowing(false);
     setIsPostsLoading(true);
-    getPosts(user.id, setIsErrorShowing, setPostsFromServer)
+
+    getPosts(user.id)
+      .then(setPostsFromServer)
+      .catch(() => setIsErrorShowing(true))
       .finally(() => setIsPostsLoading(false));
   };
 

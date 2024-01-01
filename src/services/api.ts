@@ -14,17 +14,14 @@ export const getUsers = (
     .catch(() => setIsErrorShowing(true));
 };
 
-export const getPosts = (
+export const getPosts = async (
   userId: number,
-  setIsErrorShowing: (isShowing: boolean) => void,
-  setPostsFromServer: (posts: Post[] | null) => void,
 ) => {
-  setPostsFromServer(null);
-  setIsErrorShowing(false);
-
-  return client.get<Post[]>(`/posts?userId=${userId}`)
-    .then(setPostsFromServer)
-    .catch(() => setIsErrorShowing(true));
+  try {
+    return await client.get<Post[]>(`/posts?userId=${userId}`);
+  } catch {
+    throw new Error('Couldn\'t fetch posts');
+  }
 };
 
 export const getComments = (
@@ -42,4 +39,24 @@ export const getComments = (
     .then(setCommentsOfPost)
     .catch(() => setIsErrorShowing(true))
     .finally(() => setIsCommentsLoading(false));
+};
+
+export const postComment = async (
+  newComment: Omit<Comment, 'id'>,
+) => {
+  try {
+    return await client.post<Comment>('/comments', newComment);
+  } catch {
+    throw new Error('Couldn\'t post a comment');
+  }
+};
+
+export const deleteComment = async (
+  commentId: number,
+) => {
+  try {
+    return await client.delete(`/comments/${commentId}`);
+  } catch {
+    throw new Error('Couldn\'t delete comment');
+  }
 };

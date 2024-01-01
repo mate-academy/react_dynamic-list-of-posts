@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
-import { client } from '../utils/fetchClient';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm/NewCommentForm';
-import { getComments } from '../services/api';
+import { deleteComment, getComments } from '../services/api';
+import { CommentBox } from './Comment';
 
 interface Props {
   selectedPost: Post | null;
@@ -20,8 +20,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const handleDeleteComment = (commentId: number) => {
     setIsErrorShowing(false);
 
-    client
-      .delete(`/comments/${commentId}`)
+    deleteComment(commentId)
       .then(() => {
         setCommentsOfPost((prevComments: Comment[] | null) => {
           if (prevComments) {
@@ -70,30 +69,11 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
                   <p className="title is-4">Comments:</p>
 
                   {commentsOfPost.map(comment => (
-                    <article
-                      className="message is-small"
-                      data-cy="Comment"
+                    <CommentBox
+                      comment={comment}
+                      handleDeleteComment={handleDeleteComment}
                       key={comment.id}
-                    >
-                      <div className="message-header">
-                        <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                          {comment.name}
-                        </a>
-                        <button
-                          data-cy="CommentDelete"
-                          type="button"
-                          className="delete is-small"
-                          aria-label="delete"
-                          onClick={() => handleDeleteComment(comment.id)}
-                        >
-                          delete button
-                        </button>
-                      </div>
-
-                      <div className="message-body" data-cy="CommentBody">
-                        {comment.body}
-                      </div>
-                    </article>
+                    />
                   ))}
                 </>
               ) : (
