@@ -90,22 +90,20 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {postId && (
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                'Sidebar--open',
-              )}
-            >
-              <div className="tile is-child box is-success ">
-                <PostDetails postId={postId} />
-              </div>
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': postId },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              {postId && <PostDetails postId={postId} />}
             </div>
-          )}
+          </div>
 
         </div>
       </div>

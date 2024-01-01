@@ -11,15 +11,11 @@ export type UserSelectorProps = {
 
 export const UserSelector: React.FC<UserSelectorProps>
 = ({ users, userId, setUserId }) => {
-  const [expandedList, setExpandedList] = useState<boolean>(false);
-
-  const handleList = () => {
-    setExpandedList((prev) => !prev);
-  };
+  const [isActive, setIsActive] = useState(false);
 
   const handleUserId = (id: number) => {
     setUserId(id);
-    handleList();
+    setIsActive(() => false);
   };
 
   const getUserName = () => {
@@ -35,7 +31,7 @@ export const UserSelector: React.FC<UserSelectorProps>
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={classNames('dropdown', { 'is-active': isActive })}
     >
       <div className="dropdown-trigger">
         <button
@@ -43,7 +39,7 @@ export const UserSelector: React.FC<UserSelectorProps>
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={handleList}
+          onClick={() => setIsActive((prev) => !prev)}
         >
           <span>{getUserName()}</span>
 
@@ -58,22 +54,22 @@ export const UserSelector: React.FC<UserSelectorProps>
         id="dropdown-menu"
         role="menu"
       >
-        {expandedList && (
-          <ul className="dropdown-content">
-            {users.map((item) => (
-              <a
-                href={`#user-${item.id}`}
-                className={classNames('dropdown-item',
-                  { 'is-active': item.id === userId })}
-                onClick={() => handleUserId(item.id)}
-                key={item.id}
-              >
-                {item.name}
-              </a>
-            ))}
 
-          </ul>
-        )}
+        <div className="dropdown-content">
+          {users.map((user) => (
+            <a
+              key={user.id}
+              href={`#user-${user.id}`}
+              className={classNames('dropdown-item',
+                { 'is-active': user.id === userId })}
+              onClick={() => handleUserId(user.id)}
+            >
+              {user.name}
+            </a>
+          ))}
+
+        </div>
+
       </div>
     </div>
   );

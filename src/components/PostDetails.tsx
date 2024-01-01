@@ -6,7 +6,7 @@ import { addComment, getComments, removeComment } from '../api/api';
 import { Comment, CommentData } from '../types/Comment';
 
 export type PostDetailsProps = {
-  postId: (Post)
+  postId: Post
 };
 
 export const PostDetails: React.FC<PostDetailsProps> = ({ postId }) => {
