@@ -2,6 +2,7 @@ import React, {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 import { User } from '../types/User';
@@ -66,7 +67,7 @@ export const PostsProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-  useEffect(() => {
+  useMemo(() => {
     getUsers()
       .then(setUsers);
   }, []);
