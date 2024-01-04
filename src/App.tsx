@@ -72,7 +72,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {userId && posts && posts.length && (
+                {userId && posts && !posts.length && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>

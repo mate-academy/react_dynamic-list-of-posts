@@ -35,19 +35,19 @@ export const NewCommentForm: React.FC<NewCommentFormProps>
   const handleSend = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!name) {
+    if (!name.trim()) {
       setNameCheck(false);
     }
 
-    if (!email) {
+    if (!email.trim()) {
       setEmailCheck(false);
     }
 
-    if (!body) {
+    if (!body.trim()) {
       setBodyCheck(false);
     }
 
-    if (name && email && body) {
+    if (name.trim() && email.trim() && body.trim()) {
       handleAddComment({ name, email, body });
       setBody('');
     }
