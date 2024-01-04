@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -10,7 +10,7 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { usePosts } from './components/PostsProvider';
 
-export const App: React.FC = () => {
+export const App: FC = () => {
   const {
     selectedUser,
     loading,

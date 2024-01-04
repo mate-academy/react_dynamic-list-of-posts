@@ -1,4 +1,5 @@
-import React, {
+import {
+  FC,
   createContext,
   useContext,
   useEffect,
@@ -41,7 +42,7 @@ export const usePosts = () => {
   return useContext(PostsContext);
 };
 
-export const PostsProvider: React.FC<Props> = ({ children }) => {
+export const PostsProvider: FC<Props> = ({ children }) => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [userPosts, setUserPosts] = useState<Post[]>([]);

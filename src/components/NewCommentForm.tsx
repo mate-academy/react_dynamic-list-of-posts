@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { createComment } from '../utils/commentService';
 import { Comment } from '../types/Comment';
@@ -10,7 +10,7 @@ type Props = {
   setErrorMessage: (err: string) => void;
 };
 
-export const NewCommentForm: React.FC<Props>
+export const NewCommentForm: FC<Props>
   = ({ setErrorMessage, postComments, setPostComments }) => {
     const [name, setName] = useState('');
     const [hasNameError, setHasNameError] = useState(false);
@@ -20,23 +20,11 @@ export const NewCommentForm: React.FC<Props>
     const [hasCommentError, setHasCommentError] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    const nameRef = useRef<HTMLInputElement | null>(null);
+    const mailRef = useRef<HTMLInputElement | null>(null);
+    const commentRef = useRef<HTMLTextAreaElement | null>(null);
+
     const { selectedPost } = usePosts();
-
-    const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setName(event.target.value);
-      setHasNameError(false);
-    };
-
-    const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setEmail(event.target.value);
-      setHasEmailError(false);
-    };
-
-    const handleCommentChange
-      = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setComment(event.target.value);
-        setHasCommentError(false);
-      };
 
     function addComment({
       postId,
@@ -65,14 +53,22 @@ export const NewCommentForm: React.FC<Props>
         });
     }
 
+    const handleClear = () => {
+      setName('');
+      setEmail('');
+      setComment('');
+    };
+
     const handleAdd = (event: React.FormEvent) => {
       event.preventDefault();
 
-      setHasNameError(!name.trim());
-      setHasEmailError(!email.trim());
-      setHasCommentError(!comment.trim());
+      setHasNameError(!nameRef?.current?.value.trim());
+      setHasEmailError(!mailRef?.current?.value.trim());
+      setHasCommentError(!commentRef?.current?.value.trim());
 
-      if (!name.trim() || !email.trim() || !comment.trim()) {
+      if (!nameRef?.current?.value.trim()
+        || !mailRef?.current?.value.trim()
+        || !commentRef?.current?.value.trim()) {
         return;
       }
 
@@ -80,17 +76,13 @@ export const NewCommentForm: React.FC<Props>
         addComment({
           id: postComments.length,
           postId: selectedPost.id,
-          name,
-          email,
-          body: comment,
+          name: nameRef?.current?.value,
+          email: mailRef?.current?.value,
+          body: commentRef?.current?.value,
         });
       }
-    };
 
-    const handleClear = () => {
-      setName('');
-      setEmail('');
-      setComment('');
+      handleClear();
     };
 
     return (
@@ -112,8 +104,8 @@ export const NewCommentForm: React.FC<Props>
               className={classNames('input', {
                 'is-danger': hasNameError,
               })}
-              value={name}
-              onChange={handleNameChange}
+              defaultValue={name}
+              ref={nameRef}
             />
 
             <span className="icon is-small is-left">
@@ -151,8 +143,8 @@ export const NewCommentForm: React.FC<Props>
               className={classNames('input', {
                 'is-danger': hasEmailError,
               })}
-              value={email}
-              onChange={handleEmailChange}
+              defaultValue={email}
+              ref={mailRef}
             />
 
             <span className="icon is-small is-left">
@@ -189,8 +181,8 @@ export const NewCommentForm: React.FC<Props>
               className={classNames('input', {
                 'is-danger': hasCommentError,
               })}
-              value={comment}
-              onChange={handleCommentChange}
+              defaultValue={comment}
+              ref={commentRef}
             />
           </div>
 
