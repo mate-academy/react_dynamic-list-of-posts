@@ -6,20 +6,25 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { getPosts, getUsers } from '../api/api';
+import { getPosts, getUsers, getComments } from '../api/api';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
+import { Comment } from '../types/Comment';
 
 interface PostContextType {
-  posts: Post[],
-  selectedPost: Post,
-  users: User[],
+  posts: Post[];
+  selectedPost: Post;
+  selectedComments: Comment[];
+  users: User[];
   person: User | null;
-  postsLoading: boolean
-  error: boolean
+  postsLoading: boolean;
+  commentsLoading: boolean;
+  error: boolean;
   setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>
+  setSelectedComments: React.Dispatch<React.SetStateAction<Comment[]>>
   setPerson: React.Dispatch<React.SetStateAction<User | null>>
   setPostsLoading: React.Dispatch<React.SetStateAction<boolean>>
+  setCommentsLoading: React.Dispatch<React.SetStateAction<boolean>>
   setError: React.Dispatch<React.SetStateAction<boolean>>
 }
 
@@ -30,9 +35,11 @@ export const PostProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post>();
+  const [selectedComments, setSelectedComments] = useState<Comment[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [person, setPerson] = useState<User | null>(null);
   const [postsLoading, setPostsLoading] = useState<boolean>(false);
+  const [commentsLoading, setCommentsLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
@@ -54,6 +61,24 @@ export const PostProvider: React.FC<{ children: ReactNode }> = ({
       });
   }, [person]);
 
+  useEffect(() => {
+    setCommentsLoading(true);
+    getComments()
+      .then(allComments => {
+        setSelectedComments(
+          allComments.filter(comment => comment.postId === selectedPost?.id),
+        );
+      })
+      .catch(() => {
+        setError(true);
+      })
+      .finally(() => {
+        setCommentsLoading(false);
+      });
+
+    console.log(selectedComments)
+  }, [selectedPost]);
+
   const memoizedValue = useMemo(() => ({
     posts,
     selectedPost,
@@ -61,9 +86,19 @@ export const PostProvider: React.FC<{ children: ReactNode }> = ({
     person,
     postsLoading,
     error,
+    selectedComments,
+    commentsLoading,
     setSelectedPost,
     setPerson,
-  }), [posts, selectedPost, users, person, postsLoading, error]);
+  }), [posts,
+    selectedPost,
+    users,
+    person,
+    postsLoading,
+    error,
+    selectedComments,
+    commentsLoading,
+  ]);
 
   return (
     <PostContext.Provider value={memoizedValue}>

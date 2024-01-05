@@ -1,5 +1,6 @@
 import { Post } from '../types/Post';
 import { User } from '../types/User';
+import { Comment } from '../types/Comment';
 import { client } from '../utils/fetchClient';
 
 export const getUsers = () => {
@@ -8,6 +9,10 @@ export const getUsers = () => {
 
 export const getPosts = () => {
   return client.get<Post[]>('/posts');
+};
+
+export const getComments = () => {
+  return client.get<Comment[]>('/comments');
 };
 
 export const addPosts = (data: Post) => {
