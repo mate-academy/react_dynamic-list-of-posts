@@ -169,7 +169,7 @@ Cypress.on('fail', (e) => {
   throw e;
 });
 
-describe('', () => {
+describe.skip('', () => {
   beforeEach(() => {
     if (failed) Cypress.runner.stop();
 

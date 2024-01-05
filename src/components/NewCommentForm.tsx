@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import { createComment } from '../utils/commentService';
 import { Comment } from '../types/Comment';
 import { usePosts } from './PostsProvider';
+import { ErrorMessage } from '../types/errors';
 
 type Props = {
   setPostComments: (comm: Comment[]) => void;
@@ -12,17 +13,17 @@ type Props = {
 
 export const NewCommentForm: FC<Props>
   = ({ setErrorMessage, postComments, setPostComments }) => {
-    const [name, setName] = useState('');
-    const [hasNameError, setHasNameError] = useState(false);
-    const [email, setEmail] = useState('');
-    const [hasEmailError, setHasEmailError] = useState(false);
-    const [comment, setComment] = useState('');
-    const [hasCommentError, setHasCommentError] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const nameRef = useRef<HTMLInputElement | null>(null);
-    const mailRef = useRef<HTMLInputElement | null>(null);
-    const commentRef = useRef<HTMLTextAreaElement | null>(null);
+    const [errors, setErrors] = useState({
+      nameError: null as null | ErrorMessage,
+      emailError: null as null | ErrorMessage,
+      commentError: null as null | ErrorMessage,
+    });
+
+    const nameRef = useRef<HTMLInputElement>(null);
+    const mailRef = useRef<HTMLInputElement>(null);
+    const commentRef = useRef<HTMLTextAreaElement>(null);
 
     const { selectedPost } = usePosts();
 
@@ -43,10 +44,9 @@ export const NewCommentForm: FC<Props>
       })
         .then(newComment => {
           setPostComments([...postComments, newComment]);
-          setComment('');
         })
         .catch(() => {
-          setErrorMessage('Something went wrong!');
+          setErrorMessage(ErrorMessage.Something);
         })
         .finally(() => {
           setLoading(false);
@@ -54,17 +54,48 @@ export const NewCommentForm: FC<Props>
     }
 
     const handleClear = () => {
-      setName('');
-      setEmail('');
-      setComment('');
+      if (nameRef.current) {
+        nameRef.current.value = '';
+      }
+
+      if (mailRef.current) {
+        mailRef.current.value = '';
+      }
+
+      if (commentRef.current) {
+        commentRef.current.value = '';
+      }
+
+      setErrors({
+        nameError: null,
+        emailError: null,
+        commentError: null,
+      });
     };
 
     const handleAdd = (event: React.FormEvent) => {
       event.preventDefault();
 
-      setHasNameError(!nameRef?.current?.value.trim());
-      setHasEmailError(!mailRef?.current?.value.trim());
-      setHasCommentError(!commentRef?.current?.value.trim());
+      if (!nameRef?.current?.value.trim()) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          nameError: ErrorMessage.Name,
+        }));
+      }
+
+      if (!mailRef?.current?.value.trim()) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          emailError: ErrorMessage.Email,
+        }));
+      }
+
+      if (!commentRef?.current?.value.trim()) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          commentError: ErrorMessage.Comment,
+        }));
+      }
 
       if (!nameRef?.current?.value.trim()
         || !mailRef?.current?.value.trim()
@@ -102,9 +133,9 @@ export const NewCommentForm: FC<Props>
               id="comment-author-name"
               placeholder="Name Surname"
               className={classNames('input', {
-                'is-danger': hasNameError,
+                'is-danger': errors.nameError,
               })}
-              defaultValue={name}
+              defaultValue=""
               ref={nameRef}
             />
 
@@ -112,7 +143,7 @@ export const NewCommentForm: FC<Props>
               <i className="fas fa-user" />
             </span>
 
-            {hasNameError && (
+            {errors.nameError && (
               <span
                 className="icon is-small is-right has-text-danger"
                 data-cy="ErrorIcon"
@@ -122,9 +153,9 @@ export const NewCommentForm: FC<Props>
             )}
           </div>
 
-          {hasNameError && (
+          {errors.nameError && (
             <p className="help is-danger" data-cy="ErrorMessage">
-              Name is required
+              {errors.nameError}
             </p>
           )}
         </div>
@@ -141,9 +172,9 @@ export const NewCommentForm: FC<Props>
               id="comment-author-email"
               placeholder="email@test.com"
               className={classNames('input', {
-                'is-danger': hasEmailError,
+                'is-danger': errors.emailError,
               })}
-              defaultValue={email}
+              defaultValue=""
               ref={mailRef}
             />
 
@@ -151,7 +182,7 @@ export const NewCommentForm: FC<Props>
               <i className="fas fa-envelope" />
             </span>
 
-            {hasEmailError && (
+            {errors.emailError && (
               <span
                 className="icon is-small is-right has-text-danger"
                 data-cy="ErrorIcon"
@@ -161,9 +192,9 @@ export const NewCommentForm: FC<Props>
             )}
           </div>
 
-          {hasEmailError && (
+          {errors.emailError && (
             <p className="help is-danger" data-cy="ErrorMessage">
-              Email is required
+              {errors.emailError}
             </p>
           )}
         </div>
@@ -179,16 +210,16 @@ export const NewCommentForm: FC<Props>
               name="body"
               placeholder="Type comment here"
               className={classNames('input', {
-                'is-danger': hasCommentError,
+                'is-danger': errors.commentError,
               })}
-              defaultValue={comment}
+              defaultValue=""
               ref={commentRef}
             />
           </div>
 
-          {hasCommentError && (
+          {errors.commentError && (
             <p className="help is-danger" data-cy="ErrorMessage">
-              Enter some text
+              {errors.commentError}
             </p>
           )}
         </div>
