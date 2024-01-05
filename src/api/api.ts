@@ -15,14 +15,10 @@ export const getComments = () => {
   return client.get<Comment[]>('/comments');
 };
 
-export const addPosts = (data: Post) => {
-  return client.post<Post>('/posts', data);
+export const addComment = (data: Comment) => {
+  return client.post<Comment>('/comments', data);
 };
 
-export const deletePost = (postId: number) => {
-  return client.delete(`/posts/${postId}`);
-};
-
-export const patchTodo = (data: Post) => {
-  return client.patch<Post>(`/posts/${data.id}`, data);
+export const deleteComment = (commentId: number) => {
+  return client.delete(`/comments/${commentId}`);
 };

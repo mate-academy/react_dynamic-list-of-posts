@@ -6,7 +6,7 @@
   transition-timing-function: ease-in-out;
 
   @media (min-width: 769px) {
-    max-width: 0;
+    max-width: 100%;
   }
 
   &--open {
