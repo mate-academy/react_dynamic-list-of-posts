@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react';
-import { UsersContext } from '../context/UsersContext';
 import { User } from '../types/User';
+import { AppContext } from '../context/ContextProvider';
 
 export const UserSelector: React.FC = () => {
-  const { users, setSelectedUser } = useContext(UsersContext);
+  const { users, setSelectedUser } = useContext(AppContext);
   const [dropdownSelector, setDropdownSelector] = useState(false);
 
   const handleSelectUser = (user: User) => {
@@ -23,7 +23,6 @@ export const UserSelector: React.FC = () => {
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => setDropdownSelector(!dropdownSelector)}
-          onBlur={() => setDropdownSelector(!dropdownSelector)}
         >
           <span>Choose a user</span>
 

@@ -7,17 +7,17 @@ import './App.scss';
 import { PostsList } from './components/PostsList';
 // import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-import { UsersContext } from './context/UsersContext';
 import { Loader } from './components/Loader';
-import { PostsContext } from './context/PostsContext';
+import { AppContext } from './context/ContextProvider';
 
 export const App: React.FC = () => {
-  const { selectedUser } = useContext(UsersContext);
   const {
+    posts,
     loadPosts,
     isPostsLoading,
     postErrorMessage,
-  } = useContext(PostsContext);
+    selectedUser,
+  } = useContext(AppContext);
 
   useEffect(() => {
     if (selectedUser) {
@@ -53,9 +53,11 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {posts.length === 0 && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
                 <PostsList />
               </div>
