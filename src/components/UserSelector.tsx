@@ -26,6 +26,7 @@ export const UserSelector: React.FC = () => {
     >
       <div className="dropdown-trigger">
         <button
+          onBlur={handleDropdown}
           type="button"
           className="button"
           aria-haspopup="true"
@@ -47,9 +48,11 @@ export const UserSelector: React.FC = () => {
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
           {
-            users.map(user => (
-              <UserItem key={user.id} user={user} />
-            ))
+            users.length > 0
+              ? users.map(user => (
+                <UserItem key={user.id} user={user} />
+              ))
+              : <p>No users loaded</p>
           }
         </div>
       </div>

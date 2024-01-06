@@ -31,7 +31,7 @@ export const AppContextProvider: FC<Props> = ({ children }) => {
       .then(response => setUsers(response as User[]))
       .catch(error => {
         // eslint-disable-next-line no-console
-        console.error(error);
+        console.error(error, 'Unable to load users');
         throw new Error('Unable to load users');
       });
   };
