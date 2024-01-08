@@ -6,7 +6,7 @@ import './App.scss';
 import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
+import { UserSelector } from './components/UserSelector/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { Post } from './types/Post';
@@ -24,7 +24,9 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     service.getUsers()
-      .then(use => setUsers(use));
+      // eslint-disable-next-line @typescript-eslint/no-shadow
+      .then(users => setUsers(users))
+      .catch(() => setIsError(true));
   }, []);
 
   const handleListDropDown = () => {
@@ -38,10 +40,15 @@ export const App: React.FC = () => {
     setSelectedPost(null);
 
     service.getPosts(user.id)
-      .then(pos => setPosts(pos))
+      // eslint-disable-next-line @typescript-eslint/no-shadow
+      .then(posts => setPosts(posts))
       .catch(() => setIsError(true))
       .finally(() => setIsLoading(false));
   };
+
+  const isNoUserSelected = !selectedUser;
+  const isLoadingAndNoPosts = isLoading && !posts.length;
+  const hasPosts = selectedUser && !!posts.length && !isError;
 
   return (
     <main className="section">
@@ -61,15 +68,13 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUser && (
+                {isNoUserSelected && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {isLoading && (
-                  <Loader />
-                )}
+                {isLoading && <Loader />}
 
                 {isError && (
                   <div
@@ -80,16 +85,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUser && !isLoading && !posts.length && (
-                  <div
-                    className="notification is-warning"
-                    data-cy="NoPostsYet"
-                  >
+                {isLoadingAndNoPosts && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {selectedUser && posts.length > 0 && !isError && (
+                {hasPosts && (
                   <PostsList
                     posts={posts}
                     setIsForm={setIsForm}
@@ -122,7 +124,6 @@ export const App: React.FC = () => {
               )}
             </div>
           </div>
-
         </div>
       </div>
     </main>

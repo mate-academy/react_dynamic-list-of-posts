@@ -1,6 +1,9 @@
-import React from 'react';
-import { User } from '../types/User';
-import { UserList } from './UserList';
+// src/components/UserSelector.tsx
+
+import React, { useCallback } from 'react';
+import { User } from '../../types/User';
+import { UserList } from '../UserList';
+import './UserSelector.scss';
 
 type Props = {
   handleListDropDown: () => void;
@@ -19,8 +22,12 @@ export const UserSelector: React.FC<Props> = ({
   users,
   handleChoseUser,
 }) => {
+  const handleBlur = useCallback(() => {
+    setTimeout(() => setIsDropDownList(false), 210);
+  }, [setIsDropDownList]);
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div data-cy="UserSelector" className={`dropdown ${isDropDownList ? 'is-active' : ''}`}>
       <div className="dropdown-trigger">
         <button
           type="button"
@@ -28,7 +35,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={handleListDropDown}
-          onBlur={() => setTimeout(() => setIsDropDownList(false), 210)}
+          onBlur={handleBlur}
         >
           {selectedUser ? (
             <span>{selectedUser.name}</span>
@@ -41,14 +48,11 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      {isDropDownList
-      && (
-        <UserList
-          users={users}
-          selectedUser={selectedUser}
-          handleChoseUser={handleChoseUser}
-        />
-      )}
+      <UserList
+        users={users}
+        selectedUser={selectedUser}
+        handleChoseUser={handleChoseUser}
+      />
     </div>
   );
 };
