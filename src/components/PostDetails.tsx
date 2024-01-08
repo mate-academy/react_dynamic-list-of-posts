@@ -50,7 +50,6 @@ export const PostDetails: React.FC = () => {
               <article
                 className="message is-small"
                 data-cy="Comment"
-                key={comment.id}
               >
                 <div className="message-header">
                   <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">

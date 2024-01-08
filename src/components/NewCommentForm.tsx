@@ -56,8 +56,8 @@ export const NewCommentForm: React.FC = () => {
     if (isValid) {
       handleAddComment(query.name, query.mail, query.comment);
       setQuery({
-        name: '',
-        mail: '',
+        name: query.name,
+        mail: query.mail,
         comment: '',
       });
     }

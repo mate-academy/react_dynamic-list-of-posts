@@ -100,6 +100,7 @@ export const PostProvider: React.FC<{ children: ReactNode }> = ({
     (name: string, email: string, body: string) => {
       setAddPostLoading(true);
       const data = {
+        id: 0,
         postId: selectedPost?.id !== undefined ? selectedPost.id : 0,
         name,
         email,
