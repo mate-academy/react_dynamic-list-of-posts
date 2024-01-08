@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import React, { useState } from 'react';
 import cn from 'classnames';
 import { usePostContext } from '../context/PostProvider';
 
@@ -17,6 +17,8 @@ export const NewCommentForm: React.FC = () => {
     commentError: false,
   });
 
+  const FIELDS: (keyof typeof query)[] = ['name', 'mail', 'comment'];
+
   const handleClearForm = () => {
     setQuery({
       name: '',
@@ -30,14 +32,32 @@ export const NewCommentForm: React.FC = () => {
     });
   };
 
-  const handleSubmitForm = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmitForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (query.name.length && query.mail.length && query.comment.length) {
+    FIELDS.forEach((field: keyof typeof query) => {
+      if (query[field] === '') {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [`${field}Error`]: true,
+        }));
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [`${field}Error`]: false,
+        }));
+      }
+    });
+
+    const isValid = FIELDS.every(
+      (field: keyof typeof query) => query[field].trim() !== '',
+    );
+
+    if (isValid) {
       handleAddComment(query.name, query.mail, query.comment);
       setQuery({
-        name: query.name,
-        mail: query.mail,
+        name: '',
+        mail: '',
         comment: '',
       });
     }
@@ -157,7 +177,7 @@ export const NewCommentForm: React.FC = () => {
         <div className="control">
           <button
             type="submit"
-            className={cn('button is-link', {'is-loading': addPostLoading})}
+            className={cn('button is-link', { 'is-loading': addPostLoading })}
           >
             Add
           </button>

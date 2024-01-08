@@ -32,25 +32,32 @@ export const App: React.FC = () => {
                     No user selected
                   </p>
                 )}
+                {postsLoading ? (
+                  <Loader />
+                ) : (
+                  <>
+                    {error && (
+                      <div
+                        className="notification is-danger"
+                        data-cy="PostsLoadingError"
+                      >
+                        Something went wrong!
+                      </div>
+                    )}
 
-                {postsLoading && <Loader />}
+                    {posts.length === 0 && person && !postsLoading && (
+                      <div
+                        className="notification is-warning"
+                        data-cy="NoPostsYet"
+                      >
+                        No posts yet
+                      </div>
+                    )}
 
-                {error && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
-                    Something went wrong!
-                  </div>
+                    {!!posts.length && <PostsList />}
+                  </>
                 )}
 
-                {!postsLoading && !posts.length && person && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                ) }
-
-                {!!posts.length && <PostsList /> }
               </div>
             </div>
           </div>
@@ -62,10 +69,10 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPost },
             )}
           >
-            {selectedPost && (
+            {selectedPost && !postsLoading && (
               <div className="tile is-child box is-success ">
                 <PostDetails />
               </div>

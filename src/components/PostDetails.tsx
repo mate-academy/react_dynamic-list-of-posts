@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { usePostContext } from '../context/PostProvider';
@@ -9,20 +9,20 @@ export const PostDetails: React.FC = () => {
     selectedComments,
     commentsLoading,
     error,
+    isEdit,
+    setIsEdit,
     handleDeleteComment,
   } = usePostContext();
-
-  const [editForm, setEditForm] = useState<boolean>(false);
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
         <h2 data-cy="PostTitle">
-          {`#${selectedPost.id}: ${selectedPost.title}`}
+          {`#${selectedPost?.id}: ${selectedPost?.title}`}
         </h2>
 
         <p data-cy="PostBody">
-          {selectedPost.body}
+          {selectedPost?.body}
         </p>
       </div>
 
@@ -73,20 +73,23 @@ export const PostDetails: React.FC = () => {
               </article>
             ))}
 
-            {!editForm && (
+            {!isEdit && (
               <button
                 data-cy="WriteCommentButton"
                 type="button"
                 className="button is-link"
-                onClick={() => setEditForm(true)}
+                onClick={() => setIsEdit(true)}
               >
                 Write a comment
               </button>
             )}
+
+            {isEdit && <NewCommentForm />}
+
           </>
+
         )}
 
-        {editForm && <NewCommentForm />}
       </div>
     </div>
   );

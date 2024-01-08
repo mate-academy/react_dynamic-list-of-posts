@@ -4,6 +4,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import {
@@ -19,7 +20,7 @@ import { Comment } from '../types/Comment';
 
 interface PostContextType {
   posts: Post[];
-  selectedPost: Post;
+  selectedPost: Post | null;
   selectedComments: Comment[];
   users: User[];
   person: User | null;
@@ -27,6 +28,7 @@ interface PostContextType {
   commentsLoading: boolean;
   addPostLoading: boolean;
   error: boolean;
+  isEdit: boolean;
   setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>
   setSelectedComments: React.Dispatch<React.SetStateAction<Comment[]>>
   setPerson: React.Dispatch<React.SetStateAction<User | null>>
@@ -34,6 +36,7 @@ interface PostContextType {
   setCommentsLoading: React.Dispatch<React.SetStateAction<boolean>>
   setAddPostLoading: React.Dispatch<React.SetStateAction<boolean>>
   setError: React.Dispatch<React.SetStateAction<boolean>>
+  setIsEdit: React.Dispatch<React.SetStateAction<boolean>>
   handleDeleteComment: (commentId: number) => void;
   handleAddComment: (name: string, mail: string, comment: string) => void;
 }
@@ -52,13 +55,23 @@ export const PostProvider: React.FC<{ children: ReactNode }> = ({
   const [commentsLoading, setCommentsLoading] = useState<boolean>(false);
   const [addPostLoading, setAddPostLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
+
+  const firstRender = useRef(true);
 
   useEffect(() => {
     getUsers()
       .then(allUsers => setUsers(allUsers));
   }, []);
 
-  useEffect(() => {
+  useMemo(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+
+      return;
+    }
+
+    setPosts([]);
     setPostsLoading(true);
     setSelectedPost(null);
     getPosts()
@@ -85,6 +98,7 @@ export const PostProvider: React.FC<{ children: ReactNode }> = ({
   const handleAddComment = (name: string, email: string, body: string) => {
     setAddPostLoading(true);
     const data = {
+      id: 0,
       postId: selectedPost?.id !== undefined ? selectedPost.id : 0,
       name,
       email,
@@ -95,8 +109,9 @@ export const PostProvider: React.FC<{ children: ReactNode }> = ({
       .then(() => {
         setSelectedComments([...selectedComments, data]);
       })
-      .catch(error => {
-        console.error('Błąd dodawania komentarza:', error);
+      .catch(e => {
+        // eslint-disable-next-line no-console
+        console.error(e);
       })
       .finally(() => {
         setAddPostLoading(false);
@@ -117,8 +132,6 @@ export const PostProvider: React.FC<{ children: ReactNode }> = ({
       .finally(() => {
         setCommentsLoading(false);
       });
-
-    console.log(selectedComments);
   }, [selectedPost]);
 
   const memoizedValue = useMemo(() => ({
@@ -131,11 +144,19 @@ export const PostProvider: React.FC<{ children: ReactNode }> = ({
     selectedComments,
     commentsLoading,
     addPostLoading,
+    isEdit,
     setSelectedPost,
+    setSelectedComments,
     setPerson,
+    setPostsLoading,
+    setCommentsLoading,
+    setAddPostLoading,
+    setError,
+    setIsEdit,
     handleDeleteComment,
     handleAddComment,
-  }), [posts,
+  }), [
+    posts,
     selectedPost,
     users,
     person,
@@ -144,7 +165,17 @@ export const PostProvider: React.FC<{ children: ReactNode }> = ({
     selectedComments,
     commentsLoading,
     addPostLoading,
+    isEdit,
+    setSelectedPost,
+    setSelectedComments,
+    setPerson,
+    setPostsLoading,
+    setCommentsLoading,
+    setAddPostLoading,
+    setError,
+    setIsEdit,
     handleDeleteComment,
+    handleAddComment,
   ]);
 
   return (

@@ -16,17 +16,19 @@ export const UserSelector: React.FC = () => {
     setOpenDropdown(false);
   };
 
-  const handleDocumentClick = (event: EventTarget) => {
-    if (!event.target.closest('.dropdown')) {
+  const handleDocumentClick = (event: MouseEvent) => {
+    const targetElement = event.target as Element;
+
+    if (!targetElement.closest('.dropdown')) {
       setOpenDropdown(false);
     }
   };
 
   useEffect(() => {
-    document.addEventListener('click', handleDocumentClick);
+    document.addEventListener('click', () => handleDocumentClick);
 
     return () => {
-      document.removeEventListener('click', handleDocumentClick);
+      document.removeEventListener('click', () => handleDocumentClick);
     };
   }, []);
 

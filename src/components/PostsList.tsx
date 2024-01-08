@@ -1,8 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { usePostContext } from '../context/PostProvider';
+import { Post } from '../types/Post';
 
 export const PostsList: React.FC = () => {
-  const { posts, setSelectedPost } = usePostContext();
+  const {
+    posts, selectedPost, setSelectedPost, setIsEdit,
+  } = usePostContext();
+  const [open, setOpen] = useState<number>(-1);
+
+  const handleOpenPost = (post: Post) => {
+    if (selectedPost !== post) {
+      setIsEdit(false);
+      setSelectedPost(post);
+      setOpen(post.id);
+    } else {
+      setOpen(-1);
+      setSelectedPost(null);
+    }
+  };
 
   return (
     <div data-cy="PostsList">
@@ -28,14 +43,25 @@ export const PostsList: React.FC = () => {
               </td>
 
               <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className="button is-link is-light"
-                  onClick={() => setSelectedPost(post)}
-                >
-                  Open
-                </button>
+                {open !== post.id ? (
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className="button is-link is-light"
+                    onClick={() => handleOpenPost(post)}
+                  >
+                    Open
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className="button is-link"
+                    onClick={() => handleOpenPost(post)}
+                  >
+                    Close
+                  </button>
+                )}
               </td>
             </tr>
           ))}
