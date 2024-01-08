@@ -1,29 +1,23 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-// import classNames from 'classnames';
+import classNames from 'classnames';
+import { PostDetails } from './components/PostDetails';
 import { PostsList } from './components/PostsList';
-// import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
 import { AppContext } from './context/ContextProvider';
+import { Loader } from './components/Loader/Loader';
 
 export const App: React.FC = () => {
   const {
     posts,
-    loadPosts,
     isPostsLoading,
     postErrorMessage,
     selectedUser,
+    selectedPost,
   } = useContext(AppContext);
-
-  useEffect(() => {
-    if (selectedUser) {
-      loadPosts(selectedUser?.id);
-    }
-  }, [selectedUser, loadPosts]);
 
   return (
     <main className="section">
@@ -53,31 +47,34 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {posts.length === 0 && (
+                {(!isPostsLoading && posts.length === 0 && selectedUser) && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                <PostsList />
+                {posts.length !== 0 && selectedUser && (
+                  <PostsList />
+                )}
               </div>
             </div>
           </div>
 
-          {/* <div
+          <div
             data-cy="Sidebar"
             className={classNames(
               'tile',
               'is-parent',
               'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
+              'Sidebar', {
+                'Sidebar--open': selectedPost,
+              },
             )}
           >
             <div className="tile is-child box is-success ">
               <PostDetails />
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
     </main>

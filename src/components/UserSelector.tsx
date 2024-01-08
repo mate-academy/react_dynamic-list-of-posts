@@ -3,7 +3,7 @@ import { User } from '../types/User';
 import { AppContext } from '../context/ContextProvider';
 
 export const UserSelector: React.FC = () => {
-  const { users, setSelectedUser } = useContext(AppContext);
+  const { users, setSelectedUser, usersErrorMessage } = useContext(AppContext);
   const [dropdownSelector, setDropdownSelector] = useState(false);
 
   const handleSelectUser = (user: User) => {
@@ -33,7 +33,7 @@ export const UserSelector: React.FC = () => {
       </div>
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        {dropdownSelector && (
+        {(dropdownSelector && !usersErrorMessage) ? (
           <div className="dropdown-content">
             {users.map(user => (
               <a
@@ -46,7 +46,7 @@ export const UserSelector: React.FC = () => {
               </a>
             ))}
           </div>
-        )}
+        ) : <p>{usersErrorMessage}</p>}
         {/* <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a> */}
       </div>
     </div>
