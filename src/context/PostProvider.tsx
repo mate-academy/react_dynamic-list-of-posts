@@ -1,6 +1,7 @@
 import React, {
   createContext,
   ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -86,37 +87,39 @@ export const PostProvider: React.FC<{ children: ReactNode }> = ({
       });
   }, [person]);
 
-  const handleDeleteComment = (commentId: number) => {
+  const handleDeleteComment = useCallback((commentId: number) => {
     const updatedSelectedComments
     = selectedComments.filter(comment => comment.id !== commentId);
 
     deleteComment(commentId);
 
     setSelectedComments(updatedSelectedComments);
-  };
+  }, [selectedComments]);
 
-  const handleAddComment = (name: string, email: string, body: string) => {
-    setAddPostLoading(true);
-    const data = {
-      id: 0,
-      postId: selectedPost?.id !== undefined ? selectedPost.id : 0,
-      name,
-      email,
-      body,
-    };
+  const handleAddComment = useCallback(
+    (name: string, email: string, body: string) => {
+      setAddPostLoading(true);
+      const data = {
+        id: 0,
+        postId: selectedPost?.id !== undefined ? selectedPost.id : 0,
+        name,
+        email,
+        body,
+      };
 
-    addComment(data)
-      .then(() => {
-        setSelectedComments([...selectedComments, data]);
-      })
-      .catch(e => {
+      addComment(data)
+        .then(() => {
+          setSelectedComments([...selectedComments, data]);
+        })
+        .catch(e => {
         // eslint-disable-next-line no-console
-        console.error(e);
-      })
-      .finally(() => {
-        setAddPostLoading(false);
-      });
-  };
+          console.error(e);
+        })
+        .finally(() => {
+          setAddPostLoading(false);
+        });
+    }, [selectedComments, selectedPost],
+  );
 
   useEffect(() => {
     setCommentsLoading(true);
