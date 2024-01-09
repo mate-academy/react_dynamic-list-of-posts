@@ -23,10 +23,17 @@ export const App: React.FC = () => {
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
-    service.getUsers()
-      // eslint-disable-next-line @typescript-eslint/no-shadow
-      .then(users => setUsers(users))
-      .catch(() => setIsError(true));
+    const fetchUsers = async () => {
+      try {
+        const fetchedUsers = await service.getUsers();
+
+        setUsers(fetchedUsers);
+      } catch (error) {
+        setIsError(true);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
   const handleListDropDown = () => {
@@ -40,15 +47,12 @@ export const App: React.FC = () => {
     setSelectedPost(null);
 
     service.getPosts(user.id)
-      // eslint-disable-next-line @typescript-eslint/no-shadow
-      .then(posts => setPosts(posts))
+      .then((fetchedPosts) => setPosts(fetchedPosts))
       .catch(() => setIsError(true))
       .finally(() => setIsLoading(false));
   };
 
-  const isNoUserSelected = !selectedUser;
-  const isLoadingAndNoPosts = isLoading && !posts.length;
-  const hasPosts = selectedUser && !!posts.length && !isError;
+  const hasPosts = selectedUser && posts.length > 0 && !isLoading && !isError;
 
   return (
     <main className="section">
@@ -68,36 +72,41 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {isNoUserSelected && (
+                {selectedUser ? (
+                  <>
+                    {isLoading && <Loader />}
+
+                    {isError && (
+                      <div
+                        className="notification is-danger"
+                        data-cy="PostsLoadingError"
+                      >
+                        Something went wrong!
+                      </div>
+                    )}
+
+                    {!hasPosts && !isLoading && !isDropDownList && (
+                      <div
+                        className="notification is-warning"
+                        data-cy="NoPostsYet"
+                      >
+                        No posts yet
+                      </div>
+                    )}
+
+                    {hasPosts && (
+                      <PostsList
+                        posts={posts}
+                        setIsForm={setIsForm}
+                        selectedPost={selectedPost}
+                        setSelectedPost={setSelectedPost}
+                      />
+                    )}
+                  </>
+                ) : (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
-                )}
-
-                {isLoading && <Loader />}
-
-                {isError && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
-                    Something went wrong!
-                  </div>
-                )}
-
-                {isLoadingAndNoPosts && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
-
-                {hasPosts && (
-                  <PostsList
-                    posts={posts}
-                    setIsForm={setIsForm}
-                    selectedPost={selectedPost}
-                    setSelectedPost={setSelectedPost}
-                  />
                 )}
               </div>
             </div>
@@ -109,9 +118,8 @@ export const App: React.FC = () => {
               'tile',
               'is-parent',
               'is-8-desktop',
-              'Sidebar', {
-                'Sidebar--open': selectedPost,
-              },
+              'Sidebar',
+              { 'Sidebar--open': selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">

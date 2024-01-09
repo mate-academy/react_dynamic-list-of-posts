@@ -6,7 +6,7 @@ import * as service from '../utils/api';
 
 type Props = {
   handleCommentAdd: (value: Comment) => void;
-  selectedPost: Post,
+  selectedPost: Post;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
@@ -25,6 +25,13 @@ export const NewCommentForm: React.FC<Props> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isResponseError, setIsResponseError] = useState(false);
 
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    return emailRegex.test(email);
+  };
+
   const handleClear = () => {
     setIsLoading(false);
     setIsResponseError(false);
@@ -42,8 +49,10 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-    setIsEmailError(false);
+    const enteredEmail = event.target.value;
+
+    setEmail(enteredEmail);
+    setIsEmailError(!isValidEmail(enteredEmail));
   };
 
   const handleCommentChange = (
@@ -60,7 +69,7 @@ export const NewCommentForm: React.FC<Props> = ({
       setIsNameError(true);
     }
 
-    if (!email.trim()) {
+    if (!email.trim() || !isValidEmail(email)) {
       setIsEmailError(true);
     }
 
@@ -68,7 +77,8 @@ export const NewCommentForm: React.FC<Props> = ({
       setIsCommentError(true);
     }
 
-    if (!authorName.trim() || !commentText.trim() || !email.trim()) {
+    if (!authorName.trim()
+    || !commentText.trim() || !email.trim() || !isValidEmail(email)) {
       return;
     }
 
@@ -169,7 +179,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         {isEmailError && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
+            {isValidEmail(email) ? 'Email is required' : 'Invalid email format'}
           </p>
         )}
       </div>
