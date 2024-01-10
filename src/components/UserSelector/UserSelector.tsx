@@ -1,6 +1,5 @@
-// src/components/UserSelector.tsx
-
 import React, { useCallback } from 'react';
+import classNames from 'classnames';
 import { User } from '../../types/User';
 import { UserList } from '../UserList';
 import './UserSelector.scss';
@@ -26,8 +25,12 @@ export const UserSelector: React.FC<Props> = ({
     setTimeout(() => setIsDropDownList(false), 210);
   }, [setIsDropDownList]);
 
+  const dropdownClasses = classNames('dropdown', {
+    'is-active': isDropDownList,
+  });
+
   return (
-    <div data-cy="UserSelector" className={`dropdown ${isDropDownList ? 'is-active' : ''}`}>
+    <div data-cy="UserSelector" className={dropdownClasses}>
       <div className="dropdown-trigger">
         <button
           type="button"
@@ -37,11 +40,7 @@ export const UserSelector: React.FC<Props> = ({
           onClick={handleListDropDown}
           onBlur={handleBlur}
         >
-          {selectedUser ? (
-            <span>{selectedUser.name}</span>
-          ) : (
-            <span>Choose a user</span>
-          )}
+          <span>{`${selectedUser ? selectedUser.name : 'Choose a user'}`}</span>
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
           </span>

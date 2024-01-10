@@ -80,7 +80,7 @@ export const PostDetails: React.FC<Props> = ({
             </p>
           )}
 
-          {comments.length > 0 && !isLoadComment && (
+          {!!comments.length && !isLoadComment && (
             <>
               <p className="title is-4">Comments:</p>
 
