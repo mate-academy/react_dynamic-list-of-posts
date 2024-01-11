@@ -1,5 +1,7 @@
 import classNames from 'classnames';
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import React, {
+  FormEvent, useEffect, useRef, useState,
+} from 'react';
 import { createComment } from '../api/comments';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
@@ -7,7 +9,7 @@ import { Comment } from '../types/Comment';
 type Props = {
   isNewComment: boolean,
   postForComment: Post,
-  setComment: React.Dispatch<React.SetStateAction<Comment[]>>}
+  setComment: React.Dispatch<React.SetStateAction<Comment[]>> };
 
 export const NewCommentForm: React.FC<Props> = ({
   isNewComment,
@@ -28,7 +30,7 @@ export const NewCommentForm: React.FC<Props> = ({
     if (inputName.current) {
       inputName.current.focus();
     }
-  }, [isNewComment])
+  }, [isNewComment]);
 
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -37,25 +39,25 @@ export const NewCommentForm: React.FC<Props> = ({
     setHasEmailError(!emailValue);
     setHasNameError(!commentName);
 
-
     if (!commentName || !emailValue || !bodyValue) {
-      return
+      return;
     }
+
     setHasLoaderButton(true);
 
     createComment({
       postId: postForComment.id,
-      name:commentName,
+      name: commentName,
       email: emailValue,
-      body: bodyValue
+      body: bodyValue,
     })
-    .then((data) => {
-      setComment((prevValue) => [...prevValue, data])
-    })
-    .finally(() => {
-      setBodyValue('');
-      setHasLoaderButton(false);
-    })
+      .then((data) => {
+        setComment((prevValue) => [...prevValue, data]);
+      })
+      .finally(() => {
+        setBodyValue('');
+        setHasLoaderButton(false);
+      });
   };
 
   const sendName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,12 +68,12 @@ export const NewCommentForm: React.FC<Props> = ({
   const sendEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmailValue(e.target.value);
     setHasEmailError(false);
-  }
+  };
 
   const sendBody = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setBodyValue(e.target.value);
     setHasBodyError(false);
-  }
+  };
 
   const clearForm = () => {
     setBodyValue('');
@@ -80,7 +82,7 @@ export const NewCommentForm: React.FC<Props> = ({
     setHasNameError(false);
     setHasEmailError(false);
     setHasBodyError(false);
-  }
+  };
 
   return (
     <form
@@ -99,8 +101,8 @@ export const NewCommentForm: React.FC<Props> = ({
             ref={inputName}
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input ',{
-              'is-danger' : hasNameError
+            className={classNames('input ', {
+              'is-danger': hasNameError,
             })}
             value={commentName}
             onChange={sendName}
@@ -117,14 +119,14 @@ export const NewCommentForm: React.FC<Props> = ({
               <i className="fas fa-exclamation-triangle" />
             </span>
           )}
-  
+
         </div>
         {hasNameError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
         )}
-    
+
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -140,8 +142,8 @@ export const NewCommentForm: React.FC<Props> = ({
             onChange={sendEmail}
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input ',{
-              'is-danger' : hasEmailError
+            className={classNames('input ', {
+              'is-danger': hasEmailError,
             })}
           />
 
@@ -156,14 +158,14 @@ export const NewCommentForm: React.FC<Props> = ({
               <i className="fas fa-exclamation-triangle" />
             </span>
           )}
-  
+
         </div>
         {hasEmailError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
         )}
-      
+
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -178,8 +180,8 @@ export const NewCommentForm: React.FC<Props> = ({
             value={bodyValue}
             onChange={sendBody}
             placeholder="Type comment here"
-            className={classNames('textarea ',{
-              'is-danger' : hasBodyError
+            className={classNames('textarea ', {
+              'is-danger': hasBodyError,
             })}
           />
         </div>
@@ -194,8 +196,8 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control">
           <button
             type="submit"
-            className={classNames('button is-link ',{
-              'is-loading': hasLoaderButton
+            className={classNames('button is-link ', {
+              'is-loading': hasLoaderButton,
             })}
           >
             Add

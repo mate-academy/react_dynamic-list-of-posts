@@ -1,4 +1,4 @@
-import React, {  } from 'react';
+import React, { } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment } from '../types/Comment';
@@ -13,7 +13,7 @@ type Props = {
   isNewComment: boolean,
   setIsNewComment: (value: boolean) => void,
   setComment: React.Dispatch<React.SetStateAction<Comment[]>>
-}
+};
 
 export const PostDetails: React.FC<Props> = ({
   comment,
@@ -24,31 +24,33 @@ export const PostDetails: React.FC<Props> = ({
   setIsNewComment,
   setComment,
 }) => {
-
   const renewalComment = (id: number) => {
     deleteComment(id)
-    .then(() => {
-      setComment((prevValue) => prevValue
-      .filter(item => item.id !== id))
-    })
-  }
-
+      .then(() => {
+        setComment((prevValue) => prevValue
+          .filter(item => item.id !== id));
+      });
+  };
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #{postForComment?.id}: {postForComment?.title}
+            #
+            {postForComment?.id}
+            :
+            {' '}
+            {postForComment?.title}
           </h2>
 
           <p data-cy="PostBody">
-           {postForComment?.body}
+            {postForComment?.body}
           </p>
         </div>
 
         <div className="block">
-          
+
           {loaderComment && (<Loader />)}
           {!loaderComment && (
             <>
@@ -65,38 +67,39 @@ export const PostDetails: React.FC<Props> = ({
               )}
 
               <p className="title is-4">Comments:</p>
-                {comment?.map(comment => (
-                  <article
-                    key={comment.id}
-                    className="message is-small"
-                    data-cy="Comment">
-                    <div className="message-header">
-                      <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                        {comment.name}
-                      </a>
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
-                        onClick={() => renewalComment(comment.id)}
-                      >
-                        delete button
-                      </button>
-                    </div>
+              {comment?.map(item => (
+                <article
+                  key={item.id}
+                  className="message is-small"
+                  data-cy="Comment"
+                >
+                  <div className="message-header">
+                    <a href={`mailto:${item.email}`} data-cy="CommentAuthor">
+                      {item.name}
+                    </a>
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={() => renewalComment(item.id)}
+                    >
+                      delete button
+                    </button>
+                  </div>
 
-                    <div className="message-body" data-cy="CommentBody">
-                      {comment.body}
-                    </div>
-                  </article>
-                ))}
+                  <div className="message-body" data-cy="CommentBody">
+                    {item.body}
+                  </div>
+                </article>
+              ))}
               {!isNewComment && (
                 <button
                   data-cy="WriteCommentButton"
                   type="button"
                   className="button is-link"
                   onClick={() => setIsNewComment(true)}
-                  
+
                 >
                   Write a comment
                 </button>
@@ -104,13 +107,13 @@ export const PostDetails: React.FC<Props> = ({
             </>
           )}
         </div>
-          {isNewComment && (
-          <NewCommentForm 
+        {isNewComment && (
+          <NewCommentForm
             postForComment={postForComment}
             isNewComment={isNewComment}
             setComment={setComment}
           />
-          )}
+        )}
       </div>
     </div>
   );

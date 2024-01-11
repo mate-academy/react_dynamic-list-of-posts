@@ -31,9 +31,9 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     getUsers().then((data) => {
-      setUsers(data)
-    })
-  },[]);
+      setUsers(data);
+    });
+  }, []);
 
   const chooseUser = (id: number) => {
     setIsSelectedUser(false);
@@ -41,34 +41,35 @@ export const App: React.FC = () => {
     setIsPost(true);
     getPost().then((data) => {
       const findPostOnId = data.filter(post => post.userId === id);
-      setPosts(findPostOnId)
-    })
-    .catch((error) => {
-      setIsError(true);
-      throw error;
-    })
-    .finally(() => {
-      setIsPost(! posts?.length);
-      setIsLoaderUser(false);
 
+      setPosts(findPostOnId);
     })
+      .catch((error) => {
+        setIsError(true);
+        throw error;
+      })
+      .finally(() => {
+        setIsPost(!posts?.length);
+        setIsLoaderUser(false);
+      });
   };
 
   const handleComments = (id: number) => {
     setIsErrorComment(false);
-    setLoaderComment(true)
-    setChoosePost(true)
+    setLoaderComment(true);
+    setChoosePost(true);
     getComment().then((data) => {
       const findCommentOnId = data.filter((item) => item.postId === id);
-      setComment(findCommentOnId)
+
+      setComment(findCommentOnId);
     })
-    .catch((error) => {
-      setIsErrorComment(true);
-      throw error;
-    })
-    .finally(() => {
-      setLoaderComment(false)
-    })
+      .catch((error) => {
+        setIsErrorComment(true);
+        throw error;
+      })
+      .finally(() => {
+        setLoaderComment(false);
+      });
 
     const findPost = posts.find(post => post.id === id);
 
@@ -76,7 +77,6 @@ export const App: React.FC = () => {
       setPostForComment(findPost || null);
     }
   };
-
 
   return (
     <main className="section">
@@ -98,7 +98,7 @@ export const App: React.FC = () => {
                     No user selected
                   </p>
                 )}
-             
+
                 {isLoaderUser && (<Loader />)}
                 {isError && (
                   <div
@@ -108,13 +108,13 @@ export const App: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-               
-                  {!isPost && (
-                    <div className="notification is-warning" data-cy="NoPostsYet">
-                      No posts yet
-                    </div>
-                  )}
-               
+
+                {!isPost && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
+
                 {posts?.length !== 0 && (
                   <PostsList
                     handleComments={handleComments}
@@ -124,7 +124,7 @@ export const App: React.FC = () => {
 
                   />
                 )}
-                
+
               </div>
             </div>
           </div>
@@ -136,20 +136,22 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              {'Sidebar--open': choosePost})}
+              { 'Sidebar--open': choosePost },
+            )}
           >
             <div className="tile is-child box is-success ">
               {comment && (
-              <PostDetails
-                comment={comment}
-                isErrorComment={isErrorComment}
-                postForComment={postForComment as Post}
-                loaderComment={loaderComment}
-                isNewComment={isNewComment}
-                setIsNewComment={setIsNewComment}
-                setComment={setComment}
-              />)}
-              
+                <PostDetails
+                  comment={comment}
+                  isErrorComment={isErrorComment}
+                  postForComment={postForComment as Post}
+                  loaderComment={loaderComment}
+                  isNewComment={isNewComment}
+                  setIsNewComment={setIsNewComment}
+                  setComment={setComment}
+                />
+              )}
+
             </div>
           </div>
         </div>

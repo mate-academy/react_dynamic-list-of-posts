@@ -1,24 +1,26 @@
 import React, { useState } from 'react';
 import { User } from '../types/User';
 
-
 type Props = {
   users: User[],
   chooseUser: (value: number) => void,
   setChoosePost: (value: boolean) => void,
-}
+};
 
 export const UserSelector: React.FC<Props> = ({
   users,
   chooseUser,
   setChoosePost,
 }) => {
-
   const [isUsers, setIsUsers] = useState(false);
   const [userName, setUserName] = useState('Choose a user');
 
-  const choose = (e: React.MouseEvent<HTMLAnchorElement>, id: number, name: string) => {
-    e.preventDefault()
+  const choose = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    id: number,
+    name: string,
+  ) => {
+    e.preventDefault();
     chooseUser(id);
     setUserName(name);
     setChoosePost(false);
@@ -28,7 +30,6 @@ export const UserSelector: React.FC<Props> = ({
     <div
       data-cy="UserSelector"
       className="dropdown is-active"
-      onClick={() => setIsUsers(!isUsers)}
 
     >
       <div className="dropdown-trigger">
@@ -37,6 +38,8 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setIsUsers(!isUsers)}
+
         >
           <span>
             {userName}
@@ -60,7 +63,7 @@ export const UserSelector: React.FC<Props> = ({
                 href={`${user.id}#user-${user.id}`}
                 className="dropdown-item"
                 key={user.id}
-                onClick={(e) => choose(e,user.id, user.name)}
+                onClick={(e) => choose(e, user.id, user.name)}
 
               >
                 {user.name}
