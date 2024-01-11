@@ -1,39 +1,87 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Post } from '../types/Post';
+import classNames from 'classnames';
 
-export const PostsList: React.FC = () => (
+
+type Props = {
+  posts: Post[],
+  handleComments: (value: number) => void,
+  setChoosePost: (value: boolean) => void,
+  setIsNewComment: (value: boolean) => void,
+}
+
+enum ButtonText {
+  Open = 'Open',
+  Close = 'Close',
+}
+
+export const PostsList: React.FC<Props> = ({
+  posts,
+  handleComments,
+  setChoosePost,
+  setIsNewComment,
+}) => {
+  const [idButton, setIdButton] = useState<number | null>();
+  // const [regulationButton, setRegulationButton] = useState(true);
+ 
+  const postButton = (id: number) => {
+    if (idButton === id) {
+      setChoosePost(false);
+      setIdButton(null);
+      return
+    }
+
+    setIsNewComment(false);
+    handleComments(id);
+    setIdButton(id);
+  };
+
+  const checkId = (id: number) => {
+    return idButton !== id
+  }
+
+
+  return (
   <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+    <p className="title ">Posts:</p>
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+    <table className="table is-fullwidth is-striped is-hoverable is-narrow ">
       <thead>
-        <tr className="has-background-link-light">
+        <tr className="has-background-link-light ">
           <th>#</th>
           <th>Title</th>
           {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
           <th> </th>
         </tr>
       </thead>
-
-      <tbody>
+      {posts?.map(post => (
+        <tbody
+        key={post.id}
+        >
         <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+          <td data-cy="PostId">
+            {post.id}
+            </td>
 
           <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
+            {post?.title}
           </td>
 
           <td className="has-text-right is-vcentered">
             <button
               type="button"
               data-cy="PostButton"
-              className="button is-link is-light"
+              className={classNames('button is-link', {
+                'is-light' : checkId(post.id)
+              })}
+              onClick={() => postButton(post.id)}
             >
-              Open
+              {!checkId(post.id) ? ButtonText.Close : ButtonText.Open}
             </button>
           </td>
         </tr>
 
-        <tr data-cy="Post">
+        {/* <tr data-cy="Post">
           <td data-cy="PostId">18</td>
 
           <td data-cy="PostTitle">
@@ -79,8 +127,11 @@ export const PostsList: React.FC = () => (
               Open
             </button>
           </td>
-        </tr>
+        </tr> */}
       </tbody>
+      ))}
+
     </table>
   </div>
 );
+}
