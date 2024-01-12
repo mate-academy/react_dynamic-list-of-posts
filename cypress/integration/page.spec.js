@@ -1,6 +1,8 @@
 /// <reference types="cypress" />
 /// <reference types="../support" />
 
+const { cwd } = require('process');
+
 const page = {
   mockUsers: () => cy.intercept('**/users', { fixture: 'users' }).as('usersRequest'),
   mockUser1Posts: () => cy.intercept('**/posts?userId=1', { fixture: 'user1Posts' }).as('user1PostsRequest'),
@@ -172,10 +174,7 @@ Cypress.on('fail', (e) => {
 describe('', () => {
   beforeEach(() => {
     if (failed) Cypress.runner.stop();
-
-    cy.clock();
   });
-
 
   describe('Page by default', () => {
     describe('', () => {
@@ -401,6 +400,7 @@ describe('', () => {
       it('should show posts loader while waiting for API response', () => {
         page.mockUser1Posts()
         cy.visit('/');
+        cy.wait(500);
         cy.clock();
 
         userSelector.select(0);
@@ -1157,7 +1157,7 @@ describe('', () => {
     it('should hide NoCommentsMessage after adding the first comment', () => {
       cy.intercept('**/comments?postId=3', { body: [] }).as('post3CommentsRequest'),
 
-        page.postButton(2).click();
+      page.postButton(2).click();
       page.waitForRequest('@post3CommentsRequest');
 
       postDetails.writeCommentButton().click();
@@ -1222,8 +1222,8 @@ describe('', () => {
       postDetails.comments().should('have.length', 4);
 
       postDetails.comments().eq(0).byDataCy('CommentAuthor')
-        .should('have.text', 'quo vero reiciendis velit similique earum')
-        .and('have.attr', 'href', 'mailto:Jayne_Kuhic@sydney.com');
+          .should('have.text', 'quo vero reiciendis velit similique earum')
+          .and('have.attr', 'href', 'mailto:Jayne_Kuhic@sydney.com');
     });
 
     it('should send delete request with a deleted comment id', () => {
@@ -1233,6 +1233,7 @@ describe('', () => {
 
       cy.get('@comments2Delete').should('be.calledOnce');
     });
+
 
     it('should allow to delete several posts', () => {
       page.spyOnCommentsDelete(4);
