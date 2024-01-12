@@ -1155,7 +1155,7 @@ describe('', () => {
     it('should hide NoCommentsMessage after adding the first comment', () => {
       cy.intercept('**/comments?postId=3', { body: [] }).as('post3CommentsRequest'),
 
-        page.postButton(2).click();
+      page.postButton(2).click();
       page.waitForRequest('@post3CommentsRequest');
 
       postDetails.writeCommentButton().click();
