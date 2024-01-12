@@ -174,7 +174,6 @@ describe('', () => {
     // if (failed) Cypress.runner.stop();
   });
 
-
   describe('Page by default', () => {
     describe('', () => {
       beforeEach(() => {
