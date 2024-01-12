@@ -1,8 +1,6 @@
 /// <reference types="cypress" />
 /// <reference types="../support" />
 
-const { cwd } = require('process');
-
 const page = {
   mockUsers: () => cy.intercept('**/users', { fixture: 'users' }).as('usersRequest'),
   mockUser1Posts: () => cy.intercept('**/posts?userId=1', { fixture: 'user1Posts' }).as('user1PostsRequest'),
