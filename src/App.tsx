@@ -8,8 +8,14 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { usePostContext } from './context/PostProvider';
 
 export const App: React.FC = () => {
+  const
+    {
+      person, posts, postsLoading, error, selectedPost,
+    } = usePostContext();
+
   return (
     <main className="section">
       <div className="container">
@@ -21,24 +27,37 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!person && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
+                {postsLoading ? (
+                  <Loader />
+                ) : (
+                  <>
+                    {error && (
+                      <div
+                        className="notification is-danger"
+                        data-cy="PostsLoadingError"
+                      >
+                        Something went wrong!
+                      </div>
+                    )}
 
-                <Loader />
+                    {posts.length === 0 && person && !postsLoading && (
+                      <div
+                        className="notification is-warning"
+                        data-cy="NoPostsYet"
+                      >
+                        No posts yet
+                      </div>
+                    )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                    {!!posts.length && <PostsList />}
+                  </>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
               </div>
             </div>
           </div>
@@ -50,12 +69,14 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPost },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
+            {selectedPost && !postsLoading && (
+              <div className="tile is-child box is-success ">
+                <PostDetails />
+              </div>
+            )}
           </div>
         </div>
       </div>
