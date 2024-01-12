@@ -4,6 +4,7 @@ import { NewCommentForm } from './NewCommentForm';
 import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 import { deleteComment } from '../api/comments';
+import { CommentItem } from './CommentItem';
 
 type Props = {
   comment: Comment[],
@@ -12,7 +13,7 @@ type Props = {
   loaderComment: boolean,
   isNewComment: boolean,
   setIsNewComment: (value: boolean) => void,
-  setComment: React.Dispatch<React.SetStateAction<Comment[]>>
+  setComment: React.Dispatch<React.SetStateAction<Comment[]>>,
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -68,30 +69,11 @@ export const PostDetails: React.FC<Props> = ({
 
               <p className="title is-4">Comments:</p>
               {comment?.map(item => (
-                <article
+                <CommentItem
                   key={item.id}
-                  className="message is-small"
-                  data-cy="Comment"
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${item.email}`} data-cy="CommentAuthor">
-                      {item.name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => renewalComment(item.id)}
-                    >
-                      delete button
-                    </button>
-                  </div>
-
-                  <div className="message-body" data-cy="CommentBody">
-                    {item.body}
-                  </div>
-                </article>
+                  commentItem={item}
+                  renewalComment={renewalComment}
+                />
               ))}
               {!isNewComment && (
                 <button
@@ -99,7 +81,6 @@ export const PostDetails: React.FC<Props> = ({
                   type="button"
                   className="button is-link"
                   onClick={() => setIsNewComment(true)}
-
                 >
                   Write a comment
                 </button>

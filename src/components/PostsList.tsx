@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import classNames from 'classnames';
 import { Post } from '../types/Post';
+import { PostItem } from './PostItem';
 
 type Props = {
   posts: Post[],
@@ -9,24 +9,17 @@ type Props = {
   setIsNewComment: (value: boolean) => void,
 };
 
-enum ButtonText {
-  Open = 'Open',
-  Close = 'Close',
-}
-
 export const PostsList: React.FC<Props> = ({
   posts,
   handleComments,
   setChoosePost,
   setIsNewComment,
 }) => {
-  const [idButton, setIdButton] = useState<number | null>();
-  // const [regulationButton, setRegulationButton] = useState(true);
-
+  const [idButton, setIdButton] = useState<number | undefined>();
   const postButton = (id: number) => {
     if (idButton === id) {
       setChoosePost(false);
-      setIdButton(null);
+      setIdButton(undefined);
 
       return;
     }
@@ -34,10 +27,6 @@ export const PostsList: React.FC<Props> = ({
     setIsNewComment(false);
     handleComments(id);
     setIdButton(id);
-  };
-
-  const checkId = (id: number) => {
-    return idButton !== id;
   };
 
   return (
@@ -54,82 +43,13 @@ export const PostsList: React.FC<Props> = ({
           </tr>
         </thead>
         {posts?.map(post => (
-          <tbody
+          <PostItem
             key={post.id}
-          >
-            <tr data-cy="Post">
-              <td data-cy="PostId">
-                {post.id}
-              </td>
-
-              <td data-cy="PostTitle">
-                {post?.title}
-              </td>
-
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={classNames('button is-link', {
-                    'is-light': checkId(post.id),
-                  })}
-                  onClick={() => postButton(post.id)}
-                >
-                  {!checkId(post.id) ? ButtonText.Close : ButtonText.Open}
-                </button>
-              </td>
-            </tr>
-
-            {/* <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
-
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr> */}
-          </tbody>
+            post={post}
+            postButton={postButton}
+            idButton={idButton}
+          />
         ))}
-
       </table>
     </div>
   );

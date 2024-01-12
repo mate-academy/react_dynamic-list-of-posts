@@ -6,7 +6,10 @@ export const getComment = () => {
 };
 
 export const createComment = ({
-  postId, name, email, body,
+  postId,
+  name,
+  email,
+  body,
 }: CommentData) => {
   return client.post<Comment>('/comments', {
     postId, name, email, body,

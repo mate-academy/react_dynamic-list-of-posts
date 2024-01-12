@@ -17,9 +17,8 @@ import { Comment } from './types/Comment';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<Post[] | null>(null);
   const [isError, setIsError] = useState(false);
-  const [isPost, setIsPost] = useState(true);
   const [choosePost, setChoosePost] = useState(false);
   const [comment, setComment] = useState<Comment[]>([]);
   const [postForComment, setPostForComment] = useState<Post | null>(null);
@@ -38,7 +37,6 @@ export const App: React.FC = () => {
   const chooseUser = (id: number) => {
     setIsSelectedUser(false);
     setIsLoaderUser(true);
-    setIsPost(true);
     getPost().then((data) => {
       const findPostOnId = data.filter(post => post.userId === id);
 
@@ -49,7 +47,6 @@ export const App: React.FC = () => {
         throw error;
       })
       .finally(() => {
-        setIsPost(!posts?.length);
         setIsLoaderUser(false);
       });
   };
@@ -71,7 +68,7 @@ export const App: React.FC = () => {
         setLoaderComment(false);
       });
 
-    const findPost = posts.find(post => post.id === id);
+    const findPost = posts?.find(post => post.id === id);
 
     if (findPost) {
       setPostForComment(findPost || null);
@@ -99,7 +96,30 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {isLoaderUser && (<Loader />)}
+                {isLoaderUser
+                  ? (<Loader />)
+                  : !isError && !isSelectedUser && (
+                    <>
+                      {posts?.length
+                        ? (
+                          <PostsList
+                            handleComments={handleComments}
+                            posts={posts}
+                            setChoosePost={setChoosePost}
+                            setIsNewComment={setIsNewComment}
+                          />
+                        )
+                        : (
+                          <div
+                            className="notification is-warning"
+                            data-cy="NoPostsYet"
+                          >
+                            No posts yet
+                          </div>
+                        )}
+                    </>
+                  )}
+
                 {isError && (
                   <div
                     className="notification is-danger"
@@ -108,23 +128,6 @@ export const App: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-
-                {!isPost && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
-
-                {posts?.length !== 0 && (
-                  <PostsList
-                    handleComments={handleComments}
-                    posts={posts}
-                    setChoosePost={setChoosePost}
-                    setIsNewComment={setIsNewComment}
-
-                  />
-                )}
-
               </div>
             </div>
           </div>
@@ -151,7 +154,6 @@ export const App: React.FC = () => {
                   setComment={setComment}
                 />
               )}
-
             </div>
           </div>
         </div>

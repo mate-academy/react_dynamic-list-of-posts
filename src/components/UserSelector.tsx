@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { User } from '../types/User';
+import { UserItem } from './UserItem';
 
 type Props = {
   users: User[],
@@ -24,13 +25,13 @@ export const UserSelector: React.FC<Props> = ({
     chooseUser(id);
     setUserName(name);
     setChoosePost(false);
+    setIsUsers(!isUsers);
   };
 
   return (
     <div
       data-cy="UserSelector"
       className="dropdown is-active"
-
     >
       <div className="dropdown-trigger">
         <button
@@ -39,7 +40,6 @@ export const UserSelector: React.FC<Props> = ({
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => setIsUsers(!isUsers)}
-
         >
           <span>
             {userName}
@@ -59,23 +59,14 @@ export const UserSelector: React.FC<Props> = ({
         {isUsers && (
           <div className="dropdown-content">
             {users.map((user) => (
-              <a
-                href={`${user.id}#user-${user.id}`}
-                className="dropdown-item"
+              <UserItem
                 key={user.id}
-                onClick={(e) => choose(e, user.id, user.name)}
-
-              >
-                {user.name}
-              </a>
+                user={user}
+                choose={choose}
+              />
             ))}
-            {/* <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-            <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-            <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-            <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a> */}
           </div>
         )}
-
       </div>
     </div>
   );

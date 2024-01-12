@@ -9,7 +9,8 @@ import { Comment } from '../types/Comment';
 type Props = {
   isNewComment: boolean,
   postForComment: Post,
-  setComment: React.Dispatch<React.SetStateAction<Comment[]>> };
+  setComment: React.Dispatch<React.SetStateAction<Comment[]>>
+};
 
 export const NewCommentForm: React.FC<Props> = ({
   isNewComment,
@@ -23,7 +24,6 @@ export const NewCommentForm: React.FC<Props> = ({
   const [hasNameError, setHasNameError] = useState(false);
   const [hasBodyError, setHasBodyError] = useState(false);
   const [hasLoaderButton, setHasLoaderButton] = useState(false);
-
   const inputName = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -107,7 +107,6 @@ export const NewCommentForm: React.FC<Props> = ({
             value={commentName}
             onChange={sendName}
           />
-
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
@@ -119,16 +118,13 @@ export const NewCommentForm: React.FC<Props> = ({
               <i className="fas fa-exclamation-triangle" />
             </span>
           )}
-
         </div>
         {hasNameError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
         )}
-
       </div>
-
       <div className="field" data-cy="EmailField">
         <label className="label" htmlFor="comment-author-email">
           Author Email
@@ -146,7 +142,6 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': hasEmailError,
             })}
           />
-
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
@@ -158,16 +153,13 @@ export const NewCommentForm: React.FC<Props> = ({
               <i className="fas fa-exclamation-triangle" />
             </span>
           )}
-
         </div>
         {hasEmailError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
         )}
-
       </div>
-
       <div className="field" data-cy="BodyField">
         <label className="label" htmlFor="comment-body">
           Comment Text
