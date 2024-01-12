@@ -50,9 +50,7 @@ export const PostsList: React.FC<Props> = ({
                   )}
                   onClick={() => showPostDetails(post)}
                 >
-                  {openPostId === post.id
-                    ? 'Close'
-                    : 'Open'}
+                  {openPostId === post.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

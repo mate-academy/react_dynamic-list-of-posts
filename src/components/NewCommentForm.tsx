@@ -94,7 +94,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Name Surname"
             className={cn('input', { 'is-danger': hasNameError })}
             value={inputName}
-            onChange={event => handleChangeName(event)}
+            onChange={handleChangeName}
             required
           />
 
@@ -132,7 +132,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="email@test.com"
             className={cn('input', { 'is-danger': hasMailError })}
             value={inputMail}
-            onChange={event => handleChangeMail(event)}
+            onChange={handleChangeMail}
             required
           />
 
@@ -169,7 +169,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Type comment here"
             className={cn('textarea', { 'is-danger': hasTextareaError })}
             value={textarea}
-            onChange={event => handleChangeTextarea(event)}
+            onChange={handleChangeTextarea}
           />
         </div>
 
