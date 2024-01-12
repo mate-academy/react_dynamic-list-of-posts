@@ -171,9 +171,7 @@ Cypress.on('fail', (e) => {
 
 describe('', () => {
   beforeEach(() => {
-    if (failed) Cypress.runner.stop();
-
-    cy.clock();
+    // if (failed) Cypress.runner.stop();
   });
 
 
