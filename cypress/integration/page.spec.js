@@ -172,10 +172,7 @@ Cypress.on('fail', (e) => {
 describe('', () => {
   beforeEach(() => {
     // if (failed) Cypress.runner.stop();
-
-    cy.clock();
   });
-
 
   describe('Page by default', () => {
     describe('', () => {
@@ -401,6 +398,7 @@ describe('', () => {
       it('should show posts loader while waiting for API response', () => {
         page.mockUser1Posts()
         cy.visit('/');
+        cy.wait(500);
         cy.clock();
 
         userSelector.select(0);
