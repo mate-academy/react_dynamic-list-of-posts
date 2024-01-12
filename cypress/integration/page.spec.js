@@ -1220,8 +1220,8 @@ describe('', () => {
       postDetails.comments().should('have.length', 4);
 
       postDetails.comments().eq(0).byDataCy('CommentAuthor')
-          .should('have.text', 'quo vero reiciendis velit similique earum')
-          .and('have.attr', 'href', 'mailto:Jayne_Kuhic@sydney.com');
+        .should('have.text', 'quo vero reiciendis velit similique earum')
+        .and('have.attr', 'href', 'mailto:Jayne_Kuhic@sydney.com');
     });
 
     it('should send delete request with a deleted comment id', () => {
@@ -1231,7 +1231,6 @@ describe('', () => {
 
       cy.get('@comments2Delete').should('be.calledOnce');
     });
-
 
     it('should allow to delete several posts', () => {
       page.spyOnCommentsDelete(4);
