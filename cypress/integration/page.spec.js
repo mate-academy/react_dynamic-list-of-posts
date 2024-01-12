@@ -399,6 +399,7 @@ describe('', () => {
       it('should show posts loader while waiting for API response', () => {
         page.mockUser1Posts()
         cy.visit('/');
+        cy.wait(500);
         cy.clock();
 
         userSelector.select(0);
