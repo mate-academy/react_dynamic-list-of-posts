@@ -72,13 +72,12 @@ export const App: React.FC = () => {
   };
 
   const handleDeleteComment = (commentId: number) => {
-    client.delete(`/comments/${commentId}`)
-      .then(() => {
-        const showingComments = comments
-          .filter(comment => comment.id !== commentId);
+    const showingComments = comments
+      .filter(comment => comment.id !== commentId);
 
-        setComments(showingComments);
-      });
+    setComments(showingComments);
+
+    client.delete(`/comments/${commentId}`);
   };
 
   const createNewComment = (newComment: Comment) => {

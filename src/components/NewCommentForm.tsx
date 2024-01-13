@@ -95,7 +95,6 @@ export const NewCommentForm: React.FC<Props> = ({
             className={cn('input', { 'is-danger': hasNameError })}
             value={inputName}
             onChange={handleChangeName}
-            required
           />
 
           <span className="icon is-small is-left">
@@ -133,7 +132,6 @@ export const NewCommentForm: React.FC<Props> = ({
             className={cn('input', { 'is-danger': hasMailError })}
             value={inputMail}
             onChange={handleChangeMail}
-            required
           />
 
           <span className="icon is-small is-left">
