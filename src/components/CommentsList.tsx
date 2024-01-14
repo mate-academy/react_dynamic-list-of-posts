@@ -30,7 +30,7 @@ export const CommentsList = () => {
   }
 
   return (
-    <div className="block">
+    <>
       <p className="title is-4">Comments:</p>
 
       {
@@ -39,13 +39,6 @@ export const CommentsList = () => {
         ))
       }
 
-      <button
-        data-cy="WriteCommentButton"
-        type="button"
-        className="button is-link"
-      >
-        Write a comment
-      </button>
-    </div>
+    </>
   );
 };

@@ -1,5 +1,12 @@
 import {
-  FC, PropsWithChildren, createContext, useContext, useEffect, useState,
+  Dispatch,
+  FC,
+  PropsWithChildren,
+  SetStateAction,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
 } from 'react';
 import { useAppContext } from './AppContext';
 import { client } from '../utils/fetchClient';
@@ -9,12 +16,14 @@ type CommentContexType = {
   comments: Comment[] | null,
   commentsAreLoading: boolean,
   showCommentsError: boolean,
+  setComments: Dispatch<SetStateAction<Comment[] | []>>,
 };
 
 const CommentContextDefault = {
   comments: null,
   commentsAreLoading: false,
   showCommentsError: false,
+  setComments: () => { },
 };
 
 const CommentContext = createContext<CommentContexType>(CommentContextDefault);
@@ -24,7 +33,7 @@ type Props = PropsWithChildren;
 export const CommentContextProvider: FC<Props> = ({ children }) => {
   const { selectedPost: post } = useAppContext();
 
-  const [comments, setComments] = useState<Comment[] | null>(null);
+  const [comments, setComments] = useState<Comment[] | []>([]);
   const [commentsAreLoading, setCommentsAreLoading] = useState<boolean>(false);
   const [showCommentsError, setShowCommentsError] = useState<boolean>(false);
 
@@ -51,6 +60,7 @@ export const CommentContextProvider: FC<Props> = ({ children }) => {
     comments,
     commentsAreLoading,
     showCommentsError,
+    setComments,
   };
 
   return (
