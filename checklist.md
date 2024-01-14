@@ -1,7 +1,7 @@
 - make sure you can't add movie with empty data (with spaces only);
 - don't interact with DOM directly, use React as much as possible;
 - make sure you described objects in propTypes;
-- don't use `isLoad`, it can be `isLoading` or `isLoaded`;
+- don't use `isLoad`, it can be `isPostLoading` or `isLoaded`;
 - remove unused comments;
 - don't generate key on render ([here](https://medium.com/blackrock-engineering/5-common-mistakes-with-keys-in-react-b86e82020052) is why)
 - follow [these](https://medium.com/javascript-in-plain-english/handy-naming-conventions-for-event-handler-functions-props-in-react-fc1cbb791364) naming conventions for methods
