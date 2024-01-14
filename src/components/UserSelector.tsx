@@ -26,7 +26,6 @@ export const UserSelector: React.FC = () => {
     >
       <div className="dropdown-trigger">
         <button
-          onBlur={handleDropdown}
           type="button"
           className="button"
           aria-haspopup="true"

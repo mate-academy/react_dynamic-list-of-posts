@@ -1,14 +1,15 @@
-import React from 'react';
-import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
+import 'bulma/bulma.sass';
+import React from 'react';
 import './App.scss';
-
+import cn from 'classnames';
+import { PostsList } from './components/PostsList';
 import { UserSelector } from './components/UserSelector';
 import { useAppContext } from './context/AppContext';
-import { PostsList } from './components/PostsList';
+import { PostDetails } from './components/PostDetails';
 
 export const App: React.FC = () => {
-  const { selectedUser } = useAppContext();
+  const { selectedUser, selectedPost } = useAppContext();
 
   return (
     <main className="section">
@@ -21,20 +22,6 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-
-                {/* <Loader /> */}
-
-                {/* <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div> */}
-
-                {/* <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div> */}
-
                 {
                   selectedUser
                     ? <PostsList />
@@ -44,25 +31,24 @@ export const App: React.FC = () => {
                       </p>
                     )
                 }
-
               </div>
             </div>
           </div>
 
-          {/* <div
+          <div
             data-cy="Sidebar"
-            className={classNames(
+            className={cn(
               'tile',
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {selectedPost && <PostDetails />}
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
     </main>
