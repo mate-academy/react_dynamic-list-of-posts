@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import cn from 'classnames';
 import { UserItem } from './UserItem';
 import { useAppContext } from '../context/AppContext';
@@ -6,9 +6,18 @@ import { useAppContext } from '../context/AppContext';
 export const UserSelector: React.FC = () => {
   const [isDropdownActive, setIsDropdownActive] = useState<boolean>(false);
   const { users, selectedUser } = useAppContext();
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const handleDropdown = () => {
     setIsDropdownActive(prev => !prev);
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current && !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setIsDropdownActive(false);
+    }
   };
 
   useEffect(() => {
@@ -17,12 +26,21 @@ export const UserSelector: React.FC = () => {
     }
   }, [selectedUser]);
 
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div
       data-cy="UserSelector"
       className={cn('dropdown', {
         'is-active': isDropdownActive,
       })}
+      ref={dropdownRef}
     >
       <div className="dropdown-trigger">
         <button
@@ -44,7 +62,11 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+      <div
+        className="dropdown-menu"
+        id="dropdown-menu"
+        role="menu"
+      >
         <div className="dropdown-content">
           {
             users.length > 0

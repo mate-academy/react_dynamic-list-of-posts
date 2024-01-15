@@ -7,6 +7,7 @@ import {
   useEffect,
   useState,
   Dispatch,
+  useMemo,
 } from 'react';
 import { client } from '../utils/fetchClient';
 import { User } from '../types/User';
@@ -49,15 +50,9 @@ export const AppContextProvider: FC<Props> = ({ children }) => {
 
   // LOAD USERS
   const loadUsers = async () => {
-    try {
-      const response = await client.get('/users');
+    const response = await client.get<User[]>('/users');
 
-      setUsers(response as User[]);
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error, 'Unable to load users');
-      throw new Error('Unable to load users');
-    }
+    setUsers(response);
   };
 
   // LOAD POSTS
@@ -66,9 +61,9 @@ export const AppContextProvider: FC<Props> = ({ children }) => {
     setPostsAreLoading(true);
 
     try {
-      const response = await client.get(`/posts?userId=${selectedUser?.id}`);
+      const response = await client.get<Post[]>(`/posts?userId=${selectedUser?.id}`);
 
-      setPosts(response as Post[]);
+      setPosts(response);
     } catch (error) {
       setShowPostsError(true);
     } finally {
@@ -85,7 +80,7 @@ export const AppContextProvider: FC<Props> = ({ children }) => {
     setSelectedUser(user);
   };
 
-  useEffect(() => {
+  useMemo(() => {
     loadUsers();
   }, []);
 

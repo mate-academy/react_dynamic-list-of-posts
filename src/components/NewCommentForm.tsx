@@ -68,9 +68,9 @@ export const NewCommentForm: React.FC = () => {
       setCommentIsPosting(true);
 
       try {
-        const response = await client.post('/comments', data);
+        const response = await client.post<Comment>('/comments', data);
 
-        setComments(prev => [...prev, response] as Comment[]);
+        setComments(prev => [...prev, response]);
       } catch (error) {
         // eslint-disable-next-line no-console
         console.log(error);

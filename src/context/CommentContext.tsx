@@ -43,9 +43,9 @@ export const CommentContextProvider: FC<Props> = ({ children }) => {
       setCommentsAreLoading(true);
 
       try {
-        const response = await client.get(`/comments?postId=${post?.id}`);
+        const response = await client.get<Comment[]>(`/comments?postId=${post?.id}`);
 
-        setComments(response as Comment[]);
+        setComments(response);
       } catch (error) {
         setShowCommentsError(true);
       } finally {
