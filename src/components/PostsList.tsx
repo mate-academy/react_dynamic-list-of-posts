@@ -3,12 +3,12 @@ import { Post } from '../types/Post';
 
 type Props = {
   userPosts: Post[],
-  handleClickOpenComments: (value: number) => void,
-  userPostElement: any,
+  handleToggleCommentsClick: (value: number) => void,
+  userPostElement: Post | null,
 };
 export const PostsList: React.FC<Props> = ({
   userPosts,
-  handleClickOpenComments,
+  handleToggleCommentsClick,
   userPostElement,
 }) => (
   <div data-cy="PostsList">
@@ -40,7 +40,7 @@ export const PostsList: React.FC<Props> = ({
                 className={`button is-link ${
                   userPostElement?.id !== post.id ? 'is-light' : ''
                 }`}
-                onClick={() => handleClickOpenComments(post.id)}
+                onClick={() => handleToggleCommentsClick(post.id)}
               >
                 {userPostElement?.id === post.id ? 'Close' : 'Open'}
               </button>

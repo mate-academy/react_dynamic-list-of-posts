@@ -6,7 +6,7 @@ import { Comment } from '../types/Comment';
 type Props = {
   setUserComments: Dispatch<SetStateAction<Comment[]>>
   setIsErrorComment: (error: boolean) => void,
-  isOpenComment: number,
+  isOpenComment: number | null,
 };
 
 export const NewCommentForm: React.FC<Props> = ({
@@ -52,7 +52,10 @@ export const NewCommentForm: React.FC<Props> = ({
     setIsEmailError(!email.trim());
     setIsBodyError(!body.trim());
 
-    if (titleName.trim() && email.trim() && body.trim()) {
+    if (titleName.trim()
+    && email.trim()
+    && body.trim()
+    && isOpenComment !== null) {
       setIsLoader(true);
       try {
         const newComment = await service.newComment({

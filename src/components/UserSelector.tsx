@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useState } from 'react';
+import React, { MouseEventHandler, useEffect, useState } from 'react';
 import { User } from '../types/User';
 import { Post } from '../types/Post';
 import * as service from '../utils/api';
@@ -45,6 +45,10 @@ export const UserSelector: React.FC<Props> = ({
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    setIsChoose(false);
+  }, [users, setIsChoose]);
 
   return (
     <div data-cy="UserSelector" className="dropdown is-active">

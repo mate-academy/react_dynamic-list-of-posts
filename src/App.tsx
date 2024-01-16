@@ -18,21 +18,22 @@ export const App: React.FC = () => {
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [userComments, setUserComments] = useState<Comment[]>([]);
 
+  const [userPostElement, setUserPostElement] = useState<Post | null>(null);
   const [isChooseUser, setIsChooseUser] = useState<number | null>(null);
   const [isOpenComment, setIsOpenComment] = useState<number | null>(null);
 
   const [isChoose, setIsChoose] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [isCommentsLoading, setIsCommentsLoading] = useState(true);
   const [isErrorComment, setIsErrorComment] = useState(false);
-  const [userPostElement, setUserPostElement] = useState<Post | {}>({});
 
   useEffect(() => {
     setIsError(false);
   }, [userPosts]);
 
-  const notPostYet = userPosts.length === 0
+  const notPostYet = !isError
+  && userPosts.length === 0
   && isChooseUser
   && !isLoading;
 
@@ -48,22 +49,27 @@ export const App: React.FC = () => {
     }
   };
 
-  const handleClickOpenComments = async (postId: number) => {
+  const handleToggleCommentsClick = async (postId: number) => {
     const foundPost = userPosts?.find(post => post.id === postId);
 
+    setIsOpenComment(prevState => (prevState === postId ? null : postId));
     if (foundPost) {
       setUserPostElement(foundPost);
+
       try {
         setIsCommentsLoading(true);
-
         const commentsFromServer = await service.getComment(postId);
 
         setUserComments(commentsFromServer);
-        setIsOpenComment(prevState => (prevState === postId ? null : postId));
-        setIsCommentsLoading(false);
       } catch {
         setIsErrorComment(true);
+      } finally {
+        setIsCommentsLoading(false);
       }
+    }
+
+    if (userPostElement?.id === postId) {
+      setUserPostElement(null);
     }
   };
 
@@ -73,17 +79,13 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
       try {
         const usersFromServer = await service.getUsers();
 
         setUsers(usersFromServer);
         setIsError(false);
-        setIsLoading(false);
       } catch (usersError) {
         setIsError(true);
-      } finally {
-        setIsLoading(false);
       }
     };
 
@@ -100,7 +102,10 @@ export const App: React.FC = () => {
                 <UserSelector
                   setIsLoading={setIsLoading}
                   setIsError={setIsError}
-                  setUserPosts={setUserPosts}
+                  setUserPosts={(user: Post[]) : void => {
+                    setUserPosts(user);
+                    setUserPostElement(null);
+                  }}
                   setIsChoose={setIsChoose}
                   users={users}
                   handleChooseUser={handleChooseUser}
@@ -111,7 +116,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!isChooseUser && !isLoading && (
+                {isChooseUser === null && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
@@ -137,10 +142,10 @@ export const App: React.FC = () => {
 
                 )}
 
-                {userPosts.length > 0 && (
+                {userPosts.length > 0 && !isError && (
                   <PostsList
                     userPostElement={userPostElement}
-                    handleClickOpenComments={handleClickOpenComments}
+                    handleToggleCommentsClick={handleToggleCommentsClick}
                     userPosts={userPosts}
                   />
                 )}
@@ -148,31 +153,29 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {isOpenComment && (
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                'Sidebar--open',
-              )}
-            >
-              <div className="tile is-child box is-success ">
-                <PostDetails
-                  userPostElement={userPostElement}
-                  removeComments={removeComments}
-                  isErrorComment={isErrorComment}
-                  setIsErrorComment={setIsErrorComment}
-                  isCommentsLoading={isCommentsLoading}
-                  userComments={userComments}
-                  setUserComments={setUserComments}
-                  isOpenComment={isOpenComment}
-                />
-              </div>
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': isOpenComment },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              <PostDetails
+                userPostElement={userPostElement}
+                removeComments={removeComments}
+                isErrorComment={isErrorComment}
+                setIsErrorComment={setIsErrorComment}
+                isCommentsLoading={isCommentsLoading}
+                userComments={userComments}
+                setUserComments={setUserComments}
+                isOpenComment={isOpenComment}
+              />
             </div>
-          )}
+          </div>
         </div>
       </div>
     </main>

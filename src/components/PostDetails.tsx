@@ -2,16 +2,17 @@ import React, { Dispatch, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
 
 type Props = {
   userComments: Comment[];
   isCommentsLoading: boolean;
   removeComments: (value: number) => void;
   setUserComments: Dispatch<React.SetStateAction<Comment[]>>;
-  isOpenComment: number;
+  isOpenComment: number | null;
   isErrorComment: boolean,
   setIsErrorComment: (value: boolean) => void,
-  userPostElement: any,
+  userPostElement: Post | null,
 };
 
 export const PostDetails: React.FC<Props> = ({
