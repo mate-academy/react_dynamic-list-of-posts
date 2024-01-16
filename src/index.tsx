@@ -1,5 +1,10 @@
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
+import { AppContextProvider } from './context/AppContext';
 
 createRoot(document.getElementById('root') as HTMLElement)
-  .render(<App />);
+  .render(
+    <AppContextProvider>
+      <App />
+    </AppContextProvider>,
+  );
