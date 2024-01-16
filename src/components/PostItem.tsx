@@ -31,10 +31,14 @@ export const PostItem: FC<Props> = ({ post }) => {
         <button
           type="button"
           data-cy="PostButton"
-          className="button is-link is-light"
+          className="button is-link is-light is-active"
           onClick={handleToggleOpenPost}
         >
-          Open
+          {
+            post.id === selectedPost?.id
+              ? 'Close'
+              : 'Open'
+          }
         </button>
       </td>
     </tr>
