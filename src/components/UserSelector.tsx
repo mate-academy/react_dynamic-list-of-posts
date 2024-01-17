@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import cn from 'classnames';
 
 import { User } from '../types/User';
+import { UserLink } from './User';
 
 interface Props {
   users: User[],
@@ -14,17 +15,36 @@ export const UserSelector: React.FC<Props> = ({
   selectedUser,
   updateSelectedUser,
 }) => {
-  const [isUserSelected, setIsUserSelected] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const dropdownMenuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+
+      if (!dropdownMenuRef.current?.contains(target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, []);
 
   const updateUserAndPosts = (currUser: User) => {
     updateSelectedUser(currUser);
-    setIsUserSelected(false);
+    setIsMenuOpen(false);
   };
 
   return (
     <div
       data-cy="UserSelector"
-      className={cn('dropdown', { 'is-active': isUserSelected })}
+      className={cn('dropdown', { 'is-active': isMenuOpen })}
+      ref={dropdownMenuRef}
     >
       <div className="dropdown-trigger">
         <button
@@ -32,12 +52,12 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setIsUserSelected(!isUserSelected)}
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           <span>
             {!selectedUser
               ? 'Choose a user'
-              : selectedUser?.name}
+              : selectedUser.name}
           </span>
 
           <span className="icon is-small">
@@ -46,17 +66,25 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+      <div
+        className="dropdown-menu"
+        id="dropdown-menu"
+        role="menu"
+      >
         <div className="dropdown-content">
-          {users.map(user => (
-            <a
-              key={user.id}
-              href={`#user-${user.id}`}
-              className="dropdown-item"
-              onClick={() => updateUserAndPosts(user)}
-            >
-              {user.name}
-            </a>
+          {users.map(({
+            id, name, email, phone,
+          }) => (
+            <UserLink
+              id={id}
+              name={name}
+              email={email}
+              phone={phone}
+              selectedUserId={selectedUser?.id}
+              onClick={() => updateUserAndPosts({
+                id, name, email, phone,
+              })}
+            />
           ))}
         </div>
       </div>

@@ -6,7 +6,7 @@ import { Post } from '../types/Post';
 
 interface Props {
   comments: Comment[],
-  selectedPost: Post | null,
+  selectedPost: Post,
   isLoadingComments: boolean,
   openPostId: number,
   addComment: (el: Comment) => void,
@@ -35,11 +35,11 @@ export const PostDetails: React.FC<Props> = ({
 
         <div className="block">
           <h2 data-cy="PostTitle">
-            {`#${selectedPost?.id}: ${selectedPost?.title}`}
+            {`#${selectedPost.id}: ${selectedPost.title}`}
           </h2>
 
           <p data-cy="PostBody">
-            {selectedPost?.body}
+            {selectedPost.body}
           </p>
         </div>
 

@@ -71,6 +71,13 @@ export const App: React.FC = () => {
     setIsShowingForm(false);
   };
 
+  const updateSelectedUser = (user: User | null) => {
+    setSelectedUser(user);
+    setIsShowingComments(false);
+    setOpenPostId(0);
+    setSelectedPost(null);
+  };
+
   const handleDeleteComment = (commentId: number) => {
     const showingComments = comments
       .filter(comment => comment.id !== commentId);
@@ -88,6 +95,10 @@ export const App: React.FC = () => {
     setErrorComments(el);
   };
 
+  const isShowingLoader = !errorPosts && isLoadingPosts;
+  const isShowingNoUserSelect = !errorPosts && !selectedUser && !isLoadingPosts;
+  const isShowingPosts = !isLoadingPosts && selectedUser && !errorPosts;
+
   return (
     <main className="section">
       <div className="container">
@@ -98,24 +109,21 @@ export const App: React.FC = () => {
                 <UserSelector
                   users={users}
                   selectedUser={selectedUser}
-                  updateSelectedUser={setSelectedUser}
+                  updateSelectedUser={updateSelectedUser}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!errorPosts && isLoadingPosts
+                {isShowingLoader
                   && <Loader />}
 
-                {!errorPosts && !selectedUser && !isLoadingPosts && (
+                {isShowingNoUserSelect && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
 
-                {(!isLoadingPosts
-                  && posts.length > 0
-                  && selectedUser
-                  && !errorPosts)
+                {isShowingPosts && posts.length > 0
                   && (
                     <PostsList
                       posts={posts}
@@ -124,10 +132,7 @@ export const App: React.FC = () => {
                     />
                   )}
 
-                {!isLoadingPosts
-                  && !posts.length
-                  && selectedUser
-                  && !errorPosts
+                {isShowingPosts && !posts.length
                   && (
                     <div
                       className="notification is-warning"
@@ -159,20 +164,22 @@ export const App: React.FC = () => {
               { 'Sidebar--open': isShowingComments },
             )}
           >
-            <div className="tile is-child box is-success">
-              <PostDetails
-                comments={comments}
-                selectedPost={selectedPost}
-                isLoadingComments={isLoadingComments}
-                openPostId={openPostId}
-                addComment={createNewComment}
-                isShowingForm={isShowingForm}
-                changeIsShowingForm={setIsShowingForm}
-                onDelete={handleDeleteComment}
-                error={errorComments}
-                changeErrorState={handleChangeErrorState}
-              />
-            </div>
+            {selectedPost && (
+              <div className="tile is-child box is-success">
+                <PostDetails
+                  comments={comments}
+                  selectedPost={selectedPost}
+                  isLoadingComments={isLoadingComments}
+                  openPostId={openPostId}
+                  addComment={createNewComment}
+                  isShowingForm={isShowingForm}
+                  changeIsShowingForm={setIsShowingForm}
+                  onDelete={handleDeleteComment}
+                  error={errorComments}
+                  changeErrorState={handleChangeErrorState}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

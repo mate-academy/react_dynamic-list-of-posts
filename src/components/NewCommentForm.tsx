@@ -22,10 +22,14 @@ export const NewCommentForm: React.FC<Props> = ({
   const [hasMailError, setHasMailError] = useState(false);
   const [hasTextareaError, setHasTextareaError] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+
   const handleReset = () => {
     setInputName('');
     setInputMail('');
     setTextarea('');
+    setHasMailError(false);
+    setHasNameError(false);
+    setHasTextareaError(false);
   };
 
   const handleSumbit = (event: React.FormEvent) => {
