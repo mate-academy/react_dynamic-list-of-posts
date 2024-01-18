@@ -15,9 +15,6 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const [isError, setIsError] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(false);
 
-  const noComments = selectedPost && !comments.length && !isLoading;
-  const areComments = selectedPost && !isError && comments.length && !isLoading;
-
   function loadComments() {
     if (selectedPost) {
       setIsLoading(true);
@@ -93,13 +90,11 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             </div>
           )}
 
-          {!!noComments && (
+          {!isLoading && (!comments?.length ? (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
-          )}
-
-          {!!areComments && (
+          ) : (
             <>
               <p className="title is-4">Comments:</p>
 
@@ -125,7 +120,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
                 </article>
               ))}
             </>
-          )}
+          ))}
 
           {!isLoading && !isFormVisible && (
             <button

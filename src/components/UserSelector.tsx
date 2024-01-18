@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import cn from 'classnames';
 import { User } from '../types/User';
 import { Post } from '../types/Post';
@@ -17,6 +17,7 @@ export const UserSelector: React.FC<Props> = ({
   setSelectedPost,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleUserSelect = (user: User) => {
     setSelectedUser(user);
@@ -24,10 +25,27 @@ export const UserSelector: React.FC<Props> = ({
     setSelectedPost(null);
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current
+      && event.target instanceof Node
+      && !dropdownRef.current.contains(event.target)) {
+      setIsVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div
       data-cy="UserSelector"
       className={cn('dropdown', { 'is-active': isVisible })}
+      ref={dropdownRef}
     >
       <div className="dropdown-trigger">
         <button

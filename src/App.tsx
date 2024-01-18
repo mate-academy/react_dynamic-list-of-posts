@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import cn from 'classnames';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -20,14 +20,11 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const noPosts = selectedUser && !posts.length && !isLoading;
-  const arePosts = selectedUser && !isError && posts.length && !isLoading;
-
   useEffect(() => {
     getUsers().then(setUsers);
   }, []);
 
-  function loadPosts() {
+  const loadPosts = useCallback(() => {
     if (selectedUser) {
       setIsLoading(true);
       setIsError(false);
@@ -40,9 +37,9 @@ export const App: React.FC = () => {
         })
         .finally(() => setIsLoading(false));
     }
-  }
+  }, [selectedUser]);
 
-  useEffect(loadPosts, [selectedUser]);
+  useEffect(loadPosts, [loadPosts]);
 
   return (
     <main className="section">
@@ -77,19 +74,17 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!!noPosts && (
+                {selectedUser && !isLoading && (!posts?.length ? (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
-                )}
-
-                {!!arePosts && (
+                ) : (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}
                     setSelectedPost={setSelectedPost}
                   />
-                )}
+                ))}
               </div>
             </div>
           </div>
