@@ -18,18 +18,14 @@ export const NewCommentForm: React.FC<Props> = ({
   const [inputName, setInputName] = useState('');
   const [inputMail, setInputMail] = useState('');
   const [textarea, setTextarea] = useState('');
-  const [hasNameError, setHasNameError] = useState(false);
-  const [hasMailError, setHasMailError] = useState(false);
-  const [hasTextareaError, setHasTextareaError] = useState(false);
+  const [submitAttempted, setSubmitAttempted] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
 
   const handleReset = () => {
     setInputName('');
     setInputMail('');
     setTextarea('');
-    setHasMailError(false);
-    setHasNameError(false);
-    setHasTextareaError(false);
+    setSubmitAttempted(false);
   };
 
   const handleSumbit = (event: React.FormEvent) => {
@@ -54,33 +50,9 @@ export const NewCommentForm: React.FC<Props> = ({
         .catch(() => changeErrorState(true));
     }
 
-    if (!inputName.trim()) {
-      setHasNameError(true);
+    if (!inputName.trim() || !inputMail.trim() || !textarea.trim()) {
+      setSubmitAttempted(true);
     }
-
-    if (!inputMail.trim()) {
-      setHasMailError(true);
-    }
-
-    if (!textarea.trim()) {
-      setHasTextareaError(true);
-    }
-  };
-
-  const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputName(event.target.value);
-    setHasNameError(false);
-  };
-
-  const handleChangeMail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputMail(event.target.value);
-    setHasMailError(false);
-  };
-
-  // eslint-disable-next-line max-len
-  const handleChangeTextarea = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setTextarea(event.target.value);
-    setHasTextareaError(false);
   };
 
   return (
@@ -96,16 +68,19 @@ export const NewCommentForm: React.FC<Props> = ({
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={cn('input', { 'is-danger': hasNameError })}
+            className={cn(
+              'input',
+              { 'is-danger': !inputName && submitAttempted },
+            )}
             value={inputName}
-            onChange={handleChangeName}
+            onChange={e => setInputName(e.target.value)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {hasNameError && (
+          {!inputName && submitAttempted && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -115,7 +90,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {hasNameError && (
+        {!inputName && submitAttempted && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -133,16 +108,19 @@ export const NewCommentForm: React.FC<Props> = ({
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={cn('input', { 'is-danger': hasMailError })}
+            className={cn(
+              'input',
+              { 'is-danger': !inputMail && submitAttempted },
+            )}
             value={inputMail}
-            onChange={handleChangeMail}
+            onChange={e => setInputMail(e.target.value)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {hasMailError && (
+          {!inputMail && submitAttempted && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -152,7 +130,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {hasMailError && (
+        {!inputMail && submitAttempted && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -169,13 +147,16 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={cn('textarea', { 'is-danger': hasTextareaError })}
+            className={cn(
+              'textarea',
+              { 'is-danger': !textarea && submitAttempted },
+            )}
             value={textarea}
-            onChange={handleChangeTextarea}
+            onChange={e => setTextarea(e.target.value)}
           />
         </div>
 
-        {hasTextareaError && (
+        {!textarea && submitAttempted && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>

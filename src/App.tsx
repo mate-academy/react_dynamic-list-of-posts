@@ -25,7 +25,6 @@ export const App: React.FC = () => {
   const [isLoadingPosts, setIsLoadingPosts] = useState(false);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [isShowingComments, setIsShowingComments] = useState(false);
-  const [openPostId, setOpenPostId] = useState(0);
   const [isShowingForm, setIsShowingForm] = useState(false);
   const [errorPosts, setErrorPosts] = useState(false);
   const [errorComments, setErrorComments] = useState(false);
@@ -49,14 +48,14 @@ export const App: React.FC = () => {
 
   const showPostDetails = (post: Post) => {
     setIsLoadingComments(true);
-    if (post.id === openPostId) {
-      setOpenPostId(0);
+    if (post.id === selectedPost?.id) {
       setIsShowingComments(!isShowingComments);
+      setSelectedPost(null);
     }
 
-    if (!openPostId || openPostId !== post.id) {
+    if (!selectedPost?.id || selectedPost?.id !== post.id) {
       setIsShowingComments(true);
-      setOpenPostId(post.id);
+      setSelectedPost(post);
       setErrorComments(false);
 
       fetchComments.getComments(`/comments?postId=${post.id}`)
@@ -67,14 +66,12 @@ export const App: React.FC = () => {
         .catch(() => setErrorComments(true));
     }
 
-    setSelectedPost(post);
     setIsShowingForm(false);
   };
 
   const updateSelectedUser = (user: User | null) => {
     setSelectedUser(user);
     setIsShowingComments(false);
-    setOpenPostId(0);
     setSelectedPost(null);
   };
 
@@ -128,7 +125,7 @@ export const App: React.FC = () => {
                     <PostsList
                       posts={posts}
                       showPostDetails={showPostDetails}
-                      openPostId={openPostId}
+                      openPostId={selectedPost?.id}
                     />
                   )}
 
@@ -170,7 +167,7 @@ export const App: React.FC = () => {
                   comments={comments}
                   selectedPost={selectedPost}
                   isLoadingComments={isLoadingComments}
-                  openPostId={openPostId}
+                  openPostId={selectedPost?.id}
                   addComment={createNewComment}
                   isShowingForm={isShowingForm}
                   changeIsShowingForm={setIsShowingForm}

@@ -29,6 +29,10 @@ export const PostDetails: React.FC<Props> = ({
   error,
   changeErrorState,
 }) => {
+  const isIdle = !error && !isLoadingComments;
+  const hasComments = isIdle && Boolean(comments.length) && comments;
+  const hasNoComments = isIdle && !comments.length && comments;
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -53,21 +57,17 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {!error && !comments.length && comments && !isLoadingComments && (
+          {hasNoComments && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {!error
-            && Boolean(comments.length)
-            && comments
-            && !isLoadingComments
-            && (
-              <p className="title is-4">Comments:</p>)}
+          {hasComments && (
+            <p className="title is-4">Comments:</p>
+          )}
 
-          {!error && Boolean(comments.length)
-            && !isLoadingComments
+          {hasComments
             && comments.map(({
               id, email, name, body,
             }) => (
@@ -97,24 +97,25 @@ export const PostDetails: React.FC<Props> = ({
               </article>
             ))}
 
-          {!error && !isLoadingComments && (isShowingForm
-            ? (
-              <NewCommentForm
-                postId={openPostId}
-                addNewComment={addComment}
-                changeErrorState={changeErrorState}
-              />
-            )
-            : (
-              <button
-                data-cy="WriteCommentButton"
-                type="button"
-                className="button is-link"
-                onClick={() => changeIsShowingForm(true)}
-              >
-                Write a comment
-              </button>
-            ))}
+          {isIdle
+            && (isShowingForm
+              ? (
+                <NewCommentForm
+                  postId={openPostId}
+                  addNewComment={addComment}
+                  changeErrorState={changeErrorState}
+                />
+              )
+              : (
+                <button
+                  data-cy="WriteCommentButton"
+                  type="button"
+                  className="button is-link"
+                  onClick={() => changeIsShowingForm(true)}
+                >
+                  Write a comment
+                </button>
+              ))}
         </div>
       </div>
     </div>

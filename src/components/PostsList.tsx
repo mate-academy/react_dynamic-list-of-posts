@@ -1,11 +1,12 @@
 import React from 'react';
-import cn from 'classnames';
+
 import { Post } from '../types/Post';
+import { PostItem } from './Post';
 
 interface Props {
   posts: Post[],
   showPostDetails: (post: Post) => void,
-  openPostId: number,
+  openPostId?: number,
 }
 
 export const PostsList: React.FC<Props> = ({
@@ -28,32 +29,18 @@ export const PostsList: React.FC<Props> = ({
         </thead>
 
         <tbody>
-          {posts.map(post => (
-            <tr
-              data-cy="Post"
-              key={post.id}
-            >
-              <td data-cy="PostId">{post.id}</td>
-
-              <td data-cy="PostTitle">
-                {post.title}
-              </td>
-
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={cn(
-                    'button',
-                    'is-link',
-                    { 'is-light': openPostId !== post.id },
-                  )}
-                  onClick={() => showPostDetails(post)}
-                >
-                  {openPostId === post.id ? 'Close' : 'Open'}
-                </button>
-              </td>
-            </tr>
+          {posts.map(({
+            id, userId, title, body,
+          }) => (
+            <PostItem
+              id={id}
+              title={title}
+              userId={userId}
+              body={body}
+              openPostId={openPostId}
+              onClick={showPostDetails}
+              key={id}
+            />
           ))}
         </tbody>
       </table>
