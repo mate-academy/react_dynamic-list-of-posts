@@ -1,15 +1,46 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import cn from 'classnames';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
-
-import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { getUsers } from './api/user';
+import { User } from './types/User';
+import { Post } from './types/Post';
+import { getUserPosts } from './api/post';
 
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<[] | Post[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    getUsers().then(setUsers);
+  }, []);
+
+  const loadPosts = useCallback(() => {
+    if (selectedUser) {
+      setIsLoading(true);
+      setIsError(false);
+
+      getUserPosts(selectedUser.id)
+        .then(setPosts)
+        .catch((error) => {
+          setIsError(true);
+          throw error;
+        })
+        .finally(() => setIsLoading(false));
+    }
+  }, [selectedUser]);
+
+  useEffect(loadPosts, [loadPosts]);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,45 +48,65 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  users={users}
+                  selectedUser={selectedUser}
+                  setSelectedUser={setSelectedUser}
+                  setSelectedPost={setSelectedPost}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isLoading && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {isError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                {selectedUser && !isLoading && (!posts?.length ? (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                ) : (
+                  <PostsList
+                    posts={posts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
+                  />
+                ))}
               </div>
             </div>
           </div>
 
           <div
             data-cy="Sidebar"
-            className={classNames(
+            className={cn(
               'tile',
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPost },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
+
+            {selectedPost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails
+                  selectedPost={selectedPost}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
