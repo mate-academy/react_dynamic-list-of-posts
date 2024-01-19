@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Comment } from '../../types/Comment';
 import { deleteComment } from '../../utils/api/comments';
-import { PostsContext } from '../../PostsContext ';
+import { PostsContext } from '../../PostsContext';
 
 export const CommentItem: React.FC<{ comment: Comment }> = ({ comment }) => {
   const { comments, setComments } = useContext(PostsContext);

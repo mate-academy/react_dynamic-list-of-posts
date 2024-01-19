@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { PostsContext } from '../../PostsContext ';
+import { PostsContext } from '../../PostsContext';
 import { Load } from '../../types/Load';
 
 type Props = {

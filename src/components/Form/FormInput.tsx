@@ -6,7 +6,7 @@ import {
   LabelMap,
   ErrorMap,
 } from '../../types/Input';
-import { PostsContext } from '../../PostsContext ';
+import { PostsContext } from '../../PostsContext';
 
 type Props = {
   setValue: (val: string) => void

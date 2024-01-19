@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { PostItem } from './PostItem';
-import { PostsContext } from '../../PostsContext ';
+import { PostsContext } from '../../PostsContext';
 
 export const PostsList: React.FC = () => {
   const { posts } = useContext(PostsContext);

@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import classNames from 'classnames';
-import { PostsContext } from '../../PostsContext ';
+import { PostsContext } from '../../PostsContext';
 import { PostDetails } from '../Comments/PostDetails';
 
 export const PostSlidebar: React.FC = () => {

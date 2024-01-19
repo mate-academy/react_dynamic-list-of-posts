@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import classNames from 'classnames';
-import { PostsContext } from '../../PostsContext ';
+import { PostsContext } from '../../PostsContext';
 import { CommentsList } from './CommentsList';
 import { Loader } from '../Notices/Loader/Loader';
 import { Load } from '../../types/Load';

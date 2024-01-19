@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import classNames from 'classnames';
 import { FormInput } from './FormInput';
 import { Input } from '../../types/Input';
-import { PostsContext } from '../../PostsContext ';
+import { PostsContext } from '../../PostsContext';
 import { Error } from '../../types/Message';
 import { addComment } from '../../utils/api/comments';
 
