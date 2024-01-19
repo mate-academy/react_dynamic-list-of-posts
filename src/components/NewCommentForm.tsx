@@ -5,16 +5,16 @@ import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 
 type Props = {
-  loading: boolean;
-  setLoading: (load: boolean) => void;
+  loadingComment: boolean;
+  setLoadingComment: (load: boolean) => void;
   comments: Comment[];
   setComments: (comment: Comment[]) => void;
   selectedPost: Post;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
-  loading,
-  setLoading,
+  loadingComment,
+  setLoadingComment,
   comments,
   setComments,
   selectedPost,
@@ -75,12 +75,12 @@ export const NewCommentForm: React.FC<Props> = ({
       body: commentText,
     };
 
-    setLoading(true);
+    setLoadingComment(true);
     addComment(newComment)
       .then((data) => {
         setComments([...comments, data]);
       })
-      .finally(() => setLoading(false));
+      .finally(() => setLoadingComment(false));
     setCommentText('');
   };
 
@@ -191,9 +191,9 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control">
           <button
             type="submit"
-            className={cn('button is-link', { 'is-loading': loading })}
+            className={cn('button is-link', { 'is-loading': loadingComment })}
             onClick={(e) => handleAdd(e)}
-            disabled={loading}
+            disabled={loadingComment}
           >
             Add
           </button>

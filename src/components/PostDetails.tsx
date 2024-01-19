@@ -7,9 +7,9 @@ import { deleteComment } from '../utils/Post';
 type Props = {
   selectedPost: Post;
   comments: Comment[];
-  loading: boolean;
+  loadingComment: boolean;
   commentError: boolean;
-  setLoading: (load: boolean) => void;
+  setLoadingComment: (load: boolean) => void;
   setComments: (
     comment: Comment[] | ((comments: Comment[]) => Comment[])
   ) => void;
@@ -21,9 +21,9 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({
   selectedPost,
   comments,
-  loading,
+  loadingComment,
   commentError,
-  setLoading,
+  setLoadingComment,
   setComments,
   setCommentError,
   isWritiing,
@@ -32,9 +32,8 @@ export const PostDetails: React.FC<Props> = ({
   const { id, title, body } = selectedPost;
 
   const handleDelete = (commentId: number) => {
-    setComments((prevComments) => prevComments.filter(
-      (item) => item.id !== commentId,
-    ));
+    setComments((prevComments) => prevComments.filter((item) => item.id
+    !== commentId));
 
     deleteComment(commentId).catch(() => {
       setComments(comments);
@@ -52,13 +51,13 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {loading && <Loader />}
+          {loadingComment && <Loader />}
           {commentError && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
           )}
-          {!comments.length && !loading && !commentError && (
+          {!comments.length && !loadingComment && !commentError && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -97,7 +96,7 @@ export const PostDetails: React.FC<Props> = ({
               ))}
             </>
           )}
-          {!isWritiing && !loading && !commentError && (
+          {!isWritiing && !loadingComment && !commentError && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -111,8 +110,8 @@ export const PostDetails: React.FC<Props> = ({
 
         {isWritiing && (
           <NewCommentForm
-            loading={loading}
-            setLoading={setLoading}
+            loadingComment={loadingComment}
+            setLoadingComment={setLoadingComment}
             comments={comments}
             setComments={setComments}
             selectedPost={selectedPost}

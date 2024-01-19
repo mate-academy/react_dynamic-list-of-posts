@@ -20,6 +20,7 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingComment, setLoadingComment] = useState(false);
   const [messageError, setMessageError] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [commentError, setCommentError] = useState(false);
@@ -39,6 +40,23 @@ export const App: React.FC = () => {
 
     document.addEventListener('click', handleOutsideClick);
 
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    if (selectedPost) {
+      setLoadingComment(true);
+      setIsWriting(false);
+      getUsersComments(selectedPost.id)
+        .then(setComments)
+        .catch(() => setCommentError(true))
+        .finally(() => setLoadingComment(false));
+    }
+  }, [selectedPost]);
+
+  useEffect(() => {
     if (selectedUser) {
       setLoading(true);
       setIsWriting(false);
@@ -48,19 +66,7 @@ export const App: React.FC = () => {
         .catch(() => setMessageError(true))
         .finally(() => setLoading(false));
     }
-
-    if (selectedPost) {
-      setLoading(true);
-      getUsersComments(selectedPost.id)
-        .then(setComments)
-        .catch(() => setCommentError(true))
-        .finally(() => setLoading(false));
-    }
-
-    return () => {
-      document.removeEventListener('click', handleOutsideClick);
-    };
-  }, [selectedUser, selectedPost, isMenuOpen]);
+  }, [selectedUser]);
 
   const handleButton = () => {
     setIsWriting(true);
@@ -130,9 +136,9 @@ export const App: React.FC = () => {
                 <PostDetails
                   selectedPost={selectedPost}
                   comments={comments}
-                  loading={loading}
+                  loadingComment={loadingComment}
                   commentError={commentError}
-                  setLoading={setLoading}
+                  setLoadingComment={setLoadingComment}
                   setComments={setComments}
                   setCommentError={setCommentError}
                   isWritiing={isWritiing}
