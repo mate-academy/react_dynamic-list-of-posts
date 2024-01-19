@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import classNames from 'classnames';
-import { PostsContext } from '../../PostsContext';
+import { PostsContext } from '../PostsContext';
 import { Error } from '../../types/Message';
 
 export const AddButton: React.FC = () => {

@@ -5,7 +5,7 @@ import React from 'react';
 import { UserSelector } from './components/Users/UserSelector';
 import { MainContent } from './components/Posts/MainContent';
 import { PostSlidebar } from './components/Posts/PostSlidebar';
-import { PostsProvider } from './PostsContext';
+import { PostsProvider } from './components/PostsContext';
 
 export const App: React.FC = () => {
   return (

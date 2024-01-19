@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import classNames from 'classnames';
 import { Post } from '../../types/Post';
-import { PostsContext } from '../../PostsContext';
+import { PostsContext } from '../PostsContext';
 import { Load } from '../../types/Load';
 
 export const PostItem: React.FC<{ post: Post }> = ({ post }) => {

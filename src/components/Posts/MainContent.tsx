@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { PostsList } from './PostsList';
-import { PostsContext } from '../../PostsContext';
+import { PostsContext } from '../PostsContext';
 import { Notification } from '../Notices/Notification';
 import { Loader } from '../Notices/Loader';
 import { Load } from '../../types/Load';
