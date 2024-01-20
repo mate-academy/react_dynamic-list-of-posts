@@ -5,7 +5,6 @@ import classNames from 'classnames';
 
 import './App.scss';
 
-import './App.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
@@ -53,6 +52,8 @@ export const App: React.FC = () => {
     setIsForm(false);
   };
 
+  const arePosts = user && !posts.length && !isPending;
+
   return (
     <main className="section">
       <div className="container">
@@ -95,7 +96,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(user && !posts.length && !isPending) && (
+                {(arePosts) && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>

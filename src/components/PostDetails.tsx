@@ -98,11 +98,13 @@ export const PostDetails: React.FC<Props> = ({
             <Loader />
           )}
 
-          {!comments.length ? (
+          {(!comments.length && !areCommentsLoading) && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
-          ) : (
+          )}
+
+          {(!!comments.length && !areCommentsLoading) && (
             <>
               <p className="title is-4">Comments:</p>
 
