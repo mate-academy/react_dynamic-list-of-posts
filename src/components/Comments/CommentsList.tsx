@@ -7,7 +7,7 @@ export const CommentsList: React.FC = () => {
 
   return (
     <>
-      {comments.length > 0 && <p className="title is-4">Comments:</p>}
+      {!!comments.length && <p className="title is-4">Comments:</p>}
       {comments?.map(comment => (
         <CommentItem
           key={comment.id}
