@@ -4,6 +4,8 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import classNames from 'classnames';
 
 import './App.scss';
+
+import './App.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
