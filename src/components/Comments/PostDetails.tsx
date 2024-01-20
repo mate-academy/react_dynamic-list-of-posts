@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import classNames from 'classnames';
-import { PostsContext } from '../PostsContext';
+import { MainContext } from '../MainContext';
 import { CommentsList } from './CommentsList';
 import { Loader } from '../Notices/Loader/Loader';
 import { Load } from '../../types/Load';
@@ -16,7 +16,7 @@ export const PostDetails: React.FC = () => {
     loadType,
     currentPost,
     notification,
-  } = useContext(PostsContext);
+  } = useContext(MainContext);
 
   return (
     <div className="content" data-cy="PostDetails">

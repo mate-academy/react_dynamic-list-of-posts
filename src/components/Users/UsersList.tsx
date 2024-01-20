@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { PostsContext } from '../PostsContext';
+import { MainContext } from '../MainContext';
 import { Load } from '../../types/Load';
 
 type Props = {
@@ -16,7 +16,7 @@ export const UsersList: React.FC<Props> = ({ setIsMenu, setUserName }) => {
     setLoadType,
     setCurrentPost,
     setNotification,
-  } = useContext(PostsContext);
+  } = useContext(MainContext);
 
   const handleClick = (id: number, name: string) => {
     if (id === currentUser) {

@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { PostsList } from './PostsList';
-import { PostsContext } from '../PostsContext';
+import { MainContext } from '../MainContext';
 import { Notification } from '../Notices/Notification';
 import { Loader } from '../Notices/Loader';
 import { Load } from '../../types/Load';
@@ -12,7 +12,7 @@ const checkMassageTg = (value: Message) => (
   || value === Warning.emptyUsers);
 
 export const MainContent: React.FC = () => {
-  const { notification, loadType } = useContext(PostsContext);
+  const { notification, loadType } = useContext(MainContext);
 
   return (
     <div className="block" data-cy="MainContent">

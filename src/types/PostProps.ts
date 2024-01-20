@@ -4,7 +4,7 @@ import { Message } from './Message';
 import { Comment } from './Comment';
 import { Load } from './Load';
 
-export interface PostsProps {
+export type MainProps = {
   loadType: Load,
   isForm: boolean,
   isAddButton: boolean,
@@ -29,4 +29,4 @@ export interface PostsProps {
   isError: boolean,
   setIsError: (val: boolean) => void,
   setIsReset: (val: boolean) => void,
-}
+};

@@ -1,9 +1,9 @@
 import { useContext } from 'react';
-import { PostsContext } from '../PostsContext';
+import { MainContext } from '../MainContext';
 import { CommentItem } from './CommentItem';
 
 export const CommentsList: React.FC = () => {
-  const { comments } = useContext(PostsContext);
+  const { comments } = useContext(MainContext);
 
   return (
     <>

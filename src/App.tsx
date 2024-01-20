@@ -5,11 +5,11 @@ import React from 'react';
 import { UserSelector } from './components/Users/UserSelector';
 import { MainContent } from './components/Posts/MainContent';
 import { PostSlidebar } from './components/Posts/PostSlidebar';
-import { PostsProvider } from './components/PostsContext';
+import { MainProvider } from './components/MainContext';
 
 export const App: React.FC = () => {
   return (
-    <PostsProvider>
+    <MainProvider>
       <main className="section">
         <div className="container">
           <div className="tile is-ancestor">
@@ -25,6 +25,6 @@ export const App: React.FC = () => {
           </div>
         </div>
       </main>
-    </PostsProvider>
+    </MainProvider>
   );
 };

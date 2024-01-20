@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 import classNames from 'classnames';
-import { PostsContext } from '../PostsContext';
+import { MainContext } from '../MainContext';
 import { Error, Warning } from '../../types/Message';
 
 export const Notification: React.FC = () => {
-  const { notification } = useContext(PostsContext);
+  const { notification } = useContext(MainContext);
 
   return (
     <>

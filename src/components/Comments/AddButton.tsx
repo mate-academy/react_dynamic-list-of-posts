@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import classNames from 'classnames';
-import { PostsContext } from '../PostsContext';
+import { MainContext } from '../MainContext';
 import { Error } from '../../types/Message';
 
 export const AddButton: React.FC = () => {
@@ -10,7 +10,7 @@ export const AddButton: React.FC = () => {
     isAddButton,
     notification,
     setIsAddButton,
-  } = useContext(PostsContext);
+  } = useContext(MainContext);
 
   const handleClick = () => {
     setIsForm(true);

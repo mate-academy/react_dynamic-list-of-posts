@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 import { PostItem } from './PostItem';
-import { PostsContext } from '../PostsContext';
+import { MainContext } from '../MainContext';
 
 export const PostsList: React.FC = () => {
-  const { posts } = useContext(PostsContext);
+  const { posts } = useContext(MainContext);
 
   return (
     <div data-cy="PostsList">

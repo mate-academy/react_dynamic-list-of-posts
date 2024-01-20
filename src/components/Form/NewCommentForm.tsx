@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import classNames from 'classnames';
 import { FormInput } from './FormInput';
 import { Input } from '../../types/Input';
-import { PostsContext } from '../PostsContext';
+import { MainContext } from '../MainContext';
 import { Error } from '../../types/Message';
 import { addComment } from '../../utils/api/comments';
 
@@ -14,7 +14,7 @@ export const NewCommentForm: React.FC = () => {
     currentPost,
     setComments,
     setNotification,
-  } = useContext(PostsContext);
+  } = useContext(MainContext);
   const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState('');

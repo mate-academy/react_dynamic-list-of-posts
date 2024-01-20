@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 import { Comment } from '../../types/Comment';
 import { deleteComment } from '../../utils/api/comments';
-import { PostsContext } from '../PostsContext';
+import { MainContext } from '../MainContext';
 
 export const CommentItem: React.FC<{ comment: Comment }> = ({ comment }) => {
-  const { comments, setComments } = useContext(PostsContext);
+  const { comments, setComments } = useContext(MainContext);
 
   const doDeleteComment = (id: number) => {
     setComments(comments && comments.filter(item => item.id !== id));

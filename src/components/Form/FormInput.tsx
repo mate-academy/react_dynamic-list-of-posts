@@ -6,7 +6,7 @@ import {
   LabelMap,
   ErrorMap,
 } from '../../types/Input';
-import { PostsContext } from '../PostsContext';
+import { MainContext } from '../MainContext';
 
 type Props = {
   setValue: (val: string) => void
@@ -15,7 +15,7 @@ type Props = {
 };
 
 export const FormInput: React.FC<Props> = ({ type, value, setValue }) => {
-  const { isError, setIsError, isReset } = useContext(PostsContext);
+  const { isError, setIsError, isReset } = useContext(MainContext);
   const [hasError, setHasError] = useState(false);
   const lowerCaseType = type.toLowerCase();
 

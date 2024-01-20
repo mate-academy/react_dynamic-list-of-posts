@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 import classNames from 'classnames';
 import { Post } from '../../types/Post';
-import { PostsContext } from '../PostsContext';
+import { MainContext } from '../MainContext';
 import { Load } from '../../types/Load';
 
 export const PostItem: React.FC<{ post: Post }> = ({ post }) => {
@@ -13,7 +13,7 @@ export const PostItem: React.FC<{ post: Post }> = ({ post }) => {
     setIsAddButton,
     setCurrentPost,
     setNotification,
-  } = useContext(PostsContext);
+  } = useContext(MainContext);
   const [isOpen, setIsOpen] = useState(false);
   const isActive = currentPost?.id === post.id;
   const toggleCurrentPost = isActive ? null : post;
