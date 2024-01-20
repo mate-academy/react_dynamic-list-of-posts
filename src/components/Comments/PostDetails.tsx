@@ -13,9 +13,16 @@ export const PostDetails: React.FC = () => {
   const {
     isForm,
     loadType,
+    isAddButton,
     currentPost,
     notification,
   } = useContext(MainContext);
+
+  const isButtonActive = (
+    !(notification === Error.getComments)
+    || isAddButton
+    || !isForm
+  );
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -31,13 +38,12 @@ export const PostDetails: React.FC = () => {
 
         <div className="block">
           {loadType === Load.Comments && <Loader />}
-
           {notification === Error.getComments
             ? <Notification />
             : loadType === Load.None && <NoteEmpty />}
 
           <CommentsList />
-          <AddButton />
+          {isButtonActive && <AddButton />}
           {isForm && <NewCommentForm />}
         </div>
       </div>
