@@ -42,7 +42,10 @@ export const NewCommentForm: React.FC = () => {
 
     setIsLoading(true);
     addComment({
-      postId, name, email, body,
+      postId,
+      name,
+      email,
+      body,
     })
       .then((resp) => {
         setComments([...comments, resp]);

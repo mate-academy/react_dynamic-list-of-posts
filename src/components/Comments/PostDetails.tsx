@@ -13,15 +13,18 @@ export const PostDetails: React.FC = () => {
   const {
     isForm,
     loadType,
+    comments,
     isAddButton,
     currentPost,
     notification,
   } = useContext(MainContext);
 
-  const isButtonActive = (
-    !(notification === Error.getComments)
-    || isAddButton
-    || !isForm
+  const isNoteOfEmpty = loadType === Load.None && !comments.length;
+  const isButtonHidden = (
+    notification === Error.getComments
+    || loadType !== Load.None
+    || !isAddButton
+    || isForm
   );
 
   return (
@@ -38,13 +41,15 @@ export const PostDetails: React.FC = () => {
 
         <div className="block">
           {loadType === Load.Comments && <Loader />}
+
           {notification === Error.getComments
             ? <Notification />
-            : loadType === Load.None && <NoteEmpty />}
+            : isNoteOfEmpty && <NoteEmpty />}
 
           <CommentsList />
-          {isButtonActive && <AddButton />}
+          {!isButtonHidden && <AddButton />}
           {isForm && <NewCommentForm />}
+
         </div>
       </div>
     </div>

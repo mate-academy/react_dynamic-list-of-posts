@@ -2,10 +2,7 @@ import React, { useContext } from 'react';
 import { MainContext } from '../MainContext';
 
 export const AddButton: React.FC = () => {
-  const {
-    setIsForm,
-    setIsAddButton,
-  } = useContext(MainContext);
+  const { setIsForm, setIsAddButton } = useContext(MainContext);
 
   const handleClick = () => {
     setIsForm(true);
