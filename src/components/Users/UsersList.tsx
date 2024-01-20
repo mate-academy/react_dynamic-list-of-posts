@@ -1,6 +1,8 @@
 import React, { useContext } from 'react';
+import classNames from 'classnames';
 import { MainContext } from '../MainContext';
 import { Load } from '../../types/Load';
+import { useOuterClick } from '../../hooks/useOuterClick';
 
 type Props = {
   setIsMenu: (val: boolean) => void
@@ -17,6 +19,10 @@ export const UsersList: React.FC<Props> = ({ setIsMenu, setUserName }) => {
     setCurrentPost,
     setNotification,
   } = useContext(MainContext);
+
+  const reff = useOuterClick(() => {
+    setIsMenu(false);
+  });
 
   const handleClick = (id: number, name: string) => {
     if (id === currentUser) {
@@ -35,13 +41,20 @@ export const UsersList: React.FC<Props> = ({ setIsMenu, setUserName }) => {
   };
 
   return (
-    <div className="dropdown-menu" id="dropdown-menu" role="menu">
+    <div
+      ref={reff}
+      className="dropdown-menu"
+      id="dropdown-menu"
+      role="menu"
+    >
       <div className="dropdown-content">
         {users?.map(user => (
           <a
             key={user.id}
             href={`#user-${user.id}`}
-            className="dropdown-item"
+            className={classNames('dropdown-item', {
+              'is-active': currentUser === user.id,
+            })}
             onClick={() => handleClick(user.id, user.name)}
           >
             {user.name}
