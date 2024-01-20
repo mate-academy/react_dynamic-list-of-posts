@@ -38,10 +38,10 @@ export const PostDetails: React.FC = () => {
             : (
               <p
                 className={classNames('title is-4',
-                  { 'is-active': comments.length === 0 },
+                  { 'is-active': comments.length },
                   {
-                    'is-hidden': comments.length !== 0
-                      || loadType === Load.Comments,
+                    'is-hidden': !comments.length
+                    || loadType === Load.Comments,
                   })}
                 data-cy="NoCommentsMessage"
               >
