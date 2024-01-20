@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import classNames from 'classnames';
 import { MainContext } from '../MainContext';
 import { CommentsList } from './CommentsList';
 import { Loader } from '../Notices/Loader/Loader';
@@ -8,11 +7,11 @@ import { Notification } from '../Notices/Notification';
 import { Error } from '../../types/Message';
 import { NewCommentForm } from '../Form/NewCommentForm';
 import { AddButton } from './AddButton';
+import { NoteEmpty } from './NoteEmpty';
 
 export const PostDetails: React.FC = () => {
   const {
     isForm,
-    comments,
     loadType,
     currentPost,
     notification,
@@ -35,19 +34,7 @@ export const PostDetails: React.FC = () => {
 
           {notification === Error.getComments
             ? <Notification />
-            : (
-              <p
-                className={classNames('title is-4',
-                  { 'is-active': comments.length },
-                  {
-                    'is-hidden': !comments.length
-                    || loadType === Load.Comments,
-                  })}
-                data-cy="NoCommentsMessage"
-              >
-                No comments yet
-              </p>
-            )}
+            : loadType === Load.None && <NoteEmpty />}
 
           <CommentsList />
           <AddButton />
