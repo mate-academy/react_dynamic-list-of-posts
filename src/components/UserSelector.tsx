@@ -31,17 +31,24 @@ export const UserSelector: React.FC<Props> = ({
     setIsDropdownActive(isActive => !isActive);
   }, [setIsDropdownActive]);
 
+  const onSelectorBlur = useCallback(() => setTimeout(() => {
+    if (isDropdownActive) {
+      hideDropdown();
+    }
+  }, 150), [isDropdownActive, hideDropdown]);
+
+  const handleSelectUser = useCallback((user: User) => {
+    setSelectedUser(user);
+    hideDropdown();
+  }, [setSelectedUser, hideDropdown]);
+
   return (
     <div
       data-cy="UserSelector"
       className={classNames('dropdown', {
         'is-active': isDropdownActive,
       })}
-      onBlur={() => setTimeout(() => {
-        if (isDropdownActive) {
-          hideDropdown();
-        }
-      }, 150)}
+      onBlur={onSelectorBlur}
     >
       <div className="dropdown-trigger">
         <button
@@ -70,10 +77,7 @@ export const UserSelector: React.FC<Props> = ({
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}
-              onClick={() => {
-                setSelectedUser(user);
-                hideDropdown();
-              }}
+              onClick={() => handleSelectUser(user)}
             >
               {user.name}
             </a>

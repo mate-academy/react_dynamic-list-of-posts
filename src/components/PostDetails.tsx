@@ -72,28 +72,35 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             <>
               <p className="title is-4">Comments:</p>
 
-              {comments.map(comment => (
-                <article className="message is-small" data-cy="Comment">
-                  <div className="message-header">
-                    <a href={comment.email} data-cy="CommentAuthor">
-                      {comment.name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => handleCommentDeletion(comment.id)}
-                    >
-                      delete button
-                    </button>
-                  </div>
+              {comments.map(({
+                name,
+                email,
+                id,
+                body,
+              }) => {
+                return (
+                  <article className="message is-small" data-cy="Comment">
+                    <div className="message-header">
+                      <a href={email} data-cy="CommentAuthor">
+                        {name}
+                      </a>
+                      <button
+                        data-cy="CommentDelete"
+                        type="button"
+                        className="delete is-small"
+                        aria-label="delete"
+                        onClick={() => handleCommentDeletion(id)}
+                      >
+                        delete button
+                      </button>
+                    </div>
 
-                  <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
-                  </div>
-                </article>
-              ))}
+                    <div className="message-body" data-cy="CommentBody">
+                      {body}
+                    </div>
+                  </article>
+                );
+              })}
             </>
           )}
 

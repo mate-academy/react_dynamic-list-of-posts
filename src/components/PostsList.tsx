@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import classNames from 'classnames';
 import { Post } from '../types/Post';
 
@@ -12,52 +12,73 @@ export const PostsList: React.FC<Props> = ({
   posts,
   selectedPost,
   setSelectedPost,
-}) => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+}) => {
+  const handlePostSelect = useCallback(({
+    id, title, userId, body,
+  }: Post) => {
+    if (selectedPost?.id === id) {
+      setSelectedPost(null);
+    } else {
+      setSelectedPost({
+        id,
+        title,
+        userId,
+        body,
+      });
+    }
+  }, [selectedPost, setSelectedPost]);
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-          <th> </th>
-        </tr>
-      </thead>
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
 
-      <tbody>
-        {posts.map(post => (
-          <tr data-cy="Post" key={post.id}>
-            <td data-cy="PostId">
-              {post.id}
-            </td>
-
-            <td data-cy="PostTitle">
-              {post.title}
-            </td>
-
-            <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className={classNames('button', 'is-link', {
-                  'is-light': selectedPost?.id !== post.id,
-                })}
-                onClick={() => {
-                  if (selectedPost?.id === post.id) {
-                    setSelectedPost(null);
-                  } else {
-                    setSelectedPost(post);
-                  }
-                }}
-              >
-                {selectedPost?.id === post.id ? 'Close' : 'Open'}
-              </button>
-            </td>
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+            <th> </th>
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
+        </thead>
+
+        <tbody>
+          {posts.map(({
+            id,
+            title,
+            userId,
+            body,
+          }) => (
+            <tr data-cy="Post" key={id}>
+              <td data-cy="PostId">
+                {id}
+              </td>
+
+              <td data-cy="PostTitle">
+                {title}
+              </td>
+
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className={classNames('button', 'is-link', {
+                    'is-light': selectedPost?.id !== id,
+                  })}
+                  onClick={() => handlePostSelect({
+                    id,
+                    title,
+                    userId,
+                    body,
+                  })}
+                >
+                  {selectedPost?.id === id ? 'Close' : 'Open'}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
