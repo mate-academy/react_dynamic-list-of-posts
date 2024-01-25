@@ -1,0 +1,10 @@
+@import '../../styles/main';
+
+.dropdown {
+  &-content {
+    max-height: 200px;
+    overflow: auto;
+
+    @include scrollBar;
+  }
+}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -6,10 +6,27 @@ import './App.scss';
 import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
+import { UserSelector } from './components/UserSelector/UserSelector';
 import { Loader } from './components/Loader';
+import { getUsers } from './api/api';
+import { User } from './types/User';
 
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [isloading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    setIsLoading(true);
+    getUsers()
+      .then(setUsers)
+      .catch(() => {
+        setErrorMessage('Something went wrong!');
+        setTimeout(() => setErrorMessage(''), 3000);
+      })
+      .finally(() => setIsLoading(false));
+  }, []);
+
   return (
     <main className="section">
       <div className="container">
@@ -17,7 +34,7 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector users={users} />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -25,14 +42,16 @@ export const App: React.FC = () => {
                   No user selected
                 </p>
 
-                <Loader />
+                {isloading && (<Loader />)}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {errorMessage && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    {errorMessage}
+                  </div>
+                )}
 
                 <div className="notification is-warning" data-cy="NoPostsYet">
                   No posts yet
