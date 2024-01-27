@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -18,6 +18,16 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  const isNoPostsErrorShown = useMemo(
+    () => (selectedUser && !userPosts.length && !isLoading && !isError),
+    [selectedUser, userPosts, isLoading, isError],
+  );
+
+  const isPostListShown = useMemo(
+    () => (!!userPosts.length && !isLoading && !isError),
+    [userPosts, isLoading, isError],
+  );
 
   useEffect(() => {
     if (selectedUser) {
@@ -70,16 +80,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(selectedUser
-                  && !userPosts.length
-                  && !isLoading
-                  && !isError) && (
+                {isNoPostsErrorShown && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {(!!userPosts.length && !isLoading && !isError) && (
+                {isPostListShown && (
                   <PostsList
                     posts={userPosts}
                     selectedPost={selectedPost}

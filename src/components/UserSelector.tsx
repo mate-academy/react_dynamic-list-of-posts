@@ -35,7 +35,7 @@ export const UserSelector: React.FC<Props> = ({
     if (isDropdownActive) {
       hideDropdown();
     }
-  }, 150), [isDropdownActive, hideDropdown]);
+  }, 170), [isDropdownActive, hideDropdown]);
 
   const handleSelectUser = useCallback((user: User) => {
     setSelectedUser(user);
