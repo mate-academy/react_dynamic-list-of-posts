@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -10,22 +10,25 @@ import { UserSelector } from './components/UserSelector/UserSelector';
 import { Loader } from './components/Loader';
 import { getUsers } from './api/api';
 import { User } from './types/User';
+import { DispatchContext, StateContext } from './store/store';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [isloading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { selectedUser, userPosts, errorMessage } = useContext(StateContext);
+  const dispatch = useContext(DispatchContext);
 
   useEffect(() => {
-    setIsLoading(true);
     getUsers()
       .then(setUsers)
       .catch(() => {
-        setErrorMessage('Something went wrong!');
-        setTimeout(() => setErrorMessage(''), 3000);
-      })
-      .finally(() => setIsLoading(false));
-  }, []);
+        dispatch({ type: 'setError', payload: 'Can\'t get users' });
+        setTimeout(() => {
+          dispatch({ type: 'setError', payload: '' });
+        }, 3000);
+      });
+  }, [dispatch]);
 
   return (
     <main className="section">
@@ -34,15 +37,17 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector users={users} />
+                <UserSelector users={users} setIsLoading={setIsLoading} />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                {isloading && (<Loader />)}
+                {isLoading && (<Loader />)}
 
                 {errorMessage && (
                   <div
@@ -53,11 +58,23 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {selectedUser
+                  && !userPosts.length
+                  && !isLoading
+                  && !errorMessage
+                  && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  )}
 
-                <PostsList />
+                {selectedUser && !!userPosts.length && (
+                  <PostsList />
+                )}
+
               </div>
             </div>
           </div>
