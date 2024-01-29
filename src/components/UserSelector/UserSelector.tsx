@@ -18,6 +18,7 @@ export const UserSelector: React.FC<Props> = ({ users, setIsLoading }) => {
 
   function handleSelectUser(user: User) {
     dispatch({ type: 'selectUser', payload: user });
+    dispatch({ type: 'setSeletedPost', payload: null });
     setShowDropdown(false);
   }
 

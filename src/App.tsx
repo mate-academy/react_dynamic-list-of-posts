@@ -3,9 +3,9 @@ import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
+import cn from 'classnames';
+import { PostsList } from './components/PostList';
+import { PostDetails } from './components/PostDetails/PostDetails';
 import { UserSelector } from './components/UserSelector/UserSelector';
 import { Loader } from './components/Loader';
 import { getUsers } from './api/api';
@@ -16,8 +16,13 @@ export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { selectedUser, userPosts, errorMessage } = useContext(StateContext);
   const dispatch = useContext(DispatchContext);
+  const {
+    selectedUser,
+    userPosts,
+    errorMessage,
+    selectedPost,
+  } = useContext(StateContext);
 
   useEffect(() => {
     getUsers()
@@ -81,12 +86,13 @@ export const App: React.FC = () => {
 
           <div
             data-cy="Sidebar"
-            className={classNames(
+            className={cn(
               'tile',
               'is-parent',
               'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
+              'Sidebar', {
+                'Sidebar--open': selectedPost,
+              },
             )}
           >
             <div className="tile is-child box is-success ">
