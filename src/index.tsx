@@ -1,10 +1,10 @@
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
-import { UserProvider } from './components/UserContext/UserContext';
+import { MainProvider } from './components/MainContext/MainContext';
 
 createRoot(document.getElementById('root') as HTMLElement)
   .render(
-    <UserProvider>
+    <MainProvider>
       <App />
-    </UserProvider>,
+    </MainProvider>,
   );

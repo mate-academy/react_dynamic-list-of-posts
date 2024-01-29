@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react';
 import cn from 'classnames';
 import { getPosts } from '../../api/posts';
-import { UserContext } from '../UserContext/UserContext';
+import { MainContext } from '../MainContext/MainContext';
 import { User } from '../../types/User';
 import { Errors } from '../../types/Errors';
 
@@ -20,7 +20,7 @@ export const UserSelector: React.FC<Props> = ({
     setError,
     setIsLoading,
     setChoosedPost,
-  } = useContext(UserContext);
+  } = useContext(MainContext);
 
   const [isActive, setIsActive] = useState(false);
 
@@ -28,9 +28,9 @@ export const UserSelector: React.FC<Props> = ({
     setIsLoading(true);
     setChoosedUser(user);
     setIsActive(false);
-    setPosts(undefined);
-    setChoosedPost(undefined);
-    setError(Errors.DEFAULT);
+    setPosts([]);
+    setChoosedPost(null);
+    setError(Errors.NONE);
 
     getPosts(user.id)
       .then(setPosts)

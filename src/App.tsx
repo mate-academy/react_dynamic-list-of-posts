@@ -8,10 +8,10 @@ import { PostDetails } from './components/PostDetails/PostDetails';
 import { UserSelector } from './components/UserSelector/UserSelector';
 import { MainContent } from './components/MainContent/MainContent';
 import { User } from './types/User';
-import { UserContext } from './components/UserContext/UserContext';
+import { MainContext } from './components/MainContext/MainContext';
 
 export const App: React.FC = () => {
-  const { choosedPost } = useContext(UserContext);
+  const { choosedPost } = useContext(MainContext);
   const [choosedUser, setChoosedUser] = useState<User>();
 
   return (

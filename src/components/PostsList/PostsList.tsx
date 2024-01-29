@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { PostItem } from '../PostItem/PostItem';
-import { UserContext } from '../UserContext/UserContext';
+import { MainContext } from '../MainContext/MainContext';
 
 export const PostsList: React.FC = () => {
-  const { posts } = useContext(UserContext);
+  const { posts } = useContext(MainContext);
 
   const [isActive, setIsActive] = useState<number | null>(null);
 

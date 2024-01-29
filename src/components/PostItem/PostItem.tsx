@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import cn from 'classnames';
 import { Post } from '../../types/Post';
-import { UserContext } from '../UserContext/UserContext';
+import { MainContext } from '../MainContext/MainContext';
 import { getComments } from '../../api/comments';
 import { Errors } from '../../types/Errors';
 
@@ -19,16 +19,16 @@ export const PostItem: React.FC<Props> = ({ post, isActive, setIsActive }) => {
     setError,
     setIsLoading,
     setIsActiveComForm,
-  } = useContext(UserContext);
+  } = useContext(MainContext);
 
   const { id, title } = post;
 
   const handleOpenPost = (openedPost: Post): void => {
-    setComments(undefined);
+    setComments([]);
     setIsActiveComForm(false);
 
     if (choosedPost?.id === openedPost.id) {
-      setChoosedPost(undefined);
+      setChoosedPost(null);
 
       setIsActive(null);
 

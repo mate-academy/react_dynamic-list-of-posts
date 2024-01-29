@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import cn from 'classnames';
-import { UserContext } from '../UserContext/UserContext';
+import { MainContext } from '../MainContext/MainContext';
 import { createComments } from '../../api/comments';
 import { Errors } from '../../types/Errors';
 
@@ -10,7 +10,7 @@ export const NewCommentForm: React.FC = () => {
     comments,
     setComments,
     setError,
-  } = useContext(UserContext);
+  } = useContext(MainContext);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

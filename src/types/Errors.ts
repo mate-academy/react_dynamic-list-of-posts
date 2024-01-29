@@ -1,5 +1,5 @@
 export enum Errors {
-  DEFAULT = '',
+  NONE = '',
   POST = 'post',
   COMMENT = 'comment',
 }

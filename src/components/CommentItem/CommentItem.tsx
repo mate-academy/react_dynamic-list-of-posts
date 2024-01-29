@@ -1,14 +1,14 @@
 import { useContext } from 'react';
 import { removeComments } from '../../api/comments';
 import { Comment } from '../../types/Comment';
-import { UserContext } from '../UserContext/UserContext';
+import { MainContext } from '../MainContext/MainContext';
 
 type Props = {
   comment: Comment,
 };
 
 export const CommentItem: React.FC<Props> = ({ comment }) => {
-  const { comments, setComments } = useContext(UserContext);
+  const { comments, setComments } = useContext(MainContext);
 
   const {
     id, email, name, body,

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Loader } from '../Loader';
 import { NewCommentForm } from '../NewCommentForm/NewCommentForm';
-import { UserContext } from '../UserContext/UserContext';
+import { MainContext } from '../MainContext/MainContext';
 import { CommentItem } from '../CommentItem/CommentItem';
 import { Errors } from '../../types/Errors';
 
@@ -13,7 +13,7 @@ export const PostDetails: React.FC = () => {
     isLoading,
     isActiveComForm,
     setIsActiveComForm,
-  } = useContext(UserContext);
+  } = useContext(MainContext);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -29,7 +29,7 @@ export const PostDetails: React.FC = () => {
         </div>
 
         <div className="block">
-          {isLoading && !comments && (<Loader />)}
+          {isLoading && (<Loader />)}
 
           {error === Errors.COMMENT && (
             <div className="notification is-danger" data-cy="CommentsError">
@@ -37,17 +37,17 @@ export const PostDetails: React.FC = () => {
             </div>
           )}
 
-          {comments && comments.length === 0 && !error && (
+          {!comments.length && !error && !isLoading && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {comments && comments.length > 0 && !error && (
+          {!!comments.length && !error && (
             <p className="title is-4">Comments:</p>
           )}
 
-          {!error && comments?.map(comment => (
+          {!error && !!comments.length && comments.map(comment => (
             <CommentItem
               key={comment.id}
               comment={comment}

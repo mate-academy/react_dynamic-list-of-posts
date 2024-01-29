@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { User } from '../../types/User';
 import { PostsList } from '../PostsList/PostsList';
-import { UserContext } from '../UserContext/UserContext';
+import { MainContext } from '../MainContext/MainContext';
 import { Loader } from '../Loader';
 import { Errors } from '../../types/Errors';
 
@@ -14,7 +14,7 @@ export const MainContent: React.FC<Props> = ({ choosedUser }) => {
     posts,
     error,
     isLoading,
-  } = useContext(UserContext);
+  } = useContext(MainContext);
 
   return (
     <div className="block" data-cy="MainContent">
@@ -24,7 +24,7 @@ export const MainContent: React.FC<Props> = ({ choosedUser }) => {
         </p>
       )}
 
-      {isLoading && posts === undefined && (<Loader />)}
+      {isLoading && !posts.length && (<Loader />)}
 
       {error === Errors.POST && (
         <div
@@ -35,7 +35,7 @@ export const MainContent: React.FC<Props> = ({ choosedUser }) => {
         </div>
       )}
 
-      {posts && posts.length === 0 && (
+      {!posts.length && choosedUser && !isLoading && !error && (
         <div className="notification is-warning" data-cy="NoPostsYet">
           No posts yet
         </div>
