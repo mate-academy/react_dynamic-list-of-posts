@@ -1,0 +1,6 @@
+@import './mixins';
+@import './variables';
+
+html {
+  @include scroll-bar;
+}
