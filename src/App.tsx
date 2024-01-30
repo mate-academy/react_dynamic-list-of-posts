@@ -9,7 +9,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
-import { getUsers } from './services/user';
+import * as userService from './services/user';
 import * as postService from './services/post';
 import { Post } from './types/Post';
 
@@ -19,9 +19,10 @@ export const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
-    getUsers().then(setUsers);
+    userService.getUsers().then(setUsers);
   }, []);
 
   function loadPosts() {
@@ -59,6 +60,7 @@ export const App: React.FC = () => {
                   users={users}
                   selectedUser={selectedUser}
                   setSelectedUser={setSelectedUser}
+                  setSelectedPost={setSelectedPost}
                 />
               </div>
 
@@ -91,6 +93,8 @@ export const App: React.FC = () => {
                 {shouldRenderPosts && (
                   <PostsList
                     posts={posts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
                   />
                 )}
 
@@ -99,20 +103,24 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
+          {selectedPost && (
+            <div
+              data-cy="Sidebar"
+              className={classNames(
+                'tile',
+                'is-parent',
+                'is-8-desktop',
+                'Sidebar',
+                'Sidebar--open',
+              )}
+            >
+              <div className="tile is-child box is-success ">
+                <PostDetails
+                  selectedPost={selectedPost}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </main>
