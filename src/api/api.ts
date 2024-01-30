@@ -23,3 +23,17 @@ export function getComments(postId: number) {
       throw err;
     });
 }
+
+export function createComment(comment: Comment) {
+  return client.post<Comment>('/comments', comment)
+    .catch(err => {
+      throw err;
+    });
+}
+
+export function deleteComment(commentId: number) {
+  return client.delete(`/comments/${commentId}`)
+    .catch(err => {
+      throw err;
+    });
+}

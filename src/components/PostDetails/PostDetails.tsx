@@ -2,22 +2,23 @@ import React, { useContext, useEffect, useState } from 'react';
 import './PostDetails.scss';
 import { Loader } from '../Loader';
 import { NewCommentForm } from '../NewCommentForm/NewCommentForm';
+import { CommentsList } from '../CommentsList';
 import { StateContext } from '../../store/store';
-import { getComments } from '../../api/api';
 import { Comment } from '../../types/Comment';
-import { CommentItem } from '../CommentItem/CommentItem';
+import { getComments } from '../../api/api';
 
-export const PostDetails: React.FC = () => {
+export const PostDetails: React.FC = React.memo(() => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
+
   const { selectedPost } = useContext(StateContext);
 
   useEffect(() => {
     if (selectedPost) {
-      setIsLoading(true);
       setShowForm(false);
+      setIsLoading(true);
 
       getComments(selectedPost.id)
         .then(res => setComments(res))
@@ -31,7 +32,7 @@ export const PostDetails: React.FC = () => {
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {` #${selectedPost?.id}: ${selectedPost?.title}`}
+            {`#${selectedPost?.id}: ${selectedPost?.title}`}
           </h2>
 
           <p data-cy="PostBody">
@@ -43,33 +44,17 @@ export const PostDetails: React.FC = () => {
           {isLoading
             ? (<Loader />)
             : (
-              <div className="wrapper">
-                {errorMessage && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="CommentsError"
-                  >
-                    {errorMessage}
-                  </div>
-                )}
-
-                {!comments.length
-                  ? (
-                    <p className="title is-4" data-cy="NoCommentsMessage">
-                      No comments yet
-                    </p>
-                  )
-                  : (
-                    <p className="title is-4">Comments:</p>
-                  )}
-
-                {comments.map(comment => (
-                  <CommentItem comment={comment} key={comment.id} />
-                ))}
-              </div>
+              <CommentsList
+                comments={comments}
+                setComments={setComments}
+                setIsLoading={setIsLoading}
+                setShowForm={setShowForm}
+                setErrorMessage={setErrorMessage}
+                errorMessage={errorMessage}
+              />
             )}
 
-          {!showForm && (
+          {!showForm && !isLoading && !errorMessage && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -81,9 +66,14 @@ export const PostDetails: React.FC = () => {
           )}
         </div>
 
-        {showForm && (<NewCommentForm />)}
+        {showForm && !errorMessage && (
+          <NewCommentForm
+            setComments={setComments}
+            setErrorMessage={setErrorMessage}
+          />
+        )}
 
       </div>
     </div>
   );
-};
+});

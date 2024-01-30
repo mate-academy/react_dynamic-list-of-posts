@@ -61,7 +61,7 @@ export const UserSelector: React.FC<Props> = ({ users, setIsLoading }) => {
           onClick={() => setShowDropdown(!showDropdown)}
           onBlur={() => setShowDropdown(false)}
         >
-          <span>{selectedUser?.name || 'Select user'}</span>
+          <span>{selectedUser?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />

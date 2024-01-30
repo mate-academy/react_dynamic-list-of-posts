@@ -1,0 +1,16 @@
+.message {
+  position: relative;
+
+  &__loader{
+    position: absolute;
+    top: -8%;
+    left: 47%;
+    z-index: 2;
+  }
+
+  &__notification {
+    position: absolute;
+    width: 100%;
+    z-index: 2;
+  }
+}
