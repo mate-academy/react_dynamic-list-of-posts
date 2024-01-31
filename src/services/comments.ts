@@ -18,3 +18,7 @@ export function createComment({
     body,
   });
 }
+
+export function deleteComment(id: number) {
+  return client.delete(`/comments/${id}`);
+}

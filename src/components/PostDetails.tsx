@@ -40,8 +40,6 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
     email,
     body,
   }: Comment) => {
-    // setLoading(true);
-
     return commentService.createComment({
       postId,
       name,
@@ -51,8 +49,17 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       .then(newComment => {
         setComments(currentComments => [...currentComments, newComment]);
       })
-      .catch(() => setErrorMessage('Something went wrong!'));
-  // .finally(() => setLoading(false));
+      .catch(() => {
+        setWriteComment(false);
+        setErrorMessage('Something went wrong!');
+      });
+  };
+
+  const deleteComment = (commentId: number) => {
+    setComments(currentComments => currentComments
+      .filter(comment => comment.id !== commentId));
+
+    return commentService.deleteComment(commentId);
   };
 
   const hasError = !loading && errorMessage;
@@ -115,6 +122,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
                         type="button"
                         className="delete is-small"
                         aria-label="delete"
+                        onClick={() => deleteComment(comment.id)}
                       >
                         delete button
                       </button>
@@ -129,7 +137,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             </>
           )}
 
-          {!writeComment && (
+          {!writeComment && !errorMessage && (
             <button
               data-cy="WriteCommentButton"
               type="button"
