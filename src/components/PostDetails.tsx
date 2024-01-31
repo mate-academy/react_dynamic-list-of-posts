@@ -10,8 +10,6 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
-  const { id, title, body } = selectedPost;
-
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -19,16 +17,43 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
 
   function loadComments() {
     setErrorMessage('');
-    setLoading(true);
     setWriteComment(false);
+    setLoading(true);
 
-    commentService.getComments(id)
+    if (!selectedPost.id) {
+      setWriteComment(false);
+
+      return;
+    }
+
+    commentService.getComments(selectedPost.id)
       .then(setComments)
       .catch(() => setErrorMessage('Something went wrong!'))
       .finally(() => setLoading(false));
   }
 
-  useEffect(loadComments, [id]);
+  useEffect(loadComments, [selectedPost.id]);
+
+  const addComment = ({
+    postId,
+    name,
+    email,
+    body,
+  }: Comment) => {
+    // setLoading(true);
+
+    return commentService.createComment({
+      postId,
+      name,
+      email,
+      body,
+    })
+      .then(newComment => {
+        setComments(currentComments => [...currentComments, newComment]);
+      })
+      .catch(() => setErrorMessage('Something went wrong!'));
+  // .finally(() => setLoading(false));
+  };
 
   const hasError = !loading && errorMessage;
   const hasNoComments = !loading
@@ -41,11 +66,11 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {`#${id}: ${title}`}
+            {`#${selectedPost.id}: ${selectedPost.title}`}
           </h2>
 
           <p data-cy="PostBody">
-            {body}
+            {selectedPost.body}
           </p>
         </div>
 
@@ -117,7 +142,10 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         </div>
 
         {writeComment && (
-          <NewCommentForm />
+          <NewCommentForm
+            selectedPost={selectedPost}
+            addComment={addComment}
+          />
         )}
       </div>
     </div>
