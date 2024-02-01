@@ -11,7 +11,7 @@ export const PostDetails: React.FC = () => {
     loadingComments,
     errorMessage,
     postComments,
-    setNewComment,
+    setPostComments,
     newCommentShown,
     setNewCommentShown,
   } = usePosts();
@@ -19,6 +19,13 @@ export const PostDetails: React.FC = () => {
   if (!post) {
     return null;
   }
+
+  const handleDelete = (commentId: number) => {
+    setPostComments(postComments
+      .filter(comment => comment.id !== commentId));
+
+    deleteComment(commentId);
+  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -52,7 +59,9 @@ export const PostDetails: React.FC = () => {
             </p>
           )}
 
-          <p className="title is-4">Comments:</p>
+          {!loadingComments && !errorMessage && postComments.length > 0 && (
+            <p className="title is-4">Comments:</p>
+          )}
 
           {postComments.map(comment => (
             <article
@@ -72,10 +81,7 @@ export const PostDetails: React.FC = () => {
                   type="button"
                   className="delete is-small"
                   aria-label="delete"
-                  onClick={() => {
-                    deleteComment(comment.id);
-                    setNewComment(true);
-                  }}
+                  onClick={() => handleDelete(comment.id)}
                 >
                   delete button
                 </button>

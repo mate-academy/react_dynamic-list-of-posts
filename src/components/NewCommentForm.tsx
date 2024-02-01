@@ -2,47 +2,95 @@ import React, { useState } from 'react';
 import cn from 'classnames';
 import { Errors } from '../types/Errors';
 import { usePosts } from '../context/PostContext';
-import { Comment } from '../types/Comment';
+import { Comment, CommentData } from '../types/Comment';
 import { createComment } from '../api/comments';
 
 export const NewCommentForm: React.FC = () => {
   const {
     selectedPostId,
-    setNewComment,
-    loadingComments,
-    setLoadingForm,
+    setErrorMessage,
+    postComments,
+    setPostComments,
   } = usePosts();
 
-  const [name, setName] = useState('');
-  const [hasNameError, setHasNameError] = useState(false);
-  const [email, setEmail] = useState('');
-  const [hasEmailError, setHasEmailError] = useState(false);
-  const [body, setBody] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [comment, setComment] = useState<CommentData>({
+    name: '',
+    email: '',
+    body: '',
+  });
+
+  const [hasNameError, setHasNameError] = useState('');
+  const [hasEmailError, setHasEmailError] = useState('');
   const [hasBodyError, setHasBodyError] = useState('');
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-    setHasNameError(false);
+    setComment(prevComment => ({
+      ...prevComment,
+      name: event.target.value,
+    }));
+
+    setHasNameError('');
   };
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
-    setHasEmailError(false);
+    setComment(prevComment => ({
+      ...prevComment,
+      email: event.target.value,
+    }));
+
+    setHasEmailError('');
   };
 
   const handleBodyChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setBody(event.target.value);
+    setComment(prevComment => ({
+      ...prevComment,
+      body: event.target.value,
+    }));
+
     setHasBodyError('');
   };
 
   const reset = () => {
-    setName('');
-    setEmail('');
-    setBody('');
-    setHasNameError(false);
-    setHasEmailError(false);
+    setComment({
+      name: '',
+      email: '',
+      body: '',
+    });
+    setHasNameError('');
+    setHasEmailError('');
     setHasBodyError('');
   };
+
+  function addComment({
+    postId,
+    name: commentName,
+    email: commentEmail,
+    body,
+  }: Comment) {
+    setLoading(true);
+
+    createComment({
+      postId,
+      name: commentName,
+      email: commentEmail,
+      body,
+    })
+      .then(newComment => {
+        setPostComments([...postComments, newComment]);
+      })
+      .catch(() => {
+        setErrorMessage(Errors.SomethingWrong);
+      })
+      .finally(() => {
+        setLoading(false);
+
+        setComment(prevComment => ({
+          ...prevComment,
+          body: '',
+        }));
+      });
+  }
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -51,46 +99,54 @@ export const NewCommentForm: React.FC = () => {
       return;
     }
 
-    const bodyTrimmed = body.trim();
+    const nameTrimmed = comment.name.trim();
+    const emailTrimmed = comment.email.trim();
+    const bodyTrimmed = comment.body.trim();
 
-    setHasNameError(!name);
-    setHasEmailError(!email);
-
-    if (!body) {
+    if (!bodyTrimmed) {
       setHasBodyError(Errors.ErrorMessage);
+    }
+
+    if (nameTrimmed.length < 1) {
+      setHasNameError(Errors.ErrorName);
+      setComment(prevComment => ({
+        ...prevComment,
+        name: '',
+      }));
+    }
+
+    if (emailTrimmed.length < 1) {
+      setHasEmailError(Errors.ErrorEmail);
+      setComment(prevComment => ({
+        ...prevComment,
+        email: '',
+      }));
     }
 
     if (bodyTrimmed.length < 1) {
       setHasBodyError(Errors.ErrorMessage);
-      setBody('');
+      setComment(prevComment => ({
+        ...prevComment,
+        body: '',
+      }));
 
       return;
     }
 
-    if (!name || !email || !body) {
-      setBody('');
-
-      return;
+    if (!nameTrimmed || !emailTrimmed || !bodyTrimmed) {
+      setComment(prevComment => ({
+        ...prevComment,
+        body: '',
+      }));
     }
 
-    const newComment: Comment = {
-      id: 0,
+    addComment({
+      id: postComments.length,
       postId: selectedPostId,
-      name,
-      email,
+      name: nameTrimmed,
+      email: emailTrimmed,
       body: bodyTrimmed,
-    };
-
-    setLoadingForm(true);
-
-    createComment(newComment)
-      .then(() => {
-        setNewComment(true);
-        setLoadingForm(false);
-        setBody('');
-      });
-
-    reset();
+    });
   };
 
   return (
@@ -110,7 +166,7 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            value={name}
+            value={comment.name}
             onChange={handleNameChange}
             className={cn('input', {
               'is-danger': hasNameError,
@@ -149,7 +205,7 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            value={email}
+            value={comment.email}
             onChange={handleEmailChange}
             className={cn('input', {
               'is-danger': hasEmailError,
@@ -187,11 +243,12 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            value={body}
+            value={comment.body}
             onChange={handleBodyChange}
             className={cn('textarea', {
               'is-danger': hasBodyError,
             })}
+            style={{ resize: 'none' }}
           />
         </div>
 
@@ -207,7 +264,7 @@ export const NewCommentForm: React.FC = () => {
           <button
             type="submit"
             className={cn('button is-link', {
-              'is-loading': loadingComments,
+              'is-loading': loading,
             })}
           >
             Add
