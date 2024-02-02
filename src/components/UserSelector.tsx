@@ -20,6 +20,8 @@ export const UserSelector: React.FC = () => {
     setSelectedPostId(0);
   };
 
+  const userName = selectedUser ? selectedUser.name : 'Choose a user';
+
   const handleDropdownBlur = (event: MouseEvent) => {
     // Перевірка, чи клікнуто поза елементом dropdown
     if (dropdownRef.current
@@ -53,9 +55,7 @@ export const UserSelector: React.FC = () => {
           onClick={() => setDropdownShow(!dropdownShow)}
         >
           <span>
-            {selectedUser
-              ? selectedUser.name
-              : 'Choose a user'}
+            {userName}
           </span>
 
           <span className="icon is-small">

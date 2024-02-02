@@ -63,32 +63,37 @@ export const PostDetails: React.FC = () => {
             <p className="title is-4">Comments:</p>
           )}
 
-          {postComments.map(comment => (
+          {postComments.map(({
+            id,
+            name,
+            email,
+            body,
+          }) => (
             <article
-              key={comment.id}
+              key={id}
               className="message is-small"
               data-cy="Comment"
             >
               <div className="message-header">
                 <a
-                  href={`mailto:${comment.email}`}
+                  href={`mailto:${email}`}
                   data-cy="CommentAuthor"
                 >
-                  {comment.name}
+                  {name}
                 </a>
                 <button
                   data-cy="CommentDelete"
                   type="button"
                   className="delete is-small"
                   aria-label="delete"
-                  onClick={() => handleDelete(comment.id)}
+                  onClick={() => handleDelete(id)}
                 >
                   delete button
                 </button>
               </div>
 
               <div className="message-body" data-cy="CommentBody">
-                {comment.body}
+                {body}
               </div>
             </article>
           ))}
