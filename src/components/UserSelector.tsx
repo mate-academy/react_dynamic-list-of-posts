@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, {
+  RefObject, useEffect, useRef, useState,
+} from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { Post } from '../types/Post';
@@ -10,6 +12,22 @@ type Props = {
   setSelectedPost: (post: Post | null) => void;
 };
 
+function useOutsideAlerter(ref: RefObject<HTMLElement>, onClose: () => void) {
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        onClose();
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref, onClose]);
+}
+
 export const UserSelector: React.FC<Props> = ({
   users,
   selectedUser,
@@ -17,6 +35,9 @@ export const UserSelector: React.FC<Props> = ({
   setSelectedPost,
 }) => {
   const [isDropDown, setIsDropDown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useOutsideAlerter(dropdownRef, () => setIsDropDown(false));
 
   const handleDropDown = () => {
     setIsDropDown(!isDropDown);
@@ -34,6 +55,7 @@ export const UserSelector: React.FC<Props> = ({
       className={classNames('dropdown', {
         'is-active': isDropDown,
       })}
+      ref={dropdownRef}
     >
       <div className="dropdown-trigger">
         <button
@@ -60,16 +82,25 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
+      <div
+        className="dropdown-menu"
+        id="dropdown-menu"
+        role="menu"
+      >
+        <div
+          className="dropdown-content"
+        >
           {users
             .map(user => {
               return (
                 <a
                   href={`#user-${user.id}`}
-                  className="dropdown-item"
+                  className={classNames('dropdown-item', {
+                    'is-active': user.id === selectedUser?.id,
+                  })}
                   onClick={() => handleUserSelect(user)}
                   key={user.id}
+
                 >
                   {user.name}
                 </a>

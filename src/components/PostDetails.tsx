@@ -112,7 +112,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
                   >
                     <div className="message-header">
                       <a
-                        href="mailto:misha@mate.academy"
+                        href={`mailto:${comment.email}`}
                         data-cy="CommentAuthor"
                       >
                         {comment.name}
@@ -137,7 +137,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             </>
           )}
 
-          {!writeComment && !errorMessage && (
+          {!loading && !writeComment && !errorMessage && (
             <button
               data-cy="WriteCommentButton"
               type="button"
