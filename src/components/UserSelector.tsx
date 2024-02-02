@@ -1,9 +1,8 @@
-import React, {
-  RefObject, useEffect, useRef, useState,
-} from 'react';
+import React, { useRef, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { Post } from '../types/Post';
+import { useOutsideAlerter } from '../customHooks/useOutsideAlerter';
 
 type Props = {
   users: User[];
@@ -11,22 +10,6 @@ type Props = {
   setSelectedUser: (user: User) => void;
   setSelectedPost: (post: Post | null) => void;
 };
-
-function useOutsideAlerter(ref: RefObject<HTMLElement>, onClose: () => void) {
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        onClose();
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [ref, onClose]);
-}
 
 export const UserSelector: React.FC<Props> = ({
   users,
