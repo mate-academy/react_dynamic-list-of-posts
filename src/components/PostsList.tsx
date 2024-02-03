@@ -40,7 +40,10 @@ export const PostsList: React.FC<Props> = ({
             const isPostSelected = selectedPost?.id === post.id;
 
             return (
-              <tr data-cy="Post">
+              <tr
+                data-cy="Post"
+                key={post.id}
+              >
                 <td data-cy="PostId">{post.id}</td>
 
                 <td data-cy="PostTitle">

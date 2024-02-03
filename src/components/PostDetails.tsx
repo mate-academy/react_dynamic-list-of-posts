@@ -4,12 +4,15 @@ import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import * as commentService from '../services/comments';
 import { Comment } from '../types/Comment';
+import { useLoadingState } from '../customHooks/useLoadingState';
 
 type Props = {
   selectedPost: Post;
 };
 
-export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
+export const PostDetails: React.FC<Props> = ({
+  selectedPost,
+}) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -62,11 +65,16 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
     return commentService.deleteComment(commentId);
   };
 
-  const hasError = !loading && errorMessage;
-  const hasNoComments = !loading
-    && !errorMessage && selectedPost && !comments.length;
-  const shouldRenderComments = !loading
-    && !errorMessage && selectedPost && comments.length > 0;
+  const {
+    hasError,
+    hasNoList,
+    shouldRenderItems,
+  } = useLoadingState({
+    loading,
+    errorMessage,
+    selectedItem: selectedPost,
+    list: comments,
+  });
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -93,13 +101,13 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             </div>
           )}
 
-          {hasNoComments && (
+          {hasNoList && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {shouldRenderComments && (
+          {shouldRenderItems && (
             <>
               <p className="title is-4">Comments:</p>
 

@@ -12,6 +12,7 @@ import { User } from './types/User';
 import * as userService from './services/user';
 import * as postService from './services/post';
 import { Post } from './types/Post';
+import { useLoadingState } from './customHooks/useLoadingState';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -43,11 +44,14 @@ export const App: React.FC = () => {
 
   useEffect(loadPosts, [selectedUser]);
 
-  const hasError = !loading && errorMessage;
+  const { hasError, hasNoList, shouldRenderItems } = useLoadingState({
+    loading,
+    errorMessage,
+    selectedItem: selectedUser,
+    list: posts,
+  });
+
   const isUserNotSelected = !loading && !errorMessage && !selectedUser;
-  const hasNoPosts = !loading && !errorMessage && selectedUser && !posts.length;
-  const shouldRenderPosts = !loading
-    && !errorMessage && selectedUser && posts.length > 0;
 
   return (
     <main className="section">
@@ -84,13 +88,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {hasNoPosts && (
+                {hasNoList && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {shouldRenderPosts && (
+                {shouldRenderItems && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}
