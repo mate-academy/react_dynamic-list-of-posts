@@ -7,3 +7,10 @@ export interface Comment {
 }
 
 export type CommentData = Pick<Comment, 'name' | 'email' | 'body'>;
+
+export interface CommentPost {
+  postId: number;
+  name: string;
+  email: string;
+  body: string;
+}
