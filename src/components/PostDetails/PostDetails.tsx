@@ -17,8 +17,6 @@ export const PostDetails: React.FC = () => {
     return null;
   }
 
-  console.log(postComments)
-
   const handleDeleteComment = (com: Comment) => {
     const filterComments = postComments.filter(item => item.id !== com.id);
   

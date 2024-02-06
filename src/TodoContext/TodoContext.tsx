@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Post } from "../types/Post";
+import { Comment } from '../types/Comment';
 import { User } from "../types/User";
 import { allUsersFromApi, getPostComments, getUserPosts } from "../utils/users";
 
@@ -25,7 +26,7 @@ type ContextType = {
   choosenPost: Post | null,
   setChoosenPost: (post: Post) => void,
   postComments: Comment[],
-  setPostComments: (comment: Comment[]) => void,
+  setPostComments: React.Dispatch<React.SetStateAction<Comment[]>>,
   setAvailNewComment: React.Dispatch<React.SetStateAction<boolean>>,
   availNewComment: boolean,
 };
@@ -64,11 +65,13 @@ export const TodosProvider: React.FC<Props> = ({ children }) => {
   const [availNewComment, setAvailNewComment] = useState(true);
 
   const handleOpenPost = (post: Post) => {
-    selectedPost === post
-      ? setSelectedPost(null)
-      : setSelectedPost(post);
+    if (selectedPost?.id === post.id) {
+      setSelectedPost(null)
+    }
     
-    return selectedPost;
+    if (selectedPost?.id !== post.id) {
+      setSelectedPost(post) 
+    }
   };
 
 useEffect(() => {
@@ -111,7 +114,7 @@ useEffect(() => {
   }
 
   getPostComments(choosenPost.id)
-    .then(setPostComments)
+    .then(comment => setPostComments(comment))
     .catch(() => {})
     .finally(() => {});
 }, [choosenPost]);
