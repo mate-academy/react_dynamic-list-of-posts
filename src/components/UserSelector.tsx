@@ -1,6 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
+import cn from 'classnames';
+import { User } from '../types/User';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  users: User[],
+  getUserId: (userId: number) => void,
+};
+
+export const UserSelector: React.FC<Props> = ({ users, getUserId }) => {
+  const [isActiveMenu, setIsActiveMenu] = useState(false);
+  const [isActiveItem, setIsActiveItem] = useState({
+    id: 0,
+    name: 'Choose a user',
+  });
+
   return (
     <div
       data-cy="UserSelector"
@@ -12,8 +25,9 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setIsActiveMenu(!isActiveMenu)}
         >
-          <span>Choose a user</span>
+          <span>{isActiveItem.name}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -21,15 +35,40 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+      {isActiveMenu && (
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div className="dropdown-content">
+            {users.map(user => (
+              <a
+                href={`#user-${user.id}`}
+                className={cn('dropdown-item', {
+                  'is-active': user.id === isActiveItem.id,
+                })}
+                onClick={(event: React.MouseEvent) => {
+                  event.preventDefault();
+
+                  getUserId(user.id);
+
+                  setIsActiveMenu(!isActiveMenu);
+
+                  setIsActiveItem({
+                    id: user.id,
+                    name: user.name,
+                  });
+                }}
+                key={user.id}
+              >
+                {user.name}
+              </a>
+            ))}
+
+            <a href="#user-2" className="dropdown-item is-active">
+              Ervin Howell
+            </a>
+          </div>
         </div>
-      </div>
+      )}
+
     </div>
   );
 };
