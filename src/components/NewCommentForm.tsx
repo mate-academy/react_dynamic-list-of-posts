@@ -49,19 +49,24 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const normalizedName = commentData.name.trim();
+    const normalizedEmail = commentData.email.trim();
+    const normalizedBody = commentData.body.trim();
+
+
     let nameError = '';
     let emailError = '';
     let bodyError = '';
 
-    if (!commentData.name) {
+    if (!normalizedName) {
       nameError = 'Name is required';
     }
 
-    if (!commentData.email) {
+    if (!normalizedEmail) {
       emailError = 'Email is required';
     }
 
-    if (!commentData.body) {
+    if (!normalizedBody) {
       bodyError = 'Enter some text';
     }
 
@@ -78,7 +83,11 @@ export const NewCommentForm: React.FC<Props> = ({
 
     setIsLoading(true);
 
-    handleAddNewComment(commentData)
+    handleAddNewComment({
+      name: normalizedName,
+      email: normalizedEmail,
+      body: normalizedBody,
+    })
       .then(() => {
         setErrors({
           nameError: '',
