@@ -16,10 +16,8 @@ export const TodoApp: React.FC = () => {
     selectedPost,
   } = useContext(TodosContext);
 
-console.log(isLoading)
-
   return (
-    <main className="section">
+    <main className="section" data-cy="MainContent">
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
@@ -27,9 +25,9 @@ console.log(isLoading)
               <div className="block">
                 <UserSelector />
               </div>
-              {isLoading && (
+              {(isLoading) && (
                 <Loader />
-              )}
+               )}
 
               {selectedUser && userPosts.length > 0 && (
                 <PostsList />

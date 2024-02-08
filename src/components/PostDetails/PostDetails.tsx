@@ -140,7 +140,7 @@ export const PostDetails: React.FC = () => {
                 })}
               </>
             )}
-            {!errorMessage && !availNewComment && (
+            {!errorMessage && !availNewComment && !loadingComments && (
               <button
                 data-cy="WriteCommentButton"
                 type="button"

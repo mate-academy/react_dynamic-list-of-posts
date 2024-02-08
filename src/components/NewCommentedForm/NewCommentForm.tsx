@@ -72,8 +72,7 @@ export const NewCommentForm: React.FC = () => {
       })
       .catch(() => setErrorMessage(true))
       .finally(() => {
-        setAuthorName('');
-        setAuthorEmail('');
+        setCommentText('');
         setLoading(false);
       });
   }

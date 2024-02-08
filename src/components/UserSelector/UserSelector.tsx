@@ -69,7 +69,7 @@ export const UserSelector: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="block" data-cy="MainContent">
+      <div className="block">
         {!selectedUser
        && (
          <p data-cy="NoSelectedUser">

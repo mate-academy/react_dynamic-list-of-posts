@@ -83,6 +83,7 @@ export const TodosProvider: React.FC<Props> = ({ children }) => {
 
   useEffect(() => {
     if (selectedUser) {
+      setUserPosts([]);
       setIsLoading(true);
 
       getUserPosts(selectedUser.id)
