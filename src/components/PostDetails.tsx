@@ -86,7 +86,11 @@ export const PostDetails: React.FC<Props> = ({
 
               {postComments.map(comment => (
                 <>
-                  <article className="message is-small" data-cy="Comment">
+                  <article
+                    className="message is-small"
+                    data-cy="Comment"
+                    key={comment.id}
+                  >
                     <div className="message-header">
                       <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                         {comment.name}
@@ -104,7 +108,10 @@ export const PostDetails: React.FC<Props> = ({
                       </button>
                     </div>
 
-                    <div className="message-body" data-cy="CommentBody">
+                    <div
+                      className="message-body"
+                      data-cy="CommentBody"
+                    >
                       {comment.body}
                     </div>
                   </article>
@@ -124,7 +131,10 @@ export const PostDetails: React.FC<Props> = ({
             </div>
 
             {form && (
-              <NewCommentForm createComment={addNewComment} />
+              <NewCommentForm
+                createComment={addNewComment}
+                post={post}
+              />
             )}
 
           </>

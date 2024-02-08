@@ -2,20 +2,30 @@ import React, { useState } from 'react';
 import cn from 'classnames';
 import * as clientComments from '../service/comment';
 import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
 
 type Props = {
   createComment: (comment: Comment) => void
+  post: Post
 };
 
-export const NewCommentForm: React.FC<Props> = ({ createComment }) => {
+export const NewCommentForm: React.FC<Props> = ({ createComment, post }) => {
   const [nameText, setNameText] = useState('');
   const [emailText, setEmailText] = useState('');
   const [commentText, setCommentText] = useState('');
   const [nameError, setNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [commentError, setCommentError] = useState(false);
-
   const [isLoading, setIsLoading] = useState(false);
+
+  const reset = () => {
+    setNameText('');
+    setEmailText('');
+    setCommentText('');
+    setNameError(false);
+    setEmailError(false);
+    setCommentError(false);
+  };
 
   const addComment = ({
     postId, name, email, body,
@@ -34,28 +44,33 @@ export const NewCommentForm: React.FC<Props> = ({ createComment }) => {
       setCommentError(true);
     }
 
+    // eslint-disable-next-line no-console
+    console.log(nameError, emailError, commentError);
+
     if (!nameError && !emailError && !commentError) {
       clientComments.createComment({
         postId, name, email, body,
       })
         .then(createComment)
         .finally(() => {
-          setNameText('');
-          setEmailText('');
           setCommentText('');
+          setIsLoading(false);
         });
     }
   };
 
   const changeNameText = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNameError(false);
     setNameText(event.target.value);
   };
 
   const changeEmailText = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailError(false);
     setEmailText(event.target.value);
   };
 
   const changeCommentText = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setCommentError(false);
     setCommentText(event.target.value);
   };
 
@@ -66,7 +81,7 @@ export const NewCommentForm: React.FC<Props> = ({ createComment }) => {
         event.preventDefault();
 
         addComment({
-          postId: +new Date(),
+          postId: post.id,
           name: nameText,
           email: emailText,
           body: commentText,
@@ -86,7 +101,9 @@ export const NewCommentForm: React.FC<Props> = ({ createComment }) => {
             onChange={changeNameText}
             value={nameText}
             placeholder="Name Surname"
-            className="input is-danger"
+            className={cn('input', {
+              'is-danger': nameError,
+            })}
           />
 
           <span className="icon is-small is-left">
@@ -94,19 +111,22 @@ export const NewCommentForm: React.FC<Props> = ({ createComment }) => {
           </span>
 
           {nameError && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
-              <i className="fas fa-exclamation-triangle" />
-            </span>
+            <>
+              <span
+                className="icon is-small is-right has-text-danger"
+                data-cy="ErrorIcon"
+              >
+                <i className="fas fa-exclamation-triangle" />
+              </span>
+              <p className="help is-danger" data-cy="ErrorMessage">
+                Name is required
+              </p>
+            </>
+
           )}
 
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -122,7 +142,9 @@ export const NewCommentForm: React.FC<Props> = ({ createComment }) => {
             value={emailText}
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            className={cn('input', {
+              'is-danger': emailError,
+            })}
           />
 
           <span className="icon is-small is-left">
@@ -130,19 +152,22 @@ export const NewCommentForm: React.FC<Props> = ({ createComment }) => {
           </span>
 
           {emailError && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
-              <i className="fas fa-exclamation-triangle" />
-            </span>
+            <>
+              <span
+                className="icon is-small is-right has-text-danger"
+                data-cy="ErrorIcon"
+              >
+                <i className="fas fa-exclamation-triangle" />
+              </span>
+
+              <p className="help is-danger" data-cy="ErrorMessage">
+                Email is required
+              </p>
+            </>
           )}
 
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -157,7 +182,9 @@ export const NewCommentForm: React.FC<Props> = ({ createComment }) => {
             onChange={changeCommentText}
             value={commentText}
             placeholder="Type comment here"
-            className="textarea is-danger"
+            className={cn('textarea', {
+              'is-danger': commentError,
+            })}
           />
         </div>
 
@@ -183,7 +210,11 @@ export const NewCommentForm: React.FC<Props> = ({ createComment }) => {
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={reset}
+          >
             Clear
           </button>
         </div>
