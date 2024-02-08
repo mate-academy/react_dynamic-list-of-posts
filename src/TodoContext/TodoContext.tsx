@@ -11,16 +11,16 @@ type Props = {
 
 type ContextType = {
   users: User[];
-  selectedUser: User | null;
-  setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>;
+  selectedUser: User | undefined;
+  setSelectedUser: React.Dispatch<React.SetStateAction<User | undefined>>;
   isDropdownActive: boolean;
   setIsDropdownActive: React.Dispatch<React.SetStateAction<boolean>>;
   isLoading: boolean,
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   userPosts: Post[],
   setUserPosts: React.Dispatch<React.SetStateAction<Post[]>>,
-  selectedPost: Post | undefined,
-  setSelectedPost: (post: Post | undefined) => void,
+  selectedPost: Post | null,
+  setSelectedPost: (post: Post | null) => void,
   postDetails: Post | null,
   setPostDetails: (post: Post) => void,
   postComments: Comment[],
@@ -35,7 +35,7 @@ type ContextType = {
 
 export const TodosContext = React.createContext<ContextType>({
   users: [],
-  selectedUser: null,
+  selectedUser: undefined,
   setSelectedUser: () => {},
   isDropdownActive: false,
   setIsDropdownActive: () => {},
@@ -43,7 +43,7 @@ export const TodosContext = React.createContext<ContextType>({
   setIsLoading: () => {},
   userPosts: [],
   setUserPosts: () => {},
-  selectedPost: undefined,
+  selectedPost: null,
   setSelectedPost: () => {},
   postDetails: null,
   setPostDetails: () => {},
@@ -61,9 +61,9 @@ export const TodosContext = React.createContext<ContextType>({
 export const TodosProvider: React.FC<Props> = ({ children }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [userPosts, setUserPosts] = useState<Post[]>([]);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
   const [isDropdownActive, setIsDropdownActive] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<Post | undefined>(undefined);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [postDetails, setPostDetails] = useState<Post | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [postComments, setPostComments] = useState<Comment[]>([]);
@@ -73,10 +73,12 @@ export const TodosProvider: React.FC<Props> = ({ children }) => {
 
   useEffect(() => {
     getUsers()
-      .then(setUsers)
+      .then(allUsers => {
+        setUsers(allUsers);
+      })
       .catch(() => {
         setErrorMessage(true);
-      })
+      });
   }, []);
 
   useEffect(() => {

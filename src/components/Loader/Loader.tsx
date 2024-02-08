@@ -9,9 +9,11 @@ export const Loader: React.FC = () => {
 
   return (
     isLoading
-      ? <div className="Loader" data-cy="Loader">
+      ? (
+        <div className="Loader" data-cy="Loader">
           <div className="Loader__content" />
         </div>
+      )
       : null
-  )
+  );
 };

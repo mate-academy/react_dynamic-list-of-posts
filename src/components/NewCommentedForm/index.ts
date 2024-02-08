@@ -1,1 +1,1 @@
-export * from '../NewCommentedForm';
+export * from './NewCommentForm';

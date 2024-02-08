@@ -1,1 +1,1 @@
-export * from '../UserSelector';
+export * from './UserSelector';
