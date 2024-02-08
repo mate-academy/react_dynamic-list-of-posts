@@ -27,7 +27,7 @@ export const PostDetails: React.FC<Props> = ({
       setIsLoading(true);
 
       getComments(post.id)
-        .then((res) => setComments(res))
+        .then(setComments)
         .catch(() => setIsError(true))
         .finally(() => setIsLoading(false));
     }
