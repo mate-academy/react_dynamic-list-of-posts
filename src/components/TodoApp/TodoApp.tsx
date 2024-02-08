@@ -16,6 +16,8 @@ export const TodoApp: React.FC = () => {
     selectedPost,
   } = useContext(TodosContext);
 
+console.log(isLoading)
+
   return (
     <main className="section">
       <div className="container">
@@ -29,7 +31,7 @@ export const TodoApp: React.FC = () => {
                 <Loader />
               )}
 
-              {selectedUser && userPosts.length > 0 && !isLoading && (
+              {selectedUser && userPosts.length > 0 && (
                 <PostsList />
               )}
 
