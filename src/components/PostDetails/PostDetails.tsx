@@ -1,99 +1,180 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { TodosContext } from '../../TodoContext/TodoContext';
 import { Loader } from '../Loader';
-import { NewCommentForm } from '../NewCommentedForm/NewCommentForm';
 import { Comment } from '../../types/Comment';
+import { NewCommentForm } from '../NewCommentedForm/NewCommentForm';
+import { Errors } from '../../types/Errors';
+import { deleteComment, getPostComments } from '../../utils/users';
+import classNames from 'classnames';
 
 export const PostDetails: React.FC = () => {
   const {
-    choosenPost,
+    selectedPost,
+    postDetails,
+    userPosts,
     postComments,
     setPostComments,
     setAvailNewComment,
     availNewComment,
+    loadingComments,
+    errorMessage,
+    setLoadingComments,
+    setErrorMessage,
+    selectedUser,
+    setPostDetails,
   } = useContext(TodosContext);
 
-  if (!choosenPost) {
+  useEffect(() => {
+    if (!selectedPost) {
+      return;
+    };
+
+    if (userPosts) {
+      const selectedPostDetails = userPosts
+        .find(item => item.id === selectedPost.id);
+
+      if (selectedPostDetails) {
+        setPostDetails(selectedPostDetails);
+      }
+    }
+  }, [selectedPost]);
+
+  useEffect(() => {
+    if (!postDetails) {
+      return;
+    }
+
+    setLoadingComments(true);
+
+    getPostComments(postDetails.id)
+      .then(comments => setPostComments(comments))
+      .catch(() => setErrorMessage(true))
+      .finally(() => {
+        setLoadingComments(false);
+      });
+  }, [postDetails, selectedUser]);
+
+  if (!postDetails) {
     return null;
   }
 
-  const handleDeleteComment = (com: Comment) => {
-    const filterComments = postComments.filter(item => item.id !== com.id);
-  
+  const handleDeleteComment = (id: number) => {
+    const filterComments = postComments.filter(item => item.id !== id);
+
+    const toBeDeleted = postComments.find(item => item.id === id);
+
+    if (toBeDeleted) {
+      deleteComment(toBeDeleted.id);
+    };
+ 
     setPostComments(filterComments);
-  }
+  };
+
+  const selected = userPosts?.find(item => item.id === selectedPost?.id);
 
   return (
-    <div className="content" data-cy="PostDetails">
-      <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 data-cy="PostTitle">
-            {`#${choosenPost.id}: ${choosenPost.title}`}
-          </h2>
+    <div
+      data-cy="Sidebar"
+      className={classNames(
+        'tile',
+        'is-parent',
+        'is-8-desktop',
+        'Sidebar',
+        {
+          'Sidebar--open': selectedPost,
+        },
+      )}
+    >
+      {selected && (
+        <div className="tile is-child box is-success ">
+          <div className="content" data-cy="PostDetails">
+            <div className="content" data-cy="PostDetails">
+              <div className="block">
+                <h2 data-cy="PostTitle">
+                  {`#${postDetails.id}: ${postDetails.title}`}
+                </h2>
 
-          <p data-cy="PostBody">
-            {choosenPost.body}
-          </p>
-        </div>
+                <p data-cy="PostBody">
+                  {postDetails.body}
+                </p>
+              </div>
 
-        <div className="block">
-          <Loader />
+              <div className="block">
+                <>
+                  {loadingComments && (
+                    <Loader />
+                  )}
 
-          {/* <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div> */}
-
-          {postComments
-            ? <> 
-                <p className="title is-4">Comments:</p>
-                {postComments.map((comment: Comment) => {
-                  <article key={comment.id} className="message is-small" data-cy="Comment">
-                    <div className="message-header">
-                      <a
-                        href={`mailto:${comment.email}`}
-                        data-cy="CommentAuthor"
-                      >
-                        {comment.name}
-                      </a>
-
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
-                        onClick={() => handleDeleteComment(comment)}
-                      >
-                        delete button
-                      </button>
+                  {errorMessage && (
+                    <div className="notification is-danger" data-cy="CommentsError">
+                      {Errors.SomethingWrong}
                     </div>
+                  )}
 
-                    <div className="message-body" data-cy="CommentBody">
-                      {comment.body}
-                    </div>
-                  </article>
-                })}
-                
-            </>
-            
-            : <p className="title is-4" data-cy="NoCommentsMessage">
-                No comments yet
-              </p>
-          }
-          
+                  {(!loadingComments && !errorMessage && postComments
+                  && postComments.length === 0) && (
+                    <p className="title is-4" data-cy="NoCommentsMessage">
+                      {Errors.NoCommentsYet}
+                    </p>
+                  )}
 
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-            onClick={() => setAvailNewComment(!availNewComment)}
-          >
-            Write a comment
-          </button>
+                  {!loadingComments && !errorMessage 
+                  && postComments && postComments.length > 0 && (
+                    <>
+                    <p className="title is-4">Comments:</p>
+
+                    {postComments.map((comment: Comment) => {
+                      return <article
+                        key={comment.id}
+                        className="message is-small"
+                        data-cy="Comment"
+                      >
+                        <div className="message-header">
+                          <a
+                            href={`mailto:${comment.email}`}
+                            data-cy="CommentAuthor"
+                          >
+                            {comment.name}
+                          </a>
+
+                          <button
+                            data-cy="CommentDelete"
+                            type="button"
+                            className="delete is-small"
+                            aria-label="delete"
+                            onClick={() => handleDeleteComment(comment.id)}
+                          >
+                            delete button
+                          </button>
+                        </div>
+
+                      <div className="message-body" data-cy="CommentBody">
+                        {comment.body}
+                      </div>
+                    </article>;
+                    })}
+                    </>
+                  )}
+                  {!errorMessage && !availNewComment && (
+                    <button
+                      data-cy="WriteCommentButton"
+                      type="button"
+                      className="button is-link"
+                      onClick={() => setAvailNewComment(true)}
+                    >
+                      Write a comment
+                    </button>
+                  )}
+                </>
+              </div>
+
+              {!errorMessage && availNewComment && (
+                <NewCommentForm />
+              )}
+            </div>
+          </div>
         </div>
-
-
-        <NewCommentForm />
-      </div>
+      )}
     </div>
-  )
+  );
 };

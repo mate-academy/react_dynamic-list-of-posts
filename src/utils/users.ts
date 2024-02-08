@@ -1,11 +1,10 @@
-import { Post } from "../types/Post";
-import { User } from "../types/User";
-import { client } from "./fetchClient";
+import { Post } from '../types/Post';
+import { User } from '../types/User';
+import { Comment } from '../types/Comment';
+import { client } from './fetchClient';
 
-export const allUsersFromApi = {
-  getUsers: () => {
-    return client.get<User[]>(`/users`);
-  }
+export const getUsers = () => {
+  return client.get<User[]>('/users');
 };
 
 export const getUserPosts = (userId: number) => {

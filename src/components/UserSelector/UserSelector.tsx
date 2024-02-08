@@ -17,6 +17,12 @@ export const UserSelector: React.FC = () => {
     setIsDropdownActive(false)
   };
 
+  const handleonBlur = () => {
+    setTimeout(() => {
+      setIsDropdownActive(false);
+    }, 200);
+  }
+
   return (
     <>
     <div
@@ -31,7 +37,8 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setIsDropdownActive(true)}
+          onBlur={handleonBlur}
+          onMouseDown={() => setIsDropdownActive(!isDropdownActive)}
         >
           {selectedUser 
             ? <span>{selectedUser.name}</span>
@@ -62,7 +69,7 @@ export const UserSelector: React.FC = () => {
       </div>
     </div>
      <div className="block" data-cy="MainContent">
-     {!selectedUser &&
+     {!selectedUser && 
        (<p data-cy="NoSelectedUser">
        No user selected
        </p>)

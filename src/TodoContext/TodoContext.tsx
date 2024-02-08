@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Post } from "../types/Post";
+import React, { useEffect, useState } from 'react';
+import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
-import { User } from "../types/User";
-import { allUsersFromApi, getPostComments, getUserPosts } from "../utils/users";
+import { User } from '../types/User';
+import { getUserPosts, getUsers } from '../utils/users';
+// import { Errors } from '../types/Errors';
 
 type Props = {
   children: React.ReactNode;
 };
-
-// const USER_ID = 12157;
 
 type ContextType = {
   users: User[];
@@ -20,15 +19,18 @@ type ContextType = {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   userPosts: Post[],
   setUserPosts: React.Dispatch<React.SetStateAction<Post[]>>,
-  selectedPost: Post | null,
-  setSelectedPost: (post: Post) => void,
-  handleOpenPost: (post: Post) => void,
-  choosenPost: Post | null,
-  setChoosenPost: (post: Post) => void,
+  selectedPost: Post | undefined,
+  setSelectedPost: (post: Post | undefined) => void,
+  postDetails: Post | null,
+  setPostDetails: (post: Post) => void,
   postComments: Comment[],
   setPostComments: React.Dispatch<React.SetStateAction<Comment[]>>,
   setAvailNewComment: React.Dispatch<React.SetStateAction<boolean>>,
   availNewComment: boolean,
+  loadingComments: boolean,
+  setLoadingComments: React.Dispatch<React.SetStateAction<boolean>>,
+  errorMessage: boolean,
+  setErrorMessage: (message: boolean) => void,
 };
 
 export const TodosContext = React.createContext<ContextType>({
@@ -41,16 +43,19 @@ export const TodosContext = React.createContext<ContextType>({
   setIsLoading: () => {},
   userPosts: [],
   setUserPosts: () => {},
-  selectedPost: null,
+  selectedPost: undefined,
   setSelectedPost: () => {},
-  handleOpenPost: () => {},
-  choosenPost: null,
-  setChoosenPost: () => {},
+  postDetails: null,
+  setPostDetails: () => {},
   postComments: [],
   setPostComments: () => {},
   setAvailNewComment: () => {},
   availNewComment: false,
-  
+  setLoadingComments: () => {},
+  loadingComments: false,
+  errorMessage: false,
+  setErrorMessage: () => {},
+
 });
 
 export const TodosProvider: React.FC<Props> = ({ children }) => {
@@ -58,66 +63,36 @@ export const TodosProvider: React.FC<Props> = ({ children }) => {
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isDropdownActive, setIsDropdownActive] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [choosenPost, setChoosenPost] = useState<Post | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | undefined>(undefined);
+  const [postDetails, setPostDetails] = useState<Post | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [postComments, setPostComments] = useState<Comment[]>([]);
   const [availNewComment, setAvailNewComment] = useState(true);
+  const [loadingComments, setLoadingComments] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<boolean>(false);
 
-  const handleOpenPost = (post: Post) => {
-    if (selectedPost?.id === post.id) {
-      setSelectedPost(null)
+  useEffect(() => {
+    getUsers()
+      .then(setUsers)
+      .catch(() => {
+        setErrorMessage(true);
+      })
+  }, []);
+
+  useEffect(() => {
+    if (selectedUser) {
+      setIsLoading(true);
+
+      getUserPosts(selectedUser?.id)
+        .then((posts) => {
+          setUserPosts(posts);
+        })
+        .catch(() => {
+          setErrorMessage(true);
+        })
+        .finally(() => setIsLoading(false));
     }
-    
-    if (selectedPost?.id !== post.id) {
-      setSelectedPost(post) 
-    }
-  };
-
-useEffect(() => {
-  allUsersFromApi
-    .getUsers()
-    .then((usersFromServer) => {
-      setUsers(usersFromServer);
-    })
-    .catch(() => {
-    })
-}, []);
-
-useEffect(() => {
-  if (selectedUser) {
-    setIsLoading(true);
-
-    getUserPosts(selectedUser?.id)
-      .then(setUserPosts)
-      .catch(() => {})
-      .finally(() => setIsLoading(false));
-  }
-}, [selectedUser]);
-
-useEffect(() => {
-  if (!selectedPost) {
-    return;
-  }
-
-  const filteredPosts = userPosts
-    .find(item => item.id === selectedPost.id);
-
-  if (filteredPosts) {
-    setChoosenPost(filteredPosts);
-  }
-}, [userPosts, selectedPost]);
-
-useEffect(() => {
-  if (!choosenPost) {
-    return;
-  }
-
-  getPostComments(choosenPost.id)
-    .then(comment => setPostComments(comment))
-    .catch(() => {})
-    .finally(() => {});
-}, [choosenPost]);
+  }, [selectedUser]);
 
   return (
     <TodosContext.Provider value={{
@@ -131,14 +106,17 @@ useEffect(() => {
       userPosts,
       setUserPosts,
       setSelectedPost,
-      handleOpenPost,
       selectedPost,
-      choosenPost,
-      setChoosenPost,
+      postDetails,
+      setPostDetails,
       postComments,
       setPostComments,
       setAvailNewComment,
       availNewComment,
+      setLoadingComments,
+      loadingComments,
+      errorMessage,
+      setErrorMessage,
     }}
     >
       {children}
