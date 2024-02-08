@@ -36,7 +36,7 @@ export const PostDetails: React.FC = () => {
         setPostDetails(selectedPostDetails);
       }
     }
-  }, [selectedPost, userPosts]);
+  }, [selectedPost, userPosts, setPostDetails]);
 
   useEffect(() => {
     if (!postDetails) {
@@ -51,7 +51,11 @@ export const PostDetails: React.FC = () => {
       .finally(() => {
         setLoadingComments(false);
       });
-  }, [postDetails, selectedUser]);
+  }, [postDetails,
+    selectedUser,
+    setErrorMessage,
+    setLoadingComments,
+    setPostComments]);
 
   if (!postDetails) {
     return null;

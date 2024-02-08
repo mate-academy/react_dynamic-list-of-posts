@@ -27,7 +27,7 @@ export const TodoApp: React.FC = () => {
               </div>
               {(isLoading) && (
                 <Loader />
-               )}
+              )}
 
               {selectedUser && userPosts.length > 0 && (
                 <PostsList />
