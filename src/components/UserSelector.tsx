@@ -75,7 +75,10 @@ export const UserSelector: React.FC<Props> = ({
         role="menu"
         ref={dropdownRef}
       >
-        <div className="dropdown-content">
+        <div
+          className="dropdown-content"
+          style={{ height: 500, overflow: 'auto' }}
+        >
           {users.map((user) => {
             const { id, name } = user;
 
