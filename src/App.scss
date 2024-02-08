@@ -18,6 +18,11 @@
   }
 }
 
+.dropdown-content {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
 .message-body {
   white-space: pre-line;
 }

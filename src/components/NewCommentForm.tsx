@@ -10,6 +10,13 @@ interface ErrorMessages {
   serverError: string,
 }
 
+const defaultErrorValues = {
+  nameError: '',
+  emailError: '',
+  bodyError: '',
+  serverError: '',
+};
+
 interface Props {
   handleAddNewComment: (commentData: CommentData) => Promise<void>,
 }
@@ -17,12 +24,7 @@ interface Props {
 export const NewCommentForm: React.FC<Props> = ({
   handleAddNewComment,
 }) => {
-  const [errors, setErrors] = useState<ErrorMessages>({
-    nameError: '',
-    emailError: '',
-    bodyError: '',
-    serverError: '',
-  });
+  const [errors, setErrors] = useState<ErrorMessages>(defaultErrorValues);
 
   const [commentData, setCommentData] = useState<CommentData>({
     name: '',
@@ -52,7 +54,6 @@ export const NewCommentForm: React.FC<Props> = ({
     const normalizedName = commentData.name.trim();
     const normalizedEmail = commentData.email.trim();
     const normalizedBody = commentData.body.trim();
-
 
     let nameError = '';
     let emailError = '';
@@ -89,12 +90,7 @@ export const NewCommentForm: React.FC<Props> = ({
       body: normalizedBody,
     })
       .then(() => {
-        setErrors({
-          nameError: '',
-          emailError: '',
-          bodyError: '',
-          serverError: '',
-        });
+        setErrors(defaultErrorValues);
 
         setCommentData({
           ...commentData,
