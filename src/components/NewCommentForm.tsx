@@ -147,7 +147,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
           )}
         </div>
 
-        {formErrors?.email && (
+        {!!formErrors?.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
             {formErrors?.email}
           </p>
