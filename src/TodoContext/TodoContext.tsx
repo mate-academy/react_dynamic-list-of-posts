@@ -19,8 +19,8 @@ type ContextType = {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
   userPosts: Post[],
   setUserPosts: React.Dispatch<React.SetStateAction<Post[]>>,
-  selectedPost: Post | null,
-  setSelectedPost: (post: Post | null) => void,
+  selectedPost: Post | undefined,
+  setSelectedPost: (post: Post | undefined) => void,
   postDetails: Post | null,
   setPostDetails: (post: Post) => void,
   postComments: Comment[],
@@ -43,7 +43,7 @@ export const TodosContext = React.createContext<ContextType>({
   setIsLoading: () => {},
   userPosts: [],
   setUserPosts: () => {},
-  selectedPost: null,
+  selectedPost: undefined,
   setSelectedPost: () => {},
   postDetails: null,
   setPostDetails: () => {},
@@ -63,7 +63,7 @@ export const TodosProvider: React.FC<Props> = ({ children }) => {
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
   const [isDropdownActive, setIsDropdownActive] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | undefined>(undefined);
   const [postDetails, setPostDetails] = useState<Post | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [postComments, setPostComments] = useState<Comment[]>([]);

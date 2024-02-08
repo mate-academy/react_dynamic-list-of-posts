@@ -10,11 +10,13 @@ export const UserSelector: React.FC = () => {
     selectedUser,
     isDropdownActive,
     setIsDropdownActive,
+    setSelectedPost,
   } = useContext(TodosContext);
 
   const handleUserLinkClick = (user: User) => {
     setSelectedUser(user);
     setIsDropdownActive(false);
+    setSelectedPost(undefined);
   };
 
   const handleonBlur = () => {
@@ -38,7 +40,7 @@ export const UserSelector: React.FC = () => {
             aria-haspopup="true"
             aria-controls="dropdown-menu"
             onBlur={handleonBlur}
-            onMouseDown={() => setIsDropdownActive(!isDropdownActive)}
+            onClick={() => setIsDropdownActive(!isDropdownActive)}
           >
             {selectedUser
               ? <span>{selectedUser.name}</span>

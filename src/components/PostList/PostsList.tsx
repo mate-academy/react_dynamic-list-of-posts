@@ -16,7 +16,7 @@ export const PostsList: React.FC = () => {
   };
 
   const resetChoosenPost = () => {
-    setSelectedPost(null);
+    setSelectedPost(undefined);
     setAvailNewComment(false);
   };
 
