@@ -19,7 +19,7 @@ export const UserSelector: React.FC<Props> = ({
 
   useEffect(() => {
     getUsers()
-      .then(res => setUsers(res));
+      .then(setUsers);
   }, []);
 
   useEffect(() => {
