@@ -3,13 +3,40 @@ import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
+import { useSignals } from '@preact/signals-react/runtime';
+import { effect } from '@preact/signals-react';
 import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import {
+  isPostsErrorVisible, isPostsLoaderVisible, isPostsNotificationVisible,
+  posts, selectedPost, selectedUser,
+} from './signals/signals';
+import { getPosts } from './api';
+
+effect(() => {
+  if (selectedUser.value) {
+    isPostsErrorVisible.value = false;
+    posts.value = [];
+    isPostsLoaderVisible.value = true;
+    getPosts(selectedUser.value.id)
+      .then(response => {
+        posts.value = response;
+      })
+      .catch(() => {
+        isPostsErrorVisible.value = true;
+      })
+      .finally(() => {
+        isPostsLoaderVisible.value = false;
+      });
+  }
+});
 
 export const App: React.FC = () => {
+  useSignals();
+
   return (
     <main className="section">
       <div className="container">
@@ -21,24 +48,30 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                {!selectedUser.value && (
+                  <p data-cy="NoSelectedUser">
+                    No user selected
+                  </p>
+                )}
 
-                <Loader />
+                {isPostsLoaderVisible.value && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {isPostsErrorVisible.value && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {isPostsNotificationVisible.value && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                <PostsList />
+                {!!posts.value.length && <PostsList />}
               </div>
             </div>
           </div>
@@ -50,11 +83,11 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPost.value },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {!!selectedPost.value && <PostDetails />}
             </div>
           </div>
         </div>
