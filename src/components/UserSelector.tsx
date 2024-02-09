@@ -26,6 +26,7 @@ export const UserSelector: React.FC = () => {
     user: User,
   ) => {
     event.preventDefault();
+    event.stopPropagation();
     selectedUser.value = user;
     setIsDropdownActive(false);
   };
@@ -59,7 +60,7 @@ export const UserSelector: React.FC = () => {
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
           {users.value.map(user => (
-            <a href={`#user-${user.id}`} className={classNames('dropdown-item', { 'is-active': user.id === selectedUser.value?.id })} key={user.id} onClick={e => handleSelectUser(e, user)}>{user.name}</a>
+            <a href={`#user-${user.id}`} className={classNames('dropdown-item', { 'is-active': user.id === selectedUser.value?.id })} key={user.id} onMouseDown={e => handleSelectUser(e, user)}>{user.name}</a>
           ))}
         </div>
       </div>
