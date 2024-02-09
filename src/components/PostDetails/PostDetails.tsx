@@ -7,7 +7,7 @@ import { Errors } from '../../types/Errors';
 
 export const PostDetails: React.FC = () => {
   const {
-    choosedPost,
+    chosenPost,
     comments,
     error,
     isLoading,
@@ -20,11 +20,11 @@ export const PostDetails: React.FC = () => {
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {`#${choosedPost?.id}: ${choosedPost?.title}`}
+            {`#${chosenPost?.id}: ${chosenPost?.title}`}
           </h2>
 
           <p data-cy="PostBody">
-            {choosedPost?.body}
+            {chosenPost?.body}
           </p>
         </div>
 

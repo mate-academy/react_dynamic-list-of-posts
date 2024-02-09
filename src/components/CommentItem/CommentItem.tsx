@@ -11,11 +11,16 @@ export const CommentItem: React.FC<Props> = ({ comment }) => {
   const { comments, setComments } = useContext(MainContext);
 
   const {
-    id, email, name, body,
+    id,
+    email,
+    name,
+    body,
   } = comment;
 
   const handleRemoveComment = (commentId: number) => {
-    setComments(comments?.filter(elem => elem.id !== commentId));
+    setComments(
+      prevComments => prevComments?.filter(elem => elem.id !== commentId),
+    );
 
     removeComments(commentId)
       .then()

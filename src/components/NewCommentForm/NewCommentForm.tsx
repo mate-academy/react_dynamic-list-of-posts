@@ -3,46 +3,64 @@ import cn from 'classnames';
 import { MainContext } from '../MainContext/MainContext';
 import { createComments } from '../../api/comments';
 import { Errors } from '../../types/Errors';
+import { Field } from '../../types/Field';
+
+const initialErrorFields = {
+  name: false,
+  email: false,
+  body: false,
+};
+
+const initialCommentState = {
+  name: '',
+  email: '',
+  body: '',
+};
 
 export const NewCommentForm: React.FC = () => {
   const {
-    choosedPost,
+    chosenPost,
     comments,
     setComments,
     setError,
   } = useContext(MainContext);
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [comment, setComment] = useState(initialCommentState);
+  const [errorFields, setErrorFields] = useState(initialErrorFields);
   const [isLoadingAddButton, setIsLoadingAddButton] = useState(false);
-  const [emptyName, setEmptyName] = useState(false);
-  const [emptyEmail, setEmptyEmail] = useState(false);
-  const [emptyBody, setEmptyBody] = useState(false);
+
+  function commentChangeFields(key: Field, value: string) {
+    setComment(prevComment => ({ ...prevComment, [key]: value }));
+  }
+
+  function handleErrorFields(key: Field, value: boolean) {
+    setErrorFields(prevErrorFields => ({ ...prevErrorFields, [key]: value }));
+  }
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     setIsLoadingAddButton(true);
+
+    const { name, email, body } = comment;
 
     if (!name) {
       setIsLoadingAddButton(false);
-      setEmptyName(true);
+      handleErrorFields(Field.NAME, true);
     }
 
     if (!email) {
       setIsLoadingAddButton(false);
-      setEmptyEmail(true);
+      handleErrorFields(Field.EMAIL, true);
     }
 
     if (!body) {
       setIsLoadingAddButton(false);
-      setEmptyBody(true);
+      handleErrorFields(Field.BODY, true);
     }
 
-    if (choosedPost && name && email && body) {
+    if (chosenPost && name && email && body) {
       const newComment = {
-        postId: choosedPost.id,
+        postId: chosenPost.id,
         name,
         email,
         body,
@@ -54,7 +72,7 @@ export const NewCommentForm: React.FC = () => {
             setComments([...comments, createdComment]);
           }
 
-          setBody('');
+          commentChangeFields(Field.BODY, '');
         })
         .catch(() => setError(Errors.COMMENT))
         .finally(() => setIsLoadingAddButton(false));
@@ -62,13 +80,24 @@ export const NewCommentForm: React.FC = () => {
   };
 
   const handleReset = () => {
-    setName('');
-    setEmail('');
-    setBody('');
-    setEmptyName(false);
-    setEmptyEmail(false);
-    setEmptyBody(false);
+    setComment(initialCommentState);
+    setErrorFields(initialErrorFields);
   };
+
+  function nameChangeField(value: string) {
+    commentChangeFields(Field.NAME, value);
+    handleErrorFields(Field.NAME, false);
+  }
+
+  function emailChangeField(value: string) {
+    commentChangeFields(Field.EMAIL, value);
+    handleErrorFields(Field.EMAIL, false);
+  }
+
+  function bodyChangeField(value: string) {
+    commentChangeFields(Field.BODY, value);
+    handleErrorFields(Field.BODY, false);
+  }
 
   return (
     <form
@@ -87,20 +116,17 @@ export const NewCommentForm: React.FC = () => {
             id="comment-author-name"
             placeholder="Name Surname"
             className={cn('input', {
-              'is-danger': !name.length && emptyName,
+              'is-danger': !comment.name.length && errorFields.name,
             })}
-            value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-              setEmptyName(false);
-            }}
+            value={comment.name}
+            onChange={(e) => nameChangeField(e.target.value)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {!name && emptyName && (
+          {!comment.name && errorFields.name && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -110,7 +136,7 @@ export const NewCommentForm: React.FC = () => {
           )}
         </div>
 
-        {!name && emptyName && (
+        {!comment.name && errorFields.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -129,20 +155,17 @@ export const NewCommentForm: React.FC = () => {
             id="comment-author-email"
             placeholder="email@test.com"
             className={cn('input', {
-              'is-danger': !email.length && emptyEmail,
+              'is-danger': !comment.email.length && errorFields.email,
             })}
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setEmptyEmail(false);
-            }}
+            value={comment.email}
+            onChange={(e) => emailChangeField(e.target.value)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {!email && emptyEmail && (
+          {!comment.email && errorFields.email && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -152,7 +175,7 @@ export const NewCommentForm: React.FC = () => {
           )}
         </div>
 
-        {!email && emptyEmail && (
+        {!comment.email && errorFields.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -170,17 +193,14 @@ export const NewCommentForm: React.FC = () => {
             name="body"
             placeholder="Type comment here"
             className={cn('textarea', {
-              'is-danger': !body.length && emptyBody,
+              'is-danger': !comment.body.length && errorFields.body,
             })}
-            value={body}
-            onChange={(e) => {
-              setBody(e.target.value);
-              setEmptyBody(false);
-            }}
+            value={comment.body}
+            onChange={(e) => bodyChangeField(e.target.value)}
           />
         </div>
 
-        {!body && emptyBody && (
+        {!comment.body && errorFields.body && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>

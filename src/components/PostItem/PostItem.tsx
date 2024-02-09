@@ -13,8 +13,8 @@ type Props = {
 
 export const PostItem: React.FC<Props> = ({ post, isActive, setIsActive }) => {
   const {
-    choosedPost,
-    setChoosedPost,
+    chosenPost,
+    setChosenPost,
     setComments,
     setError,
     setIsLoading,
@@ -27,8 +27,8 @@ export const PostItem: React.FC<Props> = ({ post, isActive, setIsActive }) => {
     setComments([]);
     setIsActiveComForm(false);
 
-    if (choosedPost?.id === openedPost.id) {
-      setChoosedPost(null);
+    if (chosenPost?.id === openedPost.id) {
+      setChosenPost(null);
 
       setIsActive(null);
 
@@ -36,7 +36,7 @@ export const PostItem: React.FC<Props> = ({ post, isActive, setIsActive }) => {
     }
 
     setIsActive(openedPost.id);
-    setChoosedPost(openedPost);
+    setChosenPost(openedPost);
     setIsLoading(true);
 
     getComments(openedPost.id)

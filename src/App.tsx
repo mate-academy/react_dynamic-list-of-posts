@@ -11,7 +11,7 @@ import { User } from './types/User';
 import { MainContext } from './components/MainContext/MainContext';
 
 export const App: React.FC = () => {
-  const { choosedPost } = useContext(MainContext);
+  const { chosenPost } = useContext(MainContext);
   const [choosedUser, setChoosedUser] = useState<User>();
 
   return (
@@ -41,11 +41,11 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': choosedPost },
+              { 'Sidebar--open': chosenPost },
             )}
           >
             <div className="tile is-child box is-success">
-              {choosedPost && (<PostDetails />)}
+              {chosenPost && (<PostDetails />)}
             </div>
           </div>
         </div>

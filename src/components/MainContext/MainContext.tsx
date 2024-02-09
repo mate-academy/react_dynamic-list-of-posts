@@ -10,8 +10,8 @@ export const MainContext = React.createContext<ContextProps>({
   users: [],
   posts: [],
   setPosts: () => { },
-  choosedPost: null,
-  setChoosedPost: () => { },
+  chosenPost: null,
+  setChosenPost: () => { },
   comments: [],
   setComments: () => { },
   error: Errors.NONE,
@@ -29,7 +29,7 @@ type Props = {
 export const MainProvider: React.FC<Props> = ({ children }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [choosedPost, setChoosedPost] = useState<Post | null>(null);
+  const [chosenPost, setChosenPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [error, setError] = useState<Errors>(Errors.NONE);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,8 +45,8 @@ export const MainProvider: React.FC<Props> = ({ children }) => {
         users,
         posts,
         setPosts,
-        choosedPost,
-        setChoosedPost,
+        chosenPost,
+        setChosenPost,
         comments,
         setComments,
         error,
