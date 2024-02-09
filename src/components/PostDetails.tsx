@@ -1,117 +1,121 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { Post } from '../types/Post';
+import {
+  CommentsContext,
+  CommentsUpdateContext,
+} from '../contexts/CommentsProvider';
+import { CommentInfo } from './CommentInfo';
+import { CommentData } from '../types/Comment';
+import { CommentErrors } from '../types/CommentErrors';
 
-export const PostDetails: React.FC = () => {
+interface Props {
+  post: Post,
+}
+
+export const PostDetails: React.FC<Props> = ({ post }) => {
+  const { id, title, body } = post;
+  const {
+    addComment,
+    loadComments,
+    setComments,
+  } = useContext(CommentsUpdateContext);
+  const {
+    comments,
+    isLoading,
+    errorMessage,
+  } = useContext(CommentsContext);
+
+  const [isFormOpened, setIsFormOpened] = useState(false);
+
+  useEffect(() => {
+    loadComments(id);
+
+    return () => {
+      setComments([]);
+      setIsFormOpened(false);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
+  const handleAddNewComment = (commentData: CommentData) => {
+    return addComment({
+      ...commentData,
+      postId: id,
+    });
+  };
+
+  const isNewCommentButtonShown = !errorMessage
+    && !isFormOpened;
+  const isNoCommentMessageShown = !errorMessage
+    && !comments.length;
+  const areCommentsShown = errorMessage !== CommentErrors.UnableToLoadComments
+    && !!comments.length;
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {`#${id}: ${title}`}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            {body}
           </p>
         </div>
 
         <div className="block">
-          <Loader />
+          {isLoading
+            ? <Loader />
+            : (
+              <>
+                {!!errorMessage && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="CommentsError"
+                  >
+                    {errorMessage}
+                  </div>
+                )}
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
+                {areCommentsShown
+                  && (
+                    <>
+                      <p className="title is-4">Comments:</p>
 
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
+                      {comments.map(comment => (
+                        <CommentInfo key={comment.id} comment={comment} />
+                      ))}
+                    </>
+                  )}
 
-          <p className="title is-4">Comments:</p>
+                {isNoCommentMessageShown
+                  && (
+                    <p className="title is-4" data-cy="NoCommentsMessage">
+                      No comments yet
+                    </p>
+                  )}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
-            >
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+                {isNewCommentButtonShown
+                  && (
+                    <button
+                      data-cy="WriteCommentButton"
+                      type="button"
+                      className="button is-link"
+                      onClick={() => setIsFormOpened(true)}
+                    >
+                      Write a comment
+                    </button>
+                  )}
+              </>
+            )}
         </div>
 
-        <NewCommentForm />
+        {isFormOpened && (
+          <NewCommentForm handleAddNewComment={handleAddNewComment} />
+        )}
       </div>
     </div>
   );
