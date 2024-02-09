@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { effect } from '@preact/signals-react';
 import { useSignals } from '@preact/signals-react/runtime';
 import classNames from 'classnames';
-import { selectedUser, users } from '../signals/signals';
+import { selectedPost, selectedUser, users } from '../signals/signals';
 import { getUsers } from '../api';
 import { User } from '../types/User';
 
@@ -27,6 +27,7 @@ export const UserSelector: React.FC = () => {
   ) => {
     event.preventDefault();
     event.stopPropagation();
+    selectedPost.value = null;
     selectedUser.value = user;
     setIsDropdownActive(false);
   };
