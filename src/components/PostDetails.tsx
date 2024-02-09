@@ -6,13 +6,14 @@ import { NewCommentForm } from './NewCommentForm';
 import {
   comments, isCommentsErrorVisible,
   isCommentsFormVisible, isCommentsLoaderVisible,
-  isCommentsNotificationVisible, selectedPost,
+  isCommentsNotificationVisible, isWriteCommentButtonVisible, selectedPost,
 } from '../signals/signals';
 import { getComments } from '../api';
 
 effect(() => {
   if (selectedPost.value) {
     isCommentsErrorVisible.value = false;
+    isCommentsFormVisible.value = false;
     comments.value = [];
     isCommentsLoaderVisible.value = true;
     getComments(selectedPost.value.id)
@@ -89,7 +90,7 @@ export const PostDetails: React.FC = () => {
             </>
           )}
 
-          {!isCommentsLoaderVisible.value && !isCommentsFormVisible.value && (
+          {isWriteCommentButtonVisible.value && (
             <button
               data-cy="WriteCommentButton"
               type="button"

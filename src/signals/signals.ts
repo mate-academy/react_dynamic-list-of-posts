@@ -27,3 +27,9 @@ export const isCommentsNotificationVisible = computed<boolean>(() => {
   && !isCommentsLoaderVisible.value
   && !isCommentsErrorVisible.value;
 });
+
+export const isWriteCommentButtonVisible = computed<boolean>(() => {
+  return !isCommentsLoaderVisible.value
+  && !isCommentsFormVisible.value
+  && !isCommentsErrorVisible.value;
+});
