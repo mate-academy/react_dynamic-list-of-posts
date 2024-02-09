@@ -11,7 +11,8 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import {
-  isErrorVisible, isLoaderVisible, isNotificationVisible, posts, selectedUser,
+  isErrorVisible, isLoaderVisible, isNotificationVisible,
+  posts, selectedPost, selectedUser,
 } from './signals/signals';
 import { getPosts } from './api';
 
@@ -82,7 +83,7 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              // 'Sidebar--open',
+              { 'Sidebar--open': selectedPost.value },
             )}
           >
             <div className="tile is-child box is-success ">
