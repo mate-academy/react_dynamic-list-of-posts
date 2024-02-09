@@ -73,6 +73,13 @@ export const NewCommentForm: React.FC = () => {
     }
   };
 
+  const handleResetButton = () => {
+    inputNameValue.value = '';
+    inputEmailValue.value = '';
+    inputBodyValue.value = '';
+    formErrors.value = { name: false, email: false, body: false };
+  };
+
   return (
     <form data-cy="NewCommentForm" onSubmit={handleCommentSubmit}>
       <div className="field" data-cy="NameField">
@@ -201,7 +208,11 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={handleResetButton}
+          >
             Clear
           </button>
         </div>
