@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import * as clientComments from '../service/comment';
 import { Comment } from '../types/Comment';
@@ -17,6 +17,8 @@ export const NewCommentForm: React.FC<Props> = ({ createComment, post }) => {
   const [emailError, setEmailError] = useState(false);
   const [commentError, setCommentError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAdd, setIsAdd] = useState(false);
+  const [isValidForm, setIsVAlidForm] = useState(false);
 
   const reset = () => {
     setNameText('');
@@ -25,24 +27,46 @@ export const NewCommentForm: React.FC<Props> = ({ createComment, post }) => {
     setNameError(false);
     setEmailError(false);
     setCommentError(false);
+    setIsLoading(false);
   };
+
+  useEffect(() => {
+    if (isAdd) {
+      setIsLoading(true);
+
+      if (nameText.length === 0) {
+        setNameError(true);
+      }
+
+      if (emailText.length === 0) {
+        setEmailError(true);
+      }
+
+      if (commentText.length === 0) {
+        setCommentError(true);
+      }
+
+      if (!nameError && !emailError && !commentError) {
+        setIsVAlidForm(true);
+      } else {
+        setIsLoading(false);
+        setIsAdd(false);
+      }
+    }
+  }, [
+    isAdd,
+    nameText,
+    emailText,
+    commentText,
+    nameError,
+    emailError,
+    commentError,
+  ]);
 
   const addComment = ({
     postId, name, email, body,
   }: Omit<Comment, 'id'>) => {
     setIsLoading(true);
-
-    if (nameText.length === 0) {
-      setNameError(true);
-    }
-
-    if (emailText.length === 0) {
-      setEmailError(true);
-    }
-
-    if (commentText.length === 0) {
-      setCommentError(true);
-    }
 
     // eslint-disable-next-line no-console
     console.log(nameError, emailError, commentError);
@@ -55,6 +79,8 @@ export const NewCommentForm: React.FC<Props> = ({ createComment, post }) => {
         .finally(() => {
           setCommentText('');
           setIsLoading(false);
+          setIsVAlidForm(false);
+          setIsAdd(false);
         });
     }
   };
@@ -80,12 +106,14 @@ export const NewCommentForm: React.FC<Props> = ({ createComment, post }) => {
       onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        addComment({
-          postId: post.id,
-          name: nameText,
-          email: emailText,
-          body: commentText,
-        });
+        if (isValidForm) {
+          addComment({
+            postId: post.id,
+            name: nameText,
+            email: emailText,
+            body: commentText,
+          });
+        }
       }}
     >
       <div className="field" data-cy="NameField">
@@ -203,6 +231,7 @@ export const NewCommentForm: React.FC<Props> = ({ createComment, post }) => {
             className={cn('button', 'is-link', {
               'is-loading': isLoading,
             })}
+            onClick={() => setIsAdd(true)}
           >
             Add
           </button>
