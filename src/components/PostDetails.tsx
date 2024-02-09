@@ -1,6 +1,7 @@
 import React from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { selectedPost } from '../signals/signals';
 
 export const PostDetails: React.FC = () => {
   return (
@@ -8,14 +9,11 @@ export const PostDetails: React.FC = () => {
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {`#${selectedPost.value?.id}: ${selectedPost.value?.title}`}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            {selectedPost.value?.body}
           </p>
         </div>
 

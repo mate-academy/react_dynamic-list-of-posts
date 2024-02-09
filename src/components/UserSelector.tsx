@@ -42,6 +42,7 @@ export const UserSelector: React.FC = () => {
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => setIsDropdownActive(!isDropdownActive)}
+          onBlur={() => setIsDropdownActive(false)}
         >
           <span>
             {selectedUser.value
