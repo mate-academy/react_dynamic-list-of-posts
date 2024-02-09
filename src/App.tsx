@@ -1,15 +1,19 @@
-import React from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
+import cn from 'classnames';
+import { useContext, useState } from 'react';
+import { PostDetails } from './components/PostDetails/PostDetails';
+import { UserSelector } from './components/UserSelector/UserSelector';
+import { MainContent } from './components/MainContent/MainContent';
+import { User } from './types/User';
+import { MainContext } from './components/MainContext/MainContext';
 
 export const App: React.FC = () => {
+  const { chosenPost } = useContext(MainContext);
+  const [choosedUser, setChoosedUser] = useState<User>();
+
   return (
     <main className="section">
       <div className="container">
@@ -17,44 +21,31 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  choosedUser={choosedUser}
+                  setChoosedUser={setChoosedUser}
+                />
               </div>
 
-              <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+              <MainContent
+                choosedUser={choosedUser}
+              />
 
-                <Loader />
-
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
-
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
-              </div>
             </div>
           </div>
 
           <div
             data-cy="Sidebar"
-            className={classNames(
+            className={cn(
               'tile',
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': chosenPost },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
+            <div className="tile is-child box is-success">
+              {chosenPost && (<PostDetails />)}
             </div>
           </div>
         </div>
