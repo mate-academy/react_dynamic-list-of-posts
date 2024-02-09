@@ -20,6 +20,7 @@ export const isPostsNotificationVisible = computed<boolean>(() => {
 });
 
 export const isCommentsErrorVisible = signal<boolean>(false);
+export const isDeleteCommentErrorVisible = signal<boolean>(false);
 export const isCommentsLoaderVisible = signal<boolean>(false);
 export const isCommentsFormVisible = signal<boolean>(false);
 export const isCommentsNotificationVisible = computed<boolean>(() => {

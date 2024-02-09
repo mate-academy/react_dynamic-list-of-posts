@@ -4,7 +4,7 @@ import { useSignals } from '@preact/signals-react/runtime';
 import {
   comments,
   formErrors, inputBodyValue, inputEmailValue,
-  inputNameValue, isFormLoaderVisible, selectedPost,
+  inputNameValue, isCommentsErrorVisible, isFormLoaderVisible, selectedPost,
 } from '../signals/signals';
 import { postComment } from '../api/comments';
 
@@ -61,10 +61,14 @@ export const NewCommentForm: React.FC = () => {
         };
 
         isFormLoaderVisible.value = true;
+        isCommentsErrorVisible.value = false;
         postComment(newComment)
           .then((response) => {
             comments.value = [...comments.value, response];
             inputBodyValue.value = '';
+          })
+          .catch(() => {
+            isCommentsErrorVisible.value = true;
           })
           .finally(() => {
             isFormLoaderVisible.value = false;

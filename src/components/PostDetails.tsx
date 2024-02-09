@@ -6,7 +6,8 @@ import { NewCommentForm } from './NewCommentForm';
 import {
   comments, isCommentsErrorVisible,
   isCommentsFormVisible, isCommentsLoaderVisible,
-  isCommentsNotificationVisible, isWriteCommentButtonVisible, selectedPost,
+  isCommentsNotificationVisible, isDeleteCommentErrorVisible,
+  isWriteCommentButtonVisible, selectedPost,
 } from '../signals/signals';
 import { getComments } from '../api';
 import { deleteComment } from '../api/comments';
@@ -38,8 +39,15 @@ export const PostDetails: React.FC = () => {
   };
 
   const handleDeleteComment = (commentId: number) => {
+    isDeleteCommentErrorVisible.value = false;
+    const commentsCopy = [...comments.value];
+
     comments.value = comments.value.filter(comment => comment.id !== commentId);
-    deleteComment(commentId);
+    deleteComment(commentId)
+      .catch(() => {
+        isDeleteCommentErrorVisible.value = true;
+        comments.value = commentsCopy;
+      });
   };
 
   return (
@@ -58,11 +66,12 @@ export const PostDetails: React.FC = () => {
         <div className="block">
           {isCommentsLoaderVisible.value && <Loader />}
 
-          {isCommentsErrorVisible.value && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
-            </div>
-          )}
+          {(isCommentsErrorVisible.value || isDeleteCommentErrorVisible.value)
+            && (
+              <div className="notification is-danger" data-cy="CommentsError">
+                Something went wrong
+              </div>
+            )}
 
           {isCommentsNotificationVisible.value && (
             <p className="title is-4" data-cy="NoCommentsMessage">
