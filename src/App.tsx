@@ -11,25 +11,25 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import {
-  isErrorVisible, isLoaderVisible, isNotificationVisible,
+  isPostsErrorVisible, isPostsLoaderVisible, isPostsNotificationVisible,
   posts, selectedPost, selectedUser,
 } from './signals/signals';
 import { getPosts } from './api';
 
 effect(() => {
   if (selectedUser.value) {
-    isErrorVisible.value = false;
+    isPostsErrorVisible.value = false;
     posts.value = [];
-    isLoaderVisible.value = true;
+    isPostsLoaderVisible.value = true;
     getPosts(selectedUser.value.id)
       .then(response => {
         posts.value = response;
       })
       .catch(() => {
-        isErrorVisible.value = true;
+        isPostsErrorVisible.value = true;
       })
       .finally(() => {
-        isLoaderVisible.value = false;
+        isPostsLoaderVisible.value = false;
       });
   }
 });
@@ -54,9 +54,9 @@ export const App: React.FC = () => {
                   </p>
                 )}
 
-                {isLoaderVisible.value && <Loader />}
+                {isPostsLoaderVisible.value && <Loader />}
 
-                {isErrorVisible.value && (
+                {isPostsErrorVisible.value && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -65,7 +65,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {isNotificationVisible.value && (
+                {isPostsNotificationVisible.value && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
