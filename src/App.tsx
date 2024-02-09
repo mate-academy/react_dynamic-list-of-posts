@@ -82,7 +82,7 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              // 'Sidebar--open',
             )}
           >
             <div className="tile is-child box is-success ">
