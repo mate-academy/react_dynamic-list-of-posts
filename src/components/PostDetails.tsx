@@ -36,7 +36,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       setComments([]);
       setIsFormOpened(false);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const handleAddNewComment = (commentData: CommentData) => {
@@ -45,6 +45,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       postId: id,
     });
   };
+
+  const isNewCommentButtonShown = !errorMessage
+    && !isFormOpened;
+  const isNoCommentMessageShown = !errorMessage
+    && !comments.length;
+  const areCommentsShown = errorMessage !== CommentErrors.UnableToLoadComments
+    && !!comments.length;
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -60,55 +67,50 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         </div>
 
         <div className="block">
-          {isLoading && <Loader />}
-
-          {!!errorMessage && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              {errorMessage}
-            </div>
-          )}
-
-          {
-            !isLoading
-            && errorMessage !== CommentErrors.UnableToLoadComments
-            && !!comments.length
-            && (
+          {isLoading
+            ? <Loader />
+            : (
               <>
-                <p className="title is-4">Comments:</p>
+                {!!errorMessage && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="CommentsError"
+                  >
+                    {errorMessage}
+                  </div>
+                )}
 
-                {comments.map(comment => (
-                  <CommentInfo key={comment.id} comment={comment} />
-                ))}
+                {areCommentsShown
+                  && (
+                    <>
+                      <p className="title is-4">Comments:</p>
+
+                      {comments.map(comment => (
+                        <CommentInfo key={comment.id} comment={comment} />
+                      ))}
+                    </>
+                  )}
+
+                {isNoCommentMessageShown
+                  && (
+                    <p className="title is-4" data-cy="NoCommentsMessage">
+                      No comments yet
+                    </p>
+                  )}
+
+                {isNewCommentButtonShown
+                  && (
+                    <button
+                      data-cy="WriteCommentButton"
+                      type="button"
+                      className="button is-link"
+                      onClick={() => setIsFormOpened(true)}
+                    >
+                      Write a comment
+                    </button>
+                  )}
               </>
-            )
-          }
-
-          {
-            !isLoading
-            && !errorMessage
-            && !comments.length
-            && (
-              <p className="title is-4" data-cy="NoCommentsMessage">
-                No comments yet
-              </p>
-            )
-          }
-
-          {
-            !isLoading
-            && !errorMessage
-            && !isFormOpened
-            && (
-              <button
-                data-cy="WriteCommentButton"
-                type="button"
-                className="button is-link"
-                onClick={() => setIsFormOpened(true)}
-              >
-                Write a comment
-              </button>
-            )
-          }
+            )}
         </div>
 
         {isFormOpened && (

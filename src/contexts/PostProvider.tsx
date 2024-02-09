@@ -11,10 +11,10 @@ interface State {
   isLoading: boolean,
 }
 
-type Action = {
+interface Action {
   type: 'SetSelectedPost'
   post: Post | null,
-};
+}
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
