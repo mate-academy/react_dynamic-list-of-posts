@@ -9,6 +9,7 @@ import {
   isCommentsNotificationVisible, isWriteCommentButtonVisible, selectedPost,
 } from '../signals/signals';
 import { getComments } from '../api';
+import { deleteComment } from '../api/comments';
 
 effect(() => {
   if (selectedPost.value) {
@@ -34,6 +35,11 @@ export const PostDetails: React.FC = () => {
 
   const handleWriteCommentButtonClick = () => {
     isCommentsFormVisible.value = true;
+  };
+
+  const handleDeleteComment = (commentId: number) => {
+    comments.value = comments.value.filter(comment => comment.id !== commentId);
+    deleteComment(commentId);
   };
 
   return (
@@ -77,6 +83,7 @@ export const PostDetails: React.FC = () => {
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
+                      onClick={() => handleDeleteComment(comment.id)}
                     >
                       delete button
                     </button>

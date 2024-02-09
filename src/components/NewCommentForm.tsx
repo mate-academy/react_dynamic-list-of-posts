@@ -2,8 +2,11 @@ import classNames from 'classnames';
 import React from 'react';
 import { useSignals } from '@preact/signals-react/runtime';
 import {
-  formErrors, inputBodyValue, inputEmailValue, inputNameValue,
+  comments,
+  formErrors, inputBodyValue, inputEmailValue,
+  inputNameValue, isFormLoaderVisible, selectedPost,
 } from '../signals/signals';
+import { postComment } from '../api/comments';
 
 export const NewCommentForm: React.FC = () => {
   useSignals();
@@ -14,10 +17,12 @@ export const NewCommentForm: React.FC = () => {
     switch (inputName) {
       case 'name':
         inputNameValue.value = e.target.value;
+        formErrors.value = { ...formErrors.value, name: false };
         break;
 
       case 'email':
         inputEmailValue.value = e.target.value;
+        formErrors.value = { ...formErrors.value, email: false };
         break;
 
       default:
@@ -27,10 +32,45 @@ export const NewCommentForm: React.FC = () => {
 
   const handleTextareaInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     inputBodyValue.value = e.target.value;
+    formErrors.value = { ...formErrors.value, body: false };
   };
 
   const handleCommentSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!inputNameValue.value.trim()) {
+      formErrors.value = { ...formErrors.value, name: true };
+    }
+
+    if (!inputEmailValue.value.trim()) {
+      formErrors.value = { ...formErrors.value, email: true };
+    }
+
+    if (!inputBodyValue.value.trim()) {
+      formErrors.value = { ...formErrors.value, body: true };
+    }
+
+    if (inputNameValue.value.trim()
+      && inputEmailValue.value.trim()
+      && inputBodyValue.value.trim()) {
+      if (selectedPost.value) {
+        const newComment = {
+          postId: selectedPost.value.id,
+          name: inputNameValue.value,
+          email: inputEmailValue.value,
+          body: inputBodyValue.value,
+        };
+
+        isFormLoaderVisible.value = true;
+        postComment(newComment)
+          .then((response) => {
+            comments.value = [...comments.value, response];
+            inputBodyValue.value = '';
+          })
+          .finally(() => {
+            isFormLoaderVisible.value = false;
+          });
+      }
+    }
   };
 
   return (
@@ -91,7 +131,7 @@ export const NewCommentForm: React.FC = () => {
             onInput={handleInput}
             className={classNames(
               'input',
-              { 'is-danger': formErrors.value.name },
+              { 'is-danger': formErrors.value.email },
             )}
           />
 
@@ -132,7 +172,7 @@ export const NewCommentForm: React.FC = () => {
             onInput={handleTextareaInput}
             className={classNames(
               'textarea',
-              { 'is-danger': formErrors.value.name },
+              { 'is-danger': formErrors.value.body },
             )}
           />
         </div>
@@ -147,7 +187,14 @@ export const NewCommentForm: React.FC = () => {
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={classNames(
+              'button',
+              'is-link',
+              { 'is-loading': isFormLoaderVisible.value },
+            )}
+          >
             Add
           </button>
         </div>

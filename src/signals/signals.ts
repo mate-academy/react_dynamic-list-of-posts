@@ -35,17 +35,12 @@ export const isWriteCommentButtonVisible = computed<boolean>(() => {
   && !isCommentsErrorVisible.value;
 });
 
-export const formInputValues = signal({
-  name: '',
-  email: '',
-  body: '',
-});
+export const inputNameValue = signal<string>('');
+export const inputEmailValue = signal<string>('');
+export const inputBodyValue = signal<string>('');
 export const formErrors = signal<FormErrors>({
   name: false,
   email: false,
   body: false,
 });
-
-export const inputNameValue = signal<string>('');
-export const inputEmailValue = signal<string>('');
-export const inputBodyValue = signal<string>('');
+export const isFormLoaderVisible = signal<boolean>(false);
