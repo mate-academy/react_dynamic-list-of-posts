@@ -16,7 +16,3 @@ export function createComment({
     postId, name, email, body,
   });
 }
-
-// export function updateTodos(user: User) {
-//   return client.patch<User>(`/todos/${user.id}`, user);
-// }

@@ -14,6 +14,19 @@ export const UserSelector: React.FC<Props> = ({ users, getUserId }) => {
     name: 'Choose a user',
   });
 
+  const handleUser = (event: React.MouseEvent, user: User) => {
+    event.preventDefault();
+
+    getUserId(user.id);
+
+    setIsActiveMenu(!isActiveMenu);
+
+    setIsActiveItem({
+      id: user.id,
+      name: user.name,
+    });
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -44,18 +57,7 @@ export const UserSelector: React.FC<Props> = ({ users, getUserId }) => {
                 className={cn('dropdown-item', {
                   'is-active': user.id === isActiveItem.id,
                 })}
-                onClick={(event: React.MouseEvent) => {
-                  event.preventDefault();
-
-                  getUserId(user.id);
-
-                  setIsActiveMenu(!isActiveMenu);
-
-                  setIsActiveItem({
-                    id: user.id,
-                    name: user.name,
-                  });
-                }}
+                onClick={(event) => handleUser(event, user)}
                 key={user.id}
               >
                 {user.name}

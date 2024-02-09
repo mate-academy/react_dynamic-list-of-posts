@@ -43,64 +43,71 @@ export const NewCommentForm: React.FC<Props> = ({ createComment, post }) => {
       });
   };
 
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const isNameValid = nameText.trim();
+    const isEmailValid = emailText.trim();
+    const isBodyValid = commentText.trim();
+
+    if (!isNameValid) {
+      setNameError(true);
+    }
+
+    if (!isEmailValid) {
+      setEmailError(true);
+    }
+
+    if (!isBodyValid) {
+      setCommentError(true);
+    }
+
+    if (isNameValid && isEmailValid && isBodyValid) {
+      addComment({
+        postId: post.id,
+        name: nameText,
+        email: emailText,
+        body: commentText,
+      });
+    }
+  };
+
   const changeNameText = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNameText(event.target.value);
+
     if (nameText.length === 0) {
       setNameError(true);
     }
 
     setNameError(false);
-    setNameText(event.target.value);
   };
 
   const changeEmailText = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailText(event.target.value);
+
     if (emailText.length === 0) {
       setEmailError(true);
     }
 
     setEmailError(false);
-    setEmailText(event.target.value);
   };
 
   const changeCommentText = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setCommentText(event.target.value);
+
     if (commentText.length === 0) {
       setCommentError(true);
     }
 
     setCommentError(false);
-    setCommentText(event.target.value);
   };
 
   return (
     <form
       data-cy="NewCommentForm"
-      onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        const isNameValid = nameText.trim();
-        const isEmailValid = emailText.trim();
-        const isBodyValid = commentText.trim();
-
-        if (!isNameValid) {
-          setNameError(true);
-        }
-
-        if (!isEmailValid) {
-          setEmailError(true);
-        }
-
-        if (!isBodyValid) {
-          setCommentError(true);
-        }
-
-        if (isNameValid && isEmailValid && isBodyValid) {
-          addComment({
-            postId: post.id,
-            name: nameText,
-            email: emailText,
-            body: commentText,
-          });
-        }
-      }}
+      onSubmit={(
+        event: React.FormEvent<HTMLFormElement>,
+      ) => handleSubmit(event)}
     >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
