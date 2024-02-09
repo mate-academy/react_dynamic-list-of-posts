@@ -17,6 +17,7 @@ import { getPosts } from './api';
 
 effect(() => {
   if (selectedUser.value) {
+    isErrorVisible.value = false;
     posts.value = [];
     isLoaderVisible.value = true;
     getPosts(selectedUser.value.id)
@@ -63,7 +64,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {isNotificationVisible.value && !isLoaderVisible.value && (
+                {isNotificationVisible.value && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
