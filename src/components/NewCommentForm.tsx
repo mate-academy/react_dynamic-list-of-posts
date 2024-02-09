@@ -75,29 +75,17 @@ export const NewCommentForm: React.FC<Props> = ({ createComment, post }) => {
   const changeNameText = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNameText(event.target.value);
 
-    if (nameText.length === 0) {
-      setNameError(true);
-    }
-
     setNameError(false);
   };
 
   const changeEmailText = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmailText(event.target.value);
 
-    if (emailText.length === 0) {
-      setEmailError(true);
-    }
-
     setEmailError(false);
   };
 
   const changeCommentText = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCommentText(event.target.value);
-
-    if (commentText.length === 0) {
-      setCommentError(true);
-    }
 
     setCommentError(false);
   };
