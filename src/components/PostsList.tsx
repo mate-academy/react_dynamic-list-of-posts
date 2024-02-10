@@ -34,12 +34,12 @@ export const PostsList: React.FC<Props> = ({
         </thead>
 
         <tbody>
-          {posts.map(post => (
-            <tr data-cy="Post" key={post.id}>
-              <td data-cy="PostId">{post.id}</td>
+          {posts.map(({ id, title }) => (
+            <tr data-cy="Post" key={id}>
+              <td data-cy="PostId">{id}</td>
 
               <td data-cy="PostTitle">
-                {post.title}
+                {title}
               </td>
 
               <td className="has-text-right is-vcentered">
@@ -47,28 +47,28 @@ export const PostsList: React.FC<Props> = ({
                   type="button"
                   data-cy="PostButton"
                   className={cn('button', 'is-link', 'is-light', {
-                    hidden: (post.id === postId) && isOpen,
+                    hidden: (id === postId) && isOpen,
                   })}
                   onClick={() => {
-                    if (post.id !== postId) {
+                    if (id !== postId) {
                       isFormActive(false);
                     }
 
-                    getPostId(post.id);
+                    getPostId(id);
                     openButton(true);
                   }}
                 >
                   Open
                 </button>
 
-                {(isOpen && (postId === post.id)) && (
+                {(isOpen && (postId === id)) && (
                   <button
                     type="button"
                     data-cy="PostButton"
                     className="button is-link"
                     onClick={() => {
                       isFormActive(false);
-                      getPostId(post.id);
+                      getPostId(id);
                       openButton(false);
                     }}
                   >
