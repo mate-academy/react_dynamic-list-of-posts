@@ -38,6 +38,11 @@ export const UserSelector: React.FC<Props> = ({
     };
   }, [expanded]);
 
+  const handleUserItemClick = (user: User) => {
+    onChange(user);
+    setExpanded(false);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -73,10 +78,7 @@ export const UserSelector: React.FC<Props> = ({
               className={cn('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}
-              onClick={() => {
-                onChange(user);
-                setExpanded(false);
-              }}
+              onClick={() => handleUserItemClick(user)}
             >
               {user.name}
             </a>

@@ -78,19 +78,24 @@ export const PostDetails: React.FC<Props> = ({
             </p>
           )}
 
-        {loaded && !hasError && comments.length > 0 && (
+        {loaded && !hasError && !!comments.length && (
           <>
             <p className="title is-4">Comments:</p>
 
-            {comments.map(comment => (
+            {comments.map(({
+              id,
+              email,
+              name,
+              body,
+            }) => (
               <article
-                key={comment.id}
+                key={id}
                 className="message is-small"
                 data-cy="Comment"
               >
                 <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                    {comment.name}
+                  <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                    {name}
                   </a>
 
                   <button
@@ -98,14 +103,14 @@ export const PostDetails: React.FC<Props> = ({
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => deleteComment(id)}
                   >
                     delete button
                   </button>
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">
-                  {comment.body}
+                  {body}
                 </div>
               </article>
             ))}
