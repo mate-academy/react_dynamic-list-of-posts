@@ -40,6 +40,12 @@ export const UserSelector: React.FC = () => {
   }, [selectedUser]);
 
   function pickUser(user: User) {
+    if (user.name === selectedUser?.name) {
+      setIsActive(false);
+
+      return;
+    }
+
     setIsLoading(true);
     setSelectedUser(user);
   }
@@ -76,7 +82,8 @@ export const UserSelector: React.FC = () => {
             <a
               key={user.id}
               href={`#user-${i}`}
-              className="dropdown-item"
+              className={classNames('dropdown-item',
+                { 'is-active': user.name === selectedUser?.name })}
               onClick={() => pickUser(user)}
             >
               {user.name}

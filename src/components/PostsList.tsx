@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 /* eslint-disable max-len */
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import classNames from 'classnames';
 import { GlobalContext } from '../AppContext';
 
@@ -10,6 +11,7 @@ export const PostsList: React.FC = () => {
     postActiveId,
     setPostActiveId,
     setIsLoading,
+    selectedUser,
   } = useContext(GlobalContext);
 
   function handleSelectPost(postId: number) {
@@ -20,6 +22,10 @@ export const PostsList: React.FC = () => {
       setPostActiveId(0);
     }
   }
+
+  useEffect(() => {
+    setPostActiveId(0);
+  }, [selectedUser]);
 
   return (
     <div data-cy="PostsList">

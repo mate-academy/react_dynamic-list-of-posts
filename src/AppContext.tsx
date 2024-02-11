@@ -1,6 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable max-len */
 import React, {
   Dispatch, SetStateAction, useEffect, useState,
 } from 'react';
@@ -66,6 +63,12 @@ export const AppContext: React.FC<AppContextProps> = ({ children }) => {
   const [isCommentSuccess, setIsCommentSuccess] = useState<boolean>(true);
 
   useEffect(() => {
+    setCommentsForPost([]);
+    setSelectedUserPosts([]);
+    setPostActiveId(0);
+  }, [selectedUser]);
+
+  useEffect(() => {
     getUsers()
       .then(setAllUsers);
   }, []);
@@ -73,7 +76,8 @@ export const AppContext: React.FC<AppContextProps> = ({ children }) => {
   useEffect(() => {
     if (selectedUser) {
       getUserPosts(selectedUser.id)
-        .then(setSelectedUserPosts)
+        .then((setSelectedUserPosts))
+        .catch(() => setError('Something went wrong'))
         .finally(() => setIsLoading(false));
     }
   }, [selectedUser]);
@@ -96,12 +100,10 @@ export const AppContext: React.FC<AppContextProps> = ({ children }) => {
   };
 
   const handleDeleteComment = (commentId: number) => {
-    deleteComment(commentId)
-      .then(() => {
-        setCommentsForPost((prev) => (
-          prev.filter((comment) => comment.id !== commentId)
-        ));
-      });
+    setCommentsForPost((prev) => (
+      prev.filter((comment) => comment.id !== commentId)
+    ));
+    deleteComment(commentId);
   };
 
   const contextValue: ContextProps = {

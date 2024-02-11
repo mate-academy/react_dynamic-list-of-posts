@@ -1,9 +1,8 @@
 /* eslint-disable max-len */
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { GlobalContext } from '../AppContext';
-import { Post } from '../types/Post';
 
 export const PostDetails: React.FC = () => {
   const {
@@ -12,15 +11,24 @@ export const PostDetails: React.FC = () => {
     commentsForPost,
     isLoading,
     error,
+    selectedUser,
     handleDeleteComment,
   } = useContext(GlobalContext);
 
-  const [isWriteComment, setIsWriteComment] = useState(false);
+  const [isFormOpened, setIsFormOpened] = useState(false);
 
-  const currentPost = selectedUserPosts.find(post => post.id === postActiveId) as Post || null;
+  useEffect(() => {
+    setIsFormOpened(false);
+  }, [postActiveId]);
+
+  if (!selectedUser || !postActiveId || !selectedUserPosts) {
+    return null;
+  }
+
+  const currentPost = selectedUserPosts.find(post => post.id === postActiveId) || null;
 
   function handleWriteComment() {
-    setIsWriteComment(true);
+    setIsFormOpened(true);
   }
 
   return (
@@ -38,14 +46,12 @@ export const PostDetails: React.FC = () => {
 
         <div className="block">
           {isLoading && <Loader />}
-
           {error && (
             <div className="notification is-danger" data-cy="CommentsError">
               {error}
             </div>
           )}
-
-          {commentsForPost.length === 0 ? (
+          {!error && !isLoading && (commentsForPost.length === 0 ? (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -74,9 +80,9 @@ export const PostDetails: React.FC = () => {
                 </article>
               ))}
             </div>
-          )}
+          ))}
         </div>
-        {!isWriteComment && (
+        {!isFormOpened && !isLoading && !error && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -86,7 +92,7 @@ export const PostDetails: React.FC = () => {
             Write a comment
           </button>
         )}
-        {isWriteComment && <NewCommentForm /> }
+        {isFormOpened && <NewCommentForm /> }
       </div>
     </div>
   );

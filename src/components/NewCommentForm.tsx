@@ -32,6 +32,10 @@ export const NewCommentForm: React.FC = () => {
       setBodyError(true);
     }
 
+    if (nameError || emailError || bodyError) {
+      return;
+    }
+
     if (name && email && body) {
       setIsCommentSuccess(false);
       setLoadingButton(true);

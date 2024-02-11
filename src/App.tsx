@@ -17,9 +17,8 @@ export const App: React.FC = () => {
     selectedUser,
     postActiveId,
     isLoading,
+    error,
   } = useContext(GlobalContext);
-
-  const error = null;
 
   return (
     <main className="section">
@@ -44,10 +43,11 @@ export const App: React.FC = () => {
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    Something went wrong!
+                    {error}
                   </div>
                 )}
-                {selectedUserPosts.length === 0
+                {!error
+                && selectedUserPosts.length === 0
                 && selectedUser
                 && !isLoading
                 && (
