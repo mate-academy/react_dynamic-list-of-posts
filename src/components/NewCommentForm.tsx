@@ -11,67 +11,107 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
-  const [authName, setAuthName] = useState('');
-  const [authNameError, setAuthNameError] = useState('');
-  const [authEmail, setAuthEmail] = useState('');
-  const [authEmailError, setAuthEmailError] = useState('');
-  const [authComment, setAuthComment] = useState('');
-  const [authCommentError, setAuthCommentError] = useState('');
+  const [author, setAuthor] = useState({
+    name: '',
+    email: '',
+    comment: '',
+  });
+
+  const [error, setError] = useState({
+    name: '',
+    email: '',
+    comment: '',
+  });
+
   const [isLoading, setIsLoading] = useState(false);
 
   const { selectedPost } = useContext(SelectedPostContext);
 
+  const isEmailValid = EMAIL_REGEX.test(author.email.trim());
+
   const handleAuthNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuthNameError('');
-    setAuthName(event.target.value);
+    setError(prevError => ({
+      ...prevError,
+      name: '',
+    }));
+    setAuthor(prevAuthor => ({
+      ...prevAuthor,
+      name: event.target.value,
+    }));
   };
 
   const handleAuthEmailChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setAuthEmailError('');
-    setAuthEmail(event.target.value);
+    setError(prevError => ({
+      ...prevError,
+      email: '',
+    }));
+    setAuthor(prevAuthor => ({
+      ...prevAuthor,
+      email: event.target.value,
+    }));
   };
 
   const handleAuthCommentChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
-    setAuthCommentError('');
-    setAuthComment(event.target.value);
+    setError(prevError => ({
+      ...prevError,
+      commentError: '',
+    }));
+    setAuthor(prevAuthor => ({
+      ...prevAuthor,
+      comment: event.target.value,
+    }));
   };
 
   const handleClearForm = () => {
-    setAuthName('');
-    setAuthEmail('');
-    setAuthComment('');
-    setAuthNameError('');
-    setAuthEmailError('');
-    setAuthCommentError('');
+    setAuthor({
+      name: '',
+      email: '',
+      comment: '',
+    });
+    setError({
+      name: '',
+      email: '',
+      comment: '',
+    });
   };
 
   const handleAddingComment = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const normalizedAuthName = authName.trim();
-    const normalizedAuthEmail = authEmail.trim();
-    const normalizedAuthComment = authComment.trim();
-
-    const isEmailValid = EMAIL_REGEX.test(normalizedAuthEmail);
+    const normalizedAuthName = author.name.trim();
+    const normalizedAuthEmail = author.email.trim();
+    const normalizedAuthComment = author.comment.trim();
 
     if (!normalizedAuthName) {
-      setAuthNameError('Name is required');
+      setError(prevError => ({
+        ...prevError,
+        name: 'Name is required',
+      }));
     }
 
     if (!normalizedAuthEmail) {
-      setAuthEmailError('Email is required');
+      setError(prevError => ({
+        ...prevError,
+        email: 'Email is required',
+      }));
     }
 
     if (!isEmailValid && !!normalizedAuthEmail.length) {
-      setAuthEmailError('Email should be valid');
+      setError(prevError => ({
+        ...prevError,
+        email: 'Email should be valid',
+      }));
     }
 
     if (!normalizedAuthComment) {
-      setAuthCommentError('Enter some text');
+      setError(prevError => ({
+        ...prevError,
+        comment: 'Enter some text',
+      }));
     }
 
     if (
@@ -98,7 +138,10 @@ export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
       postId: selectedPost.id,
     })
       .then((newComment) => {
-        setAuthComment('');
+        setAuthor(prevAuthor => ({
+          ...prevAuthor,
+          comment: '',
+        }));
         setComments((prevComments) => {
           return [...prevComments, newComment];
         });
@@ -129,9 +172,9 @@ export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', {
-              'is-danger': !!authNameError.length,
+              'is-danger': !!error.name.length,
             })}
-            value={authName}
+            value={author.name}
             onChange={handleAuthNameChange}
           />
 
@@ -139,7 +182,7 @@ export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
             <i className="fas fa-user" />
           </span>
 
-          {!!authNameError.length && (
+          {!!error.name.length && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -149,9 +192,9 @@ export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
           )}
         </div>
 
-        {!!authNameError.length && (
+        {!!error.name.length && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            {authNameError}
+            {error.name}
           </p>
         )}
       </div>
@@ -168,9 +211,9 @@ export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', {
-              'is-danger': !!authEmailError.length,
+              'is-danger': !!error.email.length || !isEmailValid,
             })}
-            value={authEmail}
+            value={author.email}
             onChange={handleAuthEmailChange}
           />
 
@@ -178,7 +221,7 @@ export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
             <i className="fas fa-envelope" />
           </span>
 
-          {!!authEmailError.length && (
+          {(!!error.email.length || !isEmailValid) && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -188,9 +231,9 @@ export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
           )}
         </div>
 
-        {!!authEmailError.length && (
+        {(!!error.email.length || !isEmailValid) && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            {authEmailError}
+            {error.email}
           </p>
         )}
       </div>
@@ -206,16 +249,16 @@ export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', {
-              'is-danger': !!authCommentError.length,
+              'is-danger': !!error.comment.length,
             })}
-            value={authComment}
+            value={author.comment}
             onChange={handleAuthCommentChange}
           />
         </div>
 
-        {!!authCommentError.length && (
+        {!!error.comment.length && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            {authCommentError}
+            {error.comment}
           </p>
         )}
       </div>

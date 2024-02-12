@@ -13,20 +13,27 @@ export const CommentItem: React.FC<Props> = ({
   comments,
   setComments,
 }) => {
+  const {
+    id,
+    email,
+    name,
+    body,
+  } = comment;
+
   const handleDeleteComment = useCallback(() => {
     const oldComments = [...comments];
 
     setComments((prevComments) => {
-      return prevComments.filter((c) => c.id !== comment.id);
+      return prevComments.filter((c) => c.id !== id);
     });
 
-    deleteComment(comment.id)
+    deleteComment(id)
       .catch(() => {
         setComments(oldComments);
         // eslint-disable-next-line no-console
         console.error('Failed to delete comment');
       });
-  }, [comment.id, setComments, comments]);
+  }, [id, setComments, comments]);
 
   return (
     <article
@@ -35,10 +42,10 @@ export const CommentItem: React.FC<Props> = ({
     >
       <div className="message-header">
         <a
-          href={`mailto:${comment.email}`}
+          href={`mailto:${email}`}
           data-cy="CommentAuthor"
         >
-          {comment.name}
+          {name}
         </a>
         <button
           data-cy="CommentDelete"
@@ -55,7 +62,7 @@ export const CommentItem: React.FC<Props> = ({
         className="message-body"
         data-cy="CommentBody"
       >
-        {comment.body}
+        {body}
       </div>
     </article>
   );

@@ -16,6 +16,18 @@ export const PostDetails: React.FC = () => {
 
   const { id, title, body } = selectedPost || {};
 
+  const isNoComments = !isLoading
+  && !isErrorOnCommentsLoad
+  && !comments.length;
+
+  const isCommentsShow = !isLoading
+  && !isErrorOnCommentsLoad
+  && !!comments.length;
+
+  const isButtonShow = !isAddingForm
+  && !isErrorOnCommentsLoad
+  && !isLoading;
+
   useEffect(() => {
     setIsAddingForm(false);
     if (selectedPost) {
@@ -56,19 +68,13 @@ export const PostDetails: React.FC = () => {
             </div>
           )}
 
-          {!isLoading
-          && !isErrorOnCommentsLoad
-          && !comments.length
-          && (
+          {isNoComments && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {!isLoading
-          && !isErrorOnCommentsLoad
-          && !!comments.length
-          && (
+          {isCommentsShow && (
             <>
               <p className="title is-4">Comments:</p>
 
@@ -85,10 +91,7 @@ export const PostDetails: React.FC = () => {
           )}
         </div>
 
-        {!isAddingForm
-        && !isErrorOnCommentsLoad
-        && !isLoading
-        && (
+        {isButtonShow && (
           <button
             data-cy="WriteCommentButton"
             type="button"

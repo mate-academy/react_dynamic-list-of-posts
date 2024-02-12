@@ -21,6 +21,20 @@ export const App: React.FC = () => {
   const { selectedUser } = useContext(SelectedUserContext);
   const { selectedPost } = useContext(SelectedPostContext);
 
+  const isSomethingWrong = !!selectedUser
+  && isErrorOnPostsLoad
+  && !isLoading;
+
+  const isNoPosts = !!selectedUser
+  && !isErrorOnPostsLoad
+  && !posts.length
+  && !isLoading;
+
+  const isPostsShow = !!selectedUser
+  && !isErrorOnPostsLoad
+  && !!posts.length
+  && !isLoading;
+
   useEffect(() => {
     if (selectedUser) {
       setIsLoading(true);
@@ -57,10 +71,7 @@ export const App: React.FC = () => {
 
                 {!!selectedUser && isLoading && (<Loader />)}
 
-                {!!selectedUser
-                && isErrorOnPostsLoad
-                && !isLoading
-                && (
+                {isSomethingWrong && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -69,19 +80,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!!selectedUser
-                && !isErrorOnPostsLoad
-                && !posts.length
-                && !isLoading && (
+                {isNoPosts && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {!!selectedUser
-                && !isErrorOnPostsLoad
-                && !!posts.length
-                && !isLoading && (
+                {isPostsShow && (
                   <PostsList posts={posts} />
                 )}
               </div>
