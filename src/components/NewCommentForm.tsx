@@ -211,7 +211,7 @@ export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', {
-              'is-danger': !!error.email.length || !isEmailValid,
+              'is-danger': !!error.email.length,
             })}
             value={author.email}
             onChange={handleAuthEmailChange}
