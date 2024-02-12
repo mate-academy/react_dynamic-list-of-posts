@@ -221,7 +221,7 @@ export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
             <i className="fas fa-envelope" />
           </span>
 
-          {(!!error.email.length || !isEmailValid) && (
+          {!!error.email.length && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -231,7 +231,7 @@ export const NewCommentForm: React.FC<Props> = ({ setComments }) => {
           )}
         </div>
 
-        {(!!error.email.length || !isEmailValid) && (
+        {!!error.email.length && (
           <p className="help is-danger" data-cy="ErrorMessage">
             {error.email}
           </p>
