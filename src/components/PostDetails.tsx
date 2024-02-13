@@ -12,10 +12,8 @@ export const PostDetails: React.FC = () => {
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis
-            laborum totam consequatur non dolor
-            ut et est repudiandae
-            est voluptatem vel debitis et magnam
+            eveniet quo quis laborum totam consequatur non dolor ut et est
+            repudiandae est voluptatem vel debitis et magnam
           </p>
         </div>
 
@@ -54,10 +52,7 @@ export const PostDetails: React.FC = () => {
 
           <article className="message is-small" data-cy="Comment">
             <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
+              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
                 Misha Hrynko
               </a>
 
@@ -70,20 +65,14 @@ export const PostDetails: React.FC = () => {
                 delete button
               </button>
             </div>
-            <div
-              className="message-body"
-              data-cy="CommentBody"
-            >
+            <div className="message-body" data-cy="CommentBody">
               One more comment
             </div>
           </article>
 
           <article className="message is-small" data-cy="Comment">
             <div className="message-header">
-              <a
-                href="mailto:misha@mate.academy"
-                data-cy="CommentAuthor"
-              >
+              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
                 Misha Hrynko
               </a>
 
