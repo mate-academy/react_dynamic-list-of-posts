@@ -22,10 +22,12 @@ export const PostDetails: React.FC<Props> = ({
   useEffect(() => {
     setPostErrorMessage('');
 
-    getPostCommets(choosedPost?.id || 0)
-      .then(setComments)
-      .catch(() => setPostErrorMessage(ERROR_MESSAGE))
-      .finally(() => setIsLoading(false));
+    if (choosedPost) {
+      getPostCommets(choosedPost?.id)
+        .then(setComments)
+        .catch(() => setPostErrorMessage(ERROR_MESSAGE))
+        .finally(() => setIsLoading(false));
+    }
   }, [choosedPost?.id]);
 
   function handlerDelete(currentCommentId: number) {
@@ -39,6 +41,15 @@ export const PostDetails: React.FC<Props> = ({
       .catch(() => setComments(comments))
       .finally();
   }
+
+  const conditionForComments = !comments.length
+    && !isLoading
+    && !postErrorMessage;
+
+  const conditionForCreationComment = !isLoading
+    && comments.length >= 0
+    && !isCreate
+    && !postErrorMessage;
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -62,21 +73,22 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {!comments.length
-            && !isLoading
-            && !postErrorMessage
-            && (
-              <p className="title is-4" data-cy="NoCommentsMessage">
-                No comments yet
-              </p>
-            )}
+          {conditionForComments && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
 
           {comments.length > 0 && (
             <>
               <p className="title is-4">Comments:</p>
 
               {comments.map(comment => (
-                <article className="message is-small" data-cy="Comment">
+                <article
+                  key={comment.id}
+                  className="message is-small"
+                  data-cy="Comment"
+                >
                   <div className="message-header">
                     <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                       {comment.name}
@@ -100,20 +112,16 @@ export const PostDetails: React.FC<Props> = ({
             </>
           )}
 
-          {!isLoading
-            && comments.length >= 0
-            && !isCreate
-            && !postErrorMessage
-            && (
-              <button
-                onClick={() => setIsCreate(true)}
-                data-cy="WriteCommentButton"
-                type="button"
-                className="button is-link"
-              >
-                Write a comment
-              </button>
-            )}
+          {conditionForCreationComment && (
+            <button
+              onClick={() => setIsCreate(true)}
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+            >
+              Write a comment
+            </button>
+          )}
 
         </div>
 
