@@ -38,7 +38,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
 
     deleteComment(commentId)
       .then((res) => {
-        if ('error' in (res as object)) {
+        if (typeof res === 'object' && 'error' in (res as object)) {
           throw new Error();
         }
       })
