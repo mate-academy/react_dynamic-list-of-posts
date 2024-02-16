@@ -20,6 +20,8 @@ export const App: FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post>();
 
   useEffect(() => {
+    setSelectedPost(undefined);
+
     if (selectedUser) {
       setIsLoading(true);
       setPostLoadingFail(false);
@@ -58,7 +60,10 @@ export const App: FC = () => {
                 )}
 
                 {
-                  posts.length === 0 && !isLoading && selectedUser && (
+                  posts.length === 0
+                    && !isLoading
+                    && selectedUser
+                    && !postLoadingFail && (
                     <div
                       className="notification is-warning"
                       data-cy="NoPostsYet"
@@ -68,7 +73,7 @@ export const App: FC = () => {
                   )
                 }
 
-                {posts.length > 0 && (
+                {posts.length > 0 && !isLoading && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}
@@ -91,8 +96,8 @@ export const App: FC = () => {
               },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails selectedPost={selectedPost} />
+            <div className="tile is-child box is-success">
+              {selectedPost && <PostDetails selectedPost={selectedPost} />}
             </div>
           </div>
         </div>

@@ -33,8 +33,9 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   };
 
   const deleteCommentHandler = (commentId:number) => {
+    setComments(comments.filter(el => el.id !== commentId));
     deleteComment(commentId)
-      .then(() => setComments(comments.filter(el => el.id !== commentId)))
+      .then(() => {})
       .catch(() => {})
       .finally();
   };
@@ -61,7 +62,10 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             </div>
           )}
 
-          {comments.length === 0 && !commentsLoadingError && (
+          {comments.length === 0
+          && !commentsLoadingError
+          && !commentsIsLoading
+          && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -106,16 +110,19 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             </>
           )}
 
-          {!addCommentFormVisible && (
-            <button
-              data-cy="WriteCommentButton"
-              type="button"
-              className="button is-link"
-              onClick={() => setAddCommentFormVisible(!addCommentFormVisible)}
-            >
-              Write a comment
-            </button>
-          )}
+          {!addCommentFormVisible
+            && !commentsIsLoading
+            && !commentsLoadingError
+            && (
+              <button
+                data-cy="WriteCommentButton"
+                type="button"
+                className="button is-link"
+                onClick={() => setAddCommentFormVisible(!addCommentFormVisible)}
+              >
+                Write a comment
+              </button>
+            )}
         </div>
 
         {addCommentFormVisible && selectedPost && (
