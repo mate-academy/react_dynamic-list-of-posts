@@ -21,9 +21,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">
-                  No user selected
-                </p>
+                <p data-cy="NoSelectedUser">No user selected</p>
 
                 <Loader />
 

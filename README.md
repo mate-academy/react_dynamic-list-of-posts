@@ -3,6 +3,7 @@
 Implement the App with ability to show posts of a selected user. Each post can
 be opened in the sidebar with its comments. There should delete a comment and a
 form to add new comments.
+Install Prettier Extention and use this [VSCode settings](https://mate-academy.github.io/fe-program/tools/vscode/settings.json) to enable format on save.
 
 > Here is [the working version](https://mate-academy.github.io/react_dynamic-list-of-posts/)
 
