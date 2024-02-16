@@ -29,21 +29,21 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const formSubmitHandler = (e:React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (author.name === '') {
+    if (author.name.trim() === '') {
       setError(prev => ({
         ...prev,
         name: 'Name is required',
       }));
     }
 
-    if (author.email === '') {
+    if (author.email.trim() === '') {
       setError(prev => ({
         ...prev,
         email: 'Email is required',
       }));
     }
 
-    if (author.comment === '') {
+    if (author.comment.trim() === '') {
       setError(prev => ({
         ...prev,
         comment: 'Enter some text',
@@ -53,9 +53,9 @@ export const NewCommentForm: React.FC<Props> = ({
     if (author.name !== '' && author.email !== '' && author.comment !== '') {
       const newComment = {
         postId: selectedPostId,
-        name: author.name,
-        email: author.email,
-        body: author.comment,
+        name: author.name.trim(),
+        email: author.email.trim(),
+        body: author.comment.trim(),
       };
 
       setIsSendingComment(true);
