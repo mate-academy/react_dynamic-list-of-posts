@@ -25,7 +25,7 @@ export const NewCommentForm: React.FC<Props> = ({ setComments, postId }) => {
   const handleChange = (value: string, key: string) => {
     setFormFieldsVal(prevState => ({
       ...prevState,
-      [key]: value.trim(),
+      [key]: value,
     }));
   };
 
@@ -39,11 +39,15 @@ export const NewCommentForm: React.FC<Props> = ({ setComments, postId }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    setNameHasError(!name);
-    setBodyHasError(!body);
-    setEmailHasError(!email);
+    const trimmedName = !name.trim();
+    const trimmedBody = !body.trim();
+    const trimmedEmail = !email.trim();
 
-    if (!name || !body || !email) {
+    setNameHasError(trimmedName);
+    setBodyHasError(trimmedBody);
+    setEmailHasError(trimmedEmail);
+
+    if (trimmedName || trimmedBody || trimmedEmail) {
       return;
     }
 
