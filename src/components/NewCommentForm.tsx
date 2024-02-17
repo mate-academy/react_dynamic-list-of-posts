@@ -50,7 +50,7 @@ export const NewCommentForm: React.FC<Props> = ({
       }));
     }
 
-    if (author.name !== '' && author.email !== '' && author.comment !== '') {
+    if (author.name && author.email && author.comment !== '') {
       const newComment = {
         postId: selectedPostId,
         name: author.name.trim(),
@@ -147,7 +147,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-user" />
           </span>
 
-          {error.name !== '' && (
+          {error.name && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -157,7 +157,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {error.name !== '' && (
+        {error.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
             {error.name}
           </p>
@@ -186,7 +186,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-envelope" />
           </span>
 
-          {error.email !== '' && (
+          {error.email && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -196,7 +196,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {error.email !== '' && (
+        {error.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
             {error.email}
           </p>
@@ -221,7 +221,7 @@ export const NewCommentForm: React.FC<Props> = ({
           />
         </div>
 
-        {error.comment !== '' && (
+        {error.comment && (
           <p className="help is-danger" data-cy="ErrorMessage">
             {error.comment}
           </p>
