@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import cn from 'classnames';
 import { User } from '../types/User';
 import { UserInfo } from './UserInfo';
 
@@ -17,7 +18,7 @@ export const UserSelector: React.FC<Props> = ({
   return (
     <div
       data-cy="UserSelector"
-      className="dropdown is-active"
+      className={cn('dropdown', { 'is-active': isActive })}
     >
       <div className="dropdown-trigger">
         <button
@@ -36,20 +37,19 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      {isActive && (
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          <div className="dropdown-content">
-            {users.map(user => (
-              <UserInfo
-                key={user.id}
-                setSelectedUser={setSelectedUser}
-                selectedUser={selectedUser}
-                user={user}
-              />
-            ))}
-          </div>
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        <div className="dropdown-content">
+          {users.map(user => (
+            <UserInfo
+              key={user.id}
+              setSelectedUser={setSelectedUser}
+              selectedUser={selectedUser}
+              user={user}
+            />
+          ))}
         </div>
-      )}
+      </div>
+
     </div>
   );
 };

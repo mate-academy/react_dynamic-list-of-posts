@@ -54,7 +54,10 @@ export const NewCommentForm: React.FC<Props> = ({ setComments, postId }) => {
     setIsLoading(true);
 
     request.addComment({
-      name, body, email, postId,
+      name: name.trim(),
+      body: body.trim(),
+      email: email.trim(),
+      postId,
     })
       .then((comment: Comment) => {
         setComments(prev => [...prev, comment]);
