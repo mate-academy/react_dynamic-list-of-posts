@@ -16,10 +16,12 @@ export const UserSelector: React.FC<Props> = ({
   const buttonText = selectedUser ? selectedUser.name : 'Choose a user';
 
   return (
+
     <div
       data-cy="UserSelector"
       className={cn('dropdown', { 'is-active': isActive })}
     >
+
       <div className="dropdown-trigger">
         <button
           type="button"

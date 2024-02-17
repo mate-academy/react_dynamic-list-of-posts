@@ -58,11 +58,13 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
+
                 {!selectedUser && (
                   <p data-cy="NoSelectedUser">
                     No user selected
                   </p>
                 )}
+
 
                 {isLoading && <Loader />}
 
