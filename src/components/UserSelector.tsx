@@ -1,6 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { User } from '../types/User';
+import { UserInfo } from './UserInfo';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>;
+  users: User[];
+  selectedUser: User | null;
+};
+
+export const UserSelector: React.FC<Props> = ({
+  selectedUser, users, setSelectedUser,
+}) => {
+  const [isActive, setIsActive] = useState(false);
+  const buttonText = selectedUser ? selectedUser.name : 'Choose a user';
+
   return (
     <div
       data-cy="UserSelector"
@@ -12,8 +25,10 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onBlur={() => setIsActive(false)}
+          onClick={() => setIsActive(prev => !prev)}
         >
-          <span>Choose a user</span>
+          <span>{buttonText}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -21,15 +36,20 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">Leanne Graham</a>
-          <a href="#user-2" className="dropdown-item is-active">Ervin Howell</a>
-          <a href="#user-3" className="dropdown-item">Clementine Bauch</a>
-          <a href="#user-4" className="dropdown-item">Patricia Lebsack</a>
-          <a href="#user-5" className="dropdown-item">Chelsey Dietrich</a>
+      {isActive && (
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div className="dropdown-content">
+            {users.map(user => (
+              <UserInfo
+                key={user.id}
+                setSelectedUser={setSelectedUser}
+                selectedUser={selectedUser}
+                user={user}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
