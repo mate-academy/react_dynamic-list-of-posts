@@ -21,6 +21,8 @@ export const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
+  const error = selectedUser && posts.length === 0 && !loading && !errorMessage;
+
   useEffect(() => {
     getUsers()
       .then(setUsers)
@@ -45,19 +47,12 @@ export const App: React.FC = () => {
                 />
               </div>
 
-              <div
-                className="block"
-                data-cy="MainContent"
-              >
+              <div className="block" data-cy="MainContent">
                 {!selectedUser && (
-                  <p data-cy="NoSelectedUser">
-                    No user selected
-                  </p>
+                  <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {loading && (
-                  <Loader />
-                )}
+                {loading && <Loader />}
 
                 {errorMessage && (
                   <div
@@ -68,14 +63,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(selectedUser && posts.length === 0
-                  && !loading && !errorMessage) && (
+                {error && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     {Notifications.noPosts}
                   </div>
                 )}
 
-                {(posts.length > 0 && !loading) && (
+                {posts.length > 0 && !loading && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}
@@ -88,18 +82,12 @@ export const App: React.FC = () => {
 
           <div
             data-cy="Sidebar"
-            className={classNames(
-              'tile is-parent is-8-desktop Sidebar', {
-                'Sidebar--open': selectedPost,
-              },
-            )}
+            className={classNames('tile is-parent is-8-desktop Sidebar', {
+              'Sidebar--open': selectedPost,
+            })}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails
-                  selectedPost={selectedPost}
-                />
-              )}
+              {selectedPost && <PostDetails selectedPost={selectedPost} />}
             </div>
           </div>
         </div>

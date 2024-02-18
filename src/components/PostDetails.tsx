@@ -31,41 +31,29 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">
-            {`#${id}: ${title}`}
-          </h2>
+          <h2 data-cy="PostTitle">{`#${id}: ${title}`}</h2>
 
-          <p data-cy="PostBody">
-            {body}
-          </p>
+          <p data-cy="PostBody">{body}</p>
         </div>
 
         <div className="block">
           {loadingComments && <Loader />}
 
           {errorMessage && !loadingComments && (
-            <div
-              className="notification is-danger"
-              data-cy="CommentsError"
-            >
+            <div className="notification is-danger" data-cy="CommentsError">
               {Notifications.loadingError}
             </div>
           )}
 
           {!comments.length && !loadingComments && !errorMessage && (
-            <p
-              className="title is-4"
-              data-cy="NoCommentsMessage"
-            >
+            <p className="title is-4" data-cy="NoCommentsMessage">
               {Notifications.noComments}
             </p>
           )}
 
           {comments.length > 0 && !loadingComments && !errorMessage && (
             <>
-              <p className="title is-4">
-                Comments:
-              </p>
+              <p className="title is-4">Comments:</p>
               {comments.map(comment => (
                 <CommentItem
                   key={comment.id}
@@ -79,13 +67,10 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       </div>
 
       {openForm && (
-        <NewCommentForm
-          selectedPost={selectedPost}
-          setComments={setComments}
-        />
+        <NewCommentForm selectedPost={selectedPost} setComments={setComments} />
       )}
 
-      {!errorMessage && !openForm && (
+      {!errorMessage && !openForm && !loadingComments && (
         <button
           data-cy="WriteCommentButton"
           type="button"

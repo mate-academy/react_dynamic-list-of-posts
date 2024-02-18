@@ -62,10 +62,7 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   return (
-    <form
-      data-cy="NewCommentForm"
-      onSubmit={handleFormSubmit}
-    >
+    <form data-cy="NewCommentForm" onSubmit={handleFormSubmit}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -85,7 +82,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': hasEmptyName,
             })}
             value={name}
-            onChange={(event) => {
+            onChange={event => {
               setName(event.target.value);
               setHasEmptyName(false);
             }}
@@ -131,7 +128,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': hasEmptyEmail,
             })}
             value={email}
-            onChange={(event) => {
+            onChange={event => {
               setEmail(event.target.value);
               setHasEmptyEmail(false);
             }}
@@ -172,7 +169,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': hasEmptyText,
             })}
             value={commentText}
-            onChange={(event) => {
+            onChange={event => {
               setCommentText(event.target.value);
               setHasEmptyText(false);
             }}
