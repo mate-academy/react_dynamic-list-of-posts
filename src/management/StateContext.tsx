@@ -105,6 +105,9 @@ export const GlobalStateProvider: React.FC<Props> = ({ children }) => {
       dispatch({ type: 'deleteComment', payload: commentForDelete.id });
 
       ServiceComments.deleteComment(commentForDelete.id)
+        .then(() => {
+          dispatch({ type: 'commentForDelete', payload: null });
+        })
         .catch(() => {
           dispatch({ type: 'getComments', payload: comments });
         });

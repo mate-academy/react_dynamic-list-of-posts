@@ -39,15 +39,15 @@ export const NewCommentForm: React.FC = () => {
   const handleSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setHasNameError(!name);
-    setHasEmailError(!email);
-    setHasBodyError(!body);
+    setHasNameError(!name.trim());
+    setHasEmailError(!email.trim());
+    setHasBodyError(!body.trim());
 
-    if (!name || !email || !body) {
+    if (!name.trim() || !email.trim() || !body.trim()) {
       return;
     }
 
-    let postId;
+    let postId = 0;
 
     if (currentPost) {
       postId = currentPost.id;
