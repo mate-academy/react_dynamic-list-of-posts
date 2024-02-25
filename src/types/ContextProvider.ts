@@ -1,0 +1,35 @@
+import { MouseEventHandler } from 'react';
+import { Post } from './Post';
+import { User } from './User';
+import { Comment } from './Comment';
+
+export type ContextProvider = {
+  users: User[];
+  setUsers: React.Dispatch<React.SetStateAction<User[]>>;
+  posts: Post[];
+  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
+  comments: Comment[];
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
+  isActiveDrop: boolean;
+  setIsActiveDrop: React.Dispatch<React.SetStateAction<boolean>>;
+  isError: boolean;
+  selectedUser: null | User;
+  setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>;
+  selectedPost: null | Post;
+  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
+  isLoader: boolean;
+  isPostLoader: boolean;
+  isShowForm: boolean;
+  setIsShowForm: React.Dispatch<React.SetStateAction<boolean>>;
+  handleAddNewComment: MouseEventHandler<HTMLButtonElement>;
+  setNewName: React.Dispatch<React.SetStateAction<string>>;
+  setNewEmail: React.Dispatch<React.SetStateAction<string>>;
+  newBody: string;
+  setNewBody: React.Dispatch<React.SetStateAction<string>>;
+  isNewNameError: boolean;
+  isNewEmailError: boolean;
+  isNewBodyError: boolean;
+  isNewButtonLoading: boolean;
+  handleDeleteComment: (id: number) => void;
+  handleClearBtn: () => void;
+};
