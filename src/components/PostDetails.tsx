@@ -31,25 +31,8 @@ export const PostDetails: React.FC<Props> = ({ currentPost }) => {
       .finally(() => setIsCommentsLoader(false));
   }, [currentPost]);
 
-  const removeCommentFromServer = (
-    commentId: number,
-    index: number,
-    forDelete: Comment,
-  ) => {
-    delateComment(commentId).catch(() =>
-      setComments(prevComments => {
-        const workComments = [...prevComments];
-
-        workComments.splice(index, 0, forDelete);
-
-        return workComments;
-      }),
-    );
-  };
-
   const handleDelete = (commentId: number) => {
     const index = comments.findIndex(c => c.id === commentId);
-    const forDelete = { ...comments[index] };
 
     setComments(prevComments => {
       const workComments = [...prevComments];
@@ -63,7 +46,7 @@ export const PostDetails: React.FC<Props> = ({ currentPost }) => {
       return;
     }
 
-    removeCommentFromServer(commentId, index, forDelete);
+    delateComment(commentId).catch(() => setHasError(true));
   };
 
   const addCommentOnServer = (newComment: Comment) => {
@@ -87,19 +70,7 @@ export const PostDetails: React.FC<Props> = ({ currentPost }) => {
           return workComments;
         });
       })
-      .catch(() => {
-        setComments(prevComments => {
-          const index = prevComments.findIndex(c => c.id === newComment.id);
-
-          const workComments = [...prevComments];
-
-          workComments.splice(index, 1);
-
-          return workComments;
-        });
-
-        throw new Error();
-      });
+      .catch(() => setHasError(true));
   };
 
   return (

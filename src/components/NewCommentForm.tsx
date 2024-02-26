@@ -62,7 +62,6 @@ export const NewCommentForm: React.FC<Props> = ({
       .then(() => {
         setText('');
       })
-      .catch(() => {})
       .finally(() => {
         setIsLoading(false);
       });
