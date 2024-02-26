@@ -40,7 +40,7 @@ export const PostDetails: React.FC<Props> = ({ currentPost }) => {
       setComments(prevComments => {
         const workComments = [...prevComments];
 
-        workComments.splice(index, 1, forDelete);
+        workComments.splice(index, 0, forDelete);
 
         return workComments;
       }),
@@ -89,7 +89,7 @@ export const PostDetails: React.FC<Props> = ({ currentPost }) => {
       })
       .catch(() => {
         setComments(prevComments => {
-          const index = prevComments.findIndex(c => c.id === 0);
+          const index = prevComments.findIndex(c => c.id === newComment.id);
 
           const workComments = [...prevComments];
 

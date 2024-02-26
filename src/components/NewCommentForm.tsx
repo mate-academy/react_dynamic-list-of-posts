@@ -19,9 +19,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const [email, setEmail] = useState('');
   const [text, setText] = useState('');
 
-  const addComment = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const validation = () => {
     let isPassValid = true;
 
     if (!name.trim()) {
@@ -40,6 +38,16 @@ export const NewCommentForm: React.FC<Props> = ({
     }
 
     if (!isPassValid) {
+      return false;
+    }
+
+    return true;
+  };
+
+  const addComment = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!validation()) {
       return;
     }
 
