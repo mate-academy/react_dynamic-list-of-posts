@@ -30,7 +30,7 @@ export const UserSelector: React.FC<Props> = ({
       })
       .catch(() => setHasError(true))
       .finally(() => setIsLoading(false));
-  }, []);
+  }, []); // eslint-disable-line
 
   const selectUser = (user: User) => {
     setCurrentUser(user);

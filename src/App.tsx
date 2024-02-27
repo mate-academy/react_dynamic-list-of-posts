@@ -71,7 +71,7 @@ export const App: React.FC = () => {
                 {!hasError &&
                   posts?.length === 0 &&
                   currentUser &&
-                  isPostsLoader && (
+                  !isPostsLoader && (
                     <div
                       className="notification is-warning"
                       data-cy="NoPostsYet"

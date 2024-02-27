@@ -10,7 +10,7 @@ export const CommentItem: React.FC<Props> = ({ comment, handleDelete }) => {
   const { name, email, body, id } = comment;
 
   return (
-    <article className="message is-small" data-cy="Comment" key={id}>
+    <article className="message is-small" data-cy="Comment">
       <div className="message-header">
         <a href={`mailto:${email}`} data-cy="CommentAuthor">
           {name}

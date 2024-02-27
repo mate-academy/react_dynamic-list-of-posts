@@ -14,7 +14,7 @@ export const PostItem: React.FC<Props> = ({
   selectPost,
 }) => {
   return (
-    <tr data-cy="Post" key={post.id}>
+    <tr data-cy="Post">
       <td data-cy="PostId">{post.id}</td>
 
       <td data-cy="PostTitle">{post.title}</td>
