@@ -43,6 +43,7 @@ export const PostsList: React.FC<Props> = ({
               post={post}
               currentPost={currentPost}
               selectPost={selectPost}
+              key={post.id}
             />
           ))}
         </tbody>

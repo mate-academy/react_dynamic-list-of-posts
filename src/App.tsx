@@ -67,11 +67,19 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!hasError && posts?.length === 0 && currentUser && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
+                {/* eslint-disable */}
+                {!hasError &&
+                  posts?.length === 0 &&
+                  currentUser &&
+                  isPostsLoader && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  )}
+                {/* eslint-enable */}
 
                 {!hasError && posts?.length > 0 && (
                   <PostsList
