@@ -6,7 +6,7 @@ import { Loader } from './Loader';
 
 type Props = {
   currentUser: User | null;
-  setCurrentUser: (u: User | null) => void;
+  setCurrentUser: (u: User) => void;
   hasError: boolean;
   setHasError: (h: boolean) => void;
 };
@@ -20,6 +20,8 @@ export const UserSelector: React.FC<Props> = ({
   const [users, setUsers] = useState<User[]>();
   const [isFocusDropdown, setIsFocusDropdown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { id: currentUserId, name: currentUserName } = currentUser || {};
 
   useEffect(() => {
     setIsLoading(true);
@@ -63,7 +65,7 @@ export const UserSelector: React.FC<Props> = ({
           onClick={handleClick}
           onBlur={handleBlur}
         >
-          <span>{currentUser ? currentUser.name : 'Choose a user'}</span>
+          <span>{currentUser ? currentUserName : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -82,7 +84,7 @@ export const UserSelector: React.FC<Props> = ({
               <a
                 href={`#user-${user.id}`}
                 className={cl('dropdown-item', {
-                  'is-active': user.id === currentUser?.id,
+                  'is-active': user.id === currentUserId,
                 })}
                 onClick={() => selectUser(user)}
                 key={user.id}

@@ -15,6 +15,7 @@ export const CommentItem: React.FC<Props> = ({ comment, handleDelete }) => {
         <a href={`mailto:${email}`} data-cy="CommentAuthor">
           {name}
         </a>
+
         <button
           data-cy="CommentDelete"
           type="button"

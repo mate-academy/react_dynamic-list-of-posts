@@ -9,6 +9,14 @@ type Props = {
   addCommentOnServer: (newComment: Comment) => Promise<void>;
 };
 
+type FocusEventType =
+  | React.FocusEvent<HTMLInputElement, Element>
+  | React.FocusEvent<HTMLTextAreaElement, Element>;
+
+type ChangeEventType =
+  | React.ChangeEvent<HTMLTextAreaElement>
+  | React.ChangeEvent<HTMLInputElement>;
+
 export const NewCommentForm: React.FC<Props> = ({
   postId,
   addCommentOnServer,
@@ -25,20 +33,23 @@ export const NewCommentForm: React.FC<Props> = ({
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  const { name, email, text } = valuesFrom;
+  const { name: nameErr, email: emailErr, text: textErr } = validationErrors;
+
   const validation = () => {
     let isPassValid = true;
 
-    if (!valuesFrom.name.trim()) {
+    if (!name.trim()) {
       setValidationErrors(prevErrors => ({ ...prevErrors, name: true }));
       isPassValid = false;
     }
 
-    if (!valuesFrom.text.trim()) {
+    if (!text.trim()) {
       setValidationErrors(prevErrors => ({ ...prevErrors, text: true }));
       isPassValid = false;
     }
 
-    if (!valuesFrom.email.trim()) {
+    if (!email.trim()) {
       setValidationErrors(prevErrors => ({ ...prevErrors, email: true }));
       isPassValid = false;
     }
@@ -58,12 +69,13 @@ export const NewCommentForm: React.FC<Props> = ({
     }
 
     setIsLoading(true);
+
     addCommentOnServer({
       id: 0,
-      name: valuesFrom.name,
+      name,
       postId,
-      body: valuesFrom.text,
-      email: valuesFrom.email,
+      body: text,
+      email,
     })
       .then(() => {
         setValuesForm(prev => ({ ...prev, text: '' }));
@@ -78,11 +90,7 @@ export const NewCommentForm: React.FC<Props> = ({
     setValuesForm({ name: '', email: '', text: '' });
   };
 
-  const handleFocus = (
-    e:
-      | React.FocusEvent<HTMLInputElement, Element> // eslint-disable-line
-      | React.FocusEvent<HTMLTextAreaElement, Element>, // eslint-disable-line
-  ) => {
+  const handleFocus = (e: FocusEventType) => {
     switch (e.target.name) {
       case 'name':
         setValidationErrors(prevErrors => ({
@@ -107,11 +115,7 @@ export const NewCommentForm: React.FC<Props> = ({
     }
   };
 
-  const handleChange = (
-    e:
-      | React.ChangeEvent<HTMLTextAreaElement> // eslint-disable-line
-      | React.ChangeEvent<HTMLInputElement>, // eslint-disable-line
-  ) => {
+  const handleChange = (e: ChangeEventType) => {
     switch (e.target.name) {
       case 'name':
         setValuesForm(prev => ({ ...prev, name: e.target.value }));
@@ -140,21 +144,21 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', {
-              'is-danger': validationErrors.name,
+              'is-danger': nameErr,
             })}
             onFocus={handleFocus}
             onChange={handleChange}
-            value={valuesFrom.name}
+            value={name}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {validationErrors.name && <ErrorIcon />}
+          {nameErr && <ErrorIcon />}
         </div>
 
-        {validationErrors.name && <ErrorMessage title="Name is required" />}
+        {nameErr && <ErrorMessage title="Name is required" />}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -169,21 +173,21 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', {
-              'is-danger': validationErrors.email,
+              'is-danger': emailErr,
             })}
             onFocus={handleFocus}
             onChange={handleChange}
-            value={valuesFrom.email}
+            value={email}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {validationErrors.email && <ErrorIcon />}
+          {emailErr && <ErrorIcon />}
         </div>
 
-        {validationErrors.email && <ErrorMessage title="Email is required" />}
+        {emailErr && <ErrorMessage title="Email is required" />}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -197,15 +201,15 @@ export const NewCommentForm: React.FC<Props> = ({
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', {
-              'is-danger': validationErrors.text,
+              'is-danger': textErr,
             })}
             onFocus={handleFocus}
             onChange={handleChange}
-            value={valuesFrom.text}
+            value={text}
           />
         </div>
 
-        {validationErrors.text && <ErrorMessage title="Enter some text" />}
+        {textErr && <ErrorMessage title="Enter some text" />}
       </div>
 
       <div className="field is-grouped">

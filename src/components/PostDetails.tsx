@@ -16,6 +16,12 @@ export const PostDetails: React.FC<Props> = ({ currentPost }) => {
   const [hasNewCommentForm, setHasNewCommentForm] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
 
+  const {
+    id: currentPostId,
+    title: currentPostTitle,
+    body: currentPostBody,
+  } = currentPost;
+
   useEffect(() => {
     if (!currentPost) {
       return;
@@ -24,13 +30,13 @@ export const PostDetails: React.FC<Props> = ({ currentPost }) => {
     setIsCommentsLoading(true);
     setHasNewCommentForm(false);
 
-    getComments(currentPost.id)
+    getComments(currentPostId)
       .then(commentsFromServer => {
         setComments(commentsFromServer);
       })
       .catch(() => setHasError(true))
       .finally(() => setIsCommentsLoading(false));
-  }, [currentPost]);
+  }, [currentPost, currentPostId]);
 
   const handleDelete = (commentId: number) => {
     setComments(prevComments => {
@@ -58,11 +64,9 @@ export const PostDetails: React.FC<Props> = ({ currentPost }) => {
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">
-            {`#${currentPost?.id}: ${currentPost?.title}`}
-          </h2>
+          <h2 data-cy="PostTitle">{`#${currentPostId}: ${currentPostTitle}`}</h2>
 
-          <p data-cy="PostBody">{currentPost?.body}</p>
+          <p data-cy="PostBody">{currentPostBody}</p>
         </div>
 
         <div className="block">
@@ -98,7 +102,7 @@ export const PostDetails: React.FC<Props> = ({ currentPost }) => {
 
         {hasNewCommentForm && (
           <NewCommentForm
-            postId={currentPost?.id}
+            postId={currentPostId}
             addCommentOnServer={addCommentOnServer}
           />
         )}

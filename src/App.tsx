@@ -14,10 +14,13 @@ import { getPosts } from './api/posts';
 
 export const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [isPostsLoader, setIsPostLoader] = useState(false);
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [currentPost, setCurrentPost] = useState<Post | null>(null);
+
+  const isNoPostsYet =
+    !hasError && posts?.length === 0 && currentUser && !isPostsLoading;
 
   useEffect(() => {
     if (!currentUser) {
@@ -26,14 +29,14 @@ export const App: React.FC = () => {
 
     setCurrentPost(null);
     setPosts([]);
-    setIsPostLoader(true);
+    setIsPostsLoading(true);
 
     getPosts(currentUser.id)
       .then(postsFromServer => {
         setPosts(postsFromServer);
       })
       .catch(() => setHasError(true))
-      .finally(() => setIsPostLoader(false));
+      .finally(() => setIsPostsLoading(false));
   }, [currentUser]);
 
   return (
@@ -56,7 +59,7 @@ export const App: React.FC = () => {
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {isPostsLoader && <Loader />}
+                {isPostsLoading && <Loader />}
 
                 {hasError && (
                   <div
@@ -67,19 +70,11 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {/* eslint-disable */}
-                {!hasError &&
-                  posts?.length === 0 &&
-                  currentUser &&
-                  !isPostsLoader && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )}
-                {/* eslint-enable */}
+                {isNoPostsYet && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
                 {!hasError && posts?.length > 0 && (
                   <PostsList
