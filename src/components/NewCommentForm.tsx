@@ -1,6 +1,8 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { Comment } from '../types/Comment';
+import { ErrorMessage } from './ErrorMessage';
+import { ErrorIcon } from './ErrorIcon';
 
 type Props = {
   postId: number;
@@ -11,29 +13,33 @@ export const NewCommentForm: React.FC<Props> = ({
   postId,
   addCommentOnServer,
 }) => {
-  const [nameErr, setNameErr] = useState(false);
-  const [emailErr, setEmailErr] = useState(false);
-  const [textErr, setTextErr] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({
+    name: false,
+    email: false,
+    text: false,
+  });
+  const [valuesFrom, setValuesForm] = useState({
+    name: '',
+    email: '',
+    text: '',
+  });
   const [isLoading, setIsLoading] = useState(false);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [text, setText] = useState('');
 
   const validation = () => {
     let isPassValid = true;
 
-    if (!name.trim()) {
-      setNameErr(true);
+    if (!valuesFrom.name.trim()) {
+      setValidationErrors(prevErrors => ({ ...prevErrors, name: true }));
       isPassValid = false;
     }
 
-    if (!text.trim()) {
-      setTextErr(true);
+    if (!valuesFrom.text.trim()) {
+      setValidationErrors(prevErrors => ({ ...prevErrors, text: true }));
       isPassValid = false;
     }
 
-    if (!email.trim()) {
-      setEmailErr(true);
+    if (!valuesFrom.email.trim()) {
+      setValidationErrors(prevErrors => ({ ...prevErrors, email: true }));
       isPassValid = false;
     }
 
@@ -54,13 +60,13 @@ export const NewCommentForm: React.FC<Props> = ({
     setIsLoading(true);
     addCommentOnServer({
       id: 0,
-      name,
+      name: valuesFrom.name,
       postId,
-      body: text,
-      email,
+      body: valuesFrom.text,
+      email: valuesFrom.email,
     })
       .then(() => {
-        setText('');
+        setValuesForm(prev => ({ ...prev, text: '' }));
       })
       .finally(() => {
         setIsLoading(false);
@@ -68,12 +74,56 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const clear = () => {
-    setEmailErr(false);
-    setNameErr(false);
-    setTextErr(false);
-    setName('');
-    setEmail('');
-    setText('');
+    setValidationErrors({ name: false, email: false, text: false });
+    setValuesForm({ name: '', email: '', text: '' });
+  };
+
+  const handleFocus = (
+    e:
+      | React.FocusEvent<HTMLInputElement, Element> // eslint-disable-line
+      | React.FocusEvent<HTMLTextAreaElement, Element>, // eslint-disable-line
+  ) => {
+    switch (e.target.name) {
+      case 'name':
+        setValidationErrors(prevErrors => ({
+          ...prevErrors,
+          name: false,
+        }));
+        break;
+      case 'email':
+        setValidationErrors(prevErrors => ({
+          ...prevErrors,
+          email: false,
+        }));
+
+        break;
+
+      default:
+        setValidationErrors(prevErrors => ({
+          ...prevErrors,
+          text: false,
+        }));
+        break;
+    }
+  };
+
+  const handleChange = (
+    e:
+      | React.ChangeEvent<HTMLTextAreaElement> // eslint-disable-line
+      | React.ChangeEvent<HTMLInputElement>, // eslint-disable-line
+  ) => {
+    switch (e.target.name) {
+      case 'name':
+        setValuesForm(prev => ({ ...prev, name: e.target.value }));
+        break;
+      case 'email':
+        setValuesForm(prev => ({ ...prev, email: e.target.value }));
+        break;
+
+      default:
+        setValuesForm(prev => ({ ...prev, text: e.target.value }));
+        break;
+    }
   };
 
   return (
@@ -89,31 +139,22 @@ export const NewCommentForm: React.FC<Props> = ({
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': nameErr })}
-            onFocus={() => setNameErr(false)}
-            onChange={e => setName(e.target.value)}
-            value={name}
+            className={classNames('input', {
+              'is-danger': validationErrors.name,
+            })}
+            onFocus={handleFocus}
+            onChange={handleChange}
+            value={valuesFrom.name}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {nameErr && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
-              <i className="fas fa-exclamation-triangle" />
-            </span>
-          )}
+          {validationErrors.name && <ErrorIcon />}
         </div>
 
-        {nameErr && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Name is required
-          </p>
-        )}
+        {validationErrors.name && <ErrorMessage title="Name is required" />}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -127,31 +168,22 @@ export const NewCommentForm: React.FC<Props> = ({
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': emailErr })}
-            onFocus={() => setEmailErr(false)}
-            onChange={e => setEmail(e.target.value)}
-            value={email}
+            className={classNames('input', {
+              'is-danger': validationErrors.email,
+            })}
+            onFocus={handleFocus}
+            onChange={handleChange}
+            value={valuesFrom.email}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {emailErr && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
-              <i className="fas fa-exclamation-triangle" />
-            </span>
-          )}
+          {validationErrors.email && <ErrorIcon />}
         </div>
 
-        {emailErr && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
-          </p>
-        )}
+        {validationErrors.email && <ErrorMessage title="Email is required" />}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -164,18 +196,16 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': textErr })}
-            onFocus={() => setTextErr(false)}
-            onChange={e => setText(e.target.value)}
-            value={text}
+            className={classNames('textarea', {
+              'is-danger': validationErrors.text,
+            })}
+            onFocus={handleFocus}
+            onChange={handleChange}
+            value={valuesFrom.text}
           />
         </div>
 
-        {textErr && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Enter some text
-          </p>
-        )}
+        {validationErrors.text && <ErrorMessage title="Enter some text" />}
       </div>
 
       <div className="field is-grouped">

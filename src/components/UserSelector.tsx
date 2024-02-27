@@ -2,26 +2,34 @@ import React, { useEffect, useState } from 'react';
 import cl from 'classnames';
 import { getUsers } from '../api/users';
 import { User } from '../types/User';
+import { Loader } from './Loader';
 
 type Props = {
   currentUser: User | null;
   setCurrentUser: (u: User | null) => void;
+  hasError: boolean;
+  setHasError: (h: boolean) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
   currentUser,
   setCurrentUser,
+  hasError,
+  setHasError,
 }) => {
   const [users, setUsers] = useState<User[]>();
   const [isFocusDropdown, setIsFocusDropdown] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
+
     getUsers()
       .then(usersFromServer => {
         setUsers(usersFromServer);
       })
-      .catch()
-      .finally();
+      .catch(() => setHasError(true))
+      .finally(() => setIsLoading(false));
   }, []);
 
   const selectUser = (user: User) => {
@@ -37,6 +45,10 @@ export const UserSelector: React.FC<Props> = ({
     setIsFocusDropdown(false);
   };
 
+  const handleClick = () => {
+    setIsFocusDropdown(!isFocusDropdown);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -48,7 +60,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setIsFocusDropdown(!isFocusDropdown)}
+          onClick={handleClick}
           onBlur={handleBlur}
         >
           <span>{currentUser ? currentUser.name : 'Choose a user'}</span>
@@ -61,7 +73,11 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users &&
+          {isLoading && <Loader />}
+
+          {!hasError &&
+            !isLoading &&
+            users &&
             users?.map(user => (
               <a
                 href={`#user-${user.id}`}

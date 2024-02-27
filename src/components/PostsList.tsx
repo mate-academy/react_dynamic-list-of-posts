@@ -1,6 +1,6 @@
 import React from 'react';
-import cl from 'classnames';
 import { Post } from '../types/Post';
+import { PostItem } from './PostItem';
 
 type Props = {
   posts: Post[];
@@ -39,24 +39,11 @@ export const PostsList: React.FC<Props> = ({
 
         <tbody>
           {posts.map(post => (
-            <tr data-cy="Post" key={post.id}>
-              <td data-cy="PostId">{post.id}</td>
-
-              <td data-cy="PostTitle">{post.title}</td>
-
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={cl('button', 'is-link', {
-                    'is-light': currentPost?.id !== post.id,
-                  })}
-                  onClick={() => selectPost(post)}
-                >
-                  {currentPost?.id === post.id ? 'Close' : 'Open'}
-                </button>
-              </td>
-            </tr>
+            <PostItem
+              post={post}
+              currentPost={currentPost}
+              selectPost={selectPost}
+            />
           ))}
         </tbody>
       </table>

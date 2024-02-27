@@ -2,15 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
-import { delateComment, getComments, sendComment } from '../api/comment';
+import { deleteComment, getComments, sendComment } from '../api/comment';
 import { Comment } from '../types/Comment';
+import { CommentList } from './CommentList';
 
 type Props = {
   currentPost: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ currentPost }) => {
-  const [isCommentsLoader, setIsCommentsLoader] = useState(false);
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [hasNewCommentForm, setHasNewCommentForm] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -20,7 +21,7 @@ export const PostDetails: React.FC<Props> = ({ currentPost }) => {
       return;
     }
 
-    setIsCommentsLoader(true);
+    setIsCommentsLoading(true);
     setHasNewCommentForm(false);
 
     getComments(currentPost.id)
@@ -28,47 +29,27 @@ export const PostDetails: React.FC<Props> = ({ currentPost }) => {
         setComments(commentsFromServer);
       })
       .catch(() => setHasError(true))
-      .finally(() => setIsCommentsLoader(false));
+      .finally(() => setIsCommentsLoading(false));
   }, [currentPost]);
 
   const handleDelete = (commentId: number) => {
-    const index = comments.findIndex(c => c.id === commentId);
-
     setComments(prevComments => {
       const workComments = [...prevComments];
+
+      const index = workComments.findIndex(comment => comment.id === commentId);
 
       workComments.splice(index, 1);
 
       return workComments;
     });
 
-    if (commentId === 0) {
-      return;
-    }
-
-    delateComment(commentId).catch(() => setHasError(true));
+    deleteComment(commentId).catch(() => setHasError(true));
   };
 
   const addCommentOnServer = (newComment: Comment) => {
-    setComments(prevComments => [...prevComments, newComment]);
-
     return sendComment(newComment)
       .then(newFromServerComment => {
-        setComments(prevComments => {
-          const index = prevComments.findIndex(c => c.id === newComment.id);
-
-          if (index === -1) {
-            delateComment(newFromServerComment.id);
-
-            return prevComments;
-          }
-
-          const workComments = [...prevComments];
-
-          workComments.splice(index, 1, newFromServerComment);
-
-          return workComments;
-        });
+        setComments(prevComments => [...prevComments, newFromServerComment]);
       })
       .catch(() => setHasError(true));
   };
@@ -85,7 +66,7 @@ export const PostDetails: React.FC<Props> = ({ currentPost }) => {
         </div>
 
         <div className="block">
-          {isCommentsLoader && <Loader />}
+          {isCommentsLoading && <Loader />}
 
           {hasError && (
             <div className="notification is-danger" data-cy="CommentsError">
@@ -93,46 +74,17 @@ export const PostDetails: React.FC<Props> = ({ currentPost }) => {
             </div>
           )}
 
-          {!hasError && !isCommentsLoader && comments?.length === 0 && (
+          {!hasError && !isCommentsLoading && comments?.length === 0 && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
           {!hasError && comments?.length > 0 && (
-            <>
-              <p className="title is-4">Comments:</p>
-
-              {comments.map(comment => (
-                <article
-                  className="message is-small"
-                  data-cy="Comment"
-                  key={comment.id}
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                      {comment.name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => handleDelete(comment.id)}
-                    >
-                      delete button
-                    </button>
-                  </div>
-
-                  <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
-                  </div>
-                </article>
-              ))}
-            </>
+            <CommentList comments={comments} handleDelete={handleDelete} />
           )}
 
-          {!hasNewCommentForm && !isCommentsLoader && !hasError && (
+          {!hasNewCommentForm && !isCommentsLoading && !hasError && (
             <button
               data-cy="WriteCommentButton"
               type="button"

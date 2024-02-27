@@ -9,6 +9,6 @@ export const sendComment = (body: Omit<Comment, 'id'>) => {
   return client.post<Comment>('/comments', body);
 };
 
-export const delateComment = (id: number) => {
+export const deleteComment = (id: number) => {
   return client.delete(`/comments/${id}`);
 };

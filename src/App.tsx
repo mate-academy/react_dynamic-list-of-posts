@@ -27,6 +27,7 @@ export const App: React.FC = () => {
     setCurrentPost(null);
     setPosts([]);
     setIsPostLoader(true);
+
     getPosts(currentUser.id)
       .then(postsFromServer => {
         setPosts(postsFromServer);
@@ -45,6 +46,8 @@ export const App: React.FC = () => {
                 <UserSelector
                   currentUser={currentUser}
                   setCurrentUser={setCurrentUser}
+                  hasError={hasError}
+                  setHasError={setHasError}
                 />
               </div>
 
