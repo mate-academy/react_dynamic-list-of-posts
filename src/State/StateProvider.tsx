@@ -63,18 +63,14 @@ export const StateProvider: React.FC<Props> = ({ children }) => {
 
   useEffect(() => {
     setIsNewNameError(false);
-  }, [newName]);
-
-  useEffect(() => {
     setIsNewEmailError(false);
-  }, [newEmail]);
-
-  useEffect(() => {
     setIsNewBodyError(false);
-  }, [newBody]);
+  }, [newName, newEmail, newBody]);
 
   useEffect(() => {
-    getUsers().then(setUsers);
+    getUsers()
+      .then(setUsers)
+      .catch(() => setIsError(true));
   }, []);
 
   useEffect(() => {
@@ -121,6 +117,24 @@ export const StateProvider: React.FC<Props> = ({ children }) => {
         body: newBody.trim(),
       };
 
+      if (newComment.name === '') {
+        setIsNewNameError(true);
+
+        return;
+      }
+
+      if (newComment.email === '') {
+        setIsNewEmailError(true);
+
+        return;
+      }
+
+      if (newComment.body === '') {
+        setIsNewBodyError(true);
+
+        return;
+      }
+
       setIsNewButtonLoading(true);
 
       postComment(newComment)
@@ -133,8 +147,11 @@ export const StateProvider: React.FC<Props> = ({ children }) => {
   };
 
   const handleDeleteComment = (id: number) => {
-    deleteComment(id);
-    setComments(prev => prev.filter(comment => comment.id !== id));
+    deleteComment(id)
+      .then(() =>
+        setComments(prev => prev.filter(comment => comment.id !== id)),
+      )
+      .catch(() => setIsError(true));
   };
 
   const handleClearBtn = () => {
@@ -143,6 +160,9 @@ export const StateProvider: React.FC<Props> = ({ children }) => {
     setIsNewBodyError(false);
 
     setNewBody('');
+    setNewEmail('');
+    setNewName('');
+    setIsNewButtonLoading(false);
   };
 
   const value = {
