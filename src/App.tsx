@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -9,7 +9,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { Post } from './types/Post';
-import { getUserPosts } from './utils/getUserPosts';
+import { client } from './utils/fetchClient';
 
 export const App: React.FC = () => {
   const [isSelectedUser, setIsSelectedUser] = useState<number | null>(null);
@@ -18,14 +18,25 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [message, setMessage] = useState('');
 
-  const isError = message === 'Something went wrong!';
+  const {
+    error: isError,
+    result: resultLoading,
+    userPosts: openUserPosts,
+  } = useMemo(() => {
+    const error = message === 'Something went wrong!';
+    const result = !posts.length && isSelectedUser && !loading;
+    const userPosts = posts.length > 0 && !loading;
 
-  const handleSelectedUser = (userId: number) => {
+    return { error, result, userPosts };
+  }, [isSelectedUser, loading, message, posts.length]);
+
+  const handleSelectedUser = useCallback((userId: number) => {
     setIsSelectedUser(userId);
     setLoading(true);
     setMessage('');
 
-    getUserPosts(userId)
+    client
+      .get<Post[]>(`/posts?userId=${userId}`)
       .then(response => {
         setPosts(response);
 
@@ -35,7 +46,7 @@ export const App: React.FC = () => {
       })
       .catch(() => setMessage('Something went wrong!'))
       .finally(() => setLoading(false));
-  };
+  }, []);
 
   return (
     <main className="section">
@@ -54,7 +65,7 @@ export const App: React.FC = () => {
 
                 {loading && isSelectedUser && <Loader />}
 
-                {!posts.length && isSelectedUser && !loading && (
+                {resultLoading && (
                   <div
                     className={cn('notification', {
                       'is-danger': isError,
@@ -66,7 +77,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {posts.length > 0 && !loading && (
+                {openUserPosts && (
                   <PostsList
                     posts={posts}
                     isSelectedPost={isSelectedPost}
@@ -77,22 +88,16 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {isSelectedPost && (
-            <div
-              data-cy="Sidebar"
-              className={cn(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                'Sidebar--open',
-              )}
-            >
-              <div className="tile is-child box is-success ">
-                <PostDetails post={isSelectedPost} />
-              </div>
+          <div
+            data-cy="Sidebar"
+            className={cn('tile', 'is-parent', 'is-8-desktop', 'Sidebar', {
+              'Sidebar--open': isSelectedPost,
+            })}
+          >
+            <div className="tile is-child box is-success ">
+              {isSelectedPost && <PostDetails post={isSelectedPost} />}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </main>

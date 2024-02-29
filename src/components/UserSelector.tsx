@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import cn from 'classnames';
 import { Context } from './Store';
 import { User } from '../types/User';
@@ -13,11 +13,17 @@ export const UserSelector: React.FC<Props> = React.memo(({ select }) => {
   const [openDropdown, setOpenDropdown] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>();
 
-  const handleSelected = (user: User) => {
-    setSelectedUser(user);
-    setOpenDropdown(!openDropdown);
-    select(user.id);
-  };
+  const handleSelected = useCallback(
+    (user: User) => {
+      if (user !== selectedUser) {
+        setSelectedUser(user);
+        select(user.id);
+      }
+
+      setOpenDropdown(!openDropdown);
+    },
+    [openDropdown, select, selectedUser],
+  );
 
   return (
     <div data-cy="UserSelector" className="dropdown is-active">

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import cn from 'classnames';
 import { Loader } from './Loader';
-import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
-import { getComments } from '../utils/getComments';
-import { Comment } from '../types/Comment';
+import { Context } from './Store';
+import { NewCommentForm } from './NewCommentForm';
+import { client } from '../utils/fetchClient';
 
 interface Props {
   post: Post;
@@ -12,27 +13,55 @@ interface Props {
 export const PostDetails: React.FC<Props> = React.memo(({ post }) => {
   const { id, title, body } = post;
 
-  const [comments, setComments] = useState<Comment[] | null>(null);
-  const [message, setMessage] = useState('');
+  const {
+    loadingComments,
+    message,
+    comments,
+    setComments,
+    openForm,
+    setOpenForm,
+  } = useContext(Context);
 
-  const isError = message === 'Something went wrong!';
+  const [failedDelete, setFailedDelete] = useState('');
+
+  const {
+    error: isError,
+    openComments: hasComments,
+    write: writeAComment,
+  } = useMemo(() => {
+    const error = message === 'Something went wrong!' && !loadingComments;
+    const openComments = comments.length > 0 && !error && !loadingComments;
+    const write = !loadingComments && !error && !openForm;
+
+    return { error, openComments, write };
+  }, [comments.length, loadingComments, message, openForm]);
+
+  const deleteComment = (commentId: number) => {
+    setFailedDelete('');
+
+    client
+      .delete(`/comments/${commentId}`)
+      .then(() => {
+        setComments(current =>
+          current.filter(comment => comment.id !== commentId),
+        );
+      })
+      .catch(() => setFailedDelete('Unable to delete a comment'));
+  };
 
   useEffect(() => {
-    if (post) {
-      getComments(post.id)
-        .then(response => {
-          setComments(response);
+    let timerId: NodeJS.Timeout;
 
-          if (!response.length) {
-            setMessage('No comments yet');
-          } else {
-            setMessage('Comments:');
-          }
-        })
-        .catch(() => setMessage('Something went wrong'))
-        .finally(() => {});
+    if (failedDelete) {
+      timerId = setTimeout(() => {
+        setFailedDelete('');
+      }, 3000);
     }
-  }, [post]);
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [failedDelete]);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -44,23 +73,22 @@ export const PostDetails: React.FC<Props> = React.memo(({ post }) => {
         </div>
 
         <div className="block">
-          <Loader />
+          {loadingComments && <Loader />}
 
-          {isError && (
+          {isError ? (
             <div className="notification is-danger" data-cy="CommentsError">
               {message}
             </div>
-          )}
-
-          {comments?.length ? (
-            <p className="title is-4">Comments:</p>
           ) : (
-            <p className="title is-4" data-cy="NoCommentsMessage">
-              No comments yet
+            <p
+              className="title is-4"
+              data-cy={!comments.length && 'NoCommentsMessage'}
+            >
+              {message}
             </p>
           )}
 
-          {comments?.length &&
+          {hasComments &&
             comments.map(comment => (
               <article
                 className="message is-small"
@@ -76,6 +104,7 @@ export const PostDetails: React.FC<Props> = React.memo(({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
+                    onClick={() => deleteComment(comment.id)}
                   >
                     delete button
                   </button>
@@ -86,79 +115,30 @@ export const PostDetails: React.FC<Props> = React.memo(({ post }) => {
                 </div>
               </article>
             ))}
-          {/*
-            <article className="message is-small" data-cy="Comment">
-              <div className="message-header">
-                <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                  Misha Hrynko
-                </a>
-                <button
-                  data-cy="CommentDelete"
-                  type="button"
-                  className="delete is-small"
-                  aria-label="delete"
-                >
-                  delete button
-                </button>
-              </div>
 
-              <div className="message-body" data-cy="CommentBody">
-                Some comment
-              </div>
-            </article>
-
-            <article className="message is-small" data-cy="Comment">
-              <div className="message-header">
-                <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                  Misha Hrynko
-                </a>
-
-                <button
-                  data-cy="CommentDelete"
-                  type="button"
-                  className="delete is-small"
-                  aria-label="delete"
-                >
-                  delete button
-                </button>
-              </div>
-              <div className="message-body" data-cy="CommentBody">
-                One more comment
-              </div>
-            </article>
-
-            <article className="message is-small" data-cy="Comment">
-              <div className="message-header">
-                <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                  Misha Hrynko
-                </a>
-
-                <button
-                  data-cy="CommentDelete"
-                  type="button"
-                  className="delete is-small"
-                  aria-label="delete"
-                >
-                  delete button
-                </button>
-              </div>
-
-              <div className="message-body" data-cy="CommentBody">
-                {'Multi\nline\ncomment'}
-              </div>
-            </article>
-          */}
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
+          <div
+            className={cn('error-delete', {
+              'error-delete--open': failedDelete,
+            })}
           >
-            Write a comment
-          </button>
+            Unable to delete a comment
+          </div>
+
+          {writeAComment && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setOpenForm(!openForm)}
+            >
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
+        <div className={cn('Form', { 'Form--open': openForm })}>
+          <NewCommentForm postId={post.id} />
+        </div>
       </div>
     </div>
   );

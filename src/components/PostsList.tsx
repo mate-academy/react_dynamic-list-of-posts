@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useCallback, useContext } from 'react';
 import cn from 'classnames';
 import { Post } from '../types/Post';
+import { Context } from './Store';
 
 interface Props {
   posts: Post[];
@@ -10,15 +11,20 @@ interface Props {
 
 export const PostsList: React.FC<Props> = React.memo(
   ({ posts, isSelectedPost, setOpenDetails }) => {
-    const handleSelectedPost = (post: Post) => {
-      if (isSelectedPost === post) {
-        setOpenDetails(null);
+    const { getComments, setOpenForm } = useContext(Context);
 
-        return;
-      }
-
-      setOpenDetails(post);
-    };
+    const handleSelectedPost = useCallback(
+      (post: Post) => {
+        if (isSelectedPost === post) {
+          setOpenDetails(null);
+        } else {
+          setOpenDetails(post);
+          getComments(post.id);
+          setOpenForm(false);
+        }
+      },
+      [getComments, isSelectedPost, setOpenDetails, setOpenForm],
+    );
 
     return (
       <div data-cy="PostsList">
