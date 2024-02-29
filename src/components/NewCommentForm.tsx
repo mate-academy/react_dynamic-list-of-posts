@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { addPostComment } from '../utils/Post';
 
@@ -16,7 +16,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (name.trim() || email.trim() || body.trim()) {
+    if (name || email || body) {
       setIsError(false);
     }
   }, [name, email, body]);
@@ -25,18 +25,22 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
     event.preventDefault();
     setLoading(true);
 
-    if (!name.trim() || !email.trim() || !body.trim()) {
-      setIsError(true);
-
-      return;
-    }
-
     const comment = {
       name: name.trim(),
       email: email.trim(),
       body: body.trim(),
       postId,
     };
+
+    if (!name || !email || !body) {
+      setIsError(true);
+
+      setTimeout(() => {
+        setLoading(false);
+      }, 400);
+
+      return;
+    }
 
     addPostComment(comment)
       .then(() => {
@@ -59,12 +63,6 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
     setName('');
     setEmail('');
     setBody('');
-  };
-
-  const handleBtnAddForm = () => {
-    if (!name.trim() || !email.trim() || !body.trim()) {
-      setIsError(true);
-    }
   };
 
   return (
@@ -171,7 +169,6 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
           <button
             type="submit"
             className={cn('button is-link', { 'is-loading': loading })}
-            onClick={handleBtnAddForm}
           >
             Add
           </button>
