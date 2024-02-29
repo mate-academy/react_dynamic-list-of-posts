@@ -76,7 +76,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={event => handleClickBtn(event)}
         >
-          <span>{!selectedUser ? 'Select user' : selectedUser}</span>
+          <span>{!selectedUser ? 'Choose a user' : selectedUser}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
