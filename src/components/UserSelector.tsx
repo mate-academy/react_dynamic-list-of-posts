@@ -7,9 +7,8 @@ import { Post } from '../types/Post';
 type Props = {
   users: User[];
   setUsers: (users: User[]) => void;
-  selectedUser: string;
-  setSelectedUser: (user: string) => void;
-  setSelectedUserId: (userId: number) => void;
+  selectedUser: User | null;
+  setSelectedUser: (user: User | null) => void;
   setIsSidebarOpen: (isSidebarOpen: boolean) => void;
   setSelectedPost: (post: Post | null) => void;
 };
@@ -19,7 +18,6 @@ export const UserSelector: React.FC<Props> = ({
   setUsers,
   selectedUser,
   setSelectedUser,
-  setSelectedUserId,
   setIsSidebarOpen,
   setSelectedPost,
 }) => {
@@ -38,8 +36,7 @@ export const UserSelector: React.FC<Props> = ({
   };
 
   const handleChooseUser = (user: User) => {
-    setSelectedUser(user.name);
-    setSelectedUserId(user.id);
+    setSelectedUser(user);
     setIsActive(false);
     setIsSidebarOpen(false);
     setSelectedPost(null);
@@ -76,7 +73,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={event => handleClickBtn(event)}
         >
-          <span>{!selectedUser ? 'Choose a user' : selectedUser}</span>
+          <span>{!selectedUser ? 'Choose a user' : selectedUser.name}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />

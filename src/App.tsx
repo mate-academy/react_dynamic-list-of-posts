@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -16,20 +16,19 @@ import { getPosts } from './utils/Post';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState('');
-  const [selectedUserId, setSelectedUserId] = useState(0);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  useMemo(() => {
+  useEffect(() => {
     if (selectedUser) {
       setIsLoading(true);
     }
 
-    getPosts(selectedUserId)
+    getPosts(selectedUser?.id || 0)
       .then(items => {
         setPosts(items);
       })
@@ -39,7 +38,7 @@ export const App: React.FC = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [selectedUserId, selectedUser]);
+  }, [selectedUser]);
 
   return (
     <main className="section">
@@ -53,20 +52,19 @@ export const App: React.FC = () => {
                   setUsers={setUsers}
                   selectedUser={selectedUser}
                   setSelectedUser={setSelectedUser}
-                  setSelectedUserId={setSelectedUserId}
                   setIsSidebarOpen={setIsSidebarOpen}
                   setSelectedPost={setSelectedPost}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {selectedUserId === 0 && (
+                {selectedUser?.id === 0 && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
                 {isLoading && <Loader />}
 
-                {isError && (
+                {isError && !isLoading && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"

@@ -47,6 +47,9 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
       .then(() => {
         setComments((comments: any[]) => [...comments, comment]);
       })
+      .catch(() => {
+        setIsError(true);
+      })
       .finally(() => {
         setLoading(false);
       });
