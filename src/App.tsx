@@ -22,6 +22,7 @@ export const App: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   useMemo(() => {
     if (selectedUser) {
@@ -31,6 +32,9 @@ export const App: React.FC = () => {
     getPosts(selectedUserId)
       .then(items => {
         setPosts(items);
+      })
+      .catch(() => {
+        setIsError(true);
       })
       .finally(() => {
         setIsLoading(false);
@@ -62,7 +66,7 @@ export const App: React.FC = () => {
 
                 {isLoading && <Loader />}
 
-                {!selectedUser && !isLoading && (
+                {isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
