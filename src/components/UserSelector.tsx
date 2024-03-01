@@ -23,11 +23,19 @@ export const UserSelector: React.FC<Props> = ({
 }) => {
   const [isActive, setIsActive] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [showError, setShowError] = useState(false);
 
   useEffect(() => {
-    getUsers().then(items => {
-      setUsers(items);
-    });
+    getUsers()
+      .then(items => {
+        setUsers(items);
+      })
+      .catch(() => {
+        setShowError(true);
+        setTimeout(() => {
+          setShowError(false);
+        }, 2000);
+      });
   }, [setUsers]);
 
   const handleClickBtn = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -95,6 +103,12 @@ export const UserSelector: React.FC<Props> = ({
           ))}
         </div>
       </div>
+
+      {showError && (
+        <div className="notification is-danger" data-cy="AddCommentError">
+          Something went wrong!
+        </div>
+      )}
     </div>
   );
 };

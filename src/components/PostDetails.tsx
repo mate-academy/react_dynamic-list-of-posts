@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
@@ -13,13 +13,20 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const [comments, setComments] = useState<Comment[] | []>([]);
   const [newComment, setNewComment] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
-  useMemo(() => {
+  useEffect(() => {
     setIsLoading(true);
 
     getPostComments(selectedPost.id)
       .then(items => {
         setComments(items);
+      })
+      .catch(() => {
+        setIsError(true);
+        setTimeout(() => {
+          setIsError(false);
+        }, 2000);
       })
       .finally(() => {
         setIsLoading(false);
@@ -52,7 +59,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         <div className="block">
           {isLoading && <Loader />}
 
-          {!isLoading && comments.length === 0 && (
+          {isError && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>

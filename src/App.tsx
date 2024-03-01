@@ -26,18 +26,18 @@ export const App: React.FC = () => {
   useEffect(() => {
     if (selectedUser) {
       setIsLoading(true);
-    }
 
-    getPosts(selectedUser?.id || 0)
-      .then(items => {
-        setPosts(items);
-      })
-      .catch(() => {
-        setIsError(true);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      getPosts(selectedUser.id)
+        .then(items => {
+          setPosts(items);
+        })
+        .catch(() => {
+          setIsError(true);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
   }, [selectedUser]);
 
   return (
@@ -58,7 +58,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {selectedUser?.id === 0 && (
+                {!selectedUser?.id && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
