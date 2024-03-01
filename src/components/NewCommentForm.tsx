@@ -34,6 +34,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ postId }) => {
     setHasErrorName(false);
     setHasErrorEmail(false);
     setHasErrorBody(false);
+    setCheckErrors(false);
   };
 
   const handleName = (event: React.ChangeEvent<HTMLInputElement>) => {

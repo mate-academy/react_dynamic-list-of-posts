@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import cn from 'classnames';
 import { Loader } from './Loader';
 import { Post } from '../types/Post';
@@ -38,18 +44,21 @@ export const PostDetails: React.FC<Props> = React.memo(({ post }) => {
     return { error, openComments, write, notComments };
   }, [comments.length, loadingComments, message, openForm]);
 
-  const deleteComment = (commentId: number) => {
-    setFailedDelete('');
+  const deleteComment = useCallback(
+    (commentId: number) => {
+      setFailedDelete('');
 
-    client
-      .delete(`/comments/${commentId}`)
-      .then(() => {
-        setComments(current =>
-          current.filter(comment => comment.id !== commentId),
-        );
-      })
-      .catch(() => setFailedDelete('Unable to delete a comment'));
-  };
+      client
+        .delete(`/comments/${commentId}`)
+        .then(() => {
+          setComments(current =>
+            current.filter(comment => comment.id !== commentId),
+          );
+        })
+        .catch(() => setFailedDelete('Unable to delete a comment'));
+    },
+    [setComments],
+  );
 
   useEffect(() => {
     let timerId: NodeJS.Timeout;
