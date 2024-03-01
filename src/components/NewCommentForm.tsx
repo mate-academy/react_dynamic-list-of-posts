@@ -19,6 +19,12 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
   const [isErrorEmail, setIsErrorEmail] = useState(false);
   const [isErrorBody, setIsErrorBody] = useState(false);
 
+  const getEmptyForm = () => {
+    setName('');
+    setEmail('');
+    setBody('');
+  };
+
   useEffect(() => {
     if (name || email || body) {
       setIsErrorName(false);
@@ -52,9 +58,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
 
     addPostComment(comment)
       .then(() => {
-        setName('');
-        setEmail('');
-        setBody('');
+        getEmptyForm();
       })
       .then(() => {
         setComments((comments: any[]) => [...comments, comment]);
@@ -71,9 +75,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
   };
 
   const clearForm = () => {
-    setName('');
-    setEmail('');
-    setBody('');
+    getEmptyForm();
     setIsErrorName(false);
     setIsErrorEmail(false);
     setIsErrorBody(false);

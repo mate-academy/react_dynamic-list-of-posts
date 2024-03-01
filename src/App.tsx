@@ -28,15 +28,9 @@ export const App: React.FC = () => {
       setIsLoading(true);
 
       getPosts(selectedUser.id)
-        .then(items => {
-          setPosts(items);
-        })
-        .catch(() => {
-          setIsError(true);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+        .then(items => setPosts(items))
+        .catch(() => setIsError(true))
+        .finally(() => setIsLoading(false));
     }
   }, [selectedUser]);
 
