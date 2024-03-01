@@ -147,22 +147,23 @@ export const StateProvider: React.FC<Props> = ({ children }) => {
   };
 
   const handleDeleteComment = (id: number) => {
-    deleteComment(id)
-      .then(() =>
-        setComments(prev => prev.filter(comment => comment.id !== id)),
-      )
-      .catch(() => setIsError(true));
+    setComments(prev => prev.filter(comment => comment.id !== id));
+
+    deleteComment(id).catch(() => {
+      setIsError(true);
+      setComments(comments);
+    });
   };
 
   const handleClearBtn = () => {
     setIsNewNameError(false);
     setIsNewEmailError(false);
     setIsNewBodyError(false);
+    setIsNewButtonLoading(false);
 
     setNewBody('');
     setNewEmail('');
     setNewName('');
-    setIsNewButtonLoading(false);
   };
 
   const value = {
