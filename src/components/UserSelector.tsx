@@ -68,24 +68,22 @@ export const UserSelector: React.FC<Props> = React.memo(({ select }) => {
         </button>
       </div>
 
-      {openDropdown && (
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          <div className="dropdown-content">
-            {users.map(user => (
-              <a
-                key={user.id}
-                href={`#user-${user.id}`}
-                className={cn('dropdown-item', {
-                  'is-active': selectedUser?.id === user.id,
-                })}
-                onClick={() => handleSelected(user)}
-              >
-                {user.name}
-              </a>
-            ))}
-          </div>
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        <div className="dropdown-content">
+          {users.map(user => (
+            <a
+              key={user.id}
+              href={`#user-${user.id}`}
+              className={cn('dropdown-item', {
+                'is-active': selectedUser?.id === user.id,
+              })}
+              onClick={() => handleSelected(user)}
+            >
+              {user.name}
+            </a>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 });
