@@ -148,7 +148,7 @@ export const PostDetails: React.FC<Props> = React.memo(({ post }) => {
           )}
         </div>
 
-        <div className={cn('Form', { 'Form--open': openForm })}>
+        <div className={cn('form', { 'form--open': openForm })}>
           <NewCommentForm postId={post.id} />
         </div>
       </div>
