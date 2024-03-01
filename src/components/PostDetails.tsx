@@ -84,7 +84,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
                   </div>
 
                   <div className="message-body" data-cy="CommentBody">
-                    Some comment
+                    {comment.body}
                   </div>
                 </article>
               ))}

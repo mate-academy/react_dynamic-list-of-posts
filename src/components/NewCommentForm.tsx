@@ -12,12 +12,17 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
-  const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const [isErrorName, setIsErrorName] = useState(false);
+  const [isErrorEmail, setIsErrorEmail] = useState(false);
+  const [isErrorBody, setIsErrorBody] = useState(false);
 
   useEffect(() => {
     if (name || email || body) {
-      setIsError(false);
+      setIsErrorName(false);
+      setIsErrorEmail(false);
+      setIsErrorBody(false);
     }
   }, [name, email, body]);
 
@@ -26,14 +31,16 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
     setLoading(true);
 
     const comment = {
-      name: name.trim(),
-      email: email.trim(),
-      body: body.trim(),
+      name: name.trim().split(/\s+/).join(' '),
+      email: email.trim().split(/\s+/).join(' '),
+      body: body.trim().split(/\s+/).join(' '),
       postId,
     };
 
-    if (!name || !email || !body) {
-      setIsError(true);
+    if (!name.trim() || !email.trim() || !body.trim()) {
+      setIsErrorName(!name.trim());
+      setIsErrorEmail(!email.trim());
+      setIsErrorBody(!body.trim());
 
       setTimeout(() => {
         setLoading(false);
@@ -50,9 +57,6 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
       })
       .then(() => {
         setComments((comments: any[]) => [...comments, comment]);
-      })
-      .catch(() => {
-        setIsError(true);
       })
       .finally(() => {
         setLoading(false);
@@ -78,7 +82,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={cn('input', { 'is-danger': isError })}
+            className={cn('input', { 'is-danger': isErrorName })}
             value={name}
             onChange={event => setName(event.target.value)}
           />
@@ -87,7 +91,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
             <i className="fas fa-user" />
           </span>
 
-          {isError && (
+          {isErrorName && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -97,7 +101,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
           )}
         </div>
 
-        {isError && (
+        {isErrorName && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -115,7 +119,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={cn('input', { 'is-danger': isError })}
+            className={cn('input', { 'is-danger': isErrorEmail })}
             value={email}
             onChange={event => setEmail(event.target.value)}
           />
@@ -124,7 +128,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
             <i className="fas fa-envelope" />
           </span>
 
-          {isError && (
+          {isErrorEmail && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -134,7 +138,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
           )}
         </div>
 
-        {isError && (
+        {isErrorEmail && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -151,13 +155,13 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={cn('textarea', { 'is-danger': isError })}
+            className={cn('textarea', { 'is-danger': isErrorBody })}
             value={body}
             onChange={event => setBody(event.target.value)}
           />
         </div>
 
-        {isError && (
+        {isErrorBody && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
