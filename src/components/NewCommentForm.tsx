@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import cn from 'classnames';
 import { client } from '../utils/fetchClient';
 import { Context } from './Store';
@@ -22,6 +22,11 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ postId }) => {
   const [creating, setCreating] = useState(false);
   const [errorCreating, setErrorCreating] = useState('');
 
+  const nameFocus = useRef<HTMLInputElement>(null);
+  const emailFocus = useRef<HTMLInputElement>(null);
+  const bodyFocus = useRef<HTMLTextAreaElement>(null);
+  const [checkErrors, setCheckErrors] = useState(false);
+
   const reset = () => {
     setName('');
     setEmail('');
@@ -32,16 +37,20 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ postId }) => {
   };
 
   const handleName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCheckErrors(false);
     setHasErrorName(false);
     setName(event.target.value);
   };
 
   const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCheckErrors(false);
     setHasErrorEmail(false);
     setEmail(event.target.value);
   };
 
   const handleBody = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setCheckErrors(false);
+
     if (body.trim().length === 0 && bodyErrorType === 'Enter some text') {
       setHasErrorBody(false);
     }
@@ -56,6 +65,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ postId }) => {
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    setCheckErrors(true);
     setHasErrorName(!name);
     setHasErrorEmail(!email);
 
@@ -70,9 +80,11 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ postId }) => {
       return;
     }
 
-    if (!name.trim() || !email.trim() || !body.trim()) {
+    if (!name.trim() || !email.trim()) {
       return;
     }
+
+    setCheckErrors(false);
 
     const newComment = {
       postId,
@@ -88,10 +100,17 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ postId }) => {
       .post<Comment>(`/comments`, newComment)
       .then(comment => {
         setComments(current => [...current, comment]);
-        reset();
+        setBody('');
       })
       .catch(() => setErrorCreating('Unable to add comment'))
       .finally(() => setCreating(false));
+  };
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      onSubmit(event as React.FormEvent);
+    }
   };
 
   useEffect(() => {
@@ -108,6 +127,24 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ postId }) => {
     };
   }, [errorCreating]);
 
+  useEffect(() => {
+    if (hasErrorName && checkErrors) {
+      nameFocus.current?.focus();
+
+      return;
+    }
+
+    if (hasErrorEmail && checkErrors) {
+      emailFocus.current?.focus();
+
+      return;
+    }
+
+    if (hasErrorBody && checkErrors) {
+      bodyFocus.current?.focus();
+    }
+  }, [hasErrorName, hasErrorEmail, hasErrorBody, checkErrors]);
+
   return (
     <form data-cy="NewCommentForm" onSubmit={onSubmit}>
       <div className="field" data-cy="NameField">
@@ -121,6 +158,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ postId }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
+            ref={nameFocus}
             className={cn('input', { 'is-danger': hasErrorName })}
             value={name}
             onChange={handleName}
@@ -130,14 +168,14 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ postId }) => {
             <i className="fas fa-user" />
           </span>
 
-          <span
-            className={cn('icon is-small is-right', {
-              'has-text-danger': hasErrorName,
-            })}
-            data-cy="ErrorIcon"
-          >
-            {hasErrorName && <i className="fas fa-exclamation-triangle" />}
-          </span>
+          {hasErrorName && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
         {hasErrorName && (
@@ -158,6 +196,7 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ postId }) => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
+            ref={emailFocus}
             className={cn('input', { 'is-danger': hasErrorEmail })}
             value={email}
             onChange={handleEmail}
@@ -167,14 +206,14 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ postId }) => {
             <i className="fas fa-envelope" />
           </span>
 
-          <span
-            className={cn('icon is-small is-right', {
-              'has-text-danger': hasErrorEmail,
-            })}
-            data-cy="ErrorIcon"
-          >
-            {hasErrorEmail && <i className="fas fa-exclamation-triangle" />}
-          </span>
+          {hasErrorEmail && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
         {hasErrorEmail && (
@@ -194,9 +233,11 @@ export const NewCommentForm: React.FC<Props> = React.memo(({ postId }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
+            ref={bodyFocus}
             className={cn('textarea', { 'is-danger': hasErrorBody })}
             value={body}
             onChange={handleBody}
+            onKeyDown={handleKeyPress}
           />
         </div>
 

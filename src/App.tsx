@@ -32,6 +32,7 @@ export const App: React.FC = () => {
 
   const handleSelectedUser = useCallback((userId: number) => {
     setIsSelectedUser(userId);
+    setIsSelectedPost(null);
     setLoading(true);
     setMessage('');
 

@@ -28,12 +28,14 @@ export const PostDetails: React.FC<Props> = React.memo(({ post }) => {
     error: isError,
     openComments: hasComments,
     write: writeAComment,
+    notComments: noComments,
   } = useMemo(() => {
     const error = message === 'Something went wrong!' && !loadingComments;
     const openComments = comments.length > 0 && !error && !loadingComments;
     const write = !loadingComments && !error && !openForm;
+    const notComments = !loadingComments && !comments.length && !error;
 
-    return { error, openComments, write };
+    return { error, openComments, write, notComments };
   }, [comments.length, loadingComments, message, openForm]);
 
   const deleteComment = (commentId: number) => {
@@ -75,16 +77,17 @@ export const PostDetails: React.FC<Props> = React.memo(({ post }) => {
         <div className="block">
           {loadingComments && <Loader />}
 
-          {isError ? (
+          {isError && (
             <div className="notification is-danger" data-cy="CommentsError">
-              {message}
+              Something went wrong
             </div>
-          ) : (
-            <p
-              className="title is-4"
-              data-cy={!comments.length && 'NoCommentsMessage'}
-            >
-              {message}
+          )}
+
+          {hasComments && <p className="title is-4">Comments:</p>}
+
+          {noComments && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
             </p>
           )}
 

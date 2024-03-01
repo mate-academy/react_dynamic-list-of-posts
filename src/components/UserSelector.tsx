@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import cn from 'classnames';
 import { Context } from './Store';
 import { User } from '../types/User';
@@ -12,6 +18,7 @@ export const UserSelector: React.FC<Props> = React.memo(({ select }) => {
 
   const [openDropdown, setOpenDropdown] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>();
+  const focus = useRef<HTMLDivElement>(null);
 
   const handleSelected = useCallback(
     (user: User) => {
@@ -22,11 +29,29 @@ export const UserSelector: React.FC<Props> = React.memo(({ select }) => {
 
       setOpenDropdown(!openDropdown);
     },
-    [openDropdown, select, selectedUser],
+    [openDropdown, select, selectedUser, setOpenDropdown],
   );
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (focus.current && !focus.current.contains(event.target as Node)) {
+        setOpenDropdown(false);
+      }
+    };
+
+    document.addEventListener('mouseup', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mouseup', handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      ref={focus}
+      className={cn('dropdown', { 'is-active': openDropdown })}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"

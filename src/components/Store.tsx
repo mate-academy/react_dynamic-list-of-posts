@@ -70,14 +70,6 @@ export const Provider: React.FC<Props> = ({ children }) => {
       .finally(() => setLoadingComments(false));
   }, []);
 
-  useEffect(() => {
-    if (!comments.length) {
-      setMessage('No comments yet');
-    } else {
-      setMessage('Comments:');
-    }
-  }, [comments.length]);
-
   const value = useMemo(
     () => ({
       users,
