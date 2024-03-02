@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { NewCommentForm } from './NewCommentForm';
 import { Context } from '../context/Context';
 import * as commentService from '../api/comments';
@@ -29,20 +29,18 @@ export const PostDetails: React.FC = () => {
     }
   }, [selectedPost, setComments]);
 
-  const deleteComment = useCallback(
-    (commentId: number) => {
-      setComments(currentComments =>
-        currentComments.filter(comment => comment.id !== commentId),
-      );
-    },
-    [setComments],
-  );
-
   const handleDeleteComment = (commentId: number) => {
-    deleteComment(commentId);
+    setComments(currentComments =>
+      currentComments.filter(comment => comment.id !== commentId),
+    );
+
     commentService
       .deleteComment(commentId)
-      .catch(() => setCommentsError(Error.wrong))
+      .catch(error => {
+        setComments(comments);
+        setCommentsError(Error.wrong);
+        throw error;
+      })
       .finally(() => setCommentsError(null));
   };
 
