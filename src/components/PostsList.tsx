@@ -3,9 +3,9 @@ import React from 'react';
 import { Post } from '../types/Post';
 
 type Props = {
-  posts: Post[],
-  selectedPost: Post | null,
-  onPostSelect: (post: Post | null) => void,
+  posts: Post[];
+  selectedPost: Post | null;
+  onPostSelect: (post: Post | null) => void;
 };
 
 export const PostsList: React.FC<Props> = ({

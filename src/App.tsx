@@ -27,10 +27,6 @@ export const App: React.FC = () => {
 
       getPostsByUserId(selectedUser.id)
         .then(res => {
-          if ('error' in res) {
-            throw new Error();
-          }
-
           setPosts(res);
         })
         .catch(() => setHasError(true))
@@ -53,9 +49,7 @@ export const App: React.FC = () => {
 
               <div className="block" data-cy="MainContent">
                 {!selectedUser && (
-                  <p data-cy="NoSelectedUser">
-                    No user selected
-                  </p>
+                  <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
                 {selectedUser && isLoading && <Loader />}
@@ -69,8 +63,10 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {(selectedUser && !isLoading && !hasError) && (
-                  posts.length > 0 ? (
+                {selectedUser &&
+                  !isLoading &&
+                  !hasError &&
+                  (!posts.length ? (
                     <PostsList
                       posts={posts}
                       selectedPost={selectedPost}
@@ -83,9 +79,7 @@ export const App: React.FC = () => {
                     >
                       No posts yet
                     </div>
-                  )
-                )}
-
+                  ))}
               </div>
             </div>
           </div>
@@ -106,7 +100,6 @@ export const App: React.FC = () => {
               </div>
             )}
           </div>
-
         </div>
       </div>
     </main>

@@ -4,9 +4,9 @@ import { addComment } from '../api/comments';
 import { Comment } from '../types/Comment';
 
 type Props = {
-  currentPostId: number,
-  onCommentAdd: React.Dispatch<React.SetStateAction<Comment[]>>,
-  onError: (hasError: boolean) => void,
+  currentPostId: number;
+  onCommentAdd: React.Dispatch<React.SetStateAction<Comment[]>>;
+  onError: (hasError: boolean) => void;
 };
 
 const defaultState = { value: '', hasError: false };
@@ -30,19 +30,19 @@ export const NewCommentForm: React.FC<Props> = ({
     const trimmedEmail = email.value.trim();
     const trimmedBody = body.value.trim();
 
-    if (trimmedName === '') {
+    if (!trimmedName) {
       setName(prevName => ({ ...prevName, hasError: true }));
     }
 
-    if (trimmedEmail === '') {
+    if (!trimmedEmail) {
       setEmail(prevName => ({ ...prevName, hasError: true }));
     }
 
-    if (trimmedBody === '') {
+    if (!trimmedBody) {
       setBody(prevName => ({ ...prevName, hasError: true }));
     }
 
-    if (trimmedName === '' || trimmedEmail === '' || trimmedBody === '') {
+    if (!trimmedName || !trimmedEmail || !trimmedBody) {
       setIsLoading(false);
 
       return;
@@ -55,10 +55,6 @@ export const NewCommentForm: React.FC<Props> = ({
       body: trimmedBody,
     })
       .then(res => {
-        if ('error' in res) {
-          throw new Error();
-        }
-
         onCommentAdd(prevComms => [...prevComms, res]);
         setBody({ value: '', hasError: false });
       })
@@ -87,9 +83,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Name Surname"
             className={cn('input', { 'is-danger': name.hasError })}
             value={name.value}
-            onChange={
-              (e) => setName({ value: e.target.value, hasError: false })
-            }
+            onChange={e => setName({ value: e.target.value, hasError: false })}
           />
 
           <span className="icon is-small is-left">
@@ -104,7 +98,6 @@ export const NewCommentForm: React.FC<Props> = ({
               <i className="fas fa-exclamation-triangle" />
             </span>
           )}
-
         </div>
 
         {name.hasError && (
@@ -127,9 +120,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="email@test.com"
             className={cn('input', { 'is-danger': email.hasError })}
             value={email.value}
-            onChange={
-              (e) => setEmail({ value: e.target.value, hasError: false })
-            }
+            onChange={e => setEmail({ value: e.target.value, hasError: false })}
           />
 
           {email.hasError && (
@@ -165,9 +156,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Type comment here"
             className={cn('textarea', { 'is-danger': body.hasError })}
             value={body.value}
-            onChange={
-              (e) => setBody({ value: e.target.value, hasError: false })
-            }
+            onChange={e => setBody({ value: e.target.value, hasError: false })}
           />
         </div>
 

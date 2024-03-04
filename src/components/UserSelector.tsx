@@ -4,8 +4,8 @@ import { User } from '../types/User';
 import { getUsers } from '../api/users';
 
 type Props = {
-  onUserSelect: (user: User) => void,
-  selectedUser: User | null,
+  onUserSelect: (user: User) => void;
+  selectedUser: User | null;
 };
 
 export const UserSelector: React.FC<Props> = ({

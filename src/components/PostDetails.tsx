@@ -6,7 +6,7 @@ import { deleteComment, getCommentsByPostId } from '../api/comments';
 import { Comment } from '../types/Comment';
 
 type Props = {
-  selectedPost: Post,
+  selectedPost: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
@@ -21,11 +21,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
     setIsCommenting(false);
 
     getCommentsByPostId(selectedPost.id)
-      .then((res) => {
-        if ('error' in res) {
-          throw new Error();
-        }
-
+      .then(res => {
         setComments(res);
       })
       .catch(() => setHasError(true))
@@ -33,11 +29,12 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   }, [selectedPost]);
 
   const handleCommentDeletion = (commentId: number) => {
-    setComments(prevComments => prevComments
-      .filter(comment => comment.id !== commentId));
+    setComments(prevComments =>
+      prevComments.filter(comment => comment.id !== commentId),
+    );
 
     deleteComment(commentId)
-      .then((res) => {
+      .then(res => {
         if (typeof res === 'object' && 'error' in (res as object)) {
           throw new Error();
         }
@@ -53,9 +50,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             {`#${selectedPost.id}: ${selectedPost.title}`}
           </h2>
 
-          <p data-cy="PostBody">
-            {selectedPost.body}
-          </p>
+          <p data-cy="PostBody">{selectedPost.body}</p>
         </div>
 
         <div className="block">
@@ -69,7 +64,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
 
           {!isLoading && !hasError && (
             <>
-              {comments.length > 0 ? (
+              {!comments.length ? (
                 <>
                   <p className="title is-4">Comments:</p>
                   {comments.map(comment => (
@@ -79,7 +74,10 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
                       key={comment.id}
                     >
                       <div className="message-header">
-                        <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                        <a
+                          href={`mailto:${comment.email}`}
+                          data-cy="CommentAuthor"
+                        >
                           {comment.name}
                         </a>
                         <button
@@ -95,7 +93,6 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
 
                       <div className="message-body" data-cy="CommentBody">
                         {comment.body}
-                        {/* {'Multi\nline\ncomment'} */}
                       </div>
                     </article>
                   ))}
@@ -117,7 +114,6 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
               )}
             </>
           )}
-
         </div>
 
         {isCommenting && !hasError && (
