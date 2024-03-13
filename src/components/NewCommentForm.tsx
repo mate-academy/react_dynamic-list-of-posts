@@ -70,16 +70,16 @@ export const NewCommentForm: React.FC<Props> = ({
 
     const { id } = selectedPost;
 
-    if (!name || !email || !body) {
-      if (!name) {
+    if (!name.trim() || !email.trim() || !body.trim()) {
+      if (!name.trim()) {
         setInputError(prev => ({ ...prev, name: true }));
       }
 
-      if (!email) {
+      if (!email.trim()) {
         setInputError(prev => ({ ...prev, email: true }));
       }
 
-      if (!body) {
+      if (!body.trim()) {
         setInputError(prev => ({ ...prev, body: true }));
       }
 
