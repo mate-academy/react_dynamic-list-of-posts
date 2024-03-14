@@ -22,8 +22,8 @@ export const App: React.FC = () => {
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    getUsers().then(u => {
-      setUsers(u);
+    getUsers().then(user => {
+      setUsers(user);
     });
   }, []);
 
