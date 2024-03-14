@@ -25,7 +25,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       .then(setComments)
       .catch(() => setHasError(true))
       .finally(() => setLoading(false));
-  }, [post.id]);
+  }, [id]);
 
   const handleDelete = (commentId: number) => {
     setComments(prev => prev.filter(c => c.id !== commentId));
