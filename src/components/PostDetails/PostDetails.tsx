@@ -1,8 +1,11 @@
-import React from 'react';
-import { Loader } from './Loader';
-import { NewCommentForm } from './NewCommentForm';
+import React, { useContext } from 'react';
+import { Loader } from '../Loader';
+import { NewCommentForm } from '../NewCommentForm/NewCommentForm';
+import { GlobalContext } from '../../State';
 
 export const PostDetails: React.FC = () => {
+  const { loading } = useContext(GlobalContext);
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -18,7 +21,7 @@ export const PostDetails: React.FC = () => {
         </div>
 
         <div className="block">
-          <Loader />
+          {loading && <Loader />}
 
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
