@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import cn from 'classnames';
+import { FormData } from '../../types';
 
 export const NewCommentForm: React.FC = () => {
+  const [isSubmitted] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
+
+  console.log(errors);
+
   return (
-    <form data-cy="NewCommentForm">
+    <form
+      data-cy="NewCommentForm"
+      onSubmit={handleSubmit(data => {
+        console.log(data);
+      })}
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -11,7 +28,7 @@ export const NewCommentForm: React.FC = () => {
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
-            name="name"
+            {...register('name', { required: 'Name is required' })}
             id="comment-author-name"
             placeholder="Name Surname"
             className="input is-danger"
@@ -30,7 +47,7 @@ export const NewCommentForm: React.FC = () => {
         </div>
 
         <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
+          {errors.name?.message}
         </p>
       </div>
 
@@ -42,7 +59,7 @@ export const NewCommentForm: React.FC = () => {
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
-            name="email"
+            {...register('email', { required: 'Email is required' })}
             id="comment-author-email"
             placeholder="email@test.com"
             className="input is-danger"
@@ -61,7 +78,7 @@ export const NewCommentForm: React.FC = () => {
         </div>
 
         <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
+          {errors.email?.message}
         </p>
       </div>
 
@@ -73,20 +90,25 @@ export const NewCommentForm: React.FC = () => {
         <div className="control">
           <textarea
             id="comment-body"
-            name="body"
+            {...register('body', { required: 'Enter some text' })}
             placeholder="Type comment here"
             className="textarea is-danger"
           />
         </div>
 
         <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
+          {errors.body?.message}
         </p>
       </div>
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={cn('button is-link', {
+              'is-loading': isSubmitted,
+            })}
+          >
             Add
           </button>
         </div>
