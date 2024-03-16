@@ -10,8 +10,10 @@ export const UserSelector: React.FC = () => {
     setUsers,
     selectedUser,
     setSelectedUser,
-    setLoading,
+    setIsloadingPosts,
     setErrorMessage,
+    setIsShowForm,
+    setSelectedPost,
   } = useContext(GlobalContext);
   const [isVisibleDropdown, setIsVisibleDropdown] = useState(false);
 
@@ -28,11 +30,13 @@ export const UserSelector: React.FC = () => {
   const hadleSelectedUser = (user: User) => {
     setSelectedUser(user);
     setIsVisibleDropdown(false);
+    setIsShowForm(false);
+    setSelectedPost(null);
   };
 
   const fetchUsers = useCallback(async () => {
     try {
-      setLoading(true);
+      setIsloadingPosts(true);
       setErrorMessage(false);
 
       const usersData = await getUsers();
@@ -41,7 +45,7 @@ export const UserSelector: React.FC = () => {
     } catch (error) {
       setErrorMessage(true);
     } finally {
-      setLoading(false);
+      setIsloadingPosts(false);
     }
   }, []);
 

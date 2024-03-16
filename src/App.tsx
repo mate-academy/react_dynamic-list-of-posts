@@ -13,21 +13,21 @@ import { getPostByUserId } from './components/api/getData';
 
 export const App: React.FC = () => {
   const {
-    loading,
+    isloadingPosts,
     errorMessage,
     selectedUser,
     posts,
-    setLoading,
+    setIsloadingPosts,
     setPosts,
     setErrorMessage,
     selectedPost,
   } = useContext(GlobalContext);
 
   const shouldShowNoPosts =
-    posts.length === 0 && selectedUser && !loading && !errorMessage;
+    posts.length === 0 && selectedUser && !isloadingPosts && !errorMessage;
 
   const shouldShowPosts =
-    posts.length > 0 && selectedUser && !loading && !errorMessage;
+    posts.length > 0 && selectedUser && !isloadingPosts && !errorMessage;
 
   const fetchPosts = useCallback(async () => {
     if (!selectedUser) {
@@ -35,7 +35,7 @@ export const App: React.FC = () => {
     }
 
     try {
-      setLoading(true);
+      setIsloadingPosts(true);
       setErrorMessage(false);
       const postsData = await getPostByUserId(selectedUser.id);
 
@@ -43,7 +43,7 @@ export const App: React.FC = () => {
     } catch (error) {
       setErrorMessage(true);
     } finally {
-      setLoading(false);
+      setIsloadingPosts(false);
     }
   }, [selectedUser]);
 
@@ -66,7 +66,7 @@ export const App: React.FC = () => {
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {loading && <Loader />}
+                {isloadingPosts && <Loader />}
 
                 {errorMessage && (
                   <div
@@ -100,7 +100,7 @@ export const App: React.FC = () => {
               )}
             >
               <div className="tile is-child box is-success ">
-                <PostDetails />
+                {!isloadingPosts && selectedPost && <PostDetails />}
               </div>
             </div>
           )}
