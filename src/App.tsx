@@ -45,7 +45,7 @@ export const App: React.FC = () => {
     } finally {
       setIsloadingPosts(false);
     }
-  }, [selectedUser]);
+  }, [selectedUser, setPosts, setErrorMessage, setIsloadingPosts]);
 
   useEffect(() => {
     fetchPosts();

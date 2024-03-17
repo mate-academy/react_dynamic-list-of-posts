@@ -47,7 +47,7 @@ export const UserSelector: React.FC = () => {
     } finally {
       setIsloadingPosts(false);
     }
-  }, []);
+  }, [setUsers, setErrorMessage, setIsloadingPosts]);
 
   useEffect(() => {
     fetchUsers();

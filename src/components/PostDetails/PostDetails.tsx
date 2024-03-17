@@ -26,19 +26,22 @@ export const PostDetails: React.FC = () => {
     setIsShowForm(!isShowForm);
   };
 
-  const hadleDeleteComment = useCallback(async (commentId: number) => {
-    try {
-      setIsErrorForm(false);
+  const hadleDeleteComment = useCallback(
+    async (commentId: number) => {
+      try {
+        setIsErrorForm(false);
 
-      setComments(prevComments =>
-        prevComments.filter(comment => comment.id !== commentId),
-      );
+        setComments(prevComments =>
+          prevComments.filter(comment => comment.id !== commentId),
+        );
 
-      deleteComment(commentId);
-    } catch (error) {
-      setIsErrorForm(true);
-    }
-  }, []);
+        deleteComment(commentId);
+      } catch (error) {
+        setIsErrorForm(true);
+      }
+    },
+    [setComments, setIsErrorForm],
+  );
 
   const fetchComments = useCallback(async () => {
     if (!selectedPost) {
@@ -56,7 +59,7 @@ export const PostDetails: React.FC = () => {
     } finally {
       setIsLoadingComments(false);
     }
-  }, [selectedPost]);
+  }, [selectedPost, setComments, setIsErrorForm, setIsLoadingComments]);
 
   useEffect(() => {
     fetchComments();

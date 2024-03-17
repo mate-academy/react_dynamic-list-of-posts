@@ -52,9 +52,7 @@ export const NewCommentForm: React.FC = () => {
     }
   };
 
-  const handleCreateComment = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+  const checkErorrsInForm = () => {
     if (name.trim().length === 0) {
       setHasNameError(true);
     }
@@ -66,19 +64,25 @@ export const NewCommentForm: React.FC = () => {
     if (commentText.trim().length === 0) {
       setHasTextError(true);
     }
+  };
+
+  const handleCreateComment = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    checkErorrsInForm();
 
     const hasAnyError =
       name.trim().length === 0 ||
       email.trim().length === 0 ||
       commentText.trim().length === 0;
 
-    if (hasAnyError) {
+    if (hasAnyError || !selectedPost) {
       return;
     }
 
     const newComment: Omit<Comment, 'id'> = {
       name,
-      postId: selectedPost!.id,
+      postId: selectedPost.id,
       email,
       body: commentText,
     };
