@@ -96,7 +96,11 @@ export const PostDetails: React.FC = () => {
               <p className="title is-4">Comments:</p>
 
               {comments.map(comment => (
-                <article className="message is-small" data-cy="Comment">
+                <article
+                  className="message is-small"
+                  data-cy="Comment"
+                  key={comment.id}
+                >
                   <div className="message-header">
                     <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
                       {comment.name}
