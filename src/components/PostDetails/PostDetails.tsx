@@ -23,7 +23,7 @@ export const PostDetails: React.FC = () => {
     comments.length > 0 && !isLoadingComments && !isErrorForm && selectedPost;
 
   const handleShowForm = () => {
-    setIsShowForm(!isShowForm);
+    setIsShowForm(true);
   };
 
   const hadleDeleteComment = useCallback(
@@ -120,14 +120,16 @@ export const PostDetails: React.FC = () => {
             </>
           )}
 
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-            onClick={handleShowForm}
-          >
-            Write a comment
-          </button>
+          {!isShowForm && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={handleShowForm}
+            >
+              Write a comment
+            </button>
+          )}
         </div>
 
         {isShowForm && <NewCommentForm />}
