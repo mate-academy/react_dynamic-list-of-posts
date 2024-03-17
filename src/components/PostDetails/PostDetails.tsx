@@ -102,7 +102,7 @@ export const PostDetails: React.FC = () => {
                   key={comment.id}
                 >
                   <div className="message-header">
-                    <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
+                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                       {comment.name}
                     </a>
                     <button
@@ -124,7 +124,7 @@ export const PostDetails: React.FC = () => {
             </>
           )}
 
-          {!isShowForm && (
+          {!isShowForm && !isLoadingComments && !isErrorForm && (
             <button
               data-cy="WriteCommentButton"
               type="button"

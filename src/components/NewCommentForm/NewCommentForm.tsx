@@ -34,6 +34,9 @@ export const NewCommentForm: React.FC = () => {
     setName('');
     setEmail('');
     setCommentText('');
+    setHasEmailError(false);
+    setHasNameError(false);
+    setHasTextError(false);
   };
 
   const handlAddCommet = async (newComment: Omit<Comment, 'id'>) => {

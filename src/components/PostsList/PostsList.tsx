@@ -4,7 +4,8 @@ import { GlobalContext } from '../../State';
 import { Post } from '../../types/Post';
 
 export const PostsList: React.FC = () => {
-  const { posts, selectedPost, setSelectedPost } = useContext(GlobalContext);
+  const { posts, selectedPost, setSelectedPost, setIsShowForm } =
+    useContext(GlobalContext);
 
   const handlShowPostDetails = (post: Post) => {
     if (selectedPost && selectedPost.id === post.id) {
@@ -12,6 +13,8 @@ export const PostsList: React.FC = () => {
     } else {
       setSelectedPost(post);
     }
+
+    setIsShowForm(false);
   };
 
   return (

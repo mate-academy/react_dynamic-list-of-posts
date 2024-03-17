@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import cn from 'classnames';
 import { GlobalContext } from '../../State';
 import { getUsers } from '../api/getData';
@@ -10,12 +16,13 @@ export const UserSelector: React.FC = () => {
     setUsers,
     selectedUser,
     setSelectedUser,
-    setIsloadingPosts,
     setErrorMessage,
     setIsShowForm,
     setSelectedPost,
   } = useContext(GlobalContext);
   const [isVisibleDropdown, setIsVisibleDropdown] = useState(false);
+
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const handlShowDropdown = () => {
     setIsVisibleDropdown(!isVisibleDropdown);
@@ -36,7 +43,6 @@ export const UserSelector: React.FC = () => {
 
   const fetchUsers = useCallback(async () => {
     try {
-      setIsloadingPosts(true);
       setErrorMessage(false);
 
       const usersData = await getUsers();
@@ -44,17 +50,34 @@ export const UserSelector: React.FC = () => {
       setUsers(usersData);
     } catch (error) {
       setErrorMessage(true);
-    } finally {
-      setIsloadingPosts(false);
     }
-  }, [setUsers, setErrorMessage, setIsloadingPosts]);
+  }, [setUsers, setErrorMessage]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsVisibleDropdown(false);
+      }
+    };
+
+    if (isVisibleDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isVisibleDropdown]);
 
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
 
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className={cn('dropdown', { 'is-active': isVisibleDropdown })}
+    >
       <div
         role="button"
         tabIndex={0}
@@ -68,7 +91,7 @@ export const UserSelector: React.FC = () => {
           aria-haspopup="true"
           aria-controls="dropdown-menu"
         >
-          <span>{selectedUser ? selectedUser.name : 'Choose User'}</span>
+          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -76,24 +99,28 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      {isVisibleDropdown && (
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          <div className="dropdown-content">
-            {users.map(user => (
-              <a
-                href={`#user-${user.id}`}
-                key={user.id}
-                className={cn('dropdown-item', {
-                  'is-active': selectedUser?.id === user.id,
-                })}
-                onClick={() => hadleSelectedUser(user)}
-              >
-                {user.name}
-              </a>
-            ))}
-          </div>
+      <div
+        className="dropdown-menu"
+        id="dropdown-menu"
+        role="menu"
+        style={{ display: isVisibleDropdown ? 'block' : 'none' }}
+        ref={menuRef}
+      >
+        <div className="dropdown-content">
+          {users.map(user => (
+            <a
+              href={`#user-${user.id}`}
+              key={user.id}
+              className={cn('dropdown-item', {
+                'is-active': selectedUser?.id === user.id,
+              })}
+              onClick={() => hadleSelectedUser(user)}
+            >
+              {user.name}
+            </a>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 };
