@@ -44,7 +44,7 @@ export const PostsList: React.FC = () => {
                   })}
                   onClick={() => handlShowPostDetails(post)}
                 >
-                  {selectedPost ? 'Close' : 'Open'}
+                  {selectedPost?.id === post.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>
