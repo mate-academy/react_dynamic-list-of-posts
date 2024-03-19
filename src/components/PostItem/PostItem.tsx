@@ -1,17 +1,24 @@
 import cn from 'classnames';
 import { Post } from '../../types';
-import { usePosts } from '../../context';
+import { useComments, usePosts } from '../../context';
 
-interface Props {
+type Props = {
   post: Post;
-}
+};
 
 export const PostItem: React.FC<Props> = ({ post }) => {
   const { id, title } = post;
 
-  const { openedPost, hadndleOpenPost } = usePosts();
+  const { openedPost, handleOpenPost } = usePosts();
+
+  const { handleToggleWriteComment } = useComments();
 
   const isPostOpen = (postId: number) => postId === openedPost?.id;
+
+  const handleOpenPostClick = (postData: Post) => {
+    handleOpenPost(postData);
+    handleToggleWriteComment(false);
+  };
 
   return (
     <tr data-cy="Post">
@@ -21,7 +28,7 @@ export const PostItem: React.FC<Props> = ({ post }) => {
 
       <td className="has-text-right is-vcentered">
         <button
-          onClick={() => hadndleOpenPost(post)}
+          onClick={() => handleOpenPostClick(post)}
           type="button"
           data-cy="PostButton"
           className={cn('button is-link', {

@@ -40,36 +40,40 @@ export const PostDetails: React.FC = () => {
                 <Loader />
               ) : (
                 <>
-                  {commentsError && (
+                  {commentsError ? (
                     <div
                       className="notification is-danger"
                       data-cy="CommentsError"
                     >
                       Something went wrong
                     </div>
-                  )}
+                  ) : (
+                    <>
+                      {!comments.length ? (
+                        <p className="title is-4" data-cy="NoCommentsMessage">
+                          No comments yet
+                        </p>
+                      ) : (
+                        <>
+                          <p className="title is-4">Comments:</p>
 
-                  {!comments.length && (
-                    <p className="title is-4" data-cy="NoCommentsMessage">
-                      No comments yet
-                    </p>
-                  )}
+                          {comments.map(comment => (
+                            <CommentsItem comment={comment} key={comment.id} />
+                          ))}
+                        </>
+                      )}
 
-                  <p className="title is-4">Comments:</p>
-
-                  {comments.map(comment => (
-                    <CommentsItem comment={comment} key={comment.id} />
-                  ))}
-
-                  {!isWritingComment && (
-                    <button
-                      onClick={() => handleToggleWriteComment(true)}
-                      data-cy="WriteCommentButton"
-                      type="button"
-                      className="button is-link"
-                    >
-                      Write a comment
-                    </button>
+                      {!isWritingComment && (
+                        <button
+                          onClick={() => handleToggleWriteComment(true)}
+                          data-cy="WriteCommentButton"
+                          type="button"
+                          className="button is-link"
+                        >
+                          Write a comment
+                        </button>
+                      )}
+                    </>
                   )}
                 </>
               )}

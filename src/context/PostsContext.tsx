@@ -8,25 +8,25 @@ type State = {
   isPostsLoading: boolean;
   postsError: string;
   handleFetchComments: (userId: number) => void;
-  hadndleOpenPost: (post: Post) => void;
+  handleOpenPost: (post: Post | null) => void;
 };
 
 const initialState: State = {
   posts: [],
-  isPostsLoading: false,
+  isPostsLoading: true,
   postsError: '',
   openedPost: null,
   handleFetchComments: () => {},
-  hadndleOpenPost: () => {},
+  handleOpenPost: () => {},
 };
 
 const PostsContext = createContext(initialState);
 
 type Action =
   | { type: 'posts/loaded'; payload: Post[] }
-  | { type: 'rejected'; payload: string }
-  | { type: 'posts/openPost'; payload: Post }
-  | { type: 'loading'; payload: boolean };
+  | { type: 'posts/rejected'; payload: string }
+  | { type: 'posts/openPost'; payload: Post | null }
+  | { type: 'posts/loading'; payload: boolean };
 
 type Props = {
   children: React.ReactNode;
@@ -34,7 +34,7 @@ type Props = {
 
 function reducer(state: State, action: Action) {
   switch (action.type) {
-    case 'loading':
+    case 'posts/loading':
       return { ...state, isPostsLoading: action.payload };
 
     case 'posts/loaded':
@@ -46,32 +46,36 @@ function reducer(state: State, action: Action) {
         openedPost: state.openedPost === action.payload ? null : action.payload,
       };
 
-    case 'rejected':
-      return { ...state, isPostsLoading: false, todosError: action.payload };
+    case 'posts/rejected':
+      return { ...state, isPostsLoading: false, postsError: action.payload };
     default:
       return state;
   }
 }
 
 const PostsProvider: React.FC<Props> = ({ children }) => {
+  // Can't fix it because of  Prettier
+  /* eslint-disable */
   const [{ posts, isPostsLoading, postsError, openedPost }, dispatch] =
     useReducer(reducer, initialState);
-
+  /* eslint-enable */
   const handleFetchComments = async (userId: number) => {
-    dispatch({ type: 'loading', payload: true });
+    dispatch({ type: 'posts/loading', payload: true });
     try {
       const fetchedPosts = await getPosts(userId);
 
       dispatch({ type: 'posts/loaded', payload: fetchedPosts });
     } catch {
       dispatch({
-        type: 'rejected',
+        type: 'posts/rejected',
         payload: 'Something went wrong',
       });
+    } finally {
+      dispatch({ type: 'posts/loading', payload: false });
     }
   };
 
-  const hadndleOpenPost = (post: Post) => {
+  const handleOpenPost = (post: Post | null) => {
     dispatch({ type: 'posts/openPost', payload: post });
   };
 
@@ -83,7 +87,7 @@ const PostsProvider: React.FC<Props> = ({ children }) => {
         postsError,
         openedPost,
         handleFetchComments,
-        hadndleOpenPost,
+        handleOpenPost,
       }}
     >
       {children}

@@ -43,16 +43,19 @@ function reducer(state: State, action: Action) {
       return { ...state, selectedUser: action.payload };
 
     case 'rejected':
-      return { ...state, isUsersLoading: false, todosError: action.payload };
+      return { ...state, isUsersLoading: false, usersError: action.payload };
     default:
       return state;
   }
 }
 
 const UsersProvider: React.FC<Props> = ({ children }) => {
+  // Can't fix it because of  Prettier
+  /* eslint-disable */
   const [{ users, selectedUser, isUsersLoading, usersError }, dispatch] =
     useReducer(reducer, initialState);
 
+  /* eslint-enable */
   useEffect(() => {
     const fetchUsers = async () => {
       dispatch({ type: 'loading', payload: true });
@@ -65,6 +68,8 @@ const UsersProvider: React.FC<Props> = ({ children }) => {
           type: 'rejected',
           payload: 'Something went wrong',
         });
+      } finally {
+        dispatch({ type: 'loading', payload: false });
       }
     };
 

@@ -3,17 +3,20 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import cn from 'classnames';
+import { useEffect } from 'react';
 import { PostsList } from './components/PostsList/PostsList';
 import { PostDetails } from './components/PostDetails/PostDetails';
 import { UserSelector } from './components/UserSelector/UserSelector';
 import { Loader } from './components/Loader';
-import { useEffect } from 'react';
 import { usePosts, useUsers } from './context';
 
 export const App: React.FC = () => {
-  const { selectedUser, usersError } = useUsers();
-  const { posts, isPostsLoading, handleFetchComments, openedPost } = usePosts();
-
+  const { selectedUser } = useUsers();
+  // Prettier does it)))
+  /* eslint-disable */
+  const { posts, isPostsLoading, handleFetchComments, openedPost, postsError } =
+    usePosts();
+  /* eslint-disable */
   useEffect(() => {
     if (selectedUser) {
       handleFetchComments(selectedUser.id);
@@ -41,24 +44,26 @@ export const App: React.FC = () => {
                       <Loader />
                     ) : (
                       <>
-                        {usersError && (
+                        {postsError ? (
                           <div
                             className="notification is-danger"
                             data-cy="PostsLoadingError"
                           >
                             Something went wrong!
                           </div>
-                        )}
-
-                        {!posts.length ? (
-                          <div
-                            className="notification is-warning"
-                            data-cy="NoPostsYet"
-                          >
-                            No posts yet
-                          </div>
                         ) : (
-                          <PostsList />
+                          <>
+                            {!posts.length ? (
+                              <div
+                                className="notification is-warning"
+                                data-cy="NoPostsYet"
+                              >
+                                No posts yet
+                              </div>
+                            ) : (
+                              <PostsList />
+                            )}
+                          </>
                         )}
                       </>
                     )}
