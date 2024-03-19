@@ -2,22 +2,27 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import { Comment } from '../types/Comment';
 import { addComment } from '../api/api';
+import ErrorMessage from './ErrorMessage';
 
-type Props = {
+interface Props {
   postId: number;
-  onAddNewComment: (newComment: Comment) => void;
+  onAddNewComment: (comment: Comment) => void;
+}
+
+const initializeFormValues = (postId: number) => {
+  return {
+    postId,
+    name: '',
+    email: '',
+    body: '',
+  };
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   postId,
   onAddNewComment,
 }) => {
-  const formValues = {
-    postId,
-    name: '',
-    email: '',
-    body: '',
-  };
+  const formValues = initializeFormValues(postId);
 
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<Omit<Comment, 'id'>>(formValues);
@@ -164,11 +169,7 @@ export const NewCommentForm: React.FC<Props> = ({
             })}
           />
         </div>
-        {!!formErrors?.body && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Enter some text
-          </p>
-        )}
+        {!!formErrors?.body && <ErrorMessage message="Some Error" />}
       </div>
 
       <div className="field is-grouped">

@@ -42,8 +42,7 @@ export const App: React.FC = () => {
       setIsLoading(true);
       getUserPosts(selectedUser.id)
         .then(posts => setVisiblePosts(posts))
-        .catch(() => setIsError(true))
-        .finally(() => setIsLoading(false));
+        .catch(() => setIsError(true));
     }
 
     return () => setIsLoading(false);

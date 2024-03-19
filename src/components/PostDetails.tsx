@@ -30,12 +30,15 @@ export const PostDetails: React.FC<Props> = ({
   };
 
   const removeComment = (commentId: number) => {
-    setComments(currentComments =>
-      currentComments.filter(comment => comment.id !== commentId),
-    );
-
-    // eslint-disable-next-line no-console
-    deleteComment(commentId).catch(error => console.error(error));
+    deleteComment(commentId)
+      .then(() => {
+        setComments(currentComments =>
+          currentComments.filter(comment => comment.id !== commentId),
+        );
+      })
+      .catch(error => {
+        throw new Error(`Failed to delete comment: ${error.message}`);
+      });
   };
 
   useEffect(() => {
@@ -46,8 +49,6 @@ export const PostDetails: React.FC<Props> = ({
         .catch(() => setIsError(true))
         .finally(() => setIsLoading(false));
     }
-
-    return () => setIsError(false);
   }, [selectedPost]);
 
   return (
