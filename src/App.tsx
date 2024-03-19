@@ -43,11 +43,11 @@ export const App: React.FC = () => {
       getUserPosts(selectedUser.id)
         .then(posts => {
           setVisiblePosts(posts);
-          setIsLoading(false); // Встановлюємо isLoading в false після отримання постів
+          setIsLoading(false);
         })
         .catch(() => setIsError(true));
     } else {
-      setIsLoading(false); // Встановлюємо isLoading в false, якщо selectedUser є нульовим
+      setIsLoading(false);
     }
   }, [selectedUser]);
 
