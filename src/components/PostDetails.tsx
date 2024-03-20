@@ -11,22 +11,22 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
-  const [addComment, setAddComment] = useState<boolean>(false);
+  const [isAddComment, setIsAddComment] = useState<boolean>(false);
 
   useEffect(() => {
     if (selectedPost) {
-      setLoading(true);
+      setIsLoading(true);
       setComments([]);
-      setAddComment(false);
+      setIsAddComment(false);
 
       client
         .get(`/comments?postId=${selectedPost?.id}`)
         .then(data => setComments(data as Comment[]))
         .catch(() => setError('Something went wrong'))
         .finally(() => {
-          setLoading(false);
+          setIsLoading(false);
         });
     }
   }, [selectedPost]);
@@ -54,64 +54,70 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         </div>
 
         <div className="block">
-          {loading && <Loader />}
+          {isLoading && <Loader />}
 
-          {!loading && error && (
+          {!isLoading && error && (
             <div className="notification is-danger" data-cy="CommentsError">
               {error}
             </div>
           )}
 
-          {!loading && !comments.length && !error && (
+          {!isLoading && !comments.length && !error && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {!loading && comments.length > 0 && (
-            <p className="title is-4">Comments:</p>
+          {!isLoading && !!comments.length && (
+            <>
+              <p className="title is-4">Comments:</p>
+
+              {comments.map((comment: Comment) => {
+                const { id, email, name, body } = comment;
+
+                return (
+                  <article
+                    key={id}
+                    className="message is-small"
+                    data-cy="Comment"
+                  >
+                    <div className="message-header">
+                      <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                        {name}
+                      </a>
+                      <button
+                        data-cy="CommentDelete"
+                        type="button"
+                        className="delete is-small"
+                        aria-label="delete"
+                        onClick={() => handleDelete(id)}
+                      >
+                        delete button
+                      </button>
+                    </div>
+
+                    <div className="message-body" data-cy="CommentBody">
+                      {body}
+                    </div>
+                  </article>
+                );
+              })}
+            </>
           )}
 
-          {comments.map((comment: Comment) => (
-            <article
-              key={comment.id}
-              className="message is-small"
-              data-cy="Comment"
-            >
-              <div className="message-header">
-                <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                  {comment.name}
-                </a>
-                <button
-                  data-cy="CommentDelete"
-                  type="button"
-                  className="delete is-small"
-                  aria-label="delete"
-                  onClick={() => handleDelete(comment.id)}
-                >
-                  delete button
-                </button>
-              </div>
-
-              <div className="message-body" data-cy="CommentBody">
-                {comment.body}
-              </div>
-            </article>
-          ))}
-
-          {!loading && !addComment && !error && (
+          {!isLoading && !isAddComment && !error && (
             <button
               data-cy="WriteCommentButton"
               type="button"
               className="button is-link"
-              onClick={() => setAddComment(true)}
+              onClick={() => setIsAddComment(true)}
             >
               Write a comment
             </button>
           )}
         </div>
 
-        {addComment && (
+        {isAddComment && (
           <NewCommentForm postId={selectedPost?.id} setComments={setComments} />
         )}
       </div>

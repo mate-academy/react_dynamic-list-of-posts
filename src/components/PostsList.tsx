@@ -1,6 +1,6 @@
-import classNames from 'classnames';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Post } from '../types/Post';
+import { PostItem } from './PostItem';
 
 type Props = {
   posts: Post[];
@@ -13,13 +13,16 @@ export const PostsList: React.FC<Props> = ({
   selectedPost,
   setSelectedPost,
 }) => {
-  const handlePostInfo = (id: number) => {
-    if (selectedPost?.id === id) {
-      setSelectedPost(null);
-    } else {
-      setSelectedPost(posts.find(post => post.id === id) || null);
-    }
-  };
+  const handlePostInfo = useCallback(
+    (id: number) => {
+      if (selectedPost?.id === id) {
+        setSelectedPost(null);
+      } else {
+        setSelectedPost(posts.find(post => post.id === id) || null);
+      }
+    },
+    [posts, selectedPost?.id, setSelectedPost],
+  );
 
   return (
     <div data-cy="PostsList">
@@ -37,24 +40,16 @@ export const PostsList: React.FC<Props> = ({
 
         <tbody>
           {posts.map(post => {
-            return (
-              <tr data-cy="Post" key={post.id}>
-                <td data-cy="PostId">{post.id}</td>
-                <td data-cy="PostTitle">{post.title}</td>
+            const { id, title } = post;
 
-                <td className="has-text-right is-vcentered">
-                  <button
-                    type="button"
-                    data-cy="PostButton"
-                    className={classNames('button is-link', {
-                      'is-light': selectedPost?.id !== post.id,
-                    })}
-                    onClick={() => handlePostInfo(post.id)}
-                  >
-                    {selectedPost?.id === post.id ? 'Close' : 'Open'}
-                  </button>
-                </td>
-              </tr>
+            return (
+              <PostItem
+                key={id}
+                id={id}
+                title={title}
+                selectedPostId={selectedPost?.id}
+                handlePostInfo={handlePostInfo}
+              />
             );
           })}
         </tbody>

@@ -14,7 +14,7 @@ import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState('');
   const [selectedUser, setSelectedUser] = useState<number>(0);
   const [userPosts, setUserPosts] = useState<Post[]>([]);
@@ -29,18 +29,20 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     if (selectedUser !== 0) {
-      setLoading(true);
+      setIsLoading(true);
       setError('');
 
       client
         .get<Post[]>(`/posts?userId=${selectedUser}`)
         .then(setUserPosts)
         .catch(() => setError('Something went wrong!'))
-        .finally(() => setLoading(false));
+        .finally(() => setIsLoading(false));
     }
 
     setSelectedPost(null);
-  }, [selectedUser, setLoading]);
+  }, [selectedUser, setIsLoading]);
+
+  const hasPosts = !!userPosts.length;
 
   return (
     <main className="section">
@@ -61,7 +63,7 @@ export const App: React.FC = () => {
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {loading && <Loader />}
+                {isLoading && <Loader />}
 
                 {error && (
                   <div
@@ -72,13 +74,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!loading && !!selectedUser && !userPosts.length && !error && (
+                {!isLoading && !!selectedUser && !hasPosts && !error && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {!loading && !!selectedUser && !error && (
+                {!isLoading && !!selectedUser && hasPosts && (
                   <PostsList
                     posts={userPosts}
                     selectedPost={selectedPost}

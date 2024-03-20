@@ -10,18 +10,20 @@ type Props = {
 
 export const UserSelector: React.FC<Props> = React.memo(
   ({ users, selectedUser, setSelectedUser }) => {
-    const [showDropdown, setShowDropdown] = useState<boolean>(false);
+    const [isDropdown, setIsDropdown] = useState<boolean>(false);
 
     const handleSelectUser = (id: number) => {
       setSelectedUser(id);
-      setShowDropdown(false);
+      setIsDropdown(false);
     };
+
+    const chosenUser = users.find(user => user.id === selectedUser)?.name;
 
     return (
       <div
         data-cy="UserSelector"
         className={classNames('dropdown', {
-          'is-active': showDropdown,
+          'is-active': isDropdown,
         })}
       >
         <div className="dropdown-trigger">
@@ -30,14 +32,10 @@ export const UserSelector: React.FC<Props> = React.memo(
             className="button"
             aria-haspopup="true"
             aria-controls="dropdown-menu"
-            onClick={() => setShowDropdown(prev => !prev)}
-            onBlur={() => setShowDropdown(false)}
+            onClick={() => setIsDropdown(prev => !prev)}
+            onBlur={() => setIsDropdown(false)}
           >
-            <span>
-              {!selectedUser
-                ? 'Choose a user'
-                : users.find(user => user.id === selectedUser)?.name}
-            </span>
+            <span>{chosenUser || 'Choose a user'}</span>
 
             <span className="icon is-small">
               <i className="fas fa-angle-down" aria-hidden="true" />
@@ -47,21 +45,29 @@ export const UserSelector: React.FC<Props> = React.memo(
 
         <div className="dropdown-menu" id="dropdown-menu" role="menu">
           <div className="dropdown-content">
-            {users.map(user => (
-              <a
-                key={user.id}
-                href={`#user-${user.id}`}
-                className={classNames('dropdown-item', {
-                  'is-active': user.id === selectedUser,
-                })}
-                onMouseDown={() => handleSelectUser(user.id)}
-              >
-                {user.name}
-              </a>
-            ))}
+            {users.map(user => {
+              const { id, name } = user;
+
+              return (
+                <a
+                  key={id}
+                  href={`#user-${id}`}
+                  className={classNames('dropdown-item', {
+                    'is-active': id === selectedUser,
+                  })}
+                  onMouseDown={() => handleSelectUser(id)}
+                >
+                  {name}
+                </a>
+              );
+            })}
           </div>
         </div>
       </div>
     );
   },
 );
+
+// Trying to remove this linter error on GitHub
+// Error:   11:46  error  Component definition is missing display name  react/display-name
+UserSelector.displayName = 'UserSelector';
