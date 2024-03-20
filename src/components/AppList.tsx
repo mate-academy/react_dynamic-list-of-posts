@@ -64,6 +64,7 @@ export const AppList: React.FC = () => {
                 {!selectedUser && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
+
                 {selectedUser && (
                   <>
                     {loading && <Loader />}
@@ -76,17 +77,17 @@ export const AppList: React.FC = () => {
                         {errorMessage}
                       </div>
                     )}
+
                     {!errorMessage && !loading && (
                       <>
-                        {posts.length === 0 && (
+                        {posts.length === 0 ? (
                           <div
                             className="notification is-warning"
                             data-cy="NoPostsYet"
                           >
                             No posts yet
                           </div>
-                        )}
-                        {!!posts.length && (
+                        ) : (
                           <PostsList
                             posts={posts}
                             selectedPost={selectedPost}

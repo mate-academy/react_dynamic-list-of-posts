@@ -5,7 +5,7 @@ import { Post } from '../types/Post';
 type Props = {
   posts: Post[];
   selectedPost: Post | null;
-  setSelectedPost: (p: Post | null) => void;
+  setSelectedPost: (post: Post | null) => void;
 };
 
 export const PostsList: React.FC<Props> = ({

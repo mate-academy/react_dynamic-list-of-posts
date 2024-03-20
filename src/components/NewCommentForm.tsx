@@ -6,10 +6,10 @@ import { Comment } from '../types/Comment';
 
 type Props = {
   comments: Comment[];
-  setComments: (c: Comment[]) => void;
-  setAddComment: (b: boolean) => void;
+  setComments: (comments: Comment[]) => void;
+  setAddComment: (addComment: boolean) => void;
   selectedPost: Post;
-  setErrorMessageComment: (s: string) => void;
+  setErrorMessageComment: (error: string) => void;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
@@ -23,6 +23,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorBody, setErrorBody] = useState(false);
   const [loading, setLoading] = useState(false);
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
