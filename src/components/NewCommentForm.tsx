@@ -1,12 +1,24 @@
-import React, { useContext, useState } from 'react';
-import { ListContext } from './ListContext';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import { addComment } from '../api/api';
+import { Post } from '../types/Post';
+import { Comment } from '../types/Comment';
 
-export const NewCommentForm: React.FC = () => {
-  const context = useContext(ListContext);
-  const { comments, setComments, setAddComment } = context;
-  const { selectedPost, setErrorMessageComment } = context;
+type Props = {
+  comments: Comment[];
+  setComments: (c: Comment[]) => void;
+  setAddComment: (b: boolean) => void;
+  selectedPost: Post;
+  setErrorMessageComment: (s: string) => void;
+};
+
+export const NewCommentForm: React.FC<Props> = ({
+  comments,
+  setComments,
+  setAddComment,
+  selectedPost,
+  setErrorMessageComment,
+}) => {
   const [errorName, setErrorName] = useState(false);
   const [errorEmail, setErrorEmail] = useState(false);
   const [errorBody, setErrorBody] = useState(false);
@@ -42,18 +54,18 @@ export const NewCommentForm: React.FC = () => {
   const handlerSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessageComment('');
-    setErrorName(!name);
-    setErrorEmail(!email);
-    setErrorBody(!body);
+    setErrorName(!name.trim());
+    setErrorEmail(!email.trim());
+    setErrorBody(!body.trim());
 
-    if (!!name && !!email && !!body) {
+    if (!!name.trim() && !!email.trim() && !!body.trim()) {
       setLoading(true);
 
       const newComment = {
         postId: selectedPost?.id,
-        name,
-        email,
-        body,
+        name: name.trim(),
+        email: email.trim(),
+        body: body.trim(),
       };
 
       addComment(newComment)

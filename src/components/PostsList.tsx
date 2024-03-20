@@ -1,11 +1,18 @@
-import React, { useContext } from 'react';
-import { ListContext } from './ListContext';
+import React from 'react';
 import classNames from 'classnames';
 import { Post } from '../types/Post';
 
-export const PostsList: React.FC = () => {
-  const { posts, selectedPost, setSelectedPost } = useContext(ListContext);
+type Props = {
+  posts: Post[];
+  selectedPost: Post | null;
+  setSelectedPost: (p: Post | null) => void;
+};
 
+export const PostsList: React.FC<Props> = ({
+  posts,
+  selectedPost,
+  setSelectedPost,
+}) => {
   const handleSelectPost = (post: Post) => {
     if (selectedPost === post) {
       setSelectedPost(null);

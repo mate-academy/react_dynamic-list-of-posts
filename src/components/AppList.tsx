@@ -1,15 +1,50 @@
-import React, { useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { PostsList } from './PostsList';
 import { PostDetails } from './PostDetails';
 import { UserSelector } from './UserSelector';
 import { Loader } from './Loader';
-import { ListContext } from './ListContext';
+import { User } from '../types/User';
+import { getPosts, getUsers } from '../api/api';
+import { Post } from '../types/Post';
 
 export const AppList: React.FC = () => {
-  const context = useContext(ListContext);
-  const { selectedUser, errorMessage, posts } = context;
-  const { isLoadingPosts, selectedPost } = context;
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setloading] = useState(false);
+
+  useEffect(() => {
+    setErrorMessage('');
+
+    getUsers()
+      .then(setUsers)
+      .catch(() => {
+        setErrorMessage('Something went wrong');
+      });
+  }, []);
+
+  useEffect(() => {
+    setErrorMessage('');
+    setSelectedPost(null);
+
+    if (selectedUser) {
+      setloading(true);
+
+      getPosts(selectedUser.id)
+        .then(data => {
+          setPosts(data);
+        })
+        .catch(() => {
+          setErrorMessage('Something went wrong');
+        })
+        .finally(() => {
+          setloading(false);
+        });
+    }
+  }, [selectedUser]);
 
   return (
     <main className="section">
@@ -18,38 +53,45 @@ export const AppList: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  users={users}
+                  selectedUser={selectedUser}
+                  setSelectedUser={setSelectedUser}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUser ? (
+                {!selectedUser && (
                   <p data-cy="NoSelectedUser">No user selected</p>
-                ) : (
+                )}
+                {selectedUser && (
                   <>
-                    {isLoadingPosts ? (
-                      <Loader />
-                    ) : (
+                    {loading && <Loader />}
+
+                    {errorMessage && !loading && (
+                      <div
+                        className="notification is-danger"
+                        data-cy="PostsLoadingError"
+                      >
+                        {errorMessage}
+                      </div>
+                    )}
+                    {!errorMessage && !loading && (
                       <>
-                        {errorMessage ? (
+                        {posts.length === 0 && (
                           <div
-                            className="notification is-danger"
-                            data-cy="PostsLoadingError"
+                            className="notification is-warning"
+                            data-cy="NoPostsYet"
                           >
-                            {errorMessage}
+                            No posts yet
                           </div>
-                        ) : (
-                          <>
-                            {posts.length === 0 ? (
-                              <div
-                                className="notification is-warning"
-                                data-cy="NoPostsYet"
-                              >
-                                No posts yet
-                              </div>
-                            ) : (
-                              <PostsList />
-                            )}
-                          </>
+                        )}
+                        {!!posts.length && (
+                          <PostsList
+                            posts={posts}
+                            selectedPost={selectedPost}
+                            setSelectedPost={setSelectedPost}
+                          />
                         )}
                       </>
                     )}
@@ -72,7 +114,7 @@ export const AppList: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails />}
+              {selectedPost && <PostDetails selectedPost={selectedPost} />}
             </div>
           </div>
         </div>

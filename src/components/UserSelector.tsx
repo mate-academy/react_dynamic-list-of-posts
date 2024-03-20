@@ -1,10 +1,18 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { ListContext } from './ListContext';
+import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 
-export const UserSelector: React.FC = () => {
-  const { users, selectedUser, setSelectedUser } = useContext(ListContext);
+type Props = {
+  users: User[];
+  selectedUser: User | null;
+  setSelectedUser: (u: User | null) => void;
+};
+
+export const UserSelector: React.FC<Props> = ({
+  users,
+  selectedUser,
+  setSelectedUser,
+}) => {
   const [isDropdownActive, setIsDropdownActive] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 

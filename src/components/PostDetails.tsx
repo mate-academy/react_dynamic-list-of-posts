@@ -1,14 +1,46 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { ListContext } from './ListContext';
-import { delComment } from '../api/api';
+import { delComment, getComments } from '../api/api';
+import { Post } from '../types/Post';
+import { Comment } from '../types/Comment';
 
-export const PostDetails: React.FC = () => {
-  const context = useContext(ListContext);
-  const { selectedPost, isLoadingComments } = context;
-  const { comments, delCommentFromState, addComment, setAddComment } = context;
-  const { errorMessageComment } = context;
+type Props = {
+  selectedPost: Post;
+};
+
+export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [errorMessageComment, setErrorMessageComment] = useState('');
+  const [addComment, setAddComment] = useState(false);
+  const [loading, setloading] = useState(false);
+
+  useEffect(() => {
+    setErrorMessageComment('');
+
+    if (selectedPost) {
+      setloading(true);
+
+      getComments(selectedPost.id)
+        .then(data => {
+          setComments(data);
+        })
+        .catch(() => {
+          setErrorMessageComment('Something went wrong');
+        })
+        .finally(() => {
+          setloading(false);
+        });
+    }
+  }, [selectedPost]);
+
+  const delCommentFromState = (commentId: number) => {
+    const currentComments = [...comments].filter(comment => {
+      return comment.id !== commentId;
+    });
+
+    setComments(currentComments);
+  };
 
   useEffect(() => {
     setAddComment(false);
@@ -35,7 +67,7 @@ export const PostDetails: React.FC = () => {
           </div>
 
           <div className="block">
-            {isLoadingComments ? (
+            {loading ? (
               <Loader />
             ) : (
               <>
@@ -104,7 +136,15 @@ export const PostDetails: React.FC = () => {
             )}
           </div>
 
-          {addComment && <NewCommentForm />}
+          {addComment && (
+            <NewCommentForm
+              comments={comments}
+              setComments={setComments}
+              setAddComment={setAddComment}
+              selectedPost={selectedPost}
+              setErrorMessageComment={setErrorMessageComment}
+            />
+          )}
         </div>
       )}
     </div>
