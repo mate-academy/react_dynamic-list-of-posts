@@ -23,6 +23,8 @@ export const App: React.FC = () => {
     }
   }, [selectedUser]);
 
+  const hasPosts = !!posts.length;
+
   return (
     <main className="section">
       <div className="container">
@@ -40,33 +42,27 @@ export const App: React.FC = () => {
 
                 {selectedUser && (
                   <>
-                    {isPostsLoading ? (
-                      <Loader />
-                    ) : (
-                      <>
-                        {postsError ? (
-                          <div
-                            className="notification is-danger"
-                            data-cy="PostsLoadingError"
-                          >
-                            Something went wrong!
-                          </div>
-                        ) : (
-                          <>
-                            {!posts.length ? (
-                              <div
-                                className="notification is-warning"
-                                data-cy="NoPostsYet"
-                              >
-                                No posts yet
-                              </div>
-                            ) : (
-                              <PostsList />
-                            )}
-                          </>
-                        )}
-                      </>
+                    {isPostsLoading && <Loader />}
+
+                    {!isPostsLoading && postsError && (
+                      <div
+                        className="notification is-danger"
+                        data-cy="PostsLoadingError"
+                      >
+                        Something went wrong!
+                      </div>
                     )}
+
+                    {!isPostsLoading && !hasPosts && !postsError && (
+                      <div
+                        className="notification is-warning"
+                        data-cy="NoPostsYet"
+                      >
+                        No posts yet
+                      </div>
+                    )}
+
+                    {!isPostsLoading && hasPosts && <PostsList />}
                   </>
                 )}
               </div>

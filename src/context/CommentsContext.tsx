@@ -11,6 +11,7 @@ type State = {
   handleToggleWriteComment: (toggleValue: boolean) => void;
   handleAddComment: (comment: Comment) => void;
   handleDeleteComment: (commentId: number) => void;
+  handleSetLoading: (value: boolean) => void;
 };
 
 const initialState: State = {
@@ -22,6 +23,7 @@ const initialState: State = {
   handleToggleWriteComment: () => {},
   handleAddComment: () => {},
   handleDeleteComment: () => {},
+  handleSetLoading: () => {},
 };
 
 const CommentsContext = createContext(initialState);
@@ -102,6 +104,10 @@ const CommentsProvider: React.FC<Props> = ({ children }) => {
     dispatch({ type: 'comments/deleteComment', payload: commentId });
   };
 
+  const handleSetLoading = (value: boolean) => {
+    dispatch({ type: 'comments/loading', payload: value });
+  };
+
   return (
     <CommentsContext.Provider
       value={{
@@ -113,6 +119,7 @@ const CommentsProvider: React.FC<Props> = ({ children }) => {
         handleToggleWriteComment,
         handleAddComment,
         handleDeleteComment,
+        handleSetLoading,
       }}
     >
       {children}

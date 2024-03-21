@@ -11,13 +11,14 @@ export const PostItem: React.FC<Props> = ({ post }) => {
 
   const { openedPost, handleOpenPost } = usePosts();
 
-  const { handleToggleWriteComment } = useComments();
+  const { handleToggleWriteComment, handleSetLoading } = useComments();
 
   const isPostOpen = (postId: number) => postId === openedPost?.id;
 
   const handleOpenPostClick = (postData: Post) => {
-    handleOpenPost(postData);
+    handleSetLoading(true);
     handleToggleWriteComment(false);
+    handleOpenPost(postData);
   };
 
   return (

@@ -22,6 +22,8 @@ export const PostDetails: React.FC = () => {
     }
   }, [openedPost]);
 
+  const hasComments = !!comments.length;
+
   return (
     <>
       {openedPost && (
@@ -36,46 +38,39 @@ export const PostDetails: React.FC = () => {
             </div>
 
             <div className="block">
-              {isCommentsLoading ? (
-                <Loader />
-              ) : (
+              {isCommentsLoading && <Loader />}
+
+              {!isCommentsLoading && commentsError && (
+                <div className="notification is-danger" data-cy="CommentsError">
+                  Something went wrong
+                </div>
+              )}
+
+              {!isCommentsLoading && !commentsError && !hasComments && (
+                <p className="title is-4" data-cy="NoCommentsMessage">
+                  No comments yet
+                </p>
+              )}
+
+              {!isCommentsLoading && hasComments && (
                 <>
-                  {commentsError ? (
-                    <div
-                      className="notification is-danger"
-                      data-cy="CommentsError"
-                    >
-                      Something went wrong
-                    </div>
-                  ) : (
-                    <>
-                      {!comments.length ? (
-                        <p className="title is-4" data-cy="NoCommentsMessage">
-                          No comments yet
-                        </p>
-                      ) : (
-                        <>
-                          <p className="title is-4">Comments:</p>
+                  <p className="title is-4">Comments:</p>
 
-                          {comments.map(comment => (
-                            <CommentsItem comment={comment} key={comment.id} />
-                          ))}
-                        </>
-                      )}
-
-                      {!isWritingComment && (
-                        <button
-                          onClick={() => handleToggleWriteComment(true)}
-                          data-cy="WriteCommentButton"
-                          type="button"
-                          className="button is-link"
-                        >
-                          Write a comment
-                        </button>
-                      )}
-                    </>
-                  )}
+                  {comments.map(comment => (
+                    <CommentsItem comment={comment} key={comment.id} />
+                  ))}
                 </>
+              )}
+
+              {!isWritingComment && !commentsError && !isCommentsLoading && (
+                <button
+                  onClick={() => handleToggleWriteComment(true)}
+                  data-cy="WriteCommentButton"
+                  type="button"
+                  className="button is-link"
+                >
+                  Write a comment
+                </button>
               )}
             </div>
 
