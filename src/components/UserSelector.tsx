@@ -1,42 +1,73 @@
-import React from 'react';
+import classNames from 'classnames';
+import React, { useState } from 'react';
+import { User } from '../types/User';
 
-export const UserSelector: React.FC = () => {
-  return (
-    <div data-cy="UserSelector" className="dropdown is-active">
-      <div className="dropdown-trigger">
-        <button
-          type="button"
-          className="button"
-          aria-haspopup="true"
-          aria-controls="dropdown-menu"
-        >
-          <span>Choose a user</span>
+type Props = {
+  users: User[];
+  selectedUser: number;
+  setSelectedUser: React.Dispatch<React.SetStateAction<number>>;
+};
 
-          <span className="icon is-small">
-            <i className="fas fa-angle-down" aria-hidden="true" />
-          </span>
-        </button>
-      </div>
+export const UserSelector: React.FC<Props> = React.memo(
+  ({ users, selectedUser, setSelectedUser }) => {
+    const [isDropdown, setIsDropdown] = useState<boolean>(false);
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+    const handleSelectUser = (id: number) => {
+      setSelectedUser(id);
+      setIsDropdown(false);
+    };
+
+    const chosenUser = users.find(user => user.id === selectedUser)?.name;
+
+    return (
+      <div
+        data-cy="UserSelector"
+        className={classNames('dropdown', {
+          'is-active': isDropdown,
+        })}
+      >
+        <div className="dropdown-trigger">
+          <button
+            type="button"
+            className="button"
+            aria-haspopup="true"
+            aria-controls="dropdown-menu"
+            onClick={() => setIsDropdown(prev => !prev)}
+            onBlur={() => setIsDropdown(false)}
+          >
+            <span>{chosenUser || 'Choose a user'}</span>
+
+            <span className="icon is-small">
+              <i className="fas fa-angle-down" aria-hidden="true" />
+            </span>
+          </button>
+        </div>
+
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div className="dropdown-content">
+            {users.map(user => {
+              const { id, name } = user;
+
+              return (
+                <a
+                  key={id}
+                  href={`#user-${id}`}
+                  className={classNames('dropdown-item', {
+                    'is-active': id === selectedUser,
+                  })}
+                  onMouseDown={() => handleSelectUser(id)}
+                >
+                  {name}
+                </a>
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  },
+);
+
+// Trying to remove this linter error on GitHub
+// Error:   11:46  error  Component definition is missing display name  react/display-name
+UserSelector.displayName = 'UserSelector';
