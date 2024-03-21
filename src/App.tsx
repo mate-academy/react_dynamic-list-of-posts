@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +8,44 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { SelectedUserContext } from './providers/UserProvider';
+import { SelectedPostContext } from './providers/PostProvider';
+import { getPosts } from './api/posts';
+import { Post } from './types/Post';
 
 export const App: React.FC = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isErrorOnPostsLoad, setIsErrorOnPostsLoad] = useState(false);
+
+  const { selectedUser } = useContext(SelectedUserContext);
+  const { selectedPost } = useContext(SelectedPostContext);
+
+  const isSomethingWrong = !!selectedUser && isErrorOnPostsLoad && !isLoading;
+
+  const isNoPosts =
+    !!selectedUser && !isErrorOnPostsLoad && !posts.length && !isLoading;
+
+  const isPostsShow =
+    !!selectedUser && !isErrorOnPostsLoad && !!posts.length && !isLoading;
+
+  useEffect(() => {
+    if (selectedUser) {
+      setIsLoading(true);
+
+      getPosts(selectedUser.id)
+        .then(loadedPosts => {
+          setPosts(loadedPosts);
+        })
+        .catch(() => {
+          setIsErrorOnPostsLoad(true);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [selectedUser]);
+
   return (
     <main className="section">
       <div className="container">
@@ -21,22 +57,28 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-                <Loader />
+                {!!selectedUser && isLoading && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {isSomethingWrong && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {isNoPosts && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                <PostsList />
+                {isPostsShow && <PostsList posts={posts} />}
               </div>
             </div>
           </div>
@@ -48,11 +90,11 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': !!selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {!!selectedPost && <PostDetails />}
             </div>
           </div>
         </div>
