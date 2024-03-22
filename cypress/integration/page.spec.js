@@ -2,11 +2,11 @@
 /// <reference types="../support" />
 
 const page = {
-  mockUsers: () => cy.intercept('**/users', { fixture: 'users' }).as('usersRequest'),
-  mockUser1Posts: () => cy.intercept('**/posts?userId=1', { fixture: 'user1Posts' }).as('user1PostsRequest'),
-  mockUser2Posts: () => cy.intercept('**/posts?userId=2', { fixture: 'user2Posts' }).as('user2PostsRequest'),
-  mockPost1Comments: () => cy.intercept('**/comments?postId=1', { fixture: 'post1Comments' }).as('post1CommentsRequest'),
-  mockPost2Comments: () => cy.intercept('**/comments?postId=2', { fixture: 'post2Comments' }).as('post2CommentsRequest'),
+  mockUsers: () => cy.intercept('**/users', {fixture: 'users'}).as('usersRequest'),
+  mockUser1Posts: () => cy.intercept('**/posts?userId=1', {fixture: 'user1Posts'}).as('user1PostsRequest'),
+  mockUser2Posts: () => cy.intercept('**/posts?userId=2', {fixture: 'user2Posts'}).as('user2PostsRequest'),
+  mockPost1Comments: () => cy.intercept('**/comments?postId=1', {fixture: 'post1Comments'}).as('post1CommentsRequest'),
+  mockPost2Comments: () => cy.intercept('**/comments?postId=2', {fixture: 'post2Comments'}).as('post2CommentsRequest'),
 
   mockError: (url, requestAlias = '') => {
     const errorResponse = {
@@ -17,7 +17,7 @@ const page = {
     return cy.intercept(url, errorResponse).as(requestAlias);
   },
 
-  spyOn: (url, spyAlias, response = { body: [] }) => {
+  spyOn: (url, spyAlias, response = {body: []}) => {
     const spy = cy.stub()
       .callsFake(req => req.reply(response))
       .as(spyAlias);
@@ -26,20 +26,20 @@ const page = {
   },
 
   spyOnCommentsDelete: (id) => {
-    const options = { method: 'DELETE', url: `**/comments/${id}` };
+    const options = {method: 'DELETE', url: `**/comments/${id}`};
     const spy = cy.stub()
-      .callsFake(req => req.reply({ statusCode: 200, body: '1' }))
+      .callsFake(req => req.reply({statusCode: 200, body: '1'}))
       .as(`comments${id}Delete`);
 
     cy.intercept(options, spy).as(`comments${id}DeleteRequest`);
   },
 
   spyOnCommentsPost: () => {
-    const options = { method: 'POST', url: '**/comments' };
+    const options = {method: 'POST', url: '**/comments'};
     const spy = cy.stub()
       .callsFake(req => req.reply({
         statusCode: 201,
-        body: Object.assign(req.body, { id: Math.random() }),
+        body: Object.assign(req.body, {id: Math.random()}),
       }))
       .as('commentsPost');
 
@@ -47,7 +47,7 @@ const page = {
   },
 
   mockCommentPostError: () => {
-    const options = { method: 'POST', url: '**/comments' };
+    const options = {method: 'POST', url: '**/comments'};
     const errorResponse = {
       statusCode: 404,
       body: '404 Not Found!',
@@ -251,7 +251,7 @@ describe('', () => {
   })
 
   describe('UserSelector', () => {
-    const { el, button, users, selectedUser } = userSelector;
+    const {el, button, users, selectedUser} = userSelector;
 
     describe('', () => {
       it('should have all the loaded users', () => {
@@ -262,7 +262,7 @@ describe('', () => {
       });
 
       it('should not have users hardcoded', () => {
-        cy.intercept('**/users', { fixture: 'someUsers' })
+        cy.intercept('**/users', {fixture: 'someUsers'})
         cy.visit('/');
 
         users().should('have.length', 3);
@@ -482,7 +482,7 @@ describe('', () => {
     describe('if API send no posts', () => {
       beforeEach(() => {
         page.mockUsers();
-        cy.intercept('**/posts?userId=1', { body: [] }).as('user1PostsRequest');
+        cy.intercept('**/posts?userId=1', {body: []}).as('user1PostsRequest');
         cy.visit('/');
 
         userSelector.select(0);
@@ -825,7 +825,7 @@ describe('', () => {
 
     describe('after empty comments received', () => {
       beforeEach(() => {
-        cy.intercept('**/comments?postId=1', { body: [] }).as('post1CommentsRequest');
+        cy.intercept('**/comments?postId=1', {body: []}).as('post1CommentsRequest');
         page.postButton(0).click();
         page.waitForRequest('@post1CommentsRequest');
       });
@@ -861,7 +861,7 @@ describe('', () => {
       describe('', () => {
         beforeEach(() => {
           cy.clock();
-          page.spyOn('**/comments?postId=2', 'post2Coments', { fixture: 'post2Comments' });
+          page.spyOn('**/comments?postId=2', 'post2Coments', {fixture: 'post2Comments'});
           page.postButton(1).click();
         });
 
@@ -1153,9 +1153,9 @@ describe('', () => {
     });
 
     it('should hide NoCommentsMessage after adding the first comment', () => {
-      cy.intercept('**/comments?postId=3', { body: [] }).as('post3CommentsRequest'),
+      cy.intercept('**/comments?postId=3', {body: []}).as('post3CommentsRequest'),
 
-      page.postButton(2).click();
+        page.postButton(2).click();
       page.waitForRequest('@post3CommentsRequest');
 
       postDetails.writeCommentButton().click();
