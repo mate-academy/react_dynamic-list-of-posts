@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { UserListContext } from './listContext';
 
 export const PostDetails: React.FC = () => {
+  const { isLoader, error, comments } = useContext(UserListContext);
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -18,39 +21,48 @@ export const PostDetails: React.FC = () => {
         </div>
 
         <div className="block">
-          <Loader />
-
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
+          {isLoader && <Loader />}
+          {error && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
             </div>
+          )}
+          {!comments.length ? (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          ) : (
+            <>
+              <p className="title is-4">Comments:</p>
+              {comments.map(com => (
+                <article
+                  className="message is-small"
+                  data-cy="Comment"
+                  key={com.id}
+                >
+                  <div className="message-header">
+                    <a href={`mailto:${com.email}`} data-cy="CommentAuthor">
+                      {com.name}
+                    </a>
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                    >
+                      delete button
+                    </button>
+                  </div>
 
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
+                  <div className="message-body" data-cy="CommentBody">
+                    {com.body}
+                  </div>
+                </article>
+              ))}
+            </>
+          )}
 
-          <article className="message is-small" data-cy="Comment">
+          {/* <article className="message is-small" data-cy="Comment">
             <div className="message-header">
               <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
                 Misha Hrynko
@@ -68,9 +80,9 @@ export const PostDetails: React.FC = () => {
             <div className="message-body" data-cy="CommentBody">
               One more comment
             </div>
-          </article>
+          </article> */}
 
-          <article className="message is-small" data-cy="Comment">
+          {/* <article className="message is-small" data-cy="Comment">
             <div className="message-header">
               <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
                 Misha Hrynko
@@ -89,7 +101,7 @@ export const PostDetails: React.FC = () => {
             <div className="message-body" data-cy="CommentBody">
               {'Multi\nline\ncomment'}
             </div>
-          </article>
+          </article> */}
 
           <button
             data-cy="WriteCommentButton"
