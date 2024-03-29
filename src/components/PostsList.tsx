@@ -10,10 +10,10 @@ export const PostsList: React.FC = () => {
 
   useEffect(() => {
     if (selectedUser) {
-      dispatch({ type: 'loaderPost', payload: false });
       getPosts(selectedUser.id)
         .then(response => {
           dispatch({ type: 'setPosts', payload: response });
+          dispatch({ type: 'loaderPost', payload: false });
         })
         .catch(() => {
           dispatch({ type: 'setErrorPosts', payload: 'Something went wrong!' });
@@ -22,7 +22,7 @@ export const PostsList: React.FC = () => {
           dispatch({ type: 'loaderPost', payload: false });
         });
     }
-  }, [selectedUser]);
+  }, [selectedUser, dispatch]);
 
   const openPost = (post: Post) => {
     if (currentPost?.id === post.id) {
