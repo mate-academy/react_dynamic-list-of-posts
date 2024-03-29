@@ -19,15 +19,15 @@ export const NewCommentForm: React.FC = () => {
   const handleAddComment = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (inputName.trim() === '') {
+    if (!inputName.trim()) {
       setNameError(true);
     }
 
-    if (inputEmail.trim() === '') {
+    if (!inputEmail.trim()) {
       setEmailError(true);
     }
 
-    if (inputBody.trim() === '') {
+    if (!inputBody.trim()) {
       setBodyError(true);
     }
 
