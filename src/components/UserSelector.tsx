@@ -1,13 +1,19 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { getPosts, getUsers } from './todosApi/api-todos';
 import { UserListContext } from './listContext';
-import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
   const [isDropdown, setIsDrobdown] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const { users, setUsers, setPost, fetchUserComments, setIsLoader } =
-    useContext(UserListContext);
+  const {
+    users,
+    setUsers,
+    setPost,
+    fetchUserComments,
+    setIsLoader,
+    setErrorPosts,
+    selectedUser,
+    setSelectedUser,
+  } = useContext(UserListContext);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -18,9 +24,14 @@ export const UserSelector: React.FC = () => {
         .then(posts => {
           setPost(posts);
           posts.forEach(post => fetchUserComments(post.id));
-          setIsLoader(false);
         })
-        .catch(() => {});
+        .catch(() => {
+          setErrorPosts(true);
+        })
+        .finally(() => {
+          setIsLoader(false);
+        });
+
       setIsDrobdown(false);
       const usersName = users.find(u => u.id === userId);
 

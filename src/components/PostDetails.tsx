@@ -4,7 +4,7 @@ import { NewCommentForm } from './NewCommentForm';
 import { UserListContext } from './listContext';
 
 export const PostDetails: React.FC = () => {
-  const { isLoader, error, comments } = useContext(UserListContext);
+  const { isLoader, errorComments, comments } = useContext(UserListContext);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -22,7 +22,7 @@ export const PostDetails: React.FC = () => {
 
         <div className="block">
           {isLoader && <Loader />}
-          {error && (
+          {errorComments && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>

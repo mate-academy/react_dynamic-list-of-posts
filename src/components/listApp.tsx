@@ -7,7 +7,9 @@ import { PostDetails } from './PostDetails';
 import { UserListContext } from './listContext';
 
 export const ListApp: React.FC = () => {
-  const { users, isLoader, error, detail } = useContext(UserListContext);
+  const { isLoader, errorPosts, detail, post, selectedUser } =
+    useContext(UserListContext);
+  // const userNames = users.find(nam => nam.id);
 
   return (
     <main className="section">
@@ -20,11 +22,11 @@ export const ListApp: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!users.length && (
+                {!selectedUser && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
                 {isLoader && <Loader />}
-                {error && (
+                {errorPosts && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -32,11 +34,11 @@ export const ListApp: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-                {/* {post.length === 0 && users.length > 0 && (
+                {!post.length && selectedUser && !errorPosts && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
-                )} */}
+                )}
                 {!isLoader && <PostsList />}
               </div>
             </div>
