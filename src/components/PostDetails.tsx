@@ -3,7 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Context, DispatchContext } from '../Store';
 import { deleteComment, getComments } from '../api/coments';
-
+//dfghjhcg
 export const PostDetails: React.FC = () => {
   const { currentPost, errorComments, comments, writeCommentActive } =
     useContext(Context);
