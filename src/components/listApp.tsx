@@ -7,7 +7,7 @@ import { PostDetails } from './PostDetails';
 import { UserListContext } from './listContext';
 
 export const ListApp: React.FC = () => {
-  const { users, isLoader, error, post, detail } = useContext(UserListContext);
+  const { users, isLoader, error, detail } = useContext(UserListContext);
 
   return (
     <main className="section">
@@ -32,12 +32,12 @@ export const ListApp: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-                {post.length === 0 && users.length > 0 && (
+                {/* {post.length === 0 && users.length > 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
-                )}
-                <PostsList />
+                )} */}
+                {!isLoader && <PostsList />}
               </div>
             </div>
           </div>

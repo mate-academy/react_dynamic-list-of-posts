@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { getPosts, getUsers } from './todosApi/api-todos';
 import { UserListContext } from './listContext';
 import { User } from '../types/User';
@@ -9,22 +9,31 @@ export const UserSelector: React.FC = () => {
   const { users, setUsers, setPost, fetchUserComments, setIsLoader } =
     useContext(UserListContext);
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   const useUserHandler = (userId: number) => {
     setIsLoader(true);
-    if (userId) {
+    if (userId !== undefined) {
       getPosts(userId)
         .then(posts => {
           setPost(posts);
           posts.forEach(post => fetchUserComments(post.id));
+          setIsLoader(false);
         })
         .catch(() => {});
-      setInterval(() => {
-        setIsLoader(false);
-      }, 1000);
       setIsDrobdown(false);
       const usersName = users.find(u => u.id === userId);
 
       setSelectedUser(usersName || null);
+    }
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setIsDrobdown(false);
     }
   };
 
@@ -42,10 +51,20 @@ export const UserSelector: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
   }, []);
 
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      onClick={() => handleClickOutside}
+      ref={dropdownRef}
+      data-cy="UserSelector"
+      className={isDropdown ? 'dropdown is-active' : 'dropdown'}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
@@ -61,28 +80,25 @@ export const UserSelector: React.FC = () => {
           </span>
         </button>
       </div>
-      {isDropdown && (
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          <div className="dropdown-content">
-            {!users.length && (
-              <a href="#user-2" className="dropdown-item is-active">
-                Choose a user
-              </a>
-            )}
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        <div className="dropdown-content">
+          {users.map(use => (
+            <a
+              href={`#${use.id}`}
+              className={
+                selectedUser && selectedUser.id === use.id
+                  ? 'dropdown-item is-active'
+                  : 'dropdown-item'
+              }
+              key={use.id}
+              // eslint-disable-next-line react-hooks/rules-of-hooks
+              onClick={() => useUserHandler(use.id)}
+            >
+              {use.name}
+            </a>
+          ))}
 
-            {users.map(use => (
-              <a
-                href={`#${use.id}`}
-                className="dropdown-item"
-                key={use.id}
-                // eslint-disable-next-line react-hooks/rules-of-hooks
-                onClick={() => useUserHandler(use.id)}
-              >
-                {use.name}
-              </a>
-            ))}
-
-            {/* <a href="#user-2" className="dropdown-item is-active">
+          {/* <a href="#user-2" className="dropdown-item is-active">
             Ervin Howell
           </a>
           <a href="#user-3" className="dropdown-item">
@@ -94,9 +110,8 @@ export const UserSelector: React.FC = () => {
           <a href="#user-5" className="dropdown-item">
             Chelsey Dietrich
           </a> */}
-          </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };
