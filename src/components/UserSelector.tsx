@@ -30,9 +30,10 @@ export const UserSelector: React.FC = () => {
           aria-controls="dropdown-menu"
           onClick={() => setFocused(!focused)}
           onBlur={() => {
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
               setFocused(!focused);
-            }, 400);
+              clearTimeout(timeout);
+            }, 380);
           }}
         >
           {selectedUser ? (
