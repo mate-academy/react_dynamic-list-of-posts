@@ -6,8 +6,13 @@ export const PostsList: React.FC = () => {
   const { post, setDetail, detail } = useContext(UserListContext);
 
   const handlePostClick = (postId: number) => {
-    setDetail(prev => !prev);
-    setSelectedPostId(postId);
+    if (postId === selectedPostId && detail) {
+      setSelectedPostId(null);
+      setDetail(false);
+    } else {
+      setSelectedPostId(postId);
+      setDetail(true);
+    }
   };
 
   return (
