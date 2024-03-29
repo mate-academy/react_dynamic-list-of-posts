@@ -28,7 +28,7 @@ export const PostDetails: React.FC = () => {
           setLoaderComments(false);
         });
     }
-  }, [currentPost, id, dispatch]);
+  }, [currentPost, dd, dispatch]);
 
   const handleDeleteComment = (commentId: number) => {
     if (currentPost && comments) {
