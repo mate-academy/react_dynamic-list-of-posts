@@ -55,7 +55,7 @@ export const ListApp: React.FC = () => {
           >
             <div className="tile is-child box is-success ">
               {loaderDetails && <Loader />}
-              {loaderDetails && selectedUser && post.length > 0 && (
+              {!loaderDetails && selectedUser && post.length > 0 && (
                 <PostDetails />
               )}
             </div>

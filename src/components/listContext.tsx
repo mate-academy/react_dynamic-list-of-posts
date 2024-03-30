@@ -72,13 +72,10 @@ export const ListContext: React.FC<PropsContext> = ({ children }) => {
 
   const fetchUserComments = (postId: number) => {
     if (postId) {
-      setIsLoaderDetails(true);
       getComments(postId)
         .then(setComments)
         .catch(() => {})
-        .finally(() => {
-          setIsLoaderDetails(false);
-        });
+        .finally(() => {});
     }
   };
 
