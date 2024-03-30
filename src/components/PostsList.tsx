@@ -2,17 +2,10 @@ import React, { useContext } from 'react';
 import { UserListContext } from './listContext';
 
 export const PostsList: React.FC = () => {
-  const {
-    post,
-    setDetail,
-    detail,
-    selectedPostId,
-    setSelectedPostId,
-    setIsLoaderDetails,
-  } = useContext(UserListContext);
+  const { post, setDetail, detail, selectedPostId, setSelectedPostId } =
+    useContext(UserListContext);
 
   const handlePostClick = (postId: number) => {
-    setIsLoaderDetails(true);
     if (postId === selectedPostId && detail) {
       setSelectedPostId(null);
       setDetail(false);
@@ -20,10 +13,6 @@ export const PostsList: React.FC = () => {
       setSelectedPostId(postId);
       setDetail(true);
     }
-
-    setTimeout(() => {
-      setIsLoaderDetails(false);
-    }, 800);
   };
 
   return (

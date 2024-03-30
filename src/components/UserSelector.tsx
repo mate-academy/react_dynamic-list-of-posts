@@ -18,7 +18,7 @@ export const UserSelector: React.FC = () => {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const useUserHandler = (userId: number) => {
+  const handleSelectUser = (userId: number) => {
     setIsLoader(true);
     if (userId !== undefined) {
       getPosts(userId)
@@ -105,7 +105,7 @@ export const UserSelector: React.FC = () => {
               }
               key={use.id}
               // eslint-disable-next-line react-hooks/rules-of-hooks
-              onClick={() => useUserHandler(use.id)}
+              onClick={() => handleSelectUser(use.id)}
             >
               {use.name}
             </a>

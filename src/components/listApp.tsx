@@ -34,7 +34,7 @@ export const ListApp: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-                {!post.length && selectedUser && !errorPosts && (
+                {!post.length && selectedUser && !errorPosts && !isLoader && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
@@ -55,7 +55,7 @@ export const ListApp: React.FC = () => {
           >
             <div className="tile is-child box is-success ">
               {loaderDetails && <Loader />}
-              {!loaderDetails && selectedUser && post.length > 0 && (
+              {loaderDetails && selectedUser && post.length > 0 && (
                 <PostDetails />
               )}
             </div>
