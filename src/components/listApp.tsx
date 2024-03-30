@@ -7,7 +7,7 @@ import { PostDetails } from './PostDetails';
 import { UserListContext } from './listContext';
 
 export const ListApp: React.FC = () => {
-  const { isLoader, errorPosts, detail, post, selectedUser } =
+  const { isLoader, errorPosts, detail, post, selectedUser, loaderDetails } =
     useContext(UserListContext);
   // const userNames = users.find(nam => nam.id);
 
@@ -54,7 +54,10 @@ export const ListApp: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {loaderDetails && <Loader />}
+              {!loaderDetails && selectedUser && post.length > 0 && (
+                <PostDetails />
+              )}
             </div>
           </div>
         </div>

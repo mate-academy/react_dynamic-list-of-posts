@@ -13,6 +13,7 @@ export const UserSelector: React.FC = () => {
     setErrorPosts,
     selectedUser,
     setSelectedUser,
+    setDetail,
   } = useContext(UserListContext);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -31,6 +32,7 @@ export const UserSelector: React.FC = () => {
         .finally(() => {
           setIsLoader(false);
         });
+      setDetail(false);
 
       setIsDrobdown(false);
       const usersName = users.find(u => u.id === userId);
