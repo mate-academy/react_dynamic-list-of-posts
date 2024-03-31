@@ -15,6 +15,7 @@ export const PostDetails: React.FC = () => {
     setButtonAddComment,
     addComment,
     setAddComent,
+    setButtonLoading,
   } = useContext(UserListContext);
 
   const selectedPost = post.find(po => po.id === selectedPostId);
@@ -22,6 +23,7 @@ export const PostDetails: React.FC = () => {
   const handleAddComment = () => {
     setAddComent(prev => !prev);
     setButtonAddComment(false);
+    setButtonLoading(false);
   };
 
   return (

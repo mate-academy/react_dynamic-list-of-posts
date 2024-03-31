@@ -29,6 +29,8 @@ type ListContextType = {
   setButtonAddComment: Dispatch<SetStateAction<boolean>>;
   addComment: boolean;
   setAddComent: Dispatch<SetStateAction<boolean>>;
+  buttonLoading: boolean;
+  setButtonLoading: Dispatch<SetStateAction<boolean>>;
 };
 
 const initialListContextValue: ListContextType = {
@@ -56,6 +58,8 @@ const initialListContextValue: ListContextType = {
   setButtonAddComment: () => {},
   addComment: false,
   setAddComent: () => {},
+  buttonLoading: false,
+  setButtonLoading: () => {},
 };
 
 export const UserListContext = React.createContext<ListContextType>(
@@ -79,6 +83,7 @@ export const ListContext: React.FC<PropsContext> = ({ children }) => {
   const [loaderDetails, setIsLoaderDetails] = useState(false);
   const [buttonAddComment, setButtonAddComment] = useState(true);
   const [addComment, setAddComent] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
 
   const fetchUserComments = (postId: number) => {
     if (postId) {
@@ -122,6 +127,8 @@ export const ListContext: React.FC<PropsContext> = ({ children }) => {
         setButtonAddComment,
         addComment,
         setAddComent,
+        buttonLoading,
+        setButtonLoading,
       }}
     >
       {children}

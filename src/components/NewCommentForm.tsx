@@ -6,7 +6,8 @@ export const NewCommentForm: React.FC = () => {
   const [autorNameInput, setAutorNameInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
   const [commentTextInput, setCommentTextInput] = useState('');
-  const { selectedPostId } = useContext(UserListContext);
+  const { selectedPostId, buttonLoading, setButtonLoading } =
+    useContext(UserListContext);
 
   // console.log(autorNameInput, emailInput, commentTextInput);
 
@@ -32,6 +33,7 @@ export const NewCommentForm: React.FC = () => {
   );
 
   const handleAddCommentButton = () => {
+    setButtonLoading(true);
     if (
       autorNameInput.trim() !== '' &&
       emailInput.trim() !== '' &&
@@ -52,12 +54,20 @@ export const NewCommentForm: React.FC = () => {
           setEmailInput('');
           setCommentTextInput('');
         })
-        .catch(() => {});
+        .catch(() => {})
+        .finally(() => {
+          setButtonLoading(false);
+        });
     }
   };
 
   return (
-    <form data-cy="NewCommentForm">
+    <form
+      data-cy="NewCommentForm"
+      onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+      }}
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -146,7 +156,9 @@ export const NewCommentForm: React.FC = () => {
         <div className="control">
           <button
             type="submit"
-            className="button is-link is-loading"
+            className={
+              buttonLoading ? 'button is-link is-loading' : 'button is-link'
+            }
             onClick={handleAddCommentButton}
           >
             Add
