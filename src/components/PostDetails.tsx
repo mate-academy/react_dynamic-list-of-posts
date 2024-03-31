@@ -1,12 +1,19 @@
-import React, { useContext } from 'react';
-import { NewCommentForm } from './NewCommentForm';
+import React, { useContext, useState } from 'react';
+// import { NewCommentForm } from './NewCommentForm';
 import { UserListContext } from './listContext';
+import { Loader } from './Loader';
+import { NewCommentForm } from './NewCommentForm';
 
 export const PostDetails: React.FC = () => {
-  const { errorComments, comments, post, selectedPostId } =
+  const [addComment, setAddComent] = useState(false);
+  const { errorComments, comments, post, selectedPostId, loaderDetails } =
     useContext(UserListContext);
 
   const selectedPost = post.find(po => po.id === selectedPostId);
+
+  const handleAddComment = () => {
+    setAddComent(prev => !prev);
+  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -19,47 +26,68 @@ export const PostDetails: React.FC = () => {
           <p data-cy="PostBody">{selectedPost?.body}</p>
 
           <div className="block">
-            {/* {loaderDetails && <Loader />} */}
-            {errorComments && (
-              <div className="notification is-danger" data-cy="CommentsError">
-                Something went wrong
-              </div>
-            )}
-            {!comments.length ? (
-              <p className="title is-4" data-cy="NoCommentsMessage">
-                No comments yet
-              </p>
+            {loaderDetails ? (
+              <Loader />
             ) : (
               <>
-                <p className="title is-4">Comments:</p>
-                {comments.map(com => (
-                  <article
-                    className="message is-small"
-                    data-cy="Comment"
-                    key={com.id}
+                {errorComments && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="CommentsError"
                   >
-                    <div className="message-header">
-                      <a href={`mailto:${com.email}`} data-cy="CommentAuthor">
-                        {com.name}
-                      </a>
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
+                    Something went wrong
+                  </div>
+                )}
+                {!comments.length ? (
+                  <p className="title is-4" data-cy="NoCommentsMessage">
+                    No comments yet
+                  </p>
+                ) : (
+                  <>
+                    <p className="title is-4">Comments:</p>
+                    {comments.map(com => (
+                      <article
+                        className="message is-small"
+                        data-cy="Comment"
+                        key={com.id}
                       >
-                        delete button
-                      </button>
-                    </div>
+                        <div className="message-header">
+                          <a
+                            href={`mailto:${com.email}`}
+                            data-cy="CommentAuthor"
+                          >
+                            {com.name}
+                          </a>
+                          <button
+                            data-cy="CommentDelete"
+                            type="button"
+                            className="delete is-small"
+                            aria-label="delete"
+                          >
+                            delete button
+                          </button>
+                        </div>
 
-                    <div className="message-body" data-cy="CommentBody">
-                      {com.body}
-                    </div>
-                  </article>
-                ))}
+                        <div className="message-body" data-cy="CommentBody">
+                          {com.body}
+                        </div>
+                      </article>
+                    ))}
+                  </>
+                )}
+                {!errorComments && comments.length > 0 && (
+                  <button
+                    data-cy="WriteCommentButton"
+                    type="button"
+                    className="button is-link"
+                    onClick={handleAddComment}
+                  >
+                    Write a comment
+                  </button>
+                )}
+                {addComment && <NewCommentForm />}
               </>
             )}
-
             {/* <article className="message is-small" data-cy="Comment">
                 <div className="message-header">
                   <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
@@ -100,17 +128,7 @@ export const PostDetails: React.FC = () => {
                   {'Multi\nline\ncomment'}
                 </div>
               </article> */}
-
-            <button
-              data-cy="WriteCommentButton"
-              type="button"
-              className="button is-link"
-            >
-              Write a comment
-            </button>
           </div>
-
-          <NewCommentForm />
         </div>
       </div>
     </div>

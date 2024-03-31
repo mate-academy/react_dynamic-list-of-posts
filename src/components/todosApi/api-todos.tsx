@@ -14,3 +14,7 @@ export const getPosts = (userId: number) => {
 export const getComments = (postId: number) => {
   return client.get<Comment[]>(`/comments?postId=${postId}`);
 };
+
+export const addComments = (data: Comment[]) => {
+  return client.post<Comment[]>('/comments', data);
+};
