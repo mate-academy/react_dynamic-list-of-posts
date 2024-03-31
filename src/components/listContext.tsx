@@ -25,6 +25,10 @@ type ListContextType = {
   setSelectedPostId: Dispatch<SetStateAction<number | null>>;
   loaderDetails: boolean;
   setIsLoaderDetails: Dispatch<SetStateAction<boolean>>;
+  buttonAddComment: boolean;
+  setButtonAddComment: Dispatch<SetStateAction<boolean>>;
+  addComment: boolean;
+  setAddComent: Dispatch<SetStateAction<boolean>>;
 };
 
 const initialListContextValue: ListContextType = {
@@ -48,6 +52,10 @@ const initialListContextValue: ListContextType = {
   setSelectedPostId: () => {},
   loaderDetails: false,
   setIsLoaderDetails: () => {},
+  buttonAddComment: true,
+  setButtonAddComment: () => {},
+  addComment: false,
+  setAddComent: () => {},
 };
 
 export const UserListContext = React.createContext<ListContextType>(
@@ -69,12 +77,18 @@ export const ListContext: React.FC<PropsContext> = ({ children }) => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [loaderDetails, setIsLoaderDetails] = useState(false);
+  const [buttonAddComment, setButtonAddComment] = useState(true);
+  const [addComment, setAddComent] = useState(false);
 
   const fetchUserComments = (postId: number) => {
     if (postId) {
       getComments(postId)
         .then(setComments)
-        .catch(() => {})
+        .catch(() => {
+          setErrorComments(true);
+          setComments([]);
+          // setDetail(false);
+        })
         .finally(() => {});
     }
   };
@@ -102,6 +116,10 @@ export const ListContext: React.FC<PropsContext> = ({ children }) => {
         setSelectedPostId,
         loaderDetails,
         setIsLoaderDetails,
+        buttonAddComment,
+        setButtonAddComment,
+        addComment,
+        setAddComent,
       }}
     >
       {children}

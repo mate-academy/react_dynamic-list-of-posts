@@ -1,18 +1,27 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 // import { NewCommentForm } from './NewCommentForm';
 import { UserListContext } from './listContext';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
 export const PostDetails: React.FC = () => {
-  const [addComment, setAddComent] = useState(false);
-  const { errorComments, comments, post, selectedPostId, loaderDetails } =
-    useContext(UserListContext);
+  const {
+    errorComments,
+    comments,
+    post,
+    selectedPostId,
+    loaderDetails,
+    buttonAddComment,
+    setButtonAddComment,
+    addComment,
+    setAddComent,
+  } = useContext(UserListContext);
 
   const selectedPost = post.find(po => po.id === selectedPostId);
 
   const handleAddComment = () => {
     setAddComent(prev => !prev);
+    setButtonAddComment(false);
   };
 
   return (
@@ -38,7 +47,7 @@ export const PostDetails: React.FC = () => {
                     Something went wrong
                   </div>
                 )}
-                {!comments.length ? (
+                {!comments.length && !errorComments ? (
                   <p className="title is-4" data-cy="NoCommentsMessage">
                     No comments yet
                   </p>
@@ -75,7 +84,7 @@ export const PostDetails: React.FC = () => {
                     ))}
                   </>
                 )}
-                {!errorComments && comments.length > 0 && (
+                {!errorComments && buttonAddComment && (
                   <button
                     data-cy="WriteCommentButton"
                     type="button"

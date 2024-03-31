@@ -9,6 +9,8 @@ export const PostsList: React.FC = () => {
     selectedPostId,
     setSelectedPostId,
     setIsLoaderDetails,
+    setButtonAddComment,
+    setAddComent,
   } = useContext(UserListContext);
 
   const handlePostClick = (postId: number) => {
@@ -19,6 +21,8 @@ export const PostsList: React.FC = () => {
     } else {
       setSelectedPostId(postId);
       setDetail(true);
+      setAddComent(false);
+      setButtonAddComment(true);
     }
 
     setTimeout(() => {
