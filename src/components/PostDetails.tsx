@@ -47,11 +47,12 @@ export const PostDetails: React.FC = () => {
                     Something went wrong
                   </div>
                 )}
-                {!comments.length && !errorComments ? (
+                {!errorComments && !comments.length && (
                   <p className="title is-4" data-cy="NoCommentsMessage">
                     No comments yet
                   </p>
-                ) : (
+                )}
+                {comments.length > 0 && !errorComments && (
                   <>
                     <p className="title is-4">Comments:</p>
                     {comments.map(com => (

@@ -1,6 +1,61 @@
-import React from 'react';
+import React, { useCallback, useContext, useState } from 'react';
+import { UserListContext } from './listContext';
+import { addComments } from './todosApi/api-todos';
 
 export const NewCommentForm: React.FC = () => {
+  const [autorNameInput, setAutorNameInput] = useState('');
+  const [emailInput, setEmailInput] = useState('');
+  const [commentTextInput, setCommentTextInput] = useState('');
+  const { selectedPostId } = useContext(UserListContext);
+
+  // console.log(autorNameInput, emailInput, commentTextInput);
+
+  const handleInputNameChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setAutorNameInput(event.target.value);
+    },
+    [],
+  );
+
+  const handleInputEmail = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setEmailInput(event.target.value);
+    },
+    [],
+  );
+
+  const handlerTextComment = useCallback(
+    (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setCommentTextInput(event.target.value);
+    },
+    [],
+  );
+
+  const handleAddCommentButton = () => {
+    if (
+      autorNameInput.trim() !== '' &&
+      emailInput.trim() !== '' &&
+      commentTextInput.trim() !== '' &&
+      selectedPostId !== null
+    ) {
+      const newComment = {
+        id: 0,
+        postId: selectedPostId,
+        name: autorNameInput.trim(),
+        email: emailInput.trim(),
+        body: commentTextInput.trim(),
+      };
+
+      addComments([newComment])
+        .then(() => {
+          setAutorNameInput('');
+          setEmailInput('');
+          setCommentTextInput('');
+        })
+        .catch(() => {});
+    }
+  };
+
   return (
     <form data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
@@ -15,6 +70,7 @@ export const NewCommentForm: React.FC = () => {
             id="comment-author-name"
             placeholder="Name Surname"
             className="input is-danger"
+            onChange={handleInputNameChange}
           />
 
           <span className="icon is-small is-left">
@@ -46,6 +102,7 @@ export const NewCommentForm: React.FC = () => {
             id="comment-author-email"
             placeholder="email@test.com"
             className="input is-danger"
+            onChange={handleInputEmail}
           />
 
           <span className="icon is-small is-left">
@@ -76,6 +133,7 @@ export const NewCommentForm: React.FC = () => {
             name="body"
             placeholder="Type comment here"
             className="textarea is-danger"
+            onChange={handlerTextComment}
           />
         </div>
 
@@ -86,7 +144,11 @@ export const NewCommentForm: React.FC = () => {
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className="button is-link is-loading"
+            onClick={handleAddCommentButton}
+          >
             Add
           </button>
         </div>

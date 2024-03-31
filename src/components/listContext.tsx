@@ -83,11 +83,13 @@ export const ListContext: React.FC<PropsContext> = ({ children }) => {
   const fetchUserComments = (postId: number) => {
     if (postId) {
       getComments(postId)
-        .then(setComments)
+        .then(com => {
+          setComments(com);
+          setErrorComments(false);
+        })
         .catch(() => {
           setErrorComments(true);
           setComments([]);
-          // setDetail(false);
         })
         .finally(() => {});
     }
