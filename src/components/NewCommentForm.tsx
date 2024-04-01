@@ -69,9 +69,12 @@ export const NewCommentForm: React.FC = () => {
   };
 
   const handleReset = () => {
-    setAutorNameInput('');
-    setEmailInput('');
     setCommentTextInput('');
+    setEmailInput('');
+    setAutorNameInput('');
+    setAutorNameError(false);
+    setEmailError(false);
+    setBodyError(false);
   };
 
   const handleAddCommentButton = () => {
@@ -95,8 +98,6 @@ export const NewCommentForm: React.FC = () => {
       addComments(newComment)
         .then(addedComment => {
           setComments(prevComments => [...prevComments, addedComment]);
-          setAutorNameInput('');
-          setEmailInput('');
           setCommentTextInput('');
         })
         .catch(() => {
@@ -105,7 +106,6 @@ export const NewCommentForm: React.FC = () => {
         })
         .finally(() => {
           setButtonLoading(false);
-          handleReset();
         });
     }
   };
@@ -125,6 +125,7 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control has-icons-left has-icons-right">
           <input
+            value={autorNameInput}
             type="text"
             name="name"
             id="comment-author-name"
@@ -159,6 +160,7 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control has-icons-left has-icons-right">
           <input
+            value={emailInput}
             type="text"
             name="email"
             id="comment-author-email"
@@ -193,6 +195,7 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control">
           <textarea
+            value={commentTextInput}
             id="comment-body"
             name="body"
             placeholder="Type comment here"
@@ -214,7 +217,6 @@ export const NewCommentForm: React.FC = () => {
             className={
               buttonLoading ? 'button is-link is-loading' : 'button is-link'
             }
-            onClick={handleAddCommentButton}
           >
             Add
           </button>
@@ -222,7 +224,11 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={handleReset}
+          >
             Clear
           </button>
         </div>
