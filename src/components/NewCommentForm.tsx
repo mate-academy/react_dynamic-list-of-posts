@@ -78,10 +78,10 @@ export const NewCommentForm: React.FC = () => {
   const handleAddCommentButton = () => {
     validation();
     if (
-      autorNameInput.trim() !== '' &&
-      emailInput.trim() !== '' &&
-      commentTextInput.trim() !== '' &&
-      selectedPostId !== null
+      autorNameInput.trim() &&
+      emailInput.trim() &&
+      commentTextInput.trim() &&
+      selectedPostId
     ) {
       setButtonLoading(true);
 

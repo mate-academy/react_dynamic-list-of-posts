@@ -20,7 +20,7 @@ export const UserSelector: React.FC = () => {
   const handleSelectUser = (userId: number) => {
     setIsLoader(true);
     setPost([]);
-    if (userId !== undefined) {
+    if (userId) {
       getPosts(userId)
         .then(posts => {
           setPost(posts);
@@ -34,7 +34,7 @@ export const UserSelector: React.FC = () => {
       setDetail(false);
 
       setIsDrobdown(false);
-      const usersName = users.find(u => u.id === userId);
+      const usersName = users.find(user => user.id === userId);
 
       setSelectedUser(usersName || null);
     }
@@ -55,8 +55,8 @@ export const UserSelector: React.FC = () => {
 
   function fetchUsers() {
     getUsers()
-      .then(use => {
-        setUsers(use);
+      .then(user => {
+        setUsers(user);
       })
       .catch(() => {});
   }
@@ -94,18 +94,18 @@ export const UserSelector: React.FC = () => {
       </div>
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {users.map(use => (
+          {users.map(user => (
             <a
-              href={`#${use.id}`}
+              href={`#${user.id}`}
               className={
-                selectedUser && selectedUser.id === use.id
+                selectedUser && selectedUser.id === user.id
                   ? 'dropdown-item is-active'
                   : 'dropdown-item'
               }
-              key={use.id}
-              onClick={() => handleSelectUser(use.id)}
+              key={user.id}
+              onClick={() => handleSelectUser(user.id)}
             >
-              {use.name}
+              {user.name}
             </a>
           ))}
         </div>
