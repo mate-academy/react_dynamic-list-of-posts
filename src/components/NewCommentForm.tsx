@@ -18,8 +18,6 @@ export const NewCommentForm: React.FC = () => {
     setAddComent,
   } = useContext(UserListContext);
 
-  // console.log(autorNameInput, emailInput, commentTextInput);
-
   const handleInputNameChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       setAutorNameInput(event.target.value);

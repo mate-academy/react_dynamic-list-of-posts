@@ -9,7 +9,6 @@ import { UserListContext } from './listContext';
 export const ListApp: React.FC = () => {
   const { isLoader, errorPosts, detail, post, selectedUser } =
     useContext(UserListContext);
-  // const userNames = users.find(nam => nam.id);
 
   return (
     <main className="section">

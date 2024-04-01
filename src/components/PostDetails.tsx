@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react';
-// import { NewCommentForm } from './NewCommentForm';
 import { UserListContext } from './listContext';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { deleteComment } from './todosApi/api-todos';
 
 export const PostDetails: React.FC = () => {
   const {
@@ -17,6 +17,7 @@ export const PostDetails: React.FC = () => {
     setAddComent,
     setButtonLoading,
     fetchUserComments,
+    setComments,
   } = useContext(UserListContext);
 
   const selectedPost = post.find(po => po.id === selectedPostId);
@@ -32,6 +33,13 @@ export const PostDetails: React.FC = () => {
       fetchUserComments(selectedPostId);
     }
   }, [selectedPostId]);
+
+  const handleDeleteButton = (commentId: number) => {
+    setComments(prevComments =>
+      prevComments.filter(comment => comment.id !== commentId),
+    );
+    deleteComment(commentId).catch(() => {});
+  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -82,6 +90,7 @@ export const PostDetails: React.FC = () => {
                             type="button"
                             className="delete is-small"
                             aria-label="delete"
+                            onClick={() => handleDeleteButton(com.id)}
                           >
                             delete button
                           </button>
@@ -107,46 +116,6 @@ export const PostDetails: React.FC = () => {
                 {addComment && <NewCommentForm />}
               </>
             )}
-            {/* <article className="message is-small" data-cy="Comment">
-                <div className="message-header">
-                  <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                    Misha Hrynko
-                  </a>
-
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                  >
-                    delete button
-                  </button>
-                </div>
-                <div className="message-body" data-cy="CommentBody">
-                  One more comment
-                </div>
-              </article> */}
-
-            {/* <article className="message is-small" data-cy="Comment">
-                <div className="message-header">
-                  <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                    Misha Hrynko
-                  </a>
-
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                  >
-                    delete button
-                  </button>
-                </div>
-
-                <div className="message-body" data-cy="CommentBody">
-                  {'Multi\nline\ncomment'}
-                </div>
-              </article> */}
           </div>
         </div>
       </div>
