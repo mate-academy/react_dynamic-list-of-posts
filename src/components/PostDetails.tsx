@@ -31,13 +31,7 @@ export const PostDetails: React.FC = () => {
     if (selectedPostId) {
       fetchUserComments(selectedPostId);
     }
-  }, [fetchUserComments, selectedPostId]);
-
-  // useEffect(() => {
-  //   if (selectedPostId) {
-  //     fetchUserComments(selectedPostId);
-  //   }
-  // }, [selectedPostId]);
+  }, [selectedPostId]);
 
   return (
     <div className="content" data-cy="PostDetails">

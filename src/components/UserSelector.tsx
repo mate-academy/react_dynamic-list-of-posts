@@ -8,7 +8,6 @@ export const UserSelector: React.FC = () => {
     users,
     setUsers,
     setPost,
-    fetchUserComments,
     setIsLoader,
     setErrorPosts,
     selectedUser,
@@ -25,7 +24,6 @@ export const UserSelector: React.FC = () => {
       getPosts(userId)
         .then(posts => {
           setPost(posts);
-          posts.forEach(post => fetchUserComments(post.id));
         })
         .catch(() => {
           setErrorPosts(true);
