@@ -2,58 +2,59 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { client } from '../utils/fetchClient';
-import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
 
 type Props = {
-  selectedPost: Post | null;
+  postId: number;
+  postTitle: string;
+  postBody: string;
 };
 
-export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
+export const PostDetails: React.FC<Props> = ({
+  postId,
+  postTitle,
+  postBody,
+}) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isCommentsLoading, setIsCommentsLoading] = useState<boolean>(false);
   const [commentsError, setCommentsError] = useState<boolean>(false);
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
 
-  const { id: postId, title, body } = selectedPost || {};
-
   useEffect(() => {
-    if (selectedPost) {
-      setIsCommentsLoading(true);
+    setIsCommentsLoading(true);
 
-      if (commentsError) {
-        setCommentsError(false);
-      }
-
-      if (comments.length) {
-        setComments([]);
-      }
-
-      if (isFormVisible) {
-        setIsFormVisible(false);
-      }
-
-      client
-        .get<Comment[]>(`/comments?postId=${selectedPost.id}`)
-        .then(setComments)
-        .catch(() => setCommentsError(true))
-        .finally(() => setIsCommentsLoading(false));
+    if (commentsError) {
+      setCommentsError(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPost]);
 
-  const handleDeleteComment = (id: number): void => {
-    setComments(comments.filter(comm => comm.id !== id));
-    client.delete(`/comments/${id}`).catch(() => {});
+    if (comments.length) {
+      setComments([]);
+    }
+
+    if (isFormVisible) {
+      setIsFormVisible(false);
+    }
+
+    client
+      .get<Comment[]>(`/comments?postId=${postId}`)
+      .then(setComments)
+      .catch(() => setCommentsError(true))
+      .finally(() => setIsCommentsLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [postId]);
+
+  const handleDeleteComment = (commId: number): void => {
+    setComments(comments.filter(comm => comm.id !== commId));
+    client.delete(`/comments/${commId}`).catch(() => {});
   };
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">{title}</h2>
+          <h2 data-cy="PostTitle">{`#${postId}: ${postTitle}`}</h2>
 
-          <p data-cy="PostBody">{body}</p>
+          <p data-cy="PostBody">{postBody}</p>
         </div>
 
         <div className="block">
@@ -76,11 +77,11 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
               <p className="title is-4">Comments:</p>
 
               {comments.map(comment => {
-                const { id, name, email, body: commentBody } = comment;
+                const { id: commId, name, email, body: commentBody } = comment;
 
                 return (
                   <article
-                    key={id}
+                    key={commId}
                     className="message is-small"
                     data-cy="Comment"
                   >
@@ -93,7 +94,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
                         type="button"
                         className="delete is-small"
                         aria-label="delete"
-                        onClick={() => handleDeleteComment(id)}
+                        onClick={() => handleDeleteComment(commId)}
                       >
                         delete button
                       </button>
@@ -124,7 +125,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
           <NewCommentForm
             comments={comments}
             updateComments={setComments}
-            postId={postId as number}
+            postId={postId}
             addCommentsError={setCommentsError}
           />
         )}

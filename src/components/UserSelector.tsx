@@ -38,6 +38,12 @@ export const UserSelector: React.FC<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleOnBlurDropdownButton = (): void => {
+    setTimeout(() => {
+      setIsUsersVisible(false);
+    }, 300);
+  };
+
   const handleOnClickUser = (user: User): void => {
     if (hasError) {
       addHasError(false);
@@ -63,7 +69,10 @@ export const UserSelector: React.FC<Props> = ({
   };
 
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className={classNames('dropdown', { 'is-active': isUsersVisible })}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
@@ -71,6 +80,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => setIsUsersVisible(!isUsersVisible)}
+          onBlur={handleOnBlurDropdownButton}
         >
           <span>{selectedUser?.name || 'Choose a user'}</span>
 
@@ -80,28 +90,26 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      {isUsersVisible && (
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          <div className="dropdown-content">
-            {users.map(user => {
-              const { id, name } = user;
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        <div className="dropdown-content">
+          {users.map(user => {
+            const { id, name } = user;
 
-              return (
-                <a
-                  key={id}
-                  href={`#user-${id}`}
-                  className={classNames('dropdown-item', {
-                    'is-active': id === selectedUser?.id,
-                  })}
-                  onClick={() => handleOnClickUser(user)}
-                >
-                  {name}
-                </a>
-              );
-            })}
-          </div>
+            return (
+              <a
+                key={id}
+                href={`#user-${id}`}
+                className={classNames('dropdown-item', {
+                  'is-active': id === selectedUser?.id,
+                })}
+                onClick={() => handleOnClickUser(user)}
+              >
+                {name}
+              </a>
+            );
+          })}
         </div>
-      )}
+      </div>
     </div>
   );
 };
