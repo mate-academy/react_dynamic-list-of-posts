@@ -62,19 +62,19 @@ export const NewCommentForm: React.FC<Props> = ({
   ): void => {
     event.preventDefault();
 
-    if (!nameQuery) {
+    if (!nameQuery.trim()) {
       setNameError(true);
     }
 
-    if (!emailQuery) {
+    if (!emailQuery.trim()) {
       setEmailError(true);
     }
 
-    if (!textareaQuery) {
+    if (!textareaQuery.trim()) {
       setTextareaError(true);
     }
 
-    if (!nameQuery || !emailQuery || !textareaQuery) {
+    if (!nameQuery.trim() || !emailQuery.trim() || !textareaQuery.trim()) {
       return;
     }
 

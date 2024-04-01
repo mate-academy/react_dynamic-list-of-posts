@@ -31,7 +31,11 @@ export const UserSelector: React.FC<Props> = ({
   const [isUsersVisible, setIsUsersVisible] = useState<boolean>(false);
 
   useEffect(() => {
-    client.get<User[]>('/users').then(setUsers);
+    client
+      .get<User[]>('/users')
+      .then(setUsers)
+      .catch(() => addHasError(true));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleOnClickUser = (user: User): void => {
