@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 // import { NewCommentForm } from './NewCommentForm';
 import { UserListContext } from './listContext';
 import { Loader } from './Loader';
@@ -16,6 +16,7 @@ export const PostDetails: React.FC = () => {
     addComment,
     setAddComent,
     setButtonLoading,
+    fetchUserComments,
   } = useContext(UserListContext);
 
   const selectedPost = post.find(po => po.id === selectedPostId);
@@ -25,6 +26,18 @@ export const PostDetails: React.FC = () => {
     setButtonAddComment(false);
     setButtonLoading(false);
   };
+
+  useEffect(() => {
+    if (selectedPostId) {
+      fetchUserComments(selectedPostId);
+    }
+  }, [fetchUserComments, selectedPostId]);
+
+  // useEffect(() => {
+  //   if (selectedPostId) {
+  //     fetchUserComments(selectedPostId);
+  //   }
+  // }, [selectedPostId]);
 
   return (
     <div className="content" data-cy="PostDetails">

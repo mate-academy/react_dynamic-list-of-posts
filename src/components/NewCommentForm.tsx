@@ -6,8 +6,14 @@ export const NewCommentForm: React.FC = () => {
   const [autorNameInput, setAutorNameInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
   const [commentTextInput, setCommentTextInput] = useState('');
-  const { selectedPostId, buttonLoading, setButtonLoading } =
-    useContext(UserListContext);
+  const {
+    selectedPostId,
+    buttonLoading,
+    setButtonLoading,
+    setComments,
+    // setErrorComments,
+    // setAddComent,
+  } = useContext(UserListContext);
 
   // console.log(autorNameInput, emailInput, commentTextInput);
 
@@ -48,13 +54,17 @@ export const NewCommentForm: React.FC = () => {
         body: commentTextInput.trim(),
       };
 
-      addComments([newComment])
-        .then(() => {
+      addComments(newComment)
+        .then(addedComment => {
+          setComments(prevComments => [...prevComments, addedComment]);
           setAutorNameInput('');
           setEmailInput('');
           setCommentTextInput('');
         })
-        .catch(() => {})
+        .catch(() => {
+          // setErrorComments(true);
+          // setAddComent(false);
+        })
         .finally(() => {
           setButtonLoading(false);
         });

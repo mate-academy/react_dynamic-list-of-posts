@@ -14,7 +14,6 @@ export const UserSelector: React.FC = () => {
     selectedUser,
     setSelectedUser,
     setDetail,
-    selectedPostId,
   } = useContext(UserListContext);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -42,12 +41,6 @@ export const UserSelector: React.FC = () => {
       setSelectedUser(usersName || null);
     }
   };
-
-  useEffect(() => {
-    if (selectedPostId) {
-      fetchUserComments(selectedPostId);
-    }
-  }, [fetchUserComments, selectedPostId]);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (

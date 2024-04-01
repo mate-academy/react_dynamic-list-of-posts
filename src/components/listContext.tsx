@@ -31,6 +31,7 @@ type ListContextType = {
   setAddComent: Dispatch<SetStateAction<boolean>>;
   buttonLoading: boolean;
   setButtonLoading: Dispatch<SetStateAction<boolean>>;
+  setComments: Dispatch<SetStateAction<Comment[]>>;
 };
 
 const initialListContextValue: ListContextType = {
@@ -60,6 +61,7 @@ const initialListContextValue: ListContextType = {
   setAddComent: () => {},
   buttonLoading: false,
   setButtonLoading: () => {},
+  setComments: () => {},
 };
 
 export const UserListContext = React.createContext<ListContextType>(
@@ -129,6 +131,7 @@ export const ListContext: React.FC<PropsContext> = ({ children }) => {
         setAddComent,
         buttonLoading,
         setButtonLoading,
+        setComments,
       }}
     >
       {children}
