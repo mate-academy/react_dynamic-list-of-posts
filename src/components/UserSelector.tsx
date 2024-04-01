@@ -1,16 +1,88 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import classNames from 'classnames';
+import { User } from '../types/User';
+import { Post } from '../types/Post';
+import { client } from '../utils/fetchClient';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  posts: Post[];
+  addPosts: (posts: Post[]) => void;
+  addLoading: (value: boolean) => void;
+  hasError: boolean;
+  addHasError: (value: boolean) => void;
+  selectedUser: User | null;
+  addSelectedUser: (user: User | null) => void;
+  selectedPost: Post | null;
+  addSelectedPost: (post: Post | null) => void;
+};
+
+export const UserSelector: React.FC<Props> = ({
+  posts,
+  addPosts,
+  addLoading,
+  hasError,
+  addHasError,
+  selectedUser,
+  addSelectedUser,
+  selectedPost,
+  addSelectedPost,
+}) => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [isUsersVisible, setIsUsersVisible] = useState<boolean>(false);
+
+  useEffect(() => {
+    client
+      .get<User[]>('/users')
+      .then(setUsers)
+      .catch(() => addHasError(true));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleOnBlurDropdownButton = (): void => {
+    setTimeout(() => {
+      setIsUsersVisible(false);
+    }, 300);
+  };
+
+  const handleOnClickUser = (user: User): void => {
+    if (hasError) {
+      addHasError(false);
+    }
+
+    if (posts.length) {
+      addPosts([]);
+    }
+
+    if (selectedPost) {
+      addSelectedPost(null);
+    }
+
+    addLoading(true);
+    setIsUsersVisible(false);
+    addSelectedUser(user);
+
+    client
+      .get<Post[]>(`/posts?userId=${user.id}`)
+      .then(addPosts)
+      .catch(() => addHasError(true))
+      .finally(() => addLoading(false));
+  };
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className={classNames('dropdown', { 'is-active': isUsersVisible })}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setIsUsersVisible(!isUsersVisible)}
+          onBlur={handleOnBlurDropdownButton}
         >
-          <span>Choose a user</span>
+          <span>{selectedUser?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -20,21 +92,22 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+          {users.map(user => {
+            const { id, name } = user;
+
+            return (
+              <a
+                key={id}
+                href={`#user-${id}`}
+                className={classNames('dropdown-item', {
+                  'is-active': id === selectedUser?.id,
+                })}
+                onClick={() => handleOnClickUser(user)}
+              >
+                {name}
+              </a>
+            );
+          })}
         </div>
       </div>
     </div>
