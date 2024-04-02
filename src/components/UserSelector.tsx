@@ -1,6 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import * as userService from '../api/users';
+import { User } from '../types/User';
+import { Post } from '../types/Post';
+type Props = {
+  setLoader: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>;
+  setError: React.Dispatch<React.SetStateAction<string>>;
+  setLoadingPosts: React.Dispatch<React.SetStateAction<boolean>>;
+  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
+};
 
-export const UserSelector: React.FC = () => {
+export const UserSelector: React.FC<Props> = ({
+  setLoader,
+  setSelectedUser,
+  setError,
+  setLoadingPosts,
+  setPosts,
+}) => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [currentUser, setCurrentUser] = useState('Choose a user');
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    userService
+      .getUsers()
+      .then(setUsers)
+      .catch(() => {
+        setError('Something went wrong!');
+      });
+  }, [setError]);
+
+  const handleUserClick = (user: User) => {
+    setCurrentUser(user.name);
+    setIsOpen(false);
+    setLoadingPosts(true);
+    setPosts([]);
+    setTimeout(() => {
+      setLoader(false);
+    }, 300);
+
+    setLoader(true);
+    setSelectedUser(user);
+  };
+
   return (
     <div data-cy="UserSelector" className="dropdown is-active">
       <div className="dropdown-trigger">
@@ -9,8 +51,9 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setIsOpen(!isOpen)}
         >
-          <span>Choose a user</span>
+          <span>{currentUser}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -18,25 +61,22 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+      {isOpen && (
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div className="dropdown-content">
+            {users.map(user => (
+              <a
+                href={`#user-${user.id}`}
+                className="dropdown-item"
+                key={user.id}
+                onClick={() => handleUserClick(user)}
+              >
+                {user.name}
+              </a>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
