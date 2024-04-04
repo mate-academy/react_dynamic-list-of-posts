@@ -14,7 +14,7 @@ import { Post } from './types/Post';
 export const App: React.FC = () => {
   const [loader, setLoader] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(false);
 
@@ -41,16 +41,16 @@ export const App: React.FC = () => {
 
                 {loader && <Loader />}
 
-                {error && selectedUser && loadingPosts && (
+                {error && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    {error}
+                    Something went wrong!
                   </div>
                 )}
 
-                {selectedUser && !loadingPosts && posts.length === 0 && (
+                {selectedUser && !loadingPosts && !error && !posts.length && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>

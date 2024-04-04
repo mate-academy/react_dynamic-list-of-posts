@@ -5,7 +5,7 @@ import { Post } from '../types/Post';
 type Props = {
   setLoader: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>;
-  setError: React.Dispatch<React.SetStateAction<string>>;
+  setError: React.Dispatch<React.SetStateAction<boolean>>;
   setLoadingPosts: React.Dispatch<React.SetStateAction<boolean>>;
   setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
 };
@@ -22,13 +22,18 @@ export const UserSelector: React.FC<Props> = ({
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
+    setLoadingPosts(true);
+    setError(false);
     userService
       .getUsers()
       .then(setUsers)
       .catch(() => {
-        setError('Something went wrong!');
+        setError(true);
+      })
+      .finally(() => {
+        setLoadingPosts(false);
       });
-  }, [setError]);
+  }, [setError, setLoadingPosts]);
 
   const handleUserClick = (user: User) => {
     setCurrentUser(user.name);
