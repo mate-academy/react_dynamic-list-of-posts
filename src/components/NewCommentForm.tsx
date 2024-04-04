@@ -99,7 +99,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': nameError })}
-            onChange={e => handleOnNameChange(e)}
+            onChange={handleOnNameChange}
           />
 
           <span className="icon is-small is-left">
@@ -172,7 +172,7 @@ export const NewCommentForm: React.FC<Props> = ({
             value={text}
             placeholder="Type comment here"
             className={classNames('input', { 'is-danger': textError })}
-            onChange={e => handleOnTextChange(e)}
+            onChange={handleOnTextChange}
           />
         </div>
 
