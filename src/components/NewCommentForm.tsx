@@ -19,31 +19,45 @@ export const NewCommentForm: React.FC<Props> = ({ id }) => {
   const [body, setBody] = useState('');
   const [bodyError, setBodyError] = useState(false);
 
-  const [load, setLoad] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setNameError(!name);
-    setMailError(!mail);
-    setBodyError(!body);
+    setNameError(!name.trim());
+    setMailError(!mail.trim());
+    setBodyError(!body.trim());
 
-    if (!name || !mail || !body) {
+    if (name.trim().length === 0) {
+      setName('');
+
       return;
     }
 
-    setLoad(true);
+    if (mail.trim().length === 0) {
+      setMail('');
+
+      return;
+    }
+
+    if (body.trim().length === 0) {
+      setBody('');
+
+      return;
+    }
+
+    setIsLoading(true);
 
     const comment = {
       postId: id,
-      name,
-      email: mail,
-      body,
+      name: name.trim(),
+      email: mail.trim(),
+      body: body.trim(),
     };
 
     addComment(comment)
       .then(request => dispatch({ type: 'addComment', comment: request }))
-      .finally(() => setLoad(false));
+      .finally(() => setIsLoading(false));
 
     setBody('');
   };
@@ -182,7 +196,7 @@ export const NewCommentForm: React.FC<Props> = ({ id }) => {
           <button
             type="submit"
             className={classNames('button', 'is-link', {
-              'is-loading': load,
+              'is-loading': isLoading,
             })}
           >
             Add

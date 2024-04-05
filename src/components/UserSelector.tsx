@@ -1,11 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { DispatchContext, StateContext } from '../Store';
+import { StateContext } from '../Store';
 import classNames from 'classnames';
-import { loadPosts } from '../utils/requests';
+import { UserItem } from './UserItem';
 
 export const UserSelector: React.FC = () => {
   const { users, selectedUser } = useContext(StateContext);
-  const dispatch = useContext(DispatchContext);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -24,13 +23,6 @@ export const UserSelector: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-  const handleOnClick = (id: number) => {
-    dispatch({ type: 'toggleSideBar', payload: false });
-    dispatch({ type: 'setUser', id });
-    loadPosts(dispatch, id);
-    setIsOpen(false);
-  };
 
   const handleOpenOnClick = () => setIsOpen(!isOpen);
 
@@ -60,16 +52,12 @@ export const UserSelector: React.FC = () => {
         <div className="dropdown-menu" id="dropdown-menu" role="menu">
           <div className="dropdown-content">
             {users.map(user => (
-              <a
+              <UserItem
                 key={user.id}
-                href={`#user-{user.id}`}
-                className={classNames('dropdown-item', {
-                  'is-active': user.id === selectedUser?.id,
-                })}
-                onClick={() => handleOnClick(user.id)}
-              >
-                {user.name}
-              </a>
+                user={user}
+                setIsOpen={setIsOpen}
+                selectedUserId={selectedUser?.id || null}
+              />
             ))}
           </div>
         </div>

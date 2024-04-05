@@ -15,7 +15,7 @@ export const PostItem: React.FC<Props> = ({ post, selectedId }) => {
   const dispatch = useContext(DispatchContext);
 
   useEffect(() => {
-    if (selectedId !== undefined && selectedId === id) {
+    if (selectedId && selectedId === id) {
       setButtonText('Close');
     } else {
       setButtonText('Open');

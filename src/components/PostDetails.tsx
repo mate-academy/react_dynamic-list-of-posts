@@ -11,7 +11,7 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const { id, title, body } = selectedPost;
-  const [load, setLoad] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [hasForm, setHasForm] = useState(false);
 
@@ -24,7 +24,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   };
 
   useEffect(() => {
-    setLoad(true);
+    setIsLoading(true);
 
     getComments(id)
       .then(response => {
@@ -32,7 +32,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         setHasForm(false);
       })
       .catch(() => setErrorMessage('Something went wrong'))
-      .finally(() => setLoad(false));
+      .finally(() => setIsLoading(false));
   }, [dispatch, id]);
 
   return (
@@ -45,7 +45,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         </div>
 
         <div className="block">
-          {load && <Loader />}
+          {isLoading && <Loader />}
 
           {errorMessage && (
             <div className="notification is-danger" data-cy="CommentsError">
@@ -53,46 +53,55 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             </div>
           )}
 
-          {!comments.length && !load && !errorMessage && (
+          {!comments.length && !isLoading && !errorMessage && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {!!comments.length && !load && (
+          {!!comments.length && !isLoading && (
             <>
               <p className="title is-4">Comments:</p>
 
-              {comments.map(comment => (
-                <article
-                  key={comment.id}
-                  className="message is-small"
-                  data-cy="Comment"
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                      {comment.name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => handleDelete(comment.id)}
-                    >
-                      delete button
-                    </button>
-                  </div>
+              {comments.map(comment => {
+                const {
+                  name,
+                  email,
+                  id: commentId,
+                  body: commentBody,
+                } = comment;
 
-                  <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
-                  </div>
-                </article>
-              ))}
+                return (
+                  <article
+                    key={commentId}
+                    className="message is-small"
+                    data-cy="Comment"
+                  >
+                    <div className="message-header">
+                      <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                        {name}
+                      </a>
+                      <button
+                        data-cy="CommentDelete"
+                        type="button"
+                        className="delete is-small"
+                        aria-label="delete"
+                        onClick={() => handleDelete(commentId)}
+                      >
+                        delete button
+                      </button>
+                    </div>
+
+                    <div className="message-body" data-cy="CommentBody">
+                      {commentBody}
+                    </div>
+                  </article>
+                );
+              })}
             </>
           )}
 
-          {!hasForm && !load && !errorMessage && (
+          {!hasForm && !isLoading && !errorMessage && (
             <button
               data-cy="WriteCommentButton"
               type="button"
