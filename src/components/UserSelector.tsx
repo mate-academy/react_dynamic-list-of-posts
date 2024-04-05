@@ -48,18 +48,12 @@ export const UserSelector: React.FC<Props> = ({
     setSelectedPost(null);
     setIsSidebarVisible(false);
 
-    if (currentUser.id === selectedUser?.id) {
+    if (selectedUser && currentUser.id === selectedUser.id) {
       return;
     }
 
-    getUser(currentUser)
-      .then(user => {
-        setSelectedUser(user);
-        setAreUsersVisible(false);
-      })
-      .catch(() => {
-        setErrorMessage(Error.LoadingError);
-      });
+    setSelectedUser(currentUser);
+    getUser(currentUser).catch(() => setErrorMessage(Error.LoadingError));
   };
 
   const handleUserListBlur = () => {
@@ -73,7 +67,10 @@ export const UserSelector: React.FC<Props> = ({
   };
 
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className={classNames('dropdown', { 'is-active': areUsersVisible })}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
@@ -90,23 +87,22 @@ export const UserSelector: React.FC<Props> = ({
           </span>
         </button>
       </div>
-      {users && areUsersVisible && (
+      {users && (
         <div className="dropdown-menu" id="dropdown-menu" role="menu">
           <div className="dropdown-content">
-            {users.map((user: User) => {
-              return (
-                <a
-                  href={`#${user.id}`}
-                  key={user.id}
-                  className={classNames('dropdown-item', {
-                    'is-active': selectedUser?.id === user.id,
-                  })}
-                  onClick={() => handleSelectUser(user)}
-                >
-                  {user.name}
-                </a>
-              );
-            })}
+            {users.map((user: User) => (
+              <a
+                key={user.id}
+                href={`#user-${user.id}`}
+                className={classNames('dropdown-item', {
+                  'is-active':
+                    selectedUser !== null && user.id === selectedUser.id,
+                })}
+                onClick={() => handleSelectUser(user)}
+              >
+                {user.name}
+              </a>
+            ))}
           </div>
         </div>
       )}
