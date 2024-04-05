@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
@@ -13,8 +14,8 @@ type Props = {
   setCommentErrorMessage: (errorMessage: Error | '') => void;
   loadingComments: boolean;
   setLoadingComments: (loadingComments: boolean) => void;
-  isNewCommentFormVisible: boolean;
-  setIsNewCommentFormVisible: (visible: boolean) => void;
+  isCommentFormVisible: boolean;
+  setIsCommentFormVisible: (visible: boolean) => void;
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -23,8 +24,8 @@ export const PostDetails: React.FC<Props> = ({
   setCommentErrorMessage,
   loadingComments,
   setLoadingComments,
-  isNewCommentFormVisible,
-  setIsNewCommentFormVisible,
+  isCommentFormVisible,
+  setIsCommentFormVisible,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
 
@@ -39,7 +40,7 @@ export const PostDetails: React.FC<Props> = ({
         .catch(() => setCommentErrorMessage(Error.LoadingError))
         .finally(() => setLoadingComments(false));
     }
-  }, [selectedPost]);
+  }, [selectedPost, setCommentErrorMessage, setLoadingComments]);
 
   const handleDeleteComment = (currentCommentId: number) => {
     setCommentErrorMessage('');
@@ -80,7 +81,7 @@ export const PostDetails: React.FC<Props> = ({
             </p>
           )}
 
-          {comments.length > 0 && !commentErrorMessage && (
+          {!loadingComments && comments.length > 0 && !commentErrorMessage && (
             <>
               <p className="title is-4">Comments:</p>
               {comments.map((comment: Comment) => {
@@ -88,7 +89,7 @@ export const PostDetails: React.FC<Props> = ({
                   <article
                     className="message is-small"
                     data-cy="Comment"
-                    key={comment.email}
+                    key={comment.id}
                   >
                     <div className="message-header">
                       <a
@@ -117,19 +118,21 @@ export const PostDetails: React.FC<Props> = ({
             </>
           )}
 
-          {!commentErrorMessage && !isNewCommentFormVisible && (
-            <button
-              data-cy="WriteCommentButton"
-              type="button"
-              className="button is-link"
-              onClick={() => setIsNewCommentFormVisible(true)}
-            >
-              Write a comment
-            </button>
-          )}
+          {!loadingComments &&
+            !commentErrorMessage &&
+            !isCommentFormVisible && (
+              <button
+                data-cy="WriteCommentButton"
+                type="button"
+                className="button is-link"
+                onClick={() => setIsCommentFormVisible(true)}
+              >
+                Write a comment
+              </button>
+            )}
         </div>
 
-        {isNewCommentFormVisible && (
+        {isCommentFormVisible && (
           <NewCommentForm
             onSetError={setCommentErrorMessage}
             selectedPost={selectedPost}

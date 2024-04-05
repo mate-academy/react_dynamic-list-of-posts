@@ -13,7 +13,7 @@ type Props = {
   setSelectedPost: (post: Post | null) => void;
   setErrorMessage: (error: Error | '') => void;
   setIsSidebarVisible: (visible: boolean) => void;
-  setIsNewCommentFormVisible: (visible: boolean) => void;
+  setIsCommentFormVisible: (visible: boolean) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
@@ -23,7 +23,7 @@ export const UserSelector: React.FC<Props> = ({
   setSelectedPost,
   setErrorMessage,
   setIsSidebarVisible,
-  setIsNewCommentFormVisible,
+  setIsCommentFormVisible,
 }) => {
   const [users, setUsers] = useState<User[] | null>([]);
   const [areUsersVisible, setAreUsersVisible] = useState(false);
@@ -40,11 +40,11 @@ export const UserSelector: React.FC<Props> = ({
         setErrorMessage(Error.LoadingError);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [setErrorMessage, setLoading]);
 
   const handleSelectUser = (currentUser: User) => {
     setErrorMessage('');
-    setIsNewCommentFormVisible(false);
+    setIsCommentFormVisible(false);
     setSelectedPost(null);
     setIsSidebarVisible(false);
 

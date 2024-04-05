@@ -25,7 +25,7 @@ export const App: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
-  const [isNewCommentFormVisible, setIsNewCommentFormVisible] = useState(false);
+  const [isCommentFormVisible, setIsCommentFormVisible] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -54,7 +54,7 @@ export const App: React.FC = () => {
                   setSelectedPost={setSelectedPost}
                   setErrorMessage={setErrorMessage}
                   setIsSidebarVisible={setIsSidebarVisible}
-                  setIsNewCommentFormVisible={setIsNewCommentFormVisible}
+                  setIsCommentFormVisible={setIsCommentFormVisible}
                 />
               </div>
 
@@ -94,7 +94,7 @@ export const App: React.FC = () => {
                         isSidebarVisible={isSidebarVisible}
                         setIsSidebarVisible={setIsSidebarVisible}
                         setLoadingComments={setLoadingComments}
-                        setIsNewCommentFormVisible={setIsNewCommentFormVisible}
+                        setIsCommentFormVisible={setIsCommentFormVisible}
                       />
                     )}
                   </>
@@ -122,8 +122,8 @@ export const App: React.FC = () => {
                 setCommentErrorMessage={setCommentErrorMessage}
                 loadingComments={loadingComments}
                 setLoadingComments={setLoadingComments}
-                isNewCommentFormVisible={isNewCommentFormVisible}
-                setIsNewCommentFormVisible={setIsNewCommentFormVisible}
+                isCommentFormVisible={isCommentFormVisible}
+                setIsCommentFormVisible={setIsCommentFormVisible}
               />
             </div>
           </div>

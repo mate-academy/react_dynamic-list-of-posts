@@ -12,7 +12,7 @@ type Props = {
   selectedPost: Post | null;
   setSelectedPost: (post: Post | null) => void;
   setLoadingComments: (loading: boolean) => void;
-  setIsNewCommentFormVisible: (visible: boolean) => void;
+  setIsCommentFormVisible: (visible: boolean) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
@@ -23,12 +23,12 @@ export const PostsList: React.FC<Props> = ({
   selectedPost,
   setSelectedPost,
   setLoadingComments,
-  setIsNewCommentFormVisible,
+  setIsCommentFormVisible,
 }) => {
   const handleSelectPost = (currentPost: Post | null) => {
     setCommentErrorMessage('');
     setLoadingComments(true);
-    setIsNewCommentFormVisible(false);
+    setIsCommentFormVisible(false);
     setIsSidebarVisible(true);
     setSelectedPost(currentPost);
 
