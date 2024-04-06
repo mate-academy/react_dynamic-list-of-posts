@@ -1,106 +1,113 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/indent */
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { Post } from '../types/Post';
+import { getComments } from '../api/comments';
+import { wait } from '../utils/fetchClient';
+import { Error } from '../types/Error';
+import { Comment } from '../types/Comment';
+import { PostComments } from './Loader/PostComments';
 
-export const PostDetails: React.FC = () => {
+type Props = {
+  selectedPost: Post | null;
+  commentErrorMessage: Error | string;
+  setCommentErrorMessage: (errorMessage: Error | string) => void;
+  loadingComments: boolean;
+  setLoadingComments: (loadingComments: boolean) => void;
+  isCommentFormVisible: boolean;
+  setIsCommentFormVisible: (visible: boolean) => void;
+};
+
+export const PostDetails: React.FC<Props> = ({
+  selectedPost,
+  commentErrorMessage,
+  setCommentErrorMessage,
+  loadingComments,
+  setLoadingComments,
+  isCommentFormVisible,
+  setIsCommentFormVisible,
+}) => {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const { id, title } = selectedPost || {};
+  const noComments =
+    !comments.length && !loadingComments && !commentErrorMessage;
+  const hasPostComments =
+    !loadingComments && comments.length > 0 && !commentErrorMessage;
+
+  useEffect(() => {
+    setLoadingComments(true);
+
+    if (selectedPost) {
+      getComments(selectedPost.id)
+        .then(commentsFromServer => {
+          wait(1000);
+          setComments(commentsFromServer);
+        })
+        .catch(() => setCommentErrorMessage(Error.LoadingError))
+        .finally(() => setLoadingComments(false));
+    }
+  }, [selectedPost, setCommentErrorMessage, setLoadingComments]);
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            #{id}: {title}
           </h2>
 
-          <p data-cy="PostBody">
-            eveniet quo quis laborum totam consequatur non dolor ut et est
-            repudiandae est voluptatem vel debitis et magnam
-          </p>
+          <p data-cy="PostBody">{selectedPost?.body}</p>
         </div>
 
         <div className="block">
-          <Loader />
+          {loadingComments && <Loader />}
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
+          {commentErrorMessage && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              {commentErrorMessage}
+            </div>
+          )}
 
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
+          {noComments && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
 
-          <p className="title is-4">Comments:</p>
+          {hasPostComments && (
+            <>
+              <p className="title is-4">Comments:</p>
+              <PostComments
+                comments={comments}
+                setComments={setComments}
+                onCommentError={setCommentErrorMessage}
+              />
+            </>
+          )}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
+          {!loadingComments &&
+            !commentErrorMessage &&
+            !isCommentFormVisible && (
               <button
-                data-cy="CommentDelete"
+                data-cy="WriteCommentButton"
                 type="button"
-                className="delete is-small"
-                aria-label="delete"
+                className="button is-link"
+                onClick={() => setIsCommentFormVisible(true)}
               >
-                delete button
+                Write a comment
               </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div className="message-body" data-cy="CommentBody">
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+            )}
         </div>
 
-        <NewCommentForm />
+        {isCommentFormVisible && (
+          <NewCommentForm
+            onSetError={setCommentErrorMessage}
+            selectedPost={selectedPost}
+            comments={comments}
+            setComments={setComments}
+          />
+        )}
       </div>
     </div>
   );
