@@ -6,7 +6,7 @@ import { Error } from '../types/Error';
 
 type Props = {
   posts: Post[];
-  setCommentErrorMessage: (error: Error | '') => void;
+  setCommentErrorMessage: (error: Error | string) => void;
   isSidebarVisible: boolean;
   setIsSidebarVisible: (visible: boolean) => void;
   selectedPost: Post | null;

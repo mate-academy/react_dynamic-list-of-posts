@@ -7,17 +7,17 @@ import classNames from 'classnames';
 import { Post } from '../types/Post';
 
 type Props = {
-  setLoading: (loading: boolean) => void;
+  setIsLoading: (isLoading: boolean) => void;
   setSelectedUser: (user: User | null) => void;
   selectedUser: User | null;
   setSelectedPost: (post: Post | null) => void;
-  setErrorMessage: (error: Error | '') => void;
+  setErrorMessage: (error: Error | string) => void;
   setIsSidebarVisible: (visible: boolean) => void;
   setIsCommentFormVisible: (visible: boolean) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
-  setLoading,
+  setIsLoading,
   setSelectedUser,
   selectedUser,
   setSelectedPost,
@@ -29,7 +29,7 @@ export const UserSelector: React.FC<Props> = ({
   const [areUsersVisible, setAreUsersVisible] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
+    setIsLoading(true);
     setErrorMessage('');
     getUsers()
       .then(usersFromServer => {
@@ -39,19 +39,18 @@ export const UserSelector: React.FC<Props> = ({
       .catch(() => {
         setErrorMessage(Error.LoadingError);
       })
-      .finally(() => setLoading(false));
-  }, [setErrorMessage, setLoading]);
+      .finally(() => setIsLoading(false));
+  }, [setErrorMessage, setIsLoading]);
 
   const handleSelectUser = (currentUser: User) => {
-    setErrorMessage('');
-    setIsCommentFormVisible(false);
-    setSelectedPost(null);
-    setIsSidebarVisible(false);
-
     if (selectedUser && currentUser.id === selectedUser.id) {
       return;
     }
 
+    setErrorMessage('');
+    setIsCommentFormVisible(false);
+    setSelectedPost(null);
+    setIsSidebarVisible(false);
     setSelectedUser(currentUser);
     getUser(currentUser).catch(() => setErrorMessage(Error.LoadingError));
   };
@@ -63,7 +62,7 @@ export const UserSelector: React.FC<Props> = ({
   };
 
   const handleButtonClick = () => {
-    setAreUsersVisible(!areUsersVisible);
+    setAreUsersVisible(prevState => !prevState);
   };
 
   return (
@@ -87,8 +86,9 @@ export const UserSelector: React.FC<Props> = ({
           </span>
         </button>
       </div>
-      {users && (
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        {users && (
           <div className="dropdown-content">
             {users.map((user: User) => (
               <a
@@ -104,8 +104,8 @@ export const UserSelector: React.FC<Props> = ({
               </a>
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

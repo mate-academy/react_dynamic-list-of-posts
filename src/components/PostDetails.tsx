@@ -3,15 +3,16 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
-import { deleteComment, getComments } from '../api/comments';
+import { getComments } from '../api/comments';
 import { wait } from '../utils/fetchClient';
 import { Error } from '../types/Error';
 import { Comment } from '../types/Comment';
+import { PostComments } from './Loader/PostComments';
 
 type Props = {
   selectedPost: Post | null;
-  commentErrorMessage: Error | '';
-  setCommentErrorMessage: (errorMessage: Error | '') => void;
+  commentErrorMessage: Error | string;
+  setCommentErrorMessage: (errorMessage: Error | string) => void;
   loadingComments: boolean;
   setLoadingComments: (loadingComments: boolean) => void;
   isCommentFormVisible: boolean;
@@ -28,9 +29,15 @@ export const PostDetails: React.FC<Props> = ({
   setIsCommentFormVisible,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
+  const { id, title } = selectedPost || {};
+  const noComments =
+    !comments.length && !loadingComments && !commentErrorMessage;
+  const hasPostComments =
+    !loadingComments && comments.length > 0 && !commentErrorMessage;
 
   useEffect(() => {
     setLoadingComments(true);
+
     if (selectedPost) {
       getComments(selectedPost.id)
         .then(commentsFromServer => {
@@ -42,25 +49,12 @@ export const PostDetails: React.FC<Props> = ({
     }
   }, [selectedPost, setCommentErrorMessage, setLoadingComments]);
 
-  const handleDeleteComment = (currentCommentId: number) => {
-    setCommentErrorMessage('');
-    setComments(prevComments =>
-      prevComments.filter(comment => comment.id !== currentCommentId),
-    );
-
-    deleteComment(currentCommentId).catch(error => {
-      setComments(comments);
-      setCommentErrorMessage(Error.LoadingError);
-      throw error;
-    });
-  };
-
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #{selectedPost?.id}: {selectedPost?.title}
+            #{id}: {title}
           </h2>
 
           <p data-cy="PostBody">{selectedPost?.body}</p>
@@ -75,46 +69,20 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {!comments.length && !loadingComments && !commentErrorMessage && (
+          {noComments && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {!loadingComments && comments.length > 0 && !commentErrorMessage && (
+          {hasPostComments && (
             <>
               <p className="title is-4">Comments:</p>
-              {comments.map((comment: Comment) => {
-                return (
-                  <article
-                    className="message is-small"
-                    data-cy="Comment"
-                    key={comment.id}
-                  >
-                    <div className="message-header">
-                      <a
-                        href={`mailto:${comment.email}`}
-                        data-cy="CommentAuthor"
-                      >
-                        {comment.name}
-                      </a>
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
-                        onClick={() => handleDeleteComment(comment.id)}
-                      >
-                        delete button
-                      </button>
-                    </div>
-
-                    <div className="message-body" data-cy="CommentBody">
-                      {comment.body}
-                    </div>
-                  </article>
-                );
-              })}
+              <PostComments
+                comments={comments}
+                setComments={setComments}
+                onCommentError={setCommentErrorMessage}
+              />
             </>
           )}
 

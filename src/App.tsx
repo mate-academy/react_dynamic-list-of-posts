@@ -15,20 +15,25 @@ import { getPosts } from './api/posts';
 import { wait } from './utils/fetchClient';
 
 export const App: React.FC = () => {
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [errorMessage, setErrorMessage] = useState<Error | ''>('');
-  const [commentErrorMessage, setCommentErrorMessage] = useState<Error | ''>(
-    '',
-  );
+  const [errorMessage, setErrorMessage] = useState<Error | string>('');
+  // eslint-disable-next-line prettier/prettier
+  const [commentErrorMessage, setCommentErrorMessage]
+    = useState<Error | string>('');
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [loadingComments, setLoadingComments] = useState(false);
   const [isCommentFormVisible, setIsCommentFormVisible] = useState(false);
+  const isLoadingPosts = isLoading && !isSidebarVisible;
+  const noSelectedUsers = !selectedUser && !errorMessage;
+  const noSelectedUserPosts = selectedUser && !posts.length && !errorMessage;
+  const hasSelectedUserPosts =
+    selectedUser && posts.length > 0 && !errorMessage;
 
   useEffect(() => {
-    setLoading(true);
+    setIsLoading(true);
     if (selectedUser) {
       getPosts(selectedUser.id)
         .then(postsFromServer => {
@@ -36,7 +41,7 @@ export const App: React.FC = () => {
           setPosts(postsFromServer);
         })
         .catch(() => setErrorMessage(Error.LoadingError))
-        .finally(() => setLoading(false));
+        .finally(() => setIsLoading(false));
     }
   }, [selectedUser]);
 
@@ -48,7 +53,7 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  setLoading={setLoading}
+                  setIsLoading={setIsLoading}
                   setSelectedUser={setSelectedUser}
                   selectedUser={selectedUser}
                   setSelectedPost={setSelectedPost}
@@ -59,11 +64,11 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUser && !errorMessage && (
+                {noSelectedUsers && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {loading && !isSidebarVisible ? (
+                {isLoadingPosts ? (
                   <Loader />
                 ) : (
                   <>
@@ -76,7 +81,7 @@ export const App: React.FC = () => {
                       </div>
                     )}
 
-                    {selectedUser && !posts.length && !errorMessage && (
+                    {noSelectedUserPosts && (
                       <div
                         className="notification is-warning"
                         data-cy="NoPostsYet"
@@ -85,7 +90,7 @@ export const App: React.FC = () => {
                       </div>
                     )}
 
-                    {selectedUser && posts.length > 0 && !errorMessage && (
+                    {hasSelectedUserPosts && (
                       <PostsList
                         posts={posts}
                         setCommentErrorMessage={setCommentErrorMessage}

@@ -9,7 +9,13 @@ type Props = {
   selectedPost: Post | null;
   comments: Comment[];
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
-  onSetError: (errorMessage: Error | '') => void;
+  onSetError: (errorMessage: Error | string) => void;
+};
+
+const initialCommentData = {
+  authorName: '',
+  authorEmail: '',
+  newCommentBody: '',
 };
 
 export const NewCommentForm: React.FC<Props> = ({
@@ -18,16 +24,12 @@ export const NewCommentForm: React.FC<Props> = ({
   setComments,
   onSetError,
 }) => {
-  const initialCommentData = {
-    authorName: '',
-    authorEmail: '',
-    newCommentBody: '',
-  };
   const [commentData, setCommentData] = useState(initialCommentData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasAuthorNameError, setHasAuthorNameError] = useState(false);
   const [hasAuthorEmailError, setHasAuthorEmailError] = useState(false);
   const [hasNewCommentBodyError, setHasNewCommentBodyError] = useState(false);
+  const { authorName, authorEmail, newCommentBody } = commentData;
 
   const handleAuthorNameChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -59,19 +61,19 @@ export const NewCommentForm: React.FC<Props> = ({
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!commentData.authorName.trim()) {
+    if (!authorName.trim()) {
       setHasAuthorNameError(true);
 
       return;
     }
 
-    if (!commentData.authorEmail.trim()) {
+    if (!authorEmail.trim()) {
       setHasAuthorEmailError(true);
 
       return;
     }
 
-    if (!commentData.newCommentBody.trim()) {
+    if (!newCommentBody.trim()) {
       setHasNewCommentBodyError(true);
 
       return;
@@ -84,9 +86,9 @@ export const NewCommentForm: React.FC<Props> = ({
 
     return addComment({
       postId: id,
-      name: commentData.authorName.trim(),
-      email: commentData.authorEmail.trim(),
-      body: commentData.newCommentBody.trim(),
+      name: authorName.trim(),
+      email: authorEmail.trim(),
+      body: newCommentBody.trim(),
     })
       .then(newComment => {
         setComments(prevComments => [...prevComments, newComment]);
@@ -116,7 +118,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control has-icons-left has-icons-right">
           <input
-            value={commentData.authorName}
+            value={authorName}
             type="text"
             name="name"
             id="comment-author-name"
@@ -154,7 +156,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control has-icons-left has-icons-right">
           <input
-            value={commentData.authorEmail}
+            value={authorEmail}
             type="text"
             name="email"
             id="comment-author-email"
@@ -194,7 +196,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control">
           <textarea
-            value={commentData.newCommentBody}
+            value={newCommentBody}
             id="comment-body"
             name="body"
             placeholder="Type comment here"
