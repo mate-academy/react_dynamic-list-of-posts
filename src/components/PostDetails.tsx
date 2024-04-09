@@ -28,6 +28,11 @@ export const PostDetails: React.FC = () => {
     }
   };
 
+  const handleOpenCreateForm = () => {
+    setIsFormOpen(true);
+    setHasErrorCreateComment(false);
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
@@ -100,10 +105,7 @@ export const PostDetails: React.FC = () => {
                 data-cy="WriteCommentButton"
                 type="button"
                 className="button is-link"
-                onClick={() => {
-                  setIsFormOpen(true);
-                  setHasErrorCreateComment(false);
-                }}
+                onClick={handleOpenCreateForm}
               >
                 Write a comment
               </button>

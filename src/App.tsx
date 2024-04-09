@@ -8,6 +8,7 @@ import { SideBar } from './components/SideBar';
 import { UserSelector } from './components/UserSelector';
 
 export const App: React.FC = () => {
+  // eslint-disable-next-line
   return (
     <main className="section">
       <div className="container">
