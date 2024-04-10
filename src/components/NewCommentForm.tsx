@@ -20,11 +20,10 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment, postId }) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     setLoadingComment(true);
     event.preventDefault();
-
+    setNameError(!name);
+    setEmailError(!email);
+    setBodyError(!body);
     if (!name.trim() || !email.trim() || !body.trim()) {
-      setNameError(!name);
-      setEmailError(!email);
-      setBodyError(!body);
       setLoadingComment(false);
 
       return;
