@@ -1,35 +1,24 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Post } from '../types/Post';
-import * as postService from '../api/posts';
-
+import classNames from 'classnames';
 type Props = {
-  userId: number | undefined;
   posts: Post[];
-  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
-  setLoadingPosts: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedPost: Post | null;
+  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
 };
 
 export const PostsList: React.FC<Props> = ({
-  userId,
   posts,
-  setPosts,
-  setLoadingPosts,
+  setSelectedPost,
+  selectedPost,
 }) => {
-  useEffect(() => {
-    if (userId !== undefined) {
-      setLoadingPosts(true);
+  const isPostSelected = (postId: number) => {
+    return selectedPost !== null && postId === selectedPost.id;
+  };
 
-      postService
-        .getPosts({ id: userId })
-        .then(fetchedPosts => {
-          setPosts(fetchedPosts);
-          setLoadingPosts(false);
-        })
-        .catch(() => {
-          setLoadingPosts(false);
-        });
-    }
-  }, [userId, setPosts, setLoadingPosts]);
+  const togglePostSelection = (post: Post) => {
+    setSelectedPost(isPostSelected(post.id) ? null : post);
+  };
 
   return (
     <div data-cy="PostsList">
@@ -64,9 +53,12 @@ export const PostsList: React.FC<Props> = ({
                     <button
                       type="button"
                       data-cy="PostButton"
-                      className="button is-link"
+                      className={classNames('button is-link', {
+                        'is-light': !isPostSelected(post.id),
+                      })}
+                      onClick={() => togglePostSelection(post)}
                     >
-                      Close/Open
+                      {isPostSelected(post.id) ? 'Close' : 'Open'}
                     </button>
                   </td>
                 </tr>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,15 +8,32 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { User } from './types/User';
 import { Post } from './types/Post';
+import { getPosts } from './api/posts';
+import { User } from './types/User';
 
 export const App: React.FC = () => {
   const [loader, setLoader] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [error, setError] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    setPosts([]);
+    setError(false);
+    setLoadingPosts(true);
+
+    if (selectedUser) {
+      setSelectedPost(null);
+
+      getPosts(selectedUser.id)
+        .then(setPosts)
+        .catch(() => setError(true))
+        .finally(() => setLoadingPosts(false));
+    }
+  }, [selectedUser]);
 
   return (
     <main className="section">
@@ -27,19 +44,18 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   setLoader={setLoader}
-                  setSelectedUser={setSelectedUser}
-                  setError={setError}
                   setLoadingPosts={setLoadingPosts}
                   setPosts={setPosts}
+                  setSelectedUser={setSelectedUser}
                 />
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUser && !error && (
+                {!selectedUser && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {loader && <Loader />}
+                {selectedUser && loader && <Loader />}
 
                 {error && (
                   <div
@@ -50,23 +66,29 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUser && !loadingPosts && !error && !posts.length && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
-                {selectedUser && (
-                  <PostsList
-                    userId={selectedUser.id}
-                    posts={posts}
-                    setPosts={setPosts}
-                    setLoadingPosts={setLoadingPosts}
-                  />
-                )}
+                {selectedUser &&
+                  !loadingPosts &&
+                  !loader &&
+                  !error &&
+                  (!posts.length ? (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  ) : (
+                    <PostsList
+                      posts={posts}
+                      selectedPost={selectedPost}
+                      setSelectedPost={setSelectedPost}
+                    />
+                  ))}
               </div>
             </div>
           </div>
-          {false && (
+
+          {selectedUser && selectedPost && (
             <div
               data-cy="Sidebar"
               className={classNames(
@@ -78,7 +100,7 @@ export const App: React.FC = () => {
               )}
             >
               <div className="tile is-child box is-success ">
-                <PostDetails />
+                <PostDetails post={selectedPost} />
               </div>
             </div>
           )}
