@@ -65,7 +65,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
           {comments.length > 0 && <p className="title is-4">Comments:</p>}
 
-          {comments.length > 0 &&
+          {!!comments.length &&
             comments.map(comment => (
               <article
                 className="message is-small"

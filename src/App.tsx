@@ -35,6 +35,8 @@ export const App: React.FC = () => {
     }
   }, [selectedUser]);
 
+  const noPosts = selectedUser && !loadingPosts && !loader && !error;
+
   return (
     <main className="section">
       <div className="container">
@@ -66,10 +68,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUser &&
-                  !loadingPosts &&
-                  !loader &&
-                  !error &&
+                {noPosts &&
                   (!posts.length ? (
                     <div
                       className="notification is-warning"
