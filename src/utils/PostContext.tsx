@@ -19,10 +19,14 @@ interface ContextTypes {
   setErrPostLoading: React.Dispatch<React.SetStateAction<boolean>>;
   errCommentsLoading: boolean;
   setErrCommentsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  errHandleComment: boolean;
+  setErrHandleComment: React.Dispatch<React.SetStateAction<boolean>>;
   isPostLoading: boolean;
   setIsPostLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  isCommentLoading: boolean;
-  setIsCommentLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  isCommentSubmitting: boolean;
+  setIsCommentSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
+  isCommentsLoading: boolean;
+  setIsCommentsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   sidebarOpen: boolean;
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   newCommentFormOpen: boolean;
@@ -31,27 +35,31 @@ interface ContextTypes {
 
 const initContext = {
   users: [],
-  setUsers: () => {},
+  setUsers: () => { },
   selectedUser: null,
-  setSelectedUser: () => {},
+  setSelectedUser: () => { },
   posts: [],
-  setPosts: () => {},
+  setPosts: () => { },
   selectedPost: null,
-  setSelectedPost: () => {},
+  setSelectedPost: () => { },
   comments: [],
-  setComments: () => {},
+  setComments: () => { },
   errPostLoading: false,
-  setErrPostLoading: () => {},
+  setErrPostLoading: () => { },
   errCommentsLoading: false,
-  setErrCommentsLoading: () => {},
+  setErrCommentsLoading: () => { },
+  errHandleComment: false,
+  setErrHandleComment: () => { },
   isPostLoading: false,
-  setIsPostLoading: () => {},
-  isCommentLoading: false,
-  setIsCommentLoading: () => {},
+  setIsPostLoading: () => { },
+  isCommentsLoading: false,
+  setIsCommentsLoading: () => { },
+  isCommentSubmitting: false,
+  setIsCommentSubmitting: () => { },
   sidebarOpen: false,
-  setSidebarOpen: () => {},
+  setSidebarOpen: () => { },
   newCommentFormOpen: false,
-  setNewCommentFormOpen: () => {},
+  setNewCommentFormOpen: () => { },
 };
 
 const PostContext = React.createContext<ContextTypes>(initContext);
@@ -68,8 +76,10 @@ export const PostContextProvider: React.FC<Props> = ({ children }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [errPostLoading, setErrPostLoading] = useState(false);
   const [errCommentsLoading, setErrCommentsLoading] = useState(false);
+  const [errHandleComment, setErrHandleComment] = useState(false);
   const [isPostLoading, setIsPostLoading] = useState(false);
-  const [isCommentLoading, setIsCommentLoading] = useState(false);
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
+  const [isCommentSubmitting, setIsCommentSubmitting] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [newCommentFormOpen, setNewCommentFormOpen] = useState(false);
 
@@ -97,10 +107,14 @@ export const PostContextProvider: React.FC<Props> = ({ children }) => {
     setErrPostLoading,
     errCommentsLoading,
     setErrCommentsLoading,
+    errHandleComment,
+    setErrHandleComment,
     isPostLoading,
     setIsPostLoading,
-    isCommentLoading,
-    setIsCommentLoading,
+    isCommentsLoading,
+    setIsCommentsLoading,
+    isCommentSubmitting,
+    setIsCommentSubmitting,
     sidebarOpen,
     setSidebarOpen,
     newCommentFormOpen,

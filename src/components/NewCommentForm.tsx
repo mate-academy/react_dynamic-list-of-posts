@@ -1,8 +1,73 @@
-import React from 'react';
+import React, { useState } from 'react';
+import classNames from 'classnames';
+import { usePostInfo } from '../utils/PostContext';
+import * as commentServices from '../api/comments';
 
 export const NewCommentForm: React.FC = () => {
+  const {
+    selectedPost,
+    setComments,
+    isCommentSubmitting,
+    setIsCommentSubmitting,
+    setErrHandleComment,
+  } = usePostInfo();
+
+  const initFormValue = {
+    name: '',
+    nameHasErr: false,
+    email: '',
+    emailHasErr: false,
+    body: '',
+    bodyHasErr: false,
+  };
+
+  const [formValue, setFormValue] = useState(initFormValue);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { value, name } = e.target;
+    const keyHasErr = `${name}HasErr`;
+
+    setFormValue(prevValue => ({
+      ...prevValue,
+      [name]: value,
+      [keyHasErr]: false,
+    }));
+  };
+
+  const handleAddComment = async () => {
+    setErrHandleComment(false);
+    setIsCommentSubmitting(true);
+    const { email, name, body } = formValue;
+
+    if (selectedPost) {
+      const newCommentData = {
+        postId: selectedPost?.userId,
+        name,
+        email,
+        body,
+      };
+
+      try {
+        const newComment = await commentServices.createComment(newCommentData);
+
+        setComments(prevState => [...prevState, newComment]);
+      } catch (error) {
+        setErrHandleComment(true);
+      } finally {
+        setIsCommentSubmitting(false);
+      }
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleAddComment();
+  };
+
   return (
-    <form data-cy="NewCommentForm">
+    <form data-cy="NewCommentForm" onSubmit={handleSubmit}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -14,7 +79,11 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            className={classNames('input', {
+              'is-danger': formValue.nameHasErr,
+            })}
+            value={formValue.name}
+            onChange={handleInputChange}
           />
 
           <span className="icon is-small is-left">
@@ -45,7 +114,11 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            className={classNames('input', {
+              'is-danger': formValue.emailHasErr,
+            })}
+            value={formValue.email}
+            onChange={handleInputChange}
           />
 
           <span className="icon is-small is-left">
@@ -75,7 +148,11 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            className={classNames('textarea', {
+              'is-danger': formValue.bodyHasErr,
+            })}
+            value={formValue.body}
+            onChange={handleInputChange}
           />
         </div>
 
@@ -86,7 +163,12 @@ export const NewCommentForm: React.FC = () => {
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={classNames('button', 'is-link', {
+              'is-loading': isCommentSubmitting,
+            })}
+          >
             Add
           </button>
         </div>

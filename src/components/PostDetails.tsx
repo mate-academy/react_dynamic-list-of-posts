@@ -2,16 +2,37 @@ import React from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { usePostInfo } from '../utils/PostContext';
+import * as commentServices from '../api/comments';
 
 export const PostDetails: React.FC = () => {
   const {
     selectedPost,
     comments,
-    isCommentLoading,
+    setComments,
+    isCommentsLoading,
     errCommentsLoading,
+    errHandleComment,
+    setErrHandleComment,
     newCommentFormOpen,
+    setIsCommentsLoading,
     setNewCommentFormOpen,
   } = usePostInfo();
+
+  const handleDeleteComment = async (id: number) => {
+    setErrHandleComment(false);
+    setIsCommentsLoading(true);
+    try {
+      await commentServices.deleteComment(id);
+      setComments(prevComments =>
+        prevComments.filter(comment => comment.id !== id),
+      );
+    } catch (error) {
+      setErrHandleComment(true);
+      setComments(comments);
+    } finally {
+      setIsCommentsLoading(false);
+    }
+  };
 
   const handleWriteComment = () => {
     setNewCommentFormOpen(true);
@@ -29,9 +50,9 @@ export const PostDetails: React.FC = () => {
         </div>
 
         <div className="block">
-          {isCommentLoading && <Loader />}
+          {isCommentsLoading && <Loader />}
 
-          {errCommentsLoading && (
+          {errCommentsLoading || errHandleComment && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
@@ -61,6 +82,7 @@ export const PostDetails: React.FC = () => {
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
+                      onClick={() => handleDeleteComment(comment.id)}
                     >
                       delete button
                     </button>

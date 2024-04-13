@@ -10,7 +10,7 @@ export const PostsList: React.FC = () => {
     selectedPost,
     setSelectedPost,
     setComments,
-    setIsCommentLoading,
+    setIsCommentsLoading,
     setNewCommentFormOpen,
     sidebarOpen,
     setSidebarOpen,
@@ -31,13 +31,13 @@ export const PostsList: React.FC = () => {
     setErrCommentsLoading(false);
     setSidebarOpen(true);
     setSelectedPost(post);
-    setIsCommentLoading(true);
+    setIsCommentsLoading(true);
 
     commentsServices
       .getComments(post.id)
       .then(setComments)
       .catch(err => setErrCommentsLoading(err))
-      .finally(() => setIsCommentLoading(false));
+      .finally(() => setIsCommentsLoading(false));
   };
 
   return (
