@@ -1,16 +1,95 @@
-import React from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
+import { StateContext } from '../store/store';
+import { DropDownMenu } from './DropDownMenu';
+import { User } from '../types/User';
+import classNames from 'classnames';
+import { getPosts } from '../api/fetches';
 
 export const UserSelector: React.FC = () => {
+  const {
+    users,
+    isOpenListUser,
+    setIsOpenListUser,
+    selectedUser,
+    setSelectedUser,
+    setPosts,
+    setIsLoading,
+    setIsWarming,
+    setIsLoadingFail,
+    setCurrentPost,
+  } = useContext(StateContext);
+
+  const inputRef = useRef<HTMLDivElement>(null);
+
+  const handleOutsideClick = (e: MouseEvent) => {
+    if (inputRef.current && !inputRef.current.contains(e.target as Node)) {
+      setIsOpenListUser(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  });
+
+  const handleToggleList = () => {
+    setIsOpenListUser(prev => !prev);
+  };
+
+  useEffect(() => {
+    if (selectedUser?.id) {
+      setIsLoading(true);
+
+      setIsWarming(false);
+
+      setPosts(null);
+
+      setIsLoadingFail(false);
+
+      getPosts(selectedUser?.id)
+        .then(response => {
+          setPosts(response);
+          if (!response.length) {
+            setIsWarming(true);
+          }
+        })
+        .catch(() => {
+          setIsLoadingFail(true);
+        })
+        .finally(() => setIsLoading(false));
+    }
+  }, [
+    selectedUser?.id,
+    setPosts,
+    setIsLoading,
+    setIsWarming,
+    setIsLoadingFail,
+  ]);
+
+  const handleChoseUser = (choseUser: User) => {
+    setSelectedUser(choseUser);
+    setIsOpenListUser(false);
+    setCurrentPost(null);
+  };
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className={classNames('dropdown', { 'is-active': isOpenListUser })}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={handleToggleList}
+          onBlur={() => setIsOpenListUser(false)}
         >
-          <span>Choose a user</span>
+          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -18,25 +97,20 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
+      <DropDownMenu>
+        {users.map(user => (
+          <a
+            href={`#user-${user.id}`}
+            key={user.id}
+            className={classNames('dropdown-item', {
+              'is-active': user.id === selectedUser?.id,
+            })}
+            onMouseDown={() => handleChoseUser(user)}
+          >
+            {user.name}
           </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
-        </div>
-      </div>
+        ))}
+      </DropDownMenu>
     </div>
   );
 };

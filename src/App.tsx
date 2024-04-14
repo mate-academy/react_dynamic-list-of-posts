@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -7,9 +7,19 @@ import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
+import { StateContext } from './store/store';
 import { Loader } from './components/Loader';
 
 export const App: React.FC = () => {
+  const {
+    selectedUser,
+    isLoading,
+    posts,
+    isWarming,
+    isLoadingFail,
+    currentPost,
+  } = useContext(StateContext);
+
   return (
     <main className="section">
       <div className="container">
@@ -21,22 +31,29 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
+                {selectedUser ? (
+                  ''
+                ) : (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-                <Loader />
+                {isLoading && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {isLoadingFail && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                {!!posts?.length && <PostsList />}
+                {isWarming && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -48,11 +65,11 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': currentPost },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {currentPost && <PostDetails />}
             </div>
           </div>
         </div>
