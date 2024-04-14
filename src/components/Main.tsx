@@ -4,7 +4,8 @@ import { Loader } from './Loader';
 import { usePostInfo } from '../utils/PostContext';
 
 export const Main: React.FC = () => {
-  const { selectedUser, posts, isPostLoading, errPostLoading } = usePostInfo();
+  const { posts, selectedUser, isPostLoading, postsLoadingError } =
+    usePostInfo();
 
   return (
     <div className="block" data-cy="MainContent">
@@ -14,18 +15,18 @@ export const Main: React.FC = () => {
 
       {selectedUser && (
         <>
-          {errPostLoading && (
+          {postsLoadingError && (
             <div className="notification is-danger" data-cy="PostsLoadingError">
               Something went wrong!
             </div>
           )}
 
-          {!errPostLoading && !posts.length && !isPostLoading && (
+          {!postsLoadingError && !posts.length && !isPostLoading && (
             <div className="notification is-warning" data-cy="NoPostsYet">
               No posts yet
             </div>
           )}
-          {!errPostLoading && !!posts.length && <PostsList />}
+          {!isPostLoading && !postsLoadingError && !!posts.length && <PostsList />}
         </>
       )}
     </div>

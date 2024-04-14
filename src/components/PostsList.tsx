@@ -14,7 +14,7 @@ export const PostsList: React.FC = () => {
     setNewCommentFormOpen,
     sidebarOpen,
     setSidebarOpen,
-    setErrCommentsLoading,
+    setCommentsError,
   } = usePostInfo();
 
   const handleSelectPost = (post: Post) => {
@@ -28,7 +28,7 @@ export const PostsList: React.FC = () => {
     }
 
     setNewCommentFormOpen(false);
-    setErrCommentsLoading(false);
+    setCommentsError(false);
     setSidebarOpen(true);
     setSelectedPost(post);
     setIsCommentsLoading(true);
@@ -36,7 +36,7 @@ export const PostsList: React.FC = () => {
     commentsServices
       .getComments(post.id)
       .then(setComments)
-      .catch(err => setErrCommentsLoading(err))
+      .catch(() => setCommentsError(true))
       .finally(() => setIsCommentsLoading(false));
   };
 

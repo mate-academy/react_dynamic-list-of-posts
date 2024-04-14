@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { User } from '../types/User';
 import { Post } from '../types/Post';
-import * as userServices from '../api/users';
+import { getUsers } from '../api/users';
 import { Comment } from '../types/Comment';
 
 interface ContextTypes {
@@ -15,16 +15,12 @@ interface ContextTypes {
   setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
   comments: Comment[];
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
-  errPostLoading: boolean;
-  setErrPostLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  errCommentsLoading: boolean;
-  setErrCommentsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  errHandleComment: boolean;
-  setErrHandleComment: React.Dispatch<React.SetStateAction<boolean>>;
+  postsLoadingError: boolean;
+  setPostsLoadingError: React.Dispatch<React.SetStateAction<boolean>>;
+  commentsError: boolean;
+  setCommentsError: React.Dispatch<React.SetStateAction<boolean>>;
   isPostLoading: boolean;
   setIsPostLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  isCommentSubmitting: boolean;
-  setIsCommentSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
   isCommentsLoading: boolean;
   setIsCommentsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   sidebarOpen: boolean;
@@ -35,31 +31,27 @@ interface ContextTypes {
 
 const initContext = {
   users: [],
-  setUsers: () => { },
+  setUsers: () => {},
   selectedUser: null,
-  setSelectedUser: () => { },
+  setSelectedUser: () => {},
   posts: [],
-  setPosts: () => { },
+  setPosts: () => {},
   selectedPost: null,
-  setSelectedPost: () => { },
+  setSelectedPost: () => {},
   comments: [],
-  setComments: () => { },
-  errPostLoading: false,
-  setErrPostLoading: () => { },
-  errCommentsLoading: false,
-  setErrCommentsLoading: () => { },
-  errHandleComment: false,
-  setErrHandleComment: () => { },
+  setComments: () => {},
+  postsLoadingError: false,
+  setPostsLoadingError: () => {},
+  commentsError: false,
+  setCommentsError: () => {},
   isPostLoading: false,
-  setIsPostLoading: () => { },
+  setIsPostLoading: () => {},
   isCommentsLoading: false,
-  setIsCommentsLoading: () => { },
-  isCommentSubmitting: false,
-  setIsCommentSubmitting: () => { },
+  setIsCommentsLoading: () => {},
   sidebarOpen: false,
-  setSidebarOpen: () => { },
+  setSidebarOpen: () => {},
   newCommentFormOpen: false,
-  setNewCommentFormOpen: () => { },
+  setNewCommentFormOpen: () => {},
 };
 
 const PostContext = React.createContext<ContextTypes>(initContext);
@@ -74,21 +66,18 @@ export const PostContextProvider: React.FC<Props> = ({ children }) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
-  const [errPostLoading, setErrPostLoading] = useState(false);
-  const [errCommentsLoading, setErrCommentsLoading] = useState(false);
-  const [errHandleComment, setErrHandleComment] = useState(false);
+  const [postsLoadingError, setPostsLoadingError] = useState(false);
+  const [commentsError, setCommentsError] = useState(false);
   const [isPostLoading, setIsPostLoading] = useState(false);
   const [isCommentsLoading, setIsCommentsLoading] = useState(false);
-  const [isCommentSubmitting, setIsCommentSubmitting] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [newCommentFormOpen, setNewCommentFormOpen] = useState(false);
 
   useEffect(() => {
-    userServices
-      .getUsers()
+    getUsers()
       .then(setUsers)
-      .catch(err => {
-        throw err;
+      .catch(() => {
+        setPostsLoadingError(true);
       });
   }, []);
 
@@ -103,18 +92,14 @@ export const PostContextProvider: React.FC<Props> = ({ children }) => {
     setSelectedPost,
     comments,
     setComments,
-    errPostLoading,
-    setErrPostLoading,
-    errCommentsLoading,
-    setErrCommentsLoading,
-    errHandleComment,
-    setErrHandleComment,
+    postsLoadingError,
+    setPostsLoadingError,
+    commentsError,
+    setCommentsError,
     isPostLoading,
     setIsPostLoading,
     isCommentsLoading,
     setIsCommentsLoading,
-    isCommentSubmitting,
-    setIsCommentSubmitting,
     sidebarOpen,
     setSidebarOpen,
     newCommentFormOpen,

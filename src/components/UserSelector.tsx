@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import classNames from 'classnames';
 import { usePostInfo } from '../utils/PostContext';
 import { User } from '../types/User';
-import * as postServices from '../api/posts';
+import { getPosts } from '../api/posts';
 
 export const UserSelector: React.FC = () => {
   const {
@@ -11,23 +11,25 @@ export const UserSelector: React.FC = () => {
     setSelectedUser,
     setPosts,
     setSelectedPost,
-    setErrPostLoading,
+    setPostsLoadingError,
     setIsPostLoading,
+    setSidebarOpen,
   } = usePostInfo();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleSelectUser = (user: User) => {
+    setPosts([]);
     setSelectedUser(user);
     setIsDropdownOpen(false);
-    setErrPostLoading(false);
+    setPostsLoadingError(false);
+    setSidebarOpen(false);
     setSelectedPost(null);
     setIsPostLoading(true);
 
-    postServices
-      .getPosts(user.id)
+    getPosts(user.id)
       .then(setPosts)
-      .catch(error => {
-        setErrPostLoading(error);
+      .catch(() => {
+        setPostsLoadingError(true);
       })
       .finally(() => setIsPostLoading(false));
   };
