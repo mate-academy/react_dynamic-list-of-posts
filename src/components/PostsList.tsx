@@ -1,86 +1,64 @@
-import React from 'react';
+import React, { useContext, useMemo } from 'react';
+import cn from 'classnames';
+import { AppContext } from './AppState';
+import { PostItem } from './PostItem';
+import { Loader } from './Loader';
+import { ErrorMessage, LoadingType } from '../types';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+export const PostsList: React.FC = () => {
+  const { posts, errorMessage, loadingType } = useContext(AppContext);
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-          <th> </th>
-        </tr>
-      </thead>
+  const isLoading = useMemo(
+    () => loadingType === LoadingType.Posts,
+    [loadingType],
+  );
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+  const hasError = useMemo(
+    () => errorMessage === ErrorMessage.LoadingPosts,
+    [errorMessage],
+  );
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
+  return (
+    <>
+      {(isLoading && <Loader />) ||
+        (hasError && (
+          <div className="notification is-danger" data-cy="PostsLoadingError">
+            {errorMessage}
+          </div>
+        )) ||
+        (!posts.length ? (
+          <div className="notification is-warning" data-cy="NoPostsYet">
+            No posts yet
+          </div>
+        ) : (
+          <div data-cy="PostsList">
+            <p className="title">Posts:</p>
+            <table
+              className={cn(
+                'table',
+                'is-fullwidth',
+                'is-striped',
+                'is-hoverable',
+                'is-narrow',
+              )}
             >
-              Open
-            </button>
-          </td>
-        </tr>
+              <thead>
+                <tr className="has-background-link-light">
+                  <th>#</th>
+                  <th>Title</th>
+                  {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+                  <th> </th>
+                </tr>
+              </thead>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
-
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+              <tbody>
+                {posts.map(post => (
+                  <PostItem post={post} key={post.id} />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))}
+    </>
+  );
+};
