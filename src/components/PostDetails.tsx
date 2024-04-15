@@ -66,32 +66,36 @@ export const PostDetails: React.FC = () => {
         {!commentsError && !!comments.length && (
           <>
             <p className="title is-4">Comments:</p>
-            {comments.map(comment => (
-              <article
-                key={comment.id}
-                className="message is-small"
-                data-cy="Comment"
-              >
-                <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                    {comment.name}
-                  </a>
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                    onClick={() => handleDeleteComment(comment.id)}
-                  >
-                    delete button
-                  </button>
-                </div>
+            {comments.map(comment => {
+              const { id, name, email, body } = comment;
 
-                <div className="message-body" data-cy="CommentBody">
-                  {comment.body}
-                </div>
-              </article>
-            ))}
+              return (
+                <article
+                  key={id}
+                  className="message is-small"
+                  data-cy="Comment"
+                >
+                  <div className="message-header">
+                    <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                      {name}
+                    </a>
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={() => handleDeleteComment(id)}
+                    >
+                      delete button
+                    </button>
+                  </div>
+
+                  <div className="message-body" data-cy="CommentBody">
+                    {body}
+                  </div>
+                </article>
+              );
+            })}
           </>
         )}
 
