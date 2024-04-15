@@ -1,0 +1,24 @@
+.Sidebar {
+  overflow: hidden;
+  opacity: 0;
+  transition-property: max-width, opacity;
+  transition-duration: 0.5s;
+  transition-timing-function: ease-in-out;
+}
+@media (min-width: 769px) {
+  .Sidebar {
+    max-width: 0;
+  }
+}
+.Sidebar--open {
+  opacity: 1;
+}
+@media (min-width: 769px) {
+  .Sidebar--open {
+    max-width: 50%;
+  }
+}
+
+.message-body {
+  white-space: pre-line;
+}/*# sourceMappingURL=App.css.map */
