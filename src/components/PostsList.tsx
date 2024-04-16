@@ -11,7 +11,7 @@ export const PostsList: React.FC = () => {
     return postId === selectedPost?.id;
   };
 
-  const handleOnClick = (post: Post) => {
+  const handleClick = (post: Post) => {
     const definedValue = isOpen(post.id) ? null : post;
 
     setIsOpenNewComment(false);
@@ -33,22 +33,22 @@ export const PostsList: React.FC = () => {
         </thead>
 
         <tbody>
-          {posts.map(post => (
-            <tr key={post.id} data-cy="Post">
-              <td data-cy="PostId">{post.id}</td>
+          {posts.map(({ id, title, userId, body }: Post) => (
+            <tr key={id} data-cy="Post">
+              <td data-cy="PostId">{id}</td>
 
-              <td data-cy="PostTitle">{post.title}</td>
+              <td data-cy="PostTitle">{title}</td>
 
               <td className="has-text-right is-vcentered">
                 <button
                   type="button"
                   data-cy="PostButton"
                   className={classNames('button is-link', {
-                    'is-light': !isOpen(post.id),
+                    'is-light': !isOpen(id),
                   })}
-                  onClick={() => handleOnClick(post)}
+                  onClick={() => handleClick({ id, title, userId, body })}
                 >
-                  {isOpen(post.id) ? 'Close' : 'Open'}
+                  {isOpen(id) ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>
