@@ -17,12 +17,3 @@ export const addComment = ({
 }: Omit<Comment, 'id'>) => {
   return client.post<Comment>('/comments', { name, postId, email, body });
 };
-
-// export const updatePost = ({ id, name, postId, email, body }: Comment) => {
-//   return client.patch<Comment>(`/comments/${id}`, {
-//     name,
-//     postId,
-//     email,
-//     body,
-//   });
-// };

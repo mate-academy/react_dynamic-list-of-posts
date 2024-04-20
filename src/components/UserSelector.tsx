@@ -1,35 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
 import classNames from 'classnames';
-import { Post } from '../types/Post';
+
 type Props = {
   users: User[];
   userId: number;
-  setUserId: React.Dispatch<React.SetStateAction<number>>;
-  setSelectedPost: React.Dispatch<React.SetStateAction<Post | undefined>>;
+  onSelect: (user: User) => void;
 };
 
-export const UserSelector: React.FC<Props> = ({
-  users,
-  userId,
-  setUserId,
-  setSelectedPost,
-}) => {
+export const UserSelector: React.FC<Props> = ({ users, userId, onSelect }) => {
   const [isPressed, setIsPressed] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [name, setName] = useState('');
 
-  function OnChoose(user: User) {
+  function handleClick(user: User) {
     setIsPressed(false);
-    setUserId(user.id);
+    onSelect(user);
     setName(user.name);
-    setSelectedPost(undefined);
   }
 
-  function handleBlur() {
-    setTimeout(() => {
-      setIsPressed(false);
-    }, 200);
-  }
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsPressed(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
 
   return (
     <div
@@ -37,6 +42,7 @@ export const UserSelector: React.FC<Props> = ({
       className={classNames('dropdown', {
         'is-active': isPressed,
       })}
+      ref={dropdownRef}
     >
       <div className="dropdown-trigger">
         <button
@@ -45,7 +51,6 @@ export const UserSelector: React.FC<Props> = ({
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => setIsPressed(!isPressed)}
-          onBlur={() => handleBlur()}
         >
           <span>{name ? name : 'Choose a user'}</span>
 
@@ -68,7 +73,7 @@ export const UserSelector: React.FC<Props> = ({
                 'is-active': userId === user.id,
               })}
               key={user.id}
-              onClick={() => OnChoose(user)}
+              onClick={() => handleClick(user)}
             >
               {user.name}
             </a>

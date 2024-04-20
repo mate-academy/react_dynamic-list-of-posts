@@ -52,7 +52,6 @@ export const PostDetails: React.FC<Props> = ({
       })
       .catch(e => {
         setError(e);
-        throw e;
       })
       .finally(() => setIsLoading(false));
   }
@@ -64,7 +63,7 @@ export const PostDetails: React.FC<Props> = ({
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #{post.id}: {post?.title}
+            #{post.id}: {post.title}
           </h2>
 
           <p data-cy="PostBody">{post.body}</p>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -21,18 +21,14 @@ export const App: React.FC = () => {
   const [loader, setLoader] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post>();
   const [isCommenting, setIsCommenting] = useState(false);
-  const isFirstRender = useRef(true);
 
   function loadPosts() {
     setLoader(true);
     clientService
       .getPosts(userId)
       .then(setPosts)
-      .catch(e => {
-        setError(e);
-      })
+      .catch(setError)
       .finally(() => setLoader(false));
-    // .catch(() => setErrorMasage(Errors.cantGetPeople));
   }
 
   function loadUsers() {
@@ -41,15 +37,18 @@ export const App: React.FC = () => {
 
   useEffect(loadUsers, []);
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-
+    if (!userId) {
       return;
     }
 
     return loadPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
+
+  function onSelect(user: User) {
+    setUserId(user.id);
+    setSelectedPost(undefined);
+  }
 
   return (
     <main className="section">
@@ -61,8 +60,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   users={users}
                   userId={userId}
-                  setUserId={setUserId}
-                  setSelectedPost={setSelectedPost}
+                  onSelect={onSelect}
                 />
               </div>
               <div className="block" data-cy="MainContent">
