@@ -45,8 +45,8 @@ export const App: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
-  function onSelect(user: User) {
-    setUserId(user.id);
+  function onSelect(id: number) {
+    setUserId(id);
     setSelectedPost(undefined);
   }
 

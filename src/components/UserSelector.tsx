@@ -5,7 +5,7 @@ import classNames from 'classnames';
 type Props = {
   users: User[];
   userId: number;
-  onSelect: (user: User) => void;
+  onSelect: (id: number) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({ users, userId, onSelect }) => {
@@ -15,7 +15,7 @@ export const UserSelector: React.FC<Props> = ({ users, userId, onSelect }) => {
 
   function handleClick(user: User) {
     setIsPressed(false);
-    onSelect(user);
+    onSelect(user.id);
     setName(user.name);
   }
 
@@ -73,7 +73,7 @@ export const UserSelector: React.FC<Props> = ({ users, userId, onSelect }) => {
                 'is-active': userId === user.id,
               })}
               key={user.id}
-              onClick={() => handleClick(user)}
+              onClick={() => handleClick({id, name})}
             >
               {user.name}
             </a>
