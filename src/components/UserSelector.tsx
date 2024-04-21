@@ -73,7 +73,7 @@ export const UserSelector: React.FC<Props> = ({ users, userId, onSelect }) => {
                 'is-active': userId === user.id,
               })}
               key={user.id}
-              onClick={() => handleClick({id, name})}
+              onClick={() => handleClick(user)}
             >
               {user.name}
             </a>
