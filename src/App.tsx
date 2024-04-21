@@ -18,17 +18,17 @@ export const App: React.FC = () => {
   const [users, setUser] = useState<User[]>([]);
   const [userId, setUserId] = useState<number>(0);
   const [error, setError] = useState('');
-  const [loader, setLoader] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post>();
   const [isCommenting, setIsCommenting] = useState(false);
 
   function loadPosts() {
-    setLoader(true);
+    setIsLoading(true);
     clientService
       .getPosts(userId)
       .then(setPosts)
       .catch(setError)
-      .finally(() => setLoader(false));
+      .finally(() => setIsLoading(false));
   }
 
   function loadUsers() {
@@ -64,7 +64,7 @@ export const App: React.FC = () => {
                 />
               </div>
               <div className="block" data-cy="MainContent">
-                {loader ? (
+                {isLoading ? (
                   <Loader />
                 ) : !!error ? (
                   <div

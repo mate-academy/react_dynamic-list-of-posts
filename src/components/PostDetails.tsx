@@ -17,18 +17,18 @@ export const PostDetails: React.FC<Props> = ({
   setIsCommenting,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [loader, setLoader] = useState(false);
-  const [error, setError] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+  const [isCommentFormLoading, setIsCommentFormLoading] = useState(false);
 
   function loadComments() {
-    setLoader(true);
+    setIsLoading(true);
     getComments(post.id)
       .then(setComments)
       .catch(e => {
         setError(e);
       })
-      .finally(() => setLoader(false));
+      .finally(() => setIsLoading(false));
   }
 
   function handleDeleteComment(commentId: number) {
@@ -43,7 +43,7 @@ export const PostDetails: React.FC<Props> = ({
   }
 
   function handleAddComment({ postId, name, email, body }: Comment) {
-    setIsLoading(true);
+    setIsCommentFormLoading(true);
     setError(undefined);
 
     return addComment({ postId, name, email, body })
@@ -53,7 +53,7 @@ export const PostDetails: React.FC<Props> = ({
       .catch(e => {
         setError(e);
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => setIsCommentFormLoading(false));
   }
 
   useEffect(loadComments, [post]);
@@ -70,7 +70,7 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {loader ? (
+          {isLoading ? (
             <Loader />
           ) : !!error ? (
             <div className="notification is-danger" data-cy="CommentsError">
@@ -83,7 +83,7 @@ export const PostDetails: React.FC<Props> = ({
           ) : (
             <p className="title is-4">Comments:</p>
           )}
-          {!loader &&
+          {!isLoading &&
             !error &&
             !!comments.length &&
             comments.map(comment => (
@@ -113,7 +113,7 @@ export const PostDetails: React.FC<Props> = ({
               </article>
             ))}
 
-          {!loader && !isCommenting && !error && (
+          {!isLoading && !isCommenting && !error && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -128,7 +128,7 @@ export const PostDetails: React.FC<Props> = ({
           <NewCommentForm
             postId={post.id}
             onAdd={handleAddComment}
-            isLoading={isLoading}
+            isLoading={isCommentFormLoading}
           />
         )}
       </div>

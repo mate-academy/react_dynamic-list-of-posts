@@ -47,8 +47,8 @@ export const NewCommentForm: React.FC<Props> = ({
     event?.preventDefault();
     setHasNameError(!name);
     setHasEmailError(!email);
-    setHasBodyError(!body);
-    if (!name || !email || !body) {
+    setHasBodyError(!body.trim());
+    if (!name || !email || !body.trim()) {
       return;
     }
 
@@ -56,7 +56,7 @@ export const NewCommentForm: React.FC<Props> = ({
       postId,
       name,
       email,
-      body,
+      body: body.trim(),
       id: 0,
     }).then(() => setBody(''));
   }
