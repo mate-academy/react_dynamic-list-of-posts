@@ -52,17 +52,17 @@ export const NewCommentForm: React.FC<Props> = ({
 
     let hasError = false;
 
-    if (name.trim() === '') {
+    if (!name.trim()) {
       hasError = true;
       setNameError(true);
     }
 
-    if (email.trim() === '') {
+    if (!email.trim()) {
       hasError = true;
       setEmailError(true);
     }
 
-    if (body.trim() === '') {
+    if (!body.trim()) {
       hasError = true;
       setBodyError(true);
     }
