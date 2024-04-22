@@ -1,0 +1,35 @@
+.item-enter {
+  width: 100%; /* Start with full width */
+}
+
+.item-enter-active {
+  width: calc(100% - 320px); /* Adjust width to accommodate PostDetails */
+  transition: width 0.3s ease-in-out; /* Transition width */
+}
+
+.item-exit {
+  /* No need to change width */
+}
+
+.item-exit-active {
+  width: calc(100% - 1000px); /* Shrink back to smaller width */
+  transition: width 0.3s ease-in-out; /* Transition width */
+}
+
+.temp-item-enter {
+  width: 320px; /* Start with the width of PostDetails */
+}
+
+.temp-item-enter-active {
+  width: 100%; /* Expand to full width */
+  transition: width 0.3s ease-in-out; /* Transition width */
+}
+
+.temp-item-exit {
+  /* No need to change width */
+}
+
+.temp-item-exit-active {
+  width: 320px; /* Shrink to the width of PostDetails */
+  transition: width 0.3s ease-in-out; /* Transition width */
+}
