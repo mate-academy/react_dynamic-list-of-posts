@@ -60,7 +60,7 @@ export const UserSelector: React.FC = () => {
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={handleUsersListVisibility}
-          onBlur={() => setTimeout(() => setIsUserListVisible(false), 100)}
+          onBlur={() => setTimeout(() => setIsUserListVisible(false), 200)}
         >
           {selectedUser ? (
             <span>{selectedUser.name}</span>
