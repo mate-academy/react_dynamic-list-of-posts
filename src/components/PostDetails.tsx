@@ -27,6 +27,7 @@ export const PostDetails: React.FC = () => {
   useEffect(() => {
     setPostComments(null);
     setIsLoadingComments(true);
+    setErrorType(ErrorType.noError);
 
     if (selectedPost) {
       getPostComments(selectedPost.id)
