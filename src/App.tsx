@@ -1,15 +1,30 @@
 import React from 'react';
+import cn from 'classnames';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
 import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
+import { useGlobalStateContext } from './components/GlobalStateProvider';
 import { Loader } from './components/Loader';
+import { PostDetails } from './components/PostDetails';
 
 export const App: React.FC = () => {
+  const { error, userPosts, selectedUser, selectedPost } =
+    useGlobalStateContext();
+  const [isLoadingPosts, setIsLoadingPosts] = React.useState(false);
+
+  let dataCy, message;
+
+  if (error) {
+    dataCy = 'PostsLoadingError';
+    message = error;
+  } else if (!userPosts.length && selectedUser && !error && !isLoadingPosts) {
+    dataCy = 'NoPostsYet';
+    message = 'No posts yet';
+  }
+
   return (
     <main className="section">
       <div className="container">
@@ -17,44 +32,51 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector setLoading={setIsLoadingPosts} />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-                <Loader />
+                {isLoadingPosts && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {message && (
+                  <div
+                    className={cn('notification', {
+                      'is-danger': error,
+                      'is-warning': !userPosts.length && !error,
+                    })}
+                    data-cy={dataCy}
+                  >
+                    {message}
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                {!!userPosts.length && <PostsList />}
               </div>
             </div>
           </div>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
+          {selectedPost && (
+            <div
+              data-cy="Sidebar"
+              className={cn(
+                'tile',
+                'is-parent',
+                'is-8-desktop',
+                'Sidebar',
+                'Sidebar--open',
+              )}
+            >
+              {!!userPosts.length && selectedPost && (
+                <div className="tile is-child box is-success ">
+                  <PostDetails />
+                </div>
+              )}
             </div>
-          </div>
+          )}
         </div>
       </div>
     </main>

@@ -1,92 +1,130 @@
 import React from 'react';
+import cn from 'classnames';
 
-export const NewCommentForm: React.FC = () => {
+import { NewCommentField } from './NewCommentField';
+import { useGlobalDispatchContext } from './GlobalStateProvider';
+
+import * as commentService from '../api/comments';
+
+type Props = {
+  id: number | null;
+};
+export const NewCommentForm: React.FC<Props> = ({ id }) => {
+  const dispatch = useGlobalDispatchContext();
+
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isError, setIsError] = React.useState(false);
+  const [resetCount, setResetCount] = React.useState(0);
+  const [submitCount, setSubmitCount] = React.useState(0);
+
+
+
+  const initialFormState = {
+    postId: id,
+    id: Date.now(),
+    name: '',
+    email: '',
+    body: '',
+  };
+
+  const [formState, setFormState] = React.useState(initialFormState);
+
+  const handleNewComment = (name: string, value: string) => {
+    setFormState({
+      ...formState,
+      [name]: value.trim(),
+    });
+  };
+
+  const handleOnSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!formState.name || !formState.email || !formState.body) {
+      setIsError(true);
+
+      return;
+    }
+
+    setIsLoading(true);
+    commentService
+      .addComment(formState)
+      .then(comment => {
+        dispatch({
+          type: 'ADD_COMMENT',
+          payload: comment,
+        });
+        setIsLoading(false);
+        setFormState({
+          ...formState,
+          body: '',
+        });
+        setSubmitCount(submitCount + 1);
+        setIsError(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+        dispatch({
+          type: 'SET_SIDEBAR_ERROR',
+          payload: 'Something went wrong',
+        });
+      });
+  };
+
+  const handleOnReset = () => {
+    setFormState(initialFormState);
+    setResetCount(resetCount + 1);
+    setIsError(false);
+  };
+
   return (
-    <form data-cy="NewCommentForm">
-      <div className="field" data-cy="NameField">
-        <label className="label" htmlFor="comment-author-name">
-          Author Name
-        </label>
+    <form
+      data-cy="NewCommentForm"
+      onSubmit={handleOnSubmit}
+      onReset={handleOnReset}
+    >
+      <NewCommentField
+        key={`field-name-${resetCount}`}
+        name="name"
+        dataCy="NameField"
+        label="Author Name"
+        id="comment-author-name"
+        placeholder="Name Surname"
+        onChange={handleNewComment}
+        fieldType="input"
+        required={isError && !formState.name}
+      />
 
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="name"
-            id="comment-author-name"
-            placeholder="Name Surname"
-            className="input is-danger"
-          />
+      <NewCommentField
+        key={`field-email-${resetCount}`}
+        name="email"
+        dataCy="EmailField"
+        label="Author Email"
+        id="comment-author-email"
+        placeholder="email@test.com"
+        onChange={handleNewComment}
+        fieldType="input"
+        required={isError && !formState.email}
+      />
 
-          <span className="icon is-small is-left">
-            <i className="fas fa-user" />
-          </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
-      </div>
-
-      <div className="field" data-cy="EmailField">
-        <label className="label" htmlFor="comment-author-email">
-          Author Email
-        </label>
-
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="email"
-            id="comment-author-email"
-            placeholder="email@test.com"
-            className="input is-danger"
-          />
-
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
-          </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
-      </div>
-
-      <div className="field" data-cy="BodyField">
-        <label className="label" htmlFor="comment-body">
-          Comment Text
-        </label>
-
-        <div className="control">
-          <textarea
-            id="comment-body"
-            name="body"
-            placeholder="Type comment here"
-            className="textarea is-danger"
-          />
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
-      </div>
+      <NewCommentField
+        key={`field-submit-${resetCount}-${submitCount}`}
+        name="body"
+        dataCy="BodyField"
+        label="Comment Text"
+        id="comment-body"
+        placeholder="Type comment here"
+        onChange={handleNewComment}
+        fieldType="textarea"
+        required={isError && !formState.body}
+      />
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={cn('button', 'is-link', {
+              'is-loading': isLoading,
+            })}
+          >
             Add
           </button>
         </div>

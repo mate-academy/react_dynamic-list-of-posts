@@ -1,6 +1,81 @@
 import React from 'react';
+import cn from 'classnames';
 
-export const UserSelector: React.FC = () => {
+import {
+  useGlobalDispatchContext,
+  useGlobalStateContext,
+} from './GlobalStateProvider';
+
+import * as userService from '../api/users';
+import * as postService from '../api/posts';
+import { User } from '../types/User';
+
+type Props = {
+  setLoading: (value: boolean) => void;
+};
+export const UserSelector: React.FC<Props> = ({ setLoading }) => {
+  const [isActive, setIsActive] = React.useState(false);
+
+  const { users, selectedUser } = useGlobalStateContext();
+  const dispatch = useGlobalDispatchContext();
+
+  React.useEffect(() => {
+    userService
+      .getUsers()
+      // eslint-disable-next-line
+      .then(users =>
+        dispatch({
+          type: 'SET_USERS',
+          payload: users,
+        }),
+      )
+      .catch(() =>
+        dispatch({
+          type: 'SET_ERROR',
+          payload: 'Something went wrong',
+        }),
+      );
+  }, []);
+
+  const handleSetSelectUser = (user: User) => {
+    dispatch({
+      type: 'SET_SELECTED_USER',
+      payload: user,
+    });
+    dispatch({
+      type: 'SET_USER_POSTS',
+      payload: [],
+    });
+    dispatch({
+      type: 'SET_SELECTED_POST',
+      payload: null,
+    });
+
+    setIsActive(false);
+    setLoading(true);
+    postService
+      .getPosts(user.id)
+      .then(posts => {
+        dispatch({
+          type: 'SET_USER_POSTS',
+          payload: posts,
+        });
+      })
+      .catch(() =>
+        dispatch({
+          type: 'SET_ERROR',
+          payload: 'Something went wrong',
+        }),
+      )
+      .finally(() => setLoading(false));
+  };
+
+  const handleIsActive = () => {
+    setTimeout(() => {
+      setIsActive(!isActive);
+    }, 100);
+  };
+
   return (
     <div data-cy="UserSelector" className="dropdown is-active">
       <div className="dropdown-trigger">
@@ -9,8 +84,10 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={handleIsActive}
+          onBlur={handleIsActive}
         >
-          <span>Choose a user</span>
+          <span>{selectedUser?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -18,25 +95,27 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+      {isActive && (
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          {users.map(user => {
+            const { id, name } = user;
+
+            return (
+              <div className="dropdown-content" key={id}>
+                <a
+                  href={`#user-${id}`}
+                  onClick={() => handleSetSelectUser(user)}
+                  className={cn('dropdown-item', {
+                    'is-active': id === selectedUser?.id,
+                  })}
+                >
+                  {name}
+                </a>
+              </div>
+            );
+          })}
         </div>
-      </div>
+      )}
     </div>
   );
 };
