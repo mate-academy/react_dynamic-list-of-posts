@@ -22,7 +22,7 @@ export const NewCommentField: React.FC<Props> = ({
   fieldType = 'input',
 }) => {
   const [value, setValue] = React.useState('');
-
+  // eslint-disable-next-line
   const handleInputValueChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {

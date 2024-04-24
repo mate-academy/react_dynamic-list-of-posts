@@ -7,9 +7,11 @@ import {
   useGlobalDispatchContext,
   useGlobalStateContext,
 } from './GlobalStateProvider';
+import { Loader } from './Loader';
 
 export const PostDetails: React.FC = () => {
-  const { selectedPost, comments, sidebarError } = useGlobalStateContext();
+  const { selectedPost, comments, sidebarError, isCommentsLoading } =
+    useGlobalStateContext();
   const dispatch = useGlobalDispatchContext();
 
   const [isActive, setIsActive] = React.useState(false);
@@ -25,6 +27,14 @@ export const PostDetails: React.FC = () => {
     commentService.deleteComment(id);
   };
 
+  if (sidebarError) {
+    return (
+      <div className="notification is-danger" data-cy="CommentsError">
+        {sidebarError}
+      </div>
+    );
+  }
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -39,12 +49,8 @@ export const PostDetails: React.FC = () => {
         )}
 
         <div className="block">
-          {/* <Loader /> */}
-
-          {sidebarError ? (
-            <div className="notification is-danger" data-cy="CommentsError">
-              {sidebarError}
-            </div>
+          {isCommentsLoading ? (
+            <Loader />
           ) : (
             <>
               <p
@@ -99,7 +105,7 @@ export const PostDetails: React.FC = () => {
           )}
         </div>
 
-        {isActive && !sidebarError && (
+        {isActive && !sidebarError && !isCommentsLoading &&(
           <NewCommentForm id={selectedPost?.id || null} />
         )}
       </div>

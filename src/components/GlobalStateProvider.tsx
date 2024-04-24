@@ -11,6 +11,7 @@ const initialState: State = {
   comments: [],
   error: '',
   sidebarError: '',
+  isCommentsLoading: false,
 };
 
 const reducer = (state: State, { type, payload }: Action): State => {
@@ -67,6 +68,12 @@ const reducer = (state: State, { type, payload }: Action): State => {
       return {
         ...state,
         sidebarError: payload,
+      };
+
+    case 'SET_IS_COMMENTS_LOADING':
+      return {
+        ...state,
+        isCommentsLoading: payload,
       };
 
     default:

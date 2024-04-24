@@ -27,6 +27,15 @@ export const PostsList: React.FC = () => {
       payload: id,
     });
 
+    dispatch({
+      type: 'SET_COMMENTS',
+      payload: [],
+    });
+
+    dispatch({
+      type: 'SET_IS_COMMENTS_LOADING',
+      payload: true,
+    });
     commentService.getComments(id).then(comments => {
       dispatch({
         type: 'SET_SIDEBAR_ERROR',
@@ -35,6 +44,11 @@ export const PostsList: React.FC = () => {
       dispatch({
         type: 'SET_COMMENTS',
         payload: comments,
+      });
+
+      dispatch({
+        type: 'SET_IS_COMMENTS_LOADING',
+        payload: false,
       });
     });
   };

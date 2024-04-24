@@ -72,9 +72,11 @@ export const App: React.FC = () => {
                 'Sidebar--open',
               )}
             >
-              <div className="tile is-child box is-success ">
-                <PostDetails />
-              </div>
+              {!!userPosts.length && selectedPost && (
+                <div className="tile is-child box is-success ">
+                  <PostDetails />
+                </div>
+              )}
             </div>
           )}
         </div>

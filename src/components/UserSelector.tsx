@@ -42,6 +42,14 @@ export const UserSelector: React.FC<Props> = ({ setLoading }) => {
       type: 'SET_SELECTED_USER',
       payload: user,
     });
+    dispatch({
+      type: 'SET_USER_POSTS',
+      payload: [],
+    });
+    dispatch({
+      type: 'SET_SELECTED_POST',
+      payload: null,
+    });
 
     setIsActive(false);
     setLoading(true);

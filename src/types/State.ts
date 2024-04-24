@@ -10,4 +10,5 @@ export type State = {
   comments: Comment[];
   error: string;
   sidebarError: string;
+  isCommentsLoading: boolean;
 };
