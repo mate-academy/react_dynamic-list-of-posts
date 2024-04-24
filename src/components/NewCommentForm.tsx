@@ -17,8 +17,11 @@ export const NewCommentForm: React.FC<Props> = ({ id }) => {
   const [resetCount, setResetCount] = React.useState(0);
   const [submitCount, setSubmitCount] = React.useState(0);
 
+
+
   const initialFormState = {
     postId: id,
+    id: Date.now(),
     name: '',
     email: '',
     body: '',
@@ -29,7 +32,7 @@ export const NewCommentForm: React.FC<Props> = ({ id }) => {
   const handleNewComment = (name: string, value: string) => {
     setFormState({
       ...formState,
-      [name]: value,
+      [name]: value.trim(),
     });
   };
 

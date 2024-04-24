@@ -105,7 +105,7 @@ export const PostDetails: React.FC = () => {
           )}
         </div>
 
-        {isActive && !sidebarError && !isCommentsLoading &&(
+        {isActive && !sidebarError && !isCommentsLoading && (
           <NewCommentForm id={selectedPost?.id || null} />
         )}
       </div>
