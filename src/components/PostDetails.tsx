@@ -47,7 +47,8 @@ export const PostDetails: React.FC = () => {
             .then(fetchComments => {
               setComments(
                 fetchComments.filter(
-                  comment => comment.postId === currentPostId,
+                  comment =>
+                    comment.postId === currentPostId && comment.body.length,
                 ),
               );
 
@@ -69,7 +70,8 @@ export const PostDetails: React.FC = () => {
             .then(fetchComments => {
               setComments(
                 fetchComments.filter(
-                  comment => comment.postId === currentPostId,
+                  comment =>
+                    comment.postId === currentPostId && comment.body.length,
                 ),
               );
 
@@ -99,7 +101,10 @@ export const PostDetails: React.FC = () => {
       getComments()
         .then(fetchComments => {
           setComments(
-            fetchComments.filter(comment => comment.postId === currentPostId),
+            fetchComments.filter(
+              comment =>
+                comment.postId === currentPostId && comment.body.length,
+            ),
           );
 
           return fetchComments;
