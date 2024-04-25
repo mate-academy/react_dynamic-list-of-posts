@@ -78,18 +78,20 @@ export const NewCommentForm: React.FC = () => {
       id: +new Date(),
     };
 
-    setLoadingAddComment(true);
+    if (nameValue && emailValue && textValue) {
+      setLoadingAddComment(true);
 
-    addComment(newComment)
-      .then(() => setPostComments([...postComments, newComment]))
-      .catch(() => {
-        setIsFormOpened(false);
-        setIsErrorCommentsShown(true);
-      })
-      .finally(() => {
-        setLoadingAddComment(false);
-        setTextValue('');
-      });
+      addComment(newComment)
+        .then(() => setPostComments([...postComments, newComment]))
+        .catch(() => {
+          setIsFormOpened(false);
+          setIsErrorCommentsShown(true);
+        })
+        .finally(() => {
+          setLoadingAddComment(false);
+          setTextValue('');
+        });
+    }
   };
 
   return (
