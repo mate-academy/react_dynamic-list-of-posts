@@ -1,16 +1,28 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
+import { getUsers } from '../api/users';
+import { UserComponent } from './userComponent';
+import { UserContext } from '../contexts/userContext';
 
 export const UserSelector: React.FC = () => {
+  const { users, setUsers, isListOpen, setIsListOpen, chosenUser } =
+    useContext(UserContext);
+
+  useEffect(() => {
+    getUsers().then(setUsers);
+  }, [setUsers]);
+
   return (
     <div data-cy="UserSelector" className="dropdown is-active">
       <div className="dropdown-trigger">
         <button
+          onBlur={() => setIsListOpen(false)}
+          onClick={() => setIsListOpen(!isListOpen)}
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
         >
-          <span>Choose a user</span>
+          <span>{chosenUser}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -18,25 +30,15 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+      {isListOpen && (
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div className="dropdown-content">
+            {users.map(user => (
+              <UserComponent key={user.id} user={user} />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
