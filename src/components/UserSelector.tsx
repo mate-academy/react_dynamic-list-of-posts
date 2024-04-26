@@ -60,7 +60,7 @@ export const UserSelector: React.FC = () => {
             {users.map(({ id, name }) => (
               <a
                 key={id}
-                href="#user-2"
+                href={`#user-${id}`}
                 className={cn('dropdown-item', {
                   'is-active': activeUserId === id,
                 })}

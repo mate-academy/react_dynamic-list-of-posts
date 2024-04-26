@@ -10,44 +10,46 @@ export const NewCommentForm: React.FC = () => {
   const [requiredName, setRequiredName] = useState(false);
   const [requiredEmail, setRequiredEmail] = useState(false);
   const [requiredTitle, setRequiredTitle] = useState(false);
-  const [inputName, setInputName] = useState('');
-  const [inputEmail, setInputEmail] = useState('');
-  const [inputTitle, setInputTitle] = useState('');
+  const [inputs, setInputs] = useState({
+    name: '',
+    email: '',
+    title: '',
+  });
 
   useEffect(() => {
     setRequiredName(false);
-  }, [inputName]);
+  }, [inputs.name]);
   useEffect(() => {
     setRequiredEmail(false);
-  }, [inputEmail]);
+  }, [inputs.email]);
   useEffect(() => {
     setRequiredTitle(false);
-  }, [inputTitle]);
+  }, [inputs.title]);
 
   const addNewComment = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!inputName) {
+    if (!inputs.name.trim()) {
       setRequiredName(true);
     }
 
-    if (!inputEmail) {
+    if (!inputs.email.trim()) {
       setRequiredEmail(true);
     }
 
-    if (!inputTitle) {
+    if (!inputs.title.trim()) {
       setRequiredTitle(true);
     }
 
-    if (!inputName || !inputEmail || !inputTitle) {
+    if (!inputs.name.trim() || !inputs.email.trim() || !inputs.title.trim()) {
       return;
     }
 
     const comment = {
       postId: activePostId,
-      name: inputName,
-      email: inputEmail,
-      body: inputTitle,
+      name: inputs.name.trim(),
+      email: inputs.email.trim(),
+      body: inputs.title.trim(),
     };
 
     setVaitingAddComment(true);
@@ -56,9 +58,11 @@ export const NewCommentForm: React.FC = () => {
     addComment(comment)
       .then(data => {
         dispatch({ type: 'ADD_COMMENT', comment: data });
-        setInputName('');
-        setInputEmail('');
-        setInputTitle('');
+        setInputs({
+          name: '',
+          email: '',
+          title: '',
+        });
       })
       .catch(() => dispatch({ type: 'SET_ERRORCOMMENTS', isUse: true }))
       .finally(() => setVaitingAddComment(false));
@@ -80,8 +84,12 @@ export const NewCommentForm: React.FC = () => {
             className={cn('input', {
               'is-danger': requiredName,
             })}
-            value={inputName}
-            onChange={e => setInputName(e.target.value)}
+            value={inputs.name}
+            onChange={e =>
+              setInputs(prev => {
+                return { ...prev, name: e.target.value };
+              })
+            }
           />
 
           <span className="icon is-small is-left">
@@ -119,8 +127,12 @@ export const NewCommentForm: React.FC = () => {
             className={cn('input', {
               'is-danger': requiredEmail,
             })}
-            value={inputEmail}
-            onChange={e => setInputEmail(e.target.value)}
+            value={inputs.email}
+            onChange={e =>
+              setInputs(prev => {
+                return { ...prev, email: e.target.value };
+              })
+            }
           />
 
           <span className="icon is-small is-left">
@@ -157,8 +169,12 @@ export const NewCommentForm: React.FC = () => {
             className={cn('textarea', {
               'is-danger': requiredTitle,
             })}
-            value={inputTitle}
-            onChange={e => setInputTitle(e.target.value)}
+            value={inputs.title}
+            onChange={e =>
+              setInputs(prev => {
+                return { ...prev, title: e.target.value };
+              })
+            }
           />
         </div>
 
