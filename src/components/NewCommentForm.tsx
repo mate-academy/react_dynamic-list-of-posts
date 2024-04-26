@@ -1,8 +1,75 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { addComment } from '../Api/getItems';
+import { DispatchContext, StateContext } from './store/store';
+import cn from 'classnames';
 
 export const NewCommentForm: React.FC = () => {
+  const dispatch = useContext(DispatchContext);
+  const { activePostId } = useContext(StateContext);
+  const [vaitingAddComment, setVaitingAddComment] = useState(false);
+  const [requiredName, setRequiredName] = useState(false);
+  const [requiredEmail, setRequiredEmail] = useState(false);
+  const [requiredTitle, setRequiredTitle] = useState(false);
+  const [inputs, setInputs] = useState({
+    name: '',
+    email: '',
+    title: '',
+  });
+
+  useEffect(() => {
+    setRequiredName(false);
+  }, [inputs.name]);
+  useEffect(() => {
+    setRequiredEmail(false);
+  }, [inputs.email]);
+  useEffect(() => {
+    setRequiredTitle(false);
+  }, [inputs.title]);
+
+  const addNewComment = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!inputs.name.trim()) {
+      setRequiredName(true);
+    }
+
+    if (!inputs.email.trim()) {
+      setRequiredEmail(true);
+    }
+
+    if (!inputs.title.trim()) {
+      setRequiredTitle(true);
+    }
+
+    if (!inputs.name.trim() || !inputs.email.trim() || !inputs.title.trim()) {
+      return;
+    }
+
+    const comment = {
+      postId: activePostId,
+      name: inputs.name.trim(),
+      email: inputs.email.trim(),
+      body: inputs.title.trim(),
+    };
+
+    setVaitingAddComment(true);
+    dispatch({ type: 'SET_ERRORCOMMENTS', isUse: false });
+
+    addComment(comment)
+      .then(data => {
+        dispatch({ type: 'ADD_COMMENT', comment: data });
+        setInputs({
+          name: '',
+          email: '',
+          title: '',
+        });
+      })
+      .catch(() => dispatch({ type: 'SET_ERRORCOMMENTS', isUse: true }))
+      .finally(() => setVaitingAddComment(false));
+  };
+
   return (
-    <form data-cy="NewCommentForm">
+    <form data-cy="NewCommentForm" onSubmit={addNewComment}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -14,24 +81,36 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            className={cn('input', {
+              'is-danger': requiredName,
+            })}
+            value={inputs.name}
+            onChange={e =>
+              setInputs(prev => {
+                return { ...prev, name: e.target.value };
+              })
+            }
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {requiredName && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
+        {requiredName && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Name is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -45,24 +124,36 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            className={cn('input', {
+              'is-danger': requiredEmail,
+            })}
+            value={inputs.email}
+            onChange={e =>
+              setInputs(prev => {
+                return { ...prev, email: e.target.value };
+              })
+            }
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {requiredEmail && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
+        {requiredEmail && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -75,18 +166,33 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            className={cn('textarea', {
+              'is-danger': requiredTitle,
+            })}
+            value={inputs.title}
+            onChange={e =>
+              setInputs(prev => {
+                return { ...prev, title: e.target.value };
+              })
+            }
           />
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
+        {requiredTitle && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Enter some text
+          </p>
+        )}
       </div>
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={cn('button is-link', {
+              'is-loading': vaitingAddComment,
+            })}
+          >
             Add
           </button>
         </div>
