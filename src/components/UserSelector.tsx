@@ -2,6 +2,7 @@ import React, { useEffect, useContext } from 'react';
 import { getUsers } from '../api/users';
 import { UserComponent } from './userComponent';
 import { UserContext } from '../contexts/userContext';
+import classNames from 'classnames';
 
 export const UserSelector: React.FC = () => {
   const { users, setUsers, isListOpen, setIsListOpen, chosenUser } =
@@ -12,7 +13,10 @@ export const UserSelector: React.FC = () => {
   }, [setUsers]);
 
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className={classNames('dropdown', { 'is-active': isListOpen })}
+    >
       <div className="dropdown-trigger">
         <button
           onBlur={() => setIsListOpen(false)}
@@ -30,15 +34,13 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      {isListOpen && (
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          <div className="dropdown-content">
-            {users.map(user => (
-              <UserComponent key={user.id} user={user} />
-            ))}
-          </div>
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        <div className="dropdown-content">
+          {users.map(user => (
+            <UserComponent key={user.id} user={user} />
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 };

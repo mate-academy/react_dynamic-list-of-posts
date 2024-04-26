@@ -51,6 +51,7 @@ export const NewCommentForm: React.FC = () => {
     setTextValue('');
     setFormNameError(false);
     setFormEmailError(false);
+    setFormTextError(false);
   };
 
   const handleAddComment = (

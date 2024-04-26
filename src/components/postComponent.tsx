@@ -28,7 +28,6 @@ export const PostComponent: React.FC<PostProps> = ({ post }) => {
     );
 
     setCurrentPost(post);
-
     setIsCommentsLoaderShown(true);
     setIsErrorCommentsShown(false);
     setIsFormOpened(false);
@@ -43,12 +42,6 @@ export const PostComponent: React.FC<PostProps> = ({ post }) => {
       });
   };
 
-  const buttonClass = classNames({
-    button: true,
-    'is-link': true,
-    'is-light': activePostId !== post.id,
-  });
-
   return (
     <tr data-cy="Post">
       <td data-cy="PostId">{post.id}</td>
@@ -60,7 +53,9 @@ export const PostComponent: React.FC<PostProps> = ({ post }) => {
           onClick={handleOpenCloseButton}
           type="button"
           data-cy="PostButton"
-          className={buttonClass}
+          className={classNames('button', 'is-link', {
+            'is-light': activePostId !== post.id,
+          })}
         >
           {activePostId === post.id ? 'Close' : 'Open'}
         </button>

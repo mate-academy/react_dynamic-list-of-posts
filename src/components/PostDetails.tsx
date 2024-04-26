@@ -14,10 +14,6 @@ export const PostDetails: React.FC = () => {
     handleDeleteCommentButton,
   } = useContext(PostContext);
 
-  const handleWriteCommentButton = () => {
-    setIsFormOpened(true);
-  };
-
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -75,7 +71,7 @@ export const PostDetails: React.FC = () => {
 
               {!isFormOpened && (
                 <button
-                  onClick={handleWriteCommentButton}
+                  onClick={() => setIsFormOpened(true)}
                   data-cy="WriteCommentButton"
                   type="button"
                   className="button is-link"
