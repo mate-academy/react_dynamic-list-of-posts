@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Loader } from '../../Loader';
 import { NewCommentForm } from './CommentsList/components/Form/Form';
@@ -41,7 +42,7 @@ export const PostDetails: React.FC<Props> = React.memo(({ post }) => {
         setError(ErrorText.failLoad);
       })
       .finally(() => setLoading(false));
-  }, [post.id]);
+  }, []);
 
   useEffect(() => {
     if (error === ErrorText.noComments || !error) {
