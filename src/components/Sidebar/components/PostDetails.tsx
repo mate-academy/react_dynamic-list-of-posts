@@ -42,7 +42,7 @@ export const PostDetails: React.FC<Props> = React.memo(({ post }) => {
         setError(ErrorText.failLoad);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [post]);
 
   useEffect(() => {
     if (error === ErrorText.noComments || !error) {
