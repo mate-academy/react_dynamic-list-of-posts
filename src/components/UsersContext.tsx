@@ -8,16 +8,27 @@ type UsersContextProps = {
   setUserSelected: React.Dispatch<React.SetStateAction<User | null>>;
   openSidebar: null | number;
   setOpenSidebar: React.Dispatch<React.SetStateAction<number | null>>;
+
   selectedPost: Post | null;
   setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
   comments: CommentData[];
   setComments: React.Dispatch<React.SetStateAction<CommentData[]>>;
   visibleLoader: boolean;
   setVisibleLoader: React.Dispatch<React.SetStateAction<boolean>>;
-  showErrOnLoadPost: boolean;
-  setShowErrOnLoadPost: React.Dispatch<React.SetStateAction<boolean>>;
-  errInLoadingPosts: boolean;
-  setErrInLoadingPosts: React.Dispatch<React.SetStateAction<boolean>>;
+  showErrOnLoad: boolean;
+  setShowErrOnLoad: React.Dispatch<React.SetStateAction<boolean>>;
+  showErrComments: boolean;
+  setShowErrComments: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  visiblePost: boolean;
+  setVisiblePost: React.Dispatch<React.SetStateAction<boolean>>;
+  posts: Post[];
+  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
+  errInLoadingComments: boolean;
+  setErrInLoadingComments: React.Dispatch<React.SetStateAction<boolean>>;
+  visibleForm: boolean;
+  setVisibleForm: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 type Props = {
@@ -27,34 +38,47 @@ type Props = {
 export const ContextUsers = React.createContext({} as UsersContextProps);
 
 export const UsersContext: React.FC<Props> = ({ children }) => {
-  const [errInLoadingPosts, setErrInLoadingPosts] = useState(false);
+  const [visibleForm, setVisibleForm] = useState(false);
+  const [errInLoadingComments, setErrInLoadingComments] = useState(false);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [visiblePost, setVisiblePost] = useState(false);
   const [userSelected, setUserSelected] = useState<User | null>(null);
   const [openSidebar, setOpenSidebar] = useState<number | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<CommentData[]>([]);
   const [visibleLoader, setVisibleLoader] = useState(false);
-  const [showErrOnLoadPost, setShowErr] = useState(true);
+  const [showErrOnLoad, setShowErrOnLoad] = useState(false);
+  const [showErrComments, setShowErrComments] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const value = {
+    visibleForm,
+    setVisibleForm,
+    errInLoadingComments,
+    setErrInLoadingComments,
+    posts,
+    setPosts,
+    visiblePost,
+    setVisiblePost,
+    isLoading,
+    setIsLoading,
+    showErrComments,
+    setShowErrComments,
+    setComments,
+    setShowErrOnLoad,
+    setVisibleLoader,
+    setUserSelected,
+    setSelectedPost,
+    setOpenSidebar,
+    comments,
+    showErrOnLoad,
+    visibleLoader,
+    userSelected,
+    selectedPost,
+    openSidebar,
+  };
 
   return (
-    <ContextUsers.Provider
-      value={{
-        setErrInLoadingPosts,
-        setComments,
-        setShowErrOnLoadPost: setShowErr,
-        setVisibleLoader,
-        setUserSelected,
-        setSelectedPost,
-        setOpenSidebar,
-        errInLoadingPosts,
-        comments,
-        showErrOnLoadPost,
-        visibleLoader,
-        userSelected,
-        selectedPost,
-        openSidebar,
-      }}
-    >
-      {children}
-    </ContextUsers.Provider>
+    <ContextUsers.Provider value={value}>{children}</ContextUsers.Provider>
   );
 };

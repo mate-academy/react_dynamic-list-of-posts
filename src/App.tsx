@@ -15,14 +15,19 @@ import { getPosts } from './components/api/getPosts';
 import { Post } from './types/Post';
 
 export const App: React.FC = () => {
-  const { userSelected } = useContext(ContextUsers);
   const [users, setUsers] = useState<User[]>([]);
-  const [posts, setPosts] = useState<Post[]>([]);
-  // const [errInLoadingPosts, setErrInLoadingPosts] = useState(false);
   const [isLoadingPosts, setIsloadingPosts] = useState(false);
-  const [visiblePost, setVisiblePost] = useState(false);
-  const { openSidebar, errInLoadingPosts, setErrInLoadingPosts } =
-    useContext(ContextUsers);
+  const {
+    posts,
+    setPosts,
+    openSidebar,
+    visiblePost,
+    setVisiblePost,
+    showErrOnLoad,
+    setShowErrOnLoad,
+    userSelected,
+    selectedPost,
+  } = useContext(ContextUsers);
 
   //@dev for load users on mount
   useEffect(() => {
@@ -36,22 +41,23 @@ export const App: React.FC = () => {
   useEffect(() => {
     const loadPosts = async () => {
       if (userSelected) {
-        try {
-          setIsloadingPosts(true);
-          await getPosts(userSelected.id).then(respond => {
-            setPosts(respond);
+        setIsloadingPosts(true);
+        await getPosts(userSelected.id)
+          .then(respond => {
+            setPosts(respond as Post[]);
             setVisiblePost(true);
+          })
+          .catch(() => {
+            setShowErrOnLoad(true);
+          })
+          .finally(() => {
+            setIsloadingPosts(false);
           });
-        } catch (error) {
-          setErrInLoadingPosts(true);
-        } finally {
-          setIsloadingPosts(false);
-        }
       }
     };
 
     loadPosts();
-  }, [setErrInLoadingPosts, userSelected]);
+  }, [setPosts, setShowErrOnLoad, setVisiblePost, userSelected]);
 
   return (
     <main className="section">
@@ -70,7 +76,7 @@ export const App: React.FC = () => {
 
                 {isLoadingPosts && <Loader />}
 
-                {errInLoadingPosts && (
+                {showErrOnLoad && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -80,7 +86,7 @@ export const App: React.FC = () => {
                 )}
                 {visiblePost && (
                   <>
-                    {!posts.length && (
+                    {!posts.length && !showErrOnLoad && (
                       <div
                         className="notification is-warning"
                         data-cy="NoPostsYet"
@@ -102,7 +108,7 @@ export const App: React.FC = () => {
             })}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {selectedPost && <PostDetails />}
             </div>
           </div>
         </div>

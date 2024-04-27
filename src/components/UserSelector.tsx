@@ -9,7 +9,14 @@ type Props = {
 
 export const UserSelector: React.FC<Props> = ({ users }) => {
   const [activeDropDown, setActiveDropDown] = useState(false);
-  const { setUserSelected, userSelected } = useContext(ContextUsers);
+  const [activeUser, setActiveUser] = useState<number | null>(null);
+  const {
+    setUserSelected,
+    setVisiblePost,
+    userSelected,
+    setOpenSidebar,
+    setSelectedPost,
+  } = useContext(ContextUsers);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -30,8 +37,11 @@ export const UserSelector: React.FC<Props> = ({ users }) => {
   }, []);
 
   const handlerDropdownMenu = (user: User) => {
+    setOpenSidebar(null);
+    setSelectedPost(null);
     setUserSelected(user);
     setActiveDropDown(false);
+    setVisiblePost(false);
   };
 
   return (
@@ -62,9 +72,12 @@ export const UserSelector: React.FC<Props> = ({ users }) => {
             return (
               <a
                 key={user.id}
+                onMouseEnter={() => setActiveUser(user.id)}
                 onClick={() => handlerDropdownMenu(user)}
                 href={`#user-${user.id}`}
-                className="dropdown-item"
+                className={cn('dropdown-item', {
+                  'is-active': activeUser === user.id,
+                })}
               >
                 {user.name}
               </a>

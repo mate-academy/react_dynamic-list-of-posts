@@ -11,27 +11,32 @@ type Props = {
 export const PostsList: React.FC<Props> = ({ posts }) => {
   const {
     openSidebar,
+    isLoading,
+    setShowErrComments,
     selectedPost,
-    setShowErrOnLoadPost,
+    setShowErrOnLoad,
     setComments,
     setVisibleLoader,
     setOpenSidebar,
     setSelectedPost,
+    setErrInLoadingComments,
+    setVisibleForm,
   } = useContext(ContextUsers);
 
+  //@dev for load comments
   useEffect(() => {
+    setShowErrComments(false);
+    setVisibleLoader(true);
+    setShowErrOnLoad(false);
     const loadComments = async () => {
-      setVisibleLoader(true);
-      setShowErrOnLoadPost(true);
-
       if (selectedPost) {
         getComments(selectedPost.id)
           .then(response => {
             setComments(response);
-            setShowErrOnLoadPost(true);
           })
           .catch(() => {
-            setShowErrOnLoadPost(true);
+            setShowErrComments(true);
+            setErrInLoadingComments(true);
           })
           .finally(() => {
             setVisibleLoader(false);
@@ -40,11 +45,20 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
     };
 
     loadComments();
-  }, [selectedPost, setComments, setShowErrOnLoadPost, setVisibleLoader]);
+  }, [
+    selectedPost,
+    setComments,
+    setShowErrComments,
+    setShowErrOnLoad,
+    setVisibleLoader,
+    isLoading,
+    setErrInLoadingComments,
+  ]);
 
   const handlerPostOpen = (post: Post) => {
     setOpenSidebar(post.id);
     setSelectedPost(post);
+    setVisibleForm(false);
 
     if (openSidebar === post.id) {
       setOpenSidebar(null);
