@@ -18,7 +18,7 @@ export const NewCommentForm: React.FC = () => {
   };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    setError(!error);
+    setError(true);
     setSpinner(true);
     e.preventDefault();
 
