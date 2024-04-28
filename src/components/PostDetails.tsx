@@ -118,8 +118,6 @@ export const PostDetails: React.FC = () => {
           }
         });
     }
-
-    //return () => dispatch({ type: 'closePostDetails' });
   }, [currentPostId, signalAdd, signaDelete]);
 
   return (
