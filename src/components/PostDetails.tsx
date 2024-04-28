@@ -3,7 +3,6 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { ContextUsers } from './UsersContext';
 import { deleteComment } from './api/deleteComment';
-// import { getComments } from './api/getComments';
 
 export const PostDetails: React.FC = () => {
   const {
@@ -23,10 +22,6 @@ export const PostDetails: React.FC = () => {
         prevState.filter(comment => comment.id !== commentId),
       ),
     );
-
-    // if (selectedPost) {
-    //   getComments(selectedPost.id).then(setComments);
-    // }
   };
 
   return (
