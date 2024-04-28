@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +8,21 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { ContextList } from './components/ListProvider/ListProvider';
 
 export const App: React.FC = () => {
+  const {
+    selectedUser,
+    postsList,
+    apiLoad,
+    isPostNotification,
+    errorPostsMessage,
+    selectPost,
+  } = useContext(ContextList);
+
+  const isPosts =
+    selectedUser && postsList.length > 0 && !apiLoad && !errorPostsMessage;
+
   return (
     <main className="section">
       <div className="container">
@@ -21,22 +34,28 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-                <Loader />
+                {errorPostsMessage && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    {errorPostsMessage}
+                  </div>
+                )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {apiLoad && <Loader />}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {!apiLoad && isPostNotification && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    {isPostNotification}
+                  </div>
+                )}
 
-                <PostsList />
+                {isPosts && <PostsList />}
               </div>
             </div>
           </div>
@@ -48,12 +67,14 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectPost },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
+            {selectPost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails />
+              </div>
+            )}
           </div>
         </div>
       </div>
