@@ -1151,7 +1151,7 @@ describe('', () => {
         .should('eq', 'Some comment body');
     });
 
-    it.only('should add a comment to the list after success', () => {
+    it('should add a comment to the list after success', () => {
       page.spyOnCommentsPost();
 
       newCommentForm.nameInput().type('Some name');
@@ -1242,7 +1242,7 @@ describe('', () => {
       newCommentForm.assertBodyError(false);
     });
 
-    it.only('should hide NoCommentsMessage after adding the first comment', () => {
+    it('should hide NoCommentsMessage after adding the first comment', () => {
       cy
         .intercept('**/comments?postId=3', { body: [] })
         .as('post3CommentsRequest'),
@@ -1264,7 +1264,7 @@ describe('', () => {
       postDetails.noCommentsMessage().should('not.exist');
     });
 
-    it.only('should allow to add a comment after adding one before', () => {
+    it('should allow to add a comment after adding one before', () => {
       page.spyOnCommentsPost();
 
       newCommentForm.nameInput().type('Some name');

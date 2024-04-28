@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/indent */
 import React, { useContext, useState } from 'react';
-import { getComments, postComment } from '../api/lists';
+import { postComment } from '../api/lists';
 import { ContextList } from './ListProvider/ListProvider';
 import classNames from 'classnames';
 
 const initialFormState = { name: '', email: '', body: '' };
 
 export const NewCommentForm: React.FC = () => {
-  const { selectPost, setComments } = useContext(ContextList);
+  const { selectPost, comments, setComments } = useContext(ContextList);
   const [comment, setComment] = useState(initialFormState);
   const [error, setError] = useState(false);
   const [spinner, setSpinner] = useState(false);
+
+  // const addCheck = !!comment.body.trim() && error;
 
   const onReset = () => {
     setError(false);
@@ -28,20 +30,21 @@ export const NewCommentForm: React.FC = () => {
       return;
     }
 
-    const newComment = {
-      ...comment,
-      postId: selectPost?.id,
-    };
-
     if (selectPost) {
-      postComment(newComment)
-        .then(() => getComments(selectPost.id))
-        .then(setComments)
-        .finally(() => {
-          setSpinner(false);
-          setComment({ ...comment, body: '' });
-          setError(false);
-        });
+      const newComment = {
+        ...comment,
+        id: Math.max(...comments.map(item => item.id)) + 1,
+        postId: selectPost?.id,
+      };
+
+      const newCommensList = [...comments, newComment];
+
+      setComments(newCommensList);
+      postComment(newComment).finally(() => {
+        setSpinner(false);
+        setComment({ ...comment, body: '' });
+        setError(false);
+      });
     }
   };
 
@@ -52,6 +55,7 @@ export const NewCommentForm: React.FC = () => {
   ) => {
     const { name, value } = e.target;
 
+    setError(false);
     setComment(prevData => ({ ...prevData, [name]: value }));
   };
 
