@@ -59,15 +59,15 @@ export const NewCommentForm: React.FC = () => {
   ) => {
     event.preventDefault();
 
-    if (!nameValue) {
+    if (!nameValue.trim()) {
       setFormNameError(true);
     }
 
-    if (!emailValue) {
+    if (!emailValue.trim()) {
       setFormEmailError(true);
     }
 
-    if (!textValue) {
+    if (!textValue.trim()) {
       setFormTextError(true);
     }
 
@@ -79,7 +79,7 @@ export const NewCommentForm: React.FC = () => {
       id: +new Date(),
     };
 
-    if (nameValue && emailValue && textValue) {
+    if (nameValue.trim() && emailValue.trim() && textValue.trim()) {
       setLoadingAddComment(true);
 
       addComment(newComment)
