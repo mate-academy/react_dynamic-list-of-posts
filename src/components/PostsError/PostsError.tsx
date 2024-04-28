@@ -20,6 +20,6 @@ export const PostsError: React.FC<Props> = ({ errorMessage }) => {
         </div>
       );
     default:
-      return;
+      return null;
   }
 };

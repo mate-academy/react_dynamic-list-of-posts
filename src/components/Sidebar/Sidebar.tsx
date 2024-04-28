@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { PostDetails } from './components/PostDetails';
 import React, { useContext } from 'react';
-import { postsContext } from '../../Store';
+import { postsContext } from '../../context/Store';
 export const Sidebar: React.FC = () => {
   const { state } = useContext(postsContext);
   const { selectedPost } = state;

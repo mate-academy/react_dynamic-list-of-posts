@@ -3,13 +3,11 @@ import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-//import classNames from 'classnames';
 import { PostsList } from './components/PostList/PostsList';
-//import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector/UserSelector';
 import { User } from './types/User';
 import { getUsers } from './api/users';
-import { postsContext } from './Store';
+import { postsContext } from './context/Store';
 import { Loader } from './components/Loader';
 import { Post } from './types/Post';
 import { getPosts } from './api/posts';

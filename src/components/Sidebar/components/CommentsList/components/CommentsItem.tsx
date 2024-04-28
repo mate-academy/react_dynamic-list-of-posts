@@ -1,18 +1,19 @@
 import React, { useContext } from 'react';
 import { deleteComment } from '../../../../../api/comments';
 import { Comment } from '../../../../../types/Comment';
-import { postsContext } from '../../../../../Store';
 import { ErrorText } from '../../../../../types/ErrorText';
+import { ComntContext } from '../../../../../context/ComntComtext';
 
 type Props = { comment: Comment; onError: (v: ErrorText) => void };
 
 export const CommentItem: React.FC<Props> = React.memo(
   ({ comment, onError }) => {
     const { id, name, email, body } = comment;
-    const { setters } = useContext(postsContext);
-    const { setComments } = setters;
-
+    const { comments, setComments } = useContext(ComntContext);
     const handleDelete = () => {
+      setComments(oldComments =>
+        oldComments.filter(oldComment => oldComment.id !== id),
+      );
       deleteComment(id)
         .then(() => {
           setComments(oldComments =>
@@ -21,6 +22,7 @@ export const CommentItem: React.FC<Props> = React.memo(
         })
         .catch(() => {
           onError(ErrorText.failLoad);
+          setComments(comments);
         });
     };
 

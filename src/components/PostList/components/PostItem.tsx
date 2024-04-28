@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { Post } from '../../../types/Post';
 import { useContext } from 'react';
-import { postsContext } from '../../../Store';
+import { postsContext } from '../../../context/Store';
 
 type Props = {
   post: Post;

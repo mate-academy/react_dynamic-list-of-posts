@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { User } from '../../../types/User';
 import { useContext } from 'react';
-import { postsContext } from '../../../Store';
+import { postsContext } from '../../../context/Store';
 type Props = {
   user: User;
   selectedUser: User | null;

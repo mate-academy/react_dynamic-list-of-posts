@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { User } from '../../types/User';
 import { UserItem } from './components/UserItem';
-import { postsContext } from '../../Store';
+import { postsContext } from '../../context/Store';
 import classNames from 'classnames';
 type Props = {
   users: User[];
