@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Comment } from '../../../../types/Comment';
-import { CommentItem } from './components/CommentsItem';
 import { ErrorText } from '../../../../types/ErrorText';
+import { CommentItem } from './components/CommentsItem';
 import { Loader } from '../../../Loader';
 import { NewCommentForm } from './components/Form/NewCommentForm';
 import { CommentsError } from '../ComError/CommentsError';
@@ -13,9 +13,7 @@ export const CommentsList: React.FC<Props> = React.memo(({ comments }) => {
   const [error, setError] = useState<'' | ErrorText>('');
   const [loading, setLoading] = useState(false);
   const hasEnoughComments = comments.length > 0;
-  const onError = useCallback((v: ErrorText) => {
-    setError(v);
-  }, []);
+  const onError = useCallback((v: ErrorText) => setError(v), []);
 
   return (
     <>

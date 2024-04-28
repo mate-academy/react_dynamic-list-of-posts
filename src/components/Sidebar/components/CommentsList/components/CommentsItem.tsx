@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { deleteComment } from '../../../../../api/comments';
 import { Comment } from '../../../../../types/Comment';
+import { deleteComment } from '../../../../../api/comments';
 import { ErrorText } from '../../../../../types/ErrorText';
 import { ComntContext } from '../../../../../context/ComntComtext';
 
