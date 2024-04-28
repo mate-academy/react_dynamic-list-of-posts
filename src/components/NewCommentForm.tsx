@@ -4,16 +4,16 @@ import { postComment } from './api/postComment';
 import cn from 'classnames';
 
 export const NewCommentForm: React.FC = () => {
-  const { selectedPost, setComments, isLoading, setIsLoading } =
-    useContext(ContextUsers);
+  const { selectedPost, setComments, setIsLoading } = useContext(ContextUsers);
   const [author, setAuthor] = useState('');
   const [email, setEmail] = useState('');
   const [comment, setComment] = useState('');
   const [authorErr, setAuthorrErr] = useState(false);
   const [emailErr, setEmailErr] = useState(false);
   const [commentErr, setCommentErr] = useState(false);
+  const [isLoadingbutton, setIsLoadingbutton] = useState(false);
 
-  const addComment = async () => {
+  const addComment = () => {
     if (selectedPost) {
       const newComment = {
         id: 0,
@@ -23,12 +23,12 @@ export const NewCommentForm: React.FC = () => {
         body: comment,
       };
 
-      const postCom = async () => {
-        setIsLoading(true);
-        await postComment(newComment)
-          .then(response =>
-            setComments(prevComments => [...prevComments, response]),
-          )
+      setComments(prevComments => [...prevComments, newComment]);
+
+      const postCom = () => {
+        setIsLoadingbutton(true);
+        postComment(newComment)
+          .then(() => setIsLoadingbutton(false))
           .finally(() => {
             setIsLoading(false);
             setComment('');
@@ -48,7 +48,9 @@ export const NewCommentForm: React.FC = () => {
     setEmailErr(false);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
     event.preventDefault();
     if (author === '') {
       setAuthorrErr(true);
@@ -70,7 +72,7 @@ export const NewCommentForm: React.FC = () => {
   };
 
   return (
-    <form onSubmit={event => handleSubmit(event)} data-cy="NewCommentForm">
+    <form data-cy="NewCommentForm">
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -175,8 +177,9 @@ export const NewCommentForm: React.FC = () => {
         <div className="control">
           <button
             type="submit"
+            onClick={event => handleSubmit(event)}
             className={cn('button is-link', {
-              'is-loading': isLoading,
+              'is-loading': isLoadingbutton,
             })}
           >
             Add
