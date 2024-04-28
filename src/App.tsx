@@ -1,15 +1,56 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
+import { PostsList } from './components/PostList/PostsList';
+import { UserSelector } from './components/UserSelector/UserSelector';
+import { User } from './types/User';
+import { getUsers } from './api/users';
+import { postsContext } from './context/Store';
 import { Loader } from './components/Loader';
+import { Post } from './types/Post';
+import { getPosts } from './api/posts';
+import { ErrorText } from './types/ErrorText';
+import { PostsError } from './components/PostsError/PostsError';
+import { Sidebar } from './components/Sidebar/Sidebar';
 
 export const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [error, setError] = useState<'' | ErrorText>('');
+  const [loading, setLoading] = useState(false);
+  const { state, setters } = useContext(postsContext);
+  const { selectedUser } = state;
+  const { setSelectedPost } = setters;
+
+  useEffect(() => {
+    getUsers().then(newUsers => setUsers(newUsers));
+  }, []);
+
+  useEffect(() => {
+    setError('');
+
+    if (selectedUser) {
+      setLoading(true);
+      setSelectedPost(null);
+      getPosts(selectedUser.id)
+        .then(newPosts => {
+          if (newPosts.length === 0) {
+            setError(ErrorText.noPosts);
+          }
+
+          setPosts(newPosts);
+        })
+        .catch(() => {
+          setError(ErrorText.failLoad);
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [selectedUser, setSelectedPost]);
+  const displayError = error && !loading;
+  const displayPostList = selectedUser && !error && !loading;
+
   return (
     <main className="section">
       <div className="container">
@@ -17,44 +58,22 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector users={users} />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-                <Loader />
+                {loading && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
-
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                {displayError && <PostsError errorMessage={error} />}
+                {displayPostList && <PostsList posts={posts} />}
               </div>
             </div>
           </div>
-
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
-            )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
-          </div>
+          <Sidebar />
         </div>
       </div>
     </main>
