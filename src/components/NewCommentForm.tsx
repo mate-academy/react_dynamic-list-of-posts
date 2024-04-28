@@ -24,7 +24,7 @@ export const NewCommentForm: React.FC = () => {
   };
 
   const handleErrorBodyBLur = () => {
-    if (!newComment.body.length) {
+    if (!newComment.body.trim().length) {
       setErrorBody(true);
     }
   };

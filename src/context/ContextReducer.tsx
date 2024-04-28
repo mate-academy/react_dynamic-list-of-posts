@@ -144,6 +144,10 @@ const reducer = (state: State, action: Action) => {
       };
 
     case 'addComment':
+      if (!state.newComment.body.trim().length) {
+        return state;
+      }
+
       return {
         ...state,
         fetchOfAddComent: true,

@@ -51,7 +51,7 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {openButton && (
+          {openButton && !fetch && (
             <div
               data-cy="Sidebar"
               className={classNames(

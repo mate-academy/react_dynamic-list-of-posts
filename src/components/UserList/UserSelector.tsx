@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { DispatchContext, StateContext } from '../../context/ContextReducer';
 import cn from 'classnames';
+import { User } from '../../types/User';
 
 export const UserSelector: React.FC = () => {
   const { Users, Dropdown, UserId } = useContext(StateContext);
@@ -9,6 +10,12 @@ export const UserSelector: React.FC = () => {
   const handleSelectClick = () => {
     dispatch({ type: 'unsetUsers' });
     dispatch({ type: 'Dropdown-active-disable' });
+  };
+
+  const handleUserClick = (user: User) => {
+    dispatch({ type: 'Dropdown-active-disable' });
+    dispatch({ type: 'setUserId', userId: user.id });
+    dispatch({ type: 'closePostDetails' });
   };
 
   const nameOfUser = Users.find(user => user.id === UserId);
@@ -43,10 +50,7 @@ export const UserSelector: React.FC = () => {
           <div className="dropdown-content">
             {Users.map(user => (
               <a
-                onClick={() => {
-                  dispatch({ type: 'Dropdown-active-disable' });
-                  dispatch({ type: 'setUserId', userId: user.id });
-                }}
+                onClick={() => handleUserClick(user)}
                 key={user.id}
                 href="#user-1"
                 className="dropdown-item"

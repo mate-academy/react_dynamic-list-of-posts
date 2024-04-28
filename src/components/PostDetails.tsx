@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import {
@@ -18,7 +17,7 @@ export const PostDetails: React.FC = () => {
   const [loaderComments, setLoaderComments] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [comments, setComments] = useState<Comment[]>([]);
-  const { openButton } = useContext(StateContext);
+  // const { openButton } = useContext(StateContext);
 
   const {
     currentPostId,
@@ -119,87 +118,77 @@ export const PostDetails: React.FC = () => {
           }
         });
     }
-  }, [currentPostId, openButton, signalAdd, signaDelete]);
+
+    //return () => dispatch({ type: 'closePostDetails' });
+  }, [currentPostId, signalAdd, signaDelete]);
 
   return (
-    <TransitionGroup>
-      <CSSTransition
-        key={currentPostId}
-        classNames="post-details"
-        timeout={300}
-      >
-        <div className="content" data-cy="PostDetails">
-          <div className="block">
-            <h2 data-cy="PostTitle">
-              #{Post?.id}: {Post?.title}
-            </h2>
+    <div className="content" data-cy="PostDetails">
+      <div className="block">
+        <h2 data-cy="PostTitle">
+          #{Post?.id}: {Post?.title}
+        </h2>
 
-            <p data-cy="PostBody">{Post?.body}</p>
-          </div>
+        <p data-cy="PostBody">{Post?.body}</p>
+      </div>
 
-          {error === ERROR && loaderComments === DONE_FETCH && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
-            </div>
-          )}
-
-          {loaderComments !== DONE_FETCH && <Loader />}
-
-          {loaderComments === DONE_FETCH && error !== ERROR && (
-            <div className="block">
-              {!comments.length ? (
-                <p className="title is-4" data-cy="NoCommentsMessage">
-                  No comments yet
-                </p>
-              ) : (
-                <p className="title is-4">Comments:</p>
-              )}
-
-              {comments.map(c => (
-                <article
-                  key={c.id}
-                  className="message is-small"
-                  data-cy="Comment"
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${c.email}`} data-cy="CommentAuthor">
-                      {c.name}
-                    </a>
-                    <button
-                      onClick={() =>
-                        dispatch({ type: 'deleteComment', currentId: c.id })
-                      }
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                    >
-                      delete button
-                    </button>
-                  </div>
-
-                  <div className="message-body" data-cy="CommentBody">
-                    {c.body}
-                  </div>
-                </article>
-              ))}
-
-              {!whriteComment && (
-                <button
-                  onClick={() => dispatch({ type: 'setWhriteComment' })}
-                  data-cy="WriteCommentButton"
-                  type="button"
-                  className="button is-link"
-                >
-                  Write a comment
-                </button>
-              )}
-            </div>
-          )}
-
-          {whriteComment && <NewCommentForm />}
+      {error === ERROR && loaderComments === DONE_FETCH && (
+        <div className="notification is-danger" data-cy="CommentsError">
+          Something went wrong
         </div>
-      </CSSTransition>
-    </TransitionGroup>
+      )}
+
+      {loaderComments !== DONE_FETCH && <Loader />}
+
+      {loaderComments === DONE_FETCH && error !== ERROR && (
+        <div className="block">
+          {!comments.length ? (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          ) : (
+            <p className="title is-4">Comments:</p>
+          )}
+
+          {comments.map(c => (
+            <article key={c.id} className="message is-small" data-cy="Comment">
+              <div className="message-header">
+                <a href={`mailto:${c.email}`} data-cy="CommentAuthor">
+                  {c.name}
+                </a>
+                <button
+                  onClick={() =>
+                    dispatch({ type: 'deleteComment', currentId: c.id })
+                  }
+                  data-cy="CommentDelete"
+                  type="button"
+                  className="delete is-small"
+                  aria-label="delete"
+                >
+                  delete button
+                </button>
+              </div>
+
+              <div className="message-body" data-cy="CommentBody">
+                {c.body}
+              </div>
+            </article>
+          ))}
+
+          {!whriteComment && (
+            <button
+              onClick={() => dispatch({ type: 'setWhriteComment' })}
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+            >
+              Write a comment
+            </button>
+          )}
+        </div>
+      )}
+
+      {whriteComment && <NewCommentForm />}
+    </div>
   );
 };
