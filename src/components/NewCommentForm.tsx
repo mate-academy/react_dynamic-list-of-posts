@@ -4,7 +4,7 @@ import { postComment } from './api/postComment';
 import cn from 'classnames';
 
 export const NewCommentForm: React.FC = () => {
-  const { selectedPost, setComments, isLoading, comments, setIsLoading } =
+  const { selectedPost, setComments, isLoading, setIsLoading } =
     useContext(ContextUsers);
   const [author, setAuthor] = useState('');
   const [email, setEmail] = useState('');
@@ -26,7 +26,9 @@ export const NewCommentForm: React.FC = () => {
       const postCom = async () => {
         setIsLoading(true);
         await postComment(newComment)
-          .then(() => setComments([...comments, newComment]))
+          .then(response =>
+            setComments(prevComments => [...prevComments, response]),
+          )
           .finally(() => {
             setIsLoading(false);
             setComment('');
