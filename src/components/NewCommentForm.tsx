@@ -12,7 +12,11 @@ export const NewCommentForm: React.FC = () => {
   const [error, setError] = useState(false);
   const [spinner, setSpinner] = useState(false);
 
-  // const addCheck = !!comment.body.trim() && error;
+  const dataError = {
+    name: !comment.name && error,
+    email: !comment.email && error,
+    body: !comment.body && error,
+  };
 
   const onReset = () => {
     setError(false);
@@ -83,7 +87,7 @@ export const NewCommentForm: React.FC = () => {
             <i className="fas fa-user" />
           </span>
 
-          {!comment.name && error && (
+          {dataError.name && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -92,7 +96,7 @@ export const NewCommentForm: React.FC = () => {
             </span>
           )}
         </div>
-        {!comment.name && error && (
+        {dataError.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -121,7 +125,7 @@ export const NewCommentForm: React.FC = () => {
             <i className="fas fa-envelope" />
           </span>
 
-          {!comment.email && error && (
+          {dataError.email && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -131,10 +135,10 @@ export const NewCommentForm: React.FC = () => {
           )}
         </div>
 
-        {!comment.email && error && (
+        {dataError.email && (
           <p
             className={classNames('help', {
-              'is-danger': !comment.email && error,
+              'is-danger': dataError.email,
             })}
             data-cy="ErrorMessage"
           >
@@ -154,17 +158,17 @@ export const NewCommentForm: React.FC = () => {
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', {
-              'is-danger': !comment.body && error,
+              'is-danger': dataError.body,
             })}
             value={comment.body}
             onChange={handlerInput}
           />
         </div>
 
-        {!comment.body && error && (
+        {dataError.body && (
           <p
             className={classNames('help', {
-              'is-danger': !comment.body && error,
+              'is-danger': dataError.body,
             })}
             data-cy="ErrorMessage"
           >
