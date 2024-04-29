@@ -16,6 +16,7 @@ import { Error } from './types/Error';
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [chosenUser, setChosenUser] = useState<User | null>(null);
+  const [chosenPost, setChosenPost] = useState<Post | null>(null);
   const [usersPosts, setUsersPosts] = useState<Post[]>([]);
   const [isLoadingPosts, setIsLoadingPosts] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
@@ -51,7 +52,9 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
+                {!chosenUser && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
                 {isLoadingPosts && <Loader />}
 
@@ -64,13 +67,19 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!usersPosts.length && (
+                {chosenUser && !usersPosts.length && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {!!usersPosts.length && <PostsList posts={usersPosts} />}
+                {!!usersPosts.length && (
+                  <PostsList
+                    posts={usersPosts}
+                    chosenPost={chosenPost}
+                    handlePostChange={setChosenPost}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -82,7 +91,7 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': chosenPost },
             )}
           >
             <div className="tile is-child box is-success ">

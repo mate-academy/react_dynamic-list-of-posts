@@ -3,9 +3,15 @@ import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[];
+  chosenPost: Post | null;
+  handlePostChange: (newPost: Post | null) => void;
 };
 
-export const PostsList: React.FC<Props> = ({ posts }) => (
+export const PostsList: React.FC<Props> = ({
+  posts,
+  chosenPost,
+  handlePostChange,
+}) => (
   <div data-cy="PostsList">
     <p className="title">Posts:</p>
 
@@ -31,8 +37,15 @@ export const PostsList: React.FC<Props> = ({ posts }) => (
                 type="button"
                 data-cy="PostButton"
                 className="button is-link is-light"
+                onClick={() => {
+                  if (chosenPost && chosenPost === currentPost) {
+                    handlePostChange(null);
+                  } else {
+                    handlePostChange(currentPost);
+                  }
+                }}
               >
-                Open or close TODO
+                {currentPost !== chosenPost ? 'Open' : 'Close'}
               </button>
             </td>
           </tr>
