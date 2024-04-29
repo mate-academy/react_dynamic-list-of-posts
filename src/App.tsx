@@ -8,7 +8,12 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getComments, getUsers, getUsersPosts } from './utils/fetchClient';
+import {
+  getComments,
+  getUsers,
+  getUsersPosts,
+  postComment,
+} from './utils/fetchClient';
 import { User } from './types/User';
 import { Post } from './types/Post';
 import { Error } from './types/Error';
@@ -22,8 +27,9 @@ export const App: React.FC = () => {
   const [isLoadingPosts, setIsLoadingPosts] = useState<boolean>(false);
   const [isLoadingComments, setIsLoadingComments] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
-  const [comments, setComments] = useState<Comment[] | null>(null);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [isShowingForm, setIsShowingForm] = useState<boolean>(false);
+  const [isSubmittingForm, setIsSubmittingForm] = useState<boolean>(false);
 
   useEffect(() => {
     getUsers().then(setUsers).catch();
@@ -53,6 +59,44 @@ export const App: React.FC = () => {
         .finally(() => setIsLoadingPosts(false));
     }
   }, [chosenUser]);
+
+  const handleCommentFormSubmission = (
+    postId: Post['id'],
+    authorName: string,
+    authorEmail: string,
+    commentBody: string,
+  ) => {
+    setIsSubmittingForm(true);
+
+    if (
+      !authorName.trim().length ||
+      !authorEmail.trim().length ||
+      !commentBody.trim().length
+    ) {
+      setIsSubmittingForm(false);
+
+      return;
+    }
+
+    const newComment: Comment = {
+      // GET NEW ID - #TODO
+      id: 0,
+      postId: postId,
+      name: authorName.trim(),
+      email: authorEmail.trim(),
+      body: commentBody.trim(),
+    };
+
+    postComment(postId, authorName, authorEmail, commentBody)
+      .then(() =>
+        setComments(
+          (currentComments: Comment[]) =>
+            [...currentComments, newComment] as Comment[],
+        ),
+      )
+      .catch(() => setError(Error.CommentsError))
+      .finally(() => setIsSubmittingForm(false));
+  };
 
   return (
     <main className="section">
@@ -84,7 +128,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {chosenUser && !usersPosts.length && (
+                {!isLoadingPosts && chosenUser && !usersPosts.length && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
@@ -112,7 +156,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {
+              {chosenPost && (
                 <PostDetails
                   post={chosenPost}
                   comments={comments}
@@ -120,8 +164,11 @@ export const App: React.FC = () => {
                   error={error}
                   isShowingForm={isShowingForm}
                   handleShowForm={setIsShowingForm}
+                  isSubmittingForm={isSubmittingForm}
+                  handleIsSubmittingForm={setIsSubmittingForm}
+                  handleCommentFormSubmission={handleCommentFormSubmission}
                 />
-              }
+              )}
             </div>
           </div>
         </div>

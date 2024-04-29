@@ -6,12 +6,20 @@ import { Comment } from '../types/Comment';
 import { Error } from '../types/Error';
 
 type Props = {
-  post: Post | null;
+  post: Post;
   comments: Comment[] | null;
   isLoadingComments: boolean;
   error: Error | null;
   isShowingForm: boolean;
   handleShowForm: (show: boolean) => void;
+  isSubmittingForm: boolean;
+  handleIsSubmittingForm: (isSubmitting: boolean) => void;
+  handleCommentFormSubmission: (
+    postId: Post['id'],
+    authorName: string,
+    authorEmail: string,
+    commentBody: string,
+  ) => void;
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -21,16 +29,19 @@ export const PostDetails: React.FC<Props> = ({
   isLoadingComments,
   isShowingForm,
   handleShowForm,
+  isSubmittingForm,
+  handleIsSubmittingForm,
+  handleCommentFormSubmission,
 }) => {
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {post?.id}: {post?.title}
+            {post.id}: {post.title}
           </h2>
 
-          <p data-cy="PostBody">{post?.body}</p>
+          <p data-cy="PostBody">{post.body}</p>
         </div>
 
         <div className="block">
@@ -156,7 +167,14 @@ export const PostDetails: React.FC<Props> = ({
           )}
         </div>
 
-        {isShowingForm && <NewCommentForm />}
+        {isShowingForm && (
+          <NewCommentForm
+            isSubmittingForm={isSubmittingForm}
+            handleIsSubmittingForm={handleIsSubmittingForm}
+            handleCommentFormSubmission={handleCommentFormSubmission}
+            currentPostId={post.id}
+          />
+        )}
       </div>
     </div>
   );

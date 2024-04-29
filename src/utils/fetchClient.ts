@@ -54,3 +54,17 @@ export const getUsersPosts = (userId: User['id']) => {
 export const getComments = (postId: Post['id']) => {
   return client.get<Comment[]>(`/comments?postId=${postId}`);
 };
+
+export const postComment = (
+  postId: Post['id'],
+  authorName: string,
+  authorEmail: string,
+  commentBody: string,
+) => {
+  return client.post('/comments', {
+    postId: postId,
+    name: authorName,
+    email: authorEmail,
+    body: commentBody,
+  });
+};
