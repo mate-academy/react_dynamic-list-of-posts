@@ -10,13 +10,23 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { getUsers } from './utils/fetchClient';
 import { User } from './types/User';
+// import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [chosenUser, setChosenUser] = useState<User['id'] | null>(null);
+  // const [usersPosts, setUsersPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     getUsers().then(setUsers).catch();
   }, []);
+
+  // useEffect(() => {
+  //   if (chosenUser !== null) {
+  //     // Get posts if a user has been chosen
+  //     getUsersPosts(chosenUser).then(setUsersPosts).catch();
+  //   }
+  // }, [chosenUser]);
 
   return (
     <main className="section">
@@ -25,7 +35,11 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector users={users} />
+                <UserSelector
+                  users={users}
+                  chosenUser={chosenUser}
+                  setChosenUser={setChosenUser}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -44,6 +58,7 @@ export const App: React.FC = () => {
                   No posts yet
                 </div>
 
+                {/* <PostsList posts={usersPosts} /> */}
                 <PostsList />
               </div>
             </div>

@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { User } from '../types/User';
 
 type Props = {
   users: User[];
+  chosenUser: User['id'] | null;
+  setChosenUser: (userId: User['id']) => void;
 };
 
-export const UserSelector: React.FC<Props> = ({ users }) => {
+export const UserSelector: React.FC<Props> = ({
+  users,
+  // chosenUser,
+  setChosenUser,
+}) => {
+  const [usersListShown, setUsersListShown] = useState<boolean>(false);
+
   return (
     <div data-cy="UserSelector" className="dropdown is-active">
       <div className="dropdown-trigger">
@@ -14,6 +22,9 @@ export const UserSelector: React.FC<Props> = ({ users }) => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => {
+            setUsersListShown((currentValue: boolean) => !currentValue);
+          }}
         >
           <span>Choose a user</span>
 
@@ -24,17 +35,19 @@ export const UserSelector: React.FC<Props> = ({ users }) => {
       </div>
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          {users.map((currentUser: User) => (
-            <a
-              key={currentUser.id}
-              href={`#${currentUser.id}`}
-              className="dropdown-item"
-            >
-              {currentUser.name}
-            </a>
-          ))}
-          {/* <a href="#user-1" className="dropdown-item">
+        {usersListShown && (
+          <div className="dropdown-content">
+            {users.map((currentUser: User) => (
+              <a
+                key={currentUser.id}
+                href={`#${currentUser.id}`}
+                className="dropdown-item"
+                onChange={() => setChosenUser(currentUser.id)}
+              >
+                {currentUser.name}
+              </a>
+            ))}
+            {/* <a href="#user-1" className="dropdown-item">
             Leanne Graham
           </a>
           <a href="#user-2" className="dropdown-item is-active">
@@ -49,7 +62,8 @@ export const UserSelector: React.FC<Props> = ({ users }) => {
           <a href="#user-5" className="dropdown-item">
             Chelsey Dietrich
           </a> */}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
