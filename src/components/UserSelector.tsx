@@ -1,6 +1,11 @@
 import React from 'react';
+import { User } from '../types/User';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  users: User[];
+};
+
+export const UserSelector: React.FC<Props> = ({ users }) => {
   return (
     <div data-cy="UserSelector" className="dropdown is-active">
       <div className="dropdown-trigger">
@@ -20,7 +25,16 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
+          {users.map((currentUser: User) => (
+            <a
+              key={currentUser.id}
+              href={`#${currentUser.id}`}
+              className="dropdown-item"
+            >
+              {currentUser.name}
+            </a>
+          ))}
+          {/* <a href="#user-1" className="dropdown-item">
             Leanne Graham
           </a>
           <a href="#user-2" className="dropdown-item is-active">
@@ -34,7 +48,7 @@ export const UserSelector: React.FC = () => {
           </a>
           <a href="#user-5" className="dropdown-item">
             Chelsey Dietrich
-          </a>
+          </a> */}
         </div>
       </div>
     </div>
