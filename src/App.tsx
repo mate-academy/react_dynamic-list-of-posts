@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,55 +8,105 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { User } from './types/User';
+import { Post } from './types/Post';
+import { getPosts } from './api/getPosts';
+import { getUsers } from './api/getUsers';
+import { CommentsProvider } from './utils/CommentsContext';
 
 export const App: React.FC = () => {
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<User[] | null>(null);
+  const [posts, setPosts] = useState<Post[] | null>(null);
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
+  const [isPostsError, setIsPostsError] = useState(false);
+  const [openedPost, setOpenedPost] = useState<Post | null>(null);
+
+  useEffect(() => {
+    getUsers().then(result => {
+      setUsers(result);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (selectedUser) {
+      setIsPostsError(false);
+      setIsPostsLoading(true);
+      getPosts(selectedUser.id)
+        .then(result => {
+          setPosts(result);
+          setTimeout(() => setIsPostsLoading(false), 300);
+        })
+        .catch(() => setIsPostsError(true));
+    }
+  }, [selectedUser]);
+
   return (
-    <main className="section">
-      <div className="container">
-        <div className="tile is-ancestor">
-          <div className="tile is-parent">
-            <div className="tile is-child box is-success">
-              <div className="block">
-                <UserSelector />
-              </div>
-
-              <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
-
-                <Loader />
-
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
+    <CommentsProvider>
+      <main className="section">
+        <div className="container">
+          <div className="tile is-ancestor">
+            <div className="tile is-parent">
+              <div className="tile is-child box is-success">
+                <div className="block">
+                  <UserSelector
+                    users={users}
+                    selectedUser={selectedUser}
+                    setSelectedUser={setSelectedUser}
+                  />
                 </div>
-
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
+                <div className="block" data-cy="MainContent">
+                  {!selectedUser && (
+                    <p data-cy="NoSelectedUser">No user selected</p>
+                  )}
+                  {isPostsLoading && !isPostsError && <Loader />}
+                  {isPostsError && (
+                    <div
+                      className="notification is-danger"
+                      data-cy="PostsLoadingError"
+                    >
+                      Something went wrong!
+                    </div>
+                  )}
+                  {!(!posts?.length && selectedUser) &&
+                    !isPostsLoading &&
+                    posts && (
+                      <PostsList
+                        openedPost={openedPost}
+                        setOpenedPost={setOpenedPost}
+                        posts={posts}
+                      />
+                    )}
+                  {!posts?.length && selectedUser && !isPostsLoading && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  )}
                 </div>
-
-                <PostsList />
               </div>
             </div>
-          </div>
-
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              'Sidebar--open',
+            {openedPost && (
+              <div
+                data-cy="Sidebar"
+                className={classNames(
+                  'tile',
+                  'is-parent',
+                  'is-8-desktop',
+                  'Sidebar',
+                  'Sidebar--open',
+                )}
+              >
+                <div className="tile is-child box is-success ">
+                  <PostDetails openedPost={openedPost} />
+                </div>
+              </div>
             )}
-          >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </CommentsProvider>
   );
 };
