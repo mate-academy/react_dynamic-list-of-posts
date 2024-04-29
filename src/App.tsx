@@ -9,6 +9,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import {
+  deleteComment,
   getComments,
   getUsers,
   getUsersPosts,
@@ -98,6 +99,16 @@ export const App: React.FC = () => {
       .finally(() => setIsSubmittingForm(false));
   };
 
+  const handleDeleteComment = (commentId: Comment['id']) => {
+    deleteComment(commentId);
+
+    setComments((currentComments: Comment[]) =>
+      currentComments.filter(
+        (currentComment: Comment) => currentComment.id !== commentId,
+      ),
+    );
+  };
+
   return (
     <main className="section">
       <div className="container">
@@ -167,6 +178,7 @@ export const App: React.FC = () => {
                   isSubmittingForm={isSubmittingForm}
                   handleIsSubmittingForm={setIsSubmittingForm}
                   handleCommentFormSubmission={handleCommentFormSubmission}
+                  handleDeleteComment={handleDeleteComment}
                 />
               )}
             </div>

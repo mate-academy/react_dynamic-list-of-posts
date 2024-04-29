@@ -26,12 +26,12 @@ Install Prettier Extention and use this [VSCode settings](https://mate-academy.g
    - DONE --- the form stays visible until the other post is opened;
    - DONE --- the form should be implemented as a separate component;
 1. The form requires an author's name and email and a comment text.
-   - show errors only after the form is submitted;
-   - remove an error on the field change;
-   - keep the `name` and `email` after the successful submit but clear a comment text;
-   - The `Clear` button should also clear all errors;
-   - Add the `is-loading` class to the submit button while waiting for a response;
-   - Add the new comment received as a response from the `API` to the end of the list;
+   - DONE --- show errors only after the form is submitted;
+   - DONE --- remove an error on the field change;
+   - DONE --- keep the `name` and `email` after the successful submit but clear a comment text;
+   - DONE --- The `Clear` button should also clear all errors;
+   - DONE --- Add the `is-loading` class to the submit button while waiting for a response;
+   - DONE --- Add the new comment received as a response from the `API` to the end of the list;
 1. Implement comment deletion
    - Delete the commnet immediately not waiting for the server response to improve the UX.
 1. (\*) Handle `Add` and `Delete` errors so the user can retry

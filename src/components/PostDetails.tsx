@@ -20,6 +20,7 @@ type Props = {
     authorEmail: string,
     commentBody: string,
   ) => void;
+  handleDeleteComment: (commentId: number) => void;
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -32,6 +33,7 @@ export const PostDetails: React.FC<Props> = ({
   isSubmittingForm,
   handleIsSubmittingForm,
   handleCommentFormSubmission,
+  handleDeleteComment,
 }) => {
   return (
     <div className="content" data-cy="PostDetails">
@@ -83,6 +85,7 @@ export const PostDetails: React.FC<Props> = ({
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
+                    onClick={() => handleDeleteComment(currentComment.id)}
                   >
                     delete button
                   </button>
