@@ -3,13 +3,13 @@ import { User } from '../types/User';
 
 type Props = {
   users: User[];
-  chosenUser: User['id'] | null;
-  setChosenUser: (userId: User['id']) => void;
+  chosenUser: User | null;
+  setChosenUser: (user: User) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
-  // chosenUser,
+  chosenUser,
   setChosenUser,
 }) => {
   const [usersListShown, setUsersListShown] = useState<boolean>(false);
@@ -22,11 +22,10 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => {
-            setUsersListShown((currentValue: boolean) => !currentValue);
-          }}
+          onClick={() => setUsersListShown(true)}
+          // onBlur={() => setUsersListShown(false)}
         >
-          <span>Choose a user</span>
+          <span>{chosenUser ? chosenUser.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -42,7 +41,10 @@ export const UserSelector: React.FC<Props> = ({
                 key={currentUser.id}
                 href={`#${currentUser.id}`}
                 className="dropdown-item"
-                onChange={() => setChosenUser(currentUser.id)}
+                onClick={() => {
+                  setChosenUser(currentUser);
+                  setUsersListShown(false);
+                }}
               >
                 {currentUser.name}
               </a>

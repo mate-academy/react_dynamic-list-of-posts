@@ -1,3 +1,4 @@
+import { Post } from '../types/Post';
 import { User } from '../types/User';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -43,4 +44,8 @@ export const client = {
 
 export const getUsers = () => {
   return client.get<User[]>(`/users`);
+};
+
+export const getUsersPosts = (userId: User['id']) => {
+  return client.get<Post[]>(`/posts?userId=${userId}`);
 };
