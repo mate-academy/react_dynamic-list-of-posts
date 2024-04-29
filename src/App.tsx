@@ -23,12 +23,14 @@ export const App: React.FC = () => {
   const [isLoadingComments, setIsLoadingComments] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
   const [comments, setComments] = useState<Comment[] | null>(null);
+  const [isShowingForm, setIsShowingForm] = useState<boolean>(false);
 
   useEffect(() => {
     getUsers().then(setUsers).catch();
   }, []);
 
   useEffect(() => {
+    setIsShowingForm(false);
     setIsLoadingComments(true);
 
     // Get the Comments
@@ -116,6 +118,8 @@ export const App: React.FC = () => {
                   comments={comments}
                   isLoadingComments={isLoadingComments}
                   error={error}
+                  isShowingForm={isShowingForm}
+                  handleShowForm={setIsShowingForm}
                 />
               }
             </div>

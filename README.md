@@ -22,9 +22,9 @@ Install Prettier Extention and use this [VSCode settings](https://mate-academy.g
    - DONE --- `CommentsError` notification is show on loading error;
    - DONE --- `NoComments` message is shown if the post does not have comments yet;
 1. Show the `Write a comment` button below the comments
-   - after click hide the button and show the form to add new comment;
-   - the form stays visible until the other post is opened;
-   - the form should be implemented as a separate component;
+   - DONE --- after click hide the button and show the form to add new comment;
+   - DONE --- the form stays visible until the other post is opened;
+   - DONE --- the form should be implemented as a separate component;
 1. The form requires an author's name and email and a comment text.
    - show errors only after the form is submitted;
    - remove an error on the field change;

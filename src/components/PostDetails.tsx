@@ -10,6 +10,8 @@ type Props = {
   comments: Comment[] | null;
   isLoadingComments: boolean;
   error: Error | null;
+  isShowingForm: boolean;
+  handleShowForm: (show: boolean) => void;
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -17,6 +19,8 @@ export const PostDetails: React.FC<Props> = ({
   comments,
   error,
   isLoadingComments,
+  isShowingForm,
+  handleShowForm,
 }) => {
   return (
     <div className="content" data-cy="PostDetails">
@@ -48,7 +52,8 @@ export const PostDetails: React.FC<Props> = ({
             <p className="title is-4">Comments:</p>
           )}
 
-          {!!comments?.length &&
+          {!isLoadingComments &&
+            !!comments?.length &&
             comments.map((currentComment: Comment) => (
               <article
                 key={currentComment.id}
@@ -139,16 +144,19 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           </article> */}
 
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+          {!isShowingForm && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => handleShowForm(true)}
+            >
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
+        {isShowingForm && <NewCommentForm />}
       </div>
     </div>
   );
