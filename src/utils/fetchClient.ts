@@ -1,3 +1,4 @@
+import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 
@@ -48,4 +49,8 @@ export const getUsers = () => {
 
 export const getUsersPosts = (userId: User['id']) => {
   return client.get<Post[]>(`/posts?userId=${userId}`);
+};
+
+export const getComments = (postId: Post['id']) => {
+  return client.get<Comment[]>(`/comments?postId=${postId}`);
 };

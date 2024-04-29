@@ -8,10 +8,11 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { getUsers, getUsersPosts } from './utils/fetchClient';
+import { getComments, getUsers, getUsersPosts } from './utils/fetchClient';
 import { User } from './types/User';
 import { Post } from './types/Post';
 import { Error } from './types/Error';
+import { Comment } from './types/Comment';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -19,11 +20,25 @@ export const App: React.FC = () => {
   const [chosenPost, setChosenPost] = useState<Post | null>(null);
   const [usersPosts, setUsersPosts] = useState<Post[]>([]);
   const [isLoadingPosts, setIsLoadingPosts] = useState<boolean>(false);
+  const [isLoadingComments, setIsLoadingComments] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
+  const [comments, setComments] = useState<Comment[] | null>(null);
 
   useEffect(() => {
     getUsers().then(setUsers).catch();
   }, []);
+
+  useEffect(() => {
+    setIsLoadingComments(true);
+
+    // Get the Comments
+    if (chosenPost) {
+      getComments(chosenPost.id)
+        .then(setComments)
+        .catch(() => setError(Error.CommentsError))
+        .finally(() => setIsLoadingComments(false));
+    }
+  }, [chosenPost]);
 
   useEffect(() => {
     if (chosenUser) {
@@ -95,7 +110,14 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {
+                <PostDetails
+                  post={chosenPost}
+                  comments={comments}
+                  isLoadingComments={isLoadingComments}
+                  error={error}
+                />
+              }
             </div>
           </div>
         </div>

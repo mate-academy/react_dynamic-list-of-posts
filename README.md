@@ -16,11 +16,11 @@ Install Prettier Extention and use this [VSCode settings](https://mate-academy.g
    - DONE --- show an error notification if `posts` loading fails;
    - DONE --- if the user has no posts show the `No posts yet` notification.
 1. Add the `Sidebar--open` class to the sidebar when a post is selected;
-   - the post details should appear there immediately;
-   - the post commnets should be loaded from the API;
-   - the `Loader` is shown before comments are loaded;
-   - `CommentsError` notification is show on loading error;
-   - `NoComments` message is shown if the post does not have comments yet;
+   - DONE --- the post details should appear there immediately;
+   - DONE --- the post commnets should be loaded from the API;
+   - DONE --- the `Loader` is shown before comments are loaded;
+   - DONE --- `CommentsError` notification is show on loading error;
+   - DONE --- `NoComments` message is shown if the post does not have comments yet;
 1. Show the `Write a comment` button below the comments
    - after click hide the button and show the form to add new comment;
    - the form stays visible until the other post is opened;
