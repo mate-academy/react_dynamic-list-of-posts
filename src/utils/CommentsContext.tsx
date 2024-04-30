@@ -10,14 +10,14 @@ type Context = {
   setComments: (prop: Comment[]) => void;
 };
 
-const clearContext: Context = {
+const defaultContext: Context = {
   comments: [],
-  setComments: (prop: Comment[]) => {},
+  setComments: () => {},
 };
 
-export const CommentsContext = React.createContext<Context>(clearContext);
+export const CommentContext = React.createContext<Context>(defaultContext);
 
-export const CommentsProvider: React.FC<Props> = ({ children }) => {
+export const CommentProvider: React.FC<Props> = ({ children }) => {
   const [comments, setComments] = useState<Comment[]>([]);
 
   const value = useMemo(
@@ -29,8 +29,6 @@ export const CommentsProvider: React.FC<Props> = ({ children }) => {
   );
 
   return (
-    <CommentsContext.Provider value={value}>
-      {children}
-    </CommentsContext.Provider>
+    <CommentContext.Provider value={value}>{children}</CommentContext.Provider>
   );
 };

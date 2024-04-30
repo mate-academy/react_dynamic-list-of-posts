@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -12,7 +12,7 @@ import { User } from './types/User';
 import { Post } from './types/Post';
 import { getPosts } from './api/getPosts';
 import { getUsers } from './api/getUsers';
-import { CommentsProvider } from './utils/CommentsContext';
+import { CommentProvider } from './utils/CommentsContext';
 
 export const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -41,8 +41,12 @@ export const App: React.FC = () => {
     }
   }, [selectedUser]);
 
+  const noPosts = useMemo(() => {
+    return !posts?.length && selectedUser;
+  }, [posts, selectedUser, isPostsLoading]);
+
   return (
-    <CommentsProvider>
+    <CommentProvider>
       <main className="section">
         <div className="container">
           <div className="tile is-ancestor">
@@ -50,6 +54,7 @@ export const App: React.FC = () => {
               <div className="tile is-child box is-success">
                 <div className="block">
                   <UserSelector
+                    setOpenedPost={setOpenedPost}
                     users={users}
                     selectedUser={selectedUser}
                     setSelectedUser={setSelectedUser}
@@ -68,16 +73,14 @@ export const App: React.FC = () => {
                       Something went wrong!
                     </div>
                   )}
-                  {!(!posts?.length && selectedUser) &&
-                    !isPostsLoading &&
-                    posts && (
-                      <PostsList
-                        openedPost={openedPost}
-                        setOpenedPost={setOpenedPost}
-                        posts={posts}
-                      />
-                    )}
-                  {!posts?.length && selectedUser && !isPostsLoading && (
+                  {!noPosts && !isPostsLoading && posts && (
+                    <PostsList
+                      openedPost={openedPost}
+                      setOpenedPost={setOpenedPost}
+                      posts={posts}
+                    />
+                  )}
+                  {noPosts && !isPostsLoading && (
                     <div
                       className="notification is-warning"
                       data-cy="NoPostsYet"
@@ -107,6 +110,6 @@ export const App: React.FC = () => {
           </div>
         </div>
       </main>
-    </CommentsProvider>
+    </CommentProvider>
   );
 };

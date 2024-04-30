@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { Post } from '../types/Post';
 import { getComments } from '../api/getComments';
-import { CommentsContext } from '../utils/CommentsContext';
+import { Post } from '../types/Post';
+import { CommentContext } from '../utils/CommentsContext';
+import { deleteComment } from '../api/deleteComment';
 
 type Props = {
   openedPost: Post;
@@ -14,7 +15,7 @@ export const PostDetails: React.FC<Props> = ({ openedPost }) => {
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isCommenting, setIsCommenting] = useState(false);
-  const { comments, setComments } = useContext(CommentsContext);
+  const { comments, setComments } = useContext(CommentContext);
 
   useEffect(() => {
     setIsLoading(true);
@@ -27,6 +28,12 @@ export const PostDetails: React.FC<Props> = ({ openedPost }) => {
   }, [id, setComments]);
 
   useEffect(() => setIsCommenting(false), [openedPost]);
+
+  const handleDelete = (commentId: number) => {
+    deleteComment(commentId).finally(() =>
+      getComments(openedPost.id).then(result => setComments(result)),
+    );
+  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -72,6 +79,7 @@ export const PostDetails: React.FC<Props> = ({ openedPost }) => {
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
+                      onClick={() => handleDelete(comment.id)}
                     >
                       delete button
                     </button>
@@ -81,21 +89,21 @@ export const PostDetails: React.FC<Props> = ({ openedPost }) => {
                   </div>
                 </article>
               ))}
-              {!isCommenting && (
-                <button
-                  data-cy="WriteCommentButton"
-                  type="button"
-                  className="button is-link"
-                  onClick={() => setIsCommenting(true)}
-                >
-                  Write a comment
-                </button>
-              )}
             </>
+          )}
+          {!isCommenting && !isLoading && !isError && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setIsCommenting(true)}
+            >
+              Write a comment
+            </button>
           )}
         </div>
 
-        {isCommenting && <NewCommentForm />}
+        {isCommenting && <NewCommentForm openedPost={openedPost} />}
       </div>
     </div>
   );

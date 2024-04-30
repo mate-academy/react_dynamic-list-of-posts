@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
 import { User } from '../types/User';
 import classNames from 'classnames';
+import { Post } from '../types/Post';
 
 type Props = {
   users: User[] | null;
   selectedUser: User | null;
   setSelectedUser: (user: User | null) => void;
+  setOpenedPost: (prop: Post | null) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
   users = [],
   selectedUser,
   setSelectedUser,
+  setOpenedPost,
 }) => {
   const [isActive, setIsActive] = useState(false);
 
   const handleSetUser = (user: User) => {
     setSelectedUser(user);
+    setOpenedPost(null);
   };
 
   const handleActivate = () => {
