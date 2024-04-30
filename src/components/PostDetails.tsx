@@ -40,7 +40,7 @@ export const PostDetails: React.FC<Props> = ({
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {post.id}: {post.title}
+            #{post.id}: {post.title}
           </h2>
 
           <p data-cy="PostBody">{post.body}</p>
@@ -158,7 +158,7 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           </article> */}
 
-          {!isShowingForm && (
+          {!isShowingForm && !isLoadingComments && (
             <button
               data-cy="WriteCommentButton"
               type="button"

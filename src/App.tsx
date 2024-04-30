@@ -37,6 +37,10 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    setChosenPost(null);
+  }, [chosenUser]);
+
+  useEffect(() => {
     setIsShowingForm(false);
     setIsLoadingComments(true);
 
@@ -109,6 +113,9 @@ export const App: React.FC = () => {
     );
   };
 
+  const showNoPostsMessage =
+    !error && !isLoadingPosts && chosenUser && !usersPosts.length;
+
   return (
     <main className="section">
       <div className="container">
@@ -139,13 +146,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!isLoadingPosts && chosenUser && !usersPosts.length && (
+                {showNoPostsMessage && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {!!usersPosts.length && (
+                {!!usersPosts.length && !isLoadingPosts && (
                   <PostsList
                     posts={usersPosts}
                     chosenPost={chosenPost}
