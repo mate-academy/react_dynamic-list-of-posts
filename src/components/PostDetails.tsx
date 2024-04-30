@@ -35,6 +35,12 @@ export const PostDetails: React.FC<Props> = ({
   handleCommentFormSubmission,
   handleDeleteComment,
 }) => {
+  const isShowingNoCommentsMessage =
+    !isLoadingComments && !comments?.length && error !== Error.CommentsError;
+
+  const isShowingCommentButton =
+    !isShowingForm && !isLoadingComments && error !== Error.CommentsError;
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -55,7 +61,7 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {!isLoadingComments && !comments?.length && (
+          {isShowingNoCommentsMessage && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -97,68 +103,7 @@ export const PostDetails: React.FC<Props> = ({
               </article>
             ))}
 
-          {/* <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div className="message-body" data-cy="CommentBody">
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article> */}
-
-          {!isShowingForm && !isLoadingComments && (
+          {isShowingCommentButton && (
             <button
               data-cy="WriteCommentButton"
               type="button"
