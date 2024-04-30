@@ -7,10 +7,15 @@ type Props = {
 
 type Context = {
   comments: Comment[];
-  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
+  setComments: (prop: Comment[]) => void;
 };
 
-export const CommentsContext = React.createContext<Context | null>(null);
+const clearContext: Context = {
+  comments: [],
+  setComments: (prop: Comment[]) => {},
+};
+
+export const CommentsContext = React.createContext<Context>(clearContext);
 
 export const CommentsProvider: React.FC<Props> = ({ children }) => {
   const [comments, setComments] = useState<Comment[]>([]);
