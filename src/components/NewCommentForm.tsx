@@ -14,29 +14,31 @@ export const NewCommentForm: React.FC = () => {
   const [isLoadingbutton, setIsLoadingbutton] = useState(false);
 
   const addComment = () => {
-    if (selectedPost) {
-      const newComment = {
-        id: 0,
-        postId: selectedPost.id,
-        name: author,
-        email: email,
-        body: comment,
-      };
-
-      setComments(prevComments => [...prevComments, newComment]);
-
-      const postCom = () => {
-        setIsLoadingbutton(true);
-        postComment(newComment)
-          .then(() => setIsLoadingbutton(false))
-          .finally(() => {
-            setIsLoading(false);
-            setComment('');
-          });
-      };
-
-      postCom();
+    if (!selectedPost) {
+      return;
     }
+
+    const newComment = {
+      id: 0,
+      postId: selectedPost.id,
+      name: author,
+      email: email,
+      body: comment,
+    };
+
+    setComments(prevComments => [...prevComments, newComment]);
+
+    const postCom = () => {
+      setIsLoadingbutton(true);
+      postComment(newComment)
+        .then(() => setIsLoadingbutton(false))
+        .finally(() => {
+          setIsLoading(false);
+          setComment('');
+        });
+    };
+
+    postCom();
   };
 
   const handleClear = () => {
