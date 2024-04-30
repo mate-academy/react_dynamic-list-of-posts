@@ -43,7 +43,7 @@ export const App: React.FC = () => {
 
   const noPosts = useMemo(() => {
     return !posts?.length && selectedUser;
-  }, [posts, selectedUser, isPostsLoading]);
+  }, [posts, selectedUser]);
 
   return (
     <CommentProvider>
