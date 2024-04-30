@@ -37,17 +37,14 @@ export const NewCommentForm: React.FC<Props> = ({
     setBodyError(false);
   };
 
-  // Name
   useEffect(() => {
     setAuthorError(false);
   }, [authorName]);
 
-  // Email
   useEffect(() => {
     setEmailError(false);
   }, [authorEmail]);
 
-  // Body
   useEffect(() => {
     setBodyError(false);
   }, [commentBody]);
