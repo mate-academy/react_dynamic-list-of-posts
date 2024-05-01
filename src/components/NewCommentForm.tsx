@@ -45,7 +45,9 @@ export const NewCommentForm: React.FC<Props> = ({ openedPost }) => {
     }
 
     if (
-      !(errors.nameError || errors.emailError || errors.textError) &&
+      nameValue.trim() &&
+      emailValue.trim() &&
+      textValue.trim() &&
       openedPost
     ) {
       const data = {
@@ -69,17 +71,6 @@ export const NewCommentForm: React.FC<Props> = ({ openedPost }) => {
     }
   };
 
-  type ChangeEventTypes =
-    | React.ChangeEvent<HTMLInputElement>
-    | React.ChangeEvent<HTMLTextAreaElement>;
-
-  const handleChange = (
-    event: ChangeEventTypes,
-    setState: (prop: string) => void,
-  ) => {
-    setState(event.target.value);
-  };
-
   return (
     <form
       onReset={handleReset}
@@ -94,7 +85,10 @@ export const NewCommentForm: React.FC<Props> = ({ openedPost }) => {
         <div className="control has-icons-left has-icons-right">
           <input
             value={nameValue}
-            onChange={event => handleChange(event, setNameValue)}
+            onChange={event => {
+              setNameValue(event.target.value);
+              setErrors(prev => ({ ...prev, nameError: false }));
+            }}
             type="text"
             name="name"
             id="comment-author-name"
@@ -129,7 +123,10 @@ export const NewCommentForm: React.FC<Props> = ({ openedPost }) => {
         <div className="control has-icons-left has-icons-right">
           <input
             value={emailValue}
-            onChange={event => handleChange(event, setEmailValue)}
+            onChange={event => {
+              setEmailValue(event.target.value);
+              setErrors(prev => ({ ...prev, emailError: false }));
+            }}
             type="text"
             name="email"
             id="comment-author-email"
@@ -150,7 +147,7 @@ export const NewCommentForm: React.FC<Props> = ({ openedPost }) => {
             </span>
           )}
         </div>
-        {errors.nameError && (
+        {errors.emailError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -165,14 +162,17 @@ export const NewCommentForm: React.FC<Props> = ({ openedPost }) => {
         <div className="control">
           <textarea
             value={textValue}
-            onChange={event => handleChange(event, setTextValue)}
+            onChange={event => {
+              setTextValue(event.target.value);
+              setErrors(prev => ({ ...prev, textError: false }));
+            }}
             id="comment-body"
             name="body"
             placeholder="Type comment here"
             className={classNames('input', { 'is-danger': errors.textError })}
           />
         </div>
-        {errors.nameError && (
+        {errors.textError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
