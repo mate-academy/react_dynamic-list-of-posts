@@ -15,7 +15,7 @@ export interface State {
 export interface StateSetters {
   setUsers: (users: User[]) => void;
   setSelectedUser: (user: User | null) => void;
-  setPosts: (userId: number) => void;
+  setPosts: (userId: number) => Promise<void>;
   setSelectedPost: (post: Post | null) => void;
   setComments: (postId: number) => void;
   addComment: (comment: Comment) => void;

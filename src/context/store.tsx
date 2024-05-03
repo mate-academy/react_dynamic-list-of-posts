@@ -8,6 +8,7 @@ import { Comment } from '../types/Comment';
 import { getUsers } from '../api-services/users';
 import { getUserPosts } from '../api-services/posts';
 import * as commentService from '../api-services/comments';
+import { Error } from '../types/Notification';
 
 const initialState: State = {
   users: [],
@@ -24,7 +25,7 @@ const init: InitialContext = {
   methods: {
     setUsers: () => {},
     setSelectedUser: () => {},
-    setPosts: () => {},
+    setPosts: () => new Promise(() => {}),
     setSelectedPost: () => {},
     setComments: () => {},
     addComment: () => new Promise(() => {}),
@@ -61,10 +62,10 @@ export const ContextProvider: React.FC<Props> = ({ children }) => {
   };
 
   const setPosts = (userId: number) => {
-    getUserPosts(userId)
+    return getUserPosts(userId)
       .then(posts => dispatch({ type: 'setPosts', payload: posts }))
       .catch(() => {
-        setError('Unable to load user posts');
+        setError(Error.PostsError);
       });
   };
 
@@ -77,7 +78,7 @@ export const ContextProvider: React.FC<Props> = ({ children }) => {
       .getSelectedPostComments(postId)
       .then(comments => dispatch({ type: 'setComments', payload: comments }))
       .catch(() => {
-        setError('Unable to load comments of selected post');
+        setError(Error.CommentsError);
       });
   };
 
