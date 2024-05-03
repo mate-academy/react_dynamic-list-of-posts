@@ -23,6 +23,11 @@ export const appReducer = (state: State, action: Action): State => {
         ...state,
         selectedPost: action.payload,
       };
+    case 'setComments':
+      return {
+        ...state,
+        comments: action.payload,
+      };
     case 'addComment':
       return {
         ...state,

@@ -14,15 +14,14 @@ import { Error } from './types/Notification';
 
 export const App: React.FC = () => {
   const {
-    state: { selectedUser, posts, selectedPost, loading, error },
-    methods: { setLoading, setPosts },
+    state: { selectedUser, selectedPost, loading, error },
+    methods: { setLoading, setPosts, setSelectedPost },
   } = useAppContext();
-
-  console.log(posts);
 
   useEffect(() => {
     if (selectedUser) {
       setLoading(true);
+      setSelectedPost(null);
       setPosts(selectedUser.id).finally(() => setLoading(false));
     }
   }, [selectedUser]);
@@ -52,22 +51,20 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {selectedPost && (
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                'Sidebar--open',
-              )}
-            >
-              <div className="tile is-child box is-success ">
-                <PostDetails />
-              </div>
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': selectedPost },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              {selectedPost && <PostDetails />}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </main>

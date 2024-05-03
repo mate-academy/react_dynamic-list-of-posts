@@ -27,7 +27,7 @@ const init: InitialContext = {
     setSelectedUser: () => {},
     setPosts: () => new Promise(() => {}),
     setSelectedPost: () => {},
-    setComments: () => {},
+    setComments: () => new Promise(() => {}),
     addComment: () => new Promise(() => {}),
     deleteComment: () => new Promise(() => {}),
     setError: () => {},
@@ -64,8 +64,9 @@ export const ContextProvider: React.FC<Props> = ({ children }) => {
   const setPosts = (userId: number) => {
     return getUserPosts(userId)
       .then(posts => dispatch({ type: 'setPosts', payload: posts }))
-      .catch(() => {
+      .catch(error => {
         setError(Error.PostsError);
+        throw error;
       });
   };
 
@@ -73,13 +74,17 @@ export const ContextProvider: React.FC<Props> = ({ children }) => {
     dispatch({ type: 'selectPost', payload: post });
   };
 
-  const setComments = (postId: number) => {
-    commentService
-      .getSelectedPostComments(postId)
-      .then(comments => dispatch({ type: 'setComments', payload: comments }))
-      .catch(() => {
-        setError(Error.CommentsError);
-      });
+  // const setComments = (postId: number) => {
+  //   return commentService
+  //     .getSelectedPostComments(postId)
+  //     .then(comments => dispatch({ type: 'setComments', payload: comments }))
+  //     .catch(error => {
+  //       setError(Error.CommentsError);
+  //       throw error;
+  //     });
+  // };
+  const setComments = (comments: Comment[]) => {
+    dispatch({ type: 'setComments', payload: comments });
   };
 
   const addComment = (comment: Omit<Comment, 'id'>) => {

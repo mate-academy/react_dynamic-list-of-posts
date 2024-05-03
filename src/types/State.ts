@@ -17,9 +17,9 @@ export interface StateSetters {
   setSelectedUser: (user: User | null) => void;
   setPosts: (userId: number) => Promise<void>;
   setSelectedPost: (post: Post | null) => void;
-  setComments: (postId: number) => void;
-  addComment: (comment: Comment) => void;
-  deleteComment: (commentId: number) => void;
+  setComments: (comments: Comment[]) => void;
+  addComment: (comment: Omit<Comment, 'id'>) => void;
+  deleteComment: (commentId: number) => Promise<void>;
   setError: (error: string) => void;
   setLoading: (value: boolean) => void;
 }

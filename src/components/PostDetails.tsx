@@ -1,15 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
-import { NewCommentForm } from './NewCommentForm';
+
 import { useAppContext } from '../context/store';
 import { Notification } from './Notification';
 import { Error, Warning } from '../types/Notification';
+import { Comments } from './Comments';
+import { getSelectedPostComments } from '../api-services/comments';
 
 export const PostDetails: React.FC = () => {
   const {
-    state: { selectedPost, comments, error, loading },
+    state: { selectedPost, comments, error },
+    methods: { setComments, setError },
   } = useAppContext();
-  const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (selectedPost) {
+      setLoading(true);
+
+      getSelectedPostComments(selectedPost.id)
+        .then(fetchedComments => setComments(fetchedComments))
+        .catch(() => {
+          setError(Error.CommentsError);
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [selectedPost]);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -30,39 +46,8 @@ export const PostDetails: React.FC = () => {
             <Notification type="warning" message={Warning.NoComment} />
           )}
 
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-            onClick={() => setEditMode(true)}
-          >
-            Write a comment
-          </button>
+          {!loading && <Comments />}
         </div>
-
-        {editMode && <NewCommentForm />}
       </div>
     </div>
   );
