@@ -23,15 +23,17 @@ export const appReducer = (state: State, action: Action): State => {
         ...state,
         selectedPost: action.payload,
       };
-    case 'addPost':
+    case 'addComment':
       return {
         ...state,
-        posts: [...state.posts, action.payload],
+        comments: [...state.comments, action.payload],
       };
-    case 'deletePost':
+    case 'deleteComment':
       return {
         ...state,
-        posts: state.posts.filter(post => post.id !== action.payload),
+        comments: state.comments.filter(
+          comment => comment.id !== action.payload,
+        ),
       };
     case 'setError':
       return {
