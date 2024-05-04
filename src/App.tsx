@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +8,24 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { useAppContext } from './context/store';
+import { Notification } from './components/Notification';
+import { Error } from './types/Notification';
 
 export const App: React.FC = () => {
+  const {
+    state: { selectedUser, selectedPost, loading, error },
+    methods: { setPosts },
+  } = useAppContext();
+
+  const isListVisible = !loading && selectedUser && !error;
+
+  useEffect(() => {
+    if (selectedUser) {
+      setPosts(selectedUser.id);
+    }
+  }, [selectedUser, setPosts]);
+
   return (
     <main className="section">
       <div className="container">
@@ -21,22 +37,17 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-                <Loader />
+                {loading && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {error && !loading && (
+                  <Notification type="error" message={Error.PostsError} />
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                {isListVisible && <PostsList />}
               </div>
             </div>
           </div>
@@ -48,11 +59,11 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {selectedPost && <PostDetails />}
             </div>
           </div>
         </div>
