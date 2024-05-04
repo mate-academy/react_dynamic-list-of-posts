@@ -6,18 +6,20 @@ import { Notification } from './Notification';
 import { Error } from '../types/Notification';
 import { Comments } from './Comments';
 import { getSelectedPostComments } from '../api-services/comments';
+import { Post } from '../types/Post';
 
 export const PostDetails: React.FC = () => {
   const {
     state: { selectedPost },
     methods: { setComments },
   } = useAppContext();
-  const [loading, setLoading] = useState(false);
+  const { id, title, body } = selectedPost as Post;
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
     if (selectedPost) {
-      setLoading(true);
+      setIsLoading(true);
 
       getSelectedPostComments(selectedPost.id)
         .then(fetchedComments => {
@@ -27,7 +29,7 @@ export const PostDetails: React.FC = () => {
         .catch(() => {
           setError(Error.CommentsError);
         })
-        .finally(() => setLoading(false));
+        .finally(() => setIsLoading(false));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPost]);
@@ -37,20 +39,20 @@ export const PostDetails: React.FC = () => {
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #{selectedPost?.id}: {selectedPost?.title}
+            #{id}: {title}
           </h2>
 
-          <p data-cy="PostBody">{selectedPost?.body}</p>
+          <p data-cy="PostBody">{body}</p>
         </div>
 
         <div className="block">
-          {loading && <Loader />}
+          {isLoading && <Loader />}
 
-          {error && !loading && (
+          {error && !isLoading && (
             <Notification type="error" message={Error.CommentsError} />
           )}
 
-          {!loading && !error && <Comments />}
+          {!isLoading && !error && <Comments />}
         </div>
       </div>
     </div>

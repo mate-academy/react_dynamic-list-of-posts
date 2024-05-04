@@ -12,6 +12,7 @@ export const Comments: React.FC = () => {
 
   const handleDelete = (commentId: number) => {
     setComments(comments.filter(comment => comment.id !== commentId));
+
     deleteComment(commentId);
   };
 
@@ -23,12 +24,14 @@ export const Comments: React.FC = () => {
       >
         {comments.length ? 'Comments:' : 'No comments yet'}
       </p>
+
       {comments.map(({ id, name, email, body }: Comment) => (
         <article key={id} className="message is-small" data-cy="Comment">
           <div className="message-header">
             <a href={`mailto:${email}`} data-cy="CommentAuthor">
               {name}
             </a>
+
             <button
               data-cy="CommentDelete"
               type="button"

@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useReducer } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+} from 'react';
 import { appReducer as reducer } from './reducer';
 import { State } from '../types/State';
 import { InitialContext } from '../types/InitialContext';
@@ -50,7 +56,6 @@ export const ContextProvider: React.FC<Props> = ({ children }) => {
 
   const setError = (errorMessage: string) => {
     dispatch({ type: 'setError', payload: errorMessage });
-    // setTimeout(() => dispatch({ type: 'setError', payload: '' }), 3000);
   };
 
   const setUsers = (users: User[]) => {
@@ -61,17 +66,21 @@ export const ContextProvider: React.FC<Props> = ({ children }) => {
     dispatch({ type: 'selectUser', payload: user });
   };
 
-  const setPosts = (userId: number) => {
+  const setSelectedPost = (post: Post | null) => {
+    dispatch({ type: 'selectPost', payload: post });
+  };
+
+  const setPosts = useCallback((userId: number) => {
+    setLoading(true);
+    setSelectedPost(null);
+
     return getUserPosts(userId)
       .then(posts => dispatch({ type: 'setPosts', payload: posts }))
       .catch(() => {
         setError(Error.PostsError);
-      });
-  };
-
-  const setSelectedPost = (post: Post | null) => {
-    dispatch({ type: 'selectPost', payload: post });
-  };
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const setComments = (comments: Comment[]) => {
     dispatch({ type: 'setComments', payload: comments });

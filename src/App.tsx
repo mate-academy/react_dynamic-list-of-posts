@@ -15,17 +15,16 @@ import { Error } from './types/Notification';
 export const App: React.FC = () => {
   const {
     state: { selectedUser, selectedPost, loading, error },
-    methods: { setLoading, setPosts, setSelectedPost },
+    methods: { setPosts },
   } = useAppContext();
+
+  const isListVisible = !loading && selectedUser && !error;
 
   useEffect(() => {
     if (selectedUser) {
-      setLoading(true);
-      setSelectedPost(null);
-      setPosts(selectedUser.id).finally(() => setLoading(false));
+      setPosts(selectedUser.id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedUser]);
+  }, [selectedUser, setPosts]);
 
   return (
     <main className="section">
@@ -43,11 +42,12 @@ export const App: React.FC = () => {
                 )}
 
                 {loading && <Loader />}
+
                 {error && !loading && (
                   <Notification type="error" message={Error.PostsError} />
                 )}
 
-                {!loading && selectedUser && !error && <PostsList />}
+                {isListVisible && <PostsList />}
               </div>
             </div>
           </div>

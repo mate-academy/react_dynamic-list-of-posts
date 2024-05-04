@@ -11,14 +11,18 @@ export const NewCommentForm: React.FC = () => {
     methods: { addComment },
   } = useAppContext();
 
+  const initialData = { name: '', email: '', body: '' };
+
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const initialData = {
-    name: '',
-    email: '',
-    body: '',
-  };
   const [newComment, setNewComment] = useState<CommentData>(initialData);
   const [formError, setFormError] = useState<CommentData>(initialData);
+
+  const {
+    name: newCommentName,
+    email: newCommentEmail,
+    body: newCommentBody,
+  } = newComment;
+  const { name: nameError, email: emailError, body: bodyError } = formError;
 
   const reset = () => {
     setNewComment(initialData);
@@ -92,9 +96,9 @@ export const NewCommentForm: React.FC = () => {
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', {
-              'is-danger': formError.name,
+              'is-danger': nameError,
             })}
-            value={newComment.name}
+            value={newCommentName}
             onChange={handleChange}
           />
 
@@ -102,7 +106,7 @@ export const NewCommentForm: React.FC = () => {
             <i className="fas fa-user" />
           </span>
 
-          {formError.name && (
+          {nameError && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -112,7 +116,7 @@ export const NewCommentForm: React.FC = () => {
           )}
         </div>
 
-        {formError.name && <FormError message={formError.name} />}
+        {nameError && <FormError message={formError.name} />}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -127,9 +131,9 @@ export const NewCommentForm: React.FC = () => {
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', {
-              'is-danger': formError.email,
+              'is-danger': emailError,
             })}
-            value={newComment.email}
+            value={newCommentEmail}
             onChange={handleChange}
           />
 
@@ -137,7 +141,7 @@ export const NewCommentForm: React.FC = () => {
             <i className="fas fa-envelope" />
           </span>
 
-          {formError.email && (
+          {emailError && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -147,7 +151,7 @@ export const NewCommentForm: React.FC = () => {
           )}
         </div>
 
-        {formError.email && <FormError message={formError.email} />}
+        {emailError && <FormError message={formError.email} />}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -161,14 +165,14 @@ export const NewCommentForm: React.FC = () => {
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', {
-              'is-danger': formError.body,
+              'is-danger': bodyError,
             })}
-            value={newComment.body}
+            value={newCommentBody}
             onChange={handleChange}
           />
         </div>
 
-        {formError.body && <FormError message={formError.body} />}
+        {bodyError && <FormError message={formError.body} />}
       </div>
 
       <div className="field is-grouped">
