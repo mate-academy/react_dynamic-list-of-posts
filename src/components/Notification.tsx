@@ -8,23 +8,17 @@ interface Props {
 }
 
 export const Notification: React.FC<Props> = ({ type, message }) => {
-  const notificationClass = cn(
-    message === Warning.NoComment ? 'title' : 'notification',
-    {
-      'is-danger': type === 'error',
-      'is-warning': type === 'warning' && message === Warning.NoPost,
-      'is-4': type === 'warning' && message === Warning.NoComment,
-    },
-  );
+  const notificationClass = cn('notification', {
+    'is-danger': type === 'error',
+    'is-warning': type === 'warning',
+  });
 
   const dataCy =
     type === 'error' && message === Error.PostsError
       ? 'PostsLoadingError'
       : type === 'error' && message === Error.CommentsError
         ? 'CommentsError'
-        : type === 'warning' && message === Warning.NoPost
-          ? 'NoPostsYet'
-          : 'NoCommentsMessage';
+        : 'NoPostsYet';
 
   return (
     <div className={notificationClass} data-cy={dataCy}>

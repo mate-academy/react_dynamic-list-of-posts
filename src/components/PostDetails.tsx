@@ -3,23 +3,27 @@ import { Loader } from './Loader';
 
 import { useAppContext } from '../context/store';
 import { Notification } from './Notification';
-import { Error, Warning } from '../types/Notification';
+import { Error } from '../types/Notification';
 import { Comments } from './Comments';
 import { getSelectedPostComments } from '../api-services/comments';
 
 export const PostDetails: React.FC = () => {
   const {
-    state: { selectedPost, comments, error },
-    methods: { setComments, setError },
+    state: { selectedPost },
+    methods: { setComments },
   } = useAppContext();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (selectedPost) {
       setLoading(true);
 
       getSelectedPostComments(selectedPost.id)
-        .then(fetchedComments => setComments(fetchedComments))
+        .then(fetchedComments => {
+          setError('');
+          setComments(fetchedComments);
+        })
         .catch(() => {
           setError(Error.CommentsError);
         })
@@ -41,12 +45,11 @@ export const PostDetails: React.FC = () => {
         <div className="block">
           {loading && <Loader />}
 
-          {error && <Notification type="error" message={Error.CommentsError} />}
-          {!comments && (
-            <Notification type="warning" message={Warning.NoComment} />
+          {error && !loading && (
+            <Notification type="error" message={Error.CommentsError} />
           )}
 
-          {!loading && <Comments />}
+          {!loading && !error && <Comments />}
         </div>
       </div>
     </div>

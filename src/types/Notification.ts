@@ -7,5 +7,4 @@ export enum Error {
 
 export enum Warning {
   NoPost = 'No posts yet',
-  NoComment = 'No comments yet',
 }

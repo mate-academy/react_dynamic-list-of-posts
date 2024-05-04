@@ -6,11 +6,11 @@ import { Warning } from '../types/Notification';
 
 export const PostsList: React.FC = () => {
   const {
-    state: { posts, selectedPost },
+    state: { posts, selectedPost, error },
     methods: { setSelectedPost },
   } = useAppContext();
 
-  if (!posts.length) {
+  if (!posts.length && !error) {
     return <Notification type="warning" message={Warning.NoPost} />;
   }
 

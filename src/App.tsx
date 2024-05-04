@@ -42,11 +42,11 @@ export const App: React.FC = () => {
                 )}
 
                 {loading && <Loader />}
-                {error && (
+                {error && !loading && (
                   <Notification type="error" message={Error.PostsError} />
                 )}
 
-                {!loading && !error && selectedUser && <PostsList />}
+                {!loading && selectedUser && !error && <PostsList />}
               </div>
             </div>
           </div>

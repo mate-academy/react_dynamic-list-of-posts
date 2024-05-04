@@ -17,7 +17,12 @@ export const Comments: React.FC = () => {
 
   return (
     <>
-      <p className="title is-4">Comments:</p>
+      <p
+        className="title is-4"
+        data-cy={!comments.length && 'NoCommentsMessage'}
+      >
+        {comments.length ? 'Comments:' : 'No comments yet'}
+      </p>
       {comments.map((comment: Comment) => (
         <article
           key={comment.id}
@@ -25,7 +30,7 @@ export const Comments: React.FC = () => {
           data-cy="Comment"
         >
           <div className="message-header">
-            <a href={`mailto:${comment.email}}`} data-cy="CommentAuthor">
+            <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
               {comment.name}
             </a>
             <button

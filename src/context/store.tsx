@@ -50,7 +50,7 @@ export const ContextProvider: React.FC<Props> = ({ children }) => {
 
   const setError = (errorMessage: string) => {
     dispatch({ type: 'setError', payload: errorMessage });
-    setTimeout(() => dispatch({ type: 'setError', payload: '' }), 3000);
+    // setTimeout(() => dispatch({ type: 'setError', payload: '' }), 3000);
   };
 
   const setUsers = (users: User[]) => {
@@ -64,9 +64,8 @@ export const ContextProvider: React.FC<Props> = ({ children }) => {
   const setPosts = (userId: number) => {
     return getUserPosts(userId)
       .then(posts => dispatch({ type: 'setPosts', payload: posts }))
-      .catch(error => {
+      .catch(() => {
         setError(Error.PostsError);
-        throw error;
       });
   };
 
@@ -74,15 +73,6 @@ export const ContextProvider: React.FC<Props> = ({ children }) => {
     dispatch({ type: 'selectPost', payload: post });
   };
 
-  // const setComments = (postId: number) => {
-  //   return commentService
-  //     .getSelectedPostComments(postId)
-  //     .then(comments => dispatch({ type: 'setComments', payload: comments }))
-  //     .catch(error => {
-  //       setError(Error.CommentsError);
-  //       throw error;
-  //     });
-  // };
   const setComments = (comments: Comment[]) => {
     dispatch({ type: 'setComments', payload: comments });
   };
