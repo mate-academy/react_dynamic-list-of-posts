@@ -24,6 +24,7 @@ export const App: React.FC = () => {
       setSelectedPost(null);
       setPosts(selectedUser.id).finally(() => setLoading(false));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedUser]);
 
   return (
