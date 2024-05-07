@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
-import { client } from '../utils/fetchClient';
 import { CommentItem } from './CommentItem';
 import { Comment } from '../types/Comment';
+import { getComments } from '../utils/clientRequests';
 
 type Props = {
   selectedPost: Post;
@@ -23,9 +23,8 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
     setIsLoadingComments(true);
     setIsCommentsError(false);
 
-    client
-      .get<Comment[]>(`/comments?postId=${selectedPost.id}`)
-      .then(setComments)
+    getComments(selectedPost.id)
+      .then(data => setComments(data))
       .catch(() => setIsCommentsError(true))
       .finally(() => {
         setIsLoadingComments(false);

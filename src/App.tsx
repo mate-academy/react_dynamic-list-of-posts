@@ -10,7 +10,7 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { client } from './utils/fetchClient';
+import { getPosts, getUsers } from './utils/clientRequests';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -19,9 +19,12 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [, setIsUsersError] = useState(false);
 
   useEffect(() => {
-    client.get<User[]>('/users').then(setUsers);
+    getUsers()
+      .then(setUsers)
+      .catch(() => setIsUsersError(true));
   }, []);
 
   useEffect(() => {
@@ -33,14 +36,14 @@ export const App: React.FC = () => {
 
     setIsLoading(true);
     setIsError(false);
-    client
-      .get<Post[]>(`/posts?userId=${selectedUser.id}`)
+    getPosts(selectedUser.id)
       .then(setPosts)
       .catch(() => setIsError(true))
       .finally(() => {
         setIsLoading(false);
       });
   }, [selectedUser]);
+
   const onSelectUser = (user: User) => {
     setSelectedUser(user);
     setSelectedPost(null);

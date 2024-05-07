@@ -1,6 +1,6 @@
 import { Dispatch, FC, SetStateAction } from 'react';
 import { Comment } from '../types/Comment';
-import { client } from '../utils/fetchClient';
+import { removeComment } from '../utils/clientRequests';
 
 type Props = {
   comment: Comment;
@@ -10,7 +10,7 @@ type Props = {
 export const CommentItem: FC<Props> = ({ comment, setComments }) => {
   const deleteComment = () => {
     setComments(prev => prev.filter(comm => comm.id !== comment.id));
-    client.delete(`/comments/${comment.id}`);
+    removeComment(comment.id);
   };
 
   return (

@@ -7,10 +7,8 @@ import {
   FormEvent,
 } from 'react';
 import cn from 'classnames';
-import { client } from '../utils/fetchClient';
 import { Comment } from '../types/Comment';
-
-const { post: clientPost } = client;
+import { addComment } from '../utils/clientRequests';
 
 const initialNewComment = {
   name: '',
@@ -78,10 +76,7 @@ export const NewCommentForm: FC<Props> = ({ postId, setComments }) => {
 
     setIsLoading(true);
 
-    clientPost<Comment>('/comments', {
-      ...newComment,
-      postId,
-    })
+    addComment(postId, newComment)
       .then(response =>
         setComments(prevComments => [...prevComments, response]),
       )
