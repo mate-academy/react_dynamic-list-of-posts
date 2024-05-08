@@ -3,7 +3,7 @@
 Implement the App with ability to show posts of a selected user. Each post can
 be opened in the sidebar with its comments. There should delete a comment and a
 form to add new comments.
-Install Prettier Extention and use this [VSCode settings](https://mate-academy.github.io/fe-program/tools/vscode/settings.json) to enable format on save.
+Install Prettier Extension and use this [VSCode settings](https://mate-academy.github.io/fe-program/tools/vscode/settings.json) to enable format on save.
 
 > Here is [the working version](https://mate-academy.github.io/react_dynamic-list-of-posts/)
 
@@ -17,7 +17,7 @@ Install Prettier Extention and use this [VSCode settings](https://mate-academy.g
     - if the user has no posts show the `No posts yet` notification.
 1. Add the `Sidebar--open` class to the sidebar when a post is selected;
     - the post details should appear there immediately;
-    - the post commnets should be loaded from the API;
+    - the post comments should be loaded from the API;
     - the `Loader` is shown before comments are loaded;
     - `CommentsError` notification is show on loading error;
     - `NoComments` message is shown if the post does not have comments yet;
@@ -33,5 +33,5 @@ Install Prettier Extention and use this [VSCode settings](https://mate-academy.g
     - Add the `is-loading` class to the submit button while waiting for a response;
     - Add the new comment received as a response from the `API` to the end of the list;
 1. Implement comment deletion
-    - Delete the commnet immediately not waiting for the server response to improve the UX.
+    - Delete the comment immediately not waiting for the server response to improve the UX.
 1. (*) Handle `Add` and `Delete` errors so the user can retry
