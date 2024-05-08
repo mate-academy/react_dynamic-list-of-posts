@@ -154,7 +154,7 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('input', { 'is-danger': bodyError })}
+            className={classNames('textarea', { 'is-danger': bodyError })}
             value={body}
             onChange={handleBodyChange}
           />
