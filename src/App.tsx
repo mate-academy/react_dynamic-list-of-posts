@@ -8,8 +8,14 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { CommentProvider } from './providers/CommentProvider';
+import { useUsers } from './providers/UserProvider';
+import { usePosts } from './providers/PostProvider';
 
 export const App: React.FC = () => {
+  const { selectedUser } = useUsers();
+  const { selectedPost, isLoading, isError, posts } = usePosts();
+
   return (
     <main className="section">
       <div className="container">
@@ -21,22 +27,24 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
-
-                <Loader />
-
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
-
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                {!selectedUser ? (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                ) : isLoading ? (
+                  <Loader />
+                ) : isError ? (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                ) : !posts.length ? (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                ) : (
+                  <PostsList />
+                )}
               </div>
             </div>
           </div>
@@ -48,11 +56,13 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': !!selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              <CommentProvider>
+                {!!selectedPost && <PostDetails />}
+              </CommentProvider>
             </div>
           </div>
         </div>
