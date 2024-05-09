@@ -22,7 +22,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
     e.preventDefault();
     setIsError(false);
 
-    if (!email || !name || !body) {
+    if (!email || !name || !body.trim()) {
       setIsError(true);
 
       return;
@@ -30,7 +30,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
 
     setIsLoading(true);
 
-    postComment({ email, name, postId, body })
+    postComment({ email, name, postId, body: body.trim() })
       .then(data => {
         dispatch({ type: 'setComments', payload: [...comments, data] });
       })
@@ -148,12 +148,12 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
             onChange={e => setBody(e.target.value)}
             placeholder="Type comment here"
             className={classNames('textarea', {
-              'is-danger': isError && !body,
+              'is-danger': isError && !body.trim(),
             })}
           />
         </div>
 
-        {isError && !body && (
+        {isError && !body.trim() && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>

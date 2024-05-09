@@ -40,10 +40,9 @@ export const PostDetails: React.FC = () => {
       type: 'setComments',
       payload: comments.filter(comment => comment.id !== commentId),
     });
-    deleteComments(commentId)
-      .catch(() => {
-        setIsError(true);
-      });
+    deleteComments(commentId).catch(() => {
+      setIsError(true);
+    });
   };
 
   return (
@@ -67,7 +66,7 @@ export const PostDetails: React.FC = () => {
               </div>
             ) : (
               <>
-                {comments?.length === 0 ? (
+                {!comments?.length ? (
                   <p className="title is-4" data-cy="NoCommentsMessage">
                     No comments yet
                   </p>
@@ -123,7 +122,6 @@ export const PostDetails: React.FC = () => {
       {isFormEnabled && selectedPost?.id && (
         <NewCommentForm postId={selectedPost.id} />
       )}
-
     </div>
   );
 };

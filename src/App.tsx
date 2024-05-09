@@ -64,7 +64,7 @@ export const App: React.FC = () => {
                       <Loader />
                     ) : (
                       <>
-                        {posts?.length === 0 ? (
+                        {!posts?.length ? (
                           <div
                             className="notification is-warning"
                             data-cy="NoPostsYet"
