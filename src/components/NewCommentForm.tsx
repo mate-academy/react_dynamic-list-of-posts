@@ -103,7 +103,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type='email'
+            type="email"
             name="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
