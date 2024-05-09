@@ -26,7 +26,9 @@ export const Main: React.FC = () => {
             </div>
           )}
 
-          {!isPostLoading && !isPostLoadingError && !!posts.length && <PostsList />}
+          {!isPostLoading && !isPostLoadingError && !!posts.length && (
+            <PostsList />
+          )}
         </>
       )}
     </div>

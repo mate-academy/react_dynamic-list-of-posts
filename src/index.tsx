@@ -5,5 +5,5 @@ import { PostContextProvider } from './utils/PostContext';
 createRoot(document.getElementById('root') as HTMLElement).render(
   <PostContextProvider>
     <App />
-  </PostContextProvider>
+  </PostContextProvider>,
 );
