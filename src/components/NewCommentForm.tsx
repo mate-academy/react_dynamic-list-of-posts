@@ -71,7 +71,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
             value={name}
             onChange={e => setName(e.target.value)}
             className={classNames('input', {
-              'is-danger': isError && !name,
+              'is-danger': isError && !name.trim(),
             })}
           />
 
@@ -79,7 +79,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
             <i className="fas fa-user" />
           </span>
 
-          {isError && !name && (
+          {isError && !name.trim() && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -89,7 +89,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
           )}
         </div>
 
-        {isError && !name && (
+        {isError && !name.trim() && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -103,14 +103,14 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type='email'
             name="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', {
-              'is-danger': isError && !email,
+              'is-danger': isError && !email.trim(),
             })}
           />
 
@@ -118,7 +118,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
             <i className="fas fa-envelope" />
           </span>
 
-          {isError && !email && (
+          {isError && !email.trim() && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -128,7 +128,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId }) => {
           )}
         </div>
 
-        {isError && !email && (
+        {isError && !email.trim() && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
