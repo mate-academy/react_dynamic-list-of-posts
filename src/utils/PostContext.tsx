@@ -12,6 +12,10 @@ interface ContextTypes {
   isPostLoadingError: boolean;
   selectedPost: Post | null;
   isSidebarOpen: boolean;
+  comments: Comment[];
+  isCommentsLoading: boolean;
+  isCommentsError: boolean;
+  isNewCommentFormOpen: boolean;
   setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
   setIsPostLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -32,6 +36,10 @@ const initContext = {
   isPostLoadingError: false,
   selectedPost: null,
   isSidebarOpen: false,
+  comments: [],
+  isCommentsLoading: false,
+  isCommentsError: false,
+  isNewCommentFormOpen: false,
   setPosts: () => {},
   setSelectedPost: () => {},
   setSelectedUser: () => {},
