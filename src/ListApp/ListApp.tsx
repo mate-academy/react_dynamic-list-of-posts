@@ -34,7 +34,7 @@ export const ListApp: React.FC = () => {
                   </div>
                 )}
 
-                {!posts.length && !error && selectedUser && (
+                {!posts.length && !error && selectedUser && !loading && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>

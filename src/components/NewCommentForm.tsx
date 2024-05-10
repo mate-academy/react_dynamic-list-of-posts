@@ -66,6 +66,21 @@ export const NewCommentForm: React.FC = () => {
     setCommentError(false);
   };
 
+  const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+    setNameError(false);
+  };
+
+  const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    setEmailError(false);
+  };
+
+  const handleChangeComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setComment(e.target.value);
+    setCommentError(false);
+  };
+
   return (
     <form data-cy="NewCommentForm" onSubmit={e => handleSubmit(e)}>
       <div className="field" data-cy="NameField">
@@ -81,10 +96,7 @@ export const NewCommentForm: React.FC = () => {
             placeholder="Name Surname"
             className={cn('input', { 'is-danger': nameError })}
             value={name}
-            onChange={event => {
-              setName(event.target.value);
-              setNameError(false);
-            }}
+            onChange={event => handleChangeName(event)}
           />
 
           <span className="icon is-small is-left">
@@ -121,10 +133,7 @@ export const NewCommentForm: React.FC = () => {
             placeholder="email@test.com"
             className={cn('input', { 'is-danger': emailError })}
             value={email}
-            onChange={event => {
-              setEmail(event.target.value);
-              setEmailError(false);
-            }}
+            onChange={event => handleChangeEmail(event)}
           />
 
           <span className="icon is-small is-left">
@@ -160,10 +169,7 @@ export const NewCommentForm: React.FC = () => {
             placeholder="Type comment here"
             className={cn('textarea', { 'is-danger': commentError })}
             value={comment}
-            onChange={event => {
-              setComment(event.target.value);
-              setCommentError(false);
-            }}
+            onChange={event => handleChangeComment(event)}
           />
         </div>
 
