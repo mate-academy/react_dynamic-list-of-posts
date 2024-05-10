@@ -12,12 +12,16 @@ interface ContextTypes {
   isPostLoadingError: boolean;
   selectedPost: Post | null;
   isSidebarOpen: boolean;
+  setPosts: React.Dispatch<React.SetStateAction<Post[]>>;
+  setIsPostLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>;
   setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
   setIsCommentsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setIsNewCommentFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsCommentsError: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsPostLoadingError: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const initContext = {
@@ -28,12 +32,16 @@ const initContext = {
   isPostLoadingError: false,
   selectedPost: null,
   isSidebarOpen: false,
+  setPosts: () => {},
   setSelectedPost: () => {},
+  setSelectedUser: () => {},
   setComments: () => {},
   setIsCommentsLoading: () => {},
   setIsNewCommentFormOpen: () => {},
   setIsSidebarOpen: () => {},
+  setIsPostLoading: () => {},
   setIsCommentsError: () => {},
+  setIsPostLoadingError: () => {},
 };
 
 const PostContext = React.createContext<ContextTypes>(initContext);
@@ -85,6 +93,7 @@ export const PostContextProvider: React.FC<Props> = ({ children }) => {
     setIsNewCommentFormOpen,
     setIsSidebarOpen,
     setIsCommentsError,
+    setIsPostLoadingError,
   };
 
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
