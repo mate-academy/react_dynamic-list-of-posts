@@ -1,5 +1,5 @@
 # React Dynamic List of Posts
-
+[DEMO LINK](https://artemvlasiuk.github.io/react_dynamic-list-of-posts/)
 Implement the App with ability to show posts of a selected user. Each post can
 be opened in the sidebar with its comments. There should delete a comment and a
 form to add new comments.
