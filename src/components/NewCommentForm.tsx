@@ -20,26 +20,30 @@ export const NewCommentForm: React.FC = () => {
     event.preventDefault();
     setIsSubmitted(true);
 
-    if (!name) {
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedText = text.trim();
+
+    if (!trimmedName) {
       setNameError(true);
     }
 
-    if (!email) {
+    if (!trimmedEmail) {
       setEmailError(true);
     }
 
-    if (!text) {
+    if (!trimmedText) {
       setTextError(true);
     }
 
-    if (!selectedPost || !name || !email || !text) {
+    if (!selectedPost || !trimmedName || !trimmedEmail || !trimmedText) {
       return;
     }
 
     const newComment = {
-      name,
-      email,
-      body: text,
+      name: trimmedName,
+      email: trimmedEmail,
+      body: trimmedText,
       postId: selectedPost.id,
     };
 
@@ -106,7 +110,7 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
