@@ -51,11 +51,7 @@ export const PostProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [selectedUser]);
 
-  return (
-    <PostContext.Provider
-      value={{ posts, selectedPost, isLoading, isError, setSelectedPost }}
-    >
-      {children}
-    </PostContext.Provider>
-  );
+  const value = { posts, selectedPost, isLoading, isError, setSelectedPost };
+
+  return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
 };

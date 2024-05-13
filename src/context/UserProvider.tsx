@@ -24,15 +24,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     getUsers().then(usersFromServer => setUsers(usersFromServer));
   }, []);
 
-  return (
-    <UserContext.Provider
-      value={{
-        users,
-        selectedUser,
-        setSelectedUser,
-      }}
-    >
-      {children}
-    </UserContext.Provider>
-  );
+  const value = {
+    users,
+    selectedUser,
+    setSelectedUser,
+  };
+
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

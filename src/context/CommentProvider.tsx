@@ -40,9 +40,7 @@ export const CommentProvider = ({ children }: { children: ReactNode }) => {
           prevComments.filter(comment => comment.id !== commentId),
         );
       })
-      .catch(() => {
-        setIsError(true);
-      });
+      .catch(() => setIsError(true));
   };
 
   const addComment = (commentData: Omit<Comment, 'id'>) => {
@@ -53,9 +51,7 @@ export const CommentProvider = ({ children }: { children: ReactNode }) => {
         setComments([...comments, newComment]);
         setIsError(false);
       })
-      .catch(() => {
-        setIsError(true);
-      })
+      .catch(() => setIsError(true))
       .finally(() => setIsLoading(false));
   };
 
@@ -68,18 +64,14 @@ export const CommentProvider = ({ children }: { children: ReactNode }) => {
           setComments(commentsFromServer);
           setIsError(false);
         })
-        .catch(() => {
-          setIsError(true);
-        })
+        .catch(() => setIsError(true))
         .finally(() => setIsLoading(false));
     }
   }, [selectedPost]);
 
+  const value = { comments, isError, isLoading, addComment, removeComment };
+
   return (
-    <CommentContext.Provider
-      value={{ comments, isError, isLoading, addComment, removeComment }}
-    >
-      {children}
-    </CommentContext.Provider>
+    <CommentContext.Provider value={value}>{children}</CommentContext.Provider>
   );
 };

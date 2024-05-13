@@ -2,11 +2,18 @@ import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../context/UserProvider';
 import cn from 'classnames';
 import { PostContext } from '../context/PostProvider';
+import { User } from '../types/User';
 
 export const UserSelector: React.FC = () => {
   const { users, selectedUser, setSelectedUser } = useContext(UserContext);
   const { setSelectedPost } = useContext(PostContext);
   const [showList, setShowList] = useState(false);
+
+  const setUser = (user: User) => {
+    setSelectedUser(user);
+    setSelectedPost(null);
+    setShowList(false);
+  };
 
   useEffect(() => {
     if (!showList) {
@@ -58,11 +65,7 @@ export const UserSelector: React.FC = () => {
                 'is-active': user.id === selectedUser?.id,
               })}
               key={user.id}
-              onClick={() => {
-                setSelectedUser(user);
-                setSelectedPost(null);
-                setShowList(false);
-              }}
+              onClick={() => setUser(user)}
             >
               {user.name}
             </a>
@@ -72,5 +75,3 @@ export const UserSelector: React.FC = () => {
     </div>
   );
 };
-
-// add 'is-active' to active user link
