@@ -1,8 +1,8 @@
-import React, { Dispatch, FormEvent, useState } from 'react';
 import { Comment, CommentData } from '../types/Comment';
+import React, { Dispatch, FormEvent, useState } from 'react';
 
-import { postComment } from '../api/postComment';
 import { Post } from '../types/Post';
+import { postComment } from '../api/postComment';
 
 interface Props {
   selectedPost: Post;

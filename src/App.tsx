@@ -4,15 +4,15 @@ import './App.scss';
 
 import React, { useEffect, useState } from 'react';
 
-import classNames from 'classnames';
-import { getUsers } from './api/getUser';
-import { getUserPosts } from './api/getUserPosts';
 import { Loader } from './components/Loader';
+import { Post } from './types/Post';
 import { PostDetails } from './components/PostDetails';
 import { PostsList } from './components/PostsList';
-import { UserSelector } from './components/UserSelector';
-import { Post } from './types/Post';
 import { User } from './types/User';
+import { UserSelector } from './components/UserSelector';
+import classNames from 'classnames';
+import { getUserPosts } from './api/getUserPosts';
+import { getUsers } from './api/getUser';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[] | null>(null);
@@ -22,9 +22,6 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isAddingNewPost, setIsAddingNewPost] = useState(false);
-
-  // window.console.log('SelectedPost: ', selectedPost);
-  // window.console.log('Posts: ', posts);
 
   useEffect(() => {
     const fetchUsers = async () => {
