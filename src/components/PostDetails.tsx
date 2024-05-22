@@ -4,24 +4,36 @@ import { Comments } from './Comments';
 import { NewCommentForm } from './NewCommentForm';
 import { client } from '../utils/fetchClient';
 import { DispatchContext, StateContext } from '../context/GlobalPostsProvider';
+import classNames from 'classnames';
 
 export const PostDetails: React.FC = () => {
-  const { choosedPost, comments } = useContext(StateContext);
+  const {
+    choosedPost, comments, isCommentsLoading,
+    commentsFetchError, isOpenNewCommentForm
+  } = useContext(StateContext);
   const dispatch = useContext(DispatchContext);
 
   useEffect(() => {
     const fetchComment = async () => {
       try {
+        dispatch({ type: 'isCommentsLoading', isCommentsLoading: true });
         const fetchedComment = await client.get<any[]>(`/comments?postId=${choosedPost?.id}`);
         dispatch({ type: 'setComments', comments: fetchedComment });
-        console.log("🚀 ~ comments:", comments);
       } catch (error) {
-        dispatch({ type: 'setPostsFetchError', postsFetchError: true });
+        dispatch({ type: 'setCommentsFetchError', commentsFetchError: true });
+      } finally {
+        dispatch({ type: 'isCommentsLoading', isCommentsLoading: false });
       }
     };
 
     fetchComment();
   }, [choosedPost]);
+
+  const handleOpenNewCommentForm = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    dispatch({ type: 'isOpenNewCommentForm', isOpenNewCommentForm: true });
+  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -37,96 +49,45 @@ export const PostDetails: React.FC = () => {
         </div>
 
         <div className="block">
-          <Loader />
-          {}
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
+          {isCommentsLoading && comments.length >= 0 && <Loader />}
 
-          {comments.length === 0 && (
+          {commentsFetchError && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
+            </div>
+          )}
+
+          {!isCommentsLoading && comments.length === 0 && !commentsFetchError && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          <p className="title is-4">Comments:</p>
-
-          {comments.map((comment) => {
-            return (
-              <Comments key={comment?.id} comment={comment} />
-            );
-          })}
-          {/* <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div className="message-body" data-cy="CommentBody">
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article> */}
+          {!isCommentsLoading && comments.length > 0 && !commentsFetchError && (
+            <>
+              <p className="title is-4">Comments:</p>
+              {comments.filter(comment => comment?.name).map((comment) => {
+                return (
+                  <Comments key={comment?.id} comment={comment} />
+                );
+              })}
+            </>
+          )}
 
           <button
             data-cy="WriteCommentButton"
             type="button"
-            className="button is-link"
+            className={classNames(
+              "button is-link",
+              { "is-hidden": isOpenNewCommentForm }
+            )}
+            onClick={handleOpenNewCommentForm}
           >
             Write a comment
           </button>
         </div>
 
-        <NewCommentForm />
+        {isOpenNewCommentForm && !commentsFetchError && <NewCommentForm />}
       </div>
     </div>
   );

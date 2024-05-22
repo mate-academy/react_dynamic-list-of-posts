@@ -11,46 +11,37 @@ export const PostsList: React.FC = () => {
     const fetchPosts = async () => {
       if (user) {
         try {
-          dispatch({ type: 'isPostsLoading', isPostsLoading: true }); // isPostsLoading треба
+          // dispatch({ type: 'isPostsLoading', isPostsLoading: true });
           const fetchedPosts = await client.get<any[]>(`/posts?userId=${user.id}`);
-          dispatch({ type: 'setPosts', posts: fetchedPosts, isPostsLoading: false });
+          dispatch({ type: 'setPosts', posts: fetchedPosts });
         } catch (error) {
           dispatch({ type: 'setPostsFetchError', postsFetchError: true });
         } finally {
-          dispatch({ type: 'isPostsLoading', isPostsLoading: false }); // isPostsLoading треба
+          dispatch({ type: 'isPostsLoading', isPostsLoading: false });
         }
       }
     };
 
     fetchPosts();
-  }, [user, dispatch]);
+  }, [user]);
 
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
-
       <table className="table is-fullwidth is-striped is-hoverable is-narrow">
         <thead>
           <tr className="has-background-link-light">
             <th>#</th>
             <th>Title</th>
-            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-            <th> </th>
+            <th></th>
           </tr>
         </thead>
-
         <tbody>
-          {posts?.map(post => {
-            return (
-              <Post
-                key={post.id}
-                post={post}
-              />
-            )
-          })}
+          {posts?.map(post => (
+            <Post key={post.id} post={post} />
+          ))}
         </tbody>
       </table>
     </div>
-  )
-}
-
+  );
+};

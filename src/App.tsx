@@ -29,28 +29,37 @@ export const App: React.FC = () => {
 
               <div className="block" data-cy="MainContent">
 
-                {isPostsLoading && <Loader />}
+            {isPostsLoading && <Loader />}
 
-                {!isPostsLoading && posts && user && (
-                  <PostsList />
-                )}
+            {!isPostsLoading && posts && user && (
+              <PostsList />
+            )}
 
-                {postsFetchError && (
-                  <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                  >
-                    Something went wrong!
-                  </div>
-                )}
-
-                {!isPostsLoading && !user && (
-                  <p data-cy="NoSelectedUser">No user selected</p>
-                )}
-
+            {!isPostsLoading && posts && user && posts.length === 0 && (
+              <div
+                className="notification is-warning"
+                data-cy="NoPostsYet"
+              >
+                No posts yet
               </div>
-            </div>
+            )}
+
+            {postsFetchError && (
+              <div
+              className="notification is-danger"
+              data-cy="PostsLoadingError"
+              >
+                Something went wrong!
+              </div>
+            )}
+
+            {!isPostsLoading && !user && (
+              <p data-cy="NoSelectedUser">No user selected</p>
+            )}
+
           </div>
+        </div>
+      </div>
 
           {isOpenPostBody && (
             <div

@@ -9,11 +9,15 @@ const initialState: State = {
   user: null,
   comments: [],
   choosedPost: null,
+  isDataSend: false,
   isPostSelected: false,
   isPostsLoading: false,
   isOpenPostBody: false,
   postsFetchError: false,
   isUserSelectOpen: false,
+  isCommentsLoading: false,
+  commentsFetchError: false,
+  isOpenNewCommentForm: false,
 };
 
 export const StateContext = createContext<State>(initialState);

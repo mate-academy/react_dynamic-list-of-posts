@@ -15,9 +15,11 @@ export const Post: React.FC<Props> = ({ post }) => {
   const closeCondition = isOpenPostBody && choosedPost?.id === id;
 
   const handleTogglePostBody = () => {
-    if (isOpenPostBody) {
+    if (closeCondition) {
       dispatch({ type: 'isOpenPostBody', isOpenPostBody: false });
+      dispatch({ type: 'setCommentsFetchError', commentsFetchError: false });
     } else {
+      dispatch({ type: 'isOpenNewCommentForm', isOpenNewCommentForm: false });
       dispatch({ type: 'isOpenPostBody', isOpenPostBody: true });
       dispatch({ type: 'choosedPost', choosedPost: post });
     }

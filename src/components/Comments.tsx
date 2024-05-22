@@ -1,11 +1,24 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { CommentType } from '../types/CommentType';
+import { client } from '../utils/fetchClient';
+import { DispatchContext } from '../context/GlobalPostsProvider';
 
 interface Props {
   comment: CommentType;
 }
 
 export const Comments: React.FC<Props> = ({ comment }) => {
+  const dispatch = useContext(DispatchContext);
+
+  const handleDeleteComment = async () => {
+    try {
+      dispatch({ type: 'deletedCommentId', deletedCommentId: comment.id });
+      await client.delete(`/comments/${comment.id}`);
+    } catch (error) {
+      throw new Error('Could not delete comment');
+    }
+  };
+
   return (
     <article className="message is-small" data-cy="Comment">
       <div className="message-header">
@@ -17,6 +30,7 @@ export const Comments: React.FC<Props> = ({ comment }) => {
           type="button"
           className="delete is-small"
           aria-label="delete"
+          onClick={handleDeleteComment}
         >
           delete button
         </button>

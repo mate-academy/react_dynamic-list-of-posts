@@ -23,6 +23,7 @@ export const UserSelector: React.FC = () => {
 
     dispatch({ type: 'chooseUser', user: user });
     dispatch({ type: 'isOpenPostBody', isOpenPostBody: false });
+    dispatch({ type: 'isOpenNewCommentForm', isOpenNewCommentForm: false });
   };
 
   return (
@@ -53,21 +54,19 @@ export const UserSelector: React.FC = () => {
       {isUserSelectOpen && (
         <div className="dropdown-menu" id="dropdown-menu" role="menu">
           <div className="dropdown-content">
-            {users.map(user => {
-              return (
-                <a
-                  key={user.id}
-                  href={`#user-${user.id}`}
-                  className={classNames(
-                    'dropdown-item',
-                    { 'is-active': user.id === id }
-                  )}
-                  onClick={(e) => handleChooseUser(e, user)}
-                >
-                  {user.name}
-                </a>
-              )
-            })}
+            {users.map(user => (
+              <a
+                key={user.id}
+                href={`#user-${user.id}`}
+                className={classNames(
+                  'dropdown-item',
+                  { 'is-active': user.id === id }
+                )}
+                onClick={(e) => handleChooseUser(e, user)}
+              >
+                {user.name}
+              </a>
+            ))}
           </div>
         </div>
       )}

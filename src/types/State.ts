@@ -6,11 +6,15 @@ export interface State {
   users: User[];
   posts: PostType[];
   user: User | null;
+  isDataSend: boolean;
   comments: CommentType[];
   isPostSelected: boolean;
   isPostsLoading: boolean;
   isOpenPostBody: boolean;
   postsFetchError: boolean;
   isUserSelectOpen: boolean;
+  isCommentsLoading: boolean;
+  commentsFetchError: boolean;
   choosedPost: PostType | null;
+  isOpenNewCommentForm: boolean;
 }

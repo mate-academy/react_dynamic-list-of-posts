@@ -7,8 +7,13 @@ export type Action =
   | { type: 'setPosts'; posts: PostType[] }
   | { type: 'chooseUser'; user: User | null }
   | { type: 'setComments'; comments: CommentType[] }
-  | { type: 'choosedPost'; choosedPost: PostType | null}
   | { type: 'isOpenPostBody'; isOpenPostBody: boolean }
   | { type: 'isPostsLoading'; isPostsLoading: boolean }
+  | { type: 'choosedPost'; choosedPost: PostType | null }
   | { type: 'postsFetchError'; postsFetchError: boolean }
-  | { type: 'isUserSelectOpen'; isUserSelectOpen: boolean };
+  | { type: 'deletedCommentId', deletedCommentId: number }
+  | { type: 'isUserSelectOpen'; isUserSelectOpen: boolean }
+  | { type: 'isCommentsLoading', isCommentsLoading: boolean }
+  | { type: 'setCommentsFetchError', commentsFetchError: boolean }
+  | { type: 'isOpenNewCommentForm'; isOpenNewCommentForm: boolean }
+  | { type: 'isDataSend'; isDataSend: boolean, newComment: CommentType };
