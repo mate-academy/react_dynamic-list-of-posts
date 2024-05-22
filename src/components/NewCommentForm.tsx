@@ -1,18 +1,18 @@
+import React, { FormEvent, useState } from 'react';
 import { Comment, CommentData } from '../types/Comment';
-import React, { Dispatch, FormEvent, useState } from 'react';
 
-import { Post } from '../types/Post';
 import { postComment } from '../api/postComment';
+import { Post } from '../types/Post';
 
 interface Props {
   selectedPost: Post;
-  setComments: Dispatch<React.SetStateAction<Comment[]>>;
-  setIsError: Dispatch<React.SetStateAction<boolean>>;
+  handleAddNewComment: (comments: Comment) => void;
+  setIsError: (isError: boolean) => void;
 }
 
 export const NewCommentForm: React.FC<Props> = ({
   selectedPost,
-  setComments,
+  handleAddNewComment,
   setIsError,
 }) => {
   const [formState, setFormState] = useState({
@@ -70,16 +70,23 @@ export const NewCommentForm: React.FC<Props> = ({
     try {
       const res = await postComment('/comments', newComment);
 
-      setComments(prevComments => [...prevComments, res]);
+      handleAddNewComment(res);
     } catch (error) {
       setIsError(true);
     } finally {
-      setFormState({ ...newFormState, isLoading: false });
       setFormState(prevState => ({
         ...prevState,
+        isLoading: false,
         text: { ...prevState.text, value: '' },
       }));
     }
+  };
+
+  const handleChange = (field: string, value: string) => {
+    setFormState(prevState => ({
+      ...prevState,
+      [field]: { value, error: '' },
+    }));
   };
 
   return (
@@ -96,12 +103,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             className={`input ${formState.name.error && 'is-danger'}`}
-            onChange={e => {
-              setFormState({
-                ...formState,
-                name: { value: e.target.value, error: '' },
-              });
-            }}
+            onChange={e => handleChange('name', e.target.value)}
             value={formState.name.value}
           />
 
@@ -139,12 +141,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="email@test.com"
             className={`input ${formState.email.error && 'is-danger'}`}
             value={formState.email.value}
-            onChange={e => {
-              setFormState({
-                ...formState,
-                email: { value: e.target.value, error: '' },
-              });
-            }}
+            onChange={e => handleChange('email', e.target.value)}
           />
 
           <span className="icon is-small is-left">
@@ -180,12 +177,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Type comment here"
             className={`textarea ${formState.text.error && 'is-danger'}`}
             value={formState.text.value}
-            onChange={e => {
-              setFormState({
-                ...formState,
-                text: { value: e.target.value, error: '' },
-              });
-            }}
+            onChange={e => handleChange('text', e.target.value)}
           />
         </div>
 

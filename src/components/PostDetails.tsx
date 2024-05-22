@@ -9,14 +9,14 @@ import { NewCommentForm } from './NewCommentForm';
 
 interface Props {
   selectedPost: Post;
-  setIsAddingNewPost: Dispatch<React.SetStateAction<boolean>>;
-  isAddingNewPost: boolean;
+  setIsAddingNewComment: Dispatch<React.SetStateAction<boolean>>;
+  isAddingNewComment: boolean;
 }
 
 export const PostDetails: React.FC<Props> = ({
   selectedPost,
-  setIsAddingNewPost,
-  isAddingNewPost,
+  setIsAddingNewComment,
+  isAddingNewComment,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +50,10 @@ export const PostDetails: React.FC<Props> = ({
     } catch (error) {
       window.console.error('Failed to delete comment:', error);
     }
+  };
+
+  const handleAddNewComment = (comment: Comment) => {
+    setComments(prevComments => [...prevComments, comment]);
   };
 
   return (
@@ -107,21 +111,21 @@ export const PostDetails: React.FC<Props> = ({
             ))}
           </>
         )}
-        {!isAddingNewPost && !isError && !isLoading && (
+        {!isAddingNewComment && !isError && !isLoading && (
           <button
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => setIsAddingNewPost(true)}
+            onClick={() => setIsAddingNewComment(true)}
           >
             Write a comment
           </button>
         )}
       </div>
-      {!isError && isAddingNewPost && (
+      {!isError && isAddingNewComment && (
         <NewCommentForm
           selectedPost={selectedPost}
-          setComments={setComments}
+          handleAddNewComment={handleAddNewComment}
           setIsError={setIsError}
         />
       )}

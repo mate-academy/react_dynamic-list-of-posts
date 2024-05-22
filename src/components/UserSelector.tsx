@@ -1,8 +1,8 @@
 import React, { Dispatch, useRef, useState } from 'react';
 
+import { useClickOutside } from '../hooks/useClickOutside';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
-import { useClickOutside } from '../hooks/useClickOutside';
 
 interface Props {
   users: User[] | null;
@@ -22,8 +22,8 @@ export const UserSelector: React.FC<Props> = ({
 
   const handleUserSelection = (user: User) => {
     setSelectedUser(user);
-    setIsDropDownVisible(false);
     setSelectedPost(null);
+    setIsDropDownVisible(false);
   };
 
   const handleClickOutside = () => {

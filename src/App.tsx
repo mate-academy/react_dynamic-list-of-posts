@@ -4,15 +4,15 @@ import './App.scss';
 
 import React, { useEffect, useState } from 'react';
 
+import classNames from 'classnames';
+import { getUsers } from './api/getUser';
+import { getUserPosts } from './api/getUserPosts';
 import { Loader } from './components/Loader';
-import { Post } from './types/Post';
 import { PostDetails } from './components/PostDetails';
 import { PostsList } from './components/PostsList';
-import { User } from './types/User';
 import { UserSelector } from './components/UserSelector';
-import classNames from 'classnames';
-import { getUserPosts } from './api/getUserPosts';
-import { getUsers } from './api/getUser';
+import { Post } from './types/Post';
+import { User } from './types/User';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[] | null>(null);
@@ -21,7 +21,7 @@ export const App: React.FC = () => {
   const [posts, setPosts] = useState<Post[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [isAddingNewPost, setIsAddingNewPost] = useState(false);
+  const [isAddingNewComment, setIsAddingNewComment] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -55,6 +55,11 @@ export const App: React.FC = () => {
 
     fetchUserPosts();
   }, [selectedUser]);
+
+  const handleSelectedPost = (post: Post) => {
+    setSelectedPost(selectedPost?.id === post.id ? null : post);
+    setIsAddingNewComment(false);
+  };
 
   return (
     <main className="section">
@@ -102,8 +107,7 @@ export const App: React.FC = () => {
                       <PostsList
                         posts={posts}
                         selectedPost={selectedPost}
-                        setSelectedPost={setSelectedPost}
-                        setIsAddingNewPost={setIsAddingNewPost}
+                        handleSelectedPost={handleSelectedPost}
                       />
                     )}
                   </>
@@ -128,8 +132,8 @@ export const App: React.FC = () => {
               <div className="tile is-child box is-success ">
                 <PostDetails
                   selectedPost={selectedPost}
-                  isAddingNewPost={isAddingNewPost}
-                  setIsAddingNewPost={setIsAddingNewPost}
+                  isAddingNewComment={isAddingNewComment}
+                  setIsAddingNewComment={setIsAddingNewComment}
                 />
               </div>
             )}

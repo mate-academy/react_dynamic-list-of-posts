@@ -1,32 +1,18 @@
-import React, { Dispatch } from 'react';
+import React from 'react';
 
 import { Post } from '../types/Post';
 
 interface Props {
   posts: Post[] | null;
-  setSelectedPost: Dispatch<React.SetStateAction<Post | null>>;
   selectedPost: Post | null;
-  setIsAddingNewPost: Dispatch<React.SetStateAction<boolean>>;
+  handleSelectedPost: (post: Post) => void;
 }
 
 export const PostsList: React.FC<Props> = ({
   posts,
-  setSelectedPost,
   selectedPost,
-  setIsAddingNewPost,
+  handleSelectedPost,
 }) => {
-  const handleSelectedPost = (post: Post) => {
-    if (selectedPost?.id === post.id) {
-      setSelectedPost(null);
-
-      return;
-    }
-
-    setSelectedPost(post);
-
-    setIsAddingNewPost(false);
-  };
-
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
