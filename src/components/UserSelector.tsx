@@ -6,7 +6,6 @@ import classNames from 'classnames';
 export const UserSelector: React.FC = () => {
   const { users, isUserSelectOpen, user } = useContext(StateContext);
   const dispatch = useContext(DispatchContext);
-  const { id } = user || { id: 0 };
 
   const handleOpenModal = () => {
     dispatch({ type: 'isUserSelectOpen' });
@@ -18,10 +17,13 @@ export const UserSelector: React.FC = () => {
     }, 150);
   };
 
-  const handleChooseUser = (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, user: User) => {
+  const handleChooseUser = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    person: User
+  ) => {
     event.preventDefault();
 
-    dispatch({ type: 'chooseUser', user: user });
+    dispatch({ type: 'chooseUser', user: person });
     dispatch({ type: 'isOpenPostBody', isOpenPostBody: false });
     dispatch({ type: 'isOpenNewCommentForm', isOpenNewCommentForm: false });
   };
@@ -51,25 +53,25 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      {isUserSelectOpen && (
+
         <div className="dropdown-menu" id="dropdown-menu" role="menu">
           <div className="dropdown-content">
-            {users.map(user => (
+            {users.map(person => (
               <a
-                key={user.id}
-                href={`#user-${user.id}`}
+                key={person.id}
+                href={`#user-${person.id}`}
                 className={classNames(
                   'dropdown-item',
-                  { 'is-active': user.id === id }
+                  { 'is-active': person.id === user?.id }
                 )}
-                onClick={(e) => handleChooseUser(e, user)}
+                onClick={(e) => handleChooseUser(e, person)}
               >
-                {user.name}
+                {person.name}
               </a>
             ))}
           </div>
         </div>
-      )}
+
     </div>
   );
 };

@@ -1,29 +1,9 @@
-import React, { useContext, useEffect } from 'react';
-import { DispatchContext, StateContext } from '../context/GlobalPostsProvider';
-import { client } from '../utils/fetchClient';
+import React, { useContext } from 'react';
+import { StateContext } from '../context/GlobalPostsProvider';
 import { Post } from './Post';
 
 export const PostsList: React.FC = () => {
-  const { user, posts } = useContext(StateContext);
-  const dispatch = useContext(DispatchContext);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      if (user) {
-        try {
-          // dispatch({ type: 'isPostsLoading', isPostsLoading: true });
-          const fetchedPosts = await client.get<any[]>(`/posts?userId=${user.id}`);
-          dispatch({ type: 'setPosts', posts: fetchedPosts });
-        } catch (error) {
-          dispatch({ type: 'setPostsFetchError', postsFetchError: true });
-        } finally {
-          dispatch({ type: 'isPostsLoading', isPostsLoading: false });
-        }
-      }
-    };
-
-    fetchPosts();
-  }, [user]);
+  const { posts } = useContext(StateContext);
 
   return (
     <div data-cy="PostsList">

@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import { DispatchContext, StateContext } from '../context/GlobalPostsProvider';
 import classNames from 'classnames';
 import { client } from '../utils/fetchClient';
+import { CommentType } from '../types/CommentType';
 
 export const NewCommentForm: React.FC = () => {
   const { choosedPost, isDataSend } = useContext(StateContext);
@@ -26,47 +27,60 @@ export const NewCommentForm: React.FC = () => {
     setValidation(prev => ({ ...prev, [e.target.name]: false }));
   };
 
-  const postComment = async () => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
     try {
-      dispatch({ type: 'isDataSend', isDataSend: true, newComment: newComment });
-      await client.post<any[]>(`/comments`, {
+      const trimmedName = newComment.name.trim();
+      const trimmedEmail = newComment.email.trim();
+      const trimmedBody = newComment.body.trim();
+
+      if (!trimmedName || !trimmedEmail || !trimmedBody) {
+        if (!trimmedName) {
+          setValidation(prev => ({ ...prev, name: true }));
+        }
+
+        if (!trimmedEmail) {
+          setValidation(prev => ({ ...prev, email: true }));
+        }
+
+        if (!trimmedBody) {
+          setValidation(prev => ({ ...prev, body: true }));
+        }
+
+        return;
+      }
+
+      dispatch({
+        type: 'isDataSend',
+        isDataSend: true,
+        newComment: {
           postId: newComment.postId,
-          name: newComment.name.trim(),
-          email: newComment.email.trim(),
-          body: newComment.body.trim()
-        },
-      );
+          name: trimmedName,
+          email: trimmedEmail,
+          body: trimmedBody
+        }
+      });
+
+      await client.post<CommentType[]>(`/comments`, {
+        postId: newComment.postId,
+        name: trimmedName,
+        email: trimmedEmail,
+        body: trimmedBody
+      });
     } catch (error) {
       dispatch({ type: 'isDataSend', isDataSend: false });
       dispatch({ type: 'setCommentsFetchError', commentsFetchError: true });
       dispatch({ type: 'isOpenNewCommentForm', isOpenNewCommentForm: true });
     } finally {
       dispatch({ type: 'isDataSend', isDataSend: false });
+
       setNewComment({
         name: newComment.name.trim(),
         email: newComment.email.trim(),
         body: '',
         postId: choosedPost?.id,
-      })
-    }
-  };
-
-  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-
-    if (!newComment.name || !newComment.email || !newComment.body) {
-      if (!newComment.name) {
-        setValidation(prev => ({ ...prev, name: true }));
-      }
-      if (!newComment.email) {
-        setValidation(prev => ({ ...prev, email: true }));
-      }
-      if (!newComment.body) {
-        setValidation(prev => ({ ...prev, body: true }));
-      }
-      return;
-    } else {
-      postComment();
+      });
     }
   };
 
@@ -132,7 +146,7 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"

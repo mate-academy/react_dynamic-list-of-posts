@@ -18,6 +18,7 @@ export const PostDetails: React.FC = () => {
       try {
         dispatch({ type: 'isCommentsLoading', isCommentsLoading: true });
         const fetchedComment = await client.get<any[]>(`/comments?postId=${choosedPost?.id}`);
+
         dispatch({ type: 'setComments', comments: fetchedComment });
       } catch (error) {
         dispatch({ type: 'setCommentsFetchError', commentsFetchError: true });
@@ -29,7 +30,9 @@ export const PostDetails: React.FC = () => {
     fetchComment();
   }, [choosedPost]);
 
-  const handleOpenNewCommentForm = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleOpenNewCommentForm = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     event.preventDefault();
 
     dispatch({ type: 'isOpenNewCommentForm', isOpenNewCommentForm: true });
@@ -57,7 +60,8 @@ export const PostDetails: React.FC = () => {
             </div>
           )}
 
-          {!isCommentsLoading && comments.length === 0 && !commentsFetchError && (
+          {!isCommentsLoading && comments.length === 0 &&
+            !commentsFetchError && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>

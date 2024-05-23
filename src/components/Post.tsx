@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext } from 'react';
 import { DispatchContext, StateContext } from '../context/GlobalPostsProvider';
 import classNames from 'classnames';
 import { PostType } from '../types/PostType';
@@ -48,5 +48,5 @@ export const Post: React.FC<Props> = ({ post }) => {
         </button>
       </td>
     </tr>
-  )
-}
+  );
+};
