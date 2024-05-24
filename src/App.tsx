@@ -10,7 +10,7 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { DispatchContext, StateContext } from './context/GlobalPostsProvider';
 import { client } from './utils/fetchClient';
-import { PostType } from './types/PostType';
+import { User } from './types/User';
 
 export const App: React.FC = () => {
   const {
@@ -20,22 +20,18 @@ export const App: React.FC = () => {
   const dispatch = useContext(DispatchContext);
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      // if (user) {
-        dispatch({ type: 'isPostsLoading', isPostsLoading: true });
-        try {
-          const fetchedPosts = await client.get<PostType[]>(`/posts?userId=${user?.id}`);
-          dispatch({ type: 'setPosts', posts: fetchedPosts });
-        } catch (error) {
-          dispatch({ type: 'setPostsFetchError', postsFetchError: true });
-        } finally {
-          dispatch({ type: 'isPostsLoading', isPostsLoading: false });
-        }
-      // }
+    const fetchUsers = async () => {
+      try {
+        const fetchedUsers = await client.get<User[]>('/users');
+
+        dispatch({ type: 'setUsers', users: fetchedUsers });
+      } catch (error) {
+        dispatch({ type: 'setPostsFetchError', postsFetchError: true });
+      }
     };
 
-    fetchPosts();
-  }, [user]);
+    fetchUsers();
+  }, [dispatch]);
 
   return (
     <main className="section">
@@ -50,7 +46,11 @@ export const App: React.FC = () => {
               <div className="block" data-cy="MainContent">
                 {isPostsLoading && <Loader />}
 
-                {postsFetchError && ( // не показується
+                {!user && !postsFetchError && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
+
+                {postsFetchError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -59,7 +59,8 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!isPostsLoading && posts.length && (
+                {!isPostsLoading && posts.length > 0 &&
+                  !postsFetchError && user && (
                   <PostsList />
                 )}
 
@@ -73,29 +74,25 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!isPostsLoading && !user && (
-                  <p data-cy="NoSelectedUser">No user selected</p>
-                )}
+
               </div>
             </div>
           </div>
 
-          {isOpenPostBody && (
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                { 'Sidebar--open': isOpenPostBody },
-              )}
-            >
-              <div className="tile is-child box is-success ">
-                <PostDetails />
-              </div>
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': isOpenPostBody },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              {isOpenPostBody && <PostDetails />}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </main>

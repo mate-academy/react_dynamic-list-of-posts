@@ -1,7 +1,6 @@
-import React, { useEffect, useReducer, createContext, useContext } from "react";
+import React, { useReducer, createContext } from "react";
 import { reducer } from "./reducer";
 import { State } from "../types/State";
-import { client } from "../utils/fetchClient";
 
 const initialState: State = {
   users: [],
@@ -17,6 +16,7 @@ const initialState: State = {
   isUserSelectOpen: false,
   isCommentsLoading: false,
   commentsFetchError: false,
+  isWriteButtonHidden: false,
   isOpenNewCommentForm: false,
 };
 
@@ -31,21 +31,6 @@ interface Props {
 
 export const GlobalPostsProvider: React.FC<Props> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const dispatcher = useContext(DispatchContext);
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const fetchedUsers = await client.get<any[]>('/users');
-
-        dispatch({ type: 'setUsers', users: fetchedUsers });
-      } catch (error) {
-        dispatcher({ type: 'setPostsFetchError', postsFetchError: true });
-      }
-    };
-
-    fetchUsers();
-  }, []);
 
   return (
     <DispatchContext.Provider value={dispatch}>

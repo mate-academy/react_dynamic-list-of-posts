@@ -15,6 +15,7 @@ export interface State {
   isUserSelectOpen: boolean;
   isCommentsLoading: boolean;
   commentsFetchError: boolean;
+  isWriteButtonHidden: boolean;
   choosedPost: PostType | null;
   isOpenNewCommentForm: boolean;
 }

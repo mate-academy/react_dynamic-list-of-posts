@@ -20,6 +20,7 @@ export const Post: React.FC<Props> = ({ post }) => {
       dispatch({ type: 'setCommentsFetchError', commentsFetchError: false });
     } else {
       dispatch({ type: 'isOpenNewCommentForm', isOpenNewCommentForm: false });
+      dispatch({ type: 'isWriteButtonHidden', isWriteButtonHidden: true });
       dispatch({ type: 'isOpenPostBody', isOpenPostBody: true });
       dispatch({ type: 'choosedPost', choosedPost: post });
     }

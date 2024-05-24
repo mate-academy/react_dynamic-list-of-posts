@@ -1,7 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { DispatchContext, StateContext } from '../context/GlobalPostsProvider';
 import { User } from '../types/User';
 import classNames from 'classnames';
+import { client } from '../utils/fetchClient';
+import { PostType } from '../types/PostType';
 
 export const UserSelector: React.FC = () => {
   const { users, isUserSelectOpen, user } = useContext(StateContext);
@@ -28,6 +30,25 @@ export const UserSelector: React.FC = () => {
     dispatch({ type: 'isOpenNewCommentForm', isOpenNewCommentForm: false });
   };
 
+  useEffect(() => {
+    const fetchPosts = async () => {
+      if (user) {
+        dispatch({ type: 'isPostsLoading', isPostsLoading: true });
+        try {
+          const fetchedPosts = await client.get<PostType[]>(`/posts?userId=${user.id}`);
+
+          dispatch({ type: 'setPosts', posts: fetchedPosts });
+        } catch (error) {
+          dispatch({ type: 'postsFetchError', postsFetchError: true });
+        } finally {
+          dispatch({ type: 'isPostsLoading', isPostsLoading: false });
+        }
+      }
+    };
+
+    fetchPosts();
+  }, [user]);
+
   return (
     <div
       data-cy="UserSelector"
@@ -53,24 +74,23 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          <div className="dropdown-content">
-            {users.map(person => (
-              <a
-                key={person.id}
-                href={`#user-${person.id}`}
-                className={classNames(
-                  'dropdown-item',
-                  { 'is-active': person.id === user?.id }
-                )}
-                onClick={(e) => handleChooseUser(e, person)}
-              >
-                {person.name}
-              </a>
-            ))}
-          </div>
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        <div className="dropdown-content">
+          {users.map(person => (
+            <a
+              key={person.id}
+              href={`#user-${person.id}`}
+              className={classNames(
+                'dropdown-item',
+                { 'is-active': person.id === user?.id }
+              )}
+              onClick={(e) => handleChooseUser(e, person)}
+            >
+              {person.name}
+            </a>
+          ))}
         </div>
+      </div>
 
     </div>
   );

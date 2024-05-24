@@ -42,6 +42,9 @@ export function reducer(state: State, action: Action): State {
     case 'isPostsLoading':
       return { ...state, isPostsLoading: action.isPostsLoading };
 
+    case 'isWriteButtonHidden':
+      return { ...state, isWriteButtonHidden: action.isWriteButtonHidden };
+
     case 'postsFetchError':
       return { ...state, postsFetchError: action.postsFetchError };
 

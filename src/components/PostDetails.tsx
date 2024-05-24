@@ -5,11 +5,12 @@ import { NewCommentForm } from './NewCommentForm';
 import { client } from '../utils/fetchClient';
 import { DispatchContext, StateContext } from '../context/GlobalPostsProvider';
 import classNames from 'classnames';
+import { CommentType } from '../types/CommentType';
 
 export const PostDetails: React.FC = () => {
   const {
     choosedPost, comments, isCommentsLoading,
-    commentsFetchError, isOpenNewCommentForm
+    commentsFetchError, isOpenNewCommentForm, isWriteButtonHidden
   } = useContext(StateContext);
   const dispatch = useContext(DispatchContext);
 
@@ -17,7 +18,7 @@ export const PostDetails: React.FC = () => {
     const fetchComment = async () => {
       try {
         dispatch({ type: 'isCommentsLoading', isCommentsLoading: true });
-        const fetchedComment = await client.get<any[]>(`/comments?postId=${choosedPost?.id}`);
+        const fetchedComment = await client.get<CommentType[]>(`/comments?postId=${choosedPost?.id}`);
 
         dispatch({ type: 'setComments', comments: fetchedComment });
       } catch (error) {
@@ -35,6 +36,7 @@ export const PostDetails: React.FC = () => {
   ) => {
     event.preventDefault();
 
+    dispatch({ type: 'isWriteButtonHidden', isWriteButtonHidden: false });
     dispatch({ type: 'isOpenNewCommentForm', isOpenNewCommentForm: true });
   };
 
@@ -78,17 +80,19 @@ export const PostDetails: React.FC = () => {
             </>
           )}
 
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className={classNames(
-              "button is-link",
-              { "is-hidden": isOpenNewCommentForm }
-            )}
-            onClick={handleOpenNewCommentForm}
-          >
-            Write a comment
-          </button>
+          {!isCommentsLoading && isWriteButtonHidden && !commentsFetchError && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className={classNames(
+                "button is-link",
+                { "is-hidden": isOpenNewCommentForm }
+              )}
+              onClick={handleOpenNewCommentForm}
+            >
+              Write a comment
+            </button>
+          )}
         </div>
 
         {isOpenNewCommentForm && !commentsFetchError && <NewCommentForm />}

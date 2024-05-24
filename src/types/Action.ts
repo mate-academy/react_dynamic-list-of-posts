@@ -14,6 +14,7 @@ export type Action =
   | { type: 'deletedCommentId', deletedCommentId: number }
   | { type: 'isUserSelectOpen'; isUserSelectOpen: boolean }
   | { type: 'isCommentsLoading', isCommentsLoading: boolean }
+  | { type: 'isWriteButtonHidden'; isWriteButtonHidden: boolean }
   | { type: 'setCommentsFetchError', commentsFetchError: boolean }
   | { type: 'isOpenNewCommentForm'; isOpenNewCommentForm: boolean }
   | { type: 'isDataSend'; isDataSend: boolean, newComment: CommentType };
