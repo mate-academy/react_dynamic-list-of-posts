@@ -21,17 +21,17 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      if (user) {
+      // if (user) {
         dispatch({ type: 'isPostsLoading', isPostsLoading: true });
         try {
-          const fetchedPosts = await client.get<PostType[]>(`/posts?userId=${user.id}`);
+          const fetchedPosts = await client.get<PostType[]>(`/posts?userId=${user?.id}`);
           dispatch({ type: 'setPosts', posts: fetchedPosts });
         } catch (error) {
           dispatch({ type: 'setPostsFetchError', postsFetchError: true });
         } finally {
           dispatch({ type: 'isPostsLoading', isPostsLoading: false });
         }
-      }
+      // }
     };
 
     fetchPosts();
