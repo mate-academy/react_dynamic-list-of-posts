@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +8,31 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { DispatchContext, StateContext } from './context/GlobalPostsProvider';
+import { client } from './utils/fetchClient';
+import { User } from './types/User';
 
 export const App: React.FC = () => {
+  const {
+    user, posts, isPostsLoading,
+    postsFetchError, isOpenPostBody
+  } = useContext(StateContext);
+  const dispatch = useContext(DispatchContext);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const fetchedUsers = await client.get<User[]>('/users');
+
+        dispatch({ type: 'setUsers', users: fetchedUsers });
+      } catch (error) {
+        dispatch({ type: 'setPostsFetchError', postsFetchError: true });
+      }
+    };
+
+    fetchUsers();
+  }, [dispatch]);
+
   return (
     <main className="section">
       <div className="container">
@@ -21,22 +44,37 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
+                {isPostsLoading && <Loader />}
 
-                <Loader />
+                {!user && !postsFetchError && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {postsFetchError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {!isPostsLoading && posts.length > 0 &&
+                  !postsFetchError && user && (
+                  <PostsList />
+                )}
 
-                <PostsList />
+                {!isPostsLoading && !posts.length && user
+                  && !postsFetchError && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                    No posts yet
+                  </div>
+                )}
+
+
               </div>
             </div>
           </div>
@@ -48,11 +86,11 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': isOpenPostBody },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {isOpenPostBody && <PostDetails />}
             </div>
           </div>
         </div>

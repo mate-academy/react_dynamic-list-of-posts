@@ -1,106 +1,101 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Loader } from './Loader';
+import { Comments } from './Comments';
 import { NewCommentForm } from './NewCommentForm';
+import { client } from '../utils/fetchClient';
+import { DispatchContext, StateContext } from '../context/GlobalPostsProvider';
+import classNames from 'classnames';
+import { CommentType } from '../types/CommentType';
 
 export const PostDetails: React.FC = () => {
+  const {
+    choosedPost, comments, isCommentsLoading,
+    commentsFetchError, isOpenNewCommentForm, isWriteButtonHidden
+  } = useContext(StateContext);
+  const dispatch = useContext(DispatchContext);
+
+  useEffect(() => {
+    const fetchComment = async () => {
+      try {
+        dispatch({ type: 'isCommentsLoading', isCommentsLoading: true });
+        const fetchedComment = await client.get<CommentType[]>(`/comments?postId=${choosedPost?.id}`);
+
+        dispatch({ type: 'setComments', comments: fetchedComment });
+      } catch (error) {
+        dispatch({ type: 'setCommentsFetchError', commentsFetchError: true });
+      } finally {
+        dispatch({ type: 'isCommentsLoading', isCommentsLoading: false });
+      }
+    };
+
+    fetchComment();
+  }, [choosedPost, dispatch]);
+
+  const handleOpenNewCommentForm = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+
+    dispatch({ type: 'isWriteButtonHidden', isWriteButtonHidden: false });
+    dispatch({ type: 'isOpenNewCommentForm', isOpenNewCommentForm: true });
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            #{choosedPost?.id}: {choosedPost?.title}
           </h2>
 
           <p data-cy="PostBody">
-            eveniet quo quis laborum totam consequatur non dolor ut et est
-            repudiandae est voluptatem vel debitis et magnam
+            {choosedPost?.body}
           </p>
         </div>
 
         <div className="block">
-          <Loader />
+          {isCommentsLoading && comments.length >= 0 && <Loader />}
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
+          {commentsFetchError && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Something went wrong
             </div>
+          )}
 
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
+          {!isCommentsLoading && comments.length === 0 &&
+            !commentsFetchError && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
+          {!isCommentsLoading && comments.length > 0 && !commentsFetchError && (
+            <>
+              <p className="title is-4">Comments:</p>
+              {comments.filter(comment => comment?.name).map((comment) => {
+                return (
+                  <Comments key={comment?.id} comment={comment} />
+                );
+              })}
+            </>
+          )}
 
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div className="message-body" data-cy="CommentBody">
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+          {!isCommentsLoading && isWriteButtonHidden && !commentsFetchError && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className={classNames(
+                "button is-link",
+                { "is-hidden": isOpenNewCommentForm }
+              )}
+              onClick={handleOpenNewCommentForm}
+            >
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
+        {isOpenNewCommentForm && !commentsFetchError && <NewCommentForm />}
       </div>
     </div>
   );

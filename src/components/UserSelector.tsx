@@ -1,16 +1,72 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
+import { DispatchContext, StateContext } from '../context/GlobalPostsProvider';
+import { User } from '../types/User';
+import classNames from 'classnames';
+import { client } from '../utils/fetchClient';
+import { PostType } from '../types/PostType';
 
 export const UserSelector: React.FC = () => {
+  const { users, isUserSelectOpen, user } = useContext(StateContext);
+  const dispatch = useContext(DispatchContext);
+
+  const handleOpenModal = () => {
+    dispatch({ type: 'isUserSelectOpen' });
+  };
+
+  const handleCloseModal = () => {
+    setTimeout(() => {
+      dispatch({ type: 'isUserSelectOpen', isUserSelectOpen: false });
+    }, 150);
+  };
+
+  const handleChooseUser = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    person: User
+  ) => {
+    event.preventDefault();
+
+    dispatch({ type: 'chooseUser', user: person });
+    dispatch({ type: 'isOpenPostBody', isOpenPostBody: false });
+    dispatch({ type: 'isOpenNewCommentForm', isOpenNewCommentForm: false });
+  };
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      if (user) {
+        dispatch({ type: 'isPostsLoading', isPostsLoading: true });
+        try {
+          const fetchedPosts = await client.get<PostType[]>(`/posts?userId=${user.id}`);
+
+          dispatch({ type: 'setPosts', posts: fetchedPosts });
+        } catch (error) {
+          dispatch({ type: 'postsFetchError', postsFetchError: true });
+        } finally {
+          dispatch({ type: 'isPostsLoading', isPostsLoading: false });
+        }
+      }
+    };
+
+    fetchPosts();
+  }, [user, dispatch]);
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className={classNames(
+        'dropdown',
+        { 'is-active': isUserSelectOpen }
+      )}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={handleOpenModal}
+          onBlur={handleCloseModal}
         >
-          <span>Choose a user</span>
+          <span>{user ? `${user.name}` : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -20,23 +76,22 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+          {users.map(person => (
+            <a
+              key={person.id}
+              href={`#user-${person.id}`}
+              className={classNames(
+                'dropdown-item',
+                { 'is-active': person.id === user?.id }
+              )}
+              onClick={(e) => handleChooseUser(e, person)}
+            >
+              {person.name}
+            </a>
+          ))}
         </div>
       </div>
+
     </div>
   );
 };
