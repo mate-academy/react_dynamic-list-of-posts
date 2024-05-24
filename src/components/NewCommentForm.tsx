@@ -14,11 +14,13 @@ export const NewCommentForm: React.FC = () => {
     body: '',
     postId: choosedPost?.id,
   });
+  const { name, email, body } = newComment;
   const [validation, setValidation] = useState({
-    name: false,
-    email: false,
-    body: false,
+    isCorrectName: false,
+    isCorrectEmail: false,
+    isCorrectBody: false,
   });
+  const { isCorrectName, isCorrectEmail, isCorrectBody } = validation;
 
   const handleChangeInput = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -31,21 +33,21 @@ export const NewCommentForm: React.FC = () => {
     e.preventDefault();
 
     try {
-      const trimmedName = newComment.name.trim();
-      const trimmedEmail = newComment.email.trim();
-      const trimmedBody = newComment.body.trim();
+      const trimmedName = name.trim();
+      const trimmedEmail = email.trim();
+      const trimmedBody = body.trim();
 
       if (!trimmedName || !trimmedEmail || !trimmedBody) {
         if (!trimmedName) {
-          setValidation(prev => ({ ...prev, name: true }));
+          setValidation(prev => ({ ...prev, isCorrectName: true }));
         }
 
         if (!trimmedEmail) {
-          setValidation(prev => ({ ...prev, email: true }));
+          setValidation(prev => ({ ...prev, isCorrectEmail: true }));
         }
 
         if (!trimmedBody) {
-          setValidation(prev => ({ ...prev, body: true }));
+          setValidation(prev => ({ ...prev, isCorrectBody: true }));
         }
 
         return;
@@ -76,8 +78,8 @@ export const NewCommentForm: React.FC = () => {
       dispatch({ type: 'isDataSend', isDataSend: false });
 
       setNewComment({
-        name: newComment.name.trim(),
-        email: newComment.email.trim(),
+        name: name.trim(),
+        email: email.trim(),
         body: '',
         postId: choosedPost?.id,
       });
@@ -94,9 +96,9 @@ export const NewCommentForm: React.FC = () => {
       postId: choosedPost?.id,
     });
     setValidation({
-      name: false,
-      email: false,
-      body: false,
+      isCorrectName: false,
+      isCorrectEmail: false,
+      isCorrectBody: false,
     });
   };
 
@@ -113,8 +115,8 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': validation.name })}
-            value={newComment.name}
+            className={classNames('input', { 'is-danger': isCorrectName })}
+            value={name}
             onChange={handleChangeInput}
           />
 
@@ -122,7 +124,7 @@ export const NewCommentForm: React.FC = () => {
             <i className="fas fa-user" />
           </span>
 
-          {validation.name && (
+          {isCorrectName && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -132,7 +134,7 @@ export const NewCommentForm: React.FC = () => {
           )}
         </div>
 
-        {validation.name && (
+        {isCorrectName && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -150,8 +152,8 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': validation.email })}
-            value={newComment.email}
+            className={classNames('input', { 'is-danger': isCorrectEmail })}
+            value={email}
             onChange={handleChangeInput}
           />
 
@@ -159,7 +161,7 @@ export const NewCommentForm: React.FC = () => {
             <i className="fas fa-envelope" />
           </span>
 
-          {validation.email && (
+          {isCorrectEmail && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -169,7 +171,7 @@ export const NewCommentForm: React.FC = () => {
           )}
         </div>
 
-        {validation.email && (
+        {isCorrectEmail && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -186,13 +188,13 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': validation.body })}
-            value={newComment.body}
+            className={classNames('textarea', { 'is-danger': isCorrectBody })}
+            value={body}
             onChange={handleChangeInput}
           />
         </div>
 
-        {validation.body && (
+        {isCorrectBody && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>

@@ -29,7 +29,7 @@ export const PostDetails: React.FC = () => {
     };
 
     fetchComment();
-  }, [choosedPost]);
+  }, [choosedPost, dispatch]);
 
   const handleOpenNewCommentForm = (
     event: React.MouseEvent<HTMLButtonElement>

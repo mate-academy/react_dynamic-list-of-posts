@@ -47,7 +47,7 @@ export const UserSelector: React.FC = () => {
     };
 
     fetchPosts();
-  }, [user]);
+  }, [user, dispatch]);
 
   return (
     <div

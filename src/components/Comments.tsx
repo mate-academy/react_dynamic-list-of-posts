@@ -8,12 +8,13 @@ interface Props {
 }
 
 export const Comments: React.FC<Props> = ({ comment }) => {
+  const { id, name, email, body } = comment;
   const dispatch = useContext(DispatchContext);
 
   const handleDeleteComment = async () => {
     try {
-      dispatch({ type: 'deletedCommentId', deletedCommentId: comment.id });
-      await client.delete(`/comments/${comment.id}`);
+      dispatch({ type: 'deletedCommentId', deletedCommentId: id });
+      await client.delete(`/comments/${id}`);
     } catch (error) {
       throw new Error('Could not delete comment');
     }
@@ -22,8 +23,8 @@ export const Comments: React.FC<Props> = ({ comment }) => {
   return (
     <article className="message is-small" data-cy="Comment">
       <div className="message-header">
-        <a href={`mailto:${comment?.email}`} data-cy="CommentAuthor">
-          {comment?.name}
+        <a href={`mailto:${email}`} data-cy="CommentAuthor">
+          {name}
         </a>
         <button
           data-cy="CommentDelete"
@@ -37,7 +38,7 @@ export const Comments: React.FC<Props> = ({ comment }) => {
       </div>
 
       <div className="message-body" data-cy="CommentBody">
-        {comment?.body}
+        {body}
       </div>
     </article>
   );
