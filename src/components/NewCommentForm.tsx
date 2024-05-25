@@ -45,15 +45,19 @@ export const NewCommentForm: FC<IProps> = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setUserNameError(!userName);
-    setTitleError(!title);
-    setUserEmailError(!userEmail);
+    const trimmedUserName = userName.trim();
+    const trimmedTitle = title.trim();
+    const trimmedUserEmail = userEmail.trim();
 
-    if (!userName || !title || !userEmail) {
+    setUserNameError(!trimmedUserName);
+    setTitleError(!trimmedTitle);
+    setUserEmailError(!trimmedUserEmail);
+
+    if (!trimmedUserName || !trimmedTitle || !trimmedUserEmail) {
       return;
     }
 
-    creatComment(userName, title, userEmail);
+    creatComment(trimmedUserName, trimmedTitle, trimmedUserEmail);
     setTitle('');
   };
 
@@ -103,7 +107,7 @@ export const NewCommentForm: FC<IProps> = ({
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
