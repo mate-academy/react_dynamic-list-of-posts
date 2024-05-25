@@ -16,8 +16,9 @@ export const NewCommentForm: React.FC<Props> = ({
 }) => {
   const [userNameError, setUserNameError] = useState(false);
   const [titleError, setTitleError] = useState(false);
-  const [titleErrorSpaces, setTitleErrorSpaces] = useState(false);
   const [userEmailError, setUserEmailError] = useState(false);
+  const [userNameErrorSpaces, setUserNameErrorSpaces] = useState(false);
+  const [titleErrorSpaces, setTitleErrorSpaces] = useState(false);
 
   const [title, setTitle] = useState('');
   const [userName, setUserName] = useState('');
@@ -26,6 +27,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleUserName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserName(event.target.value);
     setUserNameError(false);
+    setUserNameErrorSpaces(false);
   };
 
   const handleUserEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -46,17 +48,22 @@ export const NewCommentForm: React.FC<Props> = ({
     setTitleError(!title);
     setUserEmailError(!email);
     setTitleErrorSpaces(!title);
+    setUserNameErrorSpaces(!userName);
 
     if (!userName || !title || !email) {
       return;
     }
 
-    if (title.trim()) {
-      createComment(userName, title, email);
-      setTitle('');
-    } else {
-      setTitleErrorSpaces(true);
+    if (!title.trim()) {
+      return setTitleErrorSpaces(true);
     }
+
+    if (!userName.trim()) {
+      return setUserNameErrorSpaces(true);
+    }
+
+    createComment(userName, title, email);
+    setTitle('');
   };
 
   const reset = () => {
@@ -67,6 +74,7 @@ export const NewCommentForm: React.FC<Props> = ({
     setTitleError(false);
     setUserEmailError(false);
     setTitleErrorSpaces(false);
+    setUserNameErrorSpaces(false);
   };
 
   return (
@@ -106,6 +114,12 @@ export const NewCommentForm: React.FC<Props> = ({
             Name is required
           </p>
         )}
+
+        {userNameErrorSpaces && !userNameError && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Enter valid name
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -115,7 +129,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
@@ -172,7 +186,7 @@ export const NewCommentForm: React.FC<Props> = ({
         )}
         {titleErrorSpaces && !titleError && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            please enter valid text
+            Enter valid text
           </p>
         )}
       </div>
