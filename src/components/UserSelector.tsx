@@ -1,41 +1,62 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
+import { StateContext } from '../utils/Store';
+import { UserComponent } from './UserComponent';
+import classNames from 'classnames';
 
 export const UserSelector: React.FC = () => {
+  const state = useContext(StateContext);
+  const { users, selectedUser } = state;
+  const [isDropped, setIsDropped] = useState(false);
+
+  const handleDropped = () => {
+    if (isDropped) {
+      setIsDropped(false);
+    } else {
+      setIsDropped(true);
+    }
+  };
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className={classNames('dropdown', { 'is-active': isDropped })}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          value={selectedUser?.name}
+          onClick={handleDropped}
+          onBlur={() => setIsDropped(false)}
         >
-          <span>Choose a user</span>
+          {selectedUser ? (
+            <span>{selectedUser?.name}</span>
+          ) : (
+            <span>Choose a user</span>
+          )}
 
           <span className="icon is-small">
-            <i className="fas fa-angle-down" aria-hidden="true" />
+            <i
+              className={classNames('fas', {
+                'fa-angle-down': !isDropped,
+                'fa-angle-up': isDropped,
+              })}
+              aria-hidden="true"
+            />
           </span>
         </button>
       </div>
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
-        </div>
+        {users.map(user => (
+          <UserComponent
+            user={user}
+            key={user.id}
+            setIsDropped={setIsDropped}
+          />
+        ))}
       </div>
     </div>
   );
