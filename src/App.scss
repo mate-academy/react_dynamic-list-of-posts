@@ -21,3 +21,11 @@
 .message-body {
   white-space: pre-line;
 }
+
+iframe {
+  display: none;
+}
+
+.table.is-striped tbody tr:not(.is-selected):nth-child(2n) {
+  background-color: #fafafa;
+}
