@@ -1,18 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { User } from '../types/User';
 import { Post } from '../types/Post';
 
 type Props = {
   selectedUsers: User | null;
   usersPosts: Post[];
-  onPostCommentSelect: (postComment: Post) => void;
+  onPostCommentSelect: (postComment: Post, postId: number) => void;
+  setOnClosedComments: (value: boolean) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
   selectedUsers,
   usersPosts,
   onPostCommentSelect,
+  setOnClosedComments,
 }) => {
+  const [commentsOpen, setCommentsOpen] = useState<{
+    [postId: number]: boolean;
+  }>({});
+
+  const toggleComments = (postId: number) => {
+    setCommentsOpen(prevState => ({
+      ...prevState,
+      [postId]: !prevState[postId],
+    }));
+  };
+
   return (
     <div>
       {selectedUsers && (
@@ -44,9 +57,13 @@ export const PostsList: React.FC<Props> = ({
                       type="button"
                       data-cy="PostButton"
                       className="button is-link is-light"
-                      onClick={() => onPostCommentSelect(post)}
+                      onClick={() => {
+                        onPostCommentSelect(post, post.id);
+                        toggleComments(post.id);
+                        setOnClosedComments(!commentsOpen[post.id]);
+                      }}
                     >
-                      Open
+                      {commentsOpen[post.id] ? 'Close' : 'Open'}
                     </button>
                   </td>
                 </tr>

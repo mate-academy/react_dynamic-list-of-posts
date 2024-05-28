@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -12,23 +13,25 @@ import { User } from './types/User';
 import { getUsers } from './api/Users';
 import { Post } from './types/Post';
 import { getPosts } from './api/Posts';
-import { getComments } from './api/Comments';
+import { deleteComment, getComments } from './api/Comments';
 import { Comment } from './types/Comment';
 
 export const App: React.FC = () => {
-  const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<User | null>(null);
-  const [selectedUserName, setSelectedUserName] = useState('Choose a user');
-  const [usersPosts, setUserPosts] = useState<Post[]>([]);
-  const [errorMessage, setErrorMessage] = useState<string | null>();
-  const [postComment, setPostComment] = useState<Comment[]>([]);
+  const [selectedUsersName, setSelectedUsersName] = useState('Choose a user');
+  const [usersPosts, setUsersPosts] = useState<Post[]>([]);
+  const [postsComments, setPostsComments] = useState<Comment[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>('');
+  const [openedPost, setOpenedPost] = useState<Post | null>(null);
+  const [onClosedComments, setOnClosedComments] = useState(false);
 
   const handleRequest = async () => {
     try {
       const allUsers = await getUsers();
 
-      setUser(allUsers);
+      setUsers(allUsers);
     } catch (errors) {
       setErrorMessage('Failed to load users.');
     } finally {
@@ -41,7 +44,7 @@ export const App: React.FC = () => {
       setLoading(true);
       const posts = await getPosts(userId);
 
-      setUserPosts(posts);
+      setUsersPosts(posts);
       setLoading(false);
     } catch (error) {
       setErrorMessage('Failed to load user posts.');
@@ -50,23 +53,39 @@ export const App: React.FC = () => {
     }
   };
 
-  const loadPostComments = async (postId: number) => {
+  const loadUserComments = async (postId: number) => {
     try {
       const comments = await getComments(postId);
 
-      if (comments.length > 0) {
-        setPostComment(comments);
-      } else {
-        throw Error('NoComments');
-      }
+      setPostsComments(comments);
     } catch (error) {
+      setErrorMessage('');
     } finally {
     }
   };
 
-  const handlePostCommentSelect = (postId: Post) => {
-    setPostComment(postComment);
-    loadPostComments(postId.id);
+  const handleDeleteComments = async (commentId: number) => {
+    try {
+      await deleteComment(commentId);
+
+      setPostsComments(prevComments =>
+        prevComments.filter(comment => comment.id !== commentId),
+      );
+
+      setErrorMessage(null);
+    } catch (error) {
+      setErrorMessage('');
+    }
+  };
+
+  const handlePostCommentSelect = (post: Post, postId: number) => {
+    setOpenedPost(post);
+    setOnClosedComments(false);
+    loadUserComments(postId);
+  };
+
+  const handleSetOnClosedComments = (value: boolean) => {
+    setOnClosedComments(value);
   };
 
   useEffect(() => {
@@ -76,7 +95,7 @@ export const App: React.FC = () => {
 
   const handleUserSelect = (selectedUser: User) => {
     setSelectedUsers(selectedUser);
-    setSelectedUserName(selectedUser.name);
+    setSelectedUsersName(selectedUser.name);
     loadUserPosts(selectedUser.id);
   };
 
@@ -89,8 +108,8 @@ export const App: React.FC = () => {
               <div className="block">
                 <UserSelector
                   onUserSelect={handleUserSelect}
-                  users={user}
-                  selectedUserName={selectedUserName}
+                  users={users}
+                  selectedUserName={selectedUsersName}
                 />
               </div>
               <div className="block" data-cy="MainContent">
@@ -108,16 +127,23 @@ export const App: React.FC = () => {
                     Something went wrong!
                   </div>
                 )}
-                {selectedUsers && !loading && usersPosts.length === 0 && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                )}
-                {selectedUsers && usersPosts.length > 0 && !loading && (
+                {!errorMessage &&
+                  selectedUsers &&
+                  !loading &&
+                  usersPosts.length === 0 && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  )}
+                {selectedUsers && !loading && usersPosts.length > 0 && (
                   <PostsList
                     selectedUsers={selectedUsers}
                     usersPosts={usersPosts}
                     onPostCommentSelect={handlePostCommentSelect}
+                    setOnClosedComments={handleSetOnClosedComments}
                   />
                 )}
               </div>
@@ -131,12 +157,21 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': openedPost && onClosedComments },
             )}
           >
-            {postComment.length > 0 && loading && (
+            {!loading && openedPost && onClosedComments && (
               <div className="tile is-child box is-success ">
-                <PostDetails postComment={postComment} />
+                <PostDetails
+                  openedPost={openedPost}
+                  errorMessage={errorMessage}
+                  postsComments={postsComments}
+                  onDeleteComments={handleDeleteComments}
+                  postBody={openedPost.body}
+                  postIdComment={openedPost.id}
+                  postTitle={openedPost.title}
+                  setPostsComments={setPostsComments}
+                />
               </div>
             )}
           </div>
