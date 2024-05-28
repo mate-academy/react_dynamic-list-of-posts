@@ -139,9 +139,7 @@ export const NewCommentForm: React.FC = () => {
               'is-danger': nameError,
             })}
             value={authorName}
-            onChange={event => {
-              handleAuthorName(event);
-            }}
+            onChange={handleAuthorName}
           />
 
           <span className="icon is-small is-left">
@@ -172,7 +170,7 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
@@ -180,9 +178,7 @@ export const NewCommentForm: React.FC = () => {
               'is-danger': emailError,
             })}
             value={authorEmail}
-            onChange={event => {
-              handleAuthorEmail(event);
-            }}
+            onChange={handleAuthorEmail}
           />
 
           <span className="icon is-small is-left">
@@ -220,9 +216,7 @@ export const NewCommentForm: React.FC = () => {
               'is-danger': commentError,
             })}
             value={authorComment}
-            onChange={event => {
-              handleAuthorComment(event);
-            }}
+            onChange={handleAuthorComment}
           />
         </div>
 
