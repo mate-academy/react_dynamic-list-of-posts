@@ -20,6 +20,14 @@ export const App: React.FC = () => {
     error => error.type === 'PostsLoadingError' && error.errorValue,
   );
 
+  // #region conditions
+  const noPostsNotification =
+    !isLoading && !loadingPostError && selectedUser.user && !userPosts.length;
+
+  const showPostList =
+    !isLoading && selectedUser.user && !!userPosts.length && !loadingPostError;
+  // #endregion
+
   return (
     <main className="section">
       <div className="container">
@@ -46,22 +54,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!isLoading &&
-                  !loadingPostError &&
-                  selectedUser.user &&
-                  userPosts.length === 0 && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )}
+                {noPostsNotification && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                {!isLoading &&
-                  selectedUser.user &&
-                  userPosts.length !== 0 &&
-                  !loadingPostError && <PostsList />}
+                {showPostList && <PostsList />}
               </div>
             </div>
           </div>

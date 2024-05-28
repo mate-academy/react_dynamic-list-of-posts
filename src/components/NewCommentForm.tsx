@@ -9,9 +9,16 @@ export const NewCommentForm: React.FC = () => {
   const { selectedPost } = state;
   const { post } = selectedPost;
 
+  // #region formErrors
+  const [nameError, setNameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [commentError, setCommentError] = useState(false);
+  // #endregion
+
   // #region authorName
   const [authorName, setAuthorName] = useState('');
   const handleAuthorName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNameError(false);
     setAuthorName(event.target.value);
   };
   // #endregion
@@ -19,6 +26,7 @@ export const NewCommentForm: React.FC = () => {
   // #region authorEmail
   const [authorEmail, setAuthorEmail] = useState('');
   const handleAuthorEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmailError(false);
     setAuthorEmail(event.target.value);
   };
   // #endregion
@@ -28,14 +36,9 @@ export const NewCommentForm: React.FC = () => {
   const handleAuthorComment = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
+    setCommentError(false);
     setAuthorComment(event.target.value);
   };
-  // #endregion
-
-  // #region formErrors
-  const [nameError, setNameError] = useState(false);
-  const [emailError, setEmailError] = useState(false);
-  const [commentError, setCommentError] = useState(false);
   // #endregion
 
   // #region formSubmit
@@ -57,19 +60,19 @@ export const NewCommentForm: React.FC = () => {
       commentBodyError: false,
     };
 
-    if (!name) {
+    if (!name.trim()) {
       setNameError(true);
 
       errors.nameError = true;
     }
 
-    if (!email) {
+    if (!email.trim()) {
       setEmailError(true);
 
       errors.emailError = true;
     }
 
-    if (!commentBody) {
+    if (!commentBody.trim()) {
       setCommentError(true);
 
       errors.commentBodyError = true;
@@ -93,9 +96,9 @@ export const NewCommentForm: React.FC = () => {
 
     const newComment: Omit<Comment, 'id'> = {
       postId: post ? post.id : Math.random(),
-      name: authorName,
-      email: authorEmail,
-      body: authorComment,
+      name: authorName.trim(),
+      email: authorEmail.trim(),
+      body: authorComment.trim(),
     };
 
     setFormSubmitting(true);
@@ -138,7 +141,6 @@ export const NewCommentForm: React.FC = () => {
             value={authorName}
             onChange={event => {
               handleAuthorName(event);
-              setNameError(false);
             }}
           />
 
@@ -180,7 +182,6 @@ export const NewCommentForm: React.FC = () => {
             value={authorEmail}
             onChange={event => {
               handleAuthorEmail(event);
-              setEmailError(false);
             }}
           />
 
@@ -221,7 +222,6 @@ export const NewCommentForm: React.FC = () => {
             value={authorComment}
             onChange={event => {
               handleAuthorComment(event);
-              setCommentError(false);
             }}
           />
         </div>

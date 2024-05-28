@@ -37,6 +37,16 @@ export const PostDetails: React.FC = () => {
     }
   };
 
+  // #region conditions
+  const noComments = !comments.length && !commentsError && !isLoading;
+
+  const showComments = !comments.length && !commentsError && !isLoading;
+
+  const showWriteButton = !isWriting && !isLoading && !commentsError;
+
+  const showNewCommentForm = isWriting && !isLoading && !commentsError;
+  // #endregion
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -57,15 +67,13 @@ export const PostDetails: React.FC = () => {
             </div>
           )}
 
-          {comments.length === 0 && !commentsError && !isLoading && (
+          {noComments && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {comments.length !== 0 && !commentsError && !isLoading && (
-            <p className="title is-4">Comments:</p>
-          )}
+          {showComments && <p className="title is-4">Comments:</p>}
 
           {comments.map(comment => (
             <article
@@ -94,7 +102,7 @@ export const PostDetails: React.FC = () => {
             </article>
           ))}
 
-          {!isWriting && !isLoading && !commentsError && (
+          {showWriteButton && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -108,7 +116,7 @@ export const PostDetails: React.FC = () => {
           )}
         </div>
 
-        {isWriting && !isLoading && !commentsError && <NewCommentForm />}
+        {showNewCommentForm && <NewCommentForm />}
       </div>
     </div>
   );
