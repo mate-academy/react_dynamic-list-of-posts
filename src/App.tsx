@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +8,40 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { User } from './types/User';
+import { Post } from './types/Post';
+import { getPosts, getUsers } from './api';
 
 export const App: React.FC = () => {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [currentPost, setCurrentPost] = useState<Post | null>(null);
+
+  useEffect(() => {
+    getUsers()
+      .then(setUsers)
+      .catch(() => setError('Unable get users, reload the page.'));
+  }, []);
+
+  useEffect(() => {
+    if (currentUser) {
+      setError('');
+      setIsLoading(true);
+      getPosts(currentUser.id)
+        .then(setPosts)
+        .catch(() => setError('Unable get posts.'))
+        .finally(() => setIsLoading(false));
+    }
+  }, [currentUser]);
+
+  const handlerSetCurentUser = (user: User | null) => {
+    setCurrentUser(user);
+    setCurrentPost(null);
+  };
+
   return (
     <main className="section">
       <div className="container">
@@ -17,30 +49,45 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  users={users}
+                  currentUser={currentUser}
+                  setCurrentUser={handlerSetCurentUser}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
+                {!currentUser && !isLoading && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-                <Loader />
+                {isLoading && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {error && !isLoading && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    {error}
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {!posts.length && currentUser && !isLoading && !error && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                <PostsList />
+                {!!posts.length && !isLoading && (
+                  <PostsList
+                    posts={posts}
+                    currentPostId={currentPost?.id}
+                    setCurrentPost={setCurrentPost}
+                  />
+                )}
               </div>
             </div>
           </div>
-
           <div
             data-cy="Sidebar"
             className={classNames(
@@ -48,11 +95,11 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': !!currentPost },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {currentPost && <PostDetails post={currentPost} />}
             </div>
           </div>
         </div>
