@@ -22,7 +22,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     getUsers()
-      .then(usersFromServer => setUsers(usersFromServer))
+      .then(setUsers)
       .catch(() => setError('Unable get users, reload the page.'));
   }, []);
 
@@ -31,7 +31,7 @@ export const App: React.FC = () => {
       setError('');
       setIsLoading(true);
       getPosts(currentUser.id)
-        .then(postsFromServer => setPosts(postsFromServer))
+        .then(setPosts)
         .catch(() => setError('Unable get posts.'))
         .finally(() => setIsLoading(false));
     }

@@ -9,6 +9,12 @@ interface Props {
   setError: (err: string) => void;
 }
 
+enum InputName {
+  Name = 'name',
+  Email = 'email',
+  Body = 'body',
+}
+
 export const NewCommentForm: React.FC<Props> = ({
   postId,
   addComment,
@@ -78,6 +84,31 @@ export const NewCommentForm: React.FC<Props> = ({
       .finally(() => setIsLoading(false));
   };
 
+  const handlerChangeField = (
+    evt: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    switch (evt.target.name) {
+      case InputName.Name:
+        setName(evt.target.value);
+        setNameError(false);
+
+        return;
+      case InputName.Email:
+        setEmail(evt.target.value);
+        setEmailError(false);
+
+        return;
+      case InputName.Body:
+        setCommentBody(evt.target.value);
+        setCommentBodyError(false);
+
+        return;
+
+      default:
+        return;
+    }
+  };
+
   return (
     <form data-cy="NewCommentForm" onSubmit={handlerFormSubmit}>
       <div className="field" data-cy="NameField">
@@ -88,14 +119,11 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
-            name="name"
+            name={InputName.Name}
             id="comment-author-name"
             placeholder="Name Surname"
             value={name}
-            onChange={evt => {
-              setName(evt.target.value);
-              setNameError(false);
-            }}
+            onChange={handlerChangeField}
             className={cn('input', { 'is-danger': !!nameError })}
           />
 
@@ -128,14 +156,11 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
-            name="email"
+            name={InputName.Email}
             id="comment-author-email"
             placeholder="email@test.com"
             value={email}
-            onChange={evt => {
-              setEmail(evt.target.value);
-              setEmailError(false);
-            }}
+            onChange={handlerChangeField}
             className={cn('input', { 'is-danger': !!emailError })}
           />
 
@@ -168,14 +193,11 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control">
           <textarea
             id="comment-body"
-            name="body"
+            name={InputName.Body}
             placeholder="Type comment here"
             className={cn('input', { 'is-danger': !!commenBodyError })}
             value={commentBody}
-            onChange={evt => {
-              setCommentBody(evt.target.value);
-              setCommentBodyError(false);
-            }}
+            onChange={handlerChangeField}
           />
         </div>
 
@@ -197,7 +219,6 @@ export const NewCommentForm: React.FC<Props> = ({
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button
             type="reset"
             className="button is-link is-light"

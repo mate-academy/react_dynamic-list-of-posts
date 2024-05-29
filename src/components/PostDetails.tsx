@@ -21,7 +21,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setIsLoading(true);
     setIsFormVisible(false);
     getPostComments(post.id)
-      .then(commentsFromServer => setComments(commentsFromServer))
+      .then(setComments)
       .catch(() => setError('Unable get comments'))
       .finally(() => setIsLoading(false));
   }, [post]);
@@ -65,15 +65,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   ) : (
                     <>
                       <p className="title is-4">Comments:</p>
-                      {comments.map(comment => {
-                        return (
-                          <CommentItem
-                            key={comment.id}
-                            comment={comment}
-                            removeComment={deleteComment}
-                          />
-                        );
-                      })}
+                      {comments.map(comment => (
+                        <CommentItem
+                          key={comment.id}
+                          comment={comment}
+                          removeComment={deleteComment}
+                        />
+                      ))}
                     </>
                   )}
 
