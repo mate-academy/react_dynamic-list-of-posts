@@ -69,64 +69,68 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {loading && <Loader />}
-
-          {errorMessage && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
-            </div>
-          )}
-          {postsComments.length === 0 ? (
-            <p className="title is-4" data-cy="NoCommentsMessage">
-              No comments yet
-            </p>
+          {loading ? (
+            <Loader />
           ) : (
-            <div>
-              <p className="title is-4">Comments:</p>
+            <>
+              {errorMessage && (
+                <div className="notification is-danger" data-cy="CommentsError">
+                  Something went wrong
+                </div>
+              )}
+              {postsComments.length === 0 ? (
+                <p className="title is-4" data-cy="NoCommentsMessage">
+                  No comments yet
+                </p>
+              ) : (
+                <div>
+                  <p className="title is-4">Comments:</p>
 
-              {postsComments.map((post, index) => {
-                return (
-                  <article
-                    className="message is-small"
-                    key={index}
-                    data-cy="Comment"
-                  >
-                    <div className="message-header">
-                      <a
-                        href="mailto:misha@mate.academy"
-                        data-cy="CommentAuthor"
+                  {postsComments.map((post, index) => {
+                    return (
+                      <article
+                        className="message is-small"
+                        key={index}
+                        data-cy="Comment"
                       >
-                        {post.name}
-                      </a>
-                      <button
-                        data-cy="CommentDelete"
-                        type="button"
-                        className="delete is-small"
-                        aria-label="delete"
-                        onClick={() => onDeleteComments(post.id)}
-                      >
-                        delete button
-                      </button>
-                    </div>
+                        <div className="message-header">
+                          <a
+                            href="mailto:misha@mate.academy"
+                            data-cy="CommentAuthor"
+                          >
+                            {post.name}
+                          </a>
+                          <button
+                            data-cy="CommentDelete"
+                            type="button"
+                            className="delete is-small"
+                            aria-label="delete"
+                            onClick={() => onDeleteComments(post.id)}
+                          >
+                            delete button
+                          </button>
+                        </div>
 
-                    <div className="message-body" data-cy="CommentBody">
-                      {post.body}
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          )}
+                        <div className="message-body" data-cy="CommentBody">
+                          {post.body}
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+              )}
 
-          {!writeCommentVisible && (
-            <button
-              data-cy="WriteCommentButton"
-              type="button"
-              className="button is-link"
-              onClick={toggleWriteComment}
-            >
-              Write a comment
-            </button>
+              {!writeCommentVisible && (
+                <button
+                  data-cy="WriteCommentButton"
+                  type="button"
+                  className="button is-link"
+                  onClick={toggleWriteComment}
+                >
+                  Write a comment
+                </button>
+              )}
+            </>
           )}
         </div>
 

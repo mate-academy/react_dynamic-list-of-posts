@@ -15,15 +15,10 @@ export const PostsList: React.FC<Props> = ({
   onPostCommentSelect,
   setOnClosedComments,
 }) => {
-  const [commentsOpen, setCommentsOpen] = useState<{
-    [postId: number]: boolean;
-  }>({});
+  const [openPostId, setOpenPostId] = useState<number | null>(null);
 
   const toggleComments = (postId: number) => {
-    setCommentsOpen(prevState => ({
-      ...prevState,
-      [postId]: !prevState[postId],
-    }));
+    setOpenPostId(prevPostId => (prevPostId === postId ? null : postId));
   };
 
   return (
@@ -56,14 +51,14 @@ export const PostsList: React.FC<Props> = ({
                     <button
                       type="button"
                       data-cy="PostButton"
-                      className="button is-link is-light"
+                      className={`button is-link ${openPostId === post.id ? '' : 'is-light'}`}
                       onClick={() => {
                         onPostCommentSelect(post, post.id);
                         toggleComments(post.id);
-                        setOnClosedComments(!commentsOpen[post.id]);
+                        setOnClosedComments(openPostId !== post.id);
                       }}
                     >
-                      {commentsOpen[post.id] ? 'Close' : 'Open'}
+                      {openPostId === post.id ? 'Close' : 'Open'}
                     </button>
                   </td>
                 </tr>
