@@ -4,60 +4,56 @@ import classNames from 'classnames';
 
 type Props = {
   posts: Post[];
-  selectedPost: Post | null;
-  setSelectedPost: (post: Post | null) => void;
+  chosenPost: Post | null;
+  handlePostChange: (newPost: Post | null) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
-  posts = [],
-  selectedPost,
-  setSelectedPost = () => {},
-}) => {
-  const handleSelectPost = (post: Post) => {
-    if (selectedPost && selectedPost === post) {
-      setSelectedPost(null);
-    } else {
-      setSelectedPost(post);
-    }
-  };
+  posts,
+  chosenPost,
+  handlePostChange,
+}) => (
+  <div data-cy="PostsList">
+    <p className="title">Posts:</p>
 
-  return (
-    <div data-cy="PostsList">
-      <p className="title">Posts:</p>
+    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+      <thead>
+        <tr className="has-background-link-light">
+          <th>#</th>
+          <th>Title</th>
+          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+          <th> </th>
+        </tr>
+      </thead>
 
-      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-        <thead>
-          <tr className="has-background-link-light">
-            <th>#</th>
-            <th>Title</th>
-            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-            <th> </th>
+      <tbody>
+        {posts.map((currentPost: Post) => (
+          <tr key={currentPost.id} data-cy="Post">
+            <td data-cy="PostId">{currentPost.id}</td>
+
+            <td data-cy="PostTitle">{currentPost.title}</td>
+
+            <td className="has-text-right is-vcentered">
+              <button
+                type="button"
+                data-cy="PostButton"
+                className={classNames('button', 'is-link', {
+                  'is-light': chosenPost !== currentPost,
+                })}
+                onClick={() => {
+                  if (chosenPost && chosenPost === currentPost) {
+                    handlePostChange(null);
+                  } else {
+                    handlePostChange(currentPost);
+                  }
+                }}
+              >
+                {currentPost !== chosenPost ? 'Open' : 'Close'}
+              </button>
+            </td>
           </tr>
-        </thead>
-
-        <tbody>
-          {posts.map(post => (
-            <tr data-cy="Post" key={post.id}>
-              <td data-cy="PostId">{post.id}</td>
-
-              <td data-cy="PostTitle">{post.title}</td>
-
-              <td className="has-text-right is-vcentered">
-                <button
-                  type="button"
-                  data-cy="PostButton"
-                  className={classNames('button is-link', {
-                    'is-light': selectedPost !== post,
-                  })}
-                  onClick={() => handleSelectPost(post)}
-                >
-                  {selectedPost !== post ? 'Open' : 'Close'}
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-};
+        ))}
+      </tbody>
+    </table>
+  </div>
+);

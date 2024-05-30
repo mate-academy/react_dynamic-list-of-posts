@@ -1,8 +1,12 @@
+import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
+import { User } from '../types/User';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const BASE_URL = 'https://mate.academy/students-api';
 
 // a promise resolved after a given delay
-export function wait(delay: number) {
+function wait(delay: number) {
   return new Promise(resolve => {
     setTimeout(resolve, delay);
   });
@@ -37,4 +41,34 @@ export const client = {
   post: <T>(url: string, data: any) => request<T>(url, 'POST', data),
   patch: <T>(url: string, data: any) => request<T>(url, 'PATCH', data),
   delete: (url: string) => request(url, 'DELETE'),
+};
+
+export const getUsers = () => {
+  return client.get<User[]>(`/users`);
+};
+
+export const getPosts = (userId: User['id']) => {
+  return client.get<Post[]>(`/posts?userId=${userId}`);
+};
+
+export const getComments = (postId: Post['id']) => {
+  return client.get<Comment[]>(`/comments?postId=${postId}`);
+};
+
+export const addComments = (
+  postId: Post['id'],
+  authorName: string,
+  authorEmail: string,
+  commentBody: string,
+) => {
+  return client.post('/comments', {
+    postId: postId,
+    name: authorName,
+    email: authorEmail,
+    body: commentBody,
+  });
+};
+
+export const deleteComments = (commentId: Comment['id']) => {
+  return client.delete(`/comments/${commentId}`);
 };

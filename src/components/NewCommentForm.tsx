@@ -3,51 +3,57 @@ import React, { useEffect, useState } from 'react';
 import { Post } from '../types/Post';
 
 type Props = {
+  currentPostId: number;
   isSubmittingForm: boolean;
-  setIsSubmittingForm: (isSubmit: boolean) => void;
-  handleCommentFormSubmit: (
+  handleIsSubmittingForm: (isSubmitting: boolean) => void;
+  handleCommentFormSubmission: (
     postId: Post['id'],
     authorName: string,
     authorEmail: string,
     commentBody: string,
   ) => void;
-  currentPostId: number;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
-  isSubmittingForm,
-  setIsSubmittingForm,
-  handleCommentFormSubmit,
   currentPostId,
+  isSubmittingForm,
+  handleIsSubmittingForm,
+  handleCommentFormSubmission,
 }) => {
   const [authorName, setAuthorName] = useState<string>('');
   const [authorEmail, setAuthorEmail] = useState<string>('');
   const [commentBody, setCommentBody] = useState<string>('');
+  const [authorError, setAuthorError] = useState<boolean>(false);
+  const [emailError, setEmailError] = useState<boolean>(false);
+  const [bodyError, setBodyError] = useState<boolean>(false);
 
-  const [authorNameError, setAuthorNameError] = useState<boolean>(false);
-  const [authorEmailError, setAuthorEmailError] = useState<boolean>(false);
-  const [commentBodyError, setCommentBodyError] = useState<boolean>(false);
+  const handleClearButton = () => {
+    setAuthorName('');
+    setAuthorEmail('');
+    setCommentBody('');
 
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuthorName(event.target.value);
+    setAuthorError(false);
+    setEmailError(false);
+    setBodyError(false);
   };
 
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuthorEmail(event.target.value);
-  };
+  useEffect(() => {
+    setAuthorError(false);
+  }, [authorName]);
 
-  const handleCommentBodyChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
-    setCommentBody(event.target.value);
-  };
+  useEffect(() => {
+    setEmailError(false);
+  }, [authorEmail]);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  useEffect(() => {
+    setBodyError(false);
+  }, [commentBody]);
+
+  const handleOnSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-
     let errors = 0;
 
-    handleCommentFormSubmit(
+    handleCommentFormSubmission(
       currentPostId,
       authorName,
       authorEmail,
@@ -55,51 +61,27 @@ export const NewCommentForm: React.FC<Props> = ({
     );
 
     if (!authorName.trim().length) {
-      setAuthorNameError(true);
+      setAuthorError(true);
       errors++;
     }
 
     if (!authorEmail.trim().length) {
-      setAuthorEmailError(true);
+      setEmailError(true);
       errors++;
     }
 
     if (!commentBody.trim().length) {
-      setCommentBodyError(true);
+      setBodyError(true);
       errors++;
     }
 
     if (!errors) {
       setCommentBody('');
     }
-
-    setIsSubmittingForm(false);
   };
-
-  const handleClear = () => {
-    setAuthorName('');
-    setAuthorEmail('');
-    setCommentBody('');
-
-    setAuthorNameError(false);
-    setAuthorEmailError(false);
-    setCommentBodyError(false);
-  };
-
-  useEffect(() => {
-    setAuthorNameError(false);
-  }, [authorName]);
-
-  useEffect(() => {
-    setAuthorEmailError(false);
-  }, [authorEmail]);
-
-  useEffect(() => {
-    setCommentBodyError(false);
-  }, [commentBody]);
 
   return (
-    <form data-cy="NewCommentForm" onSubmit={handleSubmit}>
+    <form data-cy="NewCommentForm" onSubmit={handleOnSubmit}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -111,16 +93,20 @@ export const NewCommentForm: React.FC<Props> = ({
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': authorNameError })}
+            className={classNames('input', {
+              'is-danger': authorError,
+            })}
             value={authorName}
-            onChange={handleNameChange}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setAuthorName(event.target.value)
+            }
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {authorNameError && (
+          {authorError && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -130,7 +116,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {authorNameError && (
+        {authorError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -148,16 +134,20 @@ export const NewCommentForm: React.FC<Props> = ({
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': authorEmailError })}
+            className={classNames('input', {
+              'is-danger': emailError,
+            })}
             value={authorEmail}
-            onChange={handleEmailChange}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setAuthorEmail(event.target.value)
+            }
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {authorEmailError && (
+          {emailError && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -167,7 +157,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {authorEmailError && (
+        {emailError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -185,14 +175,16 @@ export const NewCommentForm: React.FC<Props> = ({
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', {
-              'is-danger': commentBodyError,
+              'is-danger': bodyError,
             })}
             value={commentBody}
-            onChange={handleCommentBodyChange}
+            onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) =>
+              setCommentBody(event.target.value)
+            }
           />
         </div>
 
-        {commentBodyError && (
+        {bodyError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -203,10 +195,10 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control">
           <button
             type="submit"
-            className={classNames('button is-link', {
+            className={classNames('button', 'is-link', {
               'is-loading': isSubmittingForm,
             })}
-            onClick={() => setIsSubmittingForm(true)}
+            onClick={() => handleIsSubmittingForm(true)}
           >
             Add
           </button>
@@ -217,7 +209,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={handleClear}
+            onClick={handleClearButton}
           >
             Clear
           </button>
