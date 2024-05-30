@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export const NewCommentForm: React.FC = () => {
+  const addComment = () => {};
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [text, setText] = useState('');
+
   return (
-    <form data-cy="NewCommentForm">
+    <form data-cy="NewCommentForm" onSubmit={addComment}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -10,11 +16,13 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control has-icons-left has-icons-right">
           <input
+            value={name}
             type="text"
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
             className="input is-danger"
+            onChange={e => setName(e.target.value)}
           />
 
           <span className="icon is-small is-left">
@@ -29,9 +37,11 @@ export const NewCommentForm: React.FC = () => {
           </span>
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
+        {!name && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Name is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -41,11 +51,13 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control has-icons-left has-icons-right">
           <input
+            value={email}
             type="text"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
             className="input is-danger"
+            onChange={e => setEmail(e.target.value)}
           />
 
           <span className="icon is-small is-left">
@@ -60,9 +72,11 @@ export const NewCommentForm: React.FC = () => {
           </span>
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
+        {!email && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -72,10 +86,12 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control">
           <textarea
+            value={text}
             id="comment-body"
             name="body"
             placeholder="Type comment here"
             className="textarea is-danger"
+            onChange={e => setText(e.target.value)}
           />
         </div>
 
