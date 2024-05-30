@@ -82,6 +82,7 @@ export const App: React.FC = () => {
     setOpenedPost(post);
     setOnClosedComments(false);
     loadUserComments(postId);
+    setOnClosedComments(true);
   };
 
   const handleSetOnClosedComments = (value: boolean) => {
@@ -97,6 +98,8 @@ export const App: React.FC = () => {
     setSelectedUsers(selectedUser);
     setSelectedUsersName(selectedUser.name);
     loadUserPosts(selectedUser.id);
+    setOpenedPost(null);
+    setOnClosedComments(true);
   };
 
   return (
@@ -164,13 +167,14 @@ export const App: React.FC = () => {
               <div className="tile is-child box is-success ">
                 <PostDetails
                   openedPost={openedPost}
-                  errorMessage={errorMessage}
+                  // errorMessage={errorMessage}
                   postsComments={postsComments}
                   onDeleteComments={handleDeleteComments}
                   postBody={openedPost.body}
                   postIdComment={openedPost.id}
                   postTitle={openedPost.title}
                   setPostsComments={setPostsComments}
+                  // setErrorMessage={setErrorMessage}
                 />
               </div>
             )}

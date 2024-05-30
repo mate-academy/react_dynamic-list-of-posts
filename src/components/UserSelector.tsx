@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
 import classNames from 'classnames';
 
@@ -14,13 +14,36 @@ export const UserSelector: React.FC<Props> = ({
   selectedUserName,
 }) => {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
     setIsOpenMenu(!isOpenMenu);
   };
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setIsOpenMenu(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isOpenMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpenMenu]);
+
   return (
     <div
+      ref={dropdownRef}
       data-cy="UserSelector"
       className={classNames('dropdown', { 'is-active': isOpenMenu })}
     >
@@ -39,28 +62,25 @@ export const UserSelector: React.FC<Props> = ({
           </span>
         </button>
       </div>
-
-      {isOpenMenu && (
-        <div className="dropdown-menu" id="dropdown-menu" role="menu">
-          <div className="dropdown-content">
-            {users.map(user => (
-              <a
-                key={user.id}
-                href={`#${user.id}`}
-                className={classNames('dropdown-item', {
-                  'is-active': user.name === selectedUserName,
-                })}
-                onClick={() => {
-                  onUserSelect(user);
-                  setIsOpenMenu(false);
-                }}
-              >
-                {user.name}
-              </a>
-            ))}
-          </div>
+      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+        <div className="dropdown-content">
+          {users.map(user => (
+            <a
+              key={user.id}
+              href={`#${user.id}`}
+              className={classNames('dropdown-item', {
+                'is-active': user.name === selectedUserName,
+              })}
+              onClick={() => {
+                onUserSelect(user);
+                setIsOpenMenu(false);
+              }}
+            >
+              {user.name}
+            </a>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 };
