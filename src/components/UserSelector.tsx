@@ -11,7 +11,6 @@ export const UserSelector: React.FC<Props> = ({ users, selectedUser }) => {
   const [isUsersShown, setIsUsersShown] = useState(true);
   const [userSelected, setUserSelected] = useState<User | null>(null);
 
-  // const showUsers = () => {};
   const handleSelectionOfUser = (user: User) => {
     setUserSelected(user);
     setIsUsersShown(true);

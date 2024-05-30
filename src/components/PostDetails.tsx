@@ -2,18 +2,26 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { Post } from '../types/Post';
 import { Comment as com } from '../types/Comment';
-import { getComments } from '../api/comments';
+import { addComment, getComments, removeComment } from '../api/comments';
 import { NewCommentForm } from './NewCommentForm';
+import { User } from '../types/User';
 
 type Props = {
   post: Post;
+  selectedUser?: User;
 };
 
-export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [comments, setComments] = useState<com[] | undefined>();
+export const PostDetails: React.FC<Props> = ({ post, selectedUser }) => {
+  const [comments, setComments] = useState<com[]>([]);
   const [isCommentsLoad, setIsCommentsLoad] = useState(false);
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
+
+  const handleDeleteComment = (commentId: number) => {
+    removeComment(commentId).then(() => {
+      setComments(comments.filter(comment => comment.id !== commentId));
+    });
+  };
 
   useEffect(() => {
     setIsCommentsLoad(true);
@@ -28,7 +36,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       });
   }, [post]);
 
-  const handleDeleteComment = () => {};
+  const handleAddingComment = (newComment: com) => {
+    addComment(newComment).then(result => {
+      setComments(prev => [...prev, result]);
+    });
+  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -65,7 +77,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   type="button"
                   className="delete is-small"
                   aria-label="delete"
-                  onClick={handleDeleteComment}
+                  onClick={() => {
+                    if (comment.id) {
+                      handleDeleteComment(comment.id);
+                    }
+                  }}
                 >
                   delete button
                 </button>
@@ -87,7 +103,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </button>
         </div>
 
-        {showForm && <NewCommentForm />}
+        {showForm && (
+          <NewCommentForm
+            addComment={test => handleAddingComment(test)}
+            post={post}
+            selectedUser={selectedUser}
+          />
+        )}
       </div>
     </div>
   );

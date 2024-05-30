@@ -101,9 +101,11 @@ export const App: React.FC = () => {
                 { 'Sidebar--open': openedPost },
               )}
             >
-              <div className="tile is-child box is-success ">
-                <PostDetails post={openedPost} />
-              </div>
+              {openedPost && (
+                <div className="tile is-child box is-success ">
+                  <PostDetails post={openedPost} selectedUser={selectedUser} />
+                </div>
+              )}
             </div>
           )}
         </div>
