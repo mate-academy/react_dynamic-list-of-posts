@@ -52,6 +52,7 @@ export const NewCommentForm: React.FC<Props> = ({
       setPostsComments([...comments, newComment]);
       setCommentText('');
       setErrors({ name: '', email: '', body: '' });
+      addComment(newComment);
     } catch (error) {
     } finally {
       setIsLoading(false);

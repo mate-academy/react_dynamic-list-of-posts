@@ -50,7 +50,12 @@ export const PostDetails: React.FC<Props> = ({
 
   const addNewComment = (comment: Comment) => {
     setPostsComments(prevComments => [comment, ...prevComments]);
+    setWriteCommentVisible(false);
   };
+
+  useEffect(() => {
+    setWriteCommentVisible(false);
+  }, [openedPost]);
 
   useEffect(() => {
     if (openedPost && openedPost.id) {

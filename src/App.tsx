@@ -167,14 +167,12 @@ export const App: React.FC = () => {
               <div className="tile is-child box is-success ">
                 <PostDetails
                   openedPost={openedPost}
-                  // errorMessage={errorMessage}
                   postsComments={postsComments}
                   onDeleteComments={handleDeleteComments}
                   postBody={openedPost.body}
                   postIdComment={openedPost.id}
                   postTitle={openedPost.title}
                   setPostsComments={setPostsComments}
-                  // setErrorMessage={setErrorMessage}
                 />
               </div>
             )}
