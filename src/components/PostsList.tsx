@@ -1,6 +1,11 @@
 import React from 'react';
+import { Post } from '../types/Post'; // Assuming Post type is defined in a separate file
 
-export const PostsList: React.FC = () => {
+interface PostsListProps {
+  posts: Post[];
+}
+
+export const PostsList: React.FC<PostsListProps> = ({ posts }) => {
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -10,29 +15,26 @@ export const PostsList: React.FC = () => {
           <tr className="has-background-link-light">
             <th>#</th>
             <th>Title</th>
-            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
             <th> </th>
           </tr>
         </thead>
 
         <tbody>
-          <tr data-cy="Post">
-            <td data-cy="PostId">17</td>
-
-            <td data-cy="PostTitle">
-              fugit voluptas sed molestias voluptatem provident
-            </td>
-
-            <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className="button is-link is-light"
-              >
-                Open
-              </button>
-            </td>
-          </tr>
+          {posts.map(post => (
+            <tr key={post.id} data-cy="Post">
+              <td data-cy="PostId">{post.id}</td>
+              <td data-cy="PostTitle">{post.title}</td>
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className="button is-link is-light"
+                >
+                  Open
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
