@@ -15,10 +15,12 @@ import { Post } from './types/Post';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [posts, setPosts] = useState<Post[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<SetStateAction<string>>('');
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
 
   useEffect(() => {
     Services.client
@@ -64,7 +66,13 @@ export const App: React.FC = () => {
                   selectedUser={selectedUser}
                 />
               </div>
-              <Router posts={posts} />
+              <Router
+                posts={posts}
+                selectedPost={selectedPost}
+                setSelectedPost={setSelectedPost}
+                isDetailOpen={isDetailOpen}
+                setIsDetailOpen={setIsDetailOpen}
+              />
               {isLoading && <Loader />}
               <div className="block" data-cy="MainContent">
                 {!selectedUser && !isLoading && (
@@ -87,7 +95,13 @@ export const App: React.FC = () => {
                 )}
 
                 {selectedUser && posts.length > 0 && (
-                  <PostsList posts={posts} />
+                  <PostsList
+                    posts={posts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
+                    isDetailOpen={isDetailOpen}
+                    setIsDetailOpen={setIsDetailOpen}
+                  />
                 )}
               </div>
             </div>
@@ -100,7 +114,7 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': isDetailOpen },
             )}
           >
             <div className="tile is-child box is-success ">

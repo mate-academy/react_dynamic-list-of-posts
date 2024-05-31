@@ -1,11 +1,30 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { Post } from '../types/Post'; // Assuming Post type is defined in a separate file
 
 interface PostsListProps {
   posts: Post[];
+  selectedPost: Post | null;
+  setSelectedPost: Dispatch<SetStateAction<Post | null>>;
+  isDetailOpen: boolean;
+  setIsDetailOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export const PostsList: React.FC<PostsListProps> = ({ posts }) => {
+export const PostsList: React.FC<PostsListProps> = ({
+  posts,
+  selectedPost,
+  setSelectedPost,
+  isDetailOpen,
+  setIsDetailOpen,
+}) => {
+  const togglePostDetails = (post: Post) => {
+    if (selectedPost?.id === post.id) {
+      setIsDetailOpen(!isDetailOpen);
+    } else {
+      setSelectedPost(post);
+      setIsDetailOpen(true);
+    }
+  };
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -28,9 +47,10 @@ export const PostsList: React.FC<PostsListProps> = ({ posts }) => {
                 <button
                   type="button"
                   data-cy="PostButton"
-                  className="button is-link is-light"
+                  className={`button is-link ${selectedPost?.id === post.id && isDetailOpen ? 'is-light' : ''}`}
+                  onClick={() => togglePostDetails(post)}
                 >
-                  Open
+                  {!isDetailOpen ? <p>Open</p> : <p>Close</p>}
                 </button>
               </td>
             </tr>
