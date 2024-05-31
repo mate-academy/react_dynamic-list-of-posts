@@ -13,7 +13,7 @@ import { User } from './types/User';
 import { getUsers } from './api/Users';
 import { Post } from './types/Post';
 import { getPosts } from './api/Posts';
-import { deleteComment, getComments } from './api/Comments';
+import { deleteComment } from './api/Comments';
 import { Comment } from './types/Comment';
 
 export const App: React.FC = () => {
@@ -53,16 +53,16 @@ export const App: React.FC = () => {
     }
   };
 
-  const loadUserComments = async (postId: number) => {
-    try {
-      const comments = await getComments(postId);
+  // const loadUserComments = async (postId: number) => {
+  //   try {
+  //     const comments = await getComments(postId);
 
-      setPostsComments(comments);
-    } catch (error) {
-      setErrorMessage('');
-    } finally {
-    }
-  };
+  //     setPostsComments(comments);
+  //   } catch (error) {
+  //     setErrorMessage('');
+  //   } finally {
+  //   }
+  // };
 
   const handleDeleteComments = async (commentId: number) => {
     try {
@@ -78,10 +78,10 @@ export const App: React.FC = () => {
     }
   };
 
-  const handlePostCommentSelect = (post: Post, postId: number) => {
+  const handlePostCommentSelect = (post: Post) => {
     setOpenedPost(post);
     setOnClosedComments(false);
-    loadUserComments(postId);
+    // loadUserComments(postId);
     setOnClosedComments(true);
   };
 

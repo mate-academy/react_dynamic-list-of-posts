@@ -63,6 +63,10 @@ export const PostDetails: React.FC<Props> = ({
     }
   }, [openedPost.id]);
 
+  if (!openedPost) {
+    return null;
+  }
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
@@ -145,44 +149,3 @@ export const PostDetails: React.FC<Props> = ({
     </div>
   );
 };
-
-// <article className="message is-small" data-cy="Comment">
-//   <div className="message-header">
-//     <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-//       Misha Hrynko
-//     </a>
-
-//     <button
-//       data-cy="CommentDelete"
-//       type="button"
-//       className="delete is-small"
-//       aria-label="delete"
-//     >
-//       delete button
-//     </button>
-//   </div>
-//   <div className="message-body" data-cy="CommentBody">
-//     One more comment
-//   </div>
-// </article>
-
-// <article className="message is-small" data-cy="Comment">
-//   <div className="message-header">
-//     <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-//       Misha Hrynko
-//     </a>
-
-//     <button
-//       data-cy="CommentDelete"
-//       type="button"
-//       className="delete is-small"
-//       aria-label="delete"
-//     >
-//       delete button
-//     </button>
-//   </div>
-
-//   <div className="message-body" data-cy="CommentBody">
-//     {'Multi\nline\ncomment'}
-//   </div>
-// </article>

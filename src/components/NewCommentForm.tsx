@@ -14,23 +14,29 @@ export const NewCommentForm: React.FC<Props> = ({
   comments,
   setPostsComments,
 }) => {
-  const [authorName, setAuthorName] = useState('');
-  const [authorEmail, setAuthorEmail] = useState('');
-  const [commentText, setCommentText] = useState('');
+  const [commentData, setCommentData] = useState({
+    authorName: '',
+    authorEmail: '',
+    commentText: '',
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({
-    name: '',
-    email: '',
-    body: '',
+    authorName: '',
+    authorEmail: '',
+    commentText: '',
   });
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const trimedName = commentData.authorName.trim();
+    const trimedEmail = commentData.authorEmail.trim();
+    const trimedText = commentData.commentText.trim();
+
     const errorsToUpdate = {
-      name: !authorName ? 'Name is required' : '',
-      email: !authorEmail ? 'Email is required' : '',
-      body: !commentText ? 'Enter some text' : '',
+      authorName: !trimedName ? 'Name is required' : '',
+      authorEmail: !trimedEmail ? 'Email is required' : '',
+      commentText: !trimedText ? 'Enter some text' : '',
     };
 
     setErrors(errorsToUpdate);
@@ -44,43 +50,32 @@ export const NewCommentForm: React.FC<Props> = ({
     try {
       const newComment = await addComment({
         postId: postId,
-        name: authorName,
-        email: authorEmail,
-        body: commentText,
+        name: commentData.authorName,
+        email: commentData.authorEmail,
+        body: commentData.commentText,
       });
 
       setPostsComments([...comments, newComment]);
-      setCommentText('');
-      setErrors({ name: '', email: '', body: '' });
-      addComment(newComment);
+      setCommentData(prevData => ({ ...prevData, commentText: '' }));
+      setErrors({ authorName: '', authorEmail: '', commentText: '' });
     } catch (error) {
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuthorName(event.target.value);
-    setErrors({ ...errors, name: '' });
-  };
-
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuthorEmail(event.target.value);
-    setErrors({ ...errors, email: '' });
-  };
-
-  const handleCommentChange = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setCommentText(event.target.value);
-    setErrors({ ...errors, body: '' });
+    const { name, value } = event.target;
+
+    setCommentData(prevData => ({ ...prevData, [name]: value }));
+    setErrors(prevErrors => ({ ...prevErrors, [name]: '' }));
   };
 
   const handleClear = () => {
-    setAuthorName('');
-    setAuthorEmail('');
-    setCommentText('');
-    setErrors({ name: '', email: '', body: '' });
+    setCommentData({ authorName: '', authorEmail: '', commentText: '' });
+    setErrors({ authorName: '', authorEmail: '', commentText: '' });
   };
 
   return (
@@ -93,19 +88,19 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
-            name="name"
-            value={authorName}
+            name="authorName"
+            value={commentData.authorName}
             id="comment-author-name"
             placeholder="Name Surname"
-            className={`input ${errors.name && 'is-danger'}`}
-            onChange={handleNameChange}
+            className={`input ${errors.authorName && 'is-danger'}`}
+            onChange={handleInputChange}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {errors.name && (
+          {errors.authorName && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -115,9 +110,9 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {errors.name && (
+        {errors.authorName && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            {errors.name}
+            {errors.authorName}
           </p>
         )}
       </div>
@@ -130,19 +125,19 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
-            name="email"
-            value={authorEmail}
+            name="authorEmail"
+            value={commentData.authorEmail}
             id="comment-author-email"
             placeholder="email@test.com"
-            className={`input ${errors.email && 'is-danger'}`}
-            onChange={handleEmailChange}
+            className={`input ${errors.authorEmail && 'is-danger'}`}
+            onChange={handleInputChange}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {errors.email && (
+          {errors.authorEmail && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -152,9 +147,9 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {errors.email && (
+        {errors.authorEmail && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            {errors.email}
+            {errors.authorEmail}
           </p>
         )}
       </div>
@@ -167,17 +162,17 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control">
           <textarea
             id="comment-body"
-            name="body"
-            value={commentText}
+            name="commentText"
+            value={commentData.commentText}
             placeholder="Type comment here"
-            className={`input ${errors.body && 'is-danger'}`}
-            onChange={handleCommentChange}
+            className={`input ${errors.commentText && 'is-danger'}`}
+            onChange={handleInputChange}
           />
         </div>
 
-        {errors.body && (
+        {errors.commentText && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            {errors.body}
+            {errors.commentText}
           </p>
         )}
       </div>
