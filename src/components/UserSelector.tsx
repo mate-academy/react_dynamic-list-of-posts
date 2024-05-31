@@ -8,12 +8,13 @@ type Props = {
 };
 
 export const UserSelector: React.FC<Props> = ({ users, selectedUser }) => {
-  const [isUsersShown, setIsUsersShown] = useState(true);
+  const [isUsersShown, setIsUsersShown] = useState(false);
   const [userSelected, setUserSelected] = useState<User | null>(null);
 
   const handleSelectionOfUser = (user: User) => {
     setUserSelected(user);
     setIsUsersShown(true);
+    selectedUser(user);
   };
 
   return (
@@ -34,19 +35,22 @@ export const UserSelector: React.FC<Props> = ({ users, selectedUser }) => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        {!isUsersShown && (
+      <div
+        className={classNames('dropdown-menu', { 'is-active': isUsersShown })}
+        id="dropdown-menu"
+        role="menu"
+      >
+        {isUsersShown && (
           <div className="dropdown-content">
-            {users.slice(0, 10).map(user => (
+            {users.map(user => (
               <a
-                href={`#user-${user.id}`}
                 className={classNames('dropdown-item', {
                   'is-active': userSelected === user,
                 })}
+                href={`#user-${user.id}`}
                 key={user.id}
                 onClick={() => {
                   handleSelectionOfUser(user);
-                  selectedUser(user);
                 }}
               >
                 {user.name}

@@ -22,13 +22,26 @@ export const NewCommentForm: React.FC<Props> = ({
   const [text, setText] = useState('');
   const [textError, setTextError] = useState('');
 
+  const handleClear = () => {
+    setTextError('');
+    setEmailError('');
+    setNameError('');
+    setName('');
+    setEmail('');
+    setText('');
+  };
+
   const formSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    // handleClear();
+
     e.preventDefault();
 
     if (!name || !email || !text) {
       setNameError('Something went wrong!');
       setEmailError('Something went wrong!');
       setTextError('Something went wrong!');
+
+      return;
     }
 
     if (selectedUser) {
@@ -40,16 +53,9 @@ export const NewCommentForm: React.FC<Props> = ({
       };
 
       addComment(newComment);
-    }
-  };
 
-  const handleClear = () => {
-    setTextError('');
-    setEmailError('');
-    setNameError('');
-    setName('');
-    setEmail('');
-    setText('');
+      handleClear();
+    }
   };
 
   return (
@@ -67,7 +73,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', {
-              'is-danger': nameError,
+              'is-danger': !name && nameError,
             })}
             onChange={e => setName(e.target.value)}
           />
@@ -106,7 +112,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', {
-              'is-danger': emailError,
+              'is-danger': !email && emailError,
             })}
             onChange={e => setEmail(e.target.value)}
           />
@@ -143,7 +149,9 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={classNames('textarea', { 'is-danger': textError })}
+            className={classNames('textarea', {
+              'is-danger': !text && textError,
+            })}
             onChange={e => setText(e.target.value)}
           />
         </div>

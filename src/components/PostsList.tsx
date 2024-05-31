@@ -5,14 +5,26 @@ import classNames from 'classnames';
 type Props = {
   posts: Post[];
   onOpenPost: (post: Post) => void;
+  onClosePost: () => void;
   openedPost?: Post;
+  formStatus: boolean;
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
   onOpenPost,
   openedPost,
+  formStatus,
+  onClosePost,
 }) => {
+  const handleClickOpen = (post: Post) => {
+    if (openedPost && openedPost.id === post.id && formStatus) {
+      onClosePost();
+    } else {
+      onOpenPost(post);
+    }
+  };
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -39,13 +51,13 @@ export const PostsList: React.FC<Props> = ({
                   type="button"
                   data-cy="PostButton"
                   className={classNames(`button is-link`, {
-                    'is-light': openedPost !== post,
+                    'is-light': openedPost?.id !== post.id || !formStatus,
                   })}
-                  onClick={() => {
-                    onOpenPost(post);
-                  }}
+                  onClick={() => handleClickOpen(post)}
                 >
-                  {openedPost === post ? 'Close' : 'Open'}
+                  {openedPost && openedPost.id === post.id && formStatus
+                    ? 'Close'
+                    : 'Open'}
                 </button>
               </td>
             </tr>

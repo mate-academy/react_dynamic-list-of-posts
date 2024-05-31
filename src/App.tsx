@@ -14,20 +14,26 @@ import { getPosts } from './api/posts';
 import { Post } from './types/Post';
 
 export const App: React.FC = () => {
-  const [users, setUsers] = useState<User[] | undefined>();
+  const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState('');
-  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
-  const [posts, setPosts] = useState<Post[] | undefined>();
+  const [selectedUser, setSelectedUser] = useState<User>();
+  const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [openedPost, setOpenedPost] = useState<Post>();
+  const [isFormOpened, setIsFormOpened] = useState(false);
+  const [postsLoaded, setIsPostsLoaded] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     getUsers()
       .then(result => {
         setUsers(result);
       })
       .catch(() => {
         setError('Something went wrong!');
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, []);
 
@@ -37,10 +43,26 @@ export const App: React.FC = () => {
       getPosts(selectedUser.id)
         .then(result => {
           setPosts(result);
+          setIsPostsLoaded(true);
+        })
+        .catch(() => {
+          setError('Something went wrong while loading posts!');
         })
         .finally(() => setIsLoading(false));
+    } else {
+      setPosts([]);
     }
   }, [selectedUser]);
+
+  const handleOpenPost = (post: Post) => {
+    setOpenedPost(post);
+    setIsFormOpened(true);
+  };
+
+  const handleClosePost = () => {
+    setOpenedPost(undefined);
+    setIsFormOpened(false);
+  };
 
   return (
     <main className="section">
@@ -49,11 +71,16 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                {users && (
+                {/*{isLoading && <Loader />}*/}
+                {users.length > 0 && !isLoading && (
                   <UserSelector
                     users={users}
                     selectedUser={user => setSelectedUser(user)}
                   />
+                )}
+
+                {users.length === 0 && !isLoading && (
+                  <div>No users available</div>
                 )}
               </div>
 
@@ -73,17 +100,19 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!posts && (
+                {postsLoaded && selectedUser && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {posts && (
+                {postsLoaded && posts.length > 0 && (
                   <PostsList
+                    formStatus={isFormOpened}
                     openedPost={openedPost}
                     posts={posts}
-                    onOpenPost={post => setOpenedPost(post)}
+                    onOpenPost={handleOpenPost}
+                    onClosePost={handleClosePost}
                   />
                 )}
               </div>
@@ -98,10 +127,10 @@ export const App: React.FC = () => {
                 'is-parent',
                 'is-8-desktop',
                 'Sidebar',
-                { 'Sidebar--open': openedPost },
+                { 'Sidebar--open': isFormOpened },
               )}
             >
-              {openedPost && (
+              {openedPost && isFormOpened && (
                 <div className="tile is-child box is-success ">
                   <PostDetails post={openedPost} selectedUser={selectedUser} />
                 </div>
