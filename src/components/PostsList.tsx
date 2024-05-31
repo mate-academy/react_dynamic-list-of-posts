@@ -47,10 +47,12 @@ export const PostsList: React.FC<PostsListProps> = ({
                 <button
                   type="button"
                   data-cy="PostButton"
-                  className={`button is-link ${selectedPost?.id === post.id && isDetailOpen ? 'is-light' : ''}`}
+                  className={`button is-link ${selectedPost?.id === post.id && isDetailOpen ? '' : 'is-light'}`}
                   onClick={() => togglePostDetails(post)}
                 >
-                  {!isDetailOpen ? <p>Open</p> : <p>Close</p>}
+                  {selectedPost?.id === post.id && isDetailOpen
+                    ? 'Close'
+                    : 'Open'}
                 </button>
               </td>
             </tr>

@@ -50,8 +50,14 @@ export const App: React.FC = () => {
     if (selectedUser) {
       setIsLoading(true);
       setError('');
+      setIsDetailOpen(false);
     }
   }, [selectedUser]);
+
+  const handlePostSelect = (post: SetStateAction<Post | null>) => {
+    setSelectedPost(post);
+    setIsDetailOpen(post !== null);
+  };
 
   return (
     <main className="section">
@@ -69,7 +75,7 @@ export const App: React.FC = () => {
               <Router
                 posts={posts}
                 selectedPost={selectedPost}
-                setSelectedPost={setSelectedPost}
+                setSelectedPost={handlePostSelect}
                 isDetailOpen={isDetailOpen}
                 setIsDetailOpen={setIsDetailOpen}
               />
@@ -98,7 +104,7 @@ export const App: React.FC = () => {
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}
-                    setSelectedPost={setSelectedPost}
+                    setSelectedPost={handlePostSelect}
                     isDetailOpen={isDetailOpen}
                     setIsDetailOpen={setIsDetailOpen}
                   />
