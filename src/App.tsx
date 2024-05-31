@@ -22,9 +22,11 @@ export const App: React.FC = () => {
   const [openedPost, setOpenedPost] = useState<Post>();
   const [isFormOpened, setIsFormOpened] = useState(false);
   const [postsLoaded, setIsPostsLoaded] = useState(false);
+  const [isUsersLoaded, setIsUsersLoaded] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
+    setIsUsersLoaded(true);
     getUsers()
       .then(result => {
         setUsers(result);
@@ -71,16 +73,12 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                {/*{isLoading && <Loader />}*/}
-                {users.length > 0 && !isLoading && (
+                {isUsersLoaded && (
                   <UserSelector
+                    userSelected={selectedUser}
                     users={users}
                     selectedUser={user => setSelectedUser(user)}
                   />
-                )}
-
-                {users.length === 0 && !isLoading && (
-                  <div>No users available</div>
                 )}
               </div>
 
