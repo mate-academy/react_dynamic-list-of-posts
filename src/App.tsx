@@ -118,7 +118,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              <PostDetails selectedPost={selectedPost} />
             </div>
           </div>
         </div>
