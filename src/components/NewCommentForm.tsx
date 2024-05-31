@@ -38,21 +38,25 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const newName = name.trim();
+    const newEmail = email.trim();
+    const newBody = body.trim();
+
     let isError = false;
 
-    if (!name) {
+    if (!newName) {
       setNameErrorMessage('Name is required');
 
       isError = true;
     }
 
-    if (!email) {
+    if (!newEmail) {
       setEmailErrorMessage('Email is required');
 
       isError = true;
     }
 
-    if (!body) {
+    if (!newBody) {
       setBodyErrorMessage('Enter some text');
 
       isError = true;
@@ -64,9 +68,9 @@ export const NewCommentForm: React.FC<Props> = ({
 
     const newComment = {
       postId,
-      name: name.trim(),
-      email: email.trim(),
-      body: body.trim(),
+      name: newName,
+      email: newEmail,
+      body: newBody,
     };
 
     setIsLoading(true);
@@ -129,7 +133,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
