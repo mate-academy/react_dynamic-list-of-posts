@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { ChangeEvent, useState } from 'react';
 
 export const NewCommentForm: React.FC = () => {
+  const [authorNameLabel, setAuthorNameLabel] = useState('');
+  const [emailLabel, setEmailLabel] = useState('');
+  const [textLabel, setTextLabel] = useState('');
+  const [isValidLabel, setIsValidLabel] = useState(true);
+
+  const handleInputName = (event: ChangeEvent<HTMLInputElement>) => {
+    setAuthorNameLabel(event.target?.value);
+    setEmailLabel(event.target.value);
+    setTextLabel(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    if (authorNameLabel === '' && emailLabel === '' && textLabel === '') {
+      setIsValidLabel(false);
+    }
+  };
+
   return (
-    <form data-cy="NewCommentForm">
+    <form data-cy="NewCommentForm" onSubmit={handleSubmit}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -14,38 +31,41 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            className={`input ${isValidLabel ? '' : 'is-danger'}`}
+            onChange={handleInputName}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {!isValidLabel && authorNameLabel === '' && (
+            <>
+              <span
+                className={`icon is-small is-right ${isValidLabel ? '' : 'has-text-danger'}`}
+                data-cy="ErrorIcon"
+              >
+                <i className="fas fa-exclamation-triangle" />
+              </span>
+              <p className="help is-danger" data-cy="ErrorMessage">
+                Name is required
+              </p>
+            </>
+          )}
         </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
       </div>
 
       <div className="field" data-cy="EmailField">
         <label className="label" htmlFor="comment-author-email">
           Author Email
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            className={`input ${isValidLabel ? '' : 'is-danger'}`}
           />
 
           <span className="icon is-small is-left">
@@ -75,7 +95,7 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            className={`textarea ${isValidLabel ? '' : 'is-danger'}`}
           />
         </div>
 

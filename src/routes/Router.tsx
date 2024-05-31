@@ -1,37 +1,16 @@
 import { Route, Routes } from 'react-router-dom';
-import { PostsList } from '../components/PostsList';
-import React, { Dispatch, SetStateAction } from 'react';
-import { Post } from '../types/Post';
+import React from 'react';
+import { PostsPage } from '../pages/PostsPage';
+import { App } from '../App';
+import { Home } from '../pages/Home';
 
-type RouterProps = {
-  posts: Post[];
-  selectedPost: Post | null;
-  setSelectedPost: Dispatch<SetStateAction<Post | null>>;
-  isDetailOpen: boolean;
-  setIsDetailOpen: Dispatch<SetStateAction<boolean>>;
-};
-
-export const Router: React.FC<RouterProps> = ({
-  posts,
-  selectedPost,
-  setSelectedPost,
-  isDetailOpen,
-  setIsDetailOpen,
-}) => {
+export const Router: React.FC = ({}) => {
   return (
     <Routes>
-      <Route
-        path="/:#userId"
-        element={
-          <PostsList
-            posts={posts}
-            selectedPost={selectedPost}
-            setSelectedPost={setSelectedPost}
-            isDetailOpen={isDetailOpen}
-            setIsDetailOpen={setIsDetailOpen}
-          />
-        }
-      ></Route>
+      <Route path="/" element={<App />}>
+        <Route index element={<Home />} />
+        <Route path="/user/:userId" element={<PostsPage />} />
+      </Route>
     </Routes>
   );
 };

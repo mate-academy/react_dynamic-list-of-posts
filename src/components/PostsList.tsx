@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react';
-import { Post } from '../types/Post'; // Assuming Post type is defined in a separate file
+import { Post } from '../types/Post';
 
 interface PostsListProps {
   posts: Post[];

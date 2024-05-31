@@ -1,25 +1,32 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { User } from '../types/User';
+import * as Services from '../utils/fetchClient';
 
-type UserSelectorProps = {
-  users: User[];
-  onUserSelect: Dispatch<SetStateAction<User | null>>;
-  selectedUser: User | null;
-};
-
-export const UserSelector: React.FC<UserSelectorProps> = ({
-  users,
-  onUserSelect,
-  selectedUser,
-}) => {
+export const UserSelector: React.FC = () => {
   const [isDropdownActive, setIsDropdownActive] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    Services.client
+      .get<User[]>('/users')
+      .then(fetchedUsers => {
+        setUsers(fetchedUsers);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
+
+  // TODO highlight selected users from params
 
   const toggleDropdown = () => {
-    setIsDropdownActive(state => !state);
+    return !isLoading && setIsDropdownActive(state => !state);
   };
 
   const handleUserSelect = (user: User) => {
-    onUserSelect(user);
+    setSelectedUser(user);
     setIsDropdownActive(false);
   };
 
@@ -44,10 +51,10 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
       {isDropdownActive && (
         <div className="dropdown-menu" id="dropdown-menu" role="menu">
           <div className="dropdown-content">
-            {users.map(user => (
+            {users?.map(user => (
               <a
                 key={user.id}
-                href={`#user-${user.id}`}
+                href={`/user/${user.id}`}
                 className={`dropdown-item ${user.id === selectedUser?.id ? 'is-active' : ''} `}
                 onClick={() => handleUserSelect(user)}
               >

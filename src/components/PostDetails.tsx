@@ -13,6 +13,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ selectedPost }) => {
   const [comments = [], setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isFormVisible, setIsFormVisible] = useState(false);
 
   useEffect(() => {
     if (selectedPost) {
@@ -23,6 +24,10 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ selectedPost }) => {
         .finally(() => setIsLoading(false));
     }
   }, [error, selectedPost, selectedPost?.id]);
+
+  const openNewCommentForm = () => {
+    setIsFormVisible(true);
+  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -78,12 +83,12 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ selectedPost }) => {
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
+            onClick={openNewCommentForm}
           >
             Write a comment
           </button>
         </div>
-
-        <NewCommentForm />
+        {isFormVisible && <NewCommentForm />}
       </div>
     </div>
   );
