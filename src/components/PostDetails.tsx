@@ -92,7 +92,9 @@ export const PostDetails: React.FC<Props> = ({
             )}
 
             <div>
-              {!errorMessage && <p className="title is-4">Comments:</p>}
+              {!errorMessage && postsComments.length > 0 && (
+                <p className="title is-4">Comments:</p>
+              )}
 
               {postsComments.map((post, index) => {
                 return (

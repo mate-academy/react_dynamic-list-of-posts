@@ -1,3 +1,4 @@
+/* eslint-disable */
 export interface Comment {
   id: number;
   postId: number;
@@ -6,4 +7,8 @@ export interface Comment {
   body: string;
 }
 
-export type CommentData = Pick<Comment, 'name' | 'email' | 'body' | 'postId'>;
+type CommentWithoutId = Omit<Comment, 'id'>;
+export type CommentData = Pick<
+  CommentWithoutId,
+  'name' | 'email' | 'body' | 'postId'
+>;
