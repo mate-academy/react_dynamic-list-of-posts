@@ -15,6 +15,7 @@ export const UserSelector: React.FC<Props> = ({
 }) => {
   const [isUsersShown, setIsUsersShown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
   const handleOutsideClick = useCallback((event: MouseEvent) => {
     if (
       dropdownRef.current &&
@@ -57,9 +58,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => {
-            setIsUsersShown(!isUsersShown);
-          }}
+          onClick={() => setIsUsersShown(!isUsersShown)}
         >
           {userSelected ? userSelected.name : <span>Choose a user</span>}
 
@@ -85,9 +84,7 @@ export const UserSelector: React.FC<Props> = ({
               })}
               href={`#user-${user.id}`}
               key={user.id}
-              onClick={() => {
-                handleSelectionOfUser(user);
-              }}
+              onClick={() => handleSelectionOfUser(user)}
             >
               {user.name}
             </a>

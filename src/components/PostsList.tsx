@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Post } from '../types/Post';
 import classNames from 'classnames';
 
@@ -17,24 +17,25 @@ export const PostsList: React.FC<Props> = ({
   formStatus,
   onClosePost,
 }) => {
-  const handleClickOpen = (post: Post) => {
-    if (openedPost && openedPost.id === post.id && formStatus) {
-      onClosePost();
-    } else {
-      onOpenPost(post);
-    }
-  };
+  const handleClickOpen = useCallback(
+    (post: Post) => {
+      if (openedPost && openedPost.id === post.id && formStatus) {
+        onClosePost();
+      } else {
+        onOpenPost(post);
+      }
+    },
+    [openedPost, formStatus, onClosePost, onOpenPost],
+  );
 
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
-
       <table className="table is-fullwidth is-striped is-hoverable is-narrow">
         <thead>
           <tr className="has-background-link-light">
             <th>#</th>
             <th>Title</th>
-            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
             <th></th>
           </tr>
         </thead>
@@ -42,7 +43,7 @@ export const PostsList: React.FC<Props> = ({
         <tbody>
           {posts.map(post => (
             <tr data-cy="Post" key={post.id}>
-              <td data-cy="PostId">17</td>
+              <td data-cy="PostId">{post.id}</td>
 
               <td data-cy="PostTitle">{post.title}</td>
 

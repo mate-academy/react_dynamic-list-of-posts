@@ -8,12 +8,14 @@ type Props = {
   addComment: (comment: Comment) => void;
   post: Post;
   selectedUser?: User;
+  loading: boolean;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   addComment,
   post,
   selectedUser,
+  loading,
 }) => {
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState('');
@@ -31,9 +33,14 @@ export const NewCommentForm: React.FC<Props> = ({
     setText('');
   };
 
-  const formSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    // handleClear();
+  const handleSubmittingClear = () => {
+    setTextError('');
+    setEmailError('');
+    setNameError('');
+    setText('');
+  };
 
+  const formSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!name || !email || !text) {
@@ -53,8 +60,7 @@ export const NewCommentForm: React.FC<Props> = ({
       };
 
       addComment(newComment);
-
-      handleClear();
+      handleSubmittingClear();
     }
   };
 
@@ -165,13 +171,17 @@ export const NewCommentForm: React.FC<Props> = ({
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link">
+          <button
+            type="submit"
+            className={classNames('button is-link', {
+              'is-loading': loading,
+            })}
+          >
             Add
           </button>
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button
             type="reset"
             className="button is-link is-light"

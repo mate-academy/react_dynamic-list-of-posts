@@ -16,37 +16,56 @@ export const PostDetails: React.FC<Props> = ({ post, selectedUser }) => {
   const [isCommentsLoad, setIsCommentsLoad] = useState(false);
   const [error, setError] = useState('');
   const [showForm, setShowForm] = useState(false);
+  const [hideButton, setHideButton] = useState(false);
+  const [isCommentError, setIsCommentError] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isAddingCommentLoading, setIsAddingCommentLoading] = useState(false);
 
-  const handleDeleteComment = (commentId: number) => {
-    removeComment(commentId).then(() => {
-      setComments(comments.filter(comment => comment.id !== commentId));
-    });
+  const handleDeleteComment = async (commentId: number) => {
+    await removeComment(commentId);
+
+    setComments(prevComments =>
+      prevComments.filter(comment => comment.id !== commentId),
+    );
   };
 
   useEffect(() => {
     setIsCommentsLoad(true);
-
+    setIsFormOpen(false);
+    setHideButton(false);
     getComments(post.id)
       .then(result => {
         setComments(result);
         setIsCommentsLoad(false);
       })
       .catch(() => {
-        setError('');
+        setIsCommentsLoad(false);
+        setError('Something went wrong!');
+        setHideButton(true);
+        setIsCommentError(true);
       });
   }, [post]);
 
   const handleAddingComment = (newComment: com) => {
-    addComment(newComment).then(result => {
-      setComments(prev => [...prev, result]);
-    });
+    setIsAddingCommentLoading(true);
+    addComment(newComment)
+      .then(result => {
+        setComments(prev => [...prev, result]);
+      })
+      .finally(() => setIsAddingCommentLoading(false));
+  };
+
+  const handleButtonClick = () => {
+    setShowForm(!showForm);
+    setIsFormOpen(!isFormOpen);
+    setHideButton(true);
   };
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">{post.title}</h2>
+          <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
 
           <p data-cy="PostBody">{post.body}</p>
         </div>
@@ -59,7 +78,7 @@ export const PostDetails: React.FC<Props> = ({ post, selectedUser }) => {
             </div>
           )}
 
-          {!comments && (
+          {comments.length === 0 && !isCommentsLoad && !isCommentError && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -93,18 +112,21 @@ export const PostDetails: React.FC<Props> = ({ post, selectedUser }) => {
             </article>
           ))}
 
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-            onClick={() => setShowForm(!showForm)}
-          >
-            Write a comment
-          </button>
+          {post && !isCommentsLoad && !hideButton && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={handleButtonClick}
+            >
+              Write a comment
+            </button>
+          )}
         </div>
 
-        {showForm && (
+        {isFormOpen && (
           <NewCommentForm
+            loading={isAddingCommentLoading}
             addComment={test => handleAddingComment(test)}
             post={post}
             selectedUser={selectedUser}
