@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
 import * as Services from '../utils/fetchClient';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 export const UserSelector: React.FC = () => {
   const [isDropdownActive, setIsDropdownActive] = useState(false);
@@ -89,14 +89,14 @@ export const UserSelector: React.FC = () => {
       >
         <div className="dropdown-content">
           {users?.map(user => (
-            <a
+            <Link
               key={user.id}
-              href={`/user/${user.id}`}
+              to={`/user/${user.id}`}
               className={`dropdown-item${user.id === selectedUser?.id ? ' is-active' : ''}`}
               onClick={() => handleUserSelect(user)}
             >
               {user.name}
-            </a>
+            </Link>
           ))}
         </div>
       </div>
