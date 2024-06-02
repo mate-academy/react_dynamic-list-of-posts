@@ -53,6 +53,7 @@ export const App: React.FC = () => {
                 selectedPost={selectedPost}
                 isFormVisible={isFormVisible}
                 setIsFormVisible={setIsFormVisible}
+                isDetailOpen={isDetailOpen}
               />
             </div>
           </div>

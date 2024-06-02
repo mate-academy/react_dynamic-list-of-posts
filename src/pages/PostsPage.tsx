@@ -7,7 +7,7 @@ import { Post } from '../types/Post';
 import * as Services from '../utils/fetchClient';
 
 export const PostsPage: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { userId } = useParams();
   const [error, setError] = useState<string>('');
   const [posts, setPosts] = useState<Post[]>([]);
@@ -52,7 +52,8 @@ export const PostsPage: React.FC = () => {
         <UserSelector />
       </div>
       <div className="block" data-cy="MainContent">
-        {isLoading && <Loader data-cy="Loader" />}
+        {isLoading && <Loader />}
+
         {error && (
           <div className="notification is-danger" data-cy="PostsLoadingError">
             Something went wrong!
@@ -64,8 +65,7 @@ export const PostsPage: React.FC = () => {
             No posts yet
           </div>
         )}
-
-        {userId && posts.length > 0 && (
+        {!isLoading && userId && posts.length > 0 && (
           <PostsList
             posts={posts}
             selectedPost={selectedPost}
