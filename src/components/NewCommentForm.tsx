@@ -43,7 +43,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const formSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!name || !email || !text) {
+    if (!name || !email || text.trim().length === 0 || !text) {
       setNameError('Something went wrong!');
       setEmailError('Something went wrong!');
       setTextError('Something went wrong!');
@@ -113,7 +113,7 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control has-icons-left has-icons-right">
           <input
             value={email}
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
@@ -156,13 +156,13 @@ export const NewCommentForm: React.FC<Props> = ({
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', {
-              'is-danger': !text && textError,
+              'is-danger': !text.trim() && textError,
             })}
             onChange={e => setText(e.target.value)}
           />
         </div>
 
-        {!text && textError && (
+        {!text.trim() && textError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
