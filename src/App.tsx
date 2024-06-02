@@ -1,46 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import classNames from 'classnames';
-import { PostsList } from './components/PostsList';
+import { Outlet } from 'react-router-dom';
 import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
+import { Post } from './types/Post';
+import classNames from 'classnames';
 
 export const App: React.FC = () => {
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isFormVisible, setIsFormVisible] = useState(false);
+
+  const handlePostSelect = (post: Post | null) => {
+    setSelectedPost(post);
+    setIsDetailOpen(post !== null);
+  };
+
   return (
     <main className="section">
       <div className="container">
         <div className="tile is-ancestor">
           <div className="tile is-parent">
-            <div className="tile is-child box is-success">
-              <div className="block">
-                <UserSelector />
-              </div>
-
-              <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
-
-                <Loader />
-
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
-
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
-              </div>
+            <div className="tile is-child">
+              <Outlet
+                context={{
+                  handlePostSelect,
+                  selectedPost,
+                  isDetailOpen,
+                  setIsDetailOpen,
+                  isFormVisible,
+                  setIsFormVisible,
+                }}
+              />
             </div>
           </div>
-
           <div
             data-cy="Sidebar"
             className={classNames(
@@ -48,11 +43,18 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              {
+                'Sidebar--open': isDetailOpen,
+              },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
+            <div className="tile is-child box is-success">
+              <PostDetails
+                selectedPost={selectedPost}
+                isFormVisible={isFormVisible}
+                setIsFormVisible={setIsFormVisible}
+                isDetailOpen={isDetailOpen}
+              />
             </div>
           </div>
         </div>
