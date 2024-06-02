@@ -1,21 +1,81 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 import React, { ChangeEvent, useState } from 'react';
+import * as Services from '../utils/fetchClient';
+import { Comment } from './../types/Comment';
 
-export const NewCommentForm: React.FC = () => {
+type NewCommentFormProps = {
+  isLoading: boolean;
+  postId: number | undefined | null;
+  onAddComment: (newComment: Comment) => void;
+};
+
+export const NewCommentForm: React.FC<NewCommentFormProps> = ({
+  isLoading,
+  postId,
+  onAddComment,
+}) => {
   const [authorNameLabel, setAuthorNameLabel] = useState('');
   const [emailLabel, setEmailLabel] = useState('');
   const [textLabel, setTextLabel] = useState('');
-  const [isValidLabel, setIsValidLabel] = useState(true);
+
+  const [isAuthorNameValid, setIsAuthorNameValid] = useState(true);
+  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [isTextValid, setIsTextValid] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionError, setSubmissionError] = useState('');
 
   const handleInputName = (event: ChangeEvent<HTMLInputElement>) => {
-    setAuthorNameLabel(event.target?.value);
-    setEmailLabel(event.target.value);
-    setTextLabel(event.target.value);
+    setAuthorNameLabel(event.target.value);
+    setIsAuthorNameValid(true);
   };
 
-  const handleSubmit = () => {
-    if (authorNameLabel === '' && emailLabel === '' && textLabel === '') {
-      setIsValidLabel(false);
-    }
+  const handleInputEmail = (event: ChangeEvent<HTMLInputElement>) => {
+    setEmailLabel(event.target.value);
+    setIsEmailValid(true);
+  };
+
+  const handleInputText = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setTextLabel(event.target.value);
+    setIsTextValid(true);
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const isNameValid = authorNameLabel !== '';
+    const isEmailValid = emailLabel !== '';
+    const isTextValid = textLabel !== '';
+
+    setIsAuthorNameValid(isNameValid);
+    setIsEmailValid(isEmailValid);
+    setIsTextValid(isTextValid);
+
+    const commentData = {
+      postId,
+      name: authorNameLabel,
+      email: emailLabel,
+      body: textLabel,
+    };
+
+    Services.client
+      .post('/comments', commentData)
+      .then(newComment => {
+        onAddComment(newComment as Comment);
+        setAuthorNameLabel('');
+        setEmailLabel('');
+        setTextLabel('');
+        setIsAuthorNameValid(true);
+        setIsEmailValid(true);
+        setIsTextValid(true);
+      })
+      .catch(() => setSubmissionError(submissionError))
+      .finally(() => setIsSubmitting(false));
+  };
+
+  const handleClearButton = () => {
+    setAuthorNameLabel('');
+    setEmailLabel('');
+    setTextLabel('');
   };
 
   return (
@@ -31,18 +91,19 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={`input ${isValidLabel ? '' : 'is-danger'}`}
+            className={`input ${isAuthorNameValid ? '' : 'is-danger'}`}
             onChange={handleInputName}
+            value={authorNameLabel}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {!isValidLabel && authorNameLabel === '' && (
+          {!isAuthorNameValid && (
             <>
               <span
-                className={`icon is-small is-right ${isValidLabel ? '' : 'has-text-danger'}`}
+                className={`icon is-small is-right ${isAuthorNameValid ? '' : 'has-text-danger'}`}
                 data-cy="ErrorIcon"
               >
                 <i className="fas fa-exclamation-triangle" />
@@ -65,24 +126,28 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={`input ${isValidLabel ? '' : 'is-danger'}`}
+            onChange={handleInputEmail}
+            className={`input ${isEmailValid ? '' : 'is-danger'}`}
+            value={emailLabel}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {!isEmailValid && (
+            <>
+              <span
+                className="icon is-small is-right has-text-danger"
+                data-cy="ErrorIcon"
+              >
+                <i className="fas fa-exclamation-triangle" />
+              </span>
+              <p className="help is-danger" data-cy="ErrorMessage">
+                Email is required
+              </p>
+            </>
+          )}
         </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -95,25 +160,37 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={`textarea ${isValidLabel ? '' : 'is-danger'}`}
+            onChange={handleInputText}
+            className={`textarea ${isTextValid ? '' : 'is-danger'}`}
+            value={textLabel}
           />
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
+        {!isTextValid && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Enter some text
+          </p>
+        )}
       </div>
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={`button is-link ${isLoading ? 'is-loading' : ''}`}
+            disabled={isSubmitting || isLoading}
+          >
             Add
           </button>
         </div>
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={handleClearButton}
+          >
             Clear
           </button>
         </div>

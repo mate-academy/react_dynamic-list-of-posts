@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { Comment } from '../types/Comment';
 import * as Services from '../utils/fetchClient';
 import { Post } from '../types/Post';
+import { Comment } from './../types/Comment';
 
 type PostDetailsProps = {
   selectedPost: Post | null;
@@ -27,6 +27,21 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ selectedPost }) => {
 
   const openNewCommentForm = () => {
     setIsFormVisible(true);
+  };
+
+  const handleDeleteComment = (commentId: number) => {
+    Services.client
+      .delete(`/comments/${commentId}`)
+      .then(() => {
+        setComments(prevComments =>
+          prevComments.filter(comment => comment.id !== commentId),
+        );
+      })
+      .catch(() => setError('Failed to delete comment'));
+  };
+
+  const handleAddComment = (newComment: Comment) => {
+    setComments(prevComments => [...prevComments, newComment]);
   };
 
   return (
@@ -68,8 +83,9 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ selectedPost }) => {
                   type="button"
                   className="delete is-small"
                   aria-label="delete"
+                  onClick={() => handleDeleteComment(comment.id)}
                 >
-                  X
+                  delete comment
                 </button>
               </div>
 
@@ -88,7 +104,13 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ selectedPost }) => {
             Write a comment
           </button>
         </div>
-        {isFormVisible && <NewCommentForm />}
+        {isFormVisible && (
+          <NewCommentForm
+            isLoading={isLoading}
+            postId={selectedPost?.id}
+            onAddComment={handleAddComment}
+          />
+        )}
       </div>
     </div>
   );

@@ -21,20 +21,18 @@ export const PostsPage = ({}) => {
       setIsLoading(true);
       setError('');
       setIsDetailOpen(false);
+
+      Services.client
+        .get<Post[]>(`/posts?userId=${userId}`)
+        .then(fetchedPosts => {
+          setPosts(fetchedPosts);
+        })
+        .catch(() => setError('Something went wrong!'))
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
   }, [userId]);
-
-  useEffect(() => {
-    Services.client
-      .get<Post[]>(`/posts?userId=${userId}`)
-      .then(fetchedPosts => {
-        setPosts(fetchedPosts);
-      })
-      .catch(() => setError(error))
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [error, userId]);
 
   const handlePostSelect = (post: SetStateAction<Post | null>) => {
     setSelectedPost(post);
