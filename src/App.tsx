@@ -53,17 +53,6 @@ export const App: React.FC = () => {
     }
   };
 
-  // const loadUserComments = async (postId: number) => {
-  //   try {
-  //     const comments = await getComments(postId);
-
-  //     setPostsComments(comments);
-  //   } catch (error) {
-  //     setErrorMessage('');
-  //   } finally {
-  //   }
-  // };
-
   const handleDeleteComments = async (commentId: number) => {
     try {
       await deleteComment(commentId);
@@ -81,7 +70,6 @@ export const App: React.FC = () => {
   const handlePostCommentSelect = (post: Post) => {
     setOpenedPost(post);
     setOnClosedComments(false);
-    // loadUserComments(postId);
     setOnClosedComments(true);
   };
 
@@ -133,7 +121,7 @@ export const App: React.FC = () => {
                 {!errorMessage &&
                   selectedUsers &&
                   !loading &&
-                  usersPosts.length === 0 && (
+                  !usersPosts.length && (
                     <div
                       className="notification is-warning"
                       data-cy="NoPostsYet"
@@ -141,7 +129,7 @@ export const App: React.FC = () => {
                       No posts yet
                     </div>
                   )}
-                {selectedUsers && !loading && usersPosts.length > 0 && (
+                {selectedUsers && !loading && !!usersPosts.length && (
                   <PostsList
                     selectedUsers={selectedUsers}
                     usersPosts={usersPosts}

@@ -61,6 +61,7 @@ export const PostDetails: React.FC<Props> = ({
     if (openedPost && openedPost.id) {
       loadPostComments(openedPost.id);
     }
+    /* eslint-disable*/
   }, [openedPost.id]);
 
   if (!openedPost) {
@@ -85,41 +86,43 @@ export const PostDetails: React.FC<Props> = ({
                 Something went wrong
               </div>
             )}
-            {postsComments.length === 0 && !errorMessage && (
+            {!postsComments.length && !errorMessage && (
               <p className="title is-4" data-cy="NoCommentsMessage">
                 No comments yet
               </p>
             )}
 
             <div>
-              {!errorMessage && postsComments.length > 0 && (
+              {!errorMessage && !!postsComments.length && (
                 <p className="title is-4">Comments:</p>
               )}
 
-              {postsComments.map((post, index) => {
+              {postsComments.map(comment => {
+                const { email, name, body, id } = comment;
+
                 return (
                   <article
                     className="message is-small"
-                    key={index}
+                    key={id}
                     data-cy="Comment"
                   >
                     <div className="message-header">
-                      <a href={`mailto:${post.email}`} data-cy="CommentAuthor">
-                        {post.name}
+                      <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                        {name}
                       </a>
                       <button
                         data-cy="CommentDelete"
                         type="button"
                         className="delete is-small"
                         aria-label="delete"
-                        onClick={() => onDeleteComments(post.id)}
+                        onClick={() => onDeleteComments(id)}
                       >
                         delete button
                       </button>
                     </div>
 
                     <div className="message-body" data-cy="CommentBody">
-                      {post.body}
+                      {body}
                     </div>
                   </article>
                 );

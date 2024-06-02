@@ -124,7 +124,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="authorEmail"
             value={commentData.authorEmail}
             id="comment-author-email"

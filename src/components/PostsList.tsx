@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { User } from '../types/User';
 import { Post } from '../types/Post';
+import classNames from 'classnames';
+import { handlePostClick } from '../api/HelperFunction';
 
 type Props = {
   selectedUsers: User | null;
@@ -28,10 +30,10 @@ export const PostsList: React.FC<Props> = ({
           <p className="title">Posts:</p>
           <table
             className="table
-            is-fullwidth
-            is-striped
-            is-hoverable
-            is-narrow"
+              is-fullwidth
+              is-striped
+              is-hoverable
+              is-narrow"
           >
             <thead>
               <tr className="has-background-link-light">
@@ -43,19 +45,25 @@ export const PostsList: React.FC<Props> = ({
             </thead>
 
             <tbody>
-              {usersPosts.map((post, index) => (
-                <tr key={index} data-cy="Post">
+              {usersPosts.map(post => (
+                <tr key={post.id} data-cy="Post">
                   <td data-cy="PostId">{post.id}</td>
                   <td data-cy="PostTitle">{post.title}</td>
                   <td className="has-text-right is-vcentered">
                     <button
                       type="button"
                       data-cy="PostButton"
-                      className={`button is-link ${openPostId === post.id ? '' : 'is-light'}`}
+                      className={classNames('button is-link', {
+                        'is-light': openPostId !== post.id,
+                      })}
                       onClick={() => {
-                        onPostCommentSelect(post, post.id);
-                        toggleComments(post.id);
-                        setOnClosedComments(openPostId !== post.id);
+                        handlePostClick(
+                          post,
+                          openPostId,
+                          onPostCommentSelect,
+                          toggleComments,
+                          setOnClosedComments,
+                        );
                       }}
                     >
                       {openPostId === post.id ? 'Close' : 'Open'}
