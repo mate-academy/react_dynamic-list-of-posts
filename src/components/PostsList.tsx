@@ -7,6 +7,8 @@ interface PostsListProps {
   setSelectedPost: Dispatch<SetStateAction<Post | null>>;
   isDetailOpen: boolean;
   setIsDetailOpen: Dispatch<SetStateAction<boolean>>;
+  isFormVisible: boolean;
+  setIsFormVisible: Dispatch<SetStateAction<boolean>>;
 }
 
 export const PostsList: React.FC<PostsListProps> = ({
@@ -15,13 +17,16 @@ export const PostsList: React.FC<PostsListProps> = ({
   setSelectedPost,
   isDetailOpen,
   setIsDetailOpen,
+  setIsFormVisible,
 }) => {
   const togglePostDetails = (post: Post) => {
     if (selectedPost?.id === post.id) {
       setIsDetailOpen(!isDetailOpen);
+      setIsFormVisible(false);
     } else {
       setSelectedPost(post);
       setIsDetailOpen(true);
+      setIsFormVisible(false);
     }
   };
 
