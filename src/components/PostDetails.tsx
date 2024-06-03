@@ -1,106 +1,121 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-export const PostDetails: React.FC = () => {
+import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
+import { deletePostComment, getPostComments } from '../api/comments';
+
+type Props = {
+  selectedPost: Post;
+};
+
+export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>('');
+  const [isFormVisible, setIsFormVisible] = useState(false);
+
+  const handleDeletingComment = (commentId: number) => {
+    setComments(currentComments =>
+      currentComments.filter(comment => comment.id !== commentId),
+    );
+
+    deletePostComment(commentId).catch(() => {
+      setComments(comments);
+
+      setError('Failed to delete comment');
+      setTimeout(() => {
+        setError('');
+      }, 3000);
+    });
+  };
+
+  useEffect(() => {
+    if (!selectedPost.id) {
+      return;
+    }
+
+    setLoading(true);
+    setComments([]);
+    setError('');
+    setIsFormVisible(false);
+
+    getPostComments(selectedPost.id)
+      .then(setComments)
+      .catch(() => setError('Something went wrong'))
+      .finally(() => setLoading(false));
+  }, [selectedPost.id]);
+
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
-          </h2>
+      <div className="block">
+        <h2 data-cy="PostTitle">{`#${selectedPost.id}: ${selectedPost.title}`}</h2>
 
-          <p data-cy="PostBody">
-            eveniet quo quis laborum totam consequatur non dolor ut et est
-            repudiandae est voluptatem vel debitis et magnam
-          </p>
-        </div>
+        <p data-cy="PostBody">{selectedPost.body}</p>
+      </div>
 
-        <div className="block">
-          <Loader />
+      <div className="block">
+        {loading && <Loader />}
 
+        {error && !loading && (
           <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
+            {error}
           </div>
+        )}
 
+        {!comments.length && !loading && !error && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
+        )}
 
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
+        {!!comments.length && (
+          <>
+            <p className="title is-4">Comments:</p>
+            {comments.map(comment => (
+              <article
+                className="message is-small"
+                data-cy="Comment"
+                key={comment.id}
               >
-                delete button
-              </button>
-            </div>
+                <div className="message-header">
+                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                    {comment.name}
+                  </a>
 
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
+                  <button
+                    data-cy="CommentDelete"
+                    type="button"
+                    className="delete is-small"
+                    aria-label="delete"
+                    onClick={() => handleDeletingComment(comment.id)}
+                  >
+                    ×
+                  </button>
+                </div>
+                <div className="message-body" data-cy="CommentBody">
+                  {comment.body}
+                </div>
+              </article>
+            ))}
+          </>
+        )}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div className="message-body" data-cy="CommentBody">
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
+        {!loading && !isFormVisible && !error && (
           <button
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
+            onClick={() => setIsFormVisible(true)}
           >
             Write a comment
           </button>
-        </div>
+        )}
 
-        <NewCommentForm />
+        {isFormVisible && (
+          <NewCommentForm postId={selectedPost.id} setComments={setComments} />
+        )}
       </div>
     </div>
   );
