@@ -48,11 +48,22 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
   const handleAddingComment = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setHasNameError(!commentatorName);
-    setHasEmailError(!commentatorEmail);
-    setHasBodyError(!commentBody);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (!commentatorName || !commentatorEmail || !commentBody) {
+    const preparedName = commentatorName.trim();
+    const preparedEmail = commentatorEmail.trim();
+    const preparedBody = commentBody.trim();
+
+    setHasNameError(!preparedName);
+    setHasEmailError(!preparedEmail || !emailRegex.test(preparedEmail));
+    setHasBodyError(!preparedBody);
+
+    if (
+      !preparedName ||
+      !preparedEmail ||
+      !preparedBody ||
+      !emailRegex.test(preparedEmail)
+    ) {
       return;
     }
 
@@ -60,9 +71,9 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
 
     createPostComment({
       postId,
-      name: commentatorName.trim(),
-      email: commentatorEmail.trim(),
-      body: commentBody.trim(),
+      name: preparedName,
+      email: preparedEmail,
+      body: preparedBody,
     })
       .then(newComment => {
         setComments(currentComments => [...currentComments, newComment]);
