@@ -1,14 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { User } from '../types/User';
+import classNames from 'classnames';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  users: User[];
+  onSelect: (selectedUser: User) => void;
+};
+
+export const UserSelector: React.FC<Props> = ({ users, onSelect }) => {
+  const [isDropDown, setIsDropDown] = useState(false);
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className={classNames('dropdown', { 'is-active': isDropDown })}
+      onMouseLeave={() => setIsDropDown(false)}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => {
+            setIsDropDown(!isDropDown);
+          }}
         >
           <span>Choose a user</span>
 
@@ -20,21 +36,20 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
+          {users.map(user => (
+            <a
+              href={`#user-${user.id}`}
+              className="dropdown-item"
+              key={user.id}
+              onClick={() => onSelect(user)}
+            >
+              {user.name}
+            </a>
+          ))}
+
+          {/* <a href="#user-2" className="dropdown-item is-active">
             Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+          </a> */}
         </div>
       </div>
     </div>
