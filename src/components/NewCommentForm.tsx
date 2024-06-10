@@ -1,99 +1,178 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
+import { CommentFieldEnum, Field } from './Field';
+import { addComment } from '../utils/httpClient';
+import { PostContext } from '../context/PostContextProvider';
+import classNames from 'classnames';
+import { Comment } from '../types/Comment';
 
-export const NewCommentForm: React.FC = () => {
+export interface CommentForm {
+  name: string;
+  email: string;
+  text: string;
+}
+
+export interface CommentType {
+  addCom: (comment: Comment) => void;
+}
+
+export const NewCommentForm: React.FC<CommentType> = ({ addCom }) => {
+  const [comment, setComment] = useState<CommentForm>({
+    name: '',
+    email: '',
+    text: '',
+  });
+  const [commentError, setCommentError] = useState<CommentForm>({
+    name: '',
+    email: '',
+    text: '',
+  });
+  const [isSending, setIsSending] = useState(false);
+
+  const { post } = useContext(PostContext);
+
+  const changeFieldHandler = (newStr: string, type: CommentFieldEnum) => {
+    switch (type) {
+      case CommentFieldEnum.EMAIL: {
+        setComment(prev => {
+          return {
+            ...prev,
+            email: newStr,
+          };
+        });
+
+        break;
+      }
+
+      case CommentFieldEnum.NAME: {
+        setComment(prev => {
+          return {
+            ...prev,
+            name: newStr,
+          };
+        });
+
+        break;
+      }
+
+      case CommentFieldEnum.TEXT: {
+        setComment(prev => {
+          return {
+            ...prev,
+            text: newStr,
+          };
+        });
+
+        break;
+      }
+    }
+  };
+
+  const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!comment.email || !comment.name || !comment.text) {
+      setCommentError({
+        email: !comment.email ? 'Email is required' : '',
+        name: !comment.name ? 'Name is required' : '',
+        text: !comment.text ? 'Enter some text' : '',
+      });
+
+      return;
+    }
+
+    if (post) {
+      setIsSending(true);
+
+      addComment({
+        id: 0,
+        name: comment.name,
+        email: comment.email,
+        body: comment.text,
+        postId: post.id,
+      })
+        .then(response => {
+          addCom(response);
+
+          setComment(prev => {
+            return {
+              ...prev,
+              text: '',
+            };
+          });
+
+          setCommentError({
+            name: '',
+            email: '',
+            text: '',
+          });
+        })
+        .finally(() => {
+          setIsSending(false);
+        });
+    }
+  };
+
+  const clearHandle = () => {
+    setComment({
+      name: '',
+      email: '',
+      text: '',
+    });
+
+    setCommentError({
+      name: '',
+      email: '',
+      text: '',
+    });
+  };
+
   return (
-    <form data-cy="NewCommentForm">
-      <div className="field" data-cy="NameField">
-        <label className="label" htmlFor="comment-author-name">
-          Author Name
-        </label>
+    <form data-cy="NewCommentForm" onSubmit={onSubmitHandler}>
+      <Field
+        title={comment.name}
+        label="Author Name"
+        error={commentError.name}
+        changeField={changeFieldHandler}
+        type={CommentFieldEnum.NAME}
+      />
 
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="name"
-            id="comment-author-name"
-            placeholder="Name Surname"
-            className="input is-danger"
-          />
+      <Field
+        title={comment.email}
+        label="Author Email"
+        error={commentError.email}
+        changeField={changeFieldHandler}
+        type={CommentFieldEnum.EMAIL}
+      />
 
-          <span className="icon is-small is-left">
-            <i className="fas fa-user" />
-          </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
-      </div>
-
-      <div className="field" data-cy="EmailField">
-        <label className="label" htmlFor="comment-author-email">
-          Author Email
-        </label>
-
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="email"
-            id="comment-author-email"
-            placeholder="email@test.com"
-            className="input is-danger"
-          />
-
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
-          </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
-      </div>
-
-      <div className="field" data-cy="BodyField">
-        <label className="label" htmlFor="comment-body">
-          Comment Text
-        </label>
-
-        <div className="control">
-          <textarea
-            id="comment-body"
-            name="body"
-            placeholder="Type comment here"
-            className="textarea is-danger"
-          />
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
-      </div>
+      <Field
+        title={comment.text}
+        label="Comment Text"
+        error={commentError.text}
+        changeField={changeFieldHandler}
+        type={CommentFieldEnum.TEXT}
+        isTextArea={true}
+      />
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={classNames('button is-link', {
+              'is-loading': isSending,
+            })}
+          >
             Add
           </button>
         </div>
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={clearHandle}
+          >
             Clear
           </button>
         </div>
