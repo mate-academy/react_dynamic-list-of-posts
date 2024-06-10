@@ -71,11 +71,11 @@ export const NewCommentForm: React.FC<CommentType> = ({ addCom }) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (!comment.email || !comment.name || !comment.text) {
+    if (!comment.email.trim() || !comment.name.trim() || !comment.text.trim()) {
       setCommentError({
-        email: !comment.email ? 'Email is required' : '',
-        name: !comment.name ? 'Name is required' : '',
-        text: !comment.text ? 'Enter some text' : '',
+        email: !comment.email.trim() ? 'Email is required' : '',
+        name: !comment.name.trim() ? 'Name is required' : '',
+        text: !comment.text.trim() ? 'Enter some text' : '',
       });
 
       return;

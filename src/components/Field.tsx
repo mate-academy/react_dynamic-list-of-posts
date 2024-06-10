@@ -72,7 +72,7 @@ export const Field: React.FC<CommentField> = ({
     }
   }, [type]);
 
-  const hasError = error && !title;
+  const hasError = error && !title.trim();
 
   return (
     <div className="field" data-cy={DataCy}>
