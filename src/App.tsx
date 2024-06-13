@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useEffect, useMemo, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -28,6 +29,8 @@ export const App: React.FC = () => {
   const [openOrCloseMenu, setOpenOrCloseMenu] = useState(false);
   const [comments, setComments] = useState<CommentsState>({});
   const [openMenu, setOpenMenu] = useState<OpenState>({ postId: null });
+  const [openCommentForm, setOpenCommentForm] = useState(false);
+
 
   useEffect(() => {
     getUsers().then(result => {
@@ -89,9 +92,15 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {posts.length === 0 && selectedUser && !errorPosts && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
+                {posts.length === 0 &&
+                  selectedUser &&
+                  !errorPosts &&
+                  !loadingPost && (
+                  <div
+                    className="notification is-warning"
+                    data-cy="NoPostsYet"
+                  >
+                      No posts yet
                   </div>
                 )}
                 {selectedUser && posts.length > 0 && (
@@ -103,6 +112,7 @@ export const App: React.FC = () => {
                     openMenu={openMenu}
                     setLoadingComments={setLoadingComments}
                     setErrorComments={setErrorComments}
+                    setOpenCommentForm={setOpenCommentForm}
                   />
                 )}
               </div>
@@ -125,12 +135,12 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success ">
               {openMenu.postId !== null && currentPost && (
                 <PostDetails
-                  key={openMenu.postId}
                   comments={comments[openMenu.postId]}
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  post={currentPost!}
+                  post={currentPost}
                   errorComments={errorComments}
                   loadingComments={loadingComments}
+                  setOpenCommentForm={setOpenCommentForm}
+                  openCommentForm={openCommentForm}
                 />
               )}
             </div>

@@ -32,11 +32,9 @@ export const UserSelector: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    // Додаємо обробник подій при монтуванні компонента
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      // Видаляємо обробник подій при демонтуванні компонента
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
@@ -90,19 +88,6 @@ export const UserSelector: React.FC<Props> = ({
               {user.name}
             </a>
           ))}
-
-          {/* <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a> */}
         </div>
       </div>
     </div>

@@ -57,11 +57,9 @@ export const NewCommentForm: React.FC<Props> = ({
     }
 
     if (newComment.body && newComment.email && newComment.name) {
-      postComment({ ...newComment })
-        .then(() => {
-          setCurrentComments(prevComments => [...prevComments, newComment]);
-          // setAuthorName('');
-          // setAuthorEmail('');
+      postComment(newComment)
+        .then(createdComment => {
+          setCurrentComments(prevComments => [...prevComments, createdComment]);
           setCommentText('');
         })
         .catch(() => {

@@ -1,4 +1,4 @@
-import { Comment, CommentData } from '../types/Comment';
+import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 import { client } from '../utils/fetchClient';
@@ -19,6 +19,6 @@ export const getDelate = (postId: number) => {
   return client.delete(`/comments/${postId}`);
 };
 
-export const postComment = ({ name, email, body }: CommentData) => {
-  return client.post<Comment>(`/comments`, { name, email, body });
+export const postComment = ({ name, email, body, postId }: Comment) => {
+  return client.post<Comment>(`/comments`, { name, email, body, postId });
 };

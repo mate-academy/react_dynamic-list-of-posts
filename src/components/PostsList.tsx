@@ -14,6 +14,7 @@ type Props = {
   openMenu: OpenState;
   setLoadingComments: Dispatch<SetStateAction<boolean>>;
   setErrorComments: Dispatch<SetStateAction<boolean>>;
+  setOpenCommentForm: Dispatch<SetStateAction<boolean>>;
 };
 
 export const PostsList: React.FC<Props> = ({
@@ -24,21 +25,36 @@ export const PostsList: React.FC<Props> = ({
   openMenu,
   setLoadingComments,
   setErrorComments,
+  setOpenCommentForm,
 }) => {
   const handlerOpenMenu = (postId: number) => {
     const postIdString = postId.toString();
 
     if (openMenu.postId === postId) {
-      // Close the current open menu
       setOpenMenu({ postId: null });
       setComments(prevState => ({
         ...prevState,
         [postIdString]: null,
       }));
-
       setOpenOrCloseMenu(false);
     } else {
+      if (openMenu.postId !== null) {
+        const currentPostIdString = openMenu.postId.toString();
+
+        setComments(prevState => ({
+          ...prevState,
+          [currentPostIdString]: [],
+        }));
+      }
+
       setLoadingComments(true);
+      setComments(prevState => ({
+        ...prevState,
+        [postIdString]: [],
+      }));
+
+      setOpenMenu({ postId });
+      setOpenCommentForm(false);
 
       getComment(postId)
         .then((result: Comment[]) => {
@@ -46,15 +62,15 @@ export const PostsList: React.FC<Props> = ({
             ...prevState,
             [postIdString]: result,
           }));
-          setOpenMenu({ postId });
           setOpenOrCloseMenu(true);
+          setErrorComments(false);
         })
         .catch(() => {
           setErrorComments(true);
+          setOpenOrCloseMenu(true);
         })
         .finally(() => {
           setLoadingComments(false);
-          setErrorComments(false);
         });
     }
   };
@@ -94,54 +110,6 @@ export const PostsList: React.FC<Props> = ({
               </td>
             </tr>
           ))}
-
-          {/* <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
-
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr> */}
         </tbody>
       </table>
     </div>
