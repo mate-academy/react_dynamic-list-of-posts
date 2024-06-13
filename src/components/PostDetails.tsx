@@ -68,14 +68,14 @@ export const PostDetails: React.FC<Props> = ({
         )}
 
         {!loadingComments &&
-          currentComments.length === 0 &&
+          !currentComments.length &&
           !errorComments && (
           // eslint-disable-next-line prettier/prettier
           <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
           </p>
         )}
-        {currentComments.length > 0 && (
+        {currentComments.length && (
           <p className="title is-4">Comments:</p>
         )}
         {currentComments?.map(message => (

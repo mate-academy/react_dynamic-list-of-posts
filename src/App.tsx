@@ -47,6 +47,8 @@ export const App: React.FC = () => {
         .then(result => {
           setPosts(result);
           setErrorPosts(false);
+          setOpenOrCloseMenu(false);
+          setOpenMenu({ postId: null });
         })
         .catch(() => {
           setErrorPosts(true);
@@ -92,7 +94,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {posts.length === 0 &&
+                {!posts.length &&
                   selectedUser &&
                   !errorPosts &&
                   !loadingPost && (
@@ -103,7 +105,7 @@ export const App: React.FC = () => {
                       No posts yet
                   </div>
                 )}
-                {selectedUser && posts.length > 0 && (
+                {selectedUser && posts.length && (
                   <PostsList
                     posts={posts}
                     setComments={setComments}
@@ -133,7 +135,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {openMenu.postId !== null && currentPost && (
+              {openMenu.postId && currentPost && (
                 <PostDetails
                   comments={comments[openMenu.postId]}
                   post={currentPost}
