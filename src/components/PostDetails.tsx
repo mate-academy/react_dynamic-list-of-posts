@@ -2,8 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
-import { createComment, getComments } from '.././utils/postServices';
 import { Comment, CommentData } from '../types/Comment';
+import {
+  createComment,
+  deleteComment,
+  getComments,
+} from '../utils/postServices';
 
 type Props = {
   selectedPost: Post | null;
@@ -36,13 +40,30 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       });
   };
 
+  const removeComment = (currentComment: Comment) => {
+    setIsLoading(true);
+
+    deleteComment(currentComment.id)
+      .then(() => {
+        setComments(
+          comments.filter(comment => comment.id !== currentComment.id),
+        );
+      })
+      .catch(() => {
+        setErrorMessage('Unable to delete a comment');
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   useEffect(() => {
     setIsCreatingMode(false);
     if (selectedPost) {
       setIsLoading(true);
 
       getComments(selectedPost.id)
-        .then(data => setComments(data as unknown as Comment[]))
+        .then(data => setComments(data as Comment[]))
         .catch(() => setErrorMessage('Something went wrong'))
         .finally(() => setIsLoading(false));
     }
@@ -91,6 +112,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
+                      onClick={() => removeComment(comment)}
                     >
                       delete button
                     </button>

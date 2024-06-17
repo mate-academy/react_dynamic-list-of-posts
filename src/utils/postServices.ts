@@ -1,3 +1,4 @@
+import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 import { client } from './fetchClient';
@@ -18,4 +19,8 @@ export const getComments = (postId: number): Promise<Comment[]> => {
 
 export function createComment(newComment: Comment) {
   return client.post<Comment>(`/comments/`, newComment);
+}
+
+export function deleteComment(commentId: number) {
+  return client.delete(`/comments/${commentId}`);
 }
