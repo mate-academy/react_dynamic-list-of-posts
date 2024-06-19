@@ -21,3 +21,11 @@
 .message-body {
   white-space: pre-line;
 }
+
+.button.is-link:focus:not(:active) {
+  box-shadow: none;
+}
+
+.size {
+  width: 75px;
+}
