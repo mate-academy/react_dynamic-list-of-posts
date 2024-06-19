@@ -7,11 +7,11 @@ import * as serviceData from '../api/serviceData';
 import { NewCommentForm } from './NewCommentForm';
 
 type Props = {
-  post: Post | null;
+  post: Post;
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const { title, id, body } = post as Post;
+  const { title, id, body } = post;
   const [comments, setComments] = useState<Comment[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -54,8 +54,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       .finally(() => {
         setIsLoading(false);
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [post]);
+  }, [id]);
 
   return (
     <div className="content" data-cy="PostDetails">
