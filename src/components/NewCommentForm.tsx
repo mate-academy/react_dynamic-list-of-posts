@@ -1,8 +1,74 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
+import { InitialContext } from './ToDoContext';
+import { CommentData } from '../types/Comment';
+import { addComment } from '../utils/sevicePosts';
+import classNames from 'classnames';
 
-export const NewCommentForm: React.FC = () => {
+export const NewCommentForm = () => {
+  const [authorInput, setAuthorInput] = useState('');
+  const [bodyInput, setBodyInput] = useState('');
+  const [emailInput, setEmailInput] = useState('');
+  const [authorError, setAuthorError] = useState(false);
+  const [bodyError, setBodyError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const { selectedPost, setErrorNotification, setComments, comments } =
+    useContext(InitialContext);
+
+  const handleClearButton = () => {
+    setBodyError(false);
+    setAuthorError(false);
+    setEmailError(false);
+    setAuthorInput('');
+    setBodyInput('');
+    setEmailInput('');
+  };
+
+  const HandleAddingComment = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const emptyAuthor = !authorInput.trim();
+    const emptyBody = !bodyInput.trim();
+    const emptyEmail = !emailInput.trim();
+
+    setAuthorError(emptyAuthor);
+    setBodyError(emptyBody);
+    setEmailError(emptyEmail);
+
+    if (!authorError && !emailError && !bodyError) {
+      const AddNewComment: CommentData = {
+        name: authorInput.trim(),
+        body: bodyInput.trim(),
+        email: emailInput.trim(),
+        postId: selectedPost && selectedPost.id,
+      };
+
+      setIsLoading(true);
+
+      addComment(AddNewComment)
+        .then(newComment => {
+          addComment(newComment);
+          setComments([...comments, newComment]);
+          setBodyInput('');
+        })
+        .catch(() => {
+          setErrorNotification('Unable to add a comment');
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+
+    return;
+  };
+
   return (
-    <form data-cy="NewCommentForm">
+    <form
+      data-cy="NewCommentForm"
+      onSubmit={HandleAddingComment}
+      onReset={handleClearButton}
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -14,24 +80,32 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            className={classNames('input', { 'is-danger': authorError })}
+            value={authorInput}
+            onChange={event => {
+              setAuthorInput(event.target.value);
+            }}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {authorError && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
+        {authorError && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Name is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -45,24 +119,32 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            className={classNames('input', { 'is-danger': emailError })}
+            value={emailInput}
+            onChange={event => {
+              setEmailInput(event.target.value);
+            }}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {emailError && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
+        {emailError && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -75,18 +157,29 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            className={classNames('textarea', { 'is-danger': bodyError })}
+            value={bodyInput}
+            onChange={event => {
+              setBodyInput(event.target.value);
+            }}
           />
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
+        {bodyError && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Enter some text
+          </p>
+        )}
       </div>
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={classNames('button is-link', {
+              'is-loading': isLoading,
+            })}
+          >
             Add
           </button>
         </div>
