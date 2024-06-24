@@ -62,7 +62,7 @@ export const GlobalProvider = ({ children }: Props) => {
   const [errorNotification, setErrorNotification] = useState('');
 
   useEffect(() => {
-    getUsers().then(data => setUsers(data));
+    getUsers().then(setUsers);
   }, []);
 
   useEffect(() => {
