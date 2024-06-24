@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { User } from '../types/User';
-import { getComments, getPosts, getUsers } from '../utils/sevicePosts';
+import { getComments, getPosts } from '../utils/sevicePosts';
 import { Post } from '../types/Post';
 import { type Comment } from '../types/Comment';
 
@@ -60,10 +60,6 @@ export const GlobalProvider = ({ children }: Props) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loadingComment, setLoadingComment] = useState(false);
   const [errorNotification, setErrorNotification] = useState('');
-
-  useEffect(() => {
-    getUsers().then(setUsers);
-  }, []);
 
   useEffect(() => {
     if (selectedUser) {

@@ -1,7 +1,8 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
 import { InitialContext } from './ToDoContext';
 import classNames from 'classnames';
+import { getUsers } from '../utils/sevicePosts';
 
 type Props = {
   users: User[];
@@ -9,8 +10,12 @@ type Props = {
 
 export const UserSelector = ({ users }: Props) => {
   const [showUsers, setShowUsers] = useState(false);
-  const { selectedUser, setSelectedUser, setSelectedPost } =
+  const { selectedUser, setSelectedUser, setSelectedPost, setUsers } =
     useContext(InitialContext);
+
+  useEffect(() => {
+    getUsers().then(setUsers);
+  }, []);
 
   const HandleSelectedUser = (
     event: React.MouseEvent<HTMLAnchorElement>,
