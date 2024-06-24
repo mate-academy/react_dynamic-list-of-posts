@@ -44,7 +44,7 @@ export const PostDetails: React.FC = () => {
         <div className="block">
           {loadingComment && <Loader />}
 
-          {error && (
+          {error && comments.length === 0 && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>

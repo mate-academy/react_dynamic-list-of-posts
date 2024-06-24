@@ -13,8 +13,6 @@ type Context = {
   setPosts: (posts: Post[]) => void;
   selectedPost: Post | null;
   setSelectedPost: (selectedPost: Post | null) => void;
-  loading: boolean;
-  setLoading: (loading: boolean) => void;
   loadingPosts: boolean;
   setLoadingPosts: (loadingPosts: boolean) => void;
   error: boolean;
@@ -36,8 +34,6 @@ export const InitialContext = createContext<Context>({
   setPosts: () => {},
   selectedPost: null,
   setSelectedPost: () => {},
-  loading: false,
-  setLoading: () => {},
   loadingPosts: false,
   setLoadingPosts: () => {},
   error: false,
@@ -57,7 +53,6 @@ type Props = {
 export const GlobalProvider = ({ children }: Props) => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(false);
   const [loadingPosts, setLoadingPosts] = useState(false);
   const [error, setError] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
@@ -67,16 +62,7 @@ export const GlobalProvider = ({ children }: Props) => {
   const [errorNotification, setErrorNotification] = useState('');
 
   useEffect(() => {
-    setLoading(true);
-    getUsers()
-      .then(data => setUsers(data))
-      .catch(() => {
-        setError(true);
-        setErrorNotification('Unable to load users');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    getUsers().then(data => setUsers(data));
   }, []);
 
   useEffect(() => {
@@ -116,8 +102,6 @@ export const GlobalProvider = ({ children }: Props) => {
         setSelectedUser,
         users,
         setUsers,
-        loading,
-        setLoading,
         loadingPosts,
         setLoadingPosts,
         error,

@@ -1,6 +1,7 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { User } from '../types/User';
 import { InitialContext } from './ToDoContext';
+import classNames from 'classnames';
 
 type Props = {
   users: User[];
@@ -8,19 +9,27 @@ type Props = {
 
 export const UserSelector = ({ users }: Props) => {
   const [showUsers, setShowUsers] = useState(false);
-  const { selectedUser, setSelectedUser } = useContext(InitialContext);
+  const { selectedUser, setSelectedUser, setSelectedPost } =
+    useContext(InitialContext);
 
   const HandleSelectedUser = (
     event: React.MouseEvent<HTMLAnchorElement>,
     user: User,
   ) => {
     setSelectedUser(user);
+    setSelectedPost(null);
     event.preventDefault();
     setShowUsers(false);
   };
 
+  const selectorRef = useRef<HTMLDivElement>(null);
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className="dropdown is-active"
+      ref={selectorRef}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
@@ -46,7 +55,9 @@ export const UserSelector = ({ users }: Props) => {
               <a
                 href={`#user-${user.id}`}
                 key={user.id}
-                className="dropdown-item"
+                className={classNames('dropdown-item', {
+                  'is-active': showUsers,
+                })}
                 onClick={event => HandleSelectedUser(event, user)}
               >
                 {user.name}
