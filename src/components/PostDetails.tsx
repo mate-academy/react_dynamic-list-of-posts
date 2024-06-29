@@ -74,10 +74,10 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            {`#${selectedPost?.id} ${selectedPost?.title}`}
+            {`#${selectedPost?.id}: ${selectedPost?.title}`}
           </h2>
 
-          <p data-cy="Postody">{selectedPost?.body}</p>
+          <p data-cy="PostBody">{selectedPost?.body}</p>
         </div>
 
         <div className="block">
@@ -89,11 +89,13 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             </div>
           )}
 
-          {comments.length === 0 ? (
+          {!isLoading && !errorMessage && comments.length === 0 && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
-          ) : (
+          )}
+
+          {!isLoading && !errorMessage && (
             <>
               <p className="title is-4">Comments:</p>
 
@@ -167,7 +169,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             </div>
           </article> */}
 
-          {!isCreatingMode && (
+          {!isLoading && !errorMessage && !isCreatingMode && (
             <button
               data-cy="WriteCommentButton"
               type="button"

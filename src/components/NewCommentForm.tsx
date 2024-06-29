@@ -48,6 +48,19 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
       email: email,
       body: comment,
     });
+
+    setName('');
+    setEmail('');
+    setComment('');
+  };
+
+  const handleClear = () => {
+    setName('');
+    setEmail('');
+    setComment('');
+    setHasNameError(false);
+    setHasEmailError(false);
+    setHasCommentError(false);
   };
 
   return (
@@ -135,6 +148,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': hasCommentError })}
+            value={comment}
             onChange={handleCommentChange}
           />
         </div>
@@ -160,7 +174,11 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={handleClear}
+          >
             Clear
           </button>
         </div>

@@ -29,7 +29,9 @@ export const App: React.FC = () => {
       setIsLoading(true);
 
       getPosts(selectedUser.id)
-        .then(setPosts)
+        .then(data => {
+          setPosts(data);
+        })
         .catch(() => {
           setErrorMessage('Something went wrong!');
 
@@ -65,7 +67,7 @@ export const App: React.FC = () => {
 
                 {isLoading && <Loader />}
 
-                {selectedUser && (
+                {selectedUser && !isLoading && (
                   <>
                     {errorMessage && (
                       <div
@@ -86,7 +88,11 @@ export const App: React.FC = () => {
                     )}
 
                     {posts.length > 0 && (
-                      <PostsList userPosts={posts} onSelect={setSelectedPost} />
+                      <PostsList
+                        userPosts={posts}
+                        selectedPost={selectedPost}
+                        onSelect={setSelectedPost}
+                      />
                     )}
                   </>
                 )}
@@ -94,22 +100,22 @@ export const App: React.FC = () => {
             </div>
           </div>
 
-          {selectedPost && selectedUser && posts.length > 0 && (
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                { 'Sidebar--open': selectedPost && selectedUser },
-              )}
-            >
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': selectedPost && selectedUser },
+            )}
+          >
+            {selectedPost && selectedUser && posts.length > 0 && (
               <div className="title is-child box is-success">
                 <PostDetails selectedPost={selectedPost} />
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </main>
