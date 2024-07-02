@@ -111,7 +111,7 @@ export const App: React.FC = () => {
             )}
           >
             {selectedPost && selectedUser && posts.length > 0 && (
-              <div className="title is-child box is-success">
+              <div className="tile is-child box is-success">
                 <PostDetails selectedPost={selectedPost} />
               </div>
             )}

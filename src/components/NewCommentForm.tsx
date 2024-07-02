@@ -39,7 +39,13 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
     setHasEmailError(!email);
     setHasCommentError(!comment);
 
-    if (!name || !email || !comment) {
+    if (!name || !email) {
+      return;
+    }
+
+    if (!comment.trim()) {
+      setHasCommentError(true);
+
       return;
     }
 
@@ -49,8 +55,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
       body: comment,
     });
 
-    setName('');
-    setEmail('');
     setComment('');
   };
 
@@ -77,6 +81,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': hasNameError })}
+            value={name}
             onChange={handleNameChange}
           />
 
@@ -108,11 +113,12 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': hasEmailError })}
+            value={email}
             onChange={handleEmailChange}
           />
 
