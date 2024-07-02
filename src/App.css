@@ -4,17 +4,21 @@
   transition-property: max-width, opacity;
   transition-duration: 0.5s;
   transition-timing-function: ease-in-out;
+}
 
-  @media (min-width: 769px) {
+@media (min-width: 769px) {
+  .Sidebar {
     max-width: 0;
   }
+}
 
-  &--open {
-    opacity: 1;
+.Sidebar--open {
+  opacity: 1;
+}
 
-    @media (min-width: 769px) {
-      min-width: 50%;
-    }
+@media (min-width: 769px) {
+  .Sidebar--open {
+    max-width: 50%;
   }
 }
 
