@@ -43,6 +43,18 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, isLoading }) => {
       return;
     }
 
+    if (!name.trim()) {
+      setHasNameError(true);
+
+      return;
+    }
+
+    if (!email) {
+      setHasEmailError(true);
+
+      return;
+    }
+
     if (!comment.trim()) {
       setHasCommentError(true);
 

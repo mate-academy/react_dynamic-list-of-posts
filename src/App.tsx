@@ -29,9 +29,7 @@ export const App: React.FC = () => {
       setIsLoading(true);
 
       getPosts(selectedUser.id)
-        .then(data => {
-          setPosts(data);
-        })
+        .then(setPosts)
         .catch(() => {
           setErrorMessage('Something went wrong!');
 
@@ -39,9 +37,7 @@ export const App: React.FC = () => {
             setErrorMessage('');
           }, 3000);
         })
-        .finally(() => {
-          setIsLoading(false);
-        });
+        .finally(() => setIsLoading(false));
     }
   }, [selectedUser]);
 
@@ -87,7 +83,7 @@ export const App: React.FC = () => {
                       </div>
                     )}
 
-                    {posts.length > 0 && (
+                    {!!posts.length && (
                       <PostsList
                         userPosts={posts}
                         selectedPost={selectedPost}

@@ -15,6 +15,16 @@ export const PostsList: React.FC<Props> = ({
 }) => {
   const selectedPostId = selectedPost?.id;
 
+  const handleSelect = (post: Post) => {
+    if (!selectedPost) {
+      onSelect(post);
+    } else if (selectedPost && selectedPostId !== post.id) {
+      onSelect(post);
+    } else {
+      onSelect(null);
+    }
+  };
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -43,15 +53,7 @@ export const PostsList: React.FC<Props> = ({
                   className={classNames('button', 'is-link', {
                     'is-light': selectedPostId !== post.id,
                   })}
-                  onClick={() => {
-                    if (!selectedPost) {
-                      onSelect(post);
-                    } else if (selectedPost && selectedPostId !== post.id) {
-                      onSelect(post);
-                    } else {
-                      onSelect(null);
-                    }
-                  }}
+                  onClick={() => handleSelect(post)}
                 >
                   {(!selectedPost && selectedPostId === post.id) ||
                   (selectedPost && selectedPost.id === post.id)
