@@ -3,6 +3,7 @@ import { CommentsListItem } from './CommentsListItem';
 import { Comment } from '../types/Comment';
 import { HandleCommentDelete } from '../types/handlers';
 import { Notification } from './Notification';
+import { wentWrongMessage } from '../utils/strings/messages';
 
 type Props = {
   comments: Comment[];
@@ -35,7 +36,7 @@ export const CommentsList = React.memo(
           />
         ))}
 
-        {error && <Notification message="Something went wrong" error />}
+        {error && <Notification message={wentWrongMessage} error />}
       </>
     );
   },

@@ -7,6 +7,7 @@ import { Comment } from '../types/Comment';
 import { deleteComment, getPostComments, postComment } from '../api/comments';
 import { Notification } from './Notification';
 import { FormError } from '../types/errors';
+import { wentWrongMessage } from '../utils/strings/messages';
 
 type Props = {
   post: Post;
@@ -99,11 +100,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     sidebarContent = <Loader />;
   } else if (error) {
     sidebarContent = (
-      <Notification
-        message="Something went wrong"
-        error
-        dataCy="CommentsError"
-      />
+      <Notification message={wentWrongMessage} error dataCy="CommentsError" />
     );
   } else {
     let loadedComments: React.JSX.Element;

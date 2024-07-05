@@ -7,6 +7,13 @@ import { InputField } from './InputField';
 import { TextareaField } from './TextareaField';
 import { NewCommentFormState } from '../types/states';
 import { NewCommentFormAction } from '../types/actions';
+import {
+  emailRequiredMessage,
+  wentWrongMessage,
+  nameRequiredMessage,
+  textRequiredMessage,
+} from '../utils/strings/messages';
+import { envelopeIcon, userIcon } from '../utils/strings/icons';
 
 const reducer = (
   state: NewCommentFormState,
@@ -144,8 +151,8 @@ export const NewCommentForm: React.FC<Props> = ({ onCommentAdd }) => {
         name="NameField"
         label="Author Name"
         placeholder="Name Surname"
-        errorMessage="Name is required"
-        icon="fa-user"
+        errorMessage={nameRequiredMessage}
+        icon={userIcon}
         onChange={handleNameChange}
       />
 
@@ -155,8 +162,8 @@ export const NewCommentForm: React.FC<Props> = ({ onCommentAdd }) => {
         name="EmailField"
         label="Author Email"
         placeholder="email@test.com"
-        errorMessage="Email is required"
-        icon="fa-envelope"
+        errorMessage={emailRequiredMessage}
+        icon={envelopeIcon}
         onChange={handleEmailChange}
       />
 
@@ -166,7 +173,7 @@ export const NewCommentForm: React.FC<Props> = ({ onCommentAdd }) => {
         name="BodyField"
         label="Comment Text"
         placeholder="Type comment here"
-        errorMessage="Enter some text"
+        errorMessage={textRequiredMessage}
         onChange={handleTextChange}
       />
 
@@ -193,7 +200,7 @@ export const NewCommentForm: React.FC<Props> = ({ onCommentAdd }) => {
         </div>
       </div>
 
-      {sendError && <Notification message="Something went wrong" error />}
+      {sendError && <Notification message={wentWrongMessage} error />}
     </form>
   );
 };

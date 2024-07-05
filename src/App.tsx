@@ -14,6 +14,7 @@ import { getUsers } from './api/users';
 import { getUserPosts } from './api/posts';
 import { Post } from './types/Post';
 import { Notification } from './components/Notification';
+import { noPostsMessage, wentWrongMessage } from './utils/strings/messages';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -73,7 +74,7 @@ export const App: React.FC = () => {
   } else if (error) {
     mainContent = (
       <Notification
-        message="Something went wrong!"
+        message={wentWrongMessage}
         error
         dataCy="PostsLoadingError"
       />
@@ -81,7 +82,7 @@ export const App: React.FC = () => {
   } else if (!selectedUser) {
     mainContent = <p data-cy="NoSelectedUser">No user selected</p>;
   } else if (!posts.length) {
-    mainContent = <Notification message="No posts yet" dataCy="NoPostsYet" />;
+    mainContent = <Notification message={noPostsMessage} dataCy="NoPostsYet" />;
   } else {
     mainContent = (
       <PostsList

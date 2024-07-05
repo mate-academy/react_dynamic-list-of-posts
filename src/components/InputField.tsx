@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import React from 'react';
+import { exclamationTriangleIcon } from '../utils/strings/icons';
 
 type Props = {
   value: string;
@@ -52,7 +53,7 @@ export const InputField: React.FC<Props> = ({
             className="icon is-small is-right has-text-danger"
             data-cy="ErrorIcon"
           >
-            <i className="fas fa-exclamation-triangle" />
+            <i className={`fas ${exclamationTriangleIcon}`} />
           </span>
         )}
       </div>
