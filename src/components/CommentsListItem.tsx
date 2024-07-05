@@ -4,17 +4,17 @@ import { HandleCommentDeleteClick } from '../types/handlers';
 
 type Props = {
   comment: Comment;
-  onCommentDeleteClick: HandleCommentDeleteClick;
+  onCommentDelete: HandleCommentDeleteClick;
 };
 
 export const CommentsListItem: React.FC<Props> = ({
   comment,
-  onCommentDeleteClick,
+  onCommentDelete,
 }) => {
   const { id, email, name, body } = comment;
 
   const handleDeleteButtonClick = () => {
-    onCommentDeleteClick(id);
+    onCommentDelete(id);
   };
 
   return (

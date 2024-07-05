@@ -17,7 +17,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isFormOpened, setIsFormOpened] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [loadingError, setLoadingError] = useState(false);
+  const [deletingError, setDeletingError] = useState(false);
 
   const { id, title, body } = post;
 
@@ -59,6 +60,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const handleCommentDelete = async (commentId: number) => {
     let commentsBeforeDeletion: Comment[] = [];
 
+    setDeletingError(false);
     setComments(prevComments => {
       commentsBeforeDeletion = prevComments;
 
@@ -68,28 +70,28 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     try {
       await deleteComment(commentId);
     } catch {
+      setDeletingError(true);
       setComments(commentsBeforeDeletion);
-
-      throw new Error('Unable to delete a comment!!!');
     }
   };
 
   const loadComments = async (postId: number) => {
     setIsLoading(true);
-    setError(false);
+    setLoadingError(false);
 
     try {
       const loadedComments = await getPostComments(postId);
 
       setComments(loadedComments);
     } catch {
-      setError(true);
+      setLoadingError(true);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
+    setDeletingError(false);
     setIsFormOpened(false);
     loadComments(id);
   }, [id]);
@@ -98,7 +100,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   if (isLoading) {
     sidebarContent = <Loader />;
-  } else if (error) {
+  } else if (loadingError) {
     sidebarContent = (
       <Notification message={wentWrongMessage} error dataCy="CommentsError" />
     );
@@ -113,10 +115,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       );
     } else {
       loadedComments = (
-        <CommentsList
-          comments={comments}
-          onCommentDelete={handleCommentDelete}
-        />
+        <>
+          <CommentsList
+            comments={comments}
+            onCommentDelete={handleCommentDelete}
+          />
+
+          {deletingError && <Notification message={wentWrongMessage} error />}
+        </>
       );
     }
 
