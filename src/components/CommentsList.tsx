@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CommentsListItem } from './CommentsListItem';
 import { Comment } from '../types/Comment';
 import { HandleCommentDelete } from '../types/handlers';
+import { Notification } from './Notification';
 
 type Props = {
   comments: Comment[];
@@ -14,7 +15,12 @@ export const CommentsList = React.memo(
 
     const handleCommentDeleteClick = async (commentId: number) => {
       setError(false);
-      setError(!(await onCommentDelete(commentId)));
+
+      try {
+        await onCommentDelete(commentId);
+      } catch {
+        setError(true);
+      }
     };
 
     return (
@@ -29,9 +35,7 @@ export const CommentsList = React.memo(
           />
         ))}
 
-        {error && (
-          <div className="notification is-danger">Something went wrong</div>
-        )}
+        {error && <Notification message="Something went wrong" error />}
       </>
     );
   },

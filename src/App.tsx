@@ -13,6 +13,7 @@ import { SelectedPostId, SelectedUserId } from './types/types';
 import { getUsers } from './api/users';
 import { getUserPosts } from './api/posts';
 import { Post } from './types/Post';
+import { Notification } from './components/Notification';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -65,6 +66,32 @@ export const App: React.FC = () => {
     [posts, selectedPostId],
   );
 
+  let mainContent: React.JSX.Element;
+
+  if (isLoading) {
+    mainContent = <Loader />;
+  } else if (error) {
+    mainContent = (
+      <Notification
+        message="Something went wrong!"
+        error
+        dataCy="PostsLoadingError"
+      />
+    );
+  } else if (!selectedUser) {
+    mainContent = <p data-cy="NoSelectedUser">No user selected</p>;
+  } else if (!posts.length) {
+    mainContent = <Notification message="No posts yet" dataCy="NoPostsYet" />;
+  } else {
+    mainContent = (
+      <PostsList
+        posts={posts}
+        selectedPostId={selectedPostId}
+        onPostSelect={handlePostSelect}
+      />
+    );
+  }
+
   return (
     <main className="section">
       <div className="container">
@@ -80,28 +107,7 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {isLoading ? (
-                  <Loader />
-                ) : error ? (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
-                    Something went wrong!
-                  </div>
-                ) : !selectedUser ? (
-                  <p data-cy="NoSelectedUser">No user selected</p>
-                ) : !posts.length ? (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                ) : (
-                  <PostsList
-                    posts={posts}
-                    selectedPostId={selectedPostId}
-                    onPostSelect={handlePostSelect}
-                  />
-                )}
+                {mainContent}
               </div>
             </div>
           </div>

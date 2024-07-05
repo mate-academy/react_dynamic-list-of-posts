@@ -1,161 +1,174 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
 import { HandleCommentAdd } from '../types/handlers';
+import { Notification } from './Notification';
+import { FormError } from '../types/errors';
+import { InputField } from './InputField';
+import { TextareaField } from './TextareaField';
+import { NewCommentFormState } from '../types/states';
+import { NewCommentFormAction } from '../types/actions';
+
+const reducer = (
+  state: NewCommentFormState,
+  action: NewCommentFormAction,
+): NewCommentFormState => {
+  switch (action.type) {
+    case 'changeName':
+      return {
+        ...state,
+        name: action.payload.newName,
+        nameError: false,
+      };
+    case 'changeEmail':
+      return {
+        ...state,
+        email: action.payload.newEmail,
+        emailError: false,
+      };
+    case 'changeText':
+      return {
+        ...state,
+        text: action.payload.newText,
+        textError: false,
+      };
+    case 'clearForm':
+      return {
+        ...state,
+        name: '',
+        email: '',
+        text: '',
+        nameError: false,
+        emailError: false,
+        textError: false,
+      };
+    case 'clearText':
+      return {
+        ...state,
+        text: '',
+      };
+    case 'startLoading':
+      return {
+        ...state,
+        isLoading: true,
+        sendError: false,
+      };
+    case 'finishLoading':
+      return {
+        ...state,
+        isLoading: false,
+      };
+    case 'handleFormError': {
+      const { sendError, nameError, emailError, textError } =
+        action.payload.formError;
+
+      return {
+        ...state,
+        sendError: !!sendError,
+        nameError: !!nameError,
+        emailError: !!emailError,
+        textError: !!textError,
+      };
+    }
+
+    default:
+      throw new Error('Action is not valid!!!');
+  }
+};
 
 type Props = {
   onCommentAdd: HandleCommentAdd;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onCommentAdd }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [text, setText] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [sendError, setSendError] = useState(false);
-  const [nameError, setNameError] = useState(false);
-  const [emailError, setEmailError] = useState(false);
-  const [textError, setTextError] = useState(false);
+  const [state, dispatch] = useReducer(reducer, {
+    name: '',
+    email: '',
+    text: '',
+    isLoading: false,
+    sendError: false,
+    nameError: false,
+    emailError: false,
+    textError: false,
+  });
 
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNameError(false);
-    setName(event.currentTarget.value);
+  const {
+    name,
+    email,
+    text,
+    isLoading,
+    sendError,
+    nameError,
+    emailError,
+    textError,
+  } = state;
+
+  const handleNameChange = (newName: string) => {
+    dispatch({ type: 'changeName', payload: { newName } });
   };
 
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmailError(false);
-    setEmail(event.currentTarget.value);
+  const handleEmailChange = (newEmail: string) => {
+    dispatch({ type: 'changeEmail', payload: { newEmail } });
   };
 
-  const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setTextError(false);
-    setText(event.currentTarget.value);
+  const handleTextChange = (newText: string) => {
+    dispatch({ type: 'changeText', payload: { newText } });
   };
 
   const handleClearClick = () => {
-    setNameError(false);
-    setName('');
-    setEmailError(false);
-    setEmail('');
-    setTextError(false);
-    setText('');
+    dispatch({ type: 'clearForm' });
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    setIsLoading(true);
-    setSendError(false);
+    dispatch({ type: 'startLoading' });
 
-    const errors = await onCommentAdd(name, email, text);
-
-    setSendError(errors.sendError);
-    setNameError(errors.nameError);
-    setEmailError(errors.emailError);
-    setTextError(errors.textError);
-    setIsLoading(false);
-
-    if (Object.values(errors).every(formError => !formError)) {
-      setText('');
+    try {
+      await onCommentAdd(name, email, text);
+      dispatch({ type: 'clearText' });
+    } catch (error) {
+      if (error instanceof FormError) {
+        dispatch({ type: 'handleFormError', payload: { formError: error } });
+      } else {
+        throw new Error('Error is unknown!!!');
+      }
+    } finally {
+      dispatch({ type: 'finishLoading' });
     }
   };
 
   return (
     <form data-cy="NewCommentForm" onSubmit={handleSubmit}>
-      <div className="field" data-cy="NameField">
-        <label className="label" htmlFor="comment-author-name">
-          Author Name
-        </label>
+      <InputField
+        value={name}
+        error={nameError}
+        name="NameField"
+        label="Author Name"
+        placeholder="Name Surname"
+        errorMessage="Name is required"
+        icon="fa-user"
+        onChange={handleNameChange}
+      />
 
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="name"
-            id="comment-author-name"
-            placeholder="Name Surname"
-            className={classNames('input', { 'is-danger': nameError })}
-            value={name}
-            onChange={handleNameChange}
-          />
+      <InputField
+        value={email}
+        error={emailError}
+        name="EmailField"
+        label="Author Email"
+        placeholder="email@test.com"
+        errorMessage="Email is required"
+        icon="fa-envelope"
+        onChange={handleEmailChange}
+      />
 
-          <span className="icon is-small is-left">
-            <i className="fas fa-user" />
-          </span>
-
-          {nameError && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
-              <i className="fas fa-exclamation-triangle" />
-            </span>
-          )}
-        </div>
-
-        {nameError && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Name is required
-          </p>
-        )}
-      </div>
-
-      <div className="field" data-cy="EmailField">
-        <label className="label" htmlFor="comment-author-email">
-          Author Email
-        </label>
-
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="email"
-            id="comment-author-email"
-            placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': emailError })}
-            value={email}
-            onChange={handleEmailChange}
-          />
-
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
-          </span>
-
-          {emailError && (
-            <span
-              className="icon is-small is-right has-text-danger"
-              data-cy="ErrorIcon"
-            >
-              <i className="fas fa-exclamation-triangle" />
-            </span>
-          )}
-        </div>
-
-        {emailError && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
-          </p>
-        )}
-      </div>
-
-      <div className="field" data-cy="BodyField">
-        <label className="label" htmlFor="comment-body">
-          Comment Text
-        </label>
-
-        <div className="control">
-          <textarea
-            id="comment-body"
-            name="body"
-            placeholder="Type comment here"
-            className={classNames('input', { 'is-danger': textError })}
-            value={text}
-            onChange={handleTextChange}
-          />
-        </div>
-
-        {textError && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Enter some text
-          </p>
-        )}
-      </div>
+      <TextareaField
+        value={text}
+        error={textError}
+        name="BodyField"
+        label="Comment Text"
+        placeholder="Type comment here"
+        errorMessage="Enter some text"
+        onChange={handleTextChange}
+      />
 
       <div className="field is-grouped">
         <div className="control">
@@ -180,9 +193,7 @@ export const NewCommentForm: React.FC<Props> = ({ onCommentAdd }) => {
         </div>
       </div>
 
-      {sendError && (
-        <div className="notification is-danger">Something went wrong</div>
-      )}
+      {sendError && <Notification message="Something went wrong" error />}
     </form>
   );
 };

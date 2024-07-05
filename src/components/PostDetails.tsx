@@ -5,7 +5,8 @@ import { Post } from '../types/Post';
 import { CommentsList } from './CommentsList';
 import { Comment } from '../types/Comment';
 import { deleteComment, getPostComments, postComment } from '../api/comments';
-import { FormErrors } from '../types/types';
+import { Notification } from './Notification';
+import { FormError } from '../types/errors';
 
 type Props = {
   post: Post;
@@ -25,18 +26,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     name: string,
     email: string,
     text: string,
-  ): Promise<FormErrors> => {
+  ) => {
     const trimmedName = name.trim();
     const trimmedEmail = email.trim();
     const trimmedText = text.trim();
-    const errors: FormErrors = {
-      sendError: false,
-      nameError: !trimmedName,
-      emailError: !trimmedEmail,
-      textError: !trimmedText,
-    };
 
-    if (Object.values(errors).every(formError => !formError)) {
+    if (trimmedName && trimmedEmail && trimmedText) {
       try {
         const sentComment = await postComment({
           postId: id,
@@ -47,14 +42,20 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
         setComments(prevComments => [...prevComments, sentComment]);
       } catch {
-        errors.sendError = true;
+        throw new FormError('Unable to add a comment!!!', true);
       }
+    } else {
+      throw new FormError(
+        'Input fields are not filled!!!',
+        false,
+        !trimmedName,
+        !trimmedEmail,
+        !trimmedText,
+      );
     }
-
-    return errors;
   };
 
-  const handleCommentDelete = async (commentId: number): Promise<boolean> => {
+  const handleCommentDelete = async (commentId: number) => {
     let commentsBeforeDeletion: Comment[] = [];
 
     setComments(prevComments => {
@@ -65,12 +66,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
     try {
       await deleteComment(commentId);
-
-      return true;
     } catch {
       setComments(commentsBeforeDeletion);
 
-      return false;
+      throw new Error('Unable to delete a comment!!!');
     }
   };
 
@@ -94,6 +93,54 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     loadComments(id);
   }, [id]);
 
+  let sidebarContent: React.JSX.Element;
+
+  if (isLoading) {
+    sidebarContent = <Loader />;
+  } else if (error) {
+    sidebarContent = (
+      <Notification
+        message="Something went wrong"
+        error
+        dataCy="CommentsError"
+      />
+    );
+  } else {
+    let loadedComments: React.JSX.Element;
+
+    if (!comments.length) {
+      loadedComments = (
+        <p className="title is-4" data-cy="NoCommentsMessage">
+          No comments yet
+        </p>
+      );
+    } else {
+      loadedComments = (
+        <CommentsList
+          comments={comments}
+          onCommentDelete={handleCommentDelete}
+        />
+      );
+    }
+
+    sidebarContent = (
+      <>
+        {loadedComments}
+
+        {!isFormOpened && (
+          <button
+            data-cy="WriteCommentButton"
+            type="button"
+            className="button is-link"
+            onClick={handleFormOpen}
+          >
+            Write a comment
+          </button>
+        )}
+      </>
+    );
+  }
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -105,39 +152,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           <p data-cy="PostBody">{body}</p>
         </div>
 
-        <div className="block">
-          {isLoading ? (
-            <Loader />
-          ) : error ? (
-            <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
-            </div>
-          ) : (
-            <>
-              {!comments.length ? (
-                <p className="title is-4" data-cy="NoCommentsMessage">
-                  No comments yet
-                </p>
-              ) : (
-                <CommentsList
-                  comments={comments}
-                  onCommentDelete={handleCommentDelete}
-                />
-              )}
-
-              {!isFormOpened && (
-                <button
-                  data-cy="WriteCommentButton"
-                  type="button"
-                  className="button is-link"
-                  onClick={handleFormOpen}
-                >
-                  Write a comment
-                </button>
-              )}
-            </>
-          )}
-        </div>
+        <div className="block">{sidebarContent}</div>
 
         {isFormOpened && <NewCommentForm onCommentAdd={handleCommentAdd} />}
       </div>
