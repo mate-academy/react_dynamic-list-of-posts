@@ -1,3 +1,4 @@
+// This eslint-disable helps to avoid a mistake
 /* eslint-disable @typescript-eslint/indent */
 import React, { useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
@@ -136,7 +137,7 @@ export const App: React.FC = () => {
                 )}
 
                 {currentUser &&
-                  posts.length === 0 &&
+                  !posts.length &&
                   !isPostLoading &&
                   !isPostError && (
                     <div
@@ -150,7 +151,7 @@ export const App: React.FC = () => {
                 {currentUser &&
                   !isPostError &&
                   !isPostLoading &&
-                  posts.length > 0 && (
+                  !!posts.length && (
                     <PostsList
                       posts={posts}
                       currentPost={currentPost}

@@ -41,11 +41,11 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    setHasNameError(!name);
+    setHasNameError(!name.trim());
     setHasEmailError(!email);
-    setHasBodyError(!body);
+    setHasBodyError(!body.trim());
 
-    if (!name || !email || !body) {
+    if (!name.trim() || !email || !body.trim()) {
       return;
     }
 
@@ -54,6 +54,7 @@ export const NewCommentForm: React.FC<Props> = ({
     }
 
     setBody('');
+    setName(name.trim());
   };
 
   const reset = () => {
@@ -188,7 +189,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={() => reset()}
+            onClick={reset}
           >
             Clear
           </button>
