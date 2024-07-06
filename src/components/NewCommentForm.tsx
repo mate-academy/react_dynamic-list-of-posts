@@ -53,11 +53,15 @@ export const NewCommentForm: React.FC<Props> = ({
   function addNewComment(event: FormEvent) {
     event.preventDefault();
 
-    setErrorName(!nameField);
-    setErrorEmail(!emailField);
-    setErrorComment(!newCommentField);
+    const normalizedName = nameField.trim();
+    const normalizedEmail = emailField.trim();
+    const normalizedComment = newCommentField.trim();
 
-    if (errorName || errorEmail || errorComment) {
+    setErrorName(!normalizedName);
+    setErrorEmail(!normalizedEmail);
+    setErrorComment(!normalizedComment);
+
+    if (!normalizedName || !normalizedEmail || !normalizedComment) {
       return;
     }
 
