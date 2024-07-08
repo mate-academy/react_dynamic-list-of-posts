@@ -68,7 +68,7 @@ export const PostDetails = memo((props: Props) => {
             </div>
           )}
 
-          {comments.length > 0 && !isCommentsLoading && (
+          {!!comments.length && !isCommentsLoading && (
             <>
               <p className="title is-4">Comments:</p>
               {comments.map(comment => (
