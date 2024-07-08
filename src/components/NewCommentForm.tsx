@@ -39,7 +39,6 @@ export const NewCommentForm = ({ addComment }: Props) => {
   const [values, setValues] = useState<FormValues>(defaultValues);
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const [isFormValid, setIsFormValid] = useState(false);
 
   const [count, setCount] = useState(0);
 

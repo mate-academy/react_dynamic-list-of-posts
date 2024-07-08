@@ -100,7 +100,7 @@ export const PostDetails = memo((props: Props) => {
             </>
           )}
 
-          {comments.length === 0 && !isCommentsLoading && !errorComment && (
+          {!comments.length && !isCommentsLoading && !errorComment && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>

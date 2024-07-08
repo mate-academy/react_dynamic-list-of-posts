@@ -74,7 +74,7 @@ export const App: FC = () => {
 
                 {isLoadingPosts && <Loader />}
 
-                {userPosts.length > 0 && !isLoadingPosts && (
+                {!!userPosts.length && !isLoadingPosts && (
                   <PostsList
                     userPosts={userPosts}
                     setSelectPostId={setSelectPostId}
@@ -83,7 +83,7 @@ export const App: FC = () => {
                 )}
 
                 {!isLoadingPosts &&
-                  userPosts.length === 0 &&
+                  !userPosts.length &&
                   !postError &&
                   selectedUser && (
                     <div
