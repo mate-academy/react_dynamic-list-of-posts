@@ -17,6 +17,13 @@ export const App: React.FC = () => {
   const { posts, loading, errorMessage, selectedPost } =
     useContext(PostsContext);
 
+  const show = {
+    postsError: !loading && errorMessage,
+    posts: !loading && !errorMessage && posts.length,
+    noPosts: !loading && !errorMessage && !posts.length && selectedUser,
+    noUserSelected: !loading && !errorMessage && !posts.length && !selectedUser,
+  };
+
   return (
     <main className="section">
       <div className="container">
@@ -28,22 +35,26 @@ export const App: React.FC = () => {
                   <UserSelector />
                 </div>
 
-                {loading ? (
-                  <Loader />
-                ) : errorMessage ? (
+                {loading && <Loader />}
+
+                {show.postsError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
                     {errorMessage}
                   </div>
-                ) : posts.length ? (
-                  <PostsList />
-                ) : selectedUser ? (
+                )}
+
+                {show.posts && <PostsList />}
+
+                {show.noPosts && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
-                ) : (
+                )}
+
+                {show.noUserSelected && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
               </div>

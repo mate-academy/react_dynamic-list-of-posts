@@ -15,6 +15,13 @@ export const PostDetails = memo(function PostDetailsComponent() {
   } = useContext(CommentsContext);
   const { selectedPost } = useContext(PostsContext);
 
+  const show = {
+    commentsError: !loading && errorMessage,
+    comments: !loading && !errorMessage && comments.length,
+    noComments: !loading && !errorMessage && !comments.length,
+    buttonWriteComment: !loading && !errorMessage && !openForm,
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -27,13 +34,15 @@ export const PostDetails = memo(function PostDetailsComponent() {
         </div>
 
         <div className="block">
-          {loading ? (
-            <Loader />
-          ) : errorMessage ? (
+          {loading && <Loader />}
+
+          {show.commentsError && (
             <div className="notification is-danger" data-cy="CommentsError">
               {errorMessage}
             </div>
-          ) : comments.length ? (
+          )}
+
+          {show.comments && (
             <>
               <p className="title is-4">Comments:</p>
 
@@ -64,13 +73,15 @@ export const PostDetails = memo(function PostDetailsComponent() {
                 </article>
               ))}
             </>
-          ) : (
+          )}
+
+          {show.noComments && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {!openForm && !loading && !errorMessage && (
+          {show.buttonWriteComment && (
             <button
               data-cy="WriteCommentButton"
               type="button"

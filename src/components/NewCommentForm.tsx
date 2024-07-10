@@ -36,31 +36,31 @@ export const NewCommentForm = memo(function NewCommentFormComponent() {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const nameNormalize = name.trim();
-    const emailNormalize = email.trim();
-    const textNormalize = text.trim();
+    const nameNormalized = name.trim();
+    const emailNormalized = email.trim();
+    const textNormalized = text.trim();
 
-    if (!nameNormalize) {
+    if (!nameNormalized) {
       setNameError(true);
     }
 
-    if (!emailNormalize) {
+    if (!emailNormalized) {
       setEmailError(true);
     }
 
-    if (!textNormalize) {
+    if (!textNormalized) {
       setbodyError(true);
     }
 
-    if (!nameNormalize || !emailNormalize || !textNormalize) {
+    if (!nameNormalized || !emailNormalized || !textNormalized) {
       return;
     }
 
     addComment({
       id: 0,
-      name: nameNormalize,
-      email: emailNormalize,
-      body: textNormalize,
+      name: nameNormalized,
+      email: emailNormalized,
+      body: textNormalized,
       postId: selectedPost?.id || 0,
     });
   };
