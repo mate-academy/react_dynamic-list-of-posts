@@ -1,3 +1,5 @@
+'use strict';
+
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 import { type Comment } from '../types/Comment';
@@ -56,7 +58,7 @@ export const getComments = (id: number) => {
 };
 
 export const removeComments = (id: number) => {
-  return client.delete(`/comments${id}`);
+  return client.delete(`/comments/${id}`);
 };
 
 export const addComments = ({

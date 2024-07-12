@@ -1,29 +1,19 @@
+/* eslint-disable prettier/prettier */
 import React, { useContext } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { ProvideContext } from './StateContext';
-import { removeComments } from '../utils/fetchClient';
 
 export const PostDetails = () => {
   const {
     commentsFromPost,
-    setCommentsFromPost,
     errorNotification,
     commentLoading,
     selectedPost,
     showCommentField,
     setShowCommentField,
+    onDeleteComment,
   } = useContext(ProvideContext);
-
-  const onDeleteComment = (commentId: number) => {
-    removeComments(commentId).then(() => {
-      const updateComment = commentsFromPost.filter(
-        comment => comment.id !== commentId,
-      );
-
-      setCommentsFromPost(updateComment);
-    });
-  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -38,20 +28,23 @@ export const PostDetails = () => {
 
         <div className="block">
           {selectedPost && commentLoading && <Loader />}
-          {errorNotification !== '' && (
+          {errorNotification && (
             <div className="notification is-danger" data-cy="CommentsError">
               {errorNotification}
             </div>
           )}
-          {commentsFromPost.length === 0 && !commentLoading && (
+          {commentsFromPost.length === 0 &&
+            !commentLoading &&
+            !errorNotification && (
             <p className="title is-4" data-cy="NoCommentsMessage">
-              No comments yet
+                No comments yet
             </p>
           )}
-          {commentsFromPost.length !== 0 && !commentLoading && (
-            <p className="title is-4">Comments:</p>
-          )}
+          {commentsFromPost.length !== 0 &&
+            !commentLoading &&
+            !errorNotification && <p className="title is-4">Comments:</p>}
           {!commentLoading &&
+            !errorNotification &&
             commentsFromPost.map(comment => (
               <article
                 className="message is-small"
@@ -59,7 +52,7 @@ export const PostDetails = () => {
                 key={comment.id}
               >
                 <div className="message-header">
-                  <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
+                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                     {comment.name}
                   </a>
 
@@ -79,7 +72,7 @@ export const PostDetails = () => {
                 </div>
               </article>
             ))}
-          {!showCommentField && (
+          {!showCommentField && !commentLoading && !errorNotification && (
             <button
               data-cy="WriteCommentButton"
               type="button"

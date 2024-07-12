@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useEffect, useState } from 'react';
 import { User } from '../types/User';
 import { Post } from '../types/Post';
 import { type Comment } from '../types/Comment';
-import { getComments, getPosts } from '../utils/fetchClient';
+import { getComments, getPosts, removeComments } from '../utils/fetchClient';
 
 type ContextType = {
   setUsers: (users: User[]) => void;
@@ -26,6 +26,7 @@ type ContextType = {
   showCommentField: boolean;
   setShowCommentField: (showCommentField: boolean) => void;
   loadComments: (postId: number) => void;
+  onDeleteComment: (commentId: number) => void;
 };
 
 export const ProvideContext = createContext<ContextType>({
@@ -50,6 +51,7 @@ export const ProvideContext = createContext<ContextType>({
   showCommentField: false,
   setShowCommentField: () => {},
   loadComments: async () => {},
+  onDeleteComment: async () => {},
 });
 
 type Props = {
@@ -75,7 +77,7 @@ export const GlobalContextProvider = ({ children }: Props) => {
       getPosts(selectedUser.id)
         .then(setPosts)
         .catch(() => {
-          setErrorNotification('Something went wrong!');
+          setErrorNotification('Something went wrong');
           setError(true);
         })
         .finally(() => {
@@ -83,20 +85,6 @@ export const GlobalContextProvider = ({ children }: Props) => {
         });
     }
   }, [selectedUser]);
-
-  useEffect(() => {
-    setCommentLoading(true);
-    if (selectedPost) {
-      getComments(selectedPost.id)
-        .then(setCommentsFromPost)
-        .catch(() => {
-          setErrorNotification('Unable to load comments');
-        })
-        .finally(() => {
-          setCommentLoading(false);
-        });
-    }
-  }, [selectedPost]);
 
   const loadComments = useCallback(async (postId: number) => {
     setCommentLoading(true);
@@ -108,10 +96,18 @@ export const GlobalContextProvider = ({ children }: Props) => {
 
       setCommentsFromPost(commentsFromStorage);
     } catch {
-      setErrorNotification('something went wrong!');
+      setErrorNotification('something went wrong');
     } finally {
       setCommentLoading(false);
     }
+  }, []);
+
+  const onDeleteComment = useCallback((commentId: number) => {
+    setCommentsFromPost(currentComments =>
+      currentComments.filter(comment => comment.id !== commentId),
+    );
+
+    removeComments(commentId);
   }, []);
 
   return (
@@ -138,6 +134,7 @@ export const GlobalContextProvider = ({ children }: Props) => {
         showCommentField,
         setShowCommentField,
         loadComments,
+        onDeleteComment,
       }}
     >
       {children}

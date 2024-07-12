@@ -1,3 +1,5 @@
+'use strict';
+
 import classNames from 'classnames';
 import React, { FormEvent, useContext, useState } from 'react';
 import { addComments } from '../utils/fetchClient';
@@ -19,6 +21,15 @@ export const NewCommentForm: React.FC = () => {
   const [emailError, setEmailError] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
 
+  const onClearButton = () => {
+    setAuthorField('');
+    setEmailField('');
+    setBodyField('');
+    setAuthorError(false);
+    setBodyError(false);
+    setEmailError(false);
+  };
+
   const handleSubmit = (event: FormEvent) => {
     setSubmitLoading(true);
     setAuthorError(false);
@@ -32,6 +43,9 @@ export const NewCommentForm: React.FC = () => {
 
     if (emptyBodyField && emptyAuthorField && emptyEmailField) {
       setSubmitLoading(false);
+      setAuthorError(true);
+      setEmailError(true);
+      setBodyError(true);
 
       return;
     }
@@ -77,7 +91,11 @@ export const NewCommentForm: React.FC = () => {
   };
 
   return (
-    <form data-cy="NewCommentForm" onSubmit={handleSubmit}>
+    <form
+      data-cy="NewCommentForm"
+      onSubmit={handleSubmit}
+      onReset={onClearButton}
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name

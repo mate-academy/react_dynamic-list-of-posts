@@ -69,7 +69,7 @@ export const App: React.FC = () => {
               { 'Sidebar--open': selectedPost },
             )}
           >
-            {selectedUser && (
+            {selectedUser && selectedPost && (
               <div className="tile is-child box is-success ">
                 <PostDetails />
               </div>
