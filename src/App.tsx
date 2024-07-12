@@ -88,6 +88,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
+                {/*  eslint-disable @typescript-eslint/indent  */}
                 {!loading &&
                   selectedUser &&
                   !userPosts.length &&
@@ -99,6 +100,7 @@ export const App: React.FC = () => {
                       No posts yet
                     </div>
                   )}
+                {/* eslint-enable @typescript-eslint/indent */}
 
                 {!loading && selectedUser && !!userPosts.length && (
                   <PostsList

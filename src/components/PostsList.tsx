@@ -6,11 +6,15 @@ type PostsListProps = {
   userPosts: Post[];
   onShowDetails: (postDetails: Post | null) => void;
 };
-export const PostsList: React.FC<PostsListProps> = ({ userPosts, onShowDetails }) => {
-  const [showDetailsPostId, setShowDetailsPostId] = useState<number | null>(null);
+export const PostsList: React.FC<PostsListProps> = ({
+  userPosts,
+  onShowDetails,
+}) => {
+  const [showDetailsPostId, setShowDetailsPostId] = useState<number | null>(
+    null,
+  );
 
   const handleShowDetails = (post: Post, isCurrentlyOpen: boolean) => {
-
     setShowDetailsPostId(isCurrentlyOpen ? null : post.id);
     onShowDetails(isCurrentlyOpen ? null : post);
   };
@@ -44,8 +48,9 @@ export const PostsList: React.FC<PostsListProps> = ({ userPosts, onShowDetails }
                   <button
                     type="button"
                     data-cy="PostButton"
-                    className={cn("button is-link",
-                      {"is-light": !isCurrentlyOpen})}
+                    className={cn('button is-link', {
+                      'is-light': !isCurrentlyOpen,
+                    })}
                     onClick={() => handleShowDetails(post, isCurrentlyOpen)}
                   >
                     {isCurrentlyOpen ? 'Close' : 'Open'}

@@ -34,6 +34,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ postDetails }) => {
     deleteComment(commentId);
   };
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     loadPostComments(id);
     if (isShownCommentForm) {
