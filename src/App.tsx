@@ -18,9 +18,14 @@ export const App: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isDetailsShown, setIsDetailsShown] = useState(false);
   const [postDetails, setPostDetails] = useState<Post | null>(null);
+
+  const hasNoPosts =
+    !isLoading && selectedUser && !userPosts.length && !errorMessage;
+
+  const hasPosts = !isLoading && selectedUser && !!userPosts.length;
 
   const loadUsers = () => {
     getUsers()
@@ -29,12 +34,12 @@ export const App: React.FC = () => {
   };
 
   const loadUserPosts = (userId: number) => {
-    setLoading(true);
+    setIsLoading(true);
 
     getUserPosts(userId)
       .then(setUserPosts)
       .catch(() => setErrorMessage('Something went wrong!'))
-      .finally(() => setLoading(false));
+      .finally(() => setIsLoading(false));
   };
 
   useEffect(loadUsers, []);
@@ -77,9 +82,9 @@ export const App: React.FC = () => {
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {loading && <Loader />}
+                {isLoading && <Loader />}
 
-                {!loading && errorMessage && (
+                {!isLoading && errorMessage && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -88,21 +93,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {/*  eslint-disable @typescript-eslint/indent  */}
-                {!loading &&
-                  selectedUser &&
-                  !userPosts.length &&
-                  !errorMessage && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )}
-                {/* eslint-enable @typescript-eslint/indent */}
+                {hasNoPosts && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                {!loading && selectedUser && !!userPosts.length && (
+                {hasPosts && (
                   <PostsList
                     userPosts={userPosts}
                     onShowDetails={showPostDetails}

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
 import cn from 'classnames';
+import { UserLink } from './UserLink';
 
 type UserSelectorProps = {
   users: User[];
@@ -64,16 +65,12 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
         <div className="dropdown-content">
           {users &&
             users.map(user => (
-              <a
+              <UserLink
                 key={user.id}
-                href={`#user-${user.id}`}
-                className={cn('dropdown-item', {
-                  'is-active': user.id === selectedUser?.id,
-                })}
-                onClick={() => handleSelectUser(user.id)}
-              >
-                {user.name}
-              </a>
+                user={user}
+                userId={selectedUser?.id || null}
+                onSelectUser={handleSelectUser}
+              />
             ))}
         </div>
       </div>
