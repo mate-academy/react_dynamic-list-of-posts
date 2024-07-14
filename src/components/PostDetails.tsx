@@ -2,18 +2,20 @@
 import React, { useContext } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { ProvideContext } from './StateContext';
+import { CommentContext } from './CommentContext';
+import { PostContext } from './PostContext';
 
 export const PostDetails = () => {
+
   const {
     commentsFromPost,
-    errorNotification,
     commentLoading,
-    selectedPost,
     showCommentField,
     setShowCommentField,
-    onDeleteComment,
-  } = useContext(ProvideContext);
+    onDeleteComment
+  } = useContext(CommentContext);
+
+  const {errorNotification, selectedPost} = useContext(PostContext);
 
   return (
     <div className="content" data-cy="PostDetails">

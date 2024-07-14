@@ -3,15 +3,13 @@
 import classNames from 'classnames';
 import React, { FormEvent, useContext, useState } from 'react';
 import { addComments } from '../utils/fetchClient';
-import { ProvideContext } from './StateContext';
+import { CommentContext } from './CommentContext';
+import { PostContext } from './PostContext';
 
 export const NewCommentForm: React.FC = () => {
-  const {
-    selectedPost,
-    setCommentsFromPost,
-    commentsFromPost,
-    setErrorNotification,
-  } = useContext(ProvideContext);
+  const { setErrorNotification, selectedPost } = useContext(PostContext);
+
+  const { setCommentsFromPost, commentsFromPost } = useContext(CommentContext);
 
   const [authorField, setAuthorField] = useState('');
   const [bodyField, setBodyField] = useState('');

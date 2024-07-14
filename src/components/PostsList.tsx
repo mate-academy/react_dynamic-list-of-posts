@@ -1,11 +1,12 @@
 import React, { useContext, useState } from 'react';
-import { ProvideContext } from './StateContext';
 import { Post } from '../types/Post';
 import classNames from 'classnames';
+import { CommentContext } from './CommentContext';
+import { PostContext } from './PostContext';
 
 export const PostsList: React.FC = () => {
-  const { posts, setSelectedPost, selectedPost, loadComments } =
-    useContext(ProvideContext);
+  const { loadComments } = useContext(CommentContext);
+  const { posts, setSelectedPost, selectedPost } = useContext(PostContext);
   const [showComments, setShowComments] = useState(false);
   const handleOpeningComments = (post: Post) => {
     setShowComments(!showComments);

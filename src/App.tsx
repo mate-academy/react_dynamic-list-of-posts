@@ -8,17 +8,13 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { ProvideContext } from './components/StateContext';
+import { UserContext } from './components/UsersContext';
+import { PostContext } from './components/PostContext';
 
 export const App: React.FC = () => {
-  const {
-    selectedUser,
-    error,
-    postsLoading,
-    selectedPost,
-    posts,
-    errorNotification,
-  } = useContext(ProvideContext);
+  const { selectedUser } = useContext(UserContext);
+  const { error, errorNotification, posts, postsLoading, selectedPost } =
+    useContext(PostContext);
 
   return (
     <main className="section">
