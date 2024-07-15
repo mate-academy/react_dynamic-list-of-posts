@@ -7,6 +7,8 @@ type UserContextType = {
   users: User[];
   selectedUser: User | null;
   setSelectedUser: (selectedUser: User | null) => void;
+  showUsers: boolean;
+  setShowUsers: (showUsers: boolean) => void;
 };
 
 export const UserContext = createContext<UserContextType>({
@@ -14,6 +16,8 @@ export const UserContext = createContext<UserContextType>({
   users: [] as User[],
   selectedUser: null,
   setSelectedUser: () => {},
+  showUsers: false,
+  setShowUsers: () => {},
 });
 
 type Props = {
@@ -23,6 +27,7 @@ type Props = {
 export const UserProvider = ({ children }: Props) => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [showUsers, setShowUsers] = useState(false);
 
   useEffect(() => {
     getUsers().then(setUsers);
@@ -35,6 +40,8 @@ export const UserProvider = ({ children }: Props) => {
         setUsers,
         selectedUser,
         setSelectedUser,
+        showUsers,
+        setShowUsers,
       }}
     >
       {children}

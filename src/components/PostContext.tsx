@@ -14,6 +14,8 @@ type PostContextType = {
   setPostsLoading: (postsLoading: boolean) => void;
   selectedPost: Post | null;
   setSelectedPost: (selectedPost: Post | null) => void;
+  showComments: boolean;
+  setShowComments: (showComments: boolean) => void;
 };
 
 export const PostContext = createContext<PostContextType>({
@@ -27,6 +29,8 @@ export const PostContext = createContext<PostContextType>({
   setPostsLoading: () => {},
   selectedPost: null,
   setSelectedPost: () => {},
+  showComments: false,
+  setShowComments: () => {},
 });
 
 type Props = {
@@ -39,6 +43,7 @@ export const PostProvider = ({ children }: Props) => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [postsLoading, setPostsLoading] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [showComments, setShowComments] = useState(false);
 
   const { selectedUser } = useContext(UserContext);
 
@@ -70,6 +75,8 @@ export const PostProvider = ({ children }: Props) => {
         setPostsLoading,
         selectedPost,
         setSelectedPost,
+        showComments,
+        setShowComments,
       }}
     >
       {children}

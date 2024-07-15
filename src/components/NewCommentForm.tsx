@@ -1,23 +1,33 @@
 'use strict';
 
 import classNames from 'classnames';
-import React, { FormEvent, useContext, useState } from 'react';
+import React, { FormEvent, useContext } from 'react';
 import { addComments } from '../utils/fetchClient';
 import { CommentContext } from './CommentContext';
 import { PostContext } from './PostContext';
+import { FormContext } from './FormContext';
 
 export const NewCommentForm: React.FC = () => {
   const { setErrorNotification, selectedPost } = useContext(PostContext);
 
   const { setCommentsFromPost, commentsFromPost } = useContext(CommentContext);
 
-  const [authorField, setAuthorField] = useState('');
-  const [bodyField, setBodyField] = useState('');
-  const [emailField, setEmailField] = useState('');
-  const [authorError, setAuthorError] = useState(false);
-  const [bodyError, setBodyError] = useState(false);
-  const [emailError, setEmailError] = useState(false);
-  const [submitLoading, setSubmitLoading] = useState(false);
+  const {
+    authorField,
+    bodyField,
+    emailField,
+    setAuthorField,
+    setBodyField,
+    setEmailField,
+    authorError,
+    bodyError,
+    emailError,
+    setAuthorError,
+    setBodyError,
+    setEmailError,
+    submitLoading,
+    setSubmitLoading,
+  } = useContext(FormContext);
 
   const onClearButton = () => {
     setAuthorField('');

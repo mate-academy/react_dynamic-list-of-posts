@@ -1,14 +1,14 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { User } from '../types/User';
 import classNames from 'classnames';
 import { UserContext } from './UsersContext';
 import { PostContext } from './PostContext';
 
 export const UserSelector: React.FC = () => {
-  const { users, selectedUser, setSelectedUser } = useContext(UserContext);
+  const { users, selectedUser, setSelectedUser, showUsers, setShowUsers } =
+    useContext(UserContext);
 
   const { setPosts, setSelectedPost } = useContext(PostContext);
-  const [showUsers, setShowUsers] = useState(false);
 
   const userRef = useRef<HTMLDivElement>(null);
 
