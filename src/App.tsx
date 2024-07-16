@@ -10,14 +10,16 @@ import { UserSelector } from './components/UserSelector/UserSelector';
 import { Loader } from './components/Loader';
 import { Post, User } from './types';
 import { getPosts, getUsers } from './api/dataFromServer';
+import { Errors } from './components/Errors';
+import { ErrorsDataCy } from './types/ErrorsDataCy';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const [loadingPosts, setLoadingPosts] = useState(false);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(false);
   const [usersPosts, setUsersPost] = useState<Post[]>([]);
-  const [loadPostError, setLoadPostError] = useState(false);
+  const [loadPostError, setLoadPostError] = useState(ErrorsDataCy.Default);
 
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
@@ -27,20 +29,21 @@ export const App: React.FC = () => {
 
   const handleSelectedUser = async (user: User) => {
     setSelectedPost(null);
-    setSelectedUser(user);
-    setLoadingPosts(true);
+    setIsLoadingPosts(true);
+
     try {
+      setSelectedUser(user);
       const posts = await getPosts(user.id);
 
       setUsersPost(posts);
     } catch {
-      setLoadPostError(true);
+      setLoadPostError(ErrorsDataCy.PostsLoadingError);
     } finally {
-      setLoadingPosts(false);
+      setIsLoadingPosts(false);
     }
   };
 
-  const conditionShowPost = !loadingPosts && selectedUser && !loadPostError;
+  const isPostsShown = !isLoadingPosts && selectedUser && !loadPostError;
 
   return (
     <main className="section">
@@ -61,23 +64,16 @@ export const App: React.FC = () => {
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {loadingPosts && <Loader />}
+                {isLoadingPosts && <Loader />}
 
-                {loadPostError && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
-                    Something went wrong!
-                  </div>
-                )}
+                {loadPostError && <Errors dataCy={loadPostError} />}
 
-                {!usersPosts.length && conditionShowPost && (
+                {!usersPosts.length && isPostsShown && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
-                {Boolean(usersPosts.length) && conditionShowPost && (
+                {usersPosts.length > 0 && isPostsShown && (
                   <PostsList
                     posts={usersPosts}
                     selectedPost={selectedPost}
@@ -99,7 +95,7 @@ export const App: React.FC = () => {
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost !== null && <PostDetails post={selectedPost} />}
+              {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
         </div>

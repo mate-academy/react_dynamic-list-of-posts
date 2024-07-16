@@ -5,6 +5,8 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment, Post } from '../types';
 import { deleteComments, getComments } from '../api/dataFromServer';
+import { Errors } from './Errors';
+import { ErrorsDataCy } from '../types/ErrorsDataCy';
 
 interface Props {
   post: Post;
@@ -12,18 +14,18 @@ interface Props {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [loadingComments, setLoadingComments] = useState(true);
-  const [commentsError, setCommentsError] = useState(false);
-  const [showForm, setShowForm] = useState(false);
+  const [isLoadingComments, setIsLoadingComments] = useState(true);
+  const [commentsError, setCommentsError] = useState(ErrorsDataCy.Default);
+  const [isFormShown, setIsFormShown] = useState(false);
   const { id, title, body } = post;
 
   useEffect(() => {
-    setShowForm(false);
-    setLoadingComments(true);
+    setIsFormShown(false);
+    setIsLoadingComments(true);
     getComments(id)
       .then(setComments)
-      .catch(() => setCommentsError(true))
-      .finally(() => setLoadingComments(false));
+      .catch(() => setCommentsError(ErrorsDataCy.CommentsError))
+      .finally(() => setIsLoadingComments(false));
   }, [id]);
 
   const handleDeleteComments = async (commentId: number) => {
@@ -35,14 +37,16 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           previousComment => previousComment.id !== commentId,
         ),
       );
-    } catch {}
+    } catch {
+      setCommentsError(ErrorsDataCy.CommentsError);
+    }
   };
 
   const handleAddComment = (newComment: Comment) => {
     setComments(prevComments => [...prevComments, newComment]);
   };
 
-  const conditionShowComments = !loadingComments && !commentsError;
+  const isShowComments = !isLoadingComments && !commentsError;
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -54,21 +58,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         </div>
 
         <div className="block">
-          {loadingComments && <Loader />}
+          {isLoadingComments && <Loader />}
 
-          {commentsError && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
-            </div>
-          )}
+          {commentsError && <Errors dataCy={commentsError} />}
 
-          {conditionShowComments && !comments.length && (
+          {isShowComments && !comments.length && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {conditionShowComments && Boolean(comments.length) && (
+          {isShowComments && comments.length > 0 && (
             <>
               <p className="title is-4">Comments:</p>
 
@@ -100,19 +100,19 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
               ))}
             </>
           )}
-          {conditionShowComments && !showForm && (
+          {isShowComments && !isFormShown && (
             <button
               data-cy="WriteCommentButton"
               type="button"
               className="button is-link"
-              onClick={() => setShowForm(true)}
+              onClick={() => setIsFormShown(true)}
             >
               Write a comment
             </button>
           )}
         </div>
 
-        {showForm && (
+        {isFormShown && (
           <NewCommentForm postId={post.id} onChangeComment={handleAddComment} />
         )}
       </div>

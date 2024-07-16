@@ -51,7 +51,7 @@ export const UserSelector: React.FC<Props> = ({
         className="dropdown-trigger"
         ref={dropdownRef}
         tabIndex={0}
-        onBlur={e => handleBlur(e)}
+        onBlur={handleBlur}
       >
         <button
           type="button"
