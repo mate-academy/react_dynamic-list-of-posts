@@ -1,18 +1,45 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Post } from '../types/Post';
 import classNames from 'classnames';
-import { CommentContext } from './CommentContext';
-import { PostContext } from './PostContext';
+import { getComments } from '../utils/fetchClient';
+import { type Comment } from '../types/Comment';
 
-export const PostsList: React.FC = () => {
-  const { loadComments } = useContext(CommentContext);
-  const {
-    posts,
-    setSelectedPost,
-    selectedPost,
-    showComments,
-    setShowComments,
-  } = useContext(PostContext);
+type Props = {
+  posts: Post[];
+  setSelectedPost: (selectedPost: Post | null) => void;
+  selectedPost: Post | null;
+  setErrorNotification: (error: string) => void;
+  setShowCommentField: (showCommentField: boolean) => void;
+  setCommentsFromPost: (comment: Comment[]) => void;
+  setCommentLoading: (commentLoading: boolean) => void;
+};
+
+export const PostsList = ({
+  posts,
+  setSelectedPost,
+  selectedPost,
+  setErrorNotification,
+  setShowCommentField,
+  setCommentsFromPost,
+  setCommentLoading,
+}: Props) => {
+  const [showComments, setShowComments] = useState(false);
+  const loadComments = useCallback(async (postId: number) => {
+    setCommentLoading(true);
+    setErrorNotification('');
+    setShowCommentField(false);
+
+    try {
+      const commentsFromStorage = await getComments(postId);
+
+      setCommentsFromPost(commentsFromStorage);
+    } catch {
+      setErrorNotification('something went wrong');
+    } finally {
+      setCommentLoading(false);
+    }
+  }, []);
+
   const handleOpeningComments = (post: Post) => {
     setShowComments(!showComments);
     if (selectedPost?.id === post.id) {

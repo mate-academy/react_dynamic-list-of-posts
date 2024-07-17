@@ -1,33 +1,31 @@
 'use strict';
 
 import classNames from 'classnames';
-import React, { FormEvent, useContext } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { addComments } from '../utils/fetchClient';
-import { CommentContext } from './CommentContext';
-import { PostContext } from './PostContext';
-import { FormContext } from './FormContext';
+import { Post } from '../types/Post';
+import { Comment } from '../types/Comment';
 
-export const NewCommentForm: React.FC = () => {
-  const { setErrorNotification, selectedPost } = useContext(PostContext);
+type Props = {
+  setErrorNotification: (errorNotification: string) => void;
+  selectedPost: Post | null;
+  setCommentsFromPost: (commentsFromPost: Comment[]) => void;
+  commentsFromPost: Comment[];
+};
 
-  const { setCommentsFromPost, commentsFromPost } = useContext(CommentContext);
-
-  const {
-    authorField,
-    bodyField,
-    emailField,
-    setAuthorField,
-    setBodyField,
-    setEmailField,
-    authorError,
-    bodyError,
-    emailError,
-    setAuthorError,
-    setBodyError,
-    setEmailError,
-    submitLoading,
-    setSubmitLoading,
-  } = useContext(FormContext);
+export const NewCommentForm = ({
+  setErrorNotification,
+  selectedPost,
+  setCommentsFromPost,
+  commentsFromPost,
+}: Props) => {
+  const [authorField, setAuthorField] = useState('');
+  const [bodyField, setBodyField] = useState('');
+  const [emailField, setEmailField] = useState('');
+  const [authorError, setAuthorError] = useState(false);
+  const [bodyError, setBodyError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   const onClearButton = () => {
     setAuthorField('');

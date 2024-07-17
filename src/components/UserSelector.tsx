@@ -1,14 +1,28 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
 import classNames from 'classnames';
-import { UserContext } from './UsersContext';
-import { PostContext } from './PostContext';
+import { getUsers } from '../utils/fetchClient';
+import { Post } from '../types/Post';
 
-export const UserSelector: React.FC = () => {
-  const { users, selectedUser, setSelectedUser, showUsers, setShowUsers } =
-    useContext(UserContext);
+type Props = {
+  selectedUser: User | null;
+  setSelectedUser: (selectedUser: User | null) => void;
+  setPosts: (posts: Post[]) => void;
+  setSelectedPost: (selectedPost: Post | null) => void;
+};
 
-  const { setPosts, setSelectedPost } = useContext(PostContext);
+export const UserSelector = ({
+  selectedUser,
+  setSelectedPost,
+  setSelectedUser,
+  setPosts,
+}: Props) => {
+  const [showUsers, setShowUsers] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    getUsers().then(setUsers);
+  }, []);
 
   const userRef = useRef<HTMLDivElement>(null);
 

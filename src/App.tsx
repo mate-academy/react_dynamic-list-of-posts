@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,13 +8,44 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { UserContext } from './components/UsersContext';
-import { PostContext } from './components/PostContext';
+import { Post } from './types/Post';
+import { User } from './types/User';
+import { Comment } from './types/Comment';
+import { getPosts, removeComments } from './utils/fetchClient';
 
 export const App: React.FC = () => {
-  const { selectedUser } = useContext(UserContext);
-  const { error, errorNotification, posts, postsLoading, selectedPost } =
-    useContext(PostContext);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [error, setError] = useState(false);
+  const [errorNotification, setErrorNotification] = useState('');
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [postsLoading, setPostsLoading] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [showCommentField, setShowCommentField] = useState(false);
+  const [commentLoading, setCommentLoading] = useState(false);
+  const [commentsFromPost, setCommentsFromPost] = useState<Comment[]>([]);
+
+  useEffect(() => {
+    setPostsLoading(true);
+    if (selectedUser) {
+      getPosts(selectedUser.id)
+        .then(setPosts)
+        .catch(() => {
+          setErrorNotification('Something went wrong');
+          setError(true);
+        })
+        .finally(() => {
+          setPostsLoading(false);
+        });
+    }
+  }, [selectedUser, setError]);
+
+  const onDeleteComment = useCallback(async (commentId: number) => {
+    setCommentsFromPost(currentComments =>
+      currentComments.filter(comment => comment.id !== commentId),
+    );
+
+    await removeComments(commentId);
+  }, []);
 
   return (
     <main className="section">
@@ -23,7 +54,12 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  selectedUser={selectedUser}
+                  setSelectedUser={setSelectedUser}
+                  setPosts={setPosts}
+                  setSelectedPost={setSelectedPost}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -49,7 +85,15 @@ export const App: React.FC = () => {
                 )}
 
                 {posts.length > 0 && selectedUser && !postsLoading && (
-                  <PostsList />
+                  <PostsList
+                    posts={posts}
+                    setSelectedPost={setSelectedPost}
+                    selectedPost={selectedPost}
+                    setErrorNotification={setErrorNotification}
+                    setShowCommentField={setShowCommentField}
+                    setCommentLoading={setCommentLoading}
+                    setCommentsFromPost={setCommentsFromPost}
+                  />
                 )}
               </div>
             </div>
@@ -67,7 +111,17 @@ export const App: React.FC = () => {
           >
             {selectedUser && selectedPost && (
               <div className="tile is-child box is-success ">
-                <PostDetails />
+                <PostDetails
+                  setErrorNotification={setErrorNotification}
+                  onDeleteComment={onDeleteComment}
+                  commentsFromPost={commentsFromPost}
+                  setCommentsFromPost={setCommentsFromPost}
+                  selectedPost={selectedPost}
+                  errorNotification={errorNotification}
+                  setShowCommentField={setShowCommentField}
+                  showCommentField={showCommentField}
+                  commentLoading={commentLoading}
+                />
               </div>
             )}
           </div>
