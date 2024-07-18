@@ -1,28 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
 import classNames from 'classnames';
-import { getUsers } from '../utils/fetchClient';
-import { Post } from '../types/Post';
+import { UserContext } from './UsersContext';
+import { PostContext } from './PostsContext';
 
-type Props = {
-  selectedUser: User | null;
-  setSelectedUser: (selectedUser: User | null) => void;
-  setPosts: (posts: Post[]) => void;
-  setSelectedPost: (selectedPost: Post | null) => void;
-};
+export const UserSelector: React.FC = () => {
+  const { users, selectedUser, setSelectedUser } = useContext(UserContext);
 
-export const UserSelector = ({
-  selectedUser,
-  setSelectedPost,
-  setSelectedUser,
-  setPosts,
-}: Props) => {
+  const { setPosts, setSelectedPost } = useContext(PostContext);
   const [showUsers, setShowUsers] = useState(false);
-  const [users, setUsers] = useState<User[]>([]);
-
-  useEffect(() => {
-    getUsers().then(setUsers);
-  }, []);
 
   const userRef = useRef<HTMLDivElement>(null);
 
@@ -60,7 +46,6 @@ export const UserSelector = ({
           onClick={() => setShowUsers(!showUsers)}
         >
           <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
-
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
           </span>

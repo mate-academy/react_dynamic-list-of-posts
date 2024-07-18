@@ -1,24 +1,16 @@
 'use strict';
 
 import classNames from 'classnames';
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useContext, useState } from 'react';
 import { addComments } from '../utils/fetchClient';
-import { Post } from '../types/Post';
-import { Comment } from '../types/Comment';
+import { CommentContext } from './CommentContext';
+import { PostContext } from './PostsContext';
 
-type Props = {
-  setErrorNotification: (errorNotification: string) => void;
-  selectedPost: Post | null;
-  setCommentsFromPost: (commentsFromPost: Comment[]) => void;
-  commentsFromPost: Comment[];
-};
+export const NewCommentForm: React.FC = () => {
+  const { setErrorNotification, selectedPost } = useContext(PostContext);
 
-export const NewCommentForm = ({
-  setErrorNotification,
-  selectedPost,
-  setCommentsFromPost,
-  commentsFromPost,
-}: Props) => {
+  const { setCommentsFromPost, commentsFromPost } = useContext(CommentContext);
+
   const [authorField, setAuthorField] = useState('');
   const [bodyField, setBodyField] = useState('');
   const [emailField, setEmailField] = useState('');
@@ -26,7 +18,6 @@ export const NewCommentForm = ({
   const [bodyError, setBodyError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
-
   const onClearButton = () => {
     setAuthorField('');
     setEmailField('');
@@ -42,7 +33,6 @@ export const NewCommentForm = ({
     setEmailError(false);
     setBodyError(false);
     event.preventDefault();
-
     const emptyAuthorField = !authorField.trim();
     const emptyBodyField = !bodyField.trim();
     const emptyEmailField = !emailField.trim();
@@ -106,7 +96,6 @@ export const NewCommentForm = ({
         <label className="label" htmlFor="comment-author-name">
           Author Name
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
@@ -117,11 +106,9 @@ export const NewCommentForm = ({
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': authorError })}
           />
-
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
-
           {authorError && (
             <span
               className="icon is-small is-right has-text-danger"
@@ -131,19 +118,16 @@ export const NewCommentForm = ({
             </span>
           )}
         </div>
-
         {authorError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
         )}
       </div>
-
       <div className="field" data-cy="EmailField">
         <label className="label" htmlFor="comment-author-email">
           Author Email
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
@@ -154,11 +138,9 @@ export const NewCommentForm = ({
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': emailError })}
           />
-
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
-
           {emailError && (
             <span
               className="icon is-small is-right has-text-danger"
@@ -168,19 +150,16 @@ export const NewCommentForm = ({
             </span>
           )}
         </div>
-
         {emailError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
         )}
       </div>
-
       <div className="field" data-cy="BodyField">
         <label className="label" htmlFor="comment-body">
           Comment Text
         </label>
-
         <div className="control">
           <textarea
             id="comment-body"
@@ -191,14 +170,12 @@ export const NewCommentForm = ({
             className={classNames('input', { 'is-danger': bodyError })}
           />
         </div>
-
         {bodyError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
         )}
       </div>
-
       <div className="field is-grouped">
         <div className="control">
           <button
@@ -210,7 +187,6 @@ export const NewCommentForm = ({
             Add
           </button>
         </div>
-
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">

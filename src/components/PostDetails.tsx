@@ -1,34 +1,20 @@
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, { useContext } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { Post } from '../types/Post';
-import { type Comment } from '../types/Comment';
+import { CommentContext } from './CommentContext';
+import { PostContext } from './PostsContext';
 
-type Props = {
-  commentsFromPost: Comment[];
-  setCommentsFromPost: (comment: Comment[]) => void;
-  selectedPost: Post | null;
-  errorNotification: string;
-  setErrorNotification: (errorNotification: string) => void;
-  commentLoading: boolean;
-  setShowCommentField: (showCommentField: boolean) => void;
-  showCommentField: boolean;
-  onDeleteComment: (numberId: number) => void;
-};
+export const PostDetails = () => {
+  const {
+    commentsFromPost,
+    commentLoading,
+    showCommentField,
+    setShowCommentField,
+    onDeleteComment,
+  } = useContext(CommentContext);
 
-export const PostDetails = ({
-  commentsFromPost,
-  setCommentsFromPost,
-  errorNotification,
-  selectedPost,
-  commentLoading,
-  showCommentField,
-  setShowCommentField,
-  onDeleteComment,
-  setErrorNotification,
-}: Props) => {
-
+  const { errorNotification, selectedPost } = useContext(PostContext);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -37,10 +23,8 @@ export const PostDetails = ({
           <h2 data-cy="PostTitle">
             {`#${selectedPost?.id}: ${selectedPost?.title}`}
           </h2>
-
           <p data-cy="PostBody">{selectedPost?.body}</p>
         </div>
-
         <div className="block">
           {selectedPost && commentLoading && <Loader />}
           {errorNotification && (
@@ -51,6 +35,7 @@ export const PostDetails = ({
           {commentsFromPost.length === 0 &&
             !commentLoading &&
             !errorNotification && (
+
             <p className="title is-4" data-cy="NoCommentsMessage">
                 No comments yet
             </p>
@@ -70,7 +55,6 @@ export const PostDetails = ({
                   <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                     {comment.name}
                   </a>
-
                   <button
                     data-cy="CommentDelete"
                     type="button"
@@ -81,7 +65,6 @@ export const PostDetails = ({
                     delete button
                   </button>
                 </div>
-
                 <div className="message-body" data-cy="CommentBody">
                   {comment.body}
                 </div>
@@ -98,12 +81,7 @@ export const PostDetails = ({
             </button>
           )}
         </div>
-
-        {showCommentField && <NewCommentForm
-          setErrorNotification={setErrorNotification}
-          selectedPost={selectedPost}
-          setCommentsFromPost={setCommentsFromPost}
-          commentsFromPost={commentsFromPost}/>}
+        {showCommentField && <NewCommentForm />}
       </div>
     </div>
   );
