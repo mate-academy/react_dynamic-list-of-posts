@@ -12,6 +12,8 @@ type CommentContextType = {
   setShowCommentField: (showCommentField: boolean) => void;
   loadComments: (postId: number) => void;
   onDeleteComment: (commentId: number) => void;
+  showComments: boolean;
+  setShowComments: (showComments: boolean) => void;
 };
 
 export const CommentContext = createContext<CommentContextType>({
@@ -23,6 +25,8 @@ export const CommentContext = createContext<CommentContextType>({
   setShowCommentField: () => {},
   loadComments: async () => {},
   onDeleteComment: async () => {},
+  showComments: false,
+  setShowComments: () => {},
 });
 
 type Props = {
@@ -33,6 +37,7 @@ export const CommentProvider = ({ children }: Props) => {
   const [commentsFromPost, setCommentsFromPost] = useState<Comment[]>([]);
   const [showCommentField, setShowCommentField] = useState(false);
   const [commentLoading, setCommentLoading] = useState(false);
+  const [showComments, setShowComments] = useState(false);
 
   const { setErrorNotification } = useContext(PostContext);
 
@@ -71,6 +76,8 @@ export const CommentProvider = ({ children }: Props) => {
         setCommentLoading,
         loadComments,
         onDeleteComment,
+        showComments,
+        setShowComments,
       }}
     >
       {children}

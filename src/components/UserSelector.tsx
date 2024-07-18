@@ -1,17 +1,18 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { User } from '../types/User';
+import React, { useContext, useEffect, useRef } from 'react';
 import classNames from 'classnames';
 import { UserContext } from './UsersContext';
+import { User } from '../types/User';
 import { PostContext } from './PostsContext';
 
 export const UserSelector: React.FC = () => {
-  const { users, selectedUser, setSelectedUser } = useContext(UserContext);
+  const { users, selectedUser, setShowUsers, showUsers, setSelectedUser } =
+    useContext(UserContext);
 
   const { setPosts, setSelectedPost } = useContext(PostContext);
-  const [showUsers, setShowUsers] = useState(false);
 
   const userRef = useRef<HTMLDivElement>(null);
 
+  // If I move this to the context, function doesnt work.
   const handleSelectingUser = (currUser: User) => {
     setSelectedUser(currUser);
     setShowUsers(false);
