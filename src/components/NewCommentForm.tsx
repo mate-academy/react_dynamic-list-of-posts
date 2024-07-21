@@ -1,8 +1,101 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
+import cn from 'classnames';
+import { Comment } from '../types/Comment';
+import { postComment } from '../api/comments';
 
-export const NewCommentForm: React.FC = () => {
+interface Props {
+  postId: number;
+  setComments: (callback: (currentComments: Comment[]) => Comment[]) => void;
+  setIsCommentsError: (value: boolean) => void;
+}
+
+export const NewCommentForm: React.FC<Props> = ({
+  postId,
+  setComments,
+  setIsCommentsError,
+}) => {
+  const [authorName, setAuthorName] = useState('');
+  const [authorEmail, setAuthorEmail] = useState('');
+  const [commentBody, setCommentBody] = useState('');
+  const [isAuthorNameError, setIsAuthorNameError] = useState(false);
+  const [isAuthorEmailError, setIsAuthorEmailError] = useState(false);
+  const [isCommentBodyError, setIsCommentBodyError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleNameChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setIsAuthorNameError(false);
+      setAuthorName(e.target.value);
+    },
+    [],
+  );
+
+  const handleEmailChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setIsAuthorEmailError(false);
+      setAuthorEmail(e.target.value);
+    },
+    [],
+  );
+
+  const handleBodyChange = useCallback(
+    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setIsCommentBodyError(false);
+      setCommentBody(e.target.value);
+    },
+    [],
+  );
+
+  const handleSubmit = useCallback(
+    (
+      e: React.FormEvent<HTMLFormElement>,
+      name: string,
+      email: string,
+      body: string,
+      id: number,
+    ) => {
+      e.preventDefault();
+
+      if (!name.trim()) {
+        setIsAuthorNameError(true);
+      }
+
+      if (!email.trim()) {
+        setIsAuthorEmailError(true);
+      }
+
+      if (!body.trim()) {
+        setIsCommentBodyError(true);
+      }
+
+      if (!name.trim() || !email.trim() || !body.trim()) {
+        return;
+      }
+
+      setIsLoading(true);
+      postComment({ name, email, body, postId: id })
+        .then(newComment => {
+          setCommentBody('');
+          setComments(currentComments => [...currentComments, newComment]);
+        })
+        .catch(error => {
+          setIsCommentsError(true);
+          throw error;
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    },
+    [setComments, setIsCommentsError],
+  );
+
   return (
-    <form data-cy="NewCommentForm">
+    <form
+      data-cy="NewCommentForm"
+      onSubmit={e =>
+        handleSubmit(e, authorName, authorEmail, commentBody, postId)
+      }
+    >
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -14,24 +107,30 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            className={cn('input', { 'is-danger': isAuthorNameError })}
+            value={authorName}
+            onChange={handleNameChange}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {isAuthorNameError && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
+        {isAuthorNameError && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Name is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -45,24 +144,30 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            className={cn('input', { 'is-danger': isAuthorEmailError })}
+            value={authorEmail}
+            onChange={handleEmailChange}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {isAuthorEmailError && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
+        {isAuthorEmailError && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -75,24 +180,30 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            className={cn('textarea', { 'is-danger': isCommentBodyError })}
+            value={commentBody}
+            onChange={handleBodyChange}
           />
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
+        {isCommentBodyError && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Enter some text
+          </p>
+        )}
       </div>
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={cn('button', 'is-link', { 'is-loading': isLoading })}
+          >
             Add
           </button>
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button type="reset" className="button is-link is-light">
             Clear
           </button>
