@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,8 +8,17 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { StatesContext } from './context/Store';
 
 export const App: React.FC = () => {
+  const {
+    selectedUserId,
+    users,
+    isLoading,
+    commentErrorMessage,
+    postsByUserId,
+  } = useContext(StatesContext);
+
   return (
     <main className="section">
       <div className="container">
@@ -21,22 +30,30 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
+                <p data-cy="NoSelectedUser">
+                  {selectedUserId
+                    ? users.find(user => selectedUserId === user.id)?.name
+                    : 'No user selected'}
+                </p>
 
-                <Loader />
+                {isLoading && <Loader />}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {commentErrorMessage && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    {commentErrorMessage}
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
+                {postsByUserId.length === 0 && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
-                <PostsList />
+                {postsByUserId.length !== 0 && <PostsList />}
               </div>
             </div>
           </div>
