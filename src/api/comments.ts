@@ -18,3 +18,7 @@ export const postComment = ({
     body,
   });
 };
+
+export const deleteComment = (commentId: number) => {
+  return client.delete(`/comments/${commentId}`);
+};

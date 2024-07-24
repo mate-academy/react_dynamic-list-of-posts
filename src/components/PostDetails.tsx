@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { DispatchContext, StatesContext } from '../context/Store';
+import { Comment } from '../types/Comment';
+import { deleteComment } from '../api/comments';
 
 export const PostDetails: React.FC = () => {
   const dispatch = useContext(DispatchContext);
@@ -18,6 +20,20 @@ export const PostDetails: React.FC = () => {
 
   const handleOnClickWrite = () =>
     dispatch({ type: 'SET_COMMENTFORMACTIVE', payload: true });
+
+  const handleOnDelete = async (comment: Comment) => {
+    dispatch({ type: 'SET_ISLOADING', payload: true });
+
+    deleteComment(comment.id)
+      .catch(() => {
+        dispatch({
+          type: 'SET_COMMENTERRORMESSAGE',
+          payload: 'Something went wrong',
+        });
+        dispatch({ type: 'SET_ISLOADING', payload: false });
+      })
+      .finally(() => dispatch({ type: 'SET_ISLOADING', payload: false }));
+  };
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -59,6 +75,7 @@ export const PostDetails: React.FC = () => {
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
+                      onClick={() => handleOnDelete(comment)}
                     >
                       delete button
                     </button>

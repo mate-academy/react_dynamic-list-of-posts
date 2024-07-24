@@ -23,7 +23,6 @@ export const App: React.FC = () => {
     commentErrorMessage,
     postsByUserId,
     selectedPostId,
-    commentsByPostId,
     isSidebarOpen,
   } = useContext(StatesContext);
 
@@ -92,7 +91,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     fetchCommentsByPostId();
-  }, [commentsByPostId]);
+  }, [selectedPostId]);
 
   return (
     <main className="section">
