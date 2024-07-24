@@ -60,6 +60,8 @@ export const NewCommentForm: React.FC = () => {
 
           return;
         }
+
+        dispatch({ type: 'SET_ISLOADING', payload: false });
       }
     }
   };

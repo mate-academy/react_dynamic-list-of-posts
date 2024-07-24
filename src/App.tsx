@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -8,17 +8,91 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { StatesContext } from './context/Store';
+import { DispatchContext, StatesContext } from './context/Store';
 import { NewPost } from './components/NewPost';
+import { getPostsByUserId } from './api/posts';
+import { getUsers } from './api/users';
+import { getCommentsByPostId } from './api/comments';
 
 export const App: React.FC = () => {
+  const dispatch = useContext(DispatchContext);
   const {
     selectedUserId,
     users,
     isLoading,
     commentErrorMessage,
     postsByUserId,
+    selectedPostId,
+    commentsByPostId,
+    isSidebarOpen,
   } = useContext(StatesContext);
+
+  async function fetchUsers() {
+    dispatch({ type: 'SET_ISLOADING', payload: true });
+    const usersFromServer = await getUsers();
+
+    if ('Error' in usersFromServer) {
+      dispatch({ type: 'SET_ERRORMESSAGE', payload: 'Unable to load users' });
+      dispatch({ type: 'SET_ISLOADING', payload: false });
+
+      return;
+    }
+
+    dispatch({ type: 'SET_USERS', payload: usersFromServer });
+    dispatch({ type: 'SET_ISLOADING', payload: false });
+  }
+
+  async function fetchPostsByUser() {
+    dispatch({ type: 'SET_ISLOADING', payload: true });
+    if (selectedUserId) {
+      const postsFromServer = await getPostsByUserId(selectedUserId);
+
+      if ('Error' in postsFromServer) {
+        dispatch({
+          type: 'SET_ERRORMESSAGE',
+          payload: 'Unable to load posts',
+        });
+        dispatch({ type: 'SET_ISLOADING', payload: false });
+
+        return;
+      }
+
+      dispatch({ type: 'SET_POSTSBYUSERID', payload: postsFromServer });
+      dispatch({ type: 'SET_ISLOADING', payload: false });
+    }
+  }
+
+  async function fetchCommentsByPostId() {
+    dispatch({ type: 'SET_ISLOADING', payload: true });
+    if (selectedPostId) {
+      const commentsFromServer = await getCommentsByPostId(selectedPostId);
+
+      if ('Error' in commentsFromServer) {
+        dispatch({
+          type: 'SET_ERRORMESSAGE',
+          payload: 'Unable to load comments',
+        });
+        dispatch({ type: 'SET_ISLOADING', payload: false });
+
+        return;
+      }
+
+      dispatch({ type: 'SET_COMMENTSBYPOSTID', payload: commentsFromServer });
+      dispatch({ type: 'SET_ISLOADING', payload: false });
+    }
+  }
+
+  useEffect(() => {
+    fetchPostsByUser();
+  }, [selectedUserId]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    fetchCommentsByPostId();
+  }, [commentsByPostId]);
 
   return (
     <main className="section">
@@ -66,7 +140,7 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': isSidebarOpen },
             )}
           >
             <div className="tile is-child box is-success ">

@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { getUsers } from '../api/users';
+import React, { useContext, useState } from 'react';
 import { DispatchContext, StatesContext } from '../context/Store';
 import classNames from 'classnames';
 
@@ -12,25 +11,6 @@ export const UserSelector: React.FC = () => {
     dispatch({ type: 'SET_SELECTEDUSERID', payload: userId });
     setIsDropdownActive(false);
   };
-
-  async function fetchUsers() {
-    dispatch({ type: 'SET_ISLOADING', payload: true });
-    const usersFromServer = await getUsers();
-
-    if ('Error' in usersFromServer) {
-      dispatch({ type: 'SET_ERRORMESSAGE', payload: 'Unable to load users' });
-      dispatch({ type: 'SET_ISLOADING', payload: false });
-
-      return;
-    }
-
-    dispatch({ type: 'SET_USERS', payload: usersFromServer });
-    dispatch({ type: 'SET_ISLOADING', payload: false });
-  }
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
 
   return (
     <div

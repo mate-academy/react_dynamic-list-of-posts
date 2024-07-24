@@ -12,4 +12,5 @@ export interface States {
   selectedPostId?: number | null;
   isLoading: boolean;
   isCommentFormActive: boolean;
+  isSidebarOpen: boolean;
 }

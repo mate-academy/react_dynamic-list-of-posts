@@ -1,8 +1,7 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { DispatchContext, StatesContext } from '../context/Store';
-import { getCommentsByPostId } from '../api/comments';
 
 export const PostDetails: React.FC = () => {
   const dispatch = useContext(DispatchContext);
@@ -17,32 +16,8 @@ export const PostDetails: React.FC = () => {
 
   const post = postsByUserId.find(p => selectedPostId === p.id);
 
-  async function fetchCommentsByPostId() {
-    dispatch({ type: 'SET_ISLOADING', payload: true });
-    if (selectedPostId) {
-      const commentsFromServer = await getCommentsByPostId(selectedPostId);
-
-      if ('Error' in commentsFromServer) {
-        dispatch({
-          type: 'SET_ERRORMESSAGE',
-          payload: 'Unable to load comments',
-        });
-        dispatch({ type: 'SET_ISLOADING', payload: false });
-
-        return;
-      }
-
-      dispatch({ type: 'SET_COMMENTSBYPOSTID', payload: commentsFromServer });
-      dispatch({ type: 'SET_ISLOADING', payload: false });
-    }
-  }
-
   const handleOnClickWrite = () =>
     dispatch({ type: 'SET_COMMENTFORMACTIVE', payload: true });
-
-  useEffect(() => {
-    fetchCommentsByPostId();
-  }, [selectedPostId]);
 
   return (
     <div className="content" data-cy="PostDetails">

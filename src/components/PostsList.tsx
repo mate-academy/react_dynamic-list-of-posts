@@ -1,35 +1,9 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { DispatchContext, StatesContext } from '../context/Store';
-import { getPostsByUserId } from '../api/posts';
 
 export const PostsList: React.FC = () => {
   const dispatch = useContext(DispatchContext);
-  const { postsByUserId, selectedUserId, selectedPostId } =
-    useContext(StatesContext);
-
-  async function fetchPostsById() {
-    dispatch({ type: 'SET_ISLOADING', payload: true });
-    if (selectedUserId) {
-      const postsFromServer = await getPostsByUserId(selectedUserId);
-
-      if ('Error' in postsFromServer) {
-        dispatch({
-          type: 'SET_ERRORMESSAGE',
-          payload: 'Unable to load posts',
-        });
-        dispatch({ type: 'SET_ISLOADING', payload: false });
-
-        return;
-      }
-
-      dispatch({ type: 'SET_POSTSBYUSERID', payload: postsFromServer });
-      dispatch({ type: 'SET_ISLOADING', payload: false });
-    }
-  }
-
-  useEffect(() => {
-    fetchPostsById();
-  }, [selectedUserId]);
+  const { postsByUserId, selectedPostId } = useContext(StatesContext);
 
   return (
     <div data-cy="PostsList">
@@ -59,6 +33,20 @@ export const PostsList: React.FC = () => {
                       type="button"
                       data-cy="PostButton"
                       className="button is-link"
+                      onClick={() => {
+                        dispatch({
+                          type: 'SET_ISSIDEBAROPEN',
+                          payload: false,
+                        });
+                        setTimeout(
+                          () =>
+                            dispatch({
+                              type: 'SET_SELECTEDPOSTID',
+                              payload: null,
+                            }),
+                          450,
+                        );
+                      }}
                     >
                       Close
                     </button>
@@ -67,12 +55,13 @@ export const PostsList: React.FC = () => {
                       type="button"
                       data-cy="PostButton"
                       className="button is-link is-light"
-                      onClick={() =>
+                      onClick={() => {
+                        dispatch({ type: 'SET_ISSIDEBAROPEN', payload: true });
                         dispatch({
                           type: 'SET_SELECTEDPOSTID',
                           payload: post.id,
-                        })
-                      }
+                        });
+                      }}
                     >
                       Open
                     </button>

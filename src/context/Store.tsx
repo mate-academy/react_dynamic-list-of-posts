@@ -14,6 +14,7 @@ const initialStates: States = {
   selectedPostId: null,
   isLoading: false,
   isCommentFormActive: false,
+  isSidebarOpen: false,
 };
 
 type DispatchContextType = {
@@ -28,8 +29,9 @@ type Action =
   | { type: 'SET_COMMENTERRORMESSAGE'; payload: string }
   | { type: 'SET_SELECTEDUSERID'; payload: number }
   | { type: 'SET_ISLOADING'; payload: boolean }
-  | { type: 'SET_SELECTEDPOSTID'; payload: number }
-  | { type: 'SET_COMMENTFORMACTIVE'; payload: boolean };
+  | { type: 'SET_SELECTEDPOSTID'; payload: number | null }
+  | { type: 'SET_COMMENTFORMACTIVE'; payload: boolean }
+  | { type: 'SET_ISSIDEBAROPEN'; payload: boolean };
 
 function reducer(states: States, action: Action) {
   let newStates = { ...states };
@@ -61,6 +63,9 @@ function reducer(states: States, action: Action) {
       break;
     case 'SET_COMMENTFORMACTIVE':
       newStates = { ...newStates, isCommentFormActive: action.payload };
+      break;
+    case 'SET_ISSIDEBAROPEN':
+      newStates = { ...newStates, isSidebarOpen: action.payload };
       break;
     default:
       return states;
