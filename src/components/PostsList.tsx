@@ -67,6 +67,12 @@ export const PostsList: React.FC = () => {
                       type="button"
                       data-cy="PostButton"
                       className="button is-link is-light"
+                      onClick={() =>
+                        dispatch({
+                          type: 'SET_SELECTEDPOSTID',
+                          payload: post.id,
+                        })
+                      }
                     >
                       Open
                     </button>

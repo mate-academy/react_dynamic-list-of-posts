@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 export const NewCommentForm: React.FC = () => {
   const dispatch = useContext(DispatchContext);
-  const { isLoading } = useContext(StatesContext);
+  const { isLoading, selectedPostId } = useContext(StatesContext);
 
   const [nameError, setNameError] = useState(false);
   const [name, setName] = useState('');
@@ -42,18 +42,24 @@ export const NewCommentForm: React.FC = () => {
       dispatch({ type: 'SET_ISLOADING', payload: false });
 
       return;
-    }
+    } else {
+      if (selectedPostId) {
+        const newComment = await postComment({
+          name: name,
+          email: email,
+          body: body,
+          postId: selectedPostId,
+        });
+        if ('Error' in newComment) {
+          dispatch({
+            type: 'SET_COMMENTERRORMESSAGE',
+            payload: 'Something went wrong',
+          });
+          dispatch({ type: 'SET_ISLOADING', payload: false });
 
-    const newComment = await postComment({ name, email, body });
-
-    if ('Error' in newComment) {
-      dispatch({
-        type: 'SET_COMMENTERRORMESSAGE',
-        payload: 'Something went wrong',
-      });
-      dispatch({ type: 'SET_ISLOADING', payload: false });
-
-      return;
+          return;
+        }
+      }
     }
   };
 
