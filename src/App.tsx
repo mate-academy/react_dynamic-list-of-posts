@@ -9,6 +9,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { StatesContext } from './context/Store';
+import { NewPost } from './components/NewPost';
 
 export const App: React.FC = () => {
   const {
@@ -52,7 +53,7 @@ export const App: React.FC = () => {
                     No posts yet
                   </div>
                 )}
-
+                <NewPost />
                 {postsByUserId.length !== 0 && <PostsList />}
               </div>
             </div>

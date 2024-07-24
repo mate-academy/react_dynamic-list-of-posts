@@ -50,6 +50,7 @@ export const NewCommentForm: React.FC = () => {
           body: body,
           postId: selectedPostId,
         });
+
         if ('Error' in newComment) {
           dispatch({
             type: 'SET_COMMENTERRORMESSAGE',
