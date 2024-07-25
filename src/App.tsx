@@ -17,8 +17,7 @@ export const App: React.FC = () => {
   const dispatch = useContext(DispatchContext);
   const {
     selectedUserId,
-    isLoading,
-    hasError,
+    isPostsLoading,
     errorMessage,
     postsByUserId,
     selectedPostId,
@@ -26,65 +25,65 @@ export const App: React.FC = () => {
   } = useContext(StatesContext);
 
   const isNoPostsYetActive =
-    postsByUserId.length === 0 && selectedUserId && !isLoading && !hasError;
+    postsByUserId.length === 0 &&
+    selectedUserId &&
+    !isPostsLoading &&
+    !errorMessage;
 
   const isPostListActive =
-    postsByUserId.length !== 0 && selectedUserId && !isLoading && !hasError;
+    postsByUserId.length !== 0 && selectedUserId && !isPostsLoading;
 
   function fetchUsers() {
-    dispatch({ type: 'SET_ISLOADING', payload: true });
+    dispatch({ type: 'SET_USERSLOADER', payload: true });
     getUsers()
       .then(usersFromServer => {
         dispatch({ type: 'SET_USERS', payload: usersFromServer });
-        dispatch({ type: 'SET_ISLOADING', payload: false });
+        dispatch({ type: 'SET_USERSLOADER', payload: false });
       })
       .catch(() => {
-        dispatch({ type: 'SET_ISLOADING', payload: false });
+        dispatch({ type: 'SET_USERSLOADER', payload: false });
         dispatch({ type: 'SET_ERRORMESSAGE', payload: 'Unable to load users' });
       });
   }
 
   function fetchPostsByUser() {
     if (selectedUserId) {
-      dispatch({ type: 'SET_ISLOADING', payload: true });
+      dispatch({ type: 'SET_POSTSLOADER', payload: true });
       getPostsByUserId(selectedUserId)
         .then(postsFromServer => {
           dispatch({ type: 'SET_POSTSBYUSERID', payload: postsFromServer });
-          dispatch({ type: 'SET_ISLOADING', payload: false });
+          dispatch({ type: 'SET_POSTSLOADER', payload: false });
         })
         .catch(() => {
-          dispatch({ type: 'SET_HASERROR', payload: true });
           dispatch({
             type: 'SET_ERRORMESSAGE',
             payload: 'Unable to load posts',
           });
-          dispatch({ type: 'SET_ISLOADING', payload: false });
+          dispatch({ type: 'SET_POSTSLOADER', payload: false });
         });
     }
   }
 
   function fetchCommentsByPostId() {
     if (selectedPostId) {
-      dispatch({ type: 'SET_ISLOADING', payload: true });
+      dispatch({ type: 'SET_COMMENTSLOADER', payload: true });
       getCommentsByPostId(selectedPostId)
         .then(commentsFromServer => {
           dispatch({
             type: 'SET_COMMENTSBYPOSTID',
             payload: commentsFromServer,
           });
-          dispatch({ type: 'SET_ISLOADING', payload: false });
+          dispatch({ type: 'SET_COMMENTSLOADER', payload: false });
         })
         .catch(() => {
           dispatch({
-            type: 'SET_HASCOMMENTERROR',
+            type: 'SET_COMMENTERROR',
             payload: true,
           });
-          dispatch({ type: 'SET_ISLOADING', payload: false });
+          dispatch({ type: 'SET_COMMENTSLOADER', payload: false });
         });
     }
   }
-
-  useEffect(() => dispatch({ type: 'SET_HASERROR', payload: false }), []);
 
   useEffect(() => {
     fetchUsers();
@@ -113,9 +112,9 @@ export const App: React.FC = () => {
                   {!selectedUserId && 'No user selected'}
                 </p>
 
-                {isLoading && <Loader />}
+                {isPostsLoading && <Loader />}
 
-                {hasError && (
+                {errorMessage && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"

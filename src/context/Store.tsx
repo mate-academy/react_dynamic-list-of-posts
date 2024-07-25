@@ -8,12 +8,14 @@ const initialStates: States = {
   users: [],
   postsByUserId: [],
   commentsByPostId: [],
-  hasError: false,
   errorMessage: '',
   hasCommentError: false,
   selectedUserId: null,
   selectedPostId: null,
-  isLoading: false,
+  isUsersLoading: false,
+  isPostsLoading: false,
+  isCommentsLoading: false,
+  isAddCommentLoading: false,
   isCommentFormActive: false,
   isSidebarOpen: false,
 };
@@ -26,14 +28,16 @@ type Action =
   | { type: 'SET_USERS'; payload: User[] }
   | { type: 'SET_POSTSBYUSERID'; payload: Post[] }
   | { type: 'SET_COMMENTSBYPOSTID'; payload: Comment[] }
-  | { type: 'SET_HASERROR'; payload: boolean }
   | { type: 'SET_ERRORMESSAGE'; payload: string }
-  | { type: 'SET_HASCOMMENTERROR'; payload: boolean }
+  | { type: 'SET_COMMENTERROR'; payload: boolean }
   | { type: 'SET_SELECTEDUSERID'; payload: number }
-  | { type: 'SET_ISLOADING'; payload: boolean }
+  | { type: 'SET_USERSLOADER'; payload: boolean }
+  | { type: 'SET_POSTSLOADER'; payload: boolean }
+  | { type: 'SET_ADDBUTTONLOADER'; payload: boolean }
+  | { type: 'SET_COMMENTSLOADER'; payload: boolean }
   | { type: 'SET_SELECTEDPOSTID'; payload: number | null }
-  | { type: 'SET_ISCOMMENTFORMACTIVE'; payload: boolean }
-  | { type: 'SET_ISSIDEBAROPEN'; payload: boolean };
+  | { type: 'SET_COMMENTFORM'; payload: boolean }
+  | { type: 'SET_SIDEBAR'; payload: boolean };
 
 function reducer(states: States, action: Action) {
   let newStates = { ...states };
@@ -48,28 +52,34 @@ function reducer(states: States, action: Action) {
     case 'SET_COMMENTSBYPOSTID':
       newStates = { ...newStates, commentsByPostId: action.payload };
       break;
-    case 'SET_HASERROR':
-      newStates = { ...newStates, hasError: action.payload };
-      break;
     case 'SET_ERRORMESSAGE':
       newStates = { ...newStates, errorMessage: action.payload };
       break;
-    case 'SET_HASCOMMENTERROR':
+    case 'SET_COMMENTERROR':
       newStates = { ...newStates, hasCommentError: action.payload };
       break;
     case 'SET_SELECTEDUSERID':
       newStates = { ...newStates, selectedUserId: action.payload };
       break;
-    case 'SET_ISLOADING':
-      newStates = { ...newStates, isLoading: action.payload };
+    case 'SET_USERSLOADER':
+      newStates = { ...newStates, isUsersLoading: action.payload };
+      break;
+    case 'SET_POSTSLOADER':
+      newStates = { ...newStates, isPostsLoading: action.payload };
+      break;
+    case 'SET_COMMENTSLOADER':
+      newStates = { ...newStates, isCommentsLoading: action.payload };
+      break;
+    case 'SET_ADDBUTTONLOADER':
+      newStates = { ...newStates, isAddCommentLoading: action.payload };
       break;
     case 'SET_SELECTEDPOSTID':
       newStates = { ...newStates, selectedPostId: action.payload };
       break;
-    case 'SET_ISCOMMENTFORMACTIVE':
+    case 'SET_COMMENTFORM':
       newStates = { ...newStates, isCommentFormActive: action.payload };
       break;
-    case 'SET_ISSIDEBAROPEN':
+    case 'SET_SIDEBAR':
       newStates = { ...newStates, isSidebarOpen: action.payload };
       break;
     default:

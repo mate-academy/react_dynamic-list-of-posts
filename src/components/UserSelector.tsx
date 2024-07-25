@@ -9,7 +9,7 @@ export const UserSelector: React.FC = () => {
 
   const handleOnSelectUser = (userId: number) => {
     dispatch({ type: 'SET_SELECTEDUSERID', payload: userId });
-    dispatch({ type: 'SET_ISSIDEBAROPEN', payload: false });
+    dispatch({ type: 'SET_SIDEBAR', payload: false });
     setIsDropdownOpened(false);
   };
 

@@ -6,12 +6,14 @@ export interface States {
   users: User[];
   postsByUserId: Post[];
   commentsByPostId: Comment[];
-  hasError: boolean;
   errorMessage: string;
   hasCommentError: boolean;
   selectedUserId?: number | null;
   selectedPostId?: number | null;
-  isLoading: boolean;
+  isUsersLoading: boolean;
+  isPostsLoading: boolean;
+  isCommentsLoading: boolean;
+  isAddCommentLoading: boolean;
   isCommentFormActive: boolean;
   isSidebarOpen: boolean;
 }

@@ -4,24 +4,34 @@ import { Post } from '../types/Post';
 
 export const PostsList: React.FC = () => {
   const dispatch = useContext(DispatchContext);
-  const { postsByUserId, selectedPostId, isSidebarOpen, isCommentFormActive } =
+  const { postsByUserId, selectedPostId, isSidebarOpen } =
     useContext(StatesContext);
 
   const handleOnOpen = (post: Post) => {
     if (!isSidebarOpen) {
-      dispatch({ type: 'SET_ISSIDEBAROPEN', payload: true });
+      dispatch({ type: 'SET_SIDEBAR', payload: true });
     }
 
-    if (isCommentFormActive) {
-      dispatch({
-        type: 'SET_ISCOMMENTFORMACTIVE',
-        payload: false,
-      });
-    }
+    dispatch({
+      type: 'SET_COMMENTFORM',
+      payload: false,
+    });
 
     dispatch({
       type: 'SET_SELECTEDPOSTID',
       payload: post.id,
+    });
+  };
+
+  const handleOnClose = () => {
+    dispatch({
+      type: 'SET_SIDEBAR',
+      payload: false,
+    });
+
+    dispatch({
+      type: 'SET_SELECTEDPOSTID',
+      payload: null,
     });
   };
 
@@ -53,20 +63,7 @@ export const PostsList: React.FC = () => {
                       type="button"
                       data-cy="PostButton"
                       className="button is-link"
-                      onClick={() => {
-                        dispatch({
-                          type: 'SET_ISSIDEBAROPEN',
-                          payload: false,
-                        });
-                        setTimeout(
-                          () =>
-                            dispatch({
-                              type: 'SET_SELECTEDPOSTID',
-                              payload: null,
-                            }),
-                          450,
-                        );
-                      }}
+                      onClick={handleOnClose}
                     >
                       Close
                     </button>

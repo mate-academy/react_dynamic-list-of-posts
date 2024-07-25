@@ -5,8 +5,12 @@ import classNames from 'classnames';
 
 export const NewCommentForm: React.FC = () => {
   const dispatch = useContext(DispatchContext);
-  const { isLoading, selectedPostId, commentsByPostId, hasCommentError } =
-    useContext(StatesContext);
+  const {
+    isAddCommentLoading,
+    selectedPostId,
+    commentsByPostId,
+    hasCommentError,
+  } = useContext(StatesContext);
 
   const [nameError, setNameError] = useState(false);
   const [name, setName] = useState('');
@@ -33,14 +37,14 @@ export const NewCommentForm: React.FC = () => {
   const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    dispatch({ type: 'SET_ISLOADING', payload: true });
+    dispatch({ type: 'SET_ADDBUTTONLOADER', payload: true });
 
     setNameError(!name);
     setEmailError(!email);
     setBodyError(!body);
 
     if (!name || !email || !body) {
-      dispatch({ type: 'SET_ISLOADING', payload: false });
+      dispatch({ type: 'SET_ADDBUTTONLOADER', payload: false });
 
       return;
     } else {
@@ -56,15 +60,15 @@ export const NewCommentForm: React.FC = () => {
               type: 'SET_COMMENTSBYPOSTID',
               payload: [...commentsByPostId, newComment],
             });
-            dispatch({ type: 'SET_ISLOADING', payload: false });
+            dispatch({ type: 'SET_ADDBUTTONLOADER', payload: false });
             setBody('');
           })
           .catch(() => {
             dispatch({
-              type: 'SET_HASCOMMENTERROR',
+              type: 'SET_COMMENTERROR',
               payload: true,
             });
-            dispatch({ type: 'SET_ISLOADING', payload: false });
+            dispatch({ type: 'SET_ADDBUTTONLOADER', payload: false });
           });
       }
     }
@@ -80,7 +84,7 @@ export const NewCommentForm: React.FC = () => {
   }
 
   useEffect(
-    () => dispatch({ type: 'SET_HASCOMMENTERROR', payload: false }),
+    () => dispatch({ type: 'SET_COMMENTERROR', payload: false }),
     [hasCommentError],
   );
 
@@ -190,7 +194,7 @@ export const NewCommentForm: React.FC = () => {
           <button
             type="submit"
             className={classNames('button is-link', {
-              'is-loading': isLoading,
+              'is-loading': isAddCommentLoading,
             })}
           >
             Add

@@ -10,24 +10,31 @@ export const PostDetails: React.FC = () => {
   const {
     selectedPostId,
     postsByUserId,
-    isLoading,
+    isCommentsLoading,
     hasCommentError,
     commentsByPostId,
     isCommentFormActive,
   } = useContext(StatesContext);
 
   const post = postsByUserId.find(p => selectedPostId === p.id);
-  const isNoCommentsYetActive =
+
+  const isNoCommentsMsgActive =
     commentsByPostId.length === 0 &&
     selectedPostId &&
-    !isLoading &&
+    !isCommentsLoading &&
+    !hasCommentError;
+
+  const isCommentsListActive =
+    commentsByPostId.length !== 0 &&
+    selectedPostId &&
+    !isCommentsLoading &&
     !hasCommentError;
 
   const handleOnClickWrite = () =>
-    dispatch({ type: 'SET_ISCOMMENTFORMACTIVE', payload: true });
+    dispatch({ type: 'SET_COMMENTFORM', payload: true });
 
   const handleOnDelete = (comment: Comment) => {
-    dispatch({ type: 'SET_ISLOADING', payload: true });
+    dispatch({ type: 'SET_COMMENTSLOADER', payload: true });
     dispatch({
       type: 'SET_COMMENTSBYPOSTID',
       payload: commentsByPostId.filter(c => comment.id !== c.id),
@@ -35,12 +42,12 @@ export const PostDetails: React.FC = () => {
     deleteComment(comment.id)
       .catch(() => {
         dispatch({
-          type: 'SET_HASCOMMENTERROR',
+          type: 'SET_COMMENTERROR',
           payload: true,
         });
-        dispatch({ type: 'SET_ISLOADING', payload: false });
+        dispatch({ type: 'SET_COMMENTSLOADER', payload: false });
       })
-      .finally(() => dispatch({ type: 'SET_ISLOADING', payload: false }));
+      .finally(() => dispatch({ type: 'SET_COMMENTSLOADER', payload: false }));
   };
 
   return (
@@ -53,7 +60,7 @@ export const PostDetails: React.FC = () => {
         </div>
 
         <div className="block">
-          {isLoading && <Loader />}
+          {isCommentsLoading && <Loader />}
 
           {hasCommentError && (
             <div className="notification is-danger" data-cy="CommentsError">
@@ -61,11 +68,13 @@ export const PostDetails: React.FC = () => {
             </div>
           )}
 
-          {isNoCommentsYetActive ? (
+          {isNoCommentsMsgActive && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
-          ) : (
+          )}
+
+          {isCommentsListActive && (
             <>
               <p className="title is-4">Comments:</p>
               {commentsByPostId.map(comment => (
@@ -96,8 +105,7 @@ export const PostDetails: React.FC = () => {
               ))}
             </>
           )}
-
-          {!isCommentFormActive && !isLoading && !hasCommentError && (
+          {!isCommentFormActive && !isCommentsLoading && !hasCommentError && (
             <button
               data-cy="WriteCommentButton"
               type="button"
