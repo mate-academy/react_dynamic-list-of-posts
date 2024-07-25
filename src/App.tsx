@@ -28,6 +28,9 @@ export const App: React.FC = () => {
   const isNoPostsYetActive =
     postsByUserId.length === 0 && selectedUserId && !isLoading && !hasError;
 
+  const isPostListActive =
+    postsByUserId.length !== 0 && selectedUserId && !hasError && !isLoading;
+
   function fetchUsers() {
     dispatch({ type: 'SET_ISLOADING', payload: true });
     getUsers()
@@ -73,8 +76,8 @@ export const App: React.FC = () => {
         })
         .catch(() => {
           dispatch({
-            type: 'SET_ERRORMESSAGE',
-            payload: 'Unable to load comments',
+            type: 'SET_HASCOMMENTERROR',
+            payload: true,
           });
           dispatch({ type: 'SET_ISLOADING', payload: false });
         });
@@ -126,9 +129,7 @@ export const App: React.FC = () => {
                     No posts yet
                   </div>
                 )}
-                {postsByUserId.length !== 0 && selectedUserId && !hasError && (
-                  <PostsList />
-                )}
+                {isPostListActive && <PostsList />}
               </div>
             </div>
           </div>
@@ -143,9 +144,11 @@ export const App: React.FC = () => {
               { 'Sidebar--open': isSidebarOpen },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails />
-            </div>
+            {selectedPostId && (
+              <div className="tile is-child box is-success ">
+                <PostDetails />
+              </div>
+            )}
           </div>
         </div>
       </div>

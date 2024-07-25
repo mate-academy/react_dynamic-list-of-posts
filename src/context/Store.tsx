@@ -32,7 +32,7 @@ type Action =
   | { type: 'SET_SELECTEDUSERID'; payload: number }
   | { type: 'SET_ISLOADING'; payload: boolean }
   | { type: 'SET_SELECTEDPOSTID'; payload: number | null }
-  | { type: 'SET_COMMENTFORMACTIVE'; payload: boolean }
+  | { type: 'SET_ISCOMMENTFORMACTIVE'; payload: boolean }
   | { type: 'SET_ISSIDEBAROPEN'; payload: boolean };
 
 function reducer(states: States, action: Action) {
@@ -66,7 +66,7 @@ function reducer(states: States, action: Action) {
     case 'SET_SELECTEDPOSTID':
       newStates = { ...newStates, selectedPostId: action.payload };
       break;
-    case 'SET_COMMENTFORMACTIVE':
+    case 'SET_ISCOMMENTFORMACTIVE':
       newStates = { ...newStates, isCommentFormActive: action.payload };
       break;
     case 'SET_ISSIDEBAROPEN':

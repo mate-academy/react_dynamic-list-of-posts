@@ -13,13 +13,18 @@ export const PostDetails: React.FC = () => {
     isLoading,
     hasCommentError,
     commentsByPostId,
-    isCommentFormActive: commentForm,
+    isCommentFormActive,
   } = useContext(StatesContext);
 
   const post = postsByUserId.find(p => selectedPostId === p.id);
+  const isNoCommentsYetActive =
+    commentsByPostId.length === 0 &&
+    selectedPostId &&
+    !isLoading &&
+    !hasCommentError;
 
   const handleOnClickWrite = () =>
-    dispatch({ type: 'SET_COMMENTFORMACTIVE', payload: true });
+    dispatch({ type: 'SET_ISCOMMENTFORMACTIVE', payload: true });
 
   const handleOnDelete = async (comment: Comment) => {
     dispatch({ type: 'SET_ISLOADING', payload: true });
@@ -59,7 +64,7 @@ export const PostDetails: React.FC = () => {
             </div>
           )}
 
-          {commentsByPostId.length === 0 && selectedPostId && !isLoading ? (
+          {isNoCommentsYetActive ? (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -95,7 +100,7 @@ export const PostDetails: React.FC = () => {
             </>
           )}
 
-          {!commentForm && (
+          {!isCommentFormActive && !isLoading && !hasCommentError && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -107,7 +112,7 @@ export const PostDetails: React.FC = () => {
           )}
         </div>
 
-        {commentForm && <NewCommentForm />}
+        {isCommentFormActive && <NewCommentForm />}
       </div>
     </div>
   );

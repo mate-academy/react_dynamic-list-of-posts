@@ -45,34 +45,44 @@ export const NewCommentForm: React.FC = () => {
       return;
     } else {
       if (selectedPostId) {
-        const newComment = await postComment({
+        postComment({
           name: name,
           email: email,
           body: body,
           postId: selectedPostId,
-        });
-
-        if ('Error' in newComment) {
-          dispatch({
-            type: 'SET_HASCOMMENTERROR',
-            payload: true,
+        })
+          .then(newComment => {
+            dispatch({
+              type: 'SET_COMMENTSBYPOSTID',
+              payload: [...commentsByPostId, newComment],
+            });
+            dispatch({ type: 'SET_ISLOADING', payload: false });
+            setBody('');
+          })
+          .catch(() => {
+            dispatch({
+              type: 'SET_HASCOMMENTERROR',
+              payload: true,
+            });
+            dispatch({ type: 'SET_ISLOADING', payload: false });
           });
-          dispatch({ type: 'SET_ISLOADING', payload: false });
-
-          return;
-        }
-        dispatch({
-          type: 'SET_COMMENTSBYPOSTID',
-          payload: [...commentsByPostId, newComment],
-        });
-
-        dispatch({ type: 'SET_ISLOADING', payload: false });
       }
     }
   };
 
+  function reset() {
+    setName('');
+    setNameError(false);
+    setEmail('');
+    setEmailError(false);
+    setBody('');
+    setBodyError(false);
+  }
 
-  useEffect(() => dispatch({ type: 'SET_HASCOMMENTERROR', payload: false }), [hasCommentError]);
+  useEffect(
+    () => dispatch({ type: 'SET_HASCOMMENTERROR', payload: false }),
+    [hasCommentError],
+  );
 
   return (
     <form data-cy="NewCommentForm" onSubmit={handleOnSubmit}>
@@ -189,7 +199,11 @@ export const NewCommentForm: React.FC = () => {
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={() => reset()}
+          >
             Clear
           </button>
         </div>

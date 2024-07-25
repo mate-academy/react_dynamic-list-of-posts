@@ -58,6 +58,10 @@ export const PostsList: React.FC = () => {
                       onClick={() => {
                         dispatch({ type: 'SET_ISSIDEBAROPEN', payload: true });
                         dispatch({
+                          type: 'SET_ISCOMMENTFORMACTIVE',
+                          payload: false,
+                        });
+                        dispatch({
                           type: 'SET_SELECTEDPOSTID',
                           payload: post.id,
                         });
