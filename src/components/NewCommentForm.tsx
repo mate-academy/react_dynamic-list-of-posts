@@ -85,7 +85,7 @@ export const NewCommentForm: React.FC = () => {
 
   useEffect(
     () => dispatch({ type: 'SET_COMMENTERROR', payload: false }),
-    [hasCommentError],
+    [dispatch, hasCommentError],
   );
 
   return (

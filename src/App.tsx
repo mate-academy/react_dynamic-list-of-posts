@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import 'bulma/bulma.sass';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -33,7 +33,7 @@ export const App: React.FC = () => {
   const isPostListActive =
     postsByUserId.length !== 0 && selectedUserId && !isPostsLoading;
 
-  function fetchUsers() {
+  const fetchUsers = useCallback(() => {
     dispatch({ type: 'SET_USERSLOADER', payload: true });
     getUsers()
       .then(usersFromServer => {
@@ -44,9 +44,9 @@ export const App: React.FC = () => {
         dispatch({ type: 'SET_USERSLOADER', payload: false });
         dispatch({ type: 'SET_ERRORMESSAGE', payload: 'Unable to load users' });
       });
-  }
+  }, [dispatch]);
 
-  function fetchPostsByUser() {
+  const fetchPostsByUser = useCallback(() => {
     if (selectedUserId) {
       dispatch({ type: 'SET_POSTSLOADER', payload: true });
       getPostsByUserId(selectedUserId)
@@ -62,9 +62,9 @@ export const App: React.FC = () => {
           dispatch({ type: 'SET_POSTSLOADER', payload: false });
         });
     }
-  }
+  }, [dispatch, selectedUserId]);
 
-  function fetchCommentsByPostId() {
+  const fetchCommentsByPostId = useCallback(() => {
     if (selectedPostId) {
       dispatch({ type: 'SET_COMMENTSLOADER', payload: true });
       getCommentsByPostId(selectedPostId)
@@ -83,19 +83,19 @@ export const App: React.FC = () => {
           dispatch({ type: 'SET_COMMENTSLOADER', payload: false });
         });
     }
-  }
+  }, [dispatch, selectedPostId]);
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [fetchUsers]);
 
   useEffect(() => {
     fetchPostsByUser();
-  }, [selectedUserId]);
+  }, [fetchPostsByUser]);
 
   useEffect(() => {
     fetchCommentsByPostId();
-  }, [selectedPostId]);
+  }, [fetchCommentsByPostId]);
 
   return (
     <main className="section">
