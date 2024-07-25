@@ -11,7 +11,7 @@ export const PostDetails: React.FC = () => {
     selectedPostId,
     postsByUserId,
     isLoading,
-    errorMessage,
+    hasCommentError,
     commentsByPostId,
     isCommentFormActive: commentForm,
   } = useContext(StatesContext);
@@ -25,10 +25,16 @@ export const PostDetails: React.FC = () => {
     dispatch({ type: 'SET_ISLOADING', payload: true });
 
     deleteComment(comment.id)
+      .then(() =>
+        dispatch({
+          type: 'SET_COMMENTSBYPOSTID',
+          payload: commentsByPostId.filter(c => comment.id !== c.id),
+        }),
+      )
       .catch(() => {
         dispatch({
-          type: 'SET_COMMENTERRORMESSAGE',
-          payload: 'Something went wrong',
+          type: 'SET_HASCOMMENTERROR',
+          payload: true,
         });
         dispatch({ type: 'SET_ISLOADING', payload: false });
       })
@@ -47,13 +53,13 @@ export const PostDetails: React.FC = () => {
         <div className="block">
           {isLoading && <Loader />}
 
-          {errorMessage && (
+          {hasCommentError && (
             <div className="notification is-danger" data-cy="CommentsError">
-              {errorMessage}
+              Something went wrong.
             </div>
           )}
 
-          {commentsByPostId.length === 0 ? (
+          {commentsByPostId.length === 0 && selectedPostId && !isLoading ? (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>

@@ -1,29 +1,43 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { DispatchContext, StatesContext } from '../context/Store';
 import classNames from 'classnames';
 
 export const UserSelector: React.FC = () => {
-  const [isDropdownActive, setIsDropdownActive] = useState(false);
+  const [isDropdownOpened, setIsDropdownOpened] = useState(false);
   const dispatch = useContext(DispatchContext);
   const { users, selectedUserId } = useContext(StatesContext);
 
   const handleOnSelectUser = (userId: number) => {
     dispatch({ type: 'SET_SELECTEDUSERID', payload: userId });
-    setIsDropdownActive(false);
+    setIsDropdownOpened(false);
   };
+
+  const buttonRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const closeDropdown = (e: any) => {
+      if (!buttonRef.current?.contains(e.target)) {
+        setIsDropdownOpened(false);
+      }
+    };
+
+    document.body.addEventListener('click', closeDropdown);
+
+    return () => document.body.removeEventListener('click', closeDropdown);
+  }, []);
 
   return (
     <div
       data-cy="UserSelector"
-      className={classNames('dropdown', { 'is-active': isDropdownActive })}
+      className={classNames('dropdown', { 'is-active': isDropdownOpened })}
     >
-      <div className="dropdown-trigger">
+      <div className="dropdown-trigger" ref={buttonRef}>
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setIsDropdownActive(!isDropdownActive)}
+          onClick={() => setIsDropdownOpened(!isDropdownOpened)}
         >
           <span>
             {selectedUserId

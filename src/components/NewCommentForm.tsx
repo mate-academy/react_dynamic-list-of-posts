@@ -1,11 +1,12 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { DispatchContext, StatesContext } from '../context/Store';
 import { postComment } from '../api/comments';
 import classNames from 'classnames';
 
 export const NewCommentForm: React.FC = () => {
   const dispatch = useContext(DispatchContext);
-  const { isLoading, selectedPostId } = useContext(StatesContext);
+  const { isLoading, selectedPostId, commentsByPostId, hasCommentError } =
+    useContext(StatesContext);
 
   const [nameError, setNameError] = useState(false);
   const [name, setName] = useState('');
@@ -53,18 +54,25 @@ export const NewCommentForm: React.FC = () => {
 
         if ('Error' in newComment) {
           dispatch({
-            type: 'SET_COMMENTERRORMESSAGE',
-            payload: 'Something went wrong',
+            type: 'SET_HASCOMMENTERROR',
+            payload: true,
           });
           dispatch({ type: 'SET_ISLOADING', payload: false });
 
           return;
         }
+        dispatch({
+          type: 'SET_COMMENTSBYPOSTID',
+          payload: [...commentsByPostId, newComment],
+        });
 
         dispatch({ type: 'SET_ISLOADING', payload: false });
       }
     }
   };
+
+
+  useEffect(() => dispatch({ type: 'SET_HASCOMMENTERROR', payload: false }), [hasCommentError]);
 
   return (
     <form data-cy="NewCommentForm" onSubmit={handleOnSubmit}>

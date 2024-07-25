@@ -6,8 +6,9 @@ export interface States {
   users: User[];
   postsByUserId: Post[];
   commentsByPostId: Comment[];
+  hasError: boolean;
   errorMessage: string;
-  commentErrorMessage: string;
+  hasCommentError: boolean;
   selectedUserId?: number | null;
   selectedPostId?: number | null;
   isLoading: boolean;

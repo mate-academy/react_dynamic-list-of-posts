@@ -8,8 +8,9 @@ const initialStates: States = {
   users: [],
   postsByUserId: [],
   commentsByPostId: [],
+  hasError: false,
   errorMessage: '',
-  commentErrorMessage: '',
+  hasCommentError: false,
   selectedUserId: null,
   selectedPostId: null,
   isLoading: false,
@@ -25,8 +26,9 @@ type Action =
   | { type: 'SET_USERS'; payload: User[] }
   | { type: 'SET_POSTSBYUSERID'; payload: Post[] }
   | { type: 'SET_COMMENTSBYPOSTID'; payload: Comment[] }
+  | { type: 'SET_HASERROR'; payload: boolean }
   | { type: 'SET_ERRORMESSAGE'; payload: string }
-  | { type: 'SET_COMMENTERRORMESSAGE'; payload: string }
+  | { type: 'SET_HASCOMMENTERROR'; payload: boolean }
   | { type: 'SET_SELECTEDUSERID'; payload: number }
   | { type: 'SET_ISLOADING'; payload: boolean }
   | { type: 'SET_SELECTEDPOSTID'; payload: number | null }
@@ -46,11 +48,14 @@ function reducer(states: States, action: Action) {
     case 'SET_COMMENTSBYPOSTID':
       newStates = { ...newStates, commentsByPostId: action.payload };
       break;
+    case 'SET_HASERROR':
+      newStates = { ...newStates, hasError: action.payload };
+      break;
     case 'SET_ERRORMESSAGE':
       newStates = { ...newStates, errorMessage: action.payload };
       break;
-    case 'SET_COMMENTERRORMESSAGE':
-      newStates = { ...newStates, errorMessage: action.payload };
+    case 'SET_HASCOMMENTERROR':
+      newStates = { ...newStates, hasCommentError: action.payload };
       break;
     case 'SET_SELECTEDUSERID':
       newStates = { ...newStates, selectedUserId: action.payload };
