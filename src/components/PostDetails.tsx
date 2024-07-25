@@ -26,16 +26,13 @@ export const PostDetails: React.FC = () => {
   const handleOnClickWrite = () =>
     dispatch({ type: 'SET_ISCOMMENTFORMACTIVE', payload: true });
 
-  const handleOnDelete = async (comment: Comment) => {
+  const handleOnDelete = (comment: Comment) => {
     dispatch({ type: 'SET_ISLOADING', payload: true });
-
+    dispatch({
+      type: 'SET_COMMENTSBYPOSTID',
+      payload: commentsByPostId.filter(c => comment.id !== c.id),
+    });
     deleteComment(comment.id)
-      .then(() =>
-        dispatch({
-          type: 'SET_COMMENTSBYPOSTID',
-          payload: commentsByPostId.filter(c => comment.id !== c.id),
-        }),
-      )
       .catch(() => {
         dispatch({
           type: 'SET_HASCOMMENTERROR',

@@ -1,9 +1,29 @@
 import React, { useContext } from 'react';
 import { DispatchContext, StatesContext } from '../context/Store';
+import { Post } from '../types/Post';
 
 export const PostsList: React.FC = () => {
   const dispatch = useContext(DispatchContext);
-  const { postsByUserId, selectedPostId } = useContext(StatesContext);
+  const { postsByUserId, selectedPostId, isSidebarOpen, isCommentFormActive } =
+    useContext(StatesContext);
+
+  const handleOnOpen = (post: Post) => {
+    if (!isSidebarOpen) {
+      dispatch({ type: 'SET_ISSIDEBAROPEN', payload: true });
+    }
+
+    if (isCommentFormActive) {
+      dispatch({
+        type: 'SET_ISCOMMENTFORMACTIVE',
+        payload: false,
+      });
+    }
+
+    dispatch({
+      type: 'SET_SELECTEDPOSTID',
+      payload: post.id,
+    });
+  };
 
   return (
     <div data-cy="PostsList">
@@ -55,17 +75,7 @@ export const PostsList: React.FC = () => {
                       type="button"
                       data-cy="PostButton"
                       className="button is-link is-light"
-                      onClick={() => {
-                        dispatch({ type: 'SET_ISSIDEBAROPEN', payload: true });
-                        dispatch({
-                          type: 'SET_ISCOMMENTFORMACTIVE',
-                          payload: false,
-                        });
-                        dispatch({
-                          type: 'SET_SELECTEDPOSTID',
-                          payload: post.id,
-                        });
-                      }}
+                      onClick={() => handleOnOpen(post)}
                     >
                       Open
                     </button>

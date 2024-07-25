@@ -29,7 +29,7 @@ export const App: React.FC = () => {
     postsByUserId.length === 0 && selectedUserId && !isLoading && !hasError;
 
   const isPostListActive =
-    postsByUserId.length !== 0 && selectedUserId && !hasError && !isLoading;
+    postsByUserId.length !== 0 && selectedUserId && !isLoading && !hasError;
 
   function fetchUsers() {
     dispatch({ type: 'SET_ISLOADING', payload: true });
@@ -45,8 +45,8 @@ export const App: React.FC = () => {
   }
 
   function fetchPostsByUser() {
-    dispatch({ type: 'SET_ISLOADING', payload: true });
     if (selectedUserId) {
+      dispatch({ type: 'SET_ISLOADING', payload: true });
       getPostsByUserId(selectedUserId)
         .then(postsFromServer => {
           dispatch({ type: 'SET_POSTSBYUSERID', payload: postsFromServer });
@@ -64,8 +64,8 @@ export const App: React.FC = () => {
   }
 
   function fetchCommentsByPostId() {
-    dispatch({ type: 'SET_ISLOADING', payload: true });
     if (selectedPostId) {
+      dispatch({ type: 'SET_ISLOADING', payload: true });
       getCommentsByPostId(selectedPostId)
         .then(commentsFromServer => {
           dispatch({
