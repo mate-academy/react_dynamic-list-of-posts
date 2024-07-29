@@ -11,7 +11,7 @@ function wait(delay: number) {
 // To have autocompletion and avoid mistypes
 type RequestMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
-function request<T>(
+async function request<T>(
   url: string,
   method: RequestMethod = 'GET',
   data: any = null, // we can send any data to the server
@@ -27,9 +27,10 @@ function request<T>(
   }
 
   // for a demo purpose we emulate a delay to see if Loaders work
-  return wait(300)
-    .then(() => fetch(BASE_URL + url, options))
-    .then(response => response.json());
+  await wait(300);
+  const response = await fetch(BASE_URL + url, options);
+
+  return response.json();
 }
 
 export const client = {
