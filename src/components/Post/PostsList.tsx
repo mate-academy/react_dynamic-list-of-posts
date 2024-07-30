@@ -5,7 +5,7 @@ import PostInfo from './PostInfo';
 type Props = {
   posts: Post[];
   chosenPost: Post | null;
-  onClickPost: (post: Post) => void;
+  onClickPost: (post: Post | null) => void;
 };
 
 export const PostsList: React.FC<Props> = ({

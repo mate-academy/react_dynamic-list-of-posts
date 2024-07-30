@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from '../Loader';
 import { Post } from '../../types/Post';
 import { Comment } from '../../types/Comment';
@@ -32,8 +32,12 @@ export const PostDetails: React.FC<Props> = ({
 }) => {
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
 
+  useEffect(() => {
+    setIsFormOpen(false);
+  }, [post]);
+
   return (
-    <div className="content" data-cy="PostDetails">
+    post && (
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
@@ -52,13 +56,13 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {post && !comments.length && !isLoaded && (
+          {!error.length && !comments.length && !isLoaded && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {!!comments.length && (
+          {!!comments.length && !isLoaded && (
             <CommenstList
               onClickDeleteComment={onClickDeleteComment}
               comments={comments}
@@ -85,6 +89,6 @@ export const PostDetails: React.FC<Props> = ({
           )}
         </div>
       </div>
-    </div>
+    )
   );
 };

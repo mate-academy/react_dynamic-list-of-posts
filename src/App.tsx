@@ -98,9 +98,11 @@ export const App: React.FC = () => {
       });
   };
 
-  const handleClickOpenPost = (post: Post) => {
+  const handleClickOpenPost = (post: Post | null) => {
     setChosenPost(post);
-    handleClickChoosePostComments(post.id);
+    if (post) {
+      handleClickChoosePostComments(post.id);
+    }
   };
 
   const handleClickDeleteComment = (commentId: number) => {
@@ -146,13 +148,13 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
+                {isLoaded && <Loader />}
+
                 {chosenUser === null && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {isLoaded && <Loader />}
-
-                {!!error.length && (
+                {!!error.length && !postsArray.length && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -161,7 +163,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!!postsArray.length && (
+                {!!postsArray.length && !isLoaded && (
                   <PostsList
                     posts={postsArray}
                     chosenPost={chosenPost}
@@ -170,9 +172,9 @@ export const App: React.FC = () => {
                 )}
 
                 {chosenUser &&
+                  !error.length &&
                   !postsArray.length &&
-                  !isLoaded &&
-                  !!error.length && (
+                  !isLoaded && (
                     <div
                       className="notification is-warning"
                       data-cy="NoPostsYet"

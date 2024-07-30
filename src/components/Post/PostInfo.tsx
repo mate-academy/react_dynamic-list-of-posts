@@ -4,11 +4,19 @@ import { Post } from '../../types/Post';
 type Props = {
   post: Post;
   chosenPost: Post | null;
-  onClickPost: (post: Post) => void;
+  onClickPost: (post: Post | null) => void;
 };
 
 const PostInfo = ({ post, chosenPost, onClickPost }: Props) => {
   const { id, title } = post;
+
+  const handleClickUser = () => {
+    if (chosenPost?.id === id) {
+      return onClickPost(null);
+    }
+
+    return onClickPost(post);
+  };
 
   return (
     <tr data-cy="Post">
@@ -23,9 +31,9 @@ const PostInfo = ({ post, chosenPost, onClickPost }: Props) => {
           className={classNames('button', 'is-link', {
             'is-light': chosenPost?.id !== id,
           })}
-          onClick={() => onClickPost(post)}
+          onClick={handleClickUser}
         >
-          Open
+          {chosenPost?.id !== id ? 'Open' : 'Close'}
         </button>
       </td>
     </tr>
