@@ -33,11 +33,11 @@ export const App: React.FC = () => {
   const hasNoPosts =
     !loadingPosts && selectedUser && !posts.length && !postsErrorMessage;
 
-  function getNewCommentId(currentComments: Comment[]) {
+  const getNewCommentId = (currentComments: Comment[]) => {
     const maxId = Math.max(...currentComments.map(comment => comment.id));
 
     return maxId + 1;
-  }
+  };
 
   const addComment = ({ id, ...data }: Comment) => {
     setLoadingComments(true);
@@ -129,7 +129,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!loadingPosts && posts.length > 0 && (
+                {!loadingPosts && !!posts.length && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}

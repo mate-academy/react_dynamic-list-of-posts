@@ -52,7 +52,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={() => setIsDropdownOpened(!isDrowdownOpened)}
         >
-          {selectedUser === null ? (
+          {!selectedUser ? (
             <span>Choose a user</span>
           ) : (
             <span>{selectedUser.name}</span>

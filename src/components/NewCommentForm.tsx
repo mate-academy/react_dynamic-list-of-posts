@@ -51,20 +51,23 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    setHasNameError(!name);
-    setHasEmailError(!email);
-    setHasBodyError(!body);
+    const trimmedName = name.trim();
+    const trimmedBody = body.trim();
 
-    if (!name || !email || !body) {
+    setHasNameError(!trimmedName);
+    setHasEmailError(!email);
+    setHasBodyError(!trimmedBody);
+
+    if (!trimmedName || !email || !trimmedBody) {
       return;
     }
 
     onSubmit({
       id: 0,
       postId: +selectedPost.id,
-      name: name,
+      name: trimmedName,
       email: email,
-      body: body,
+      body: trimmedBody,
     });
 
     handleReset();
