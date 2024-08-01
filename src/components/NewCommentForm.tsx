@@ -1,11 +1,10 @@
 import React, { FormEvent, useState } from 'react';
 import { addNewComment } from '../services/comment';
 import classNames from 'classnames';
-import { Comment } from '../types/Comment';
+import { Comment, CommentData } from '../types/Comment';
 
 type Props = {
   postId: number;
-  // setComments: (comments: Comment[]) => void;
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
   setError: (value: boolean) => void;
 };
@@ -15,9 +14,11 @@ export const NewCommentForm: React.FC<Props> = ({
   setComments,
   setError,
 }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
+  const [newComment, setNewComment] = useState<CommentData>({
+    name: '',
+    email: '',
+    body: '',
+  });
   const [nameError, setNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
   const [bodyError, setBodyError] = useState(false);
@@ -27,25 +28,42 @@ export const NewCommentForm: React.FC<Props> = ({
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) {
     if (event.target.name === 'name') {
-      setName(event.target.value);
+      setNewComment(prev => {
+        return {
+          ...prev,
+          name: event.target.value,
+        };
+      });
       setNameError(false);
     }
 
     if (event.target.name === 'email') {
-      setEmail(event.target.value);
+      setNewComment(prev => {
+        return {
+          ...prev,
+          email: event.target.value,
+        };
+      });
       setEmailError(false);
     }
 
     if (event.target.name === 'body') {
-      setBody(event.target.value);
+      setNewComment(prev => {
+        return {
+          ...prev,
+          body: event.target.value,
+        };
+      });
       setBodyError(false);
     }
   }
 
   const handleClearComment = () => {
-    setName('');
-    setEmail('');
-    setBody('');
+    setNewComment({
+      name: '',
+      email: '',
+      body: '',
+    });
     setNameError(false);
     setEmailError(false);
     setBodyError(false);
@@ -54,9 +72,9 @@ export const NewCommentForm: React.FC<Props> = ({
   function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
-    const trimmedName = name.trim();
-    const trimmedEmail = email.trim();
-    const trimmedBody = body.trim();
+    const trimmedName = newComment.name.trim();
+    const trimmedEmail = newComment.email.trim();
+    const trimmedBody = newComment.body.trim();
 
     if (!trimmedName || !trimmedEmail || !trimmedBody) {
       if (!trimmedName) {
@@ -78,19 +96,24 @@ export const NewCommentForm: React.FC<Props> = ({
 
     addNewComment({
       postId,
-      name,
-      email,
-      body,
+      name: newComment.name,
+      email: newComment.email,
+      body: newComment.body,
     })
-      .then(newComment =>
-        setComments(currentComments => [...currentComments, newComment]),
+      .then(comment =>
+        setComments(currentComments => [...currentComments, comment]),
       )
       .catch(() => {
         setError(true);
       })
       .finally(() => {
         setIsLoading(false);
-        setBody('');
+        setNewComment(prev => {
+          return {
+            ...prev,
+            body: '',
+          };
+        });
       });
   }
 
@@ -108,7 +131,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': nameError })}
-            value={name}
+            value={newComment.name}
             onChange={handleOnChange}
           />
 
@@ -145,7 +168,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': emailError })}
-            value={email}
+            value={newComment.email}
             onChange={handleOnChange}
           />
 
@@ -181,7 +204,7 @@ export const NewCommentForm: React.FC<Props> = ({
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': bodyError })}
-            value={body}
+            value={newComment.body}
             onChange={handleOnChange}
           />
         </div>

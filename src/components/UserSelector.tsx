@@ -55,6 +55,12 @@ export const UserSelector: React.FC<Props> = ({
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
           {users.map(user => {
+            function handleMouseDown() {
+              setSelectedUser(user);
+              setIsActive(false);
+              setSelectedPost(null);
+            }
+
             return (
               <a
                 href={`#user-${user.id}`}
@@ -62,11 +68,7 @@ export const UserSelector: React.FC<Props> = ({
                   'is-active': selectedUser?.id === user.id,
                 })}
                 key={user.id}
-                onMouseDown={() => {
-                  setSelectedUser(user);
-                  setIsActive(false);
-                  setSelectedPost(null);
-                }}
+                onMouseDown={handleMouseDown}
               >
                 {user.name}
               </a>
