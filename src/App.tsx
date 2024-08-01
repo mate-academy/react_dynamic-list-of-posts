@@ -39,7 +39,6 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  // users={users}
                   selectedUser={selectedUser}
                   setSelectedUser={setSelectedUser}
                   setSelectedPost={setSelectedPost}
