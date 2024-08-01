@@ -9,21 +9,15 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
-import { getUsers } from './services/user';
 import { getUserPosts } from './services/post';
 import { Post } from './types/Post';
 
 export const App: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    getUsers().then(setUsers);
-  }, []);
 
   useEffect(() => {
     if (!selectedUser) {
@@ -45,7 +39,7 @@ export const App: React.FC = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  users={users}
+                  // users={users}
                   selectedUser={selectedUser}
                   setSelectedUser={setSelectedUser}
                   setSelectedPost={setSelectedPost}

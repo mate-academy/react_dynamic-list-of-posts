@@ -31,7 +31,7 @@ export const NewCommentForm: React.FC<Props> = ({
       setNewComment(prev => {
         return {
           ...prev,
-          name: event.target.value,
+          [event.target.name]: event.target.value,
         };
       });
       setNameError(false);

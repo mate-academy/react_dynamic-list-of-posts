@@ -35,28 +35,26 @@ export const PostsList: React.FC<Props> = ({
         </thead>
 
         <tbody>
-          {posts.map(post => {
-            return (
-              <tr data-cy="Post" key={post.id}>
-                <td data-cy="PostId">{post.id}</td>
+          {posts.map(post => (
+            <tr data-cy="Post" key={post.id}>
+              <td data-cy="PostId">{post.id}</td>
 
-                <td data-cy="PostTitle">{post.title}</td>
+              <td data-cy="PostTitle">{post.title}</td>
 
-                <td className="has-text-right is-vcentered">
-                  <button
-                    type="button"
-                    data-cy="PostButton"
-                    className={classNames('button is-link', {
-                      'is-light': selectedPost?.id !== post.id,
-                    })}
-                    onClick={() => handleSelectedUserPost(post)}
-                  >
-                    {selectedPost?.id === post.id ? 'Close' : 'Open'}
-                  </button>
-                </td>
-              </tr>
-            );
-          })}
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className={classNames('button is-link', {
+                    'is-light': selectedPost?.id !== post.id,
+                  })}
+                  onClick={() => handleSelectedUserPost(post)}
+                >
+                  {selectedPost?.id === post.id ? 'Close' : 'Open'}
+                </button>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

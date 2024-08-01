@@ -6,7 +6,7 @@ export function getPostsComments(postId: number) {
 }
 
 export function addNewComment(newComment: Omit<Comment, 'id'>) {
-  return client.post<Comment>(`/comments`, newComment);
+  return client.post<Comment>('/comments', newComment);
 }
 
 export function deleteComment(CommentId: number) {

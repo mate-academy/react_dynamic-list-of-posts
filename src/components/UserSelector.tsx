@@ -1,29 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { User } from '../types/User';
 import { Post } from '../types/Post';
 import classNames from 'classnames';
+import { getUsers } from '../services/user';
 
 type Props = {
-  users: User[];
   selectedUser?: User | null;
   setSelectedUser: (user: User) => void;
   setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
 };
 
 export const UserSelector: React.FC<Props> = ({
-  users,
   selectedUser,
   setSelectedUser,
   setSelectedPost,
 }) => {
   const [isActive, setIsActive] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    getUsers().then(setUsers);
+  }, []);
 
   const onActive = () => {
-    if (isActive) {
-      setIsActive(false);
-    } else {
-      setIsActive(true);
-    }
+    setIsActive(!isActive);
   };
 
   return (
