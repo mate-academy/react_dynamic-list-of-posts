@@ -79,10 +79,10 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
           ) : (
             <>
               <p className="title is-4">Comments:</p>
-              {comments.map((comment, index) => (
+              {comments.map((comment) => (
                 <article
                   className="message is-small"
-                  key={index}
+                  key={comment.id}
                   data-cy="Comment"
                 >
                   <div className="message-header">
