@@ -30,52 +30,19 @@ export const NewCommentForm: React.FC<Props> = ({
   function handleOnChange(
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) {
-    if (event.target.name === 'name') {
-      setNewComment(prev => {
-        return {
-          ...prev,
-          [event.target.name]: event.target.value,
-        };
-      });
+    setNewComment(prev => {
+      return {
+        ...prev,
+        [event.target.name]: event.target.value,
+      };
+    });
 
-      setNewCommentErrors(prev => {
-        return {
-          ...prev,
-          [event.target.name]: false,
-        };
-      });
-    }
-
-    if (event.target.name === 'email') {
-      setNewComment(prev => {
-        return {
-          ...prev,
-          email: event.target.value,
-        };
-      });
-
-      setNewCommentErrors(prev => {
-        return {
-          ...prev,
-          email: false,
-        };
-      });
-    }
-
-    if (event.target.name === 'body') {
-      setNewComment(prev => {
-        return {
-          ...prev,
-          body: event.target.value,
-        };
-      });
-      setNewCommentErrors(prev => {
-        return {
-          ...prev,
-          body: false,
-        };
-      });
-    }
+    setNewCommentErrors(prev => {
+      return {
+        ...prev,
+        [event.target.name]: false,
+      };
+    });
   }
 
   const handleClearComment = () => {
