@@ -82,7 +82,7 @@ export const App: React.FC = () => {
 
                 {!isLoading && !isError && (
                   <>
-                    {selectedUser && posts.length !== 0 ? (
+                    {selectedUser && !!posts.length ? (
                       <PostsList
                         posts={posts}
                         onPostSelection={handlePostSelection}
