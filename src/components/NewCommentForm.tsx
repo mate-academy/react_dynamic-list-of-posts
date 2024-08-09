@@ -1,99 +1,211 @@
-import React from 'react';
+import React, { useReducer, useState } from 'react';
+import { useValues } from '../SharedContext';
+import cn from 'classnames';
+import { Messages } from './constants/Messages';
+
+type Action =
+  | { type: 'changeName'; payload: { newName: string } }
+  | { type: 'changeEmail'; payload: { newEmail: string } }
+  | { type: 'changeBody'; payload: { newBody: string } };
+
+interface State {
+  name: string;
+  email: string;
+  body: string;
+}
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'changeName':
+      return { ...state, name: action.payload.newName };
+    case 'changeEmail':
+      return { ...state, email: action.payload.newEmail };
+    case 'changeBody':
+      return { ...state, body: action.payload.newBody };
+    default:
+      return state;
+  }
+}
+
+const initialValue: State = {
+  name: '',
+  email: '',
+  body: '',
+};
 
 export const NewCommentForm: React.FC = () => {
+  const { isSumbitting, handleCreateComment } = useValues();
+  const [state, dispatch] = useReducer(reducer, initialValue);
+  const [errors, setErrors] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
+
+  const { name, email, body } = state;
+
+  const handleChangeName = (newName: string) => {
+    dispatch({ type: 'changeName', payload: { newName } });
+    setErrors(prevErrors => ({ ...prevErrors, name: '' }));
+  };
+
+  const handleChangeEmail = (newEmail: string) => {
+    dispatch({ type: 'changeEmail', payload: { newEmail } });
+    setErrors(prevErrors => ({ ...prevErrors, email: '' }));
+  };
+
+  const handleChangeText = (newBody: string) => {
+    dispatch({ type: 'changeBody', payload: { newBody } });
+    setErrors(prevErrors => ({ ...prevErrors, body: '' }));
+  };
+
+  const reset = () => {
+    dispatch({ type: 'changeBody', payload: { newBody: '' } });
+  };
+
+  const handleSubmitNewComment = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const newErrors = { name: '', email: '', body: '' };
+
+    if (!name) {
+      newErrors.name = Messages.nameRequiredMessage;
+    }
+
+    if (!email) {
+      newErrors.email = Messages.emailRequiredMessage;
+    }
+
+    if (!body) {
+      newErrors.body = Messages.bodyRequiredMessage;
+    }
+
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).some(err => err)) {
+      return;
+    }
+
+    try {
+      await handleCreateComment({ name, email, body });
+
+      reset();
+    } catch {}
+  };
+
+  const handleResetButton = () => {
+    dispatch({ type: 'changeName', payload: { newName: '' } });
+    dispatch({ type: 'changeEmail', payload: { newEmail: '' } });
+    dispatch({ type: 'changeBody', payload: { newBody: '' } });
+    setErrors({ name: '', email: '', body: '' });
+  };
+
   return (
-    <form data-cy="NewCommentForm">
+    <form data-cy="NewCommentForm" onSubmit={handleSubmitNewComment}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            className={cn('input', { 'is-danger': errors.name })}
+            value={name}
+            onChange={e => handleChangeName(e.target.value)}
           />
-
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {errors.name && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
+        {errors.name && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            {errors.name}
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="EmailField">
         <label className="label" htmlFor="comment-author-email">
           Author Email
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            className={cn('input', { 'is-danger': errors.email })}
+            value={email}
+            onChange={e => handleChangeEmail(e.target.value)}
           />
-
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {errors.email && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
+        {errors.email && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            {errors.email}
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="BodyField">
         <label className="label" htmlFor="comment-body">
           Comment Text
         </label>
-
         <div className="control">
           <textarea
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            className={cn('textarea', { 'is-danger': errors.body })}
+            value={body}
+            onChange={e => handleChangeText(e.target.value)}
           />
         </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
+        {errors.body && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            {errors.body}
+          </p>
+        )}
       </div>
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={cn('button', 'is-link', {
+              'is-loading': isSumbitting,
+            })}
+          >
             Add
           </button>
         </div>
-
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={handleResetButton}
+          >
             Clear
           </button>
         </div>
