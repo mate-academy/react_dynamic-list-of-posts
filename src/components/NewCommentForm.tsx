@@ -68,15 +68,15 @@ export const NewCommentForm: React.FC = () => {
 
     const newErrors = { name: '', email: '', body: '' };
 
-    if (!name) {
+    if (!name.trim().length) {
       newErrors.name = Messages.nameRequiredMessage;
     }
 
-    if (!email) {
+    if (!email.trim().length) {
       newErrors.email = Messages.emailRequiredMessage;
     }
 
-    if (!body) {
+    if (!body.trim().length) {
       newErrors.body = Messages.bodyRequiredMessage;
     }
 
@@ -90,7 +90,7 @@ export const NewCommentForm: React.FC = () => {
       await handleCreateComment({ name, email, body });
 
       reset();
-    } catch {}
+    } catch { }
   };
 
   const handleResetButton = () => {
@@ -141,7 +141,7 @@ export const NewCommentForm: React.FC = () => {
         </label>
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
