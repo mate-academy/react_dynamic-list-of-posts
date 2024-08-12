@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
-  const [comment, setComment] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -22,18 +22,18 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
 
     setIsLoading(true);
     setShowForm(false);
-    setComment([]);
+    setComments([]);
 
     getComment(selectedPost.id)
-      .then(setComment)
+      .then(setComments)
       .catch(() => setError(true))
       .finally(() => setIsLoading(false));
   }, [selectedPost.id]);
 
   const handleDelete = (commentId: number) => {
     deleteComment(commentId).then(() => {
-      setComment(currentComments =>
-        currentComments.filter(comments => comments.id !== commentId),
+      setComments(currentComments =>
+        currentComments.filter(comment => comment.id !== commentId),
       );
     });
   };
@@ -58,42 +58,39 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
             </div>
           )}
 
-          {!comment.length && !isLoading && !error && (
+          {!comments.length && !isLoading && !error && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {!!comment.length && (
+          {!!comments.length && (
             <>
               <p className="title is-4">Comments:</p>
 
-              {comment.map(comments => (
+              {comments.map(({ id, email, name, body }) => (
                 <article
                   className="message is-small"
                   data-cy="Comment"
-                  key={comments.id}
+                  key={id}
                 >
                   <div className="message-header">
-                    <a
-                      href={`mailto:${comments.email}`}
-                      data-cy="CommentAuthor"
-                    >
-                      {comments.name}
+                    <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                      {name}
                     </a>
                     <button
                       data-cy="CommentDelete"
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
-                      onClick={() => handleDelete(comments.id)}
+                      onClick={() => handleDelete(id)}
                     >
                       delete button
                     </button>
                   </div>
 
                   <div className="message-body" data-cy="CommentBody">
-                    {comments.body}
+                    {body}
                   </div>
                 </article>
               ))}
@@ -115,7 +112,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         {showForm && (
           <NewCommentForm
             postId={selectedPost.id}
-            setComment={setComment}
+            setComment={setComments}
             setError={setError}
           />
         )}

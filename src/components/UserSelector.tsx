@@ -15,11 +15,11 @@ export const UserSelector: React.FC<Props> = ({
   setSelectedUser,
   setSelectedPost,
 }) => {
-  const [user, setUser] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    getUsers().then(setUser);
+    getUsers().then(setUsers);
   }, []);
 
   const activeUser = () => {
@@ -54,20 +54,20 @@ export const UserSelector: React.FC<Props> = ({
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          {user.map(users => (
+          {users.map(user => (
             <a
-              key={users.id}
-              href={`#user-${users.id}`}
+              key={user.id}
+              href={`#user-${user.id}`}
               className={classNames('dropdown-item', {
-                'is-active': selectedUser?.id === users.id,
+                'is-active': selectedUser?.id === user.id,
               })}
               onMouseDown={() => {
                 setSelectedPost(null);
                 setIsLoading(false);
-                setSelectedUser(users);
+                setSelectedUser(user);
               }}
             >
-              {users.name}
+              {user.name}
             </a>
           ))}
         </div>
