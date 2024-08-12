@@ -13,11 +13,15 @@ export const PostsList: React.FC<Props> = ({
   selectedPost,
   setSelectedPost,
 }) => {
-  const handleSelectPost = (post: Post) => {
-    if (selectedPost?.id === post.id) {
-      setSelectedPost(null);
-    } else {
-      setSelectedPost(post);
+  const handleSelectPost = (postId: number) => {
+    const post = posts.find(a => a.id === postId);
+
+    if (post) {
+      if (selectedPost?.id === postId) {
+        setSelectedPost(null);
+      } else {
+        setSelectedPost(post);
+      }
     }
   };
 
@@ -36,22 +40,22 @@ export const PostsList: React.FC<Props> = ({
         </thead>
 
         <tbody>
-          {posts.map(post => (
-            <tr data-cy="Post" key={post.id}>
-              <td data-cy="PostId">{post.id}</td>
+          {posts.map(({ id, title }) => (
+            <tr data-cy="Post" key={id}>
+              <td data-cy="PostId">{id}</td>
 
-              <td data-cy="PostTitle">{post.title}</td>
+              <td data-cy="PostTitle">{title}</td>
 
               <td className="has-text-right is-vcentered">
                 <button
                   type="button"
                   data-cy="PostButton"
                   className={classNames('button is-link', {
-                    'is-light': selectedPost?.id !== post.id,
+                    'is-light': selectedPost?.id !== id,
                   })}
-                  onClick={() => handleSelectPost(post)}
+                  onClick={() => handleSelectPost(id)}
                 >
-                  {selectedPost?.id === post.id ? 'Close' : 'Open'}
+                  {selectedPost?.id === id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

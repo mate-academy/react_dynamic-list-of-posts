@@ -4,6 +4,7 @@ import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
 import { getComment, deleteComment } from '../api/comment';
+import { CommentList } from './CommentList';
 
 type Props = {
   selectedPost: Post;
@@ -38,6 +39,10 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
     });
   };
 
+  const handleShowFrom = () => {
+    setShowForm(true);
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -67,33 +72,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
           {!!comments.length && (
             <>
               <p className="title is-4">Comments:</p>
-
-              {comments.map(({ id, email, name, body }) => (
-                <article
-                  className="message is-small"
-                  data-cy="Comment"
-                  key={id}
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${email}`} data-cy="CommentAuthor">
-                      {name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => handleDelete(id)}
-                    >
-                      delete button
-                    </button>
-                  </div>
-
-                  <div className="message-body" data-cy="CommentBody">
-                    {body}
-                  </div>
-                </article>
-              ))}
+              <CommentList comments={comments} handleDelete={handleDelete} />
             </>
           )}
 
@@ -102,7 +81,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
               data-cy="WriteCommentButton"
               type="button"
               className="button is-link"
-              onClick={() => setShowForm(true)}
+              onClick={handleShowFrom}
             >
               Write a comment
             </button>

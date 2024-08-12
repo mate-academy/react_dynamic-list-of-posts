@@ -26,6 +26,12 @@ export const UserSelector: React.FC<Props> = ({
     setIsLoading(!isLoading);
   };
 
+  const handleSelectUser = (user: User) => {
+    setSelectedPost(null);
+    setIsLoading(false);
+    setSelectedUser(user);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -61,11 +67,7 @@ export const UserSelector: React.FC<Props> = ({
               className={classNames('dropdown-item', {
                 'is-active': selectedUser?.id === user.id,
               })}
-              onMouseDown={() => {
-                setSelectedPost(null);
-                setIsLoading(false);
-                setSelectedUser(user);
-              }}
+              onMouseDown={() => handleSelectUser(user)}
             >
               {user.name}
             </a>

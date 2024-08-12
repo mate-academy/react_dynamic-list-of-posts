@@ -32,6 +32,11 @@ export const App: React.FC = () => {
       .finally(() => setIsLoading(false));
   }, [selectedUser]);
 
+  const displayComponent =
+    !posts.length && !error && !isLoading && selectedUser;
+
+  const postList = !!posts.length && !isLoading && selectedUser;
+
   return (
     <main className="section">
       <div className="container">
@@ -62,13 +67,13 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!posts.length && !error && !isLoading && selectedUser && (
+                {displayComponent && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {!!posts.length && !isLoading && selectedUser && (
+                {postList && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}
