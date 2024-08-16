@@ -25,8 +25,6 @@ export const NewCommentForm: React.FC<Props> = ({
     body: false,
   };
 
-  type ErrorState = typeof initialError;
-
   const [newComment, setNewComment] = useState(initialComment);
   const [error, setError] = useState(initialError);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +32,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
+
     for (const key in newComment) {
       if (!newComment[key as keyof Omit<Comment, 'id'>]) {
         setError(prevError => {
@@ -42,21 +41,22 @@ export const NewCommentForm: React.FC<Props> = ({
       }
     }
 
-    for (const key in error) {
-      if (error[key as keyof ErrorState]) {
-        return;
-      }
-    }
+    if (Object.values(newComment).includes('')) {
+      setIsLoading(false);
 
-    client
-      .post<Comment>('/comments', newComment)
-      .then(addedComment => {
-        onAddComment(addedComment);
-        setNewComment(prevComment => {
-          return { ...prevComment, body: '' };
-        });
-      })
-      .finally(() => setIsLoading(false));
+      return;
+    } else {
+      client
+        .post<Comment>('/comments', newComment)
+        .then(addedComment => {
+          onAddComment(addedComment);
+          setNewComment(prevComment => {
+            return { ...prevComment, body: '' };
+          });
+        })
+        .catch(() => {})
+        .finally(() => setIsLoading(false));
+    }
   };
 
   const handleChangeNewComment = (
