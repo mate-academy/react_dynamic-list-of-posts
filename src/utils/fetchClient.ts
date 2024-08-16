@@ -1,3 +1,6 @@
+import { Post } from '../types/Post';
+import { User } from '../types/User';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const BASE_URL = 'https://mate.academy/students-api';
 
@@ -37,4 +40,12 @@ export const client = {
   post: <T>(url: string, data: any) => request<T>(url, 'POST', data),
   patch: <T>(url: string, data: any) => request<T>(url, 'PATCH', data),
   delete: (url: string) => request(url, 'DELETE'),
+};
+
+export const getUsers = () => {
+  return client.get<User[]>('/users');
+};
+
+export const getPosts = (userId: number) => {
+  return client.get<Post[]>(`/posts?userId=${userId}`);
 };
