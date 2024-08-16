@@ -38,6 +38,8 @@ export const App: React.FC = () => {
       });
   }, [selectedUser]);
 
+  const noPosts = selectedUser && !posts.length && !isError && !isLoading;
+
   return (
     <main className="section">
       <div className="container">
@@ -69,7 +71,7 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUser && !posts.length && !isError && (
+                {noPosts && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
