@@ -13,13 +13,7 @@ export const PostsList: React.FC<Props> = ({
   selectedPost,
   setSelectedPost,
 }) => {
-  const handleSelectPost = (post: Post) => {
-    if (post.id === selectedPost?.id) {
-      setSelectedPost(null);
-    } else {
-      setSelectedPost(post);
-    }
-  };
+  const handleSelectPost = (post: Post) => setSelectedPost(post.id === selectedPost?.id ? null : post);
 
   return (
     <div data-cy="PostsList">
