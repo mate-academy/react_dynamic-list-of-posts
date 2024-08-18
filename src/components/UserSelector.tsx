@@ -30,6 +30,12 @@ export const UserSelector: FC<Props> = ({ setSelectedUser }) => {
     }
   };
 
+  const handleDropUsers = (user: User) => {
+    setSelectedUserState(user);
+    setDropdownOpen(false);
+    setSelectedUser(user);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -61,11 +67,7 @@ export const UserSelector: FC<Props> = ({ setSelectedUser }) => {
                 'is-active': user.id === selectedUser?.id,
               })}
               key={user.id}
-              onClick={() => {
-                setSelectedUserState(user);
-                setDropdownOpen(false);
-                setSelectedUser(user);
-              }}
+              onClick={() => handleDropUsers(user)}
             >
               {user.name}
             </a>

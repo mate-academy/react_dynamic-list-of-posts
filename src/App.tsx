@@ -26,14 +26,14 @@ export const App: FC = () => {
       setIsLoading(true);
       setPostLoadingFail(false);
       getPosts(selectedUser.id)
-        .then(data => setPosts(data))
+        .then(setPosts)
         .catch(() => setPostLoadingFail(true))
         .finally(() => setIsLoading(false));
     }
   }, [selectedUser]);
 
   const showPostTost =
-    posts.length === 0 && !isLoading && selectedUser && !postLoadingFail;
+    !posts.length && !isLoading && selectedUser && !postLoadingFail;
 
   return (
     <main className="section">
@@ -66,7 +66,7 @@ export const App: FC = () => {
                   </div>
                 )}
 
-                {posts.length > 0 && !isLoading && (
+                {!!posts.length && !isLoading && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}
