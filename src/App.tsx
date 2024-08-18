@@ -32,6 +32,9 @@ export const App: FC = () => {
     }
   }, [selectedUser]);
 
+  const showPostTost =
+    posts.length === 0 && !isLoading && selectedUser && !postLoadingFail;
+
   return (
     <main className="section">
       <div className="container">
@@ -57,17 +60,11 @@ export const App: FC = () => {
                   </div>
                 )}
 
-                {posts.length === 0 &&
-                  !isLoading &&
-                  selectedUser &&
-                  !postLoadingFail && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )}
+                {showPostTost && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
 
                 {posts.length > 0 && !isLoading && (
                   <PostsList
