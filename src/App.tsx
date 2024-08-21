@@ -9,38 +9,53 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
-import { getPosts, getUsers } from './utils/fetchClient';
+import { getComments, getPosts, getUsers } from './utils/fetchClient';
 import { Post } from './types/Post';
+import { Comment } from './types/Comment';
 
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-  // const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [error, setError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [postsError, setPostsError] = useState(false);
+  const [commentsError, setCommentsError] = useState(false);
+  const [postLoading, setPostLoading] = useState(false);
+  const [commentsLoading, setCommentsLoading] = useState(false);
 
   useEffect(() => {
     getUsers().then(setUsers);
   }, []);
 
   const handleUserSelect = (userId: number) => {
+    setPostsError(false);
     setSelectedUserId(userId);
-    setIsLoading(true);
+    setPosts([]);
+    setSelectedPostId(null);
+    setPostLoading(true);
     getPosts(userId)
       .then(setPosts)
-      .catch(() => setError(true))
-      .finally(() => setIsLoading(false));
+      .catch(() => setPostsError(true))
+      .finally(() => setPostLoading(false));
   };
 
-  // const handlePostSelect = (postId: number) => {
-  //   setSelectedUserId(postId);
-  //   setIsLoading(true);
-  //   getComments(postId)
-  //     .then(setPosts)
-  //     .catch(() => setError(true))
-  //     .finally(() => setIsLoading(false));
-  // };
+  const handlePostSelect = (postId: number) => {
+    setCommentsError(false);
+    setSelectedPostId(postId);
+    setCommentsLoading(true);
+    getComments(postId)
+      .then(setComments)
+      .catch(() => setCommentsError(true))
+      .finally(() => setCommentsLoading(false));
+  };
+
+  const handleClosePost = () => {
+    setSelectedPostId(null);
+    setComments([]);
+  };
+
+  const selectedPost = posts.find(post => post.id === selectedPostId);
 
   return (
     <main className="section">
@@ -61,9 +76,9 @@ export const App: React.FC = () => {
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {isLoading && <Loader />}
+                {postLoading && <Loader />}
 
-                {error && (
+                {postsError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -72,33 +87,45 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {selectedUserId && posts.length === 0 && (
+                {selectedUserId && posts.length === 0 && !postsError && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {posts.length !== 0 && <PostsList posts={posts} />}
+                {posts.length !== 0 && (
+                  <PostsList
+                    posts={posts}
+                    onSelectPost={handlePostSelect}
+                    onClosePost={handleClosePost}
+                    selectedPostId={selectedPostId}
+                  />
+                )}
               </div>
             </div>
           </div>
 
-          {false && (
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                'Sidebar--open',
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': selectedPostId && selectedPost },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              {selectedPost && (
+                <PostDetails
+                  comments={comments}
+                  post={selectedPost}
+                  commentsLoading={commentsLoading}
+                  commentsError={commentsError}
+                />
               )}
-            >
-              <div className="tile is-child box is-success ">
-                <PostDetails />
-              </div>
             </div>
-          )}
+          </div>
         </div>
       </div>
     </main>

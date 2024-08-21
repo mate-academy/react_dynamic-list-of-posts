@@ -3,9 +3,17 @@ import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[];
+  onSelectPost: (postId: number) => void;
+  onClosePost: () => void;
+  selectedPostId: number | null;
 };
 
-export const PostsList: React.FC<Props> = ({ posts }) => (
+export const PostsList: React.FC<Props> = ({
+  posts,
+  onSelectPost,
+  selectedPostId,
+  onClosePost,
+}) => (
   <div data-cy="PostsList">
     <p className="title">Posts:</p>
 
@@ -27,14 +35,25 @@ export const PostsList: React.FC<Props> = ({ posts }) => (
             <td data-cy="PostTitle">{post.title}</td>
 
             <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className="button is-link is-light"
-                // onClick={() => {onSelectPost(postId)}}
-              >
-                Open
-              </button>
+              {selectedPostId === post.id ? (
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className="button is-link"
+                  onClick={onClosePost}
+                >
+                  Close
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className="button is-link is-light"
+                  onClick={() => onSelectPost(post.id)}
+                >
+                  Open
+                </button>
+              )}
             </td>
           </tr>
         ))}

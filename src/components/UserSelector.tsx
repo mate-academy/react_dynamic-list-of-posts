@@ -20,7 +20,7 @@ export const UserSelector: React.FC<Props> = ({
   };
 
   const handleClickOutside = () => {
-    if (onSelectUser !== null) {
+    if (!selectedUserId) {
       setIsDropDown(false);
     }
   };
@@ -60,7 +60,7 @@ export const UserSelector: React.FC<Props> = ({
                 'is-active': selectedUserId === user.id,
               })}
               key={user.id}
-              onClick={() => {
+              onMouseDown={() => {
                 onSelectUser(user.id);
                 setIsDropDown(false);
               }}
