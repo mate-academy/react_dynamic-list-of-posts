@@ -1,4 +1,4 @@
-import { Comment } from '../types/Comment';
+import { Comment, CommentData } from '../types/Comment';
 import { Post } from '../types/Post';
 import { User } from '../types/User';
 
@@ -53,4 +53,12 @@ export const getPosts = (userId: number) => {
 
 export const getComments = (postId: number) => {
   return client.get<Comment[]>(`/comments?postId=${postId}`);
+};
+
+export const addComments = (comment: CommentData) => {
+  return client.post<Comment>('/comments', comment);
+};
+
+export const deleteComments = (commentId: number) => {
+  return client.delete(`/comments/${commentId}`);
 };

@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
 
 import { NewCommentForm } from './NewCommentForm';
+import { useEffect, useState } from 'react';
 
 type Props = {
   comments: Comment[];
   post: Post;
   commentsLoading: boolean;
   commentsError: boolean;
+  onAddComment: (comment: Comment) => void;
+  onDeleteComment: (commentId: number) => void;
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -17,16 +19,18 @@ export const PostDetails: React.FC<Props> = ({
   post,
   commentsLoading,
   commentsError,
+  onAddComment,
+  onDeleteComment,
 }) => {
   const [isLoadingForm, setLoadingForm] = useState(false);
-
-  useEffect(() => {
-    setLoadingForm(false);
-  }, [post]);
 
   const handleLoadingForm = () => {
     setLoadingForm(true);
   };
+
+  useEffect(() => {
+    setLoadingForm(false);
+  }, [post]);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -73,6 +77,7 @@ export const PostDetails: React.FC<Props> = ({
                           type="button"
                           className="delete is-small"
                           aria-label="delete"
+                          onClick={() => onDeleteComment(comment.id)}
                         >
                           delete button
                         </button>
@@ -86,7 +91,7 @@ export const PostDetails: React.FC<Props> = ({
                 </>
               )}
 
-              {!isLoadingForm && (
+              {!commentsLoading && !isLoadingForm && (
                 <button
                   data-cy="WriteCommentButton"
                   type="button"
@@ -99,7 +104,9 @@ export const PostDetails: React.FC<Props> = ({
             </>
           )}
         </div>
-        {isLoadingForm && <NewCommentForm />}
+        {isLoadingForm && (
+          <NewCommentForm onSubmit={onAddComment} postId={post.id} />
+        )}
       </div>
     </div>
   );

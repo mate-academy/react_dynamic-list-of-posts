@@ -9,7 +9,12 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
-import { getComments, getPosts, getUsers } from './utils/fetchClient';
+import {
+  deleteComments,
+  getComments,
+  getPosts,
+  getUsers,
+} from './utils/fetchClient';
 import { Post } from './types/Post';
 import { Comment } from './types/Comment';
 
@@ -53,6 +58,20 @@ export const App: React.FC = () => {
   const handleClosePost = () => {
     setSelectedPostId(null);
     setComments([]);
+  };
+
+  const handleAddComment = (comment: Comment) => {
+    setComments(prevComments => [...prevComments, comment]);
+  };
+
+  const handleDeleteComment = (commentId: number) => {
+    setComments(prevComments =>
+      prevComments.filter(comment => comment.id !== commentId),
+    );
+
+    deleteComments(commentId)
+      .then(() => {})
+      .catch(() => {});
   };
 
   const selectedPost = posts.find(post => post.id === selectedPostId);
@@ -122,6 +141,8 @@ export const App: React.FC = () => {
                   post={selectedPost}
                   commentsLoading={commentsLoading}
                   commentsError={commentsError}
+                  onAddComment={handleAddComment}
+                  onDeleteComment={handleDeleteComment}
                 />
               )}
             </div>

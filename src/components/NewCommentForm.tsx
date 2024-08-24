@@ -1,13 +1,21 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
+import { Comment } from '../types/Comment';
+import { addComments } from '../utils/fetchClient';
 
-export const NewCommentForm: React.FC = () => {
+type Props = {
+  onSubmit: (comment: Comment) => void;
+  postId: number;
+};
+
+export const NewCommentForm: React.FC<Props> = ({ onSubmit, postId }) => {
   const [authorName, setAuthorName] = useState('');
   const [authorEmail, setAuthorEmail] = useState('');
   const [textArea, setTextArea] = useState('');
   const [hasNameError, setHasNameError] = useState(false);
   const [hasEmailError, setHasEmailError] = useState(false);
   const [hasTextAreaError, setHasTextAreaError] = useState(false);
+  const [isSubmiting, setIsSubmiting] = useState(false);
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAuthorName(event.target.value);
@@ -36,6 +44,27 @@ export const NewCommentForm: React.FC = () => {
     if (!authorName || !authorEmail || !textArea) {
       return;
     }
+
+    setIsSubmiting(true);
+
+    const newComment: Omit<Comment, 'id'> = {
+      name: authorName,
+      email: authorEmail,
+      body: textArea,
+      postId,
+    };
+
+    addComments(newComment)
+      .then(savedComment => {
+        onSubmit(savedComment);
+        setTextArea('');
+      })
+      .catch(() => {
+        throw new Error('Failed to submit comment');
+      })
+      .finally(() => {
+        setIsSubmiting(false);
+      });
   };
 
   const reset = () => {
@@ -162,8 +191,12 @@ export const NewCommentForm: React.FC = () => {
 
       <div className="field is-grouped">
         <div className="control">
-          {/* is-loading */}
-          <button type="submit" className="button is-link ">
+          <button
+            type="submit"
+            className={classNames('button is-link', {
+              'is-loading': isSubmiting,
+            })}
+          >
             Add
           </button>
         </div>
