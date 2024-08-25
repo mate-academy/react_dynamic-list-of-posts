@@ -34,9 +34,7 @@ export const App: React.FC = () => {
       setIsLoading(true);
 
       getPosts(selectedUser.id)
-        .then(loadedPosts => {
-          setPosts(loadedPosts);
-        })
+        .then(setPosts)
         .catch(() => {
           setIsErrorOnPostsLoad(true);
         })
