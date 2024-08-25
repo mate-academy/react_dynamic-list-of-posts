@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 import { getUsers } from '../api/users';
@@ -34,6 +40,15 @@ export const UserSelector: React.FC = () => {
       document.removeEventListener('click', handleClick);
     };
   }, []);
+
+  const handleUserSelection = useCallback(
+    (user: User) => {
+      setSelectedUser(user);
+      setSelectedPost(null);
+      setIsVisible(false);
+    },
+    [setSelectedUser, setSelectedPost, setIsVisible],
+  );
 
   return (
     <div
@@ -73,18 +88,14 @@ export const UserSelector: React.FC = () => {
                 className={classNames('dropdown-item', {
                   'is-active': user.id === selectedUser?.id,
                 })}
-                onClick={() => {
-                  setSelectedUser(user);
-                  setSelectedPost(null);
-                  setIsVisible(false);
-                }}
+                onClick={() => handleUserSelection(user)}
               >
                 {user.name}
               </a>
             ))
           ) : (
             <div className="dropdown-item has-background-danger has-text-light">
-              Something go wrong! Refresh the page or try again later.
+              Something went wrong! Refresh the page or try again later.
             </div>
           )}
         </div>
