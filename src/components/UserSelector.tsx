@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { User } from '../types/User';
@@ -32,7 +33,8 @@ export const UserSelector: React.FC<Props> = ({
 
   function handleUserSelect(event: React.MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
-    const userId = Number(event.currentTarget.href.split('-')[1]);
+    const urlParts = event.currentTarget.href.split('-');
+    const userId = Number(urlParts[urlParts.length - 1]);
     const newSelectUser = users.find(({ id }) => userId === id);
 
     if (newSelectUser) {
