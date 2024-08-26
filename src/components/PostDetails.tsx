@@ -55,6 +55,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     deleteComments(commentId);
   }
 
+  const isNoCommentsYet = !isLoading && !comments.length && !isError;
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -73,7 +75,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </div>
           )}
 
-          {!isLoading && !comments.length && !isError && (
+          {isNoCommentsYet && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
