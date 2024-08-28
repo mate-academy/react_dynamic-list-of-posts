@@ -1,3 +1,7 @@
+import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
+import { User } from '../types/User';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const BASE_URL = 'https://mate.academy/students-api';
 
@@ -37,4 +41,29 @@ export const client = {
   post: <T>(url: string, data: any) => request<T>(url, 'POST', data),
   patch: <T>(url: string, data: any) => request<T>(url, 'PATCH', data),
   delete: (url: string) => request(url, 'DELETE'),
+};
+
+export const loadUsers = () => {
+  return client.get<User[]>('/users');
+};
+
+export const loadUserPosts = (id: number) => {
+  return client.get<Post[]>(`/posts?userId=${id}`);
+};
+
+export const loadPostComments = (id: number) => {
+  return client.get<Comment[]>(`/comments?postId=${id}`);
+};
+
+export const addNewComment = ({
+  postId,
+  name,
+  email,
+  body,
+}: Omit<Comment, 'id'>) => {
+  return client.post<Comment>(`/comments`, { postId, name, email, body });
+};
+
+export const deleteComment = (id: number) => {
+  return client.delete(`/comments/${id}`);
 };
