@@ -18,18 +18,21 @@ export const UserSelector: React.FC<Props> = ({
 }) => {
   const [focused, setFocused] = useState(false);
 
-  const onFocused = () => {
-    if (focused) {
-      setFocused(false);
-    } else {
-      setFocused(true);
-    }
+  const toggleDropdown = () => {
+    setFocused(prev => !prev);
+  };
+
+  const handleUserSelect = (user: User) => {
+    setSelectedUser(user);
+    setFocused(false);
+    setSelectedPost(null);
   };
 
   return (
     <div
       data-cy="UserSelector"
       className={cn('dropdown', { 'is-active': focused })}
+      onBlur={() => setFocused(false)}
     >
       <div className="dropdown-trigger">
         <button
@@ -37,8 +40,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={onFocused}
-          onBlur={() => setFocused(false)}
+          onClick={toggleDropdown}
         >
           {selectedUser ? (
             <span>{selectedUser.name}</span>
@@ -64,11 +66,7 @@ export const UserSelector: React.FC<Props> = ({
                   'is-active': selectedUser?.id === id,
                 })}
                 key={id}
-                onClick={() => {
-                  setSelectedUser(user);
-                  setFocused(false);
-                  setSelectedPost(null);
-                }}
+                onClick={() => handleUserSelect(user)}
               >
                 {name}
               </a>
