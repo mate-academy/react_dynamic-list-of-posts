@@ -85,7 +85,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </>
           )}
 
-          {!isForm && isError && !isLoading && (
+          {!isForm && !isError && !isLoading && (
             <button
               data-cy="WriteCommentButton"
               type="button"

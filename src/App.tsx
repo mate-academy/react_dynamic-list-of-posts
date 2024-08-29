@@ -15,7 +15,7 @@ import { Post } from './types/Post';
 export const App: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User>();
+  const [selectedUser, setSelectedUser] = useState<User | null>();
   const [selectedUserPost, setSelectedUserPost] = useState<Post[]>([]);
   const [isError, setIsError] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
@@ -50,8 +50,7 @@ export const App: React.FC = () => {
                 <UserSelector
                   users={users}
                   selectedUser={selectedUser}
-                  setSelectedUser={setSelectedUser}
-                  setSelectedPost={setSelectedPost}
+                  onSelect={setSelectedUser}
                 />
               </div>
 

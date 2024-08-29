@@ -1,38 +1,37 @@
 import React, { useState } from 'react';
-import { User } from '../types/User';
-import { Post } from '../types/Post';
 import cn from 'classnames';
+import { User } from '../types/User';
 
 type Props = {
   users: User[];
-  selectedUser: User | undefined;
-  setSelectedUser: (user: User) => void;
-  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
+  selectedUser: User | null | undefined;
+  onSelect: React.Dispatch<React.SetStateAction<User | null | undefined>>;
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   selectedUser,
-  setSelectedUser,
-  setSelectedPost,
+  onSelect,
 }) => {
   const [focused, setFocused] = useState(false);
 
-  const toggleDropdown = () => {
-    setFocused(prev => !prev);
+  const handlerToggleMenu = () => {
+    setFocused(!focused);
   };
 
   const handleUserSelect = (user: User) => {
-    setSelectedUser(user);
     setFocused(false);
-    setSelectedPost(null);
+    onSelect(user);
+  };
+
+  const handlerOnBlur = () => {
+    setFocused(false);
   };
 
   return (
     <div
       data-cy="UserSelector"
       className={cn('dropdown', { 'is-active': focused })}
-      onBlur={() => setFocused(false)}
     >
       <div className="dropdown-trigger">
         <button
@@ -40,7 +39,8 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={toggleDropdown}
+          onMouseDown={handlerToggleMenu}
+          onBlur={handlerOnBlur}
         >
           {selectedUser ? (
             <span>{selectedUser.name}</span>
@@ -66,7 +66,7 @@ export const UserSelector: React.FC<Props> = ({
                   'is-active': selectedUser?.id === id,
                 })}
                 key={id}
-                onClick={() => handleUserSelect(user)}
+                onMouseDown={() => handleUserSelect(user)}
               >
                 {name}
               </a>

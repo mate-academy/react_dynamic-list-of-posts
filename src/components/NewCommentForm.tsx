@@ -2,6 +2,7 @@ import React, { FormEvent, useState } from 'react';
 import { Comment } from '../types/Comment';
 import { addComment } from '../utils/fetchClient';
 import cn from 'classnames';
+import { getCorrectValue } from '../utils/getCorrectValue';
 
 type Props = {
   postId: number;
@@ -17,10 +18,6 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComent }) => {
   const [hasEmailError, setHasEmailError] = useState(false);
   const [hasBodyError, setHasBodyError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  const getCorrectValue = (value: string) => {
-    return value.trim();
-  };
 
   const handleOnChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
