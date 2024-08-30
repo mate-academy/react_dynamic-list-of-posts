@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import cn from 'classnames';
 import { User } from '../types/User';
+import { Post } from '../types/Post';
 
 type Props = {
   users: User[];
   selectedUser: User | null | undefined;
   onSelect: React.Dispatch<React.SetStateAction<User | null | undefined>>;
+  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
   selectedUser,
   onSelect,
+  setSelectedPost,
 }) => {
   const [focused, setFocused] = useState(false);
 
@@ -22,6 +25,7 @@ export const UserSelector: React.FC<Props> = ({
   const handleUserSelect = (user: User) => {
     setFocused(false);
     onSelect(user);
+    setSelectedPost(null);
   };
 
   const handlerOnBlur = () => {
@@ -39,7 +43,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onMouseDown={handlerToggleMenu}
+          onClick={handlerToggleMenu}
           onBlur={handlerOnBlur}
         >
           {selectedUser ? (
@@ -66,7 +70,7 @@ export const UserSelector: React.FC<Props> = ({
                   'is-active': selectedUser?.id === id,
                 })}
                 key={id}
-                onMouseDown={() => handleUserSelect(user)}
+                onClick={() => handleUserSelect(user)}
               >
                 {name}
               </a>

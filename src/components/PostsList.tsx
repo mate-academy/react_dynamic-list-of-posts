@@ -30,7 +30,6 @@ export const PostsList: React.FC<Props> = ({
           <tr className="has-background-link-light">
             <th>#</th>
             <th>Title</th>
-            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
             <th> </th>
           </tr>
         </thead>
@@ -42,7 +41,7 @@ export const PostsList: React.FC<Props> = ({
             return (
               <tr data-cy="Post" key={id}>
                 <td data-cy="PostId">{id}</td>
-                <td data-cy="PostTitle"> {title}</td>
+                <td data-cy="PostTitle">{title}</td>
                 <td className="has-text-right is-vcentered">
                   <button
                     type="button"

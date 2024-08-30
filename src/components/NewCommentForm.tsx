@@ -140,7 +140,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComent }) => {
 
           <div className="control has-icons-left has-icons-right">
             <input
-              type="text"
+              type="email"
               value={email}
               name="email"
               id="comment-author-email"
@@ -181,7 +181,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, updateComent }) => {
               value={body}
               name="body"
               placeholder="Type comment here"
-              className={cn('textarea', { 'is-danger': hasEmailError })}
+              className={cn('textarea', { 'is-danger': hasBodyError })}
               onChange={handleOnChange}
             />
           </div>
