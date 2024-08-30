@@ -43,7 +43,7 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={handlerToggleMenu}
+          onMouseDown={handlerToggleMenu}
           onBlur={handlerOnBlur}
         >
           {selectedUser ? (
@@ -70,7 +70,7 @@ export const UserSelector: React.FC<Props> = ({
                   'is-active': selectedUser?.id === id,
                 })}
                 key={id}
-                onClick={() => handleUserSelect(user)}
+                onMouseDown={() => handleUserSelect(user)}
               >
                 {name}
               </a>
