@@ -8,8 +8,17 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { Notification } from './components/Notification';
+import { Future } from './components/Future';
+
+import { useAppContext } from './BLoC/App/AppContext';
+
+import { NotificationType } from './enums';
+import { NoUserSelectedError } from './errors/NoUserSelectedError';
 
 export const App: React.FC = () => {
+  const { posts, selectedPost } = useAppContext();
+
   return (
     <main className="section">
       <div className="container">
@@ -21,22 +30,38 @@ export const App: React.FC = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
+                <Future
+                  future={posts}
+                  whilePending={() => <Loader />}
+                  whileError={error => {
+                    if (error instanceof NoUserSelectedError) {
+                      return <p data-cy="NoSelectedUser">No user selected</p>;
+                    }
 
-                <Loader />
-
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
-
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                    return (
+                      <Notification
+                        type={NotificationType.Error}
+                        text="Something went wrong!"
+                        data-cy="PostsLoadingError"
+                      />
+                    );
+                  }}
+                  whileReady={value => {
+                    return (
+                      <>
+                        {value?.length === 0 ? (
+                          <Notification
+                            type={NotificationType.Warning}
+                            text="No posts yet"
+                            data-cy="NoPostsYet"
+                          />
+                        ) : (
+                          <PostsList />
+                        )}
+                      </>
+                    );
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -48,11 +73,11 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': Boolean(selectedPost) },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {selectedPost && <PostDetails />}
             </div>
           </div>
         </div>
