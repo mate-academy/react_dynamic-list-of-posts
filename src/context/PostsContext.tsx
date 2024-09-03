@@ -7,8 +7,8 @@ import {
   useContext,
   useState,
 } from 'react';
-import { Post } from '../../types/Post';
-import { client } from '../../utils/fetchClient';
+import { Post } from '../types/Post';
+import { client } from '../utils/fetchClient';
 
 interface Props {
   postsLoading: boolean;

@@ -1,5 +1,5 @@
 import { Post } from '../types/Post';
-import { usePostsContext } from './context/PostsContext';
+import { usePostsContext } from '../context/PostsContext';
 import classNames from 'classnames';
 
 export const PostsList = () => {

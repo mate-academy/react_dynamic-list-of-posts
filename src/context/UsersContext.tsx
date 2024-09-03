@@ -3,12 +3,13 @@ import {
   Dispatch,
   FC,
   ReactNode,
-  SetStateAction, useContext,
+  SetStateAction,
+  useContext,
   useEffect,
   useState,
 } from 'react';
-import { User } from '../../types/User';
-import { getUsersData } from '../../helpers/getUsersData';
+import { User } from '../types/User';
+import { getUsersData } from '../helpers/getUsersData';
 
 interface Props {
   users: User[];
@@ -30,6 +31,7 @@ const UserContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
     users,
     setActiveUserId,
     activeUserId,
+    setUsers,
   };
 
   return (
@@ -47,4 +49,4 @@ const useUsersContext = () => {
   return context;
 };
 
-export { UserContextProvider, useUsersContext};
+export { UserContextProvider, useUsersContext };

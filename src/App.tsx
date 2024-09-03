@@ -8,8 +8,8 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { useUsersContext } from './components/context/UsersContext';
-import { usePostsContext } from './components/context/PostsContext';
+import { useUsersContext } from './context/UsersContext';
+import { usePostsContext } from './context/PostsContext';
 
 export const App: React.FC = () => {
   const { activeUserId } = useUsersContext();
@@ -68,9 +68,11 @@ export const App: React.FC = () => {
               },
             )}
           >
-            <div className="tile is-child box is-success ">
-              <PostDetails activePost={activePost} />
-            </div>
+            {activePost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails activePost={activePost} />
+              </div>
+            )}
           </div>
         </div>
       </div>
