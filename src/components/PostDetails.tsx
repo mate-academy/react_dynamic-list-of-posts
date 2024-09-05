@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
-import { getPostById } from '../api/Posts';
 import { deletePostComment, getPostCommets } from '../api/Coments';
 import { Comment } from '../types/Comment';
 
@@ -15,70 +14,51 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const [loader, setLoader] = useState<boolean>(false);
   const [postComments, setPostComments] = useState<Comment[]>([]);
   const [showNewCommentForm, setShowNewCommentForm] = useState(false);
-  const [newCom, setNewCom] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   useEffect(() => {
+    setLoader(true);
+    setErrorMessage('');
+    setPost(selectedPost);
+
     const fetchComments = async () => {
+      setShowNewCommentForm(false);
+      setErrorMessage('');
+
       if (selectedPost?.id) {
-        setLoader(true);
         try {
           const fComments = await getPostCommets(selectedPost.id);
 
           setPostComments(fComments || []);
         } catch (error) {
-          setErrorMessage('Something went wrong');
+          setErrorMessage('Something went wrong!');
+          setPostComments([]);
         } finally {
           setLoader(false);
         }
+      } else {
+        setLoader(false);
       }
     };
 
     fetchComments();
-  }, [selectedPost?.id, newCom]);
-
-  useEffect(() => {
-    const fetchPost = async () => {
-      if (selectedPost) {
-        setLoader(true);
-        try {
-          const fPost = await getPostById(selectedPost.id);
-
-          setPost(fPost || selectedPost);
-        } catch (error) {
-          setErrorMessage('Something went wrong');
-        } finally {
-          setLoader(false);
-        }
-      }
-    };
-
-    fetchPost();
   }, [selectedPost]);
 
   const handleDeleteComment = async (commentId: number) => {
     try {
-      await deletePostComment(commentId);
       setPostComments(prevComments =>
         prevComments.filter(comment => comment.id !== commentId),
       );
+      await deletePostComment(commentId);
     } catch (error) {
-      setErrorMessage('Failed to delete comment');
+      setErrorMessage('Something went wrong');
+    } finally {
     }
   };
-
-  if (!post) {
-    return (
-      <div className="notification is-danger" data-cy="ErrorMessage">
-        Post not found
-      </div>
-    );
-  }
 
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
-        {loader && <Loader />}
         {post && (
           <>
             <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
@@ -87,12 +67,14 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         )}
 
         {errorMessage && (
-          <div className="notification is-danger" data-cy="ErrorMessage">
+          <div className="notification is-danger" data-cy="CommentsError">
             {errorMessage}
           </div>
         )}
 
-        {postComments.length > 0 ? (
+        {loader && <Loader />}
+
+        {!loader && postComments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
             {postComments.map(comment => (
@@ -121,27 +103,29 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
               </article>
             ))}
           </>
-        ) : (
+        )}
+
+        {!loader && postComments.length === 0 && !errorMessage && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
 
-        {!showNewCommentForm ? (
+        {!loader && !errorMessage && !showNewCommentForm ? (
           <button
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
             onClick={() => setShowNewCommentForm(true)}
           >
-            Write a comment
+            Write comment
           </button>
         ) : (
-          <NewCommentForm
-            postId={post.id}
-            newCom={newCom}
-            setNewCom={setNewCom}
-          />
+          <></>
+        )}
+
+        {!loader && !errorMessage && showNewCommentForm && (
+          <NewCommentForm postId={post?.id} setPostComments={setPostComments} />
         )}
       </div>
     </div>

@@ -23,6 +23,7 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     const fetchUserPosts = async () => {
+      setSelectedPost(null);
       if (selectedUser) {
         setLoader(true);
         setErrorMessage('');
@@ -42,6 +43,8 @@ export const App: React.FC = () => {
 
     fetchUserPosts();
   }, [selectedUser]);
+
+  useEffect(() => {}, [selectedPost]);
 
   return (
     <main className="section">
@@ -74,41 +77,38 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {showNoPostsMessage && selectedUser ? (
+                {showNoPostsMessage && selectedUser && !loader && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
-                ) : (
-                  selectedUser &&
-                  userPosts.length > 0 && (
-                    <PostsList
-                      posts={userPosts}
-                      setPostDetails={setPostDetails}
-                      postDetais={postDetais}
-                      setSelectedPost={setSelectedPost}
-                      selectedPost={selectedPost}
-                    />
-                  )
+                )}
+
+                {!loader && selectedUser && userPosts.length > 0 && (
+                  <PostsList
+                    posts={userPosts}
+                    setPostDetails={setPostDetails}
+                    postDetais={postDetais}
+                    setSelectedPost={setSelectedPost}
+                    selectedPost={selectedPost}
+                  />
                 )}
               </div>
             </div>
           </div>
-          {selectedPost !== null && (
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                'Sidebar--open',
-              )}
-            >
-              <div className="tile is-child box is-success ">
-                <PostDetails selectedPost={selectedPost} />
-              </div>
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': selectedPost },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              {selectedPost && <PostDetails selectedPost={selectedPost} />}{' '}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </main>

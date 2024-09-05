@@ -3,15 +3,13 @@ import { Comment } from '../types/Comment';
 import { addPostComment } from '../api/Coments';
 
 interface Props {
-  postId: number;
-  newCom: boolean;
-  setNewCom: (state: boolean) => void;
+  postId: number | undefined;
+  setPostComments: React.Dispatch<React.SetStateAction<Comment[]>>;
 }
 
 export const NewCommentForm: React.FC<Props> = ({
   postId,
-  newCom,
-  setNewCom,
+  setPostComments,
 }) => {
   const [newCommetAuthor, setNewCommentAuthor] = useState('');
   const [newCommetAuthorEmail, setNewCommetAuthorEmail] = useState('');
@@ -37,17 +35,14 @@ export const NewCommentForm: React.FC<Props> = ({
     try {
       setLoading(true);
       await addPostComment(newComment);
+      setPostComments(prevComments => [...prevComments, newComment]);
 
-      setNewCommentAuthor('');
-      setNewCommetAuthorEmail('');
       setNewCommetText('');
     } catch (error) {
     } finally {
       setLoading(false);
       setIsSubmitting(false);
     }
-
-    setNewCom(!newCom);
   };
 
   const handleClear = () => {
@@ -73,19 +68,25 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             className={`input ${isSubmitting && !newCommetAuthor ? 'is-danger' : ''}`}
-            onBlur={() => setIsSubmitting(true)} // Mark field as touched
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
+          {isSubmitting && !newCommetAuthor && (
+            <>
+              <p className="help is-danger" data-cy="ErrorMessage">
+                Name is required
+              </p>
+              <span
+                className="icon is-small is-right has-text-danger"
+                data-cy="ErrorIcon"
+              >
+                <i className="fas fa-exclamation-triangle" />
+              </span>
+            </>
+          )}
         </div>
-
-        {isSubmitting && !newCommetAuthor && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Name is required
-          </p>
-        )}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -102,19 +103,25 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-email"
             placeholder="email@test.com"
             className={`input ${isSubmitting && !newCommetAuthorEmail ? 'is-danger' : ''}`}
-            onBlur={() => setIsSubmitting(true)} // Mark field as touched
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
+          {isSubmitting && !newCommetAuthorEmail && (
+            <>
+              <p className="help is-danger" data-cy="ErrorMessage">
+                Email is required
+              </p>
+              <span
+                className="icon is-small is-right has-text-danger"
+                data-cy="ErrorIcon"
+              >
+                <i className="fas fa-exclamation-triangle" />
+              </span>
+            </>
+          )}
         </div>
-
-        {isSubmitting && !newCommetAuthorEmail && (
-          <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
-          </p>
-        )}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -130,7 +137,6 @@ export const NewCommentForm: React.FC<Props> = ({
             name="body"
             placeholder="Type comment here"
             className={`textarea ${isSubmitting && !newCommetText ? 'is-danger' : ''}`}
-            onBlur={() => setIsSubmitting(true)} // Mark field as touched
           />
         </div>
 
