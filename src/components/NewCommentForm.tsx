@@ -25,7 +25,11 @@ export const NewCommentForm: React.FC<Props> = ({
     event.preventDefault();
     setIsSubmitting(true);
 
-    if (!newCommetAuthor || !newCommetAuthorEmail || !newCommetText) {
+    const trimmedCommentText = newCommetText.trim();
+
+    if (!newCommetAuthor || !newCommetAuthorEmail || !trimmedCommentText) {
+      setNewCommetText('');
+
       return;
     }
 
@@ -38,8 +42,9 @@ export const NewCommentForm: React.FC<Props> = ({
 
     try {
       setLoading(true);
-      await addPostComment(newComment);
-      setPostComments(prevComments => [...prevComments, newComment]);
+      const newCom = await addPostComment(newComment);
+
+      setPostComments(prevComments => [...prevComments, newCom as Comment]);
 
       setNewCommetText('');
     } catch (error) {
@@ -102,7 +107,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <input
             value={newCommetAuthorEmail}
             onChange={e => setNewCommetAuthorEmail(e.target.value)}
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"

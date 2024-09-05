@@ -14,15 +14,15 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const [loader, setLoader] = useState<boolean>(false);
   const [postComments, setPostComments] = useState<Comment[]>([]);
   const [showNewCommentForm, setShowNewCommentForm] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     setLoader(true);
     setErrorMessage('');
     setPost(selectedPost);
+    setShowNewCommentForm(false);
 
     const fetchComments = async () => {
-      setShowNewCommentForm(false);
       setErrorMessage('');
 
       if (selectedPost?.id) {
@@ -77,28 +77,25 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         {!loader && postComments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
-            {postComments.map(comment => (
-              <article
-                key={comment.id}
-                className="message is-small"
-                data-cy="Comment"
-              >
+            {postComments.map(({ id, email, name, body }) => (
+              <article key={id} className="message is-small" data-cy="Comment">
+                {id}
                 <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                    {comment.name}
+                  <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                    {name}
                   </a>
                   <button
                     data-cy="CommentDelete"
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => handleDeleteComment(comment.id)}
+                    onClick={() => handleDeleteComment(id)}
                   >
                     delete button
                   </button>
                 </div>
                 <div className="message-body" data-cy="CommentBody">
-                  {comment.body}
+                  {body}
                 </div>
               </article>
             ))}
