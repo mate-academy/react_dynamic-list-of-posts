@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Comment } from '../types/Comment';
 import { addPostComment } from '../api/Coments';
+import classNames from 'classnames';
 
 interface Props {
   postId: number | undefined;
@@ -16,6 +17,9 @@ export const NewCommentForm: React.FC<Props> = ({
   const [newCommetText, setNewCommetText] = useState('');
   const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const inputClass = classNames('input', {
+    'is-danger': isSubmitting && !newCommetAuthor,
+  });
 
   const handleClick = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -67,7 +71,7 @@ export const NewCommentForm: React.FC<Props> = ({
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={`input ${isSubmitting && !newCommetAuthor ? 'is-danger' : ''}`}
+            className={inputClass}
           />
 
           <span className="icon is-small is-left">
