@@ -26,9 +26,11 @@ export const NewCommentForm: React.FC<Props> = ({
     setIsSubmitting(true);
 
     const trimmedCommentText = newCommetText.trim();
+    const trimmedCommentAuthor = newCommetAuthor.trim();
 
-    if (!newCommetAuthor || !newCommetAuthorEmail || !trimmedCommentText) {
+    if (!trimmedCommentAuthor || !newCommetAuthorEmail || !trimmedCommentText) {
       setNewCommetText('');
+      setNewCommentAuthor('');
 
       return;
     }
