@@ -59,8 +59,8 @@ export const App = () => {
   return (
     <main className="section">
       <div className="container">
-        <div className="tile is-ancestor">
-          <div className="tile is-parent">
+        <div className="tile is-ancestor columns">
+          <div className="tile is-parent column">
             <div className="tile is-child box is-success">
               <div className="block">
                 {users && (
@@ -111,6 +111,7 @@ export const App = () => {
               'tile',
               'is-parent',
               'is-8-desktop',
+              'column',
               'Sidebar',
               {
                 'Sidebar--open': selectedPost !== null,

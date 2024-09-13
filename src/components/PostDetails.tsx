@@ -23,6 +23,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setIsLoading(true);
     setHasError(false);
     setHasWarning(false);
+    setIsFormActive(false);
 
     commentService
       .getComments(post.id)
@@ -52,13 +53,20 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         );
       })
       .catch(() => setHasError(true))
-      .finally(() => setIsLoadingDelete(false));
+      .finally(() => {
+        if (comments.length <= 1) {
+          setHasWarning(true);
+        }
+
+        setIsLoadingDelete(false);
+      });
   };
 
   const addNewComment = (newCommentData: CommentData) => {
     return commentService
       .postComment({ postId: post.id, ...newCommentData })
       .then(newComment => {
+        setHasWarning(false);
         setComments(curComments => [...curComments, newComment]);
       })
       .catch(error => {
@@ -125,7 +133,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </>
           )}
 
-          {!isFormActive && (
+          {!isLoading && !hasError && !isFormActive && (
             <button
               data-cy="WriteCommentButton"
               type="button"

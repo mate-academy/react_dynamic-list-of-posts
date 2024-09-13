@@ -126,7 +126,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': hasNameError })}
+            className={classNames('input', { 'is-danger': hasEmailError })}
             value={email}
             onChange={handleEmailChange}
           />
