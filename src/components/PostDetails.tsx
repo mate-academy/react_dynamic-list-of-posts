@@ -14,7 +14,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingDelete, setIsLoadingDelete] = useState(false);
+  const [deletingCommentId, setDeletingCommentId] = useState<number | null>(
+    null,
+  );
   const [hasError, setHasError] = useState(false);
   const [hasWarning, setHasWarning] = useState(false);
   const [isFormActive, setIsFormActive] = useState(false);
@@ -43,7 +45,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const handleDeleteComment = (commentId: number) => {
     setHasError(false);
-    setIsLoadingDelete(true);
+    setDeletingCommentId(commentId);
 
     commentService
       .deleteComment(commentId)
@@ -58,7 +60,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           setHasWarning(true);
         }
 
-        setIsLoadingDelete(false);
+        setDeletingCommentId(null);
       });
   };
 
@@ -118,7 +120,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                       data-cy="CommentDelete"
                       type="button"
                       className={classNames('button delete is-small', {
-                        'is-loading': isLoadingDelete,
+                        'is-loading': deletingCommentId === comment.id,
                       })}
                       aria-label="delete"
                       onClick={() => handleDeleteComment(comment.id)}
