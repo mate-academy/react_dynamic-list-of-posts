@@ -6,6 +6,10 @@ type Props = {
   onAddComment: (commentData: CommentData) => Promise<void>;
 };
 
+const EMAIL_REGEXP =
+  // eslint-disable-next-line max-len
+  /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/iu;
+
 export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
   // #region nameField
   const [name, setName] = useState('');
@@ -19,10 +23,10 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
 
   // #region emailField
   const [email, setEmail] = useState('');
-  const [hasEmailError, setHasEmailError] = useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState('');
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setHasEmailError(false);
+    setEmailErrorMessage('');
     setEmail(event.target.value);
   };
   // #endregion
@@ -47,14 +51,21 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
     }
 
     if (!email) {
-      setHasEmailError(true);
+      setEmailErrorMessage('Email is required');
+    } else if (!EMAIL_REGEXP.test(email)) {
+      setEmailErrorMessage('Email is not valid');
     }
 
-    if (!body) {
+    if (body.trim().length === 0) {
       setHasBodyError(true);
     }
 
-    if (!name || !email || !body) {
+    if (
+      !name ||
+      !email ||
+      !EMAIL_REGEXP.test(email) ||
+      body.trim().length === 0
+    ) {
       return;
     }
 
@@ -72,7 +83,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
     setEmail('');
     setBody('');
     setHasNameError(false);
-    setHasEmailError(false);
+    setEmailErrorMessage('');
     setHasBodyError(false);
   };
 
@@ -122,11 +133,11 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames('input', { 'is-danger': hasEmailError })}
+            className={classNames('input', { 'is-danger': emailErrorMessage })}
             value={email}
             onChange={handleEmailChange}
           />
@@ -135,7 +146,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
             <i className="fas fa-envelope" />
           </span>
 
-          {hasEmailError && (
+          {emailErrorMessage && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -145,9 +156,9 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
           )}
         </div>
 
-        {hasEmailError && (
+        {emailErrorMessage && (
           <p className="help is-danger" data-cy="ErrorMessage">
-            Email is required
+            {emailErrorMessage}
           </p>
         )}
       </div>
