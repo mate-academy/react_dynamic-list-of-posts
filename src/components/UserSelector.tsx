@@ -50,7 +50,7 @@ export const UserSelector: React.FC<Props> = ({
               href={`#user-${user.id}`}
               className={classNames('dropdown-item', {
                 'is-active': selectedUser && selectedUser.id === user.id,
-              })} //is-active
+              })}
               onMouseDown={() => handleSelectUser(user)}
             >
               {user.name}

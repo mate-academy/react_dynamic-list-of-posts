@@ -94,7 +94,7 @@ export const App = () => {
                   </div>
                 )}
 
-                {!hasError && userPosts.length > 0 && (
+                {!hasError && !!userPosts.length && (
                   <PostsList
                     posts={userPosts}
                     selectedPost={selectedPost}

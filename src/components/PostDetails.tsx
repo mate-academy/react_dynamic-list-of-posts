@@ -4,7 +4,7 @@ import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
 import * as commentService from '../api/comments';
-import classNames from 'classnames';
+import { CommentInfo } from './CommentInfo';
 
 type Props = {
   post: Post;
@@ -14,9 +14,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [deletingCommentId, setDeletingCommentId] = useState<number | null>(
-    null,
-  );
   const [hasError, setHasError] = useState(false);
   const [hasWarning, setHasWarning] = useState(false);
   const [isFormActive, setIsFormActive] = useState(false);
@@ -26,6 +23,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setHasError(false);
     setHasWarning(false);
     setIsFormActive(false);
+    setComments([]);
 
     commentService
       .getComments(post.id)
@@ -45,9 +43,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const handleDeleteComment = (commentId: number) => {
     setHasError(false);
-    setDeletingCommentId(commentId);
 
-    commentService
+    return commentService
       .deleteComment(commentId)
       .then(() => {
         setComments(currentComments =>
@@ -59,8 +56,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         if (comments.length <= 1) {
           setHasWarning(true);
         }
-
-        setDeletingCommentId(null);
       });
   };
 
@@ -102,35 +97,16 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </p>
           )}
 
-          {comments.length > 0 && (
+          {!!comments.length && (
             <>
               <p className="title is-4">Comments:</p>
 
               {comments.map(comment => (
-                <article
+                <CommentInfo
                   key={comment.id}
-                  className="message is-small"
-                  data-cy="Comment"
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                      {comment.name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className={classNames('button delete is-small', {
-                        'is-loading': deletingCommentId === comment.id,
-                      })}
-                      aria-label="delete"
-                      onClick={() => handleDeleteComment(comment.id)}
-                    ></button>
-                  </div>
-
-                  <div className="message-body" data-cy="CommentBody">
-                    {comment.body}
-                  </div>
-                </article>
+                  comment={comment}
+                  onDelete={handleDeleteComment}
+                />
               ))}
             </>
           )}

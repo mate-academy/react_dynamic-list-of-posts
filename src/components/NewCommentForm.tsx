@@ -46,7 +46,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
   const handleAddNewComment = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    if (!name) {
+    if (name.trim().length === 0) {
       setHasNameError(true);
     }
 
@@ -61,7 +61,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
     }
 
     if (
-      !name ||
+      name.trim().length === 0 ||
       !email ||
       !EMAIL_REGEXP.test(email) ||
       body.trim().length === 0
