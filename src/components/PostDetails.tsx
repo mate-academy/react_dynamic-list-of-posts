@@ -11,6 +11,7 @@ type Props = {
 };
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
+  const { id, title, body } = post;
   const [comments, setComments] = useState<Comment[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +27,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     setComments([]);
 
     commentService
-      .getComments(post.id)
+      .getComments(id)
       .then(commentsFromServer => {
         if (commentsFromServer.length === 0) {
           setHasWarning(true);
@@ -61,7 +62,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   const addNewComment = (newCommentData: CommentData) => {
     return commentService
-      .postComment({ postId: post.id, ...newCommentData })
+      .postComment({ postId: id, ...newCommentData })
       .then(newComment => {
         setHasWarning(false);
         setComments(curComments => [...curComments, newComment]);
@@ -71,15 +72,19 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       });
   };
 
+  const handleOpenFormBtnClick = () => {
+    setIsFormActive(true);
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #{post.id}: {post.title}
+            #{id}: {title}
           </h2>
 
-          <p data-cy="PostBody">{post.body}</p>
+          <p data-cy="PostBody">{body}</p>
         </div>
 
         <div className="block">
@@ -116,7 +121,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
               data-cy="WriteCommentButton"
               type="button"
               className="button is-link"
-              onClick={() => setIsFormActive(true)}
+              onClick={handleOpenFormBtnClick}
             >
               Write a comment
             </button>
