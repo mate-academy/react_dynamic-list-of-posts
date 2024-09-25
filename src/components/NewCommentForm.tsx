@@ -21,8 +21,22 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitted(true);
+    setError('');
+    if (!name.trim()) {
+      setError('Имя обязательно');
 
-    if (!name || !email || !body) {
+      return;
+    }
+
+    if (!email.trim()) {
+      setError('Email обязателен');
+
+      return;
+    }
+
+    if (!body.trim()) {
+      setError('Введите текст комментария');
+
       return;
     }
 
