@@ -4,12 +4,15 @@ import { Post } from '../types/Post';
 interface PostsListProps {
   posts: Post[];
   onPostSelect: (post: Post) => void;
+  selectedPost: Post | null;
+  setIsWriteComment: (isWriteComment: boolean) => void;
 }
 
 export const PostsList: React.FC<PostsListProps> = ({
   posts,
   onPostSelect,
   selectedPost,
+  setIsWriteComment,
 }) => {
   return (
     <div data-cy="PostsList">
@@ -34,7 +37,10 @@ export const PostsList: React.FC<PostsListProps> = ({
                   type="button"
                   data-cy="PostButton"
                   className={`button is-link ${selectedPost !== post ? 'is-light' : ''}`}
-                  onClick={() => onPostSelect(post)}
+                  onClick={() => {
+                    onPostSelect(post);
+                    setIsWriteComment(false);
+                  }}
                 >
                   {selectedPost === post ? 'Close' : 'Open'}
                 </button>

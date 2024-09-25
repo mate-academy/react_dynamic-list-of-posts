@@ -15,6 +15,8 @@ import { PostDetails } from './components/PostDetails';
 export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [isWriteComment, setIsWriteComment] = useState(false);
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<{
     id: number;
@@ -88,6 +90,7 @@ export const App = () => {
                     posts={posts}
                     onPostSelect={handlePostSelect}
                     selectedPost={selectedPost}
+                    setIsWriteComment={setIsWriteComment}
                   />
                 )}
               </div>
@@ -99,7 +102,11 @@ export const App = () => {
           >
             <div className="tile is-child box is-success">
               {selectedPost ? (
-                <PostDetails post={selectedPost} />
+                <PostDetails
+                  post={selectedPost}
+                  isWriteComment={isWriteComment}
+                  setIsWriteComment={setIsWriteComment}
+                />
               ) : (
                 <p>Post is not selected</p>
               )}
