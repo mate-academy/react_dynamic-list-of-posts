@@ -16,13 +16,11 @@ export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isWriteComment, setIsWriteComment] = useState(false);
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<{
     id: number;
     name: string;
   } | null>(null);
-
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [loadError, setLoadError] = useState<boolean>(false);
 
@@ -60,6 +58,41 @@ export const App = () => {
     }
   };
 
+  const renderMainContent = () => {
+    if (isLoading) {
+      return <Loader />;
+    }
+
+    if (loadError) {
+      return (
+        <div className="notification is-danger" data-cy="PostsLoadingError">
+          Error loading posts. Please try again later.
+        </div>
+      );
+    }
+
+    if (!selectedUser) {
+      return <p data-cy="NoSelectedUser">No user selected</p>;
+    }
+
+    if (posts.length === 0) {
+      return (
+        <div className="notification is-warning" data-cy="NoPostsYet">
+          No posts yet
+        </div>
+      );
+    }
+
+    return (
+      <PostsList
+        posts={posts}
+        onPostSelect={handlePostSelect}
+        selectedPost={selectedPost}
+        setIsWriteComment={setIsWriteComment}
+      />
+    );
+  };
+
   return (
     <main className="section">
       <div className="container">
@@ -70,29 +103,7 @@ export const App = () => {
                 <UserSelector users={users} onUserSelect={handleUserSelect} />
               </div>
               <div className="block" data-cy="MainContent">
-                {isLoading ? (
-                  <Loader />
-                ) : loadError ? (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
-                    Error loading posts. Please try again later.
-                  </div>
-                ) : !selectedUser ? (
-                  <p data-cy="NoSelectedUser">No user selected</p>
-                ) : posts.length === 0 ? (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    No posts yet
-                  </div>
-                ) : (
-                  <PostsList
-                    posts={posts}
-                    onPostSelect={handlePostSelect}
-                    selectedPost={selectedPost}
-                    setIsWriteComment={setIsWriteComment}
-                  />
-                )}
+                {renderMainContent()}
               </div>
             </div>
           </div>
