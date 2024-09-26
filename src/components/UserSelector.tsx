@@ -10,13 +10,13 @@ type Props = {
 export const UserSelector: React.FC<Props> = ({ users, onSelect }) => {
   // region States
   const [userSelect, setUserSelect] = useState<User | null>(null);
-  const [visibleList, setVisibleList] = useState(false);
+  const [visible, setVisible] = useState(false);
   //endregion
 
   // region Event handlers
   const handleUserSelect = (user: User): void => {
     setUserSelect(user);
-    setVisibleList(false);
+    setVisible(false);
     onSelect(user);
   };
   //endregion
@@ -29,7 +29,7 @@ export const UserSelector: React.FC<Props> = ({ users, onSelect }) => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setVisibleList(prev => !prev)}
+          onClick={() => setVisible(prev => !prev)}
         >
           <span>{userSelect ? userSelect.name : 'Choose a user'}</span>
 
@@ -39,7 +39,7 @@ export const UserSelector: React.FC<Props> = ({ users, onSelect }) => {
         </button>
       </div>
 
-      {visibleList && (
+      {visible && (
         <div className="dropdown-menu" id="dropdown-menu" role="menu">
           <div className="dropdown-content">
             {users.map(user => {

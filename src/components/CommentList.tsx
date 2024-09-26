@@ -9,7 +9,7 @@ type Props = {
 export const CommentList: React.FC<Props> = ({ comments, onDelete }) => {
   return (
     <>
-      {comments && comments.length > 0 ? (
+      {comments.length > 0 ? (
         comments.map(comment => {
           return (
             <CommentObj
