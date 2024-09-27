@@ -24,14 +24,14 @@ export const NewCommentForm: React.FC<Props> = ({
   const anyErrorCheck = () => {
     const errors = [];
 
-    setErrorName(!name);
-    errors.push(!name);
+    setErrorName(!name.trim());
+    errors.push(!name.trim());
 
-    setErrorEmail(!email);
-    errors.push(!email);
+    setErrorEmail(!email.trim());
+    errors.push(!email.trim());
 
-    setErrorBody(!body);
-    errors.push(!body);
+    setErrorBody(!body.trim());
+    errors.push(!body.trim());
 
     return errors.some(e => e === true);
   };
@@ -49,9 +49,9 @@ export const NewCommentForm: React.FC<Props> = ({
     commentClient
       .add({
         postId: post.id,
-        name: name,
-        email: email,
-        body: body,
+        name: name.trim(),
+        email: email.trim(),
+        body: body.trim(),
       })
       .then(() => {
         setBody('');
@@ -116,7 +116,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
