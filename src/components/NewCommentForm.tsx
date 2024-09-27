@@ -54,6 +54,8 @@ export const NewCommentForm: React.FC<Props> = ({
     setIsAddingError(false);
   };
 
+  const strValidation = (value: string) => value.trim().length > 0;
+
   return (
     <form data-cy="NewCommentForm" onSubmit={onSubmit} onReset={onReset}>
       <div className="field" data-cy="NameField">
@@ -66,7 +68,10 @@ export const NewCommentForm: React.FC<Props> = ({
             type="text"
             id="comment-author-name"
             placeholder="Name Surname"
-            {...register('name', { required: true })}
+            {...register('name', {
+              required: true,
+              validate: strValidation,
+            })}
             className={cn('input', {
               'is-danger': errors.name,
             })}
@@ -139,7 +144,10 @@ export const NewCommentForm: React.FC<Props> = ({
           <textarea
             id="comment-body"
             placeholder="Type comment here"
-            {...register('body', { required: true })}
+            {...register('body', {
+              required: true,
+              validate: strValidation,
+            })}
             className={cn('textarea', {
               'is-danger': errors.body,
             })}
