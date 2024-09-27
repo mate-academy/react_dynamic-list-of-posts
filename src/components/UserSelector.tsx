@@ -8,18 +8,14 @@ type Props = {
 };
 
 export const UserSelector: React.FC<Props> = ({ users, onSelect }) => {
-  // region States
   const [userSelect, setUserSelect] = useState<User | null>(null);
   const [visible, setVisible] = useState(false);
-  //endregion
 
-  // region Event handlers
   const handleUserSelect = (user: User): void => {
     setUserSelect(user);
     setVisible(false);
     onSelect(user);
   };
-  //endregion
 
   return (
     <div data-cy="UserSelector" className="dropdown is-active">

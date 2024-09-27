@@ -15,16 +15,13 @@ import { postClient } from './utils/postClient';
 import { Post } from './types/Post';
 
 export const App = () => {
-  //region States
   const [users, setUsers] = useState<User[]>([]);
   const [userSelected, setUserSelected] = useState<User | null>(null);
   const [userSelPosts, setUserSelPosts] = useState<Post[]>([]);
   const [openedPost, setOpendPost] = useState<Post | null>(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  //endregion
 
-  //Init users
   useEffect(() => {
     setLoading(true);
     userClient
@@ -37,7 +34,6 @@ export const App = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  // Update User Posts
   useEffect(() => {
     setOpendPost(null);
 

@@ -6,7 +6,7 @@ type Props = {
 };
 
 export const CommentObj: React.FC<Props> = ({ comment, onDelete }) => {
-  const { id, email, name, body } = { ...comment };
+  const { id, email, name, body } = comment;
 
   return (
     <article key={id} className="message is-small" data-cy="Comment">
