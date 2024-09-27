@@ -6,25 +6,27 @@ type Props = {
 };
 
 export const CommentObj: React.FC<Props> = ({ comment, onDelete }) => {
+  const { id, email, name, body } = { ...comment };
+
   return (
-    <article key={comment.id} className="message is-small" data-cy="Comment">
+    <article key={id} className="message is-small" data-cy="Comment">
       <div className="message-header">
-        <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-          {comment.name}
+        <a href={`mailto:${email}`} data-cy="CommentAuthor">
+          {name}
         </a>
         <button
           data-cy="CommentDelete"
           type="button"
           className="delete is-small"
           aria-label="delete"
-          onClick={() => onDelete(comment.id)}
+          onClick={() => onDelete(id)}
         >
           delete button
         </button>
       </div>
 
       <div className="message-body" data-cy="CommentBody">
-        {comment.body}
+        {body}
       </div>
     </article>
   );
