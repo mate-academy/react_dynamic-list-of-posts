@@ -77,25 +77,23 @@ export const App: React.FC = () => {
   return (
     <main className="section">
       <div className="container">
-        <div className="tile is-ancestor">
-          <div className="tile is-parent">
+        <div className="tile is-ancestor columns">
+          <div className="tile is-parent column">
             <div className="tile is-child box is-success">
               <div className="block">
-                {isLoadingUsers ? (
-                  <Loader />
-                ) : usersError ? (
+                <UserSelector
+                  users={users}
+                  selectedUserId={selectedUserId}
+                  setSelectedUserId={setSelectedUserId}
+                />
+                {isLoadingUsers && <Loader />}
+                {usersError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
                     {usersError}
                   </div>
-                ) : (
-                  <UserSelector
-                    users={users}
-                    selectedUserId={selectedUserId}
-                    setSelectedUserId={setSelectedUserId}
-                  />
                 )}
               </div>
 

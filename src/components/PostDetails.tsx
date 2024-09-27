@@ -59,7 +59,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">{post.title}</h2>
+          <h2 data-cy="PostTitle">
+            #{post.id}: {post.title}
+          </h2>
 
           <p data-cy="PostBody">{post.body}</p>
         </div>
@@ -71,12 +73,12 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
               {commentsError}
             </div>
           )}
-          {comments.length === 0 && (
+          {!comments.length && !commentsError && !isLoadingComments && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
-          {!commentsError && comments.length > 0 && (
+          {!commentsError && !!comments.length && !isLoadingComments && (
             <>
               <p className="title is-4">Comments:</p>
               {comments.map(comment => (
@@ -110,7 +112,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
               ))}
             </>
           )}
-          {!isAddingComments && (
+          {!isAddingComments && !commentsError && !isLoadingComments && (
             <button
               data-cy="WriteCommentButton"
               type="button"

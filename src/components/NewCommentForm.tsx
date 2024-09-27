@@ -37,8 +37,6 @@ export const NewCommentForm: React.FC<Props> = ({ postId, addComment }) => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       addComment(newComment);
 
-      setName('');
-      setEmail('');
       setBody('');
     } catch {
       setFormError('Failed to add comment. Please try again');
