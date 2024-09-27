@@ -1,5 +1,5 @@
 // #region imports
-import React, { memo, useState } from 'react';
+import React, { useState } from 'react';
 import cn from 'classnames';
 import { useForm } from 'react-hook-form';
 import { addPostComment } from '../services/comments';
@@ -18,10 +18,10 @@ type FormData = {
   body: string;
 };
 
-export const NewCommentForm: React.FC<Props> = memo(function NewCommentForm({
+export const NewCommentForm: React.FC<Props> = ({
   postId,
   onCommentAdding,
-}) {
+}) => {
   const {
     register,
     setValue,
@@ -180,4 +180,4 @@ export const NewCommentForm: React.FC<Props> = memo(function NewCommentForm({
       )}
     </form>
   );
-});
+};

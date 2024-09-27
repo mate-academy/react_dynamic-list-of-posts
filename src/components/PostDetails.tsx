@@ -1,5 +1,5 @@
 // #region imports
-import React, { memo, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { CommentsList } from './CommentsList';
 import { ErrorNotification } from './ErrorNotification';
 import { Loader } from './Loader';
@@ -13,9 +13,7 @@ type Props = {
   post: Post;
 };
 
-export const PostDetails: React.FC<Props> = memo(function PostDetails({
-  post,
-}) {
+export const PostDetails: React.FC<Props> = ({ post }) => {
   // #region states
   const [comments, setComments] = useState<Comment[]>([]);
 
@@ -55,9 +53,9 @@ export const PostDetails: React.FC<Props> = memo(function PostDetails({
     [comments],
   );
 
-  const handleCommentAdd = useCallback((newComment: Comment) => {
+  const handleCommentAdd = (newComment: Comment) => {
     setComments(currentComments => [...currentComments, newComment]);
-  }, []);
+  };
   // #endregion
 
   return (
@@ -110,4 +108,4 @@ export const PostDetails: React.FC<Props> = memo(function PostDetails({
       </div>
     </div>
   );
-});
+};
