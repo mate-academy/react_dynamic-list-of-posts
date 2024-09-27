@@ -21,6 +21,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     setCommenting(false);
+  }, [post]);
+
+  useEffect(() => {
     if (post) {
       setLoading(true);
       commentClient

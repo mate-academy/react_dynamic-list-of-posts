@@ -62,6 +62,7 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const handleClear = () => {
+    setBody('');
     setErrorName(false);
     setErrorEmail(false);
     setErrorBody(false);
