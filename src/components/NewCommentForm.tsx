@@ -53,7 +53,11 @@ export const NewCommentForm: React.FC<Props> = ({
         email: email.trim(),
         body: body.trim(),
       })
-      .then(() => {
+      .then(res => {
+        if (!res.id) {
+          throw new Error();
+        }
+
         setBody('');
         onUpdate(Math.random());
       })

@@ -22,6 +22,8 @@ export const App = () => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const readyToShowPosts = userSelected && !loading;
+
   useEffect(() => {
     setLoading(true);
     userClient
@@ -63,7 +65,11 @@ export const App = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector users={users} onSelect={handleUserSelect} />
+                <UserSelector
+                  users={users}
+                  selectedUser={userSelected}
+                  onSelect={handleUserSelect}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -82,22 +88,19 @@ export const App = () => {
                   </div>
                 )}
 
-                {userSelected && !loading ? (
-                  userSelPosts.length > 0 ? (
-                    <PostsList
-                      posts={userSelPosts}
-                      openedPost={openedPost}
-                      onOpen={setOpendPost}
-                    />
-                  ) : (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )
-                ) : undefined}
+                {readyToShowPosts && userSelPosts.length > 0 && (
+                  <PostsList
+                    posts={userSelPosts}
+                    openedPost={openedPost}
+                    onOpen={setOpendPost}
+                  />
+                )}
+
+                {readyToShowPosts && userSelPosts.length <= 0 && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
               </div>
             </div>
           </div>

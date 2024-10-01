@@ -19,6 +19,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [commenting, setCommenting] = useState(false);
   const [updateFlag, setUpdateFlag] = useState<number | null>(null);
 
+  const readyToComment = !error && !loading;
+
   useEffect(() => {
     setCommenting(false);
   }, [post]);
@@ -61,29 +63,23 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
               Something went wrong
             </div>
           )}
-          {!error && !loading && (
-            <>
-              {comments.length > 0 && (
-                <>
-                  <p className="title is-4">Comments:</p>
-                  <CommentList
-                    comments={comments}
-                    onDelete={handleCommentDelete}
-                  />
-                </>
-              )}
 
-              {!commenting && (
-                <button
-                  data-cy="WriteCommentButton"
-                  type="button"
-                  className="button is-link"
-                  onClick={() => setCommenting(true)}
-                >
-                  Write a comment
-                </button>
-              )}
+          {readyToComment && comments.length > 0 && (
+            <>
+              <p className="title is-4">Comments:</p>
+              <CommentList comments={comments} onDelete={handleCommentDelete} />
             </>
+          )}
+
+          {readyToComment && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setCommenting(true)}
+            >
+              Write a comment
+            </button>
           )}
         </div>
 
