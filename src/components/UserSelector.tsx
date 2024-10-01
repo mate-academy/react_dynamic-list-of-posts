@@ -4,15 +4,18 @@ import classNames from 'classnames';
 
 type Props = {
   users: User[];
+  selectedUser: User | null;
   onSelect: (name: User) => void;
 };
 
-export const UserSelector: React.FC<Props> = ({ users, onSelect }) => {
-  const [userSelect, setUserSelect] = useState<User | null>(null);
+export const UserSelector: React.FC<Props> = ({
+  users,
+  selectedUser,
+  onSelect,
+}) => {
   const [visible, setVisible] = useState(false);
 
   const handleUserSelect = (user: User): void => {
-    setUserSelect(user);
     setVisible(false);
     onSelect(user);
   };
@@ -27,7 +30,7 @@ export const UserSelector: React.FC<Props> = ({ users, onSelect }) => {
           aria-controls="dropdown-menu"
           onClick={() => setVisible(prev => !prev)}
         >
-          <span>{userSelect ? userSelect.name : 'Choose a user'}</span>
+          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -38,20 +41,18 @@ export const UserSelector: React.FC<Props> = ({ users, onSelect }) => {
       {visible && (
         <div className="dropdown-menu" id="dropdown-menu" role="menu">
           <div className="dropdown-content">
-            {users.map(user => {
-              return (
-                <a
-                  key={user.id}
-                  href="#user-1"
-                  className={classNames('dropdown-item', {
-                    'is-active': userSelect && user.name === userSelect.name,
-                  })}
-                  onClick={() => handleUserSelect(user)}
-                >
-                  {user.name}
-                </a>
-              );
-            })}
+            {users.map(user => (
+              <a
+                key={user.id}
+                href="#user-1"
+                className={classNames('dropdown-item', {
+                  'is-active': selectedUser && user.name === selectedUser.name,
+                })}
+                onClick={() => handleUserSelect(user)}
+              >
+                {user.name}
+              </a>
+            ))}
           </div>
         </div>
       )}

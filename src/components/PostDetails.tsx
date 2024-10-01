@@ -89,7 +89,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
         {!error && commenting && post && (
           <NewCommentForm
-            post={post as Post}
+            post={post}
             onError={setError}
             onUpdate={setUpdateFlag}
           />

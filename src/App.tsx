@@ -84,7 +84,11 @@ export const App = () => {
 
                 {userSelected && !loading ? (
                   userSelPosts.length > 0 ? (
-                    <PostsList posts={userSelPosts} onOpen={setOpendPost} />
+                    <PostsList
+                      posts={userSelPosts}
+                      openedPost={openedPost}
+                      onOpen={setOpendPost}
+                    />
                   ) : (
                     <div
                       className="notification is-warning"

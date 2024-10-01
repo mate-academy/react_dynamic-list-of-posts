@@ -1,21 +1,17 @@
-import React, { useState } from 'react';
 import { Post } from '../types/Post';
 import { PostItem } from './PostItem';
 
 type Props = {
   posts: Post[];
+  openedPost: Post | null;
   onOpen: (post: Post | null) => void;
 };
 
-export const PostsList: React.FC<Props> = ({ posts, onOpen }) => {
-  const [openedPost, setOpendPost] = useState<Post | null>(null);
-
+export const PostsList: React.FC<Props> = ({ posts, openedPost, onOpen }) => {
   const handleClick = (post: Post) => {
     if (post.id === openedPost?.id) {
-      setOpendPost(null);
       onOpen(null);
     } else {
-      setOpendPost(post);
       onOpen(post);
     }
   };
@@ -35,11 +31,16 @@ export const PostsList: React.FC<Props> = ({ posts, onOpen }) => {
         </thead>
 
         <tbody>
-          <PostItem
-            posts={posts}
-            openPostId={openedPost?.id}
-            onClick={handleClick}
-          />
+          {posts.map(post => {
+            return (
+              <PostItem
+                key={post.id}
+                post={post}
+                isOppened={openedPost?.id === post.id}
+                onClick={handleClick}
+              />
+            );
+          })}
         </tbody>
       </table>
     </div>
