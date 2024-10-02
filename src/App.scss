@@ -1,3 +1,12 @@
+.section {
+  padding: 3rem;
+  margin: 0;
+}
+
+.container {
+  max-width: 1344;
+}
+
 .Sidebar {
   overflow: hidden;
   opacity: 0;
@@ -20,4 +29,24 @@
 
 .message-body {
   white-space: pre-line;
+}
+
+.is-ancestor {
+  display: flex;
+  align-items: stretch;
+  flex: 1 1 0px;
+
+}
+
+.is-parent {
+  display: flex;
+  align-items: stretch;
+  flex: 1 1 0px;
+  min-height: min-content;
+  padding: 12px;
+  width: 100%;
+}
+
+.is-child {
+  width: 100%;
 }

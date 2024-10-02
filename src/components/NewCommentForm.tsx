@@ -69,11 +69,11 @@ export const NewCommentForm: React.FC<Props> = ({
         setEmailError(true);
       }
 
-      if (!body) {
+      if (!body.trim()) {
         setBodyError(true);
       }
 
-      if (name && email && body) {
+      if (name && email && body.trim()) {
         setIsSubmiting(true);
 
         const newComment = {
@@ -143,7 +143,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
