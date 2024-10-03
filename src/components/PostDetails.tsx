@@ -117,11 +117,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         </div>
 
         {isWriting && (
-          <NewCommentForm
-            onSubmit={handleSubmit}
-            postId={post.id}
-            comments={comments}
-          />
+          <NewCommentForm onSubmit={handleSubmit} postId={post.id} />
         )}
       </div>
     </div>

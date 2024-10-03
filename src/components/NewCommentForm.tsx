@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Comment } from '../types/Comment';
 import classNames from 'classnames';
 import { client } from '../utils/fetchClient';
@@ -6,14 +6,9 @@ import { client } from '../utils/fetchClient';
 type Props = {
   onSubmit: (newComment: Comment) => void;
   postId: number;
-  comments: Comment[];
 };
 
-export const NewCommentForm: React.FC<Props> = ({
-  onSubmit,
-  postId,
-  comments,
-}) => {
+export const NewCommentForm: React.FC<Props> = ({ onSubmit, postId }) => {
   const [isSubmiting, setIsSubmiting] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -45,23 +40,12 @@ export const NewCommentForm: React.FC<Props> = ({
     },
     [],
   );
-  const nextId = useMemo(() => {
-    let maxId = 0;
-
-    comments.forEach(comment => {
-      if (comment.id > maxId) {
-        maxId = comment.id;
-      }
-    });
-
-    return maxId + 1;
-  }, [comments]);
 
   const handleAddComment = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       e.preventDefault();
 
-      if (!name) {
+      if (!name.trim()) {
         setNameError(true);
       }
 
@@ -73,11 +57,10 @@ export const NewCommentForm: React.FC<Props> = ({
         setBodyError(true);
       }
 
-      if (name && email && body.trim()) {
+      if (name.trim() && email && body.trim()) {
         setIsSubmiting(true);
 
         const newComment = {
-          id: nextId,
           postId,
           name,
           email,
@@ -94,7 +77,7 @@ export const NewCommentForm: React.FC<Props> = ({
           .finally(() => setIsSubmiting(false));
       }
     },
-    [name, email, body, postId, comments, onSubmit],
+    [name, email, body, postId, onSubmit],
   );
 
   return (

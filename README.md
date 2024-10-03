@@ -36,4 +36,4 @@ Install Prettier Extention and use this [VSCode settings](https://mate-academy.g
     - Delete the commnet immediately not waiting for the server response to improve the UX.
 1. (*) Handle `Add` and `Delete` errors so the user can retry
 
-[DEMO] (https://oleksandrakoshyk.github.io/react_dynamic-list-of-posts/)
+[DEMO](https://oleksandrakoshyk.github.io/react_dynamic-list-of-posts/)
