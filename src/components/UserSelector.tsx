@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useEffect, useState } from 'react';
+import React, { MouseEventHandler, useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
 import { client } from '../utils/fetchClient';
 import classNames from 'classnames';
@@ -11,6 +11,7 @@ interface Props {
 export const UserSelector: React.FC<Props> = ({ selectUser, selectedUser }) => {
   const [users, setUsers] = useState<User[]>([]);
   const [isActive, setIsActive] = useState(false);
+  const dropdownRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     client.get<User[]>('/users').then(data => setUsers(data));
@@ -24,7 +25,17 @@ export const UserSelector: React.FC<Props> = ({ selectUser, selectedUser }) => {
 
       if (selected) {
         selectUser(selected);
+        setIsActive(false);
       }
+    }
+  };
+
+  const handleBlur = (event: React.FocusEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.relatedTarget)
+    ) {
+      setIsActive(false);
     }
   };
 
@@ -35,12 +46,13 @@ export const UserSelector: React.FC<Props> = ({ selectUser, selectedUser }) => {
     >
       <div className="dropdown-trigger">
         <button
+          ref={dropdownRef}
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => setIsActive(!isActive)}
-          onBlur={() => setIsActive(false)}
+          onBlur={handleBlur}
         >
           <span>{selectedUser?.name || `Choose a user`}</span>
 
