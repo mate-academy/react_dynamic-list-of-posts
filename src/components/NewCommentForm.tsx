@@ -75,7 +75,7 @@ export const NewCommentForm: React.FC<Props> = ({
       setComentError('Enter some text');
     }
 
-    if (nameValue && emailValue && comentValue && post) {
+    if (nameValue.trim() && emailValue.trim() && comentValue.trim() && post) {
       addComent(post.id, nameValue, emailValue, comentValue);
       setComentValue('');
     }
