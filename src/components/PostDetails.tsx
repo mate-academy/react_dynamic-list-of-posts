@@ -8,24 +8,24 @@ import * as comentService from '../api/coments';
 
 type Props = {
   selectedPost: Post | null;
-  coments: Comment[];
+  comments: Comment[];
   isComentsLoaded: boolean;
   errorMessage: string;
   errorLoadComents: boolean;
-  setComents: (callback: (currentTodos: Comment[]) => Comment[]) => void;
+  setComments: (callback: (currentTodos: Comment[]) => Comment[]) => void;
   setErrorLoadComents: (el: boolean) => void;
 };
 
 export const PostDetails: React.FC<Props> = ({
   selectedPost,
-  coments,
+  comments,
   isComentsLoaded,
   errorMessage,
   errorLoadComents,
-  setComents,
+  setComments,
   setErrorLoadComents,
 }) => {
-  const arrayLength = coments?.length;
+  const arrayLength = comments?.length;
   const [writeFormIsActive, setWriteFormIsActive] = useState(false);
 
   useEffect(() => {
@@ -38,9 +38,9 @@ export const PostDetails: React.FC<Props> = ({
 
   const deletingComent = (comentId: number) => {
     const updatedComents =
-      coments.filter((cm: Comment) => cm.id !== comentId) || [];
+      comments.filter((cm: Comment) => cm.id !== comentId) || [];
 
-    setComents(() => updatedComents);
+    setComments(() => updatedComents);
 
     comentService.deleteComments(comentId);
   };
@@ -68,34 +68,38 @@ export const PostDetails: React.FC<Props> = ({
           ) : arrayLength ? (
             <>
               <p className="title is-4">Comments:</p>
-              {coments?.map(coment => (
-                <article
-                  className="message is-small"
-                  data-cy="Comment"
-                  key={coment.id}
-                >
-                  <div className="message-header">
-                    <a href={`mailto:${coment.email}`} data-cy="CommentAuthor">
-                      {coment.name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => {
-                        handleDeleteButton(coment.id);
-                      }}
-                    >
-                      delete button
-                    </button>
-                  </div>
+              {comments?.map(comment => {
+                const { id, email, name, body } = comment;
 
-                  <div className="message-body" data-cy="CommentBody">
-                    {coment.body}
-                  </div>
-                </article>
-              ))}
+                return (
+                  <article
+                    className="message is-small"
+                    data-cy="Comment"
+                    key={id}
+                  >
+                    <div className="message-header">
+                      <a href={`mailto:${email}`} data-cy="CommentAuthor">
+                        {name}
+                      </a>
+                      <button
+                        data-cy="CommentDelete"
+                        type="button"
+                        className="delete is-small"
+                        aria-label="delete"
+                        onClick={() => {
+                          handleDeleteButton(id);
+                        }}
+                      >
+                        delete button
+                      </button>
+                    </div>
+
+                    <div className="message-body" data-cy="CommentBody">
+                      {body}
+                    </div>
+                  </article>
+                );
+              })}
             </>
           ) : (
             <p className="title is-4" data-cy="NoCommentsMessage">
@@ -118,7 +122,7 @@ export const PostDetails: React.FC<Props> = ({
         {writeFormIsActive && !errorLoadComents && (
           <NewCommentForm
             post={selectedPost}
-            setComents={setComents}
+            setComments={setComments}
             setErrorLoadComents={setErrorLoadComents}
           />
         )}

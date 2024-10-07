@@ -7,13 +7,13 @@ import { Comment } from '../types/Comment';
 
 type Props = {
   post: Post | null;
-  setComents: (callback: (currentTodos: Comment[]) => Comment[]) => void;
+  setComments: (callback: (currentTodos: Comment[]) => Comment[]) => void;
   setErrorLoadComents: (el: boolean) => void;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   post,
-  setComents,
+  setComments,
   setErrorLoadComents,
 }) => {
   const [nameValue, setNameValue] = useState('');
@@ -46,10 +46,7 @@ export const NewCommentForm: React.FC<Props> = ({
     return comentService
       .postComment({ postId, name, email, body })
       .then((newComent: Comment) => {
-        setComents((currentComents: Comment[]) => [
-          ...currentComents,
-          newComent,
-        ]);
+        setComments(currentComents => [...currentComents, newComent]);
       })
       .catch(er => {
         setErrorLoadComents(true);

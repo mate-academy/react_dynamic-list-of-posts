@@ -7,7 +7,6 @@ import './App.scss';
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-// import { NewCommentForm } from './components/NewCommentForm';
 import { Loader } from './components/Loader';
 import { useEffect, useState } from 'react';
 import { User } from './types/User';
@@ -30,7 +29,7 @@ export const App = () => {
   });
 
   const [selectedPostId, setSelectedPostId] = useState<number>(0);
-  const [coments, setComents] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
 
   const [slidbarIsActive, setSlidbarIsActive] = useState(false);
 
@@ -43,19 +42,15 @@ export const App = () => {
 
   const errorMessage = 'Something went wrong';
 
-  //geting USERS
   useEffect(() => {
     userService
       .getUsers()
-      .then(usersFromServer => {
-        setUsers(usersFromServer);
-      })
+      .then(setUsers)
       .catch(er => {
         throw er;
       });
   }, []);
 
-  //geting POSTS
   useEffect(() => {
     if (!selectedUser) {
       return;
@@ -82,7 +77,6 @@ export const App = () => {
       });
   }, [selectedUser]);
 
-  //geting COMENTS
   useEffect(() => {
     if (selectedPostId === 0) {
       return;
@@ -92,9 +86,7 @@ export const App = () => {
     setErrorLoadComents(false);
     comentService
       .getComments(selectedPostId)
-      .then(cmnt => {
-        setComents(cmnt);
-      })
+      .then(setComments)
       .catch(er => {
         setErrorLoadComents(true);
         throw er;
@@ -162,8 +154,8 @@ export const App = () => {
                 <div className="tile is-child box is-success">
                   <PostDetails
                     selectedPost={selectedPost}
-                    coments={coments}
-                    setComents={setComents}
+                    comments={comments}
+                    setComments={setComments}
                     isComentsLoaded={isComentsLoaded}
                     errorMessage={errorMessage}
                     errorLoadComents={errorLoadComents}
