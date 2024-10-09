@@ -9,7 +9,7 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onAdd, selectedPost }) => {
-  const [isSubmiting, setIsSubmiting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [name, setName] = useState('');
   const [isErrorName, setIsErrorName] = useState(false);
@@ -47,27 +47,31 @@ export const NewCommentForm: React.FC<Props> = ({ onAdd, selectedPost }) => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    setIsErrorName(!name);
-    setIsErrorEmail(!email);
-    setIsErrorComment(!comment);
+    setIsErrorName(!name.trim());
+    setIsErrorEmail(!email.trim());
+    setIsErrorComment(!comment.trim());
 
-    if (!name || !email || !comment) {
+    if (!name.trim() || !email.trim() || !comment.trim()) {
       return;
     }
 
-    setIsSubmiting(true);
+    setIsSubmitting(true);
     onAdd({
       name: name.trim(),
       email: email.trim(),
       body: comment.trim(),
       postId: selectedPost?.id || 0,
-    }).finally(() => {
-      setComment('');
-      setIsSubmiting(false);
-      setIsErrorComment(false);
-      setIsErrorEmail(false);
-      setIsErrorName(false);
-    });
+    })
+      .catch(error => {
+        throw error;
+      })
+      .finally(() => {
+        setComment('');
+        setIsSubmitting(false);
+        setIsErrorComment(false);
+        setIsErrorEmail(false);
+        setIsErrorName(false);
+      });
   };
 
   return (
@@ -174,7 +178,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAdd, selectedPost }) => {
           <button
             type="submit"
             className={classNames('button is-link', {
-              'is-loading': isSubmiting,
+              'is-loading': isSubmitting,
             })}
           >
             Add
@@ -186,7 +190,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAdd, selectedPost }) => {
           <button
             type="reset"
             className="button is-link is-light"
-            disabled={isSubmiting}
+            disabled={isSubmitting}
             onClick={handleReset}
           >
             Clear

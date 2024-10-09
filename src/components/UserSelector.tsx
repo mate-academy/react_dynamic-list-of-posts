@@ -22,7 +22,7 @@ export const UserSelector: React.FC<Props> = ({
     getUsers().then(setUsers);
   }, []);
 
-  const handleSelectUser = (user: User) => {
+  const handleUserSelect = (user: User) => {
     onSelectedPost(null);
     onSelectedUser(user);
   };
@@ -58,7 +58,7 @@ export const UserSelector: React.FC<Props> = ({
               className={classNames('dropdown-item', {
                 'is-active': selectedUser?.id === user.id,
               })}
-              onMouseDown={() => handleSelectUser(user)}
+              onMouseDown={() => handleUserSelect(user)}
             >
               {user.name}
             </a>
