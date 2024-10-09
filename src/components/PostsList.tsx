@@ -50,7 +50,9 @@ export const PostsList: React.FC<Props> = ({ onPostSelect, selectedUser }) => {
     };
 
     loadPosts();
-  }, [selectedUser]);
+    setSelectedPost(null);
+    onPostSelect(null);
+  }, [selectedUser, onPostSelect]);
 
   if (isLoading) {
     return <Loader />;
