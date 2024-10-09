@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
 import cn from 'classnames';
 import { getUsers } from '../api/users';
@@ -32,27 +32,30 @@ export const UserSelector: React.FC<Props> = ({
     loadUsers();
   }, []);
 
-  const handleOutsideCLick = (e: MouseEvent) => {
+  const handleOutsideClick = useCallback((e: MouseEvent) => {
     if (
       dropdownRef.current &&
       !dropdownRef.current.contains(e.target as Node)
     ) {
       setIsDropdownOpen(false);
     }
-  };
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleOutsideCLick);
-
-    return () => {
-      document.removeEventListener('mousedown', handleOutsideCLick);
-    };
   }, []);
 
-  const handleUserSelect = (user: User) => {
-    onSelectUser(user);
-    setIsDropdownOpen(false);
-  };
+  const handleUserSelect = useCallback(
+    (user: User) => {
+      onSelectUser(user);
+      setIsDropdownOpen(false);
+    },
+    [onSelectUser],
+  );
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [handleOutsideClick]);
 
   return (
     <div

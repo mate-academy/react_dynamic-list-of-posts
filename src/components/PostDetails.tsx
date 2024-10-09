@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
@@ -11,9 +11,7 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-
   const [isAddingComment, setIsAddingComment] = useState(false);
-
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
 
@@ -40,24 +38,34 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     loadComments();
   }, [post]);
 
-  const handleCommentAdd = async (commentData: Omit<Comment, 'id'>) => {
-    try {
-      const newComment = await addComment(commentData);
+  useEffect(() => {
+    setIsAddingComment(false);
+  }, [post]);
 
-      setComments([...(comments || []), newComment]);
-    } catch {
-      setError(true);
-    }
-  };
+  const handleAddComment = useCallback(
+    async (commentData: Omit<Comment, 'id'>) => {
+      try {
+        const newComment = await addComment(commentData);
 
-  const handleCommentDelete = async (id: number) => {
-    setComments(comments.filter(comment => comment.id !== id));
-    try {
-      await deleteComment(id);
-    } catch {
-      setError(true);
-    }
-  };
+        setComments([...(comments || []), newComment]);
+      } catch {
+        setError(true);
+      }
+    },
+    [comments],
+  );
+
+  const handleDeleteComment = useCallback(
+    async (id: number) => {
+      setComments(comments.filter(comment => comment.id !== id));
+      try {
+        await deleteComment(id);
+      } catch {
+        setError(true);
+      }
+    },
+    [comments],
+  );
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -76,7 +84,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             </div>
           )}
 
-          {!isLoading && comments?.length === 0 && (
+          {!isLoading && comments?.length === 0 && !error && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -93,7 +101,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                   data-cy="Comment"
                 >
                   <div className="message-header">
-                    <a href={`${email}`} data-cy="CommentAuthor">
+                    <a href={`mailto:${email}`} data-cy="CommentAuthor">
                       {name}
                     </a>
                     <button
@@ -101,7 +109,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
-                      onClick={() => handleCommentDelete(id)}
+                      onClick={() => handleDeleteComment(id)}
                     ></button>
                   </div>
 
@@ -112,18 +120,19 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
               ))}
             </>
           )}
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-            onClick={() => setIsAddingComment(true)}
-          >
-            Write a comment
-          </button>
+          {!isLoading && !isAddingComment && !error && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setIsAddingComment(true)}
+            >
+              Write a comment
+            </button>
+          )}
         </div>
         {isAddingComment && post && (
-          <NewCommentForm postId={post.id} onSubmit={handleCommentAdd} />
+          <NewCommentForm postId={post.id} onSubmit={handleAddComment} />
         )}
       </div>
     </div>

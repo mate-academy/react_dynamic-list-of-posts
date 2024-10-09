@@ -15,6 +15,11 @@ export const App = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
+  const handleUserSelect = (user: User) => {
+    setSelectedUser(user);
+    setSelectedPost(null);
+  };
+
   return (
     <main className="section">
       <div className="container">
@@ -24,7 +29,7 @@ export const App = () => {
               <div className="block">
                 <UserSelector
                   selectedUser={selectedUser}
-                  onSelectUser={setSelectedUser}
+                  onSelectUser={handleUserSelect}
                 />
               </div>
 

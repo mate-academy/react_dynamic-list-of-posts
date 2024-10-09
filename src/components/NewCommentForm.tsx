@@ -72,6 +72,12 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSubmit }) => {
       email: '',
       body: '',
     });
+
+    setErrors({
+      name: false,
+      email: false,
+      body: false,
+    });
   };
 
   return (
