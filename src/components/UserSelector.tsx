@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
-import cn from 'classnames';
+import classnames from 'classnames';
 import { getUsers } from '../api/users';
 
 type Props = {
@@ -61,7 +61,7 @@ export const UserSelector: React.FC<Props> = ({
     <div
       ref={dropdownRef}
       data-cy="UserSelector"
-      className={cn('dropdown', { 'is-active': isDropdownOpen })}
+      className={classnames('dropdown', { 'is-active': isDropdownOpen })}
     >
       <div className="dropdown-trigger">
         <button
@@ -86,7 +86,7 @@ export const UserSelector: React.FC<Props> = ({
               <a
                 key={user.id}
                 href={`#user-${user.id}`}
-                className={cn('dropdown-item', {
+                className={classnames('dropdown-item', {
                   'is-active': user.id === selectedUser?.id,
                 })}
                 onClick={() => handleUserSelect(user)}

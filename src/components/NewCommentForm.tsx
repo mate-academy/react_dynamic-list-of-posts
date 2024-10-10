@@ -1,4 +1,4 @@
-import cn from 'classnames';
+import classnames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
 
@@ -8,16 +8,20 @@ type Props = {
 };
 
 export const NewCommentForm: React.FC<Props> = ({ postId, onSubmit }) => {
-  const [formData, setFormData] = useState<CommentData>({
-    name: '',
-    email: '',
-    body: '',
-  });
-
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
+  const [formState, setFormState] = useState({
+    formData: {
+      name: '',
+      email: '',
+      body: '',
+    },
+    errors: {
+      name: false,
+      email: {
+        empty: false,
+        invalid: false,
+      },
+      body: false,
+    },
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -27,56 +31,86 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSubmit }) => {
   ) => {
     const { name, value } = e.target;
 
-    setFormData(prevData => ({
-      ...prevData,
-      [name]: value,
-    }));
-    setErrors(prevErrors => ({
-      ...prevErrors,
-      [name]: false,
+    setFormState(currState => ({
+      ...currState,
+      formData: {
+        ...currState.formData,
+        [name]: value,
+      },
+      errors: {
+        ...currState.errors,
+        [name]: name === 'email' ? { empty: false, invalid: false } : false,
+      },
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const newErrors = {
-      name: !formData.name,
-      email: !formData.email,
-      body: !formData.body,
+    const trimmedFormData = {
+      name: formState.formData.name.trim(),
+      email: formState.formData.email.trim(),
+      body: formState.formData.body.trim(),
     };
 
-    setErrors(newErrors);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (Object.values(newErrors).some(error => error)) {
+    const newErrors = {
+      name: !trimmedFormData.name,
+      email: {
+        empty: !trimmedFormData.email,
+        invalid:
+          !!trimmedFormData.email && !emailRegex.test(trimmedFormData.email),
+      },
+      body: !trimmedFormData.body,
+    };
+
+    setFormState(currState => ({
+      ...currState,
+      errors: newErrors,
+    }));
+
+    if (
+      newErrors.name ||
+      newErrors.email.empty ||
+      newErrors.email.invalid ||
+      newErrors.body
+    ) {
       return;
     }
 
     setIsLoading(true);
 
     try {
-      await onSubmit({ ...formData, postId });
+      await onSubmit({ ...trimmedFormData, postId });
 
-      setFormData({
-        ...formData,
-        body: '',
-      });
+      setFormState(currState => ({
+        ...currState,
+        formData: {
+          ...currState.formData,
+          body: '',
+        },
+      }));
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleClear = () => {
-    setFormData({
-      name: '',
-      email: '',
-      body: '',
-    });
-
-    setErrors({
-      name: false,
-      email: false,
-      body: false,
+    setFormState({
+      formData: {
+        name: '',
+        email: '',
+        body: '',
+      },
+      errors: {
+        name: false,
+        email: {
+          empty: false,
+          invalid: false,
+        },
+        body: false,
+      },
     });
   };
 
@@ -93,8 +127,10 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSubmit }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={cn('input', { 'is-danger': errors.name })}
-            value={formData.name}
+            className={classnames('input', {
+              'is-danger': formState.errors.name,
+            })}
+            value={formState.formData.name}
             onChange={handleChange}
           />
 
@@ -102,7 +138,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSubmit }) => {
             <i className="fas fa-user" />
           </span>
 
-          {errors.name && (
+          {formState.errors.name && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -112,7 +148,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSubmit }) => {
           )}
         </div>
 
-        {errors.name && (
+        {formState.errors.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -130,8 +166,11 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSubmit }) => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={cn('input', { 'is-danger': errors.email })}
-            value={formData.email}
+            className={classnames('input', {
+              'is-danger':
+                formState.errors.email.empty || formState.errors.email.invalid,
+            })}
+            value={formState.formData.email}
             onChange={handleChange}
           />
 
@@ -139,7 +178,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSubmit }) => {
             <i className="fas fa-envelope" />
           </span>
 
-          {errors.email && (
+          {(formState.errors.email.empty || formState.errors.email.invalid) && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -149,9 +188,14 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSubmit }) => {
           )}
         </div>
 
-        {errors.email && (
+        {formState.errors.email.empty && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
+          </p>
+        )}
+        {formState.errors.email.invalid && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is not valid
           </p>
         )}
       </div>
@@ -166,13 +210,15 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSubmit }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={cn('textarea', { 'is-danger': errors.body })}
-            value={formData.body}
+            className={classnames('textarea', {
+              'is-danger': formState.errors.body,
+            })}
+            value={formState.formData.body}
             onChange={handleChange}
           />
         </div>
 
-        {errors.body && (
+        {formState.errors.body && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -183,7 +229,9 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSubmit }) => {
         <div className="control">
           <button
             type="submit"
-            className={cn('button is-link', { 'is-loading': isLoading })}
+            className={classnames('button is-link', {
+              'is-loading': isLoading,
+            })}
           >
             Add
           </button>

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Post } from '../types/Post';
-import cn from 'classnames';
+import classnames from 'classnames';
 import { getPostsByUserId } from '../api/posts';
 import { User } from '../types/User';
 import { Loader } from './Loader';
@@ -102,7 +102,7 @@ export const PostsList: React.FC<Props> = ({ onPostSelect, selectedUser }) => {
                   <button
                     type="button"
                     data-cy="PostButton"
-                    className={cn('button is-link', {
+                    className={classnames('button is-link', {
                       'is-light': selectedPost?.id !== id,
                     })}
                     onClick={() => handleOpenPost(post)}
