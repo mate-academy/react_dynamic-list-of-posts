@@ -11,7 +11,8 @@ Install Prettier Extention and use this [VSCode settings](https://mate-academy.g
 1. Initially the `App` shows the `UserSelector` and a paragraph `No user selected` in the main content block.
     - load users from the API on page load;
     - implement the `UserSelector` as a dropdown using the given markup;
-1. When a user is selected load the user's posts form [the API](https://mate-academy.github.io/fe-students-api/) and show them using a table in the main content clock;
+1. When a user is selected load the user's posts form [the API](https://mate-academy.github.io/fe-students-api/)
+    and show them using a table in the main content block;
     - show the `<Loader>` while waiting for the API response;
     - show an error notification if `posts` loading fails;
     - if the user has no posts show the `No posts yet` notification.
@@ -33,5 +34,5 @@ Install Prettier Extention and use this [VSCode settings](https://mate-academy.g
     - Add the `is-loading` class to the submit button while waiting for a response;
     - Add the new comment received as a response from the `API` to the end of the list;
 1. Implement comment deletion
-    - Delete the commnet immediately not waiting for the server response to improve the UX.
+    - Delete the comment immediately not waiting for the server response to improve the UX.
 1. (*) Handle `Add` and `Delete` errors so the user can retry
