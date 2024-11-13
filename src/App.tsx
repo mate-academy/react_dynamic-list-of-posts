@@ -1,60 +1,47 @@
-import classNames from 'classnames';
-
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
+import { useEffect, useState } from 'react';
+import { User } from './types/User';
+import { getUsers } from './api/users';
 
-export const App = () => (
-  <main className="section">
-    <div className="container">
-      <div className="tile is-ancestor">
-        <div className="tile is-parent">
-          <div className="tile is-child box is-success">
-            <div className="block">
-              <UserSelector />
-            </div>
+export const App = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-            <div className="block" data-cy="MainContent">
-              <p data-cy="NoSelectedUser">No user selected</p>
+  useEffect(() => {
+    setLoading(true);
+    getUsers()
+      .then(fetchedUsers => {
+        setUsers(fetchedUsers);
+      })
+      .catch(() => {
+        setError('Unable to load users');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
-              <Loader />
+  return (
+    <main className="section">
+      <div className="container">
+        <div className="tile is-ancestor">
+          <div className="tile is-parent">
+            <div className="tile is-child box is-success">
+              <div className="block">
+                {!loading && !error && users.length > 0 && (
+                  <UserSelector users={users} />
 
-              <div
-                className="notification is-danger"
-                data-cy="PostsLoadingError"
-              >
-                Something went wrong!
+                )}
               </div>
-
-              <div className="notification is-warning" data-cy="NoPostsYet">
-                No posts yet
-              </div>
-
-              <PostsList />
             </div>
-          </div>
-        </div>
-
-        <div
-          data-cy="Sidebar"
-          className={classNames(
-            'tile',
-            'is-parent',
-            'is-8-desktop',
-            'Sidebar',
-            'Sidebar--open',
-          )}
-        >
-          <div className="tile is-child box is-success ">
-            <PostDetails />
           </div>
         </div>
       </div>
-    </div>
-  </main>
-);
+    </main>
+  );
+};
