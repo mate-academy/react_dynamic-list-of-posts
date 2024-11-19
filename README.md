@@ -7,6 +7,8 @@ Install Prettier Extention and use this [VSCode settings](https://mate-academy.g
 
 > Here is [the working version](https://mate-academy.github.io/react_dynamic-list-of-posts/)
 
+Replace <your_account> with your Github username in the [DEMO LINK](https://<your_account>.github.io/react_dynamic-list-of-posts/) and add it to the PR description.
+
 1. Learn the `utils/fetchClient.ts` and use it to interact with the API (tests expect that you each API request is sent after 300 ms delay);
 1. Initially the `App` shows the `UserSelector` and a paragraph `No user selected` in the main content block.
     - load users from the API on page load;
