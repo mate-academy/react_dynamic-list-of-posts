@@ -1,3 +1,5 @@
+@use 'sass:math';
+
 .Sidebar {
   overflow: hidden;
   opacity: 0;
@@ -21,3 +23,48 @@
 .message-body {
   white-space: pre-line;
 }
+
+/* missed classes */
+
+@mixin tablet {
+  @media screen and (min-width: 769px), print {
+    @content;
+  }
+}
+
+$tile-spacing: 0.75rem !default;
+
+.tile {
+  align-items: stretch;
+  display: block;
+  flex: 1;
+  min-height: min-content;
+
+  &.is-ancestor {
+    margin-left: $tile-spacing * -1;
+    margin-right: $tile-spacing * -1;
+    margin-top: $tile-spacing * -1;
+    &:last-child {
+      margin-bottom: $tile-spacing * -1; }
+    &:not(:last-child) {
+      margin-bottom: $tile-spacing; } }
+  &.is-child {
+    margin: 0 !important; }
+  &.is-parent {
+    padding: $tile-spacing; }
+  &.is-vertical {
+    flex-direction: column;
+
+    & > .tile.is-child:not( :last-child ) {
+      margin-bottom: 1.5rem !important; } }
+
+  @include tablet {
+    &:not(.is-child) {
+      display: flex;
+    }
+
+    @for $i from 1 through 12 {
+      &.is-#{$i} {
+        flex: none;
+        width: (math.div($i, 12) * 100%); } } }
+  }
