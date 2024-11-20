@@ -21,3 +21,12 @@
 .message-body {
   white-space: pre-line;
 }
+
+.tile.is-ancestor {
+  display: flex;
+}
+
+.tile.is-parent {
+  flex: 1;
+  padding: 0.75rem;
+}
