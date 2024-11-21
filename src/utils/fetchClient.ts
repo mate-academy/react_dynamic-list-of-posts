@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Comment } from '../types/Comment';
+
 const BASE_URL = 'https://mate.academy/students-api';
 
 // a promise resolved after a given delay
@@ -37,4 +39,22 @@ export const client = {
   post: <T>(url: string, data: any) => request<T>(url, 'POST', data),
   patch: <T>(url: string, data: any) => request<T>(url, 'PATCH', data),
   delete: (url: string) => request(url, 'DELETE'),
+};
+
+export const deleteComment = async (commentId: number) => {
+  return client.delete(`/comments/${commentId}`);
+};
+
+export const addComment = ({
+  postId,
+  name,
+  email,
+  body,
+}: Omit<Comment, 'id'>): Promise<Comment> => {
+  return client.post('/comments', {
+    postId,
+    name,
+    email,
+    body,
+  });
 };
