@@ -1,106 +1,110 @@
-import React from 'react';
+// #region imports
+import React, { useCallback, useEffect, useState } from 'react';
+import { CommentsList } from './CommentsList';
+import { ErrorNotification } from './ErrorNotification';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { deleteComment, getPostComments } from '../services/comments';
+import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
+// #endregion
 
-export const PostDetails: React.FC = () => {
+type Props = {
+  post: Post;
+};
+
+export const PostDetails: React.FC<Props> = ({ post }) => {
+  // #region states
+  const [comments, setComments] = useState<Comment[]>([]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingError, setIsLoadingError] = useState(false);
+  const [deletingErrorPostIds, setDeletingErrorPostIds] = useState<number[]>(
+    [],
+  );
+  const [isFormCommentOpen, setIsFormCommentOpen] = useState(false);
+  // #endregion
+
+  useEffect(() => {
+    if (!post) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    getPostComments(post.id)
+      .then(setComments)
+      .catch(() => setIsLoadingError(true))
+      .finally(() => setIsLoading(false));
+  }, [post]);
+
+  // #region comments handlings
+  const handleCommentDelete = useCallback(
+    (id: number) => {
+      setComments(currentComments =>
+        currentComments.filter(comment => comment.id !== id),
+      );
+
+      deleteComment(id).catch(() => {
+        setDeletingErrorPostIds(currentIds => [...currentIds, id]);
+        setComments(comments);
+      });
+    },
+    [comments],
+  );
+
+  const handleCommentAdd = (newComment: Comment) => {
+    setComments(currentComments => [...currentComments, newComment]);
+  };
+  // #endregion
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
-          </h2>
+          <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
 
-          <p data-cy="PostBody">
-            eveniet quo quis laborum totam consequatur non dolor ut et est
-            repudiandae est voluptatem vel debitis et magnam
-          </p>
+          <p data-cy="PostBody">{post.body}</p>
         </div>
 
         <div className="block">
-          <Loader />
+          {isLoading && <Loader />}
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
+          {isLoadingError && (
+            <ErrorNotification errorMessage="Something went wrong" />
+          )}
 
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
+          {!isLoading &&
+            !isLoadingError &&
+            (!comments.length ? (
+              <p className="title is-4" data-cy="NoCommentsMessage">
+                No comments yet
+              </p>
+            ) : (
+              <CommentsList
+                comments={comments}
+                onDelete={handleCommentDelete}
+                deletingErrorPostIds={deletingErrorPostIds}
+              />
+            ))}
 
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div className="message-body" data-cy="CommentBody">
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+          {!isFormCommentOpen && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => {
+                setIsFormCommentOpen(true);
+              }}
+            >
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
+        {post && isFormCommentOpen && (
+          <NewCommentForm postId={post.id} onCommentAdding={handleCommentAdd} />
+        )}
       </div>
     </div>
   );
