@@ -9,7 +9,7 @@ Install Prettier Extention and use this [VSCode settings](https://mate-academy.g
 
 1. Learn the `utils/fetchClient.ts` and use it to interact with the API (tests expect that you each API request is sent after 300 ms delay);
 1. Initially the `App` shows the `UserSelector` and a paragraph `No user selected` in the main content block.
-    - load users from the API on page load;
+    - load users from the API on page load;,,,,,,,
     - implement the `UserSelector` as a dropdown using the given markup;
 1. When a user is selected load the user's posts form [the API](https://mate-academy.github.io/fe-students-api/) and show them using a table in the main content clock;
     - show the `<Loader>` while waiting for the API response;
