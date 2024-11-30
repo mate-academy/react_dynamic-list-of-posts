@@ -1,0 +1,129 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    padding: 10px;
+    background-image: url("\images\bg3.jpg");
+    background-attachment: fixed;
+}
+
+li {
+    font-family: "Segoe Print", sans-serif;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 50px;
+    list-style-type: none;
+    width: 500px;
+    background-color: rgba(110, 103, 103, 0.12);
+
+}
+
+.title {
+    font-family: "Baskerville Old Face", sans-serif, sans-serif;
+    text-transform: uppercase;
+    font-size: 20px;
+    font-weight: 600;
+    color: #000;
+}
+
+.comment {
+    border-radius: 10px;
+    padding: 5px;
+    background-color: rgba(168, 100, 12, 0.28);
+    margin-top: 5px;
+}
+
+.author {
+    font-family: "Monotype Corsiva", sans-serif;
+    font-size: 18px;
+}
+
+img {
+    height: 30px;
+    width: 30px;
+    margin-right: 5px;
+}
+
+input {
+    width: 200px;
+    height: 25px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    background-color: transparent;
+    color: black;
+    outline: 0;
+}
+
+input::placeholder {
+    color: saddlebrown;
+}
+
+.button {
+    color: #D2691E;
+    padding: 10px 20px;
+    width: 200px;
+    text-decoration: none;
+    text-align: center;
+    margin: 20px auto;
+    display: block;
+    background-image: linear-gradient(to left, #f5f5f5, transparent 50%, #D2691E 50%, #D2691E);
+    background-position: 100% 0;
+    background-size: 200% 100%;
+    transition: all .25s ease-in;
+    font: 400 18px tahoma;
+    border: 1px solid #D2691E;
+}
+
+.button:hover {
+    background-position: 0 0;
+    color: #fff;
+}
+
+.container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 100px;
+    margin: -50px 0 0 -100px;
+}
+
+ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.text {
+    margin-bottom: 20px;
+}
+
+.text:first-letter {
+    font-family: "Segoe Print", sans-serif;
+    font-size: 24px;
+    text-transform: uppercase;
+}
+
+a {
+    color: #000000 !important;
+    text-decoration: none;
+    font-family: "Comic Sans MS", sans-serif;
+    font-size: 15px;
+}
+
+.commentText {
+    font-family: Calibri, sans-serif;
+}
+
+.commentText:first-letter {
+    font-family: "Arial", sans-serif;
+    text-transform: uppercase;
+}
+
+.comment a {
+    font-family:Calibri, sans-serif;
+    font-weight: 600;
+}
