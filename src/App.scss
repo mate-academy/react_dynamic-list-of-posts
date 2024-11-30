@@ -18,6 +18,35 @@
   }
 }
 
+.tile {
+  align-items: stretch;
+  min-height: min-content;
+  flex: 1 1 0;
+
+  &.is-ancestor {
+    margin-left: -0.75rem;
+    margin-right: -0.75rem;
+    margin-top: -0.75rem;
+
+    &:last-child {
+      margin-bottom: -0.75rem;
+    }
+  }
+
+  @media (min-width: 769px) {
+    &:not(.is-child) {
+      display: flex;
+    }
+  }
+}
+
 .message-body {
   white-space: pre-line;
+}
+
+.container {
+  flex-grow: 1;
+  margin: 0 auto;
+  position: relative;
+  width: auto;
 }
