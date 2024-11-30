@@ -287,7 +287,7 @@ describe('', () => {
         page.waitForRequest('@usersRequest');
       });
 
-      it('should should empty text by default', () => {
+      it('should show empty text by default', () => {
         button().should('have.text', 'Choose a user');
       });
 
@@ -861,7 +861,7 @@ describe('', () => {
       describe('', () => {
         beforeEach(() => {
           cy.clock();
-          page.spyOn('**/comments?postId=2', 'post2Coments', { fixture: 'post2Comments' });
+          page.spyOn('**/comments?postId=2', 'post2Comments', { fixture: 'post2Comments' });
           page.postButton(1).click();
         });
 
