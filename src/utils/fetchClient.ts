@@ -1,3 +1,7 @@
+import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
+import { User } from '../types/User';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const BASE_URL = 'https://mate.academy/students-api';
 
@@ -38,3 +42,44 @@ export const client = {
   patch: <T>(url: string, data: any) => request<T>(url, 'PATCH', data),
   delete: (url: string) => request(url, 'DELETE'),
 };
+
+export const getUsers = () => {
+  return client.get<User[]>('/users');
+};
+
+export const getUserPosts = (userId: number) => {
+  return client.get<Post[]>(`/posts?userId=${userId}`);
+};
+
+export const getComments = (postId: number) => {
+  return client.get<Comment[]>(`/comments?postId=${postId}`);
+};
+
+export const addComment = ({
+  postId,
+  name,
+  email,
+  body,
+}: Omit<Comment, 'id'>) => {
+  return client.post<Comment>('/comments', { postId, name, email, body });
+};
+
+export const deleteComment = (commentId: number) => {
+  return client.delete(`/comments/${commentId}`);
+};
+
+// export const getTodos = () => {
+//   return client.get<Todo[]>(`/todos?userId=${USER_ID}`);
+// };
+
+// export const deleteTodo = (todoId: number) => {
+//   return client.delete(`/todos/${todoId}`);
+// };
+
+// export const createTodo = ({ userId, title, completed }: Omit<Todo, 'id'>) => {
+//   return client.post<Todo>('/todos', { userId, title, completed });
+// };
+
+// export const updateTodo = ({ id, userId, title, completed }: Todo) => {
+//   return client.patch<Todo>(`/todos/${id}`, { userId, title, completed });
+// };
