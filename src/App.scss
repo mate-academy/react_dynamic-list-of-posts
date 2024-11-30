@@ -21,3 +21,32 @@
 .message-body {
   white-space: pre-line;
 }
+
+@media print, screen and (min-width: 769px) {
+  .tile:not(.is-child) {
+    display: flex;
+  }
+}
+
+.tile.is-ancestor {
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
+  margin-top: -0.75rem;
+}
+
+.tile.is-ancestor:last-child {
+  margin-bottom: -0.75rem;
+}
+
+.tile {
+  align-items: stretch;
+  min-height: min-content;
+  flex: 1 1 0;
+}
+
+.container {
+  flex-grow: 1;
+  margin: 0 auto;
+  position: relative;
+  width: auto;
+}
