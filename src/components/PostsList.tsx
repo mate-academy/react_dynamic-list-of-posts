@@ -1,86 +1,66 @@
-import React from 'react';
+import { Dispatch, FC, SetStateAction, useState } from 'react';
+import cn from 'classnames';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+import { Post } from './../types/Post';
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-          <th> </th>
-        </tr>
-      </thead>
+interface Props {
+  posts: Post[];
+  selectedPost: Post | null;
+  onSelectPost: Dispatch<SetStateAction<Post | null>>;
+}
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+export const PostsList: FC<Props> = ({ posts, selectedPost, onSelectPost }) => {
+  const [isPostOpened, setIsPostOpened] = useState(false);
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+  const handlerOpeningPost = (post: Post) => {
+    const isSamePost = selectedPost?.id === post.id;
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+    setIsPostOpened(!isSamePost);
+    onSelectPost(isSamePost ? null : post);
+  };
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+            <th> </th>
+          </tr>
+        </thead>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
+        <tbody>
+          {posts.map(post => {
+            const activePost =
+              selectedPost?.id === post.id ? isPostOpened : null;
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
+            return (
+              <tr data-cy="Post" key={post.id}>
+                <td data-cy="PostId">{post.id}</td>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+                <td data-cy="PostTitle">{post.title}</td>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+                <td className="has-text-right is-vcentered">
+                  <button
+                    type="button"
+                    data-cy="PostButton"
+                    className={cn('button is-link', {
+                      'is-light': !activePost,
+                    })}
+                    onClick={() => handlerOpeningPost(post)}
+                  >
+                    {activePost ? 'Close' : 'Open'}
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+};
