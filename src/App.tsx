@@ -8,53 +8,89 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { useUsers } from './hooks/useUsers';
+import { usePosts } from './hooks/usePosts';
+import { useState } from 'react';
 
-export const App = () => (
-  <main className="section">
-    <div className="container">
-      <div className="tile is-ancestor">
-        <div className="tile is-parent">
-          <div className="tile is-child box is-success">
-            <div className="block">
-              <UserSelector />
-            </div>
+export const App: React.FC = () => {
+  const [isFormShown, setIsFormShown] = useState(false);
 
-            <div className="block" data-cy="MainContent">
-              <p data-cy="NoSelectedUser">No user selected</p>
+  const { users, currentUser, setCurrentUser } = useUsers();
 
-              <Loader />
+  const { posts, currentPost, setCurrentPost, isPostsLoading, isPostsError } =
+    usePosts(currentUser?.id || null);
 
-              <div
-                className="notification is-danger"
-                data-cy="PostsLoadingError"
-              >
-                Something went wrong!
+  const isPostsBlockShown = currentUser && !isPostsError && !isPostsLoading;
+
+  return (
+    <main className="section">
+      <div className="container">
+        <div className="tile is-ancestor">
+          <div className="tile is-parent">
+            <div className="tile is-child box is-success">
+              <div className="block">
+                <UserSelector
+                  users={users}
+                  currentUser={currentUser}
+                  setCurrentUser={setCurrentUser}
+                  setCurrentPost={setCurrentPost}
+                />
               </div>
 
-              <div className="notification is-warning" data-cy="NoPostsYet">
-                No posts yet
-              </div>
+              <div className="block" data-cy="MainContent">
+                {!currentUser && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-              <PostsList />
+                {isPostsLoading && <Loader />}
+
+                {isPostsError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
+
+                {isPostsBlockShown &&
+                  (!posts.length ? (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  ) : (
+                    <PostsList
+                      posts={posts}
+                      currentPost={currentPost}
+                      setCurrentPost={setCurrentPost}
+                      setIsShowForm={setIsFormShown}
+                    />
+                  ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div
-          data-cy="Sidebar"
-          className={classNames(
-            'tile',
-            'is-parent',
-            'is-8-desktop',
-            'Sidebar',
-            'Sidebar--open',
-          )}
-        >
-          <div className="tile is-child box is-success ">
-            <PostDetails />
+          <div
+            data-cy="Sidebar"
+            className={classNames('tile is-parent is-8-desktop Sidebar', {
+              'Sidebar--open': !!currentPost,
+            })}
+          >
+            {currentPost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails
+                  currentPost={currentPost}
+                  isShowForm={isFormShown}
+                  setIsShowForm={setIsFormShown}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </div>
-  </main>
-);
+    </main>
+  );
+};
