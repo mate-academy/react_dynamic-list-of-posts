@@ -6,6 +6,7 @@ form to add new comments.
 Install Prettier Extention and use this [VSCode settings](https://mate-academy.github.io/fe-program/tools/vscode/settings.json) to enable format on save.
 
 > Here is [the working version](https://mate-academy.github.io/react_dynamic-list-of-posts/)
+Demo: (https://moskkat40/react_dynamic-list-of-posts/)
 
 1. Learn the `utils/fetchClient.ts` and use it to interact with the API (tests expect that you each API request is sent after 300 ms delay);
 1. Initially the `App` shows the `UserSelector` and a paragraph `No user selected` in the main content block.
