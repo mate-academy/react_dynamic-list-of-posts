@@ -1,0 +1,200 @@
+import classNames from 'classnames';
+import React, { useState } from 'react';
+import { Comment } from '../../types/Comment';
+
+interface Props {
+  error: boolean;
+  loading: boolean;
+  onAdd: (comment: Omit<Comment, 'postId'>) => void;
+}
+
+export const NewCommentForm: React.FC<Props> = ({ error, loading, onAdd }) => {
+  const [name, setName] = useState('');
+  const [hasNameError, setHasNameError] = useState(false);
+
+  const [email, setEmail] = useState('');
+  const [hasEmailError, setHasEmailError] = useState(false);
+
+  const [body, setBody] = useState('');
+  const [hasBodyError, setHasBodyError] = useState(false);
+
+  const reset = () => {
+    setName('');
+    setEmail('');
+    setBody('');
+
+    setHasNameError(false);
+    setHasEmailError(false);
+    setHasBodyError(false);
+  };
+
+  const handleOnChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setHasNameError(false);
+
+    setName(event.target.value);
+  };
+
+  const handleOnChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setHasEmailError(false);
+
+    setEmail(event.target.value);
+  };
+
+  const handleOnChangeBody = (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    setHasBodyError(false);
+
+    setBody(event.target.value);
+  };
+
+  const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    setHasNameError(!name);
+    setHasEmailError(!email);
+    setHasBodyError(!body);
+
+    if (!name || !email || !body) {
+      return;
+    }
+
+    onAdd({
+      name,
+      email,
+      body,
+      id: 0,
+    });
+
+    setBody('');
+  };
+
+  return (
+    <form data-cy="NewCommentForm" onSubmit={handleOnSubmit}>
+      {!error && (
+        <>
+          <div className="field" data-cy="NameField">
+            <label className="label" htmlFor="comment-author-name">
+              Author Name
+            </label>
+
+            <div className="control has-icons-left has-icons-right">
+              <input
+                type="text"
+                name="name"
+                id="comment-author-name"
+                placeholder="Name Surname"
+                value={name}
+                className={classNames('input', { 'is-danger': hasNameError })}
+                onChange={handleOnChangeName}
+              />
+
+              <span className="icon is-small is-left">
+                <i className="fas fa-user" />
+              </span>
+
+              {hasNameError && (
+                <span
+                  className="icon is-small is-right has-text-danger"
+                  data-cy="ErrorIcon"
+                >
+                  <i className="fas fa-exclamation-triangle" />
+                </span>
+              )}
+            </div>
+
+            {hasNameError && (
+              <p className="help is-danger" data-cy="ErrorMessage">
+                Name is required
+              </p>
+            )}
+          </div>
+
+          <div className="field" data-cy="EmailField">
+            <label className="label" htmlFor="comment-author-email">
+              Author Email
+            </label>
+
+            <div className="control has-icons-left has-icons-right">
+              <input
+                type="text"
+                name="email"
+                id="comment-author-email"
+                placeholder="email@test.com"
+                value={email}
+                className={classNames('input', { 'is-danger': hasEmailError })}
+                onChange={handleOnChangeEmail}
+              />
+
+              <span className="icon is-small is-left">
+                <i className="fas fa-envelope" />
+              </span>
+
+              {hasEmailError && (
+                <span
+                  className="icon is-small is-right has-text-danger"
+                  data-cy="ErrorIcon"
+                >
+                  <i className="fas fa-exclamation-triangle" />
+                </span>
+              )}
+            </div>
+
+            {hasEmailError && (
+              <p className="help is-danger" data-cy="ErrorMessage">
+                Email is required
+              </p>
+            )}
+          </div>
+
+          <div className="field" data-cy="BodyField">
+            <label className="label" htmlFor="comment-body">
+              Comment Text
+            </label>
+
+            <div className="control">
+              <textarea
+                id="comment-body"
+                name="body"
+                placeholder="Type comment here"
+                value={body}
+                className={classNames('input', { 'is-danger': hasBodyError })}
+                onChange={handleOnChangeBody}
+              />
+            </div>
+
+            {hasBodyError && (
+              <p className="help is-danger" data-cy="ErrorMessage">
+                Enter some text
+              </p>
+            )}
+          </div>
+
+          <div className="field is-grouped">
+            <div className="control">
+              <button
+                type="submit"
+                className={classNames('button is-link', {
+                  'is-loading': loading,
+                })}
+              >
+                Add
+              </button>
+            </div>
+
+            <div className="control">
+              {/* eslint-disable-next-line react/button-has-type */}
+              <button
+                type="reset"
+                className="button is-link is-light"
+                onClick={reset}
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </form>
+  );
+};
