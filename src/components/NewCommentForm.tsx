@@ -1,99 +1,194 @@
-import React from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
+import { CommentData } from '../types/Comment';
+import cn from 'classnames';
 
-export const NewCommentForm: React.FC = () => {
+type Props = {
+  loader: boolean;
+  onAdd: (newComment: CommentData) => Promise<void>;
+};
+
+export const NewCommentForm: React.FC<Props> = ({ loader, onAdd }) => {
+  const [newComment, setNewComment] = useState<CommentData>({
+    name: '',
+    email: '',
+    body: '',
+  });
+  const [touched, setTouched] = useState({
+    name: false,
+    email: false,
+    body: false,
+  });
+
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+
+    setNewComment(prevComment => ({ ...prevComment, [name]: value }));
+    setTouched(prevTouched => ({ ...prevTouched, [name]: true }));
+  };
+
+  const handleReset = () => {
+    setNewComment({
+      name: '',
+      email: '',
+      body: '',
+    });
+    setTouched({
+      name: false,
+      email: false,
+      body: false,
+    });
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    const isNameEmpty = newComment.name === '';
+    const isEmailEmpty = newComment.email === '';
+    const isBodyEmpty = newComment.body === '';
+
+    if (isNameEmpty || isEmailEmpty || isBodyEmpty) {
+      setTouched({
+        name: isNameEmpty,
+        email: isEmailEmpty,
+        body: isBodyEmpty,
+      });
+
+      return;
+    }
+
+    try {
+      await onAdd(newComment);
+
+      setNewComment(prevComment => ({ ...prevComment, body: '' }));
+      setTouched({ name: false, email: false, body: false });
+    } catch {
+      setTouched({ name: true, email: true, body: true });
+    }
+  };
+
   return (
-    <form data-cy="NewCommentForm">
+    <form data-cy="NewCommentForm" onSubmit={handleSubmit}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
             type="text"
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            value={newComment.name}
+            onChange={handleInputChange}
+            className={cn('input', {
+              'is-danger': touched.name && newComment.name === '',
+            })}
           />
-
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
+        {touched.name && newComment.name === '' && (
+          <>
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+            <p className="help is-danger" data-cy="ErrorMessage">
+              Name is required
+            </p>
+          </>
+        )}
       </div>
 
       <div className="field" data-cy="EmailField">
         <label className="label" htmlFor="comment-author-email">
           Author Email
         </label>
-
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            value={newComment.email}
+            onChange={handleInputChange}
+            className={cn('input', {
+              'is-danger': touched.email && newComment.email === '',
+            })}
           />
-
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
         </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
+        {touched.email && newComment.email === '' && (
+          <>
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+            <p className="help is-danger" data-cy="ErrorMessage">
+              Email is required
+            </p>
+          </>
+        )}
       </div>
 
       <div className="field" data-cy="BodyField">
         <label className="label" htmlFor="comment-body">
           Comment Text
         </label>
-
         <div className="control">
           <textarea
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            value={newComment.body}
+            onChange={handleInputChange}
+            className={cn('textarea', {
+              'is-danger': touched.body && newComment.body === '',
+            })}
           />
         </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
+        {touched.body && newComment.body === '' && (
+          <>
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+            <p className="help is-danger" data-cy="ErrorMessage">
+              Text is required
+            </p>
+          </>
+        )}
       </div>
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={cn('button is-link', {
+              'is-loading': loader,
+            })}
+          >
             Add
           </button>
         </div>
-
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={handleReset}
+          >
             Clear
           </button>
         </div>
