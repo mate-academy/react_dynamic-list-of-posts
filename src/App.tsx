@@ -8,53 +8,111 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { useEffect, useState } from 'react';
+import { getPostsByUser, getUsers } from './api/api';
+import { User } from './types/User';
+import { Post } from './types/Post';
+import { Comment } from './types/Comment';
 
-export const App = () => (
-  <main className="section">
-    <div className="container">
-      <div className="tile is-ancestor">
-        <div className="tile is-parent">
-          <div className="tile is-child box is-success">
-            <div className="block">
-              <UserSelector />
-            </div>
+export const App = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [postsError, setPostsError] = useState('');
+  const [userSelected, setUserSelected] = useState<User | null>(null);
+  const [mainLoading, setMainLoading] = useState(false);
+  const [postSelected, setPostSelected] = useState<Post | null>(null);
+  const [isFormVisible, setIsFormVisible] = useState(false);
 
-            <div className="block" data-cy="MainContent">
-              <p data-cy="NoSelectedUser">No user selected</p>
+  useEffect(() => {
+    getUsers().then(setUsers);
+  }, []);
 
-              <Loader />
+  useEffect(() => {
+    setMainLoading(true);
+    getPostsByUser(userSelected?.id ?? null)
+      .then(setPosts)
+      .catch(() => setPostsError('Something went wrong!'))
+      .finally(() => setMainLoading(false));
+  }, [userSelected]);
 
-              <div
-                className="notification is-danger"
-                data-cy="PostsLoadingError"
-              >
-                Something went wrong!
+  return (
+    <main className="section">
+      <div className="container">
+        <div className="tile is-ancestor">
+          <div className="tile is-parent">
+            <div className="tile is-child box is-success">
+              <div className="block">
+                <UserSelector
+                  users={users}
+                  userSelected={userSelected}
+                  setUserSelected={setUserSelected}
+                  setComments={setComments}
+                  setPosts={setPosts}
+                  setPostSelected={setPostSelected}
+                />
               </div>
 
-              <div className="notification is-warning" data-cy="NoPostsYet">
-                No posts yet
-              </div>
+              <div className="block" data-cy="MainContent">
+                {!userSelected && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-              <PostsList />
+                {userSelected && mainLoading && <Loader />}
+
+                {userSelected && !mainLoading && postsError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    {postsError}
+                  </div>
+                )}
+
+                {/* eslint-disable */}
+                {userSelected && !mainLoading && posts.length === 0 && !postsError && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
+                {/* eslint-enable */}
+
+                {userSelected && !mainLoading && posts.length > 0 && (
+                  <PostsList
+                    posts={posts}
+                    postSelected={postSelected}
+                    setPostSelected={setPostSelected}
+                    setIsFormVisible={setIsFormVisible}
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div
-          data-cy="Sidebar"
-          className={classNames(
-            'tile',
-            'is-parent',
-            'is-8-desktop',
-            'Sidebar',
-            'Sidebar--open',
-          )}
-        >
-          <div className="tile is-child box is-success ">
-            <PostDetails />
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': postSelected !== null },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              {postSelected && (
+                <PostDetails
+                  postSelected={postSelected}
+                  comments={comments}
+                  setComments={setComments}
+                  isFormVisible={isFormVisible}
+                  setIsFormVisible={setIsFormVisible}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </main>
-);
+    </main>
+  );
+};
