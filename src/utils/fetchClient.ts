@@ -15,8 +15,9 @@ function request<T>(
   url: string,
   method: RequestMethod = 'GET',
   data: any = null, // we can send any data to the server
+  signal: AbortSignal | null = null,
 ): Promise<T> {
-  const options: RequestInit = { method };
+  const options: RequestInit = { method, signal };
 
   if (data) {
     // We add body and Content-Type only for the requests with data
@@ -33,7 +34,8 @@ function request<T>(
 }
 
 export const client = {
-  get: <T>(url: string) => request<T>(url),
+  get: <T>(url: string, signal: AbortSignal | null = null) =>
+    request<T>(url, 'GET', null, signal),
   post: <T>(url: string, data: any) => request<T>(url, 'POST', data),
   patch: <T>(url: string, data: any) => request<T>(url, 'PATCH', data),
   delete: (url: string) => request(url, 'DELETE'),
