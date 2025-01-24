@@ -5,7 +5,7 @@ export const getComments = (postId: number): Promise<Comment[]> => {
   return client.get<Comment[]>(`/comments?postId=${postId}`);
 };
 
-export const createComent = ({
+export const createComment = ({
   postId,
   name,
   email,

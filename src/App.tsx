@@ -29,7 +29,7 @@ export const App = () => {
     getUsers()
       .then(setUsers)
       .catch(error => {
-        setErrorMessage('Something went wrong!');
+        setErrorMessage('Unable to load users!');
         throw error;
       });
   }, []);
@@ -49,7 +49,7 @@ export const App = () => {
         setPosts(response);
       })
       .catch(() => {
-        setErrorMessage('Something went wrong!');
+        setErrorMessage(`Unable to load ${selectedUser.name} post(s)!`);
       })
       .finally(() => {
         setIsLoadingUserPosts(false);
@@ -77,6 +77,15 @@ export const App = () => {
       setActivePostId(postId);
     }
   };
+  // const handlePostClick = (postId: number) => {
+  //   if (activePostId === postId) {
+  //     setActivePostId(null);
+  //     setIsOpenSidebar(false);
+  //   } else {
+  //     setActivePostId(postId);
+  //     setIsOpenSidebar(true);
+  //   }
+  // };
 
   return (
     <main className="section">
