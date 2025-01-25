@@ -40,7 +40,10 @@ export const UserSelector: React.FC<Props> = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setIsListOpen(prev => !prev)}
+          onClick={e => {
+            e.stopPropagation();
+            setIsListOpen(prev => !prev);
+          }}
         >
           <span>{selectedUser?.name || 'Choose a user'}</span>
           <span className="icon is-small">
