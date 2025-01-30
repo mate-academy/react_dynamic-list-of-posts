@@ -1,3 +1,16 @@
+.tile {
+  &.is-ancestor {
+    display: flex;
+  }
+
+  &.is-parent {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 15px;
+  }
+}
+
 .Sidebar {
   overflow: hidden;
   opacity: 0;
