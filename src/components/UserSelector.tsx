@@ -1,16 +1,57 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import cn from 'classnames';
 
-export const UserSelector: React.FC = () => {
+import { User } from '../types/User';
+import { DropdownMenu } from './DropdownMenu';
+
+type Props = {
+  users: User[];
+  selectedUser: User | null;
+  setSelectedUser: (user: User) => void;
+};
+
+export const UserSelector: React.FC<Props> = ({
+  users,
+  selectedUser,
+  setSelectedUser,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  const handleSelectedUser = (user: User) => {
+    setIsOpen(false);
+    setSelectedUser(user);
+  };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      ref={menuRef}
+      data-cy="UserSelector"
+      className={cn('dropdown', { 'is-active': isOpen })}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setIsOpen(!isOpen)}
         >
-          <span>Choose a user</span>
+          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -18,25 +59,13 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
-        </div>
-      </div>
+      {isOpen && (
+        <DropdownMenu
+          users={users}
+          selectedUser={selectedUser}
+          handleSelectedUser={handleSelectedUser}
+        />
+      )}
     </div>
   );
 };
