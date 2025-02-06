@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { User } from '../types/User';
 import { client } from '../utils/fetchClient';
+import classNames from 'classnames';
 
 interface Props {
   onUserSelect: (id: number) => void;
@@ -58,7 +59,9 @@ export const UserSelector: React.FC<Props> = ({ onUserSelect }) => {
               <a
                 href={`#user-${user.id}`}
                 key={user.id}
-                className="dropdown-item"
+                className={classNames('dropdown-item', {
+                  'is-active': selectedUserName,
+                })}
                 onClick={() => handleUserSelect(user.id, user.name)}
               >
                 {user.name}

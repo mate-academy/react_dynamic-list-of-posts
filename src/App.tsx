@@ -13,7 +13,7 @@ import { Post } from './types/Post';
 export const App = () => {
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [postId, setPostId] = useState<number>();
+  const [postId, setPostId] = useState<number | null>(null);
 
   const handleUserSelect = (id: number) => {
     setSelectedUser(id);

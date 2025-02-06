@@ -7,7 +7,7 @@ import { Comment } from '../types/Comment';
 
 interface Props {
   post: Post | null;
-  postId: number;
+  postId: number | null;
 }
 
 export const PostDetails: React.FC<Props> = ({ post, postId }) => {
