@@ -1,16 +1,53 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useAppContext } from './HooksContext';
+
+import { CurError, CurLoading, getPostsById } from '../utils/servises';
+import classNames from 'classnames';
 
 export const UserSelector: React.FC = () => {
+  const {
+    allUsers,
+    selectedUser,
+    setPosts,
+    setLoading,
+    setErrorMessage,
+    setSelectedUser,
+    showMenu,
+    setShowMenu,
+  } = useAppContext();
+
+  const handleSelectMenu = () => setShowMenu(prev => !prev);
+
+  useEffect(() => {
+    setLoading(CurLoading.Posts);
+
+    if (selectedUser) {
+      setPosts([]);
+      getPostsById(selectedUser.id)
+        .then(postsFromServer => setPosts(postsFromServer))
+        .catch(() => setErrorMessage(CurError.LoadPosts))
+        .finally(() => setLoading(CurLoading.Empty));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedUser]);
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className={classNames('dropdown', {
+        'is-active': showMenu,
+      })}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={handleSelectMenu}
+          onBlur={() => setShowMenu(false)}
         >
-          <span>Choose a user</span>
+          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -18,23 +55,32 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+      <div
+        className={classNames('dropdown-menu', {
+          'is-hidden': !showMenu,
+        })}
+        id="dropdown-menu"
+        role="menu"
+      >
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+          {allUsers.map(user => {
+            return (
+              <a
+                key={user.id}
+                href={`#user-${user.id}`}
+                className={classNames('dropdown-item', {
+                  'is-active': selectedUser?.id === user.id,
+                })}
+                onMouseDown={ev => {
+                  ev.preventDefault();
+                  setShowMenu(false);
+                  setSelectedUser(user);
+                }}
+              >
+                {user.name}
+              </a>
+            );
+          })}
         </div>
       </div>
     </div>
