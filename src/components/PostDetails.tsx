@@ -13,7 +13,7 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [shouldFormBeVisible, setShouldFormBeVisile] = useState(false);
+  const [shouldFormBeVisible, setShouldFormBeVisible] = useState(false);
   const [comments, setComments] = useState<Comment[] | null>(null);
 
   function loadComments(postId: number) {
@@ -31,7 +31,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   useEffect(() => {
     loadComments(post.id);
-    setShouldFormBeVisile(false);
+    setShouldFormBeVisible(false);
   }, [post.id]);
 
   const handleDelete = (commentId: number) => {
@@ -53,7 +53,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   };
 
   const handleWriteComment = () => {
-    setShouldFormBeVisile(true);
+    setShouldFormBeVisible(true);
   };
 
   return (

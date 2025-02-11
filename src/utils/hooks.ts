@@ -77,7 +77,7 @@ export function useCreateComment(
 
         setComment(createdComment);
       } catch {
-        onError('Something went wrong!');
+        onError('Failed to add comment');
       } finally {
         setIsLoading(false);
       }

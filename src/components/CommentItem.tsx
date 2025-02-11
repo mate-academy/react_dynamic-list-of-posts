@@ -14,7 +14,7 @@ export const CommentItem: React.FC<Props> = ({
 }) => {
   const { handleDelete } = useDeleteComment(onError);
 
-  const handleCommentDeliete = async () => {
+  const handleCommentDelete = async () => {
     try {
       await handleDelete(comment.id);
       onDelete(comment.id);
@@ -33,7 +33,7 @@ export const CommentItem: React.FC<Props> = ({
             type="button"
             className="delete is-small"
             aria-label="delete"
-            onClick={handleCommentDeliete}
+            onClick={handleCommentDelete}
           >
             delete button
           </button>
@@ -43,11 +43,6 @@ export const CommentItem: React.FC<Props> = ({
           {comment.body}
         </div>
       </article>
-      {false && (
-        <p className="help is-danger" data-cy="ErrorMessage">
-          {}
-        </p>
-      )}
     </>
   );
 };
