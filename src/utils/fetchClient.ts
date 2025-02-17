@@ -26,10 +26,16 @@ function request<T>(
     };
   }
 
+  const fetchRequest = fetch(BASE_URL + url, options).then(response =>
+    response.json(),
+  );
+
+  if (method === 'DELETE') {
+    return fetchRequest;
+  }
+
   // for a demo purpose we emulate a delay to see if Loaders work
-  return wait(300)
-    .then(() => fetch(BASE_URL + url, options))
-    .then(response => response.json());
+  return wait(300).then(() => fetchRequest);
 }
 
 export const client = {
