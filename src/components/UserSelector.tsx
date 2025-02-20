@@ -1,9 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { client } from '../utils/fetchClient';
+import { User } from '../types/User';
+import classNames from 'classnames';
 
-export const UserSelector: React.FC = () => {
+type UserSelectorProps = {
+  fetchPosts: (userId: number) => void
+}
+
+export const UserSelector: React.FC<UserSelectorProps> = ({ fetchPosts }) => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [isSelectorActive, setIsSelectorActive] = useState(false);
+
+  const fetchUsers = () => {
+    client
+      .get<User[]>('/users')
+      .then(users => setUsers(users))
+      .catch(error => console.error('Error fetching users:', error));
+  };
+
+  useEffect(() => fetchUsers(), []);
+
+  const toggleSelector = () =>
+    setIsSelectorActive(prevActiveSelector => !prevActiveSelector);
+
+  const onSelect = (userId: number) => {
+    setIsSelectorActive(false);
+    fetchPosts(userId)
+  }
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
-      <div className="dropdown-trigger">
+    <div
+      data-cy="UserSelector"
+      className={classNames('dropdown', {
+        'is-active': isSelectorActive,
+      })}
+    >
+      <div className="dropdown-trigger" onClick={toggleSelector}>
         <button
           type="button"
           className="button"
@@ -20,21 +52,15 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+          {users.map((user: User, i) => (
+            <a
+              href={`#user-${i}`}
+              className="dropdown-item"
+              onClick={() => onSelect(user.id)}
+            >
+              {user.name}
+            </a>
+          ))}
         </div>
       </div>
     </div>
