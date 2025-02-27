@@ -32,7 +32,7 @@ export const NewCommentForm: React.FC<Props> = ({
     }
   }, []);
 
-  const validateField = (field: string, value: string) => {
+  const validateFieldPresence = (field: string, value: string) => {
     if (!value) {
       switch (field) {
         case 'name':
@@ -49,25 +49,38 @@ export const NewCommentForm: React.FC<Props> = ({
     return '';
   };
 
+  const validateField = (field: string, value: string) => {
+    const presenceError = validateFieldPresence(field, value);
+    if (presenceError) {
+      return presenceError;
+    }
+
+    if (field === 'email' && value) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) {
+        return 'Please enter a valid email address';
+      }
+    }
+
+    return '';
+  };
+
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-
     setName(newValue);
-    setNameError(validateField('name', newValue));
+    setNameError(validateFieldPresence('name', newValue));
   };
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
-
     setEmail(newValue);
-    setEmailError(validateField('email', newValue));
+    setEmailError(validateFieldPresence('email', newValue));
   };
 
   const handleBodyChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = event.target.value;
-
     setBody(newValue);
-    setBodyError(validateField('body', newValue));
+    setBodyError(validateFieldPresence('body', newValue));
   };
 
   const handleSubmitForm = (event: React.FormEvent) => {
@@ -95,7 +108,6 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const handleResetForm = (event: React.FormEvent) => {
     event.preventDefault();
-
     setName('');
     setEmail('');
     setBody('');
