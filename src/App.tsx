@@ -24,7 +24,7 @@ export const App = () => {
   useEffect(() => {
     client
       .get<User[]>('/users')
-      .then(res => setUsers(res.splice(0, 20))) //before deploy delete splice
+      .then(res => setUsers(res))
       .catch(() => {
         setIsError(true);
       });
@@ -45,6 +45,12 @@ export const App = () => {
     }
   }, [selectedUserId]);
 
+  const showNoSelectedUser = selectedUserId === null;
+  const showNoPosts =
+    !loading && !isError && selectedUserId && posts.length === 0;
+  const showPost = !loading && !isError && selectedUserId && posts.length > 0;
+  const showSidebar = selectedPost !== null;
+
   return (
     <main className="section">
       <div className="container">
@@ -60,28 +66,28 @@ export const App = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {selectedUserId === null ? (
+                {showNoSelectedUser && (
                   <p data-cy="NoSelectedUser">No user selected</p>
-                ) : (
-                  ''
                 )}
 
                 {loading && <Loader />}
 
-                {isError ? (
+                {isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
                     Something went wrong!
                   </div>
-                ) : !selectedUserId || loading ? (
-                  ''
-                ) : posts.length === 0 ? (
+                )}
+
+                {showNoPosts && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
-                ) : (
+                )}
+
+                {showPost && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}
@@ -99,11 +105,11 @@ export const App = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': selectedPost },
+              { 'Sidebar--open': showSidebar },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && <PostDetails post={selectedPost} />}
+              {showSidebar && <PostDetails post={selectedPost} />}
             </div>
           </div>
         </div>
