@@ -1,60 +1,74 @@
-import classNames from 'classnames';
-
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
+import classNames from 'classnames';
 
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
+import { useEffect, useState } from 'react';
+import { User } from './types/User';
+import { Post } from './types/Post';
+import { getUsers } from './api/fetchPosts';
 
-export const App = () => (
-  <main className="section">
-    <div className="container">
-      <div className="tile is-ancestor">
-        <div className="tile is-parent">
-          <div className="tile is-child box is-success">
-            <div className="block">
-              <UserSelector />
-            </div>
+export const App = () => {
+  const [usersList, setUsersList] = useState<User[]>([]);
+  const [user, setUser] = useState<User | null>(null);
+  const [post, setPost] = useState<Post | null>(null);
+  const selectedUserId = user?.id;
 
-            <div className="block" data-cy="MainContent">
-              <p data-cy="NoSelectedUser">No user selected</p>
+  useEffect(() => {
+    getUsers().then(setUsersList);
+  }, []);
 
-              <Loader />
-
-              <div
-                className="notification is-danger"
-                data-cy="PostsLoadingError"
-              >
-                Something went wrong!
+  return (
+    <main className="section">
+      <div className="container">
+        <div className="tile is-ancestor">
+          <div className="tile is-parent">
+            <div className="tile is-child box is-success">
+              <div className="block">
+                <UserSelector
+                  usersList={usersList}
+                  setUser={setUser}
+                  user={user}
+                />
               </div>
 
-              <div className="notification is-warning" data-cy="NoPostsYet">
-                No posts yet
+              <div className="block" data-cy="MainContent">
+                {!selectedUserId ? (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                ) : (
+                  <PostsList
+                    selectedUserId={selectedUserId}
+                    post={post}
+                    setPost={setPost}
+                  />
+                )}
               </div>
 
-              <PostsList />
+              {/*    */}
             </div>
           </div>
-        </div>
 
-        <div
-          data-cy="Sidebar"
-          className={classNames(
-            'tile',
-            'is-parent',
-            'is-8-desktop',
-            'Sidebar',
-            'Sidebar--open',
-          )}
-        >
-          <div className="tile is-child box is-success ">
-            <PostDetails />
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              {
+                'Sidebar--open': post && post.userId === user?.id,
+              },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              {post && <PostDetails post={post} />}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </main>
-);
+    </main>
+  );
+};
