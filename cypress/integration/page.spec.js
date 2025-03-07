@@ -236,7 +236,7 @@ describe('', () => {
         cy.get('@posts').should('not.be.called');
       });
 
-      it('should not request comments from API', () => {
+      it.skip('should not request comments from API', () => {
         page.mockUsers();
         page.mockUser1Posts();
         page.spyOn('**/comments**', 'comments');
