@@ -27,9 +27,21 @@ function request<T>(
   }
 
   // for a demo purpose we emulate a delay to see if Loaders work
-  return wait(300)
-    .then(() => fetch(BASE_URL + url, options))
-    .then(response => response.json());
+  if (method === 'DELETE') {
+    return wait(0)
+      .then(() => fetch(BASE_URL + url, options))
+      .then(response => response.json())
+      .catch(error => {
+        throw error;
+      });
+  } else {
+    return wait(300)
+      .then(() => fetch(BASE_URL + url, options))
+      .then(response => response.json())
+      .catch(error => {
+        throw error;
+      });
+  }
 }
 
 export const client = {
