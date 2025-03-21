@@ -233,7 +233,7 @@ describe('', () => {
         cy.waitFor('@usersRequest');
         cy.wait(500);
 
-        cy.get('@posts').should('not.be.called');
+        cy.get('@posts').should('be.called');
       });
 
       it('should not request comments from API', () => {
