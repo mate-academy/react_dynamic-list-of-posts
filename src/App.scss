@@ -4,6 +4,7 @@
   transition-property: max-width, opacity;
   transition-duration: 0.5s;
   transition-timing-function: ease-in-out;
+  display: none;
 
   @media (min-width: 769px) {
     max-width: 0;
@@ -11,6 +12,7 @@
 
   &--open {
     opacity: 1;
+    display: block;
 
     @media (min-width: 769px) {
       max-width: 50%;
@@ -20,4 +22,43 @@
 
 .message-body {
   white-space: pre-line;
+}
+
+.section {
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tile {
+  &.is-ancestor {
+    margin: -12px;
+  }
+
+  &.is-parent {
+    padding: 12px;
+  }
+
+  &.is-child {
+    padding: 24px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }

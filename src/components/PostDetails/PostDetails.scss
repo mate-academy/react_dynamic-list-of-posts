@@ -1,0 +1,129 @@
+.PostDetails {
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+  position: relative;
+
+  &__close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #333;
+    }
+  }
+
+  &__title {
+    margin: 0 0 16px;
+    padding-right: 40px;
+    font-size: 24px;
+    color: #333;
+  }
+
+  &__body {
+    margin-bottom: 32px;
+    line-height: 1.6;
+    color: #444;
+  }
+
+  &__comments {
+    h3 {
+      margin: 0 0 16px;
+      font-size: 20px;
+      color: #333;
+    }
+  }
+
+  &__comment {
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+
+  &__comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  &__comment-email {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  &__comment-body {
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  &__delete-button {
+    padding: 4px 8px;
+    background-color: #f44;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #c00;
+    }
+  }
+
+  &__add-button {
+    margin-top: 16px;
+    padding: 8px 16px;
+    background-color: #06c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #0052a3;
+    }
+  }
+
+  &__loader,
+  &__error,
+  &__no-comments {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+  }
+
+  &__error {
+    background-color: #f44;
+    border: 1px solid #c00;
+  }
+
+  &__form {
+    margin-top: 16px;
+  }
+
+  &__button {
+    background-color: #06c;
+  }
+
+  &__warning {
+    color: #f00;
+  }
+}

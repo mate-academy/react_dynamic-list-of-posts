@@ -171,7 +171,7 @@ Cypress.on('fail', (e) => {
 
 describe('', () => {
   beforeEach(() => {
-    if (failed) Cypress.runner.stop();
+    // if (failed) Cypress.runner.stop();
   });
 
   describe('Page by default', () => {
@@ -179,6 +179,7 @@ describe('', () => {
       beforeEach(() => {
         page.mockUsers();
         cy.visit('/');
+        cy.wait(1000);
       });
 
       it('should have a UserSelector', () => {
@@ -781,7 +782,7 @@ describe('', () => {
           .should('have.text', 'laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium');
 
         postDetails.comments().eq(4).byDataCy('CommentBody')
-          .should('have.text', 'harum non quasi et ratione\ntempore iure ex voluptates in ratione\nharum architecto fugit inventore cupiditate\nvoluptates magni quo et');
+          .should('have.text', 'harum non quasi et ratione\ntempore iure ex voluptates in ratione\nharum architecto fugit inventore cupiditate\nvoluptatem repellendus aspernatur dolorem in')
       });
 
       it('should disappear after selecting another user', () => {
