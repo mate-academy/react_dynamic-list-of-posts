@@ -1,0 +1,19 @@
+import { Comment } from '../../types/Comment';
+import { client } from '../../utils/fetchClient';
+
+export const getComments = (postId: number) => {
+  return client.get<Comment[]>(`/comments?postId=${postId}`);
+};
+
+export const addComment = ({
+  name,
+  email,
+  body,
+  postId,
+}: Omit<Comment, 'id'>) => {
+  return client.post<Comment>('/comments', { name, email, body, postId });
+};
+
+export const deleteComments = (id: number) => {
+  return client.delete(`/comments/${id}`);
+};
