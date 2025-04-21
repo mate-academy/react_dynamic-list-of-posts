@@ -59,13 +59,33 @@ export const App = () => {
     }
 
     setLoading(true);
+
     getPosts(selectedUser.id)
       .then(setPosts)
       .catch(() => {
         setErrorMessage('Unable to load posts');
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+      });
   }, [selectedUser]);
+
+  // const loadPosts = () => {
+  //   setLoading(true);
+
+  //   if (selectedUser === null) {
+  //     return;
+  //   }
+
+  //   getPosts(selectedUser?.id)
+  //     .then(setPosts)
+  //     .catch(() => {
+  //       setErrorMessage('Unable to load posts');
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  // };
 
   const loadComments = useCallback(() => {
     setLoadingComments(true);
@@ -121,7 +141,7 @@ export const App = () => {
         );
       })
       .catch(() => {
-        setErrorMessage('Unable to delete comemnt');
+        setErrorMessage('Unable to delete comment');
       })
       .finally(() => {
         // setLoading(false);
@@ -141,7 +161,7 @@ export const App = () => {
     }
 
     loadPosts();
-  }, [selectedUser, loadPosts, setSelectedUser]);
+  }, [selectedUser, loadPosts]);
 
   useEffect(() => {
     if (selectedPost === null) {
@@ -163,6 +183,7 @@ export const App = () => {
                   selectedUser={selectedUser}
                   setSelectedUser={setSelectedUser}
                   setSelectedPost={setSelectedPost}
+                  // loadPosts={loadPosts}
                 />
               </div>
 
@@ -181,19 +202,17 @@ export const App = () => {
                     {errorMessage}
                   </div>
                 )}
-
-                {posts.length === 0 && selectedUser && !loading && (
+                {!loading && posts.length === 0 && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {posts.length > 0 && !loading && (
+                {!loading && posts.length !== 0 && (
                   <PostsList
                     posts={posts}
                     selectedPost={selectedPost}
                     setSelectedPost={setSelectedPost}
-                    setLoadingComments={setLoadingComments}
                   />
                 )}
               </div>

@@ -6,14 +6,12 @@ type PostListProps = {
   posts: Post[];
   selectedPost: Post | null;
   setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
-  setLoadingComments: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const PostsList: React.FC<PostListProps> = ({
   posts,
   selectedPost,
   setSelectedPost,
-  setLoadingComments,
 }) => {
   return (
     <div data-cy="PostsList">
@@ -36,7 +34,6 @@ export const PostsList: React.FC<PostListProps> = ({
               key={post.id}
               selectedPost={selectedPost}
               setSelectedPost={setSelectedPost}
-              setLoadingComments={setLoadingComments}
             />
           ))}
         </tbody>

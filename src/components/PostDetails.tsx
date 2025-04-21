@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
@@ -38,27 +38,13 @@ export const PostDetails: React.FC<PostDetailsType> = ({
   setFormOpened,
   isSubmitting,
 }) => {
-  const [isloading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (isloading) {
-      setIsLoading(false);
-    }
-  }, [isloading]);
-
-  if (!selectedPost) {
-    return;
-  }
-
-  const { id, title, body } = selectedPost;
-
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">{`#${id}: ${title}`}</h2>
+          <h2 data-cy="PostTitle">{`#${selectedPost?.id}: ${selectedPost?.title}`}</h2>
 
-          <p data-cy="PostBody">{body}</p>
+          <p data-cy="PostBody">{selectedPost?.body}</p>
         </div>
 
         <div className="block">
@@ -71,7 +57,7 @@ export const PostDetails: React.FC<PostDetailsType> = ({
                   Something went wrong
                 </div>
               )}
-              {comments?.length === 0 && !isloading ? (
+              {comments?.length === 0 && !loadingComments ? (
                 <p className="title is-4" data-cy="NoCommentsMessage">
                   No comments yet
                 </p>
@@ -85,7 +71,7 @@ export const PostDetails: React.FC<PostDetailsType> = ({
                 </>
               )}
 
-              {!formOpened && !isloading && (
+              {!formOpened && !loadingComments && (
                 <button
                   data-cy="WriteCommentButton"
                   type="button"

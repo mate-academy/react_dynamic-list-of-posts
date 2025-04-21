@@ -9,6 +9,7 @@ type UserSelectorProps = {
   selectedUser: User | null;
   setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>;
   setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
+  // loadPosts: () => void;
 };
 
 export const UserSelector: React.FC<UserSelectorProps> = ({
@@ -16,6 +17,7 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
   selectedUser,
   setSelectedUser,
   setSelectedPost,
+  // loadPosts,
 }) => {
   const [openedDropDown, setOpenedDropDown] = useState(false);
 
@@ -23,6 +25,7 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
     setSelectedUser(user);
     setSelectedPost(null);
     setOpenedDropDown(false);
+    // loadPosts();
   };
 
   useEffect(() => {

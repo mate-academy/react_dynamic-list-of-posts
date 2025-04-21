@@ -8,7 +8,7 @@ export type NewCommentFormType = {
   addComment: (data: CommentData) => void;
   inputCommentData: CommentData;
   setInputCommentData: React.Dispatch<React.SetStateAction<InputDataType>>;
-  selectedPost: Post;
+  selectedPost?: Post | null;
   inputCommentErrors: ErrorsType;
   setInputCommentErrors: React.Dispatch<React.SetStateAction<ErrorsType>>;
   isSubmitting: boolean;
@@ -28,16 +28,15 @@ export const NewCommentForm: React.FC<NewCommentFormType> = ({
   const handleSubmit = (submitEvent: React.FormEvent) => {
     submitEvent.preventDefault();
 
-    setInputCommentErrors(prevError => ({
-      ...prevError,
+    const newErrors: ErrorsType = {
       nameError: name.trim() ? '' : 'Name is required',
       emailError: email.trim() ? '' : 'Email is required',
       bodyError: body.trim() ? '' : 'Comment cannot be empty',
-    }));
+    };
 
-    const hasErrors = Object.values(inputCommentErrors).some(
-      error => error !== '',
-    );
+    const hasErrors = Object.values(newErrors).some(error => error !== '');
+
+    setInputCommentErrors(newErrors);
 
     if (hasErrors) {
       return;

@@ -6,14 +6,12 @@ type PostItemProps = {
   post: Post;
   selectedPost: Post | null;
   setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
-  setLoadingComments: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const PostItem: React.FC<PostItemProps> = ({
   post,
   selectedPost,
   setSelectedPost,
-  setLoadingComments,
 }) => {
   const { id, title } = post;
   const isSelected = selectedPost === post;
@@ -33,7 +31,6 @@ export const PostItem: React.FC<PostItemProps> = ({
           })}
           onClick={() => {
             setSelectedPost(isSelected ? null : post);
-            setLoadingComments(true);
           }}
         >
           {isSelected ? 'Close' : 'Open'}
