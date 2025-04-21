@@ -1,107 +1,130 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { Post } from '../types/Post';
+import { User } from '../types/User';
+import { addComment, deleteComment, getComments } from '../api/comments';
+import { Comment as PostComment } from '../types/Comment';
+import { CommentComponent } from './CommentComponent';
 
-export const PostDetails: React.FC = () => {
+interface Props {
+  selectedPost: Post;
+  selectedUser: User | null;
+}
+
+export const PostDetails: React.FC<Props> = React.memo(({ selectedPost }) => {
+  const [comments, setComments] = useState<PostComment[]>([]);
+  const [formActive, setFormActive] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleDelete = useCallback(async (deleteId: number) => {
+    setErrorMessage('');
+
+    try {
+      await deleteComment(deleteId);
+
+      setComments(currentComments =>
+        currentComments.filter(comment => comment.id !== deleteId),
+      );
+    } catch (error) {
+      setErrorMessage('Failed to delete comment');
+    }
+  }, []);
+
+  const handleAdd = useCallback(async (newData: PostComment) => {
+    setErrorMessage('');
+    const delayTimer = setTimeout(() => setLoading(true), 200);
+
+    try {
+      const response = await addComment(newData);
+
+      setComments(currentComments => [...currentComments, response]);
+    } catch (error) {
+      setErrorMessage('Something went wrong!');
+    } finally {
+      clearTimeout(delayTimer);
+      setTimeout(() => setLoading(false), 500);
+    }
+  }, []);
+
+  useEffect(() => {
+    setErrorMessage('');
+    const delayTimer = setTimeout(() => setLoading(true), 200);
+
+    getComments(selectedPost.id)
+      .then(setComments)
+      .catch(() => {
+        setErrorMessage('Something went wrong!');
+      })
+      .finally(() => {
+        clearTimeout(delayTimer);
+        setTimeout(() => setLoading(false), 500);
+      });
+  }, [selectedPost]);
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
           <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
+            {`#${selectedPost.id}: ${selectedPost.title}`}
           </h2>
 
-          <p data-cy="PostBody">
-            eveniet quo quis laborum totam consequatur non dolor ut et est
-            repudiandae est voluptatem vel debitis et magnam
-          </p>
+          <p data-cy="PostBody">{selectedPost.body}</p>
         </div>
 
         <div className="block">
-          <Loader />
+          {loading && <Loader />}
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
+          {!loading && errorMessage && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              {errorMessage}
             </div>
+          )}
 
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
+          {!loading && Boolean(!comments.length) && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
+          {!loading && Boolean(comments.length) && (
+            <p className="title is-4">Comments:</p>
+          )}
 
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div className="message-body" data-cy="CommentBody">
-              One more comment
-            </div>
-          </article>
+          {!loading &&
+            Boolean(comments.length) &&
+            comments.map(comment => (
+              <CommentComponent
+                key={comment.id}
+                comment={comment}
+                handleDelete={handleDelete}
+              />
+            ))}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+          {!formActive && !loading && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setFormActive(true)}
+            >
+              Write a comment
+            </button>
+          )}
         </div>
 
-        <NewCommentForm />
+        {formActive && !errorMessage && (
+          <NewCommentForm
+            selectedPostId={selectedPost.id}
+            handleAdd={handleAdd}
+            loading={loading}
+          />
+        )}
       </div>
     </div>
   );
-};
+});
+
+PostDetails.displayName = 'PostDetails';
