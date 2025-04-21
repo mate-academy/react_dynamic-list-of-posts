@@ -1,106 +1,114 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { Post } from '../types/Post';
+import { Comment, CommentData } from '../types/Comment';
+import { CommentsList } from './CommentsList';
+import { ErrorsType, InputDataType } from '../types/InputCommentData';
 
-export const PostDetails: React.FC = () => {
+type PostDetailsType = {
+  selectedPost: Post | null;
+  loading: boolean;
+  comments: Comment[];
+  errorMessage: string;
+  addComment: (data: CommentData) => void;
+  inputCommentData: CommentData;
+  setInputCommentData: React.Dispatch<React.SetStateAction<InputDataType>>;
+  inputCommentErrors: ErrorsType;
+  setInputCommentErrors: React.Dispatch<React.SetStateAction<ErrorsType>>;
+  deleteComment: (commentId: number) => void;
+  loadingComments: boolean;
+  formOpened: boolean;
+  setFormOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  isSubmitting: boolean;
+};
+
+export const PostDetails: React.FC<PostDetailsType> = ({
+  selectedPost,
+  comments,
+  errorMessage,
+  addComment,
+  inputCommentData,
+  setInputCommentData,
+  inputCommentErrors,
+  setInputCommentErrors,
+  deleteComment,
+  loadingComments,
+  formOpened,
+  setFormOpened,
+  isSubmitting,
+}) => {
+  const [isloading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (isloading) {
+      setIsLoading(false);
+    }
+  }, [isloading]);
+
+  if (!selectedPost) {
+    return;
+  }
+
+  const { id, title, body } = selectedPost;
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
-          </h2>
+          <h2 data-cy="PostTitle">{`#${id}: ${title}`}</h2>
 
-          <p data-cy="PostBody">
-            eveniet quo quis laborum totam consequatur non dolor ut et est
-            repudiandae est voluptatem vel debitis et magnam
-          </p>
+          <p data-cy="PostBody">{body}</p>
         </div>
 
         <div className="block">
-          <Loader />
+          {loadingComments ? (
+            <Loader />
+          ) : (
+            <>
+              {errorMessage === 'Unable to load comments' && (
+                <div className="notification is-danger" data-cy="CommentsError">
+                  Something went wrong
+                </div>
+              )}
+              {comments?.length === 0 && !isloading ? (
+                <p className="title is-4" data-cy="NoCommentsMessage">
+                  No comments yet
+                </p>
+              ) : (
+                <>
+                  <p className="title is-4">Comments:</p>
+                  <CommentsList
+                    comments={comments}
+                    deleteComment={deleteComment}
+                  />
+                </>
+              )}
 
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div className="message-body" data-cy="CommentBody">
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
+              {!formOpened && !isloading && (
+                <button
+                  data-cy="WriteCommentButton"
+                  type="button"
+                  className="button is-link"
+                  onClick={() => setFormOpened(true)}
+                >
+                  Write a comment
+                </button>
+              )}
+            </>
+          )}
         </div>
-
-        <NewCommentForm />
+        {formOpened && (
+          <NewCommentForm
+            addComment={addComment}
+            inputCommentData={inputCommentData}
+            setInputCommentData={setInputCommentData}
+            selectedPost={selectedPost}
+            inputCommentErrors={inputCommentErrors}
+            setInputCommentErrors={setInputCommentErrors}
+            isSubmitting={isSubmitting}
+          />
+        )}
       </div>
     </div>
   );
