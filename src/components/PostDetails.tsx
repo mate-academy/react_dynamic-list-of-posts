@@ -38,6 +38,10 @@ export const PostDetails: React.FC<PostDetailsType> = ({
   setFormOpened,
   isSubmitting,
 }) => {
+  if (selectedPost === null) {
+    return;
+  }
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">

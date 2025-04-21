@@ -13,7 +13,7 @@ import { User } from './types/User';
 import { getUsers } from './api/users';
 import { Post } from './types/Post';
 import { getPosts } from './api/posts';
-import * as CommentServise from './api/comments';
+import * as CommentService from './api/comments';
 import { Comment, CommentData } from './types/Comment';
 import { ErrorsType, InputDataType } from './types/InputCommentData';
 
@@ -93,7 +93,7 @@ export const App = () => {
       return;
     }
 
-    CommentServise.getComments(selectedPost.id)
+    CommentService.getComments(selectedPost.id)
       .then(setComments)
       .catch(() => {
         setErrorMessage('Unable to load comments');
@@ -113,7 +113,7 @@ export const App = () => {
     setIsSubmitting(true);
 
     if (selectedPost) {
-      CommentServise.addNewComment({ ...data, postId: selectedPost.id })
+      CommentService.addNewComment({ ...data, postId: selectedPost.id })
         .then(commentFromResponse => {
           setComments(currentComments => [
             ...currentComments,
@@ -134,7 +134,7 @@ export const App = () => {
   const deleteComment = (commentId: number) => {
     // setLoading(true);
 
-    CommentServise.deleteComment(commentId)
+    CommentService.deleteComment(commentId)
       .then(() => {
         setComments(currentComments =>
           currentComments.filter(comment => comment.id !== commentId),
