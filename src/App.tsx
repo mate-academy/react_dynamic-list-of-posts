@@ -141,8 +141,7 @@ export const App = () => {
     }
 
     loadPosts();
-    console.log('posts loaded');
-  }, [selectedUser, loadPosts]);
+  }, [selectedUser, loadPosts, setSelectedUser]);
 
   useEffect(() => {
     if (selectedPost === null) {
@@ -150,7 +149,6 @@ export const App = () => {
     }
 
     loadComments();
-    console.log('comments loaded');
   }, [loadComments, selectedPost]);
 
   return (

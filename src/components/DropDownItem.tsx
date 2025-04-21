@@ -19,7 +19,7 @@ export const DropDownItem: React.FC<ItemProps> = ({
     <a
       href={`#user-${id}`}
       className={classNames('dropdown-item', {
-        'is- active': selectedUser === user,
+        'is-active': selectedUser === user,
       })}
       key={id}
       onClick={() => {

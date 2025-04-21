@@ -21,8 +21,8 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
 
   const handleUserSelect = (user: User) => {
     setSelectedUser(user);
-    setOpenedDropDown(false);
     setSelectedPost(null);
+    setOpenedDropDown(false);
   };
 
   useEffect(() => {

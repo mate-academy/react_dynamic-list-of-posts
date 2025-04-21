@@ -32,16 +32,11 @@ export const PostItem: React.FC<PostItemProps> = ({
             'is-light': !isSelected,
           })}
           onClick={() => {
-            if (isSelected) {
-              setSelectedPost(null);
-            } else {
-              setSelectedPost(post);
-            }
-
+            setSelectedPost(isSelected ? null : post);
             setLoadingComments(true);
           }}
         >
-          {isSelected ? 'CLose' : 'Open'}
+          {isSelected ? 'Close' : 'Open'}
         </button>
       </td>
     </tr>
