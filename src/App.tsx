@@ -82,6 +82,9 @@ export const App = () => {
         }, 3000);
       })
       .finally(() => setLoadingComments(false));
+
+    setFormOpened(false);
+    setIsSubmitting(false);
   }, [selectedPost]);
 
   const addComment = (data: CommentData) => {
@@ -133,21 +136,22 @@ export const App = () => {
   }, []);
 
   useEffect(() => {
-    if (!selectedUser) {
+    if (selectedUser === null) {
       return;
     }
 
     loadPosts();
+    console.log('posts loaded');
   }, [selectedUser, loadPosts]);
 
   useEffect(() => {
-    if (selectedPost) {
-      loadComments();
-      setFormOpened(false);
-      // setInputCommentData({ name: '', email: '', body: '' });
-      setIsSubmitting(false);
+    if (selectedPost === null) {
+      return;
     }
-  }, [loadComments, selectedPost, setSelectedPost]);
+
+    loadComments();
+    console.log('comments loaded');
+  }, [loadComments, selectedPost]);
 
   return (
     <main className="section">
@@ -160,7 +164,6 @@ export const App = () => {
                   users={users}
                   selectedUser={selectedUser}
                   setSelectedUser={setSelectedUser}
-                  // changeUser={changeUser}
                   setSelectedPost={setSelectedPost}
                 />
               </div>
@@ -193,7 +196,6 @@ export const App = () => {
                     selectedPost={selectedPost}
                     setSelectedPost={setSelectedPost}
                     setLoadingComments={setLoadingComments}
-                    // deleteComment={deleteComment}
                   />
                 )}
               </div>

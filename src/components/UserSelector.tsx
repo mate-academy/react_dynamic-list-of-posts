@@ -21,8 +21,8 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
 
   const handleUserSelect = (user: User) => {
     setSelectedUser(user);
-    setOpenedDropDown(false); // Закрыть dropdown
-    setSelectedPost(null); // Сбросить выбранный пост
+    setOpenedDropDown(false);
+    setSelectedPost(null);
   };
 
   useEffect(() => {
@@ -66,13 +66,12 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
         </button>
       </div>
 
-      {openedDropDown && (
-        <DropDownMenu
-          users={users}
-          selectedUser={selectedUser}
-          handleUserSelect={handleUserSelect}
-        />
-      )}
+      <DropDownMenu
+        openedDropDown={openedDropDown}
+        users={users}
+        selectedUser={selectedUser}
+        handleUserSelect={handleUserSelect}
+      />
     </div>
   );
 };
