@@ -1,40 +1,66 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { User } from '../types/User';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  users: User[];
+  currentUser: User | undefined;
+  setCurrentUser: (user: User) => void;
+  getPostsByUserId: (userId: number) => void;
+  setIsSideBarShown: (isSideBarShown: boolean) => void;
+  // isFaAngleDownLoading: boolean;
+};
+
+export const UserSelector: React.FC<Props> = ({
+  users,
+  currentUser,
+  setCurrentUser,
+  getPostsByUserId,
+  setIsSideBarShown,
+  // isFaAngleDownLoading,
+}) => {
+  const [isShowDropDown, setIsShowDropDown] = useState(false);
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className={`dropdown ${isShowDropDown ? 'is-active' : ''}`}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => {
+            setIsShowDropDown(!isShowDropDown);
+          }}
         >
-          <span>Choose a user</span>
+          <span>{currentUser ? currentUser.name : 'Choose a user'}</span>
 
+          {/* add condition loading on this button ? */}
           <span className="icon is-small">
-            <i className="fas fa-angle-down" aria-hidden="true" />
+            <i className="fas fa-angle-down" aria-hidden="false" />
           </span>
         </button>
       </div>
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+          {users.map(user => (
+            <a
+              key={user.id}
+              href={`#user-${user.id}`}
+              className={`dropdown-item ${currentUser?.id === user.id ? 'is-active' : ''}`}
+              onClick={() => {
+                setCurrentUser(user);
+                setIsShowDropDown(!isShowDropDown);
+                getPostsByUserId(user.id);
+                setIsSideBarShown(false);
+              }}
+            >
+              {user.name}
+            </a>
+          ))}
         </div>
       </div>
     </div>
