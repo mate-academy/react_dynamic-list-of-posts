@@ -99,7 +99,7 @@ export const PostDetails: React.FC<Props> = ({
               className="button is-link"
               onClick={() => {
                 setIsCommentFormShown(true);
-                setIsButtonShown(!isButtonShown);
+                setIsButtonShown(false);
               }}
             >
               Write a comment

@@ -17,17 +17,21 @@ import { Post } from './types/Post';
 import { Comment, CommentData } from './types/Comment';
 
 export const App = () => {
-  const tempObject: Post = { id: 0, title: '', body: '', userId: 0 };
   //users State
   const [users, setUsers] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<User>();
 
   //posts State
   const [isLoadingPosts, setIsLoadingPosts] = useState(false);
-  const [userPosts, setUserPosts] = useState<Post[]>();
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [isLoadingPostsError, setIsLoadingPostsError] = useState(false);
   const [isNotHasPosts, setIsNotHasPosts] = useState(false);
-  const [currentPost, setCurrentPost] = useState<Post>(tempObject);
+  const [currentPost, setCurrentPost] = useState<Post>({
+    id: 0,
+    title: '',
+    body: '',
+    userId: 0,
+  });
 
   //comments State
   const [isLoadingComments, setIsLoadingComments] = useState(false);
@@ -49,6 +53,35 @@ export const App = () => {
       .catch(() => {})
       .finally(() => {});
   }, []);
+
+  // useEffect(() => {
+  //   if (!currentUser?.id) {
+  //     setUserPosts([]);
+  //     setCurrentPost({ id: 0, title: '', body: '', userId: 0 });
+
+  //     return;
+  //   }
+
+  //   setIsLoadingPosts(true);
+  //   setUserPosts([]);
+  //   setIsNotHasPosts(false);
+  //   setIsLoadingPostsError(false);
+
+  //   postService
+  //     .getPosts(currentUser?.id)
+  //     .then(resp => {
+  //       setUserPosts(resp);
+  //       if (resp.length === 0) {
+  //         setIsNotHasPosts(true);
+  //       }
+  //     })
+  //     .catch(() => {
+  //       setIsLoadingPostsError(true);
+  //     })
+  //     .finally(() => {
+  //       setIsLoadingPosts(false);
+  //     });
+  // }, [currentUser]);
 
   function getPostsByUserId(userId: number) {
     setIsLoadingPosts(true);
@@ -97,11 +130,11 @@ export const App = () => {
   }
 
   function deleteComment(commentId: number) {
-    commentService.deleteComment(commentId);
-
-    setUserComments(currentComments =>
-      currentComments?.filter(comment => comment.id !== commentId),
-    );
+    commentService.deleteComment(commentId).then(() => {
+      setUserComments(currentComments =>
+        currentComments?.filter(comment => comment.id !== commentId),
+      );
+    });
   }
 
   function createComment({ postId, name, email, body }: Comment) {

@@ -13,7 +13,7 @@ export const NewCommentForm: React.FC<Props> = ({
 }) => {
   const [queryName, setQueryName] = useState('');
   const [queryEmail, setQueryEmail] = useState('');
-  const [queryText, setQeryText] = useState('');
+  const [queryText, setQueryText] = useState('');
 
   const [queryNameError, setQueryNameError] = useState(false);
   const [queryEmailError, setQueryEmailError] = useState(false);
@@ -24,7 +24,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const reset = () => {
     setQueryName('');
     setQueryEmail('');
-    setQeryText('');
+    setQueryText('');
     setQueryNameError(false);
     setQueryEmailError(false);
     setQueryTextError(false);
@@ -48,7 +48,7 @@ export const NewCommentForm: React.FC<Props> = ({
     setQueryTextError(false);
     const tempQueryText = event.target.value.trim();
 
-    setQeryText(tempQueryText);
+    setQueryText(tempQueryText);
   };
 
   const hanldeSubmit = (event: React.FormEvent) => {
@@ -73,9 +73,7 @@ export const NewCommentForm: React.FC<Props> = ({
       body: queryText,
     })
       .then(() => {
-        setQueryName(queryName);
-        setQueryEmail(queryEmail);
-        setQeryText('');
+        reset();
       })
       .catch(() => {})
       .finally(() => {
@@ -97,6 +95,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             className={`input ${queryNameError ? 'is-danger' : ''}`}
+            value={queryName}
             onChange={handleQueryName}
           />
 
@@ -134,6 +133,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="email@test.com"
             className={`input ${queryEmailError ? 'is-danger' : ''}`}
             onChange={handleQueryEmail}
+            value={queryEmail}
           />
 
           <span className="icon is-small is-left">
@@ -169,6 +169,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Type comment here"
             className={`textarea ${queryTextError ? 'is-danger' : ''}`}
             onChange={handleQueryText}
+            value={queryText}
           />
         </div>
 
