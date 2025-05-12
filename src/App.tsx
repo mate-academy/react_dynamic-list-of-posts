@@ -129,8 +129,8 @@ export const App = () => {
       });
   }
 
-  function deleteComment(commentId: number) {
-    commentService.deleteComment(commentId).then(() => {
+  async function deleteComment(commentId: number) {
+    await commentService.deleteComment(commentId).then(() => {
       setUserComments(currentComments =>
         currentComments?.filter(comment => comment.id !== commentId),
       );
@@ -160,7 +160,6 @@ export const App = () => {
                   setCurrentUser={setCurrentUser}
                   getPostsByUserId={getPostsByUserId}
                   setIsSideBarShown={setIsSideBarShown}
-                  // isFaAngleDownLoading={isLoading}
                 />
               </div>
 
