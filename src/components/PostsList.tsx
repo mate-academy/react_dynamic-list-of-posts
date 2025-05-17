@@ -1,21 +1,71 @@
 import React from 'react';
+import classNames from 'classnames';
+import { Post } from '../types/Post';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+type Props = {
+  // isPostsListExists: boolean;
+  posts: Post[];
+  setActivePost: (value: Post | null) => void;
+  activePost: Post | null;
+};
+export const PostsList: React.FC<Props> = ({
+  // isPostsListExists,
+  posts,
+  setActivePost,
+  activePost,
+}) => {
+  // if (isPostsListExists)
+  // {return <div>No posts available.</div>}
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-          <th> </th>
-        </tr>
-      </thead>
+  const toggleOpenPost = (post: Post) => {
+    if (!activePost || activePost.id !== post.id) {
+      setActivePost(post);
 
-      <tbody>
-        <tr data-cy="Post">
+      return;
+    }
+
+    setActivePost(null);
+  };
+
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
+
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+            <th
+              className="has-text-right is-vcentered"
+              style={{ padding: '0px 25px 0px 0px' }}
+            >
+              Action
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {posts.map(post => (
+            <tr data-cy="Post" key={post.id}>
+              <td data-cy="PostId">{post.id}</td>
+              <td data-cy="PostTitle">{post.title}</td>
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className={classNames('button is-link', {
+                    'is-light': activePost?.id !== post.id,
+                  })}
+                  onClick={() => toggleOpenPost(post)}
+                >
+                  {activePost?.id === post.id ? 'Close' : 'Open'}
+                </button>
+              </td>
+            </tr>
+          ))}
+          {/*<tr data-cy="Post">
           <td data-cy="PostId">17</td>
 
           <td data-cy="PostTitle">
@@ -79,8 +129,9 @@ export const PostsList: React.FC = () => (
               Open
             </button>
           </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+        </tr> */}
+        </tbody>
+      </table>
+    </div>
+  );
+};
