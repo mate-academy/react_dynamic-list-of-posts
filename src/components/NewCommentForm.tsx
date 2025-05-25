@@ -1,8 +1,31 @@
 import React from 'react';
+import { Form } from '../types/Form';
 
-export const NewCommentForm: React.FC = () => {
+type Props = {
+  form: Form;
+  formNameError: boolean;
+  formEmailError: boolean;
+  formBodyError: boolean;
+  isCommentLoading: boolean;
+  onChange: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => void;
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  onReset: () => void;
+};
+
+export const NewCommentForm: React.FC<Props> = ({
+  form,
+  formNameError,
+  formEmailError,
+  formBodyError,
+  isCommentLoading,
+  onChange,
+  onSubmit,
+  onReset,
+}) => {
   return (
-    <form data-cy="NewCommentForm">
+    <form data-cy="NewCommentForm" onSubmit={onSubmit} onReset={onReset}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -14,24 +37,34 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            className={`input ${formNameError ? 'is-danger' : ''}`}
+            value={form.name}
+            onChange={onChange}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {formNameError ? (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          ) : (
+            ''
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
+        {formNameError ? (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Name is required
+          </p>
+        ) : (
+          ''
+        )}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -45,24 +78,34 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            className={`input ${formEmailError ? 'is-danger' : ''}`}
+            value={form.email}
+            onChange={onChange}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {formEmailError ? (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          ) : (
+            ''
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
+        {formEmailError ? (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is required
+          </p>
+        ) : (
+          ''
+        )}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -75,18 +118,27 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            className={`textarea ${formBodyError ? 'is-danger' : ''}`}
+            value={form.body}
+            onChange={onChange}
           />
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
+        {formBodyError ? (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Enter some text
+          </p>
+        ) : (
+          ''
+        )}
       </div>
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={`button is-link ${isCommentLoading ? 'is-loading' : ''}`}
+          >
             Add
           </button>
         </div>
