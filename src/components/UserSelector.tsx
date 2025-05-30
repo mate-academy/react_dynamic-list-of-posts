@@ -1,40 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
+import classNames from 'classnames';
+import { User } from '../types/User';
 
-export const UserSelector: React.FC = () => {
+interface UserSelectorProps {
+  user: User | null;
+  users: User[];
+  onSelect: (user: User) => void;
+}
+
+export const UserSelector: React.FC<UserSelectorProps> = ({
+  user,
+  users,
+  onSelect,
+}) => {
+  const [showList, setShowList] = useState(false);
+
+  const handleUserClick = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    linkUser: User,
+  ) => {
+    event.preventDefault();
+    onSelect(linkUser);
+    setShowList(false);
+  };
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className={classNames('dropdown', { 'is-active': showList })}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setShowList(!showList)}
+          onBlur={event => {
+            if (!showList) {
+              return;
+            }
+
+            const focusedElement = event.relatedTarget;
+
+            if (!focusedElement?.matches('a.dropdown-item')) {
+              setShowList(false);
+            }
+          }}
         >
-          <span>Choose a user</span>
+          <span>{user ? user.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
           </span>
         </button>
       </div>
-
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+          {users.map(listUser => (
+            <a
+              key={listUser.id}
+              href={`#user-${listUser.id}`}
+              className={classNames('dropdown-item', {
+                'is-active': listUser.id === user?.id,
+              })}
+              onClick={event => handleUserClick(event, listUser)}
+            >
+              {listUser.name}
+            </a>
+          ))}
         </div>
       </div>
     </div>
