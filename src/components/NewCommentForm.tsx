@@ -1,8 +1,107 @@
-import React from 'react';
+import React, { SetStateAction, useState } from 'react';
+import { Comment } from '../types/Comment';
+import { Post } from '../types/Post';
+import * as apiClient from '../api/api';
+import classNames from 'classnames';
 
-export const NewCommentForm: React.FC = () => {
+type Props = {
+  post: Post;
+  setComments: React.Dispatch<SetStateAction<Comment[]>>;
+  setIsErrorShown: (isErrorShown: boolean) => void;
+};
+
+export const NewCommentForm: React.FC<Props> = ({
+  post,
+  setComments,
+  setIsErrorShown,
+}) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [body, setBody] = useState('');
+
+  const [isNameInvalid, setIsNameInvalid] = useState(false);
+  const [isEmailInvalid, setIsEmailInvalid] = useState(false);
+  const [isBodyInvalid, setIsBodyInvalid] = useState(false);
+
+  const [isAddCommentLoading, setIsAddCommentLoading] = useState(false);
+
+  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (isNameInvalid) {
+      setIsNameInvalid(false);
+    }
+
+    setName(event.target.value.trimStart());
+  };
+
+  const onEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (isEmailInvalid) {
+      setIsEmailInvalid(false);
+    }
+
+    setEmail(event.target.value.trimStart());
+  };
+
+  const onBodyChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (isBodyInvalid) {
+      setIsBodyInvalid(false);
+    }
+
+    setBody(event.target.value.trimStart());
+  };
+
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedBody = body.trim();
+
+    if (!trimmedName) {
+      setIsNameInvalid(true);
+    }
+
+    if (!trimmedEmail) {
+      setIsEmailInvalid(true);
+    }
+
+    if (!trimmedBody) {
+      setIsBodyInvalid(true);
+    }
+
+    if (!trimmedName || !trimmedEmail || !trimmedBody) {
+      return;
+    }
+
+    const commentToAdd = {
+      postId: post.id,
+      name: trimmedName,
+      email: trimmedEmail,
+      body: trimmedBody,
+    };
+
+    setIsAddCommentLoading(true);
+    apiClient
+      .addComment(commentToAdd)
+      .then(createdComment => {
+        setComments(current => [...current, createdComment]);
+        setBody('');
+      })
+      .catch(() => setIsErrorShown(true))
+      .finally(() => setIsAddCommentLoading(false));
+  };
+
+  const onReset = () => {
+    setName('');
+    setEmail('');
+    setBody('');
+
+    setIsNameInvalid(false);
+    setIsEmailInvalid(false);
+    setIsBodyInvalid(false);
+  };
+
   return (
-    <form data-cy="NewCommentForm">
+    <form data-cy="NewCommentForm" onSubmit={onSubmit} onReset={onReset}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -14,24 +113,32 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            className={classNames('input', {
+              'is-danger': isNameInvalid,
+            })}
+            value={name}
+            onChange={onNameChange}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {isNameInvalid && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
+        {isNameInvalid && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Name is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -45,24 +152,32 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            className={classNames('input', {
+              'is-danger': isEmailInvalid,
+            })}
+            value={email}
+            onChange={onEmailChange}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {isEmailInvalid && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
+        {isEmailInvalid && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -75,18 +190,29 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            className={classNames('textarea', {
+              'is-danger': isBodyInvalid,
+            })}
+            value={body}
+            onChange={onBodyChange}
           />
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
+        {isBodyInvalid && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Enter some text
+          </p>
+        )}
       </div>
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={classNames('button', 'is-link', {
+              'is-loading': isAddCommentLoading,
+            })}
+          >
             Add
           </button>
         </div>
