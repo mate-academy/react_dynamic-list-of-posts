@@ -17,7 +17,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const ollComments = [...comments, ...tempComments];
 
-  const getComments =  useCallback(async (): Promise<void> => {
+  const getComments = useCallback(async (): Promise<void> => {
     if (!selectedPost) {
       return;
     }
@@ -71,7 +71,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       getComments();
       setIsOpen(false);
     }
-  }, [selectedPost]);
+  }, [selectedPost, getComments]);
 
   return (
     <div className="content" data-cy="PostDetails">

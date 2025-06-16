@@ -63,8 +63,7 @@ export const App = () => {
         const fetchedUsers = (await client.get('/users')) as User[];
 
         setUsers(fetchedUsers);
-      } catch {
-      }
+      } catch {}
     };
 
     fetchUsers();

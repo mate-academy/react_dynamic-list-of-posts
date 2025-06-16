@@ -1,4 +1,4 @@
-import { Comment } from "../types/Comment";
+import { Comment } from '../types/Comment';
 
 const BASE_URL = 'https://mate.academy/students-api';
 
