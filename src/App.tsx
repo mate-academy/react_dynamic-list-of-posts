@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import cn from 'classnames';
 
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -8,53 +8,105 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { useEffect, useState } from 'react';
+import * as clientApi from './api/users';
+import { User } from './types/User';
+import { Post } from './types/Post';
 
-export const App = () => (
-  <main className="section">
-    <div className="container">
-      <div className="tile is-ancestor">
-        <div className="tile is-parent">
-          <div className="tile is-child box is-success">
-            <div className="block">
-              <UserSelector />
-            </div>
+export const App = () => {
+  const [userData, setUserData] = useState<User[]>([]);
+  const [isError, setIsError] = useState(false);
+  const [user, setUser] = useState<null | User>(null);
+  const [posts, setPosts] = useState<Post[] | null>(null);
 
-            <div className="block" data-cy="MainContent">
-              <p data-cy="NoSelectedUser">No user selected</p>
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-              <Loader />
+  const [isLoading, setIsLoading] = useState(false);
 
-              <div
-                className="notification is-danger"
-                data-cy="PostsLoadingError"
-              >
-                Something went wrong!
+  useEffect(() => {
+    clientApi
+      .getUsers()
+      .then(setUserData)
+      .catch(() => setIsError(true));
+  }, []);
+
+  useEffect(() => {
+    if (user === null) {
+      return;
+    }
+
+    setPosts(null);
+    setSelectedPost(null);
+    setIsError(false);
+    setIsLoading(true);
+
+    clientApi
+      .getUserPosts(user.id)
+      .then(setPosts)
+      .catch(() => setIsError(true))
+      .finally(() => setIsLoading(false));
+  }, [user]);
+
+  const isEmpty = !isError && posts && !posts.length;
+  const isPosts = !isError && posts && !!posts.length;
+
+  return (
+    <main className="section">
+      <div className="container">
+        <div className="tile is-ancestor">
+          <div className="tile is-parent">
+            <div className="tile is-child box is-success">
+              <div className="block">
+                <UserSelector
+                  userData={userData}
+                  user={user}
+                  setUser={setUser}
+                />
               </div>
 
-              <div className="notification is-warning" data-cy="NoPostsYet">
-                No posts yet
-              </div>
+              <div className="block" data-cy="MainContent">
+                {!user && <p data-cy="NoSelectedUser">No user selected</p>}
 
-              <PostsList />
+                {isLoading && <Loader />}
+
+                {isError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
+
+                {isEmpty && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
+
+                {isPosts && (
+                  <PostsList
+                    posts={posts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div
-          data-cy="Sidebar"
-          className={classNames(
-            'tile',
-            'is-parent',
-            'is-8-desktop',
-            'Sidebar',
-            'Sidebar--open',
-          )}
-        >
-          <div className="tile is-child box is-success ">
-            <PostDetails />
+          <div
+            data-cy="Sidebar"
+            className={cn('tile', 'is-parent', 'is-8-desktop', 'Sidebar', {
+              'Sidebar--open': selectedPost,
+            })}
+          >
+            <div className="tile is-child box is-success ">
+              {selectedPost && <PostDetails selectedPost={selectedPost} />}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </main>
-);
+    </main>
+  );
+};
