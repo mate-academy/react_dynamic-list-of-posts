@@ -17,16 +17,16 @@ export const PostDetails: React.FC<Props> = ({
   setIsNewCommentFormOpened,
 }) => {
   const [comments, setComments] = useState<Comment[]>([]);
-  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [isErrorShown, setIsErrorShown] = useState(false);
 
   useEffect(() => {
-    setIsCommentsLoading(true);
+    setIsLoading(true);
     apiClient
       .getComments(post.id)
       .then(setComments)
       .catch(() => setIsErrorShown(true))
-      .finally(() => setIsCommentsLoading(false));
+      .finally(() => setIsLoading(false));
   }, [post.id]);
 
   const onCommentDelete = (commentToDelete: Comment) => {
@@ -52,7 +52,7 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {isCommentsLoading && <Loader />}
+          {isLoading && <Loader />}
 
           {isErrorShown && (
             <div className="notification is-danger" data-cy="CommentsError">
@@ -60,13 +60,13 @@ export const PostDetails: React.FC<Props> = ({
             </div>
           )}
 
-          {comments.length === 0 && !isCommentsLoading && !isErrorShown && (
+          {comments.length === 0 && !isLoading && !isErrorShown && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
           )}
 
-          {comments.length > 0 && !isCommentsLoading && !isErrorShown && (
+          {comments.length > 0 && !isLoading && !isErrorShown && (
             <>
               <p className="title is-4">Comments:</p>
 
@@ -99,7 +99,7 @@ export const PostDetails: React.FC<Props> = ({
             </>
           )}
 
-          {!isNewCommentFormOpened && !isCommentsLoading && !isErrorShown && (
+          {!isNewCommentFormOpened && !isLoading && !isErrorShown && (
             <button
               data-cy="WriteCommentButton"
               type="button"
