@@ -10,8 +10,8 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useCallback, useEffect, useState } from 'react';
 import { User } from './types/User';
-import { client } from './utils/fetchClient';
 import { Post } from './types/Post';
+import { getPosts, getUsers } from './api/api';
 
 export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -32,9 +32,7 @@ export const App = () => {
       setError(false);
       setErrorNoPosts(false);
       setPosts([]);
-      const dataPosts = (await client.get(
-        `/posts?userId=${selectedUser.id}`,
-      )) as Post[];
+      const dataPosts = await getPosts(selectedUser.id);
 
       if (dataPosts.length === 0) {
         setErrorNoPosts(true);
@@ -60,7 +58,7 @@ export const App = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const fetchedUsers = (await client.get('/users')) as User[];
+        const fetchedUsers = await getUsers();
 
         setUsers(fetchedUsers);
       } catch {}

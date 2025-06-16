@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { Comment } from '../types/Comment';
-import { client } from '../utils/fetchClient';
+import { addComment } from '../api/api';
 
 type Props = {
   postId: number;
   setError: (error: boolean) => void;
-  getComments: () => Promise<void>;
+  getPostComments: () => Promise<void>;
   setTempComments?: React.Dispatch<React.SetStateAction<Comment[]>>;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   postId,
   setError,
-  getComments,
+  getPostComments,
   setTempComments,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -21,7 +21,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
 
-  const handelSubmit = async (
+  const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
@@ -52,7 +52,7 @@ export const NewCommentForm: React.FC<Props> = ({
     }
 
     try {
-      await client.post<Comment>('/comments', {
+      await addComment({
         postId,
         name: name,
         email: email,
@@ -72,7 +72,7 @@ export const NewCommentForm: React.FC<Props> = ({
         ]);
       }
 
-      await getComments();
+      await getPostComments();
       setBody('');
     } catch {
       setError(true);
@@ -89,7 +89,7 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   return (
-    <form data-cy="NewCommentForm" onSubmit={handelSubmit}>
+    <form data-cy="NewCommentForm" onSubmit={handleSubmit}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name

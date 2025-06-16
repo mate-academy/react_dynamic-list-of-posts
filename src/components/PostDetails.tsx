@@ -3,7 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
-import { client } from '../utils/fetchClient';
+import { deleteComment, getComments } from '../api/api';
 
 type Props = {
   selectedPost: Post;
@@ -15,9 +15,9 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const ollComments = [...comments, ...tempComments];
+  const allComments = [...comments, ...tempComments];
 
-  const getComments = useCallback(async (): Promise<void> => {
+  const getPostComments = useCallback(async (): Promise<void> => {
     if (!selectedPost) {
       return;
     }
@@ -25,9 +25,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
     try {
       setError(false);
       setLoading(true);
-      const fetchedcomments = (await client.get(
-        `/comments?postId=${selectedPost.id}`,
-      )) as Comment[];
+      const fetchedcomments = await getComments(selectedPost.id);
 
       setComments(fetchedcomments);
       setTempComments(prevTemp =>
@@ -48,11 +46,11 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
     }
   }, [selectedPost]);
 
-  const deleteComment = async (commentId: number): Promise<void> => {
+  const deletePostComment = async (commentId: number): Promise<void> => {
     setError(false);
     setLoading(true);
     try {
-      await client.delete(`/comments/${commentId}`);
+      await deleteComment(commentId);
       setComments(prevComments =>
         prevComments.filter(comment => comment.id !== commentId),
       );
@@ -68,10 +66,10 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
 
   useEffect(() => {
     if (selectedPost !== null) {
-      getComments();
+      getPostComments();
       setIsOpen(false);
     }
-  }, [selectedPost, getComments]);
+  }, [selectedPost, getPostComments]);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -92,14 +90,14 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
           </div>
         ) : (
           <>
-            {!loading && comments.length === 0 ? (
+            {!loading && allComments.length === 0 ? (
               <p className="title is-4" data-cy="NoCommentsMessage">
                 No comments yet
               </p>
             ) : (
               <>
                 <p className="title is-4">Comments:</p>
-                {ollComments.map((comment: Comment) => (
+                {allComments.map((comment: Comment) => (
                   <article
                     key={comment.id}
                     className="message is-small"
@@ -117,7 +115,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
                         type="button"
                         className="delete is-small"
                         aria-label="delete"
-                        onClick={() => deleteComment(comment.id)}
+                        onClick={() => deletePostComment(comment.id)}
                       >
                         delete button
                       </button>
@@ -143,7 +141,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
               <NewCommentForm
                 postId={selectedPost.id}
                 setError={setError}
-                getComments={getComments}
+                getPostComments={getPostComments}
                 setTempComments={setTempComments}
               />
             )}
