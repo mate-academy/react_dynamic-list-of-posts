@@ -10,19 +10,19 @@ interface Props {
 
 export const UserSelector: React.FC<Props> = ({ userData, user, setUser }) => {
   const [isDropdown, setIsDropdown] = useState(false);
-  const dropdawnRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
     const relatedTarget = event.relatedTarget as Node | null;
 
-    if (!dropdawnRef.current?.contains(relatedTarget)) {
+    if (!dropdownRef.current?.contains(relatedTarget)) {
       setIsDropdown(false);
     }
   };
 
   return (
     <div
-      ref={dropdawnRef}
+      ref={dropdownRef}
       data-cy="UserSelector"
       className={cn('dropdown', { 'is-active': isDropdown })}
       onBlur={handleBlur}

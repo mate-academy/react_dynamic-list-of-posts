@@ -47,6 +47,9 @@ export const App = () => {
       .finally(() => setIsLoading(false));
   }, [user]);
 
+  const isEmpty = !isError && posts && !posts.length;
+  const isPosts = !isError && posts && !!posts.length;
+
   return (
     <main className="section">
       <div className="container">
@@ -66,32 +69,27 @@ export const App = () => {
 
                 {isLoading && <Loader />}
 
-                {isError ? (
+                {isError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
                     Something went wrong!
                   </div>
-                ) : (
-                  posts && (
-                    <>
-                      {!posts.length ? (
-                        <div
-                          className="notification is-warning"
-                          data-cy="NoPostsYet"
-                        >
-                          No posts yet
-                        </div>
-                      ) : (
-                        <PostsList
-                          posts={posts}
-                          selectedPost={selectedPost}
-                          setSelectedPost={setSelectedPost}
-                        />
-                      )}
-                    </>
-                  )
+                )}
+
+                {isEmpty && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
+
+                {isPosts && (
+                  <PostsList
+                    posts={posts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
+                  />
                 )}
               </div>
             </div>

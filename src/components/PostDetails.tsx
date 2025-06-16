@@ -38,6 +38,10 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
     setComments(cur => (cur ? cur.filter(comment => comment.id !== id) : null));
   };
 
+  const isEmpty = comments && !comments.length;
+  const isComments = comments && !!comments.length;
+  const isButtonShown = comments && !isFormShown;
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -52,67 +56,65 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         <div className="block">
           {isLoading && <Loader />}
 
-          {isError ? (
+          {isError && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
-          ) : (
-            comments && (
-              <>
-                {!comments.length ? (
-                  <p className="title is-4" data-cy="NoCommentsMessage">
-                    No comments yet
-                  </p>
-                ) : (
-                  <>
-                    <p className="title is-4">Comments:</p>
+          )}
 
-                    {comments.map(comment => {
-                      return (
-                        <article
-                          key={comment.id}
-                          className="message is-small"
-                          data-cy="Comment"
-                        >
-                          <div className="message-header">
-                            <a
-                              href={`mailto:${comment.email}`}
-                              data-cy="CommentAuthor"
-                            >
-                              {comment.name}
-                            </a>
-                            <button
-                              data-cy="CommentDelete"
-                              type="button"
-                              className="delete is-small"
-                              aria-label="delete"
-                              onClick={() => handleDelete(comment.id)}
-                            >
-                              delete button
-                            </button>
-                          </div>
+          {isEmpty && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
 
-                          <div className="message-body" data-cy="CommentBody">
-                            {comment.body}
-                          </div>
-                        </article>
-                      );
-                    })}
-                  </>
-                )}
+          {isComments && (
+            <>
+              <p className="title is-4">Comments:</p>
 
-                {!isFormShown && (
-                  <button
-                    data-cy="WriteCommentButton"
-                    type="button"
-                    className="button is-link"
-                    onClick={() => setIsFormShown(true)}
+              {comments.map(comment => {
+                return (
+                  <article
+                    key={comment.id}
+                    className="message is-small"
+                    data-cy="Comment"
                   >
-                    Write a comment
-                  </button>
-                )}
-              </>
-            )
+                    <div className="message-header">
+                      <a
+                        href={`mailto:${comment.email}`}
+                        data-cy="CommentAuthor"
+                      >
+                        {comment.name}
+                      </a>
+                      <button
+                        data-cy="CommentDelete"
+                        type="button"
+                        className="delete is-small"
+                        aria-label="delete"
+                        onClick={() => handleDelete(comment.id)}
+                      >
+                        delete button
+                      </button>
+                    </div>
+
+                    <div className="message-body" data-cy="CommentBody">
+                      {comment.body}
+                    </div>
+                  </article>
+                );
+              })}
+            </>
+          )}
+
+          {isButtonShown && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setIsFormShown(true)}
+            >
+              Write a comment
+            </button>
           )}
         </div>
 
