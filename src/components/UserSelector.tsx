@@ -7,7 +7,7 @@ import { Post } from '../types/Post';
 type Props = {
   setHasErrorGetPosts: (flag: boolean) => void;
   setIsLoadingPosts: (flag: boolean) => void;
-  setPosts: (posts: Post[]) => void;
+  setPosts: (posts: Post[] | null) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
@@ -44,7 +44,7 @@ export const UserSelector: React.FC<Props> = ({
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
-  }, []);
+  }, [setHasErrorGetPosts]);
 
   return (
     <div

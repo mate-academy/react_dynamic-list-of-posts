@@ -1,18 +1,22 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { postComment } from '../api/posts';
-import { Comment, CommentData } from '../types/Comment';
+import { Comment } from '../types/Comment';
 
 type Props = {
   postId: number;
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
+  setHasRequestError: (hasError: boolean) => void;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
+export const NewCommentForm: React.FC<Props> = ({
+  postId,
+  setComments,
+  setHasRequestError,
+}) => {
   const [author, setAuthor] = useState('');
   const [email, setEmail] = useState('');
   const [text, setText] = useState('');
-  const [hasRequestError, setHasRequestError] = useState(false);
   const [hasErrorAutor, setHasErrorAutor] = useState(false);
   const [hasErrorEmail, setHasErrorEmail] = useState(false);
   const [hasErrorText, setHasErrorText] = useState(false);

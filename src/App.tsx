@@ -17,7 +17,7 @@ export const App = () => {
   const [isLoadingPosts, setIsLoadingPosts] = useState(false);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [posts, setPosts] = useState<Post[] | null>(null);
-  const [post, setPost] = useState<Post[] | null>(null);
+  const [post, setPost] = useState<Post | null>(null);
   const [comments, setComments] = useState<Comment[] | null>(null);
 
   return (

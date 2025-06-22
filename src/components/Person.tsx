@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { User } from '../types/User';
 import { getPostsById } from '../api/posts';
 import { Post } from '../types/Post';
@@ -28,11 +28,13 @@ export const Person: React.FC<Props> = ({
 
     setHasClicked(false);
 
+    const prevRef = prevUserId;
+
     if (prevUserId.current === user.id) {
       return;
     }
 
-    prevUserId.current = user.id;
+    prevRef.current = user.id;
 
     setSelectedUser(user.name);
     setIsLoadingPosts(true);

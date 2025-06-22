@@ -4,7 +4,7 @@ import { PostItem } from './PostItem';
 
 type Props = {
   posts: Post[] | null;
-  setComments: (comments: Comment[]) => void;
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
   setHasErrorGetComments: (flag: boolean) => void;
   setIsLoadingComments: (flag: boolean) => void;
   setPost: (post: Post | null) => void;

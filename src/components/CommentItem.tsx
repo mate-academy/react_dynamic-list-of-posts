@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Comment } from '../types/Comment';
 import { deleteComment } from '../api/posts';
 
@@ -8,11 +8,11 @@ type Props = {
 };
 
 export const CommentItem: React.FC<Props> = ({ comment, setComments }) => {
-  const handleClick = () => {
-    let deletedIndex = -1;
+  const deletedIndex = useRef<number>(-1);
 
+  const handleClick = () => {
     setComments(prev => {
-      deletedIndex = prev.findIndex(item => item.id === comment.id);
+      deletedIndex.current = prev.findIndex(item => item.id === comment.id);
 
       return prev.filter(item => item.id !== comment.id);
     });
@@ -21,7 +21,7 @@ export const CommentItem: React.FC<Props> = ({ comment, setComments }) => {
       setComments(prev => {
         const updated = [...prev];
 
-        updated.splice(deletedIndex, 0, comment);
+        updated.splice(deletedIndex.current, 0, comment);
 
         return updated;
       });

@@ -10,7 +10,7 @@ type Props = {
   hasErrorGetComments: boolean;
   isLoadingComments: boolean;
   post: Post;
-  setComments: () => void;
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -21,6 +21,7 @@ export const PostDetails: React.FC<Props> = ({
   setComments,
 }) => {
   const [isOpenComment, setIsOpenComment] = useState(false);
+  const [hasRequestError, setHasRequestError] = useState(false);
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -34,44 +35,50 @@ export const PostDetails: React.FC<Props> = ({
         <div className="block">
           {isLoadingComments && <Loader />}
 
-          {hasErrorGetComments && (
+          {hasErrorGetComments || hasRequestError ? (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
-          )}
+          ) : (
+            <>
+              {comments && comments.length === 0 && (
+                <p className="title is-4" data-cy="NoCommentsMessage">
+                  No comments yet
+                </p>
+              )}
 
-          {comments && comments.length === 0 && (
-            <p className="title is-4" data-cy="NoCommentsMessage">
-              No comments yet
-            </p>
-          )}
+              <p className="title is-4">Comments:</p>
 
-          <p className="title is-4">Comments:</p>
+              {comments &&
+                comments.length > 0 &&
+                comments.map((comment: Comment) => (
+                  <CommentItem
+                    key={comment.id}
+                    comment={comment}
+                    setComments={setComments}
+                  />
+                ))}
 
-          {comments &&
-            comments.length > 0 &&
-            comments.map((comment: Comment) => (
-              <CommentItem
-                key={comment.id}
-                comment={comment}
-                setComments={setComments}
-              />
-            ))}
-
-          {!isOpenComment && (
-            <button
-              data-cy="WriteCommentButton"
-              type="button"
-              className="button is-link"
-              onClick={() => setIsOpenComment(true)}
-            >
-              Write a comment
-            </button>
+              {!isOpenComment && (
+                <button
+                  data-cy="WriteCommentButton"
+                  type="button"
+                  className="button is-link"
+                  onClick={() => setIsOpenComment(true)}
+                >
+                  Write a comment
+                </button>
+              )}
+            </>
           )}
         </div>
 
-        {isOpenComment && (
-          <NewCommentForm postId={post.id} setComments={setComments} />
+        {!hasErrorGetComments && !hasRequestError && isOpenComment && (
+          <NewCommentForm
+            postId={post.id}
+            setComments={setComments}
+            setHasRequestError={setHasRequestError}
+          />
         )}
       </div>
     </div>

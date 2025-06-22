@@ -7,7 +7,7 @@ import { Comment } from '../types/Comment';
 type Props = {
   post: Post;
   openPostId: number | null;
-  setComments: (comments: Comment[]) => void;
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
   setHasErrorGetComments: (flag: boolean) => void;
   setIsLoadingComments: (flag: boolean) => void;
   setPost: (post: Post | null) => void;
@@ -40,7 +40,7 @@ export const PostItem: React.FC<Props> = ({
         setComments(comments);
       })
       .catch(() => {
-        setHasErrorGetComments(false);
+        setHasErrorGetComments(true);
       })
       .finally(() => {
         setIsLoadingComments(false);
