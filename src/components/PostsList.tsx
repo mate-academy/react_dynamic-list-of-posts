@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Post } from '../types/Post';
-import * as service from '../services/servises';
+import * as service from '../services/services';
 import { Loader } from './Loader';
 import classNames from 'classnames';
 

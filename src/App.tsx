@@ -9,7 +9,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { useEffect, useState } from 'react';
 import { User } from './types/User';
-import * as service from './services/servises';
+import * as service from './services/services';
 import { Post } from './types/Post';
 
 export const App = () => {

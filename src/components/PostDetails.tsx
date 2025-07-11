@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import * as service from '../services/servises';
+import * as service from '../services/services';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
 
