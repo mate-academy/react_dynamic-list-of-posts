@@ -1,5 +1,4 @@
 /// <reference types="cypress" />
-/// <reference types="../support" />
 
 const page = {
   mockUsers: () => cy.intercept('**/users', { fixture: 'users' }).as('usersRequest'),
