@@ -1,86 +1,89 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Post } from '../types/Post';
+import { User } from '../types/User';
+import { getPosts } from '../api/posts';
+import { Loader } from './Loader';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+type Props = {
+  selectedUser: User | null;
+  setErrorMessage: (msg: string) => void;
+  handleSidebar: (post: Post | null) => void;
+  activePost: Post | null;
+};
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-          <th> </th>
-        </tr>
-      </thead>
+export const PostsList: React.FC<Props> = ({
+  selectedUser,
+  setErrorMessage,
+  handleSidebar,
+  activePost,
+}) => {
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+  useEffect(() => {
+    if (!selectedUser) {
+      setUserPosts([]);
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+      return;
+    }
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+    setIsLoading(true);
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+    getPosts(selectedUser.id)
+      .then(setUserPosts)
+      .catch(() => {
+        setErrorMessage('Unable to load posts');
+      })
+      .finally(() => setIsLoading(false));
+  }, [selectedUser, setErrorMessage]);
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+  const handleToggleSidebar = (post: Post) => {
+    handleSidebar(post);
+  };
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
+  return (
+    <>
+      {isLoading ? (
+        <Loader />
+      ) : userPosts.length === 0 ? (
+        <div className="notification is-warning" data-cy="NoPostsYet">
+          No posts yet
+        </div>
+      ) : (
+        <div data-cy="PostsList">
+          <p className="title">Posts:</p>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
+          {/* eslint-disable-next-line max-len */}
+          <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+            <thead>
+              <tr className="has-background-link-light">
+                <th>#</th>
+                <th>Title</th>
+                <th> </th>
+              </tr>
+            </thead>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+            <tbody>
+              {userPosts.map(post => (
+                <tr key={post.id} data-cy="Post">
+                  <td data-cy="PostId">{post.id}</td>
+                  <td data-cy="PostTitle">{post.title}</td>
+                  <td className="has-text-right is-vcentered">
+                    <button
+                      type="button"
+                      data-cy="PostButton"
+                      className={`button is-link ${activePost?.id === post.id ? '' : 'is-light'}`}
+                      onClick={() => handleToggleSidebar(post)}
+                    >
+                      {activePost?.id === post.id ? 'Close' : 'Open'}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </>
+  );
+};
