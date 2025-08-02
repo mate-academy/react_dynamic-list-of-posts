@@ -4,14 +4,14 @@ import classNames from 'classnames';
 
 type Props = {
   users: User[];
-  selectedUser?: User | null;
-  onUserSelect?: (user: User) => void;
+  selectedUser: User | null;
+  onUserSelect: (user: User) => void;
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
-  selectedUser = null,
-  onUserSelect = () => {},
+  selectedUser,
+  onUserSelect,
 }) => {
   const [isDropdownOpened, setIsDropdownOpened] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
