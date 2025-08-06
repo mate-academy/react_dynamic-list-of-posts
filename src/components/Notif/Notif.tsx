@@ -11,11 +11,13 @@ export const Notif: React.FC = () => {
         <div
           className="notification is-danger"
           data-cy={
-            notificationState.source === 'Userloading'
-              ? 'PostsLoadingError'
-              : notificationState.source === 'PostDetails'
-                ? 'CommentsError'
-                : ''
+            notificationState.source !== 'Comment'
+              ? notificationState.source === 'Userloading'
+                ? 'PostsLoadingError'
+                : notificationState.source === 'PostDetails'
+                  ? 'CommentsError'
+                  : ''
+              : undefined
           }
         >
           {notificationState.error}

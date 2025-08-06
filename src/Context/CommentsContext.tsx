@@ -98,7 +98,7 @@ export const CommentsProvider: React.FC<CommentsProviderProps> = ({
       notificationDispatch({
         type: 'SET_ALARM',
         error: '',
-        alarm: 'No posts yet',
+        alarm: 'No comments yet',
         source: 'PostDetails',
       });
     }

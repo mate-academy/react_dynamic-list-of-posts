@@ -5,11 +5,15 @@ import * as userApiServise from '../api/UserApi';
 type UserListContextType = {
   users: User[];
   setUsers: React.Dispatch<React.SetStateAction<User[]>>;
+  errorGetUsers: boolean;
+  setErrorGetUsers: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const UserListContext = React.createContext<UserListContextType>({
   users: [],
   setUsers: () => {},
+  errorGetUsers: false,
+  setErrorGetUsers: () => {},
 });
 
 type UserListProviderProps = {
@@ -20,6 +24,7 @@ export const UserListProvider: React.FC<UserListProviderProps> = ({
   children,
 }) => {
   const [users, setUsers] = useState<User[]>([]);
+  const [errorGetUsers, setErrorGetUsers] = useState(false);
 
   useEffect(() => {
     userApiServise
@@ -30,12 +35,14 @@ export const UserListProvider: React.FC<UserListProviderProps> = ({
         }
       })
       .catch(() => {
-        throw new Error('Something went wrong');
+        setErrorGetUsers(true);
       });
   }, []);
 
   return (
-    <UserListContext.Provider value={{ users, setUsers }}>
+    <UserListContext.Provider
+      value={{ users, setUsers, errorGetUsers, setErrorGetUsers }}
+    >
       {children}
     </UserListContext.Provider>
   );

@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { CommentsContext } from '../../Context/CommentsContext';
 import { Comment } from '../../types/Comment';
 import * as commentsApiServise from '../../api/CommentApi';
+import { NotificationContent } from '../../Context/NotificationManager';
 
 type CommentItemProps = {
   comment: Comment;
@@ -9,7 +10,7 @@ type CommentItemProps = {
 
 export const CommentItem: React.FC<CommentItemProps> = ({ comment }) => {
   const { onDeleteComment } = useContext(CommentsContext);
-  // const { notificationDispatch } = useContext(NotificationContent);
+  const { notificationDispatch } = useContext(NotificationContent);
 
   const handleCommentDelete = async (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -21,7 +22,12 @@ export const CommentItem: React.FC<CommentItemProps> = ({ comment }) => {
       commentsApiServise.deleteComment(commentId);
       onDeleteComment(commentId);
     } catch {
-      throw new Error();
+      notificationDispatch({
+        type: 'SET_ERROR',
+        error: 'Something went wrong',
+        alarm: '',
+        source: 'Comment',
+      });
     }
   };
 

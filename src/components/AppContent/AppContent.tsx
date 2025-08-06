@@ -14,7 +14,7 @@ import { UserListContext } from '../../Context/UserListContext';
 import { IsFormProvider } from '../../Context/IsForm';
 
 export const AppContent: React.FC = () => {
-  const { users } = useContext(UserListContext);
+  const { users, errorGetUsers } = useContext(UserListContext);
 
   const { notificationState } = useContext(NotificationContent);
   const { selectedPost } = useContext(CurrentPostContext);
@@ -33,7 +33,13 @@ export const AppContent: React.FC = () => {
       <div className="tile is-parent">
         <div className="tile is-child box is-success">
           <div className="block">
-            <UserSelector users={users} handleSelectUser={onUserPostList} />
+            {errorGetUsers ? (
+              <div className="notification is-danger">
+                Something went wrong!
+              </div>
+            ) : (
+              <UserSelector users={users} handleSelectUser={onUserPostList} />
+            )}
           </div>
 
           <div className="block" data-cy="MainContent">

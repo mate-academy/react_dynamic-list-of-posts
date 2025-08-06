@@ -3,7 +3,7 @@ import { ErrorActions, Notification } from '../types/Notification';
 export const initialErrors: Notification = {
   error: '',
   alarm: '',
-  source: '',
+  source: 'Userloading',
 };
 
 export const errorReducer = (
