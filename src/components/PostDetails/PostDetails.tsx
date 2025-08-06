@@ -6,7 +6,7 @@ import { Notif } from '../Notif';
 import { NotificationContent } from '../../Context/NotificationManager';
 import { CommentsContext } from '../../Context/CommentsContext';
 import { CurrentPostContext } from '../../Context/CurrentPostContext';
-import { IsFormContext } from '../../Context/isForm';
+import { IsFormContext } from '../../Context/IsForm';
 
 export const PostDetails: React.FC = () => {
   const { commentForm, setCommentForm } = useContext(IsFormContext);
@@ -16,6 +16,7 @@ export const PostDetails: React.FC = () => {
 
   useEffect(() => {
     setCommentForm(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPost]);
 
   const handleNewComment = (event: React.MouseEvent<HTMLButtonElement>) => {

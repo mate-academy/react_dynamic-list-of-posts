@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { User } from '../../types/User';
 import { UserItem } from '../UserItem/UserItem';
 import { CurrentUserContext } from '../../Context/CurrentUserContext';
@@ -31,6 +31,7 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDropdown = () => {

@@ -1,8 +1,6 @@
 import React, { createContext, useReducer } from 'react';
 import { ErrorActions, Notification } from '../types/Notification';
 import { errorReducer, initialErrors } from '../Reducer/NotificationReducer';
-// import { errorReducer, initialErrors } from '../Reducer/NotificationReducer';
-// import { ErrorActions, Notification } from '../types/Notification';
 
 type NotificationContextType = {
   notificationState: Notification;
