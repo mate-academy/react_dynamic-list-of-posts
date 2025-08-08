@@ -1,86 +1,72 @@
 import React from 'react';
+import { Post } from '../types/Post';
+import classNames from 'classnames';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+type Props = {
+  userPosts: Post[] | undefined;
+  selectTitle: number | null;
+  setSelectTitle: React.Dispatch<React.SetStateAction<number | null>>;
+  setStateCommentButton: React.Dispatch<React.SetStateAction<boolean>>;
+  // setStateAWriteAComment: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-          <th> </th>
-        </tr>
-      </thead>
+export const PostsList: React.FC<Props> = ({
+  userPosts,
+  selectTitle,
+  setSelectTitle,
+  setStateCommentButton,
+  // setStateAWriteAComment,
+}) => {
+  const handleToggle = (id: number) => {
+    setSelectTitle(prev => (prev === id ? null : id));
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+    if (selectTitle !== id) {
+      setStateCommentButton(false);
+    }
+  };
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+            <th> </th>
+          </tr>
+        </thead>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+        <tbody>
+          {userPosts?.map(userPost => (
+            <tr data-cy="Post" key={userPost.id}>
+              <td data-cy="PostId">{userPost.id}</td>
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+              <td data-cy="PostTitle">{userPost.title}</td>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className={classNames('button is-link', {
+                    'is-light': selectTitle !== userPost.id,
+                  })}
+                  onClick={() => {
+                    handleToggle(userPost.id);
+                    setStateCommentButton(
+                      selectTitle === userPost.id ? true : false,
+                    );
+                  }}
+                >
+                  {selectTitle === userPost.id ? 'Close' : 'Open'}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
