@@ -42,7 +42,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', {
-              'is-danger': name === '' && isSubmitted,
+              'is-danger': name.trim() === '' && isSubmitted,
             })}
             onChange={onHandleName}
           />
@@ -51,7 +51,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-user" />
           </span>
 
-          {name === '' && isSubmitted && (
+          {name.trim() === '' && isSubmitted && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -61,7 +61,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {name === '' && isSubmitted && (
+        {name.trim() === '' && isSubmitted && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -81,7 +81,7 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', {
-              'is-danger': email === '' && isSubmitted,
+              'is-danger': email.trim() === '' && isSubmitted,
             })}
             onChange={onHandleEmail}
           />
@@ -90,7 +90,7 @@ export const NewCommentForm: React.FC<Props> = ({
             <i className="fas fa-envelope" />
           </span>
 
-          {email === '' && isSubmitted && (
+          {email.trim() === '' && isSubmitted && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -100,7 +100,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {email === '' && isSubmitted && (
+        {email.trim() === '' && isSubmitted && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -119,13 +119,13 @@ export const NewCommentForm: React.FC<Props> = ({
             value={text}
             placeholder="Type comment here"
             className={classNames('textarea', {
-              'is-danger': text === '' && isSubmitted,
+              'is-danger': text.trim() === '' && isSubmitted,
             })}
             onChange={onHandleText}
           />
         </div>
 
-        {text === '' && isSubmitted && (
+        {text.trim() === '' && isSubmitted && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>

@@ -15,6 +15,9 @@ type Props = {
   isLoading: boolean;
   isPressed: boolean;
   selectedUserId: number;
+  isCreatingComment: boolean;
+  createCommentError: string;
+  deleteCommentError: string;
   onDelete: (commentId: number) => void;
   onPressed: (isPressed: boolean) => void;
   onHandleName: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -35,6 +38,9 @@ export const PostDetails: React.FC<Props> = ({
   isLoading,
   isPressed,
   selectedUserId,
+  isCreatingComment,
+  createCommentError,
+  deleteCommentError,
   onDelete,
   onPressed,
   onHandleName,
@@ -59,7 +65,25 @@ export const PostDetails: React.FC<Props> = ({
 
           {errorMessage !== '' && (
             <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
+              {errorMessage}
+            </div>
+          )}
+
+          {createCommentError !== '' && (
+            <div
+              className="notification is-danger"
+              data-cy="CreateCommentError"
+            >
+              {createCommentError}
+            </div>
+          )}
+
+          {deleteCommentError !== '' && (
+            <div
+              className="notification is-danger"
+              data-cy="DeleteCommentError"
+            >
+              {deleteCommentError}
             </div>
           )}
 
@@ -120,7 +144,7 @@ export const PostDetails: React.FC<Props> = ({
 
         {isPressed && (
           <NewCommentForm
-            isLoading={isLoading}
+            isLoading={isCreatingComment}
             selectedUserId={selectedUserId}
             name={name}
             email={email}

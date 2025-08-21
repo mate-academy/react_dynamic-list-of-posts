@@ -24,8 +24,20 @@ export const App = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+
+  // Separate error states
+  const [usersError, setUsersError] = useState('');
+  const [postsError, setPostsError] = useState('');
+  const [commentsError, setCommentsError] = useState('');
+  const [createCommentError, setCreateCommentError] = useState('');
+  const [deleteCommentError, setDeleteCommentError] = useState('');
+
+  // Separate loading states
+  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
+  const [isLoadingPosts, setIsLoadingPosts] = useState(false);
+  const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [isCreatingComment, setIsCreatingComment] = useState(false);
+
   const [selectedUserId, setSelectedUserId] = useState(-1);
   const [selectedPostId, setSelectedPostId] = useState(-1);
   const [isOpened, setIsOpened] = useState(false);
@@ -37,28 +49,47 @@ export const App = () => {
 
   const handleName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAuthName(event.target.value);
+    // Clear validation error when user starts typing
+    if (isSubmitted && event.target.value.trim() !== '') {
+      setIsSubmitted(false);
+    }
   };
 
   const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAuthEmail(event.target.value);
+    // Clear validation error when user starts typing
+    if (isSubmitted && event.target.value.trim() !== '') {
+      setIsSubmitted(false);
+    }
   };
 
   const handleText = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(event.target.value);
+    // Clear validation error when user starts typing
+    if (isSubmitted && event.target.value.trim() !== '') {
+      setIsSubmitted(false);
+    }
   };
 
   const handleDeleteComment = (commentId: number) => {
-    setErrorMessage('');
+    setDeleteCommentError('');
+
+    // Optimistic update - remove comment immediately
+    const previousComments = [...comments];
+
+    setComments(currentComments =>
+      currentComments.filter(currentComment => currentComment.id !== commentId),
+    );
 
     deleteComments(commentId)
-      .then(() =>
-        setComments(currentComments =>
-          currentComments.filter(
-            currentComment => currentComment.id !== commentId,
-          ),
-        ),
-      )
-      .catch(() => setErrorMessage('Unable to delete comment'));
+      .then(() => {
+        // Success - comment already removed
+      })
+      .catch(() => {
+        // Restore comment on failure
+        setComments(previousComments);
+        setDeleteCommentError('Unable to delete comment');
+      });
   };
 
   const handleAddComment = ({
@@ -67,13 +98,16 @@ export const App = () => {
     body,
     postId,
   }: Omit<Comment, 'id'>) => {
-    setErrorMessage('');
+    setCreateCommentError('');
 
     return createComments({ name, email, body, postId })
       .then(newComment => {
         setComments(currentComments => [...currentComments, newComment]);
+        // Keep name and email, clear only text
+        setText('');
+        setIsSubmitted(false);
       })
-      .catch(() => setErrorMessage('Unable to delete comment'));
+      .catch(() => setCreateCommentError('Unable to create comment'));
   };
 
   const handleReset = () => {
@@ -81,22 +115,32 @@ export const App = () => {
     setAuthName('');
     setAuthEmail('');
     setText('');
+    setCreateCommentError('');
   };
 
   const handleForm = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsSubmitted(true);
-    setIsLoading(true);
+
+    const trimmedName = authName.trim();
+    const trimmedEmail = authEmail.trim();
+    const trimmedText = text.trim();
+
+    // Validate all fields
+    if (trimmedName === '' || trimmedEmail === '' || trimmedText === '') {
+      setIsSubmitted(true);
+
+      return;
+    }
+
+    setIsCreatingComment(true);
 
     handleAddComment({
-      name: authName,
-      email: authEmail,
-      body: text,
-      postId: selectedUserId,
+      name: trimmedName,
+      email: trimmedEmail,
+      body: trimmedText,
+      postId: selectedPostId, // Fix: use selectedPostId instead of selectedUserId
     }).finally(() => {
-      setIsLoading(false);
-      setIsSubmitted(false);
-      setText('');
+      setIsCreatingComment(false);
     });
   };
 
@@ -114,15 +158,15 @@ export const App = () => {
   };
 
   useEffect(() => {
-    setIsLoading(true);
-    setErrorMessage('');
+    setIsLoadingUsers(true);
+    setUsersError('');
 
     getUsers()
       .then(usersFromServer => {
         setUsers(usersFromServer);
       })
-      .catch(() => setErrorMessage('Unable to load users'))
-      .finally(() => setIsLoading(false));
+      .catch(() => setUsersError('Unable to load users'))
+      .finally(() => setIsLoadingUsers(false));
   }, []);
 
   useEffect(() => {
@@ -130,29 +174,29 @@ export const App = () => {
   }, [selectedPostId]);
 
   useEffect(() => {
-    setIsLoading(true);
-    setErrorMessage('');
+    setIsLoadingPosts(true);
+    setPostsError('');
     setPosts([]);
 
     getUserPosts(selectedUserId)
       .then(userPostsFromServer => {
         setPosts(userPostsFromServer);
       })
-      .catch(() => setErrorMessage(`Unable to load user's posts`))
-      .finally(() => setIsLoading(false));
+      .catch(() => setPostsError(`Unable to load user's posts`))
+      .finally(() => setIsLoadingPosts(false));
   }, [selectedUserId]);
 
   useEffect(() => {
-    setIsLoading(true);
-    setErrorMessage('');
+    setIsLoadingComments(true);
+    setCommentsError('');
     setComments([]);
 
     getComments(selectedPostId)
       .then(commentsFromServer => {
         setComments(commentsFromServer);
       })
-      .catch(() => setErrorMessage(`Unable to load comments`))
-      .finally(() => setIsLoading(false));
+      .catch(() => setCommentsError(`Unable to load comments`))
+      .finally(() => setIsLoadingComments(false));
   }, [selectedPostId]);
 
   return (
@@ -177,20 +221,33 @@ export const App = () => {
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {isLoading && <Loader />}
+                {isLoadingUsers && <Loader />}
 
-                {errorMessage !== '' && (
+                {usersError !== '' && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="UsersLoadingError"
+                  >
+                    {usersError}
+                  </div>
+                )}
+
+                {isLoadingPosts && <Loader />}
+
+                {postsError !== '' && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    Something went wrong!
+                    {postsError}
                   </div>
                 )}
 
                 {selectedUserId !== -1 &&
-                  !isLoading &&
-                  errorMessage === '' &&
+                  !isLoadingUsers &&
+                  !isLoadingPosts &&
+                  usersError === '' &&
+                  postsError === '' &&
                   (posts.length === 0 ? (
                     <div
                       className="notification is-warning"
@@ -232,10 +289,13 @@ export const App = () => {
                   selectedUserId={selectedUserId}
                   selectedPost={selectedPost}
                   comments={comments}
-                  errorMessage={errorMessage}
-                  isLoading={isLoading}
+                  errorMessage={commentsError}
+                  isLoading={isLoadingComments}
                   isPressed={isPressed}
                   isSubmitted={isSubmitted}
+                  isCreatingComment={isCreatingComment}
+                  createCommentError={createCommentError}
+                  deleteCommentError={deleteCommentError}
                   onHandleName={handleName}
                   onHandleEmail={handleEmail}
                   onHandleText={handleText}
