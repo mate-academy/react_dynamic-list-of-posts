@@ -1,6 +1,8 @@
 import React, { useRef, useState } from 'react';
-import { User } from '../types/User';
 import classNames from 'classnames';
+
+import PropTypes from 'prop-types';
+import { User } from '../types/User';
 import { useClickOutside } from '../hooks/useClickOutside';
 
 type Props = {
@@ -71,3 +73,16 @@ export const UserSelector: React.FC<Props> = ({
     </div>
   );
 };
+
+UserSelector.propTypes = {
+  chosenUserId: PropTypes.number,
+  toChooseUserId: PropTypes.func.isRequired,
+  users: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+      phone: PropTypes.string.isRequired,
+    }).isRequired,
+  ).isRequired
+}

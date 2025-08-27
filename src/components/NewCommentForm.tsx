@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import cn from 'classnames';
 import { Comment } from '../types/Comment';
+import PropTypes from 'prop-types';
 
 type Props = {
   postId: number | null;
@@ -188,3 +189,9 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSubmit }) => {
     </form>
   );
 };
+
+
+NewCommentForm.propTypes = {
+  postId: PropTypes.number,
+  onSubmit: PropTypes.func.isRequired,
+}

@@ -63,12 +63,13 @@ export const App = () => {
               <div className="block" data-cy="MainContent">
                 {!userId ? (
                   <p data-cy="NoSelectedUser">No user selected</p>
-                ) : error ? (
+                )
+                  : error ? (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    Something went wrong!
+                      Something went wrong!
                   </div>
                 ) : isPostsLoading ? (
                   <Loader />

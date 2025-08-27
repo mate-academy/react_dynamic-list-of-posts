@@ -3,6 +3,7 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment, CommentData } from '../types/Comment';
 import * as Client from '../api/client';
+import PropTypes from 'prop-types';
 
 type Props = {
   postId: number | null;
@@ -12,8 +13,12 @@ type Props = {
 export const PostDetails: React.FC<Props> = ({ postId, posts }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [addError, setAddError] = useState(false);
+  const [deleteError, setDeleteError] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [openToWriteComment, setOpenToWriteComment] = useState(false);
+  const [pendingComment, setPendingComment] = useState<CommentData | null>(null);
+  const [retryDelete, setRetryDelete] = useState<number | null>(null);
 
   const post = posts.find(p => p.id === postId);
   const userId = post ? post.id : null;
@@ -36,18 +41,30 @@ export const PostDetails: React.FC<Props> = ({ postId, posts }) => {
     setOpenToWriteComment(false);
   }, [postId, userId]);
 
-  const deleteComment = (commentId: number) => {
-    Client.CommentsAPI.deleteComment(commentId)
-      .then(() => {
-        setComments(prev => prev.filter(c => c.id !== commentId));
-      })
-      .catch(() => setError(true));
+  const deleteComment = async (commentId: number) => {
+    const prevComments = [...comments];
+    setComments(prev => prev.filter(c => c.id !== commentId));
+    setDeleteError(false);
+
+    try {
+      await Client.CommentsAPI.deleteComment(commentId);
+    } catch {
+      setComments(prevComments);
+      setDeleteError(true);
+      setRetryDelete(commentId);
+    }
   };
 
   const addComment = async (newComment: CommentData) => {
-    const comment = await Client.CommentsAPI.addComment(newComment);
+    setAddError(false);
 
-    setComments(prev => [...prev, comment]);
+    try {
+      const comment = await Client.CommentsAPI.addComment(newComment);
+      setComments(prev => [...prev, comment]);
+    } catch {
+      setAddError(true);
+      setPendingComment(newComment);
+    }
   };
 
   return (
@@ -69,6 +86,44 @@ export const PostDetails: React.FC<Props> = ({ postId, posts }) => {
               Something went wrong
             </div>
           )}
+
+
+          {addError && pendingComment && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Failed to add comment
+              <button
+                className="button is-small ml-2"
+                onClick={() => {
+                  if (pendingComment) {
+                    addComment(pendingComment);
+                    setPendingComment(null);
+                  }
+                }}
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {deleteError && !pendingComment && (
+            <div className="notification is-danger" data-cy="CommentsError">
+              Failed to delete comment
+              <button
+                className="button is-small ml-2"
+                onClick={() => {
+                  if (retryDelete !== null) {
+                    deleteComment(retryDelete as number);
+                    setRetryDelete(null);
+                  }
+                }}
+              >
+                Retry
+              </button>
+            </div>
+          )
+
+          }
+
 
           {comments.length === 0 && !isLoading && !error && (
             <p className="title is-4" data-cy="NoCommentsMessage">
@@ -105,7 +160,7 @@ export const PostDetails: React.FC<Props> = ({ postId, posts }) => {
             </article>
           ))}
 
-          {!error && !isLoading && !openToWriteComment && (
+          {!isLoading && !openToWriteComment && !error && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -124,3 +179,14 @@ export const PostDetails: React.FC<Props> = ({ postId, posts }) => {
     </div>
   );
 };
+
+PostDetails.propTypes = {
+  postId: PropTypes.number,
+  posts: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      title: PropTypes.string.isRequired,
+      body: PropTypes.string.isRequired,
+    }).isRequired,
+  ).isRequired,
+}
