@@ -1,23 +1,49 @@
-.Sidebar {
-  overflow: hidden;
-  opacity: 0;
-  transition-property: max-width, opacity;
-  transition-duration: 0.5s;
-  transition-timing-function: ease-in-out;
-
-  @media (min-width: 769px) {
-    max-width: 0;
+.App {
+  .Sidebar {
+    transition: all 0.3s ease;
+    overflow: hidden;
+    width: 0;
+    &.Sidebar--open {
+      width: 100%;
+    }
   }
 
-  &--open {
-    opacity: 1;
-
-    @media (min-width: 769px) {
-      max-width: 50%;
+  @media (min-width: 1024px) {
+    .Sidebar {
+      &.Sidebar--open {
+        width: 50%;
+      }
     }
   }
 }
 
-.message-body {
-  white-space: pre-line;
+.app-container {
+  display: flex;
+  gap: 1rem;
+  position: relative;
+}
+
+.left-panel {
+  flex: 1 1 auto;
+  transition: flex 0.3s ease;
+  border-radius: 12px;
+  padding: 1rem;
+ 
+  &.shrinked {
+    flex: 0 0 60%;
+  }
+}
+
+.right-panel {
+  width: 50%;
+  flex-shrink: 0;
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.left-panel .content-area .title
+ {
+  margin-top: 1rem;
+  
 }
