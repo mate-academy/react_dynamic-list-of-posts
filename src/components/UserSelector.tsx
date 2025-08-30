@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
 import cn from 'classnames';
 import { Post } from '../types/Post';
@@ -20,6 +20,23 @@ export const UserSelector: React.FC<Props> = ({
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handler);
+
+    return () => {
+      document.removeEventListener('click', handler);
+    };
+  }, []);
+
   return (
     <div
       data-cy="UserSelector"
@@ -33,7 +50,6 @@ export const UserSelector: React.FC<Props> = ({
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          onBlur={() => setIsDropdownOpen(false)}
         >
           <span>{selUser?.name || 'Choose a user'}</span>
 
