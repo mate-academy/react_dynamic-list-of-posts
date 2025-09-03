@@ -18,7 +18,7 @@ export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selUser, setSelUser] = useState<User | null>(null);
 
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [errMsg, setErrMsg] = useState('');
 
   const [posts, setPosts] = useState<Post[]>([]);
@@ -30,12 +30,12 @@ export const App = () => {
 
   useEffect(() => {
     if (selUser) {
-      setLoading(true);
+      setIsLoading(true);
 
       getPostByUserId(selUser?.id)
         .then(setPosts)
         .catch(() => setErrMsg('Something went wrong!'))
-        .finally(() => setLoading(false));
+        .finally(() => setIsLoading(false));
     }
   }, [selUser]);
 
@@ -55,13 +55,13 @@ export const App = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!loading && !selUser && (
+                {!isLoading && !selUser && (
                   <p data-cy="NoselUser">No user selected</p>
                 )}
 
-                {loading && <Loader />}
+                {isLoading && <Loader />}
 
-                {errMsg && !loading && (
+                {errMsg && !isLoading && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -70,13 +70,13 @@ export const App = () => {
                   </div>
                 )}
 
-                {selUser?.id && posts.length === 0 && !errMsg && !loading && (
+                {selUser?.id && posts.length === 0 && !errMsg && !isLoading && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {selUser && posts.length > 0 && !loading && !errMsg && (
+                {selUser && posts.length > 0 && !isLoading && !errMsg && (
                   <PostsList
                     posts={posts}
                     setSelectedPost={setSelectedPost}

@@ -35,11 +35,15 @@ export const NewCommentForm: React.FC<Props> = ({
   const onSubmitHandle = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setNameError(!name);
-    setEmailError(!email);
-    setBodyError(!body);
+    const nameTrimmed = name.trim();
+    const emailTrimmed = email.trim();
+    const bodyTrimmed = body.trim();
 
-    if (!name || !body || !email) {
+    setNameError(!nameTrimmed);
+    setEmailError(!emailTrimmed);
+    setBodyError(!bodyTrimmed);
+
+    if (!nameTrimmed || !emailTrimmed || !bodyTrimmed) {
       return;
     }
 
@@ -49,9 +53,9 @@ export const NewCommentForm: React.FC<Props> = ({
     onSubmit({
       id: Math.max(0, ...comments.map(comment => comment.id)) + 1,
       postId: post.id,
-      name,
-      email,
-      body,
+      name: name.trim(),
+      email: email.trim(),
+      body: body.trim(),
     })
       .then(() => setBody(''))
       .catch(() => {
