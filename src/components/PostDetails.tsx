@@ -60,12 +60,6 @@ export const PostDetails: React.FC<Props> = ({
           <p data-cy="PostBody">{selectedPost?.body}</p>
         </div>
 
-        {/* {errorMessageCommentForm && (
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-        )} */}
-
         {!errorMessageComments ? (
           <div className="block">
             {isCommentsLoading ? (
@@ -111,7 +105,6 @@ export const PostDetails: React.FC<Props> = ({
               <NewCommentForm
                 setErrorMessageComments={setErrorMessageComments}
                 post={selectedPost}
-                comments={comments}
                 setComments={setComments}
               />
             )}

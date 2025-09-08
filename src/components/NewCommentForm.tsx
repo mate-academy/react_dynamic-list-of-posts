@@ -5,7 +5,6 @@ import { Post } from '../types/Post';
 import * as commentsService from '../services/comments';
 
 type Props = {
-  comments: Comment[] | null;
   post: Post;
   setComments: React.Dispatch<SetStateAction<Comment[]>>;
   setErrorMessageComments: (errorMessageComments: boolean) => void;
@@ -34,7 +33,7 @@ export const NewCommentForm: React.FC<Props> = ({
     setTimeout(() => setErrorMessageComments(false), 3000);
   };
 
-  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
     setHasNameError(false);
   };
@@ -114,7 +113,7 @@ export const NewCommentForm: React.FC<Props> = ({
               'is-danger': hasNameError,
             })}
             value={name}
-            onChange={handleTitleChange}
+            onChange={handleNameChange}
           />
 
           <span className="icon is-small is-left">

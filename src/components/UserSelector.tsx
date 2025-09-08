@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
+import classNames from 'classnames';
 
 type Props = {
   users: User[];
@@ -34,8 +35,14 @@ export const UserSelector: React.FC<Props> = ({
   }, []);
 
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
-      <div ref={dropdownRef} className="dropdown-trigger">
+    <div
+      data-cy="UserSelector"
+      className={classNames('dropdown', {
+        'is-active': open,
+      })}
+      ref={dropdownRef}
+    >
+      <div className="dropdown-trigger">
         <button
           type="button"
           className="button"

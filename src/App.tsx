@@ -16,7 +16,7 @@ import * as postService from './services/posts';
 
 export const App = () => {
   const [isPostLoading, setIsPostLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState(false);
 
   const [posts, setPosts] = useState<Post[]>([]);
 
@@ -29,10 +29,10 @@ export const App = () => {
     setSelectedPostId(prev => (prev === id ? null : id));
   };
 
-  const hiddenError = (message: string) => {
-    setErrorMessage(message);
-    setTimeout(() => setErrorMessage(''), 3000);
-  };
+  // const hiddenError = () => {
+  //   setErrorMessage(true);
+  //   setTimeout(() => setErrorMessage(false), 3000);
+  // };
 
   const loadUsers = async () => {
     userService.getUsers().then(setUsers);
@@ -53,7 +53,7 @@ export const App = () => {
     postService
       .getPosts(selectedUser.id)
       .then(setPosts)
-      .catch(() => hiddenError('Something went wrong!'))
+      .catch(() => setErrorMessage(true))
       .finally(() => setIsPostLoading(false));
   }, [selectedUser]);
 
@@ -79,6 +79,12 @@ export const App = () => {
                 )}
 
                 {isPostLoading && <Loader />}
+
+                {errorMessage && (
+                  <div className="notification is-danger" data-cy="PostsError">
+                    Something went wrong
+                  </div>
+                )}
 
                 {!isPostLoading &&
                   !errorMessage &&
