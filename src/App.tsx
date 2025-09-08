@@ -29,11 +29,6 @@ export const App = () => {
     setSelectedPostId(prev => (prev === id ? null : id));
   };
 
-  // const hiddenError = () => {
-  //   setErrorMessage(true);
-  //   setTimeout(() => setErrorMessage(false), 3000);
-  // };
-
   const loadUsers = async () => {
     userService.getUsers().then(setUsers);
   };
@@ -101,7 +96,6 @@ export const App = () => {
                 {!isPostLoading && !errorMessage && posts.length > 0 && (
                   <PostsList
                     posts={posts}
-                    selectedUser={selectedUser}
                     selectedPostId={selectedPostId}
                     onToggle={toggleComments}
                   />
@@ -117,7 +111,7 @@ export const App = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': !!selectedPost }
             )}
           >
             {selectedPost && (

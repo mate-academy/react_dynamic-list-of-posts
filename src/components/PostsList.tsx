@@ -1,10 +1,8 @@
 import React from 'react';
 import { Post } from '../types/Post';
-import { User } from '../types/User';
 
 type Props = {
   posts: Post[];
-  selectedUser: User | null;
   selectedPostId: number | null;
   onToggle?: (id: number | null) => void;
 };

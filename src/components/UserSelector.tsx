@@ -64,7 +64,7 @@ export const UserSelector: React.FC<Props> = ({
             {users.map(user => (
               <div
                 key={user.id}
-                className="dropdown-item is-active"
+                className={classNames('dropdown-item', { 'is-active': selectedUser?.id === user.id })}
                 onClick={() => {
                   onSelect(user);
                   setOpen(false);

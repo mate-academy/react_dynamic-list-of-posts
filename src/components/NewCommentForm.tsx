@@ -15,8 +15,6 @@ export const NewCommentForm: React.FC<Props> = ({
   post,
   setErrorMessageComments,
 }) => {
-  // const [isSubmitting, setIsSubmitting] = useState(false);
-
   const [commentLoading, setCommentLoading] = useState(false);
 
   const [name, setName] = useState('');
