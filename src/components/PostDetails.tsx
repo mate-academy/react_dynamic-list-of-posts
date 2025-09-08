@@ -26,7 +26,7 @@ export const PostDetails: React.FC<Props> = ({
   const [errorMessageComments, setErrorMessageComments] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState<boolean>(false);
 
-  const loadComments = async () => {
+  useEffect(() => {
     if (!selectedPostId) {
       return;
     }
@@ -34,19 +34,11 @@ export const PostDetails: React.FC<Props> = ({
     setIsCommentsLoading(true);
     setComments([]);
 
-    try {
-      const loadedComments = await commentsService.getComments(selectedPostId);
-
-      setComments(loadedComments);
-    } catch {
-      setErrorMessageComments(true);
-    } finally {
-      setIsCommentsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadComments();
+    commentsService
+      .getComments(selectedPostId)
+      .then(setComments)
+      .catch(() => setErrorMessageComments(true))
+      .finally(() => setIsCommentsLoading(false));
   }, [selectedPostId]);
 
   function deleteComment(commentId: number) {

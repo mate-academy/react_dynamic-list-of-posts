@@ -42,7 +42,7 @@ export const App = () => {
     loadUsers();
   }, []);
 
-  const loadPosts = async () => {
+  useEffect(() => {
     if (!selectedUser) {
       return;
     }
@@ -50,20 +50,12 @@ export const App = () => {
     setIsPostLoading(true);
     setPosts([]);
 
-    try {
-      const loadedPosts = await postService.getPosts(selectedUser.id);
-
-      setPosts(loadedPosts);
-    } catch {
-      hiddenError('Something went wrong!');
-    } finally {
-      setIsPostLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadPosts();
-  }, [loadPosts]);
+    postService
+      .getPosts(selectedUser.id)
+      .then(setPosts)
+      .catch(() => hiddenError('Something went wrong!'))
+      .finally(() => setIsPostLoading(false));
+  }, [selectedUser]);
 
   const selectedPost = posts.find(post => post.id === selectedPostId);
 
