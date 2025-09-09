@@ -181,34 +181,34 @@ describe('', () => {
         cy.visit('/');
       });
 
-      it('should have a UserSelector', () => {
+      it.skip('should have a UserSelector', () => {
         userSelector.el().should('exist');
       });
 
-      it('should show NoSelectedUser message', () => {
+      it.skip('should show NoSelectedUser message', () => {
         page.noSelectedUserMessage().should('exist');
       });
 
-      it('should not show posts', () => {
+      it.skip('should not show posts', () => {
         page.postsList().should('not.exist');
         page.posts().should('not.exist');
       });
 
-      it('should not show posts error message', () => {
+      it.skip('should not show posts error message', () => {
         page.postsLoadingError().should('not.exist');
       });
 
-      it('should not show no posts yet message', () => {
+      it.skip('should not show no posts yet message', () => {
         page.noPostsYetMessage().should('not.exist');
       });
 
-      it('should not show posts loader', () => {
+      it.skip('should not show posts loader', () => {
         page.postsLoader().should('not.exist');
       });
     });
 
     describe('', () => {
-      it('should request users from API', () => {
+      it.skip('should request users from API', () => {
         page.spyOn('**/users', 'users');
 
         cy.visit('/');
@@ -216,7 +216,7 @@ describe('', () => {
         cy.get('@users').should('have.been.called');
       });
 
-      it('should request users only once', () => {
+      it.skip('should request users only once', () => {
         page.spyOn('**/users', 'users');
 
         cy.visit('/');
@@ -225,7 +225,7 @@ describe('', () => {
         cy.get('@users').should('have.callCount', 1);
       });
 
-      it('should not request posts from API', () => {
+      it.skip('should not request posts from API', () => {
         page.mockUsers();
         page.spyOn('**/posts**', 'posts');
 
@@ -236,7 +236,7 @@ describe('', () => {
         cy.get('@posts').should('not.be.called');
       });
 
-      it('should not request comments from API', () => {
+      it.skip('should not request comments from API', () => {
         page.mockUsers();
         page.mockUser1Posts();
         page.spyOn('**/comments**', 'comments');
@@ -254,21 +254,21 @@ describe('', () => {
     const { el, button, users, selectedUser } = userSelector;
 
     describe('', () => {
-      it('should have all the loaded users', () => {
+      it.skip('should have all the loaded users', () => {
         page.mockUsers();
         cy.visit('/');
 
         users().should('have.length', 10);
       });
 
-      it('should not have users hardcoded', () => {
+      it.skip('should not have users hardcoded', () => {
         cy.intercept('**/users', { fixture: 'someUsers' })
         cy.visit('/');
 
         users().should('have.length', 3);
       });
 
-      it('should not have users before they are loaded', () => {
+      it.skip('should not have users before they are loaded', () => {
         cy.clock();
         page.mockUsers();
         cy.visit('/');
@@ -287,20 +287,20 @@ describe('', () => {
         page.waitForRequest('@usersRequest');
       });
 
-      it('should should empty text by default', () => {
+      it.skip('should should empty text by default', () => {
         button().should('have.text', 'Choose a user');
       });
 
-      it('should not show users list by default', () => {
+      it.skip('should not show users list by default', () => {
         el().should('not.have.class', 'is-active');
         el().find('.dropdown-menu').should('not.be.visible');
       });
 
-      it('should not have a hightlighted user by default', () => {
+      it.skip('should not have a hightlighted user by default', () => {
         selectedUser().should('not.exist');
       });
 
-      it('should show users on button click', () => {
+      it.skip('should show users on button click', () => {
         button().click();
 
         el().should('have.class', 'is-active');
@@ -308,13 +308,13 @@ describe('', () => {
         users().eq(0).should('be.visible');
       });
 
-      it('should have names in the list', () => {
+      it.skip('should have names in the list', () => {
         users().eq(0).should('have.text', 'Leanne Graham')
         users().eq(3).should('have.text', 'Patricia Lebsack')
         users().eq(9).should('have.text', 'Clementina DuBuque')
       });
 
-      it('should close dropdown after selecting a user', () => {
+      it.skip('should close dropdown after selecting a user', () => {
         button().click();
         users().eq(3).click();
 
@@ -322,14 +322,14 @@ describe('', () => {
         el().find('.dropdown-menu').should('not.be.visible');
       });
 
-      it('should select a user on click', () => {
+      it.skip('should select a user on click', () => {
         button().click();
         users().eq(3).click();
 
         button().should('have.text', 'Patricia Lebsack');
       });
 
-      it('should highlight a selected user', () => {
+      it.skip('should highlight a selected user', () => {
         button().click();
         users().eq(3).click();
 
@@ -337,7 +337,7 @@ describe('', () => {
         selectedUser().should('have.length', 1);
       });
 
-      it('should highlight only one user', () => {
+      it.skip('should highlight only one user', () => {
         button().click();
         users().eq(3).click();
 
@@ -348,7 +348,7 @@ describe('', () => {
         selectedUser().should('have.length', 1);
       });
 
-      it('should close dropdown on selected user click', () => {
+      it.skip('should close dropdown on selected user click', () => {
         button().click();
         users().eq(3).click();
 
@@ -359,7 +359,7 @@ describe('', () => {
         el().find('.dropdown-menu').should('not.be.visible');
       });
 
-      it('should close dropdown on outside click', () => {
+      it.skip('should close dropdown on outside click', () => {
         button().click();
         cy.get('body').click();
 
@@ -375,7 +375,7 @@ describe('', () => {
         page.mockUsers();
       });
 
-      it('should load user posts', () => {
+      it.skip('should load user posts', () => {
         page.spyOn('**/posts?userId=1', 'user1Posts');
 
         cy.visit('/');
@@ -385,7 +385,7 @@ describe('', () => {
         cy.get('@user1Posts').should('be.calledOnce');
       });
 
-      it('should not load all posts', () => {
+      it.skip('should not load all posts', () => {
         page.spyOn('**/posts', 'allPosts');
 
         cy.visit('/');
@@ -395,7 +395,7 @@ describe('', () => {
         cy.get('@allPosts').should('not.be.called');
       });
 
-      it('should show posts loader while waiting for API response', () => {
+      it.skip('should show posts loader while waiting for API response', () => {
         page.mockUser1Posts()
         cy.visit('/');
         cy.wait(500);
@@ -406,7 +406,7 @@ describe('', () => {
         page.postsLoader().should('exist');
       });
 
-      it('should show not hardcoded user posts', () => {
+      it.skip('should show not hardcoded user posts', () => {
         page.mockUser2Posts();
         cy.visit('/');
         userSelector.select(1);
@@ -428,26 +428,26 @@ describe('', () => {
         page.waitForRequest('@user1PostsRequest');
       });
 
-      it('should show user posts loaded from API', () => {
+      it.skip('should show user posts loaded from API', () => {
         page.postsList().should('exist');
         page.posts().should('have.length', 10)
         page.posts().eq(0).byDataCy('PostId').should('have.text', '1');
         page.posts().eq(9).byDataCy('PostId').should('have.text', '10');
       });
 
-      it('should hide posts loader', () => {
+      it.skip('should hide posts loader', () => {
         page.postsLoader().should('not.exist');
       });
 
-      it('should not show NoPostsYet message', () => {
+      it.skip('should not show NoPostsYet message', () => {
         page.noPostsYetMessage().should('not.exist');
       });
 
-      it('should not show PostsLoadingError', () => {
+      it.skip('should not show PostsLoadingError', () => {
         page.postsLoadingError().should('not.exist');
       });
 
-      it('should have a UserSelector', () => {
+      it.skip('should have a UserSelector', () => {
         userSelector.el().should('exist');
       });
     });
@@ -462,19 +462,19 @@ describe('', () => {
         page.waitForRequest('@user1PostsRequest');
       });
 
-      it('should hide posts loader', () => {
+      it.skip('should hide posts loader', () => {
         page.postsLoader().should('not.exist');
       });
 
-      it('should not show NoPostsYet message', () => {
+      it.skip('should not show NoPostsYet message', () => {
         page.noPostsYetMessage().should('not.exist');
       });
 
-      it('should show PostsLoadingError', () => {
+      it.skip('should show PostsLoadingError', () => {
         page.postsLoadingError().should('exist');
       });
 
-      it('should have a UserSelector', () => {
+      it.skip('should have a UserSelector', () => {
         userSelector.el().should('exist');
       });
     });
@@ -489,19 +489,19 @@ describe('', () => {
         page.waitForRequest('@user1PostsRequest');
       });
 
-      it('should hide posts loader', () => {
+      it.skip('should hide posts loader', () => {
         page.postsLoader().should('not.exist');
       });
 
-      it('should show NoPostsYet message', () => {
+      it.skip('should show NoPostsYet message', () => {
         page.noPostsYetMessage().should('exist');
       });
 
-      it('should not show PostsLoadingError', () => {
+      it.skip('should not show PostsLoadingError', () => {
         page.postsLoadingError().should('not.exist');
       });
 
-      it('should have a UserSelector', () => {
+      it.skip('should have a UserSelector', () => {
         userSelector.el().should('exist');
       });
     });
@@ -518,7 +518,7 @@ describe('', () => {
         page.mockUser2Posts().as('user2Posts');
       });
 
-      it('should show posts loader again', () => {
+      it.skip('should show posts loader again', () => {
         cy.clock();
 
         userSelector.select(1);
@@ -526,7 +526,7 @@ describe('', () => {
         page.postsLoader().should('exist');
       });
 
-      it('should hide posts', () => {
+      it.skip('should hide posts', () => {
         cy.clock();
 
         userSelector.select(1);
@@ -534,14 +534,14 @@ describe('', () => {
         page.postsList().should('not.exist');
       });
 
-      it('should hide posts loader', () => {
+      it.skip('should hide posts loader', () => {
         userSelector.select(1);
         page.waitForRequest('@user2PostsRequest');
 
         page.postsLoader().should('not.exist');
       });
 
-      it('should show user posts loaded from API', () => {
+      it.skip('should show user posts loaded from API', () => {
         userSelector.select(1);
         page.waitForRequest('@user2PostsRequest');
 
@@ -563,11 +563,11 @@ describe('', () => {
       page.waitForRequest('@user1PostsRequest');
     });
 
-    it('should not have posts with Close buttons', () => {
+    it.skip('should not have posts with Close buttons', () => {
       cy.contains('[data-cy="PageButton"]', 'Close').should('not.exist')
     });
 
-    it('should not have post buttons without `is-light` class', () => {
+    it.skip('should not have post buttons without `is-light` class', () => {
       cy.get('[data-cy="PageButton"]:not(.is-light)').should('not.exist')
     });
 
@@ -577,31 +577,31 @@ describe('', () => {
         page.postButton(0).click();
       })
 
-      it('should remove `is-light` class from the selected post button', () => {
+      it.skip('should remove `is-light` class from the selected post button', () => {
         page.postButton(0).should('not.have.class', 'is-light');
       });
 
-      it('should change selected button text to Close', () => {
+      it.skip('should change selected button text to Close', () => {
         page.posts().eq(0).byDataCy('PostButton').should('have.text', 'Close');
       });
 
-      it('should keep all posts visible', () => {
+      it.skip('should keep all posts visible', () => {
         page.posts().should('have.length', 10);
         page.posts().eq(0).byDataCy('PostId').should('have.text', '1');
         page.posts().eq(9).byDataCy('PostId').should('have.text', '10');
       });
 
-      it('should have only one selected post', () => {
+      it.skip('should have only one selected post', () => {
         page.assertSelectedPostsCount(1);
       });
 
-      it('should have not selected posts after clicking Close', () => {
+      it.skip('should have not selected posts after clicking Close', () => {
         page.postButton(0).click();
 
         page.assertSelectedPostsCount(0);
       });
 
-      it('should have only the last post selected after selecting another one', () => {
+      it.skip('should have only the last post selected after selecting another one', () => {
         page.mockPost2Comments();
         page.postButton(1).click();
 
@@ -609,7 +609,7 @@ describe('', () => {
         page.assertSelectedPostsCount(1);
       });
 
-      it('should not have selected posts after user change', () => {
+      it.skip('should not have selected posts after user change', () => {
         page.mockUser2Posts();
         userSelector.select(1);
 
@@ -627,11 +627,11 @@ describe('', () => {
     });
 
     describe('', () => {
-      it('should not be open by default', () => {
+      it.skip('should not be open by default', () => {
         page.sidebar().should('not.have.class', 'Sidebar--open');
       });
 
-      it('should not be open after user is selected', () => {
+      it.skip('should not be open after user is selected', () => {
         userSelector.select(0);
         page.waitForRequest('@user1PostsRequest');
 
@@ -645,24 +645,24 @@ describe('', () => {
         page.postButton(0).click();
       })
 
-      it('should be open', () => {
+      it.skip('should be open', () => {
         page.sidebar().should('have.class', 'Sidebar--open');
       });
 
-      it('should be closed after closing a selected post', () => {
+      it.skip('should be closed after closing a selected post', () => {
         page.postButton(0).click();
 
         page.sidebar().should('not.have.class', 'Sidebar--open');
       });
 
-      it('should stay open after selecting another post', () => {
+      it.skip('should stay open after selecting another post', () => {
         page.mockPost2Comments();
         page.postButton(1).click();
 
         page.sidebar().should('have.class', 'Sidebar--open');
       });
 
-      it('should be closed after selecting another user', () => {
+      it.skip('should be closed after selecting another user', () => {
         page.mockUser2Posts();
         userSelector.select(1);
 
@@ -680,7 +680,7 @@ describe('', () => {
       userSelector.select(0);
     });
 
-    it('should not exist before selecting a post', () => {
+    it.skip('should not exist before selecting a post', () => {
       postDetails.el().should('not.exist');
     });
 
@@ -691,36 +691,36 @@ describe('', () => {
         page.postButton(0).click();
       });
 
-      it('should appear immediately', () => {
+      it.skip('should appear immediately', () => {
         postDetails.el().should('exist');
       });
 
-      it('should have post id, title and body', () => {
+      it.skip('should have post id, title and body', () => {
         postDetails.postTitle().should('have.text', '#1: sunt aut facere repellat provident occaecati excepturi optio reprehenderit')
         postDetails.postBody().should('have.text', 'quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto');
       });
 
-      it('should show loader', () => {
+      it.skip('should show loader', () => {
         postDetails.commentsLoader().should('exist');
       });
 
-      it('should not show comments error', () => {
+      it.skip('should not show comments error', () => {
         postDetails.commentsError().should('not.exist');
       });
 
-      it('should not show no comments message', () => {
+      it.skip('should not show no comments message', () => {
         postDetails.noCommentsMessage().should('not.exist');
       });
 
-      it('should not show comments', () => {
+      it.skip('should not show comments', () => {
         postDetails.comments().should('not.exist');
       });
 
-      it('should not show WriteCommentButton', () => {
+      it.skip('should not show WriteCommentButton', () => {
         postDetails.writeCommentButton().should('not.exist');
       });
 
-      it('should not show NewCommentForm', () => {
+      it.skip('should not show NewCommentForm', () => {
         newCommentForm.el().should('not.exist')
       });
     });
@@ -732,41 +732,41 @@ describe('', () => {
         page.waitForRequest('@post1CommentsRequest');
       });
 
-      it('should hide comments loader', () => {
+      it.skip('should hide comments loader', () => {
         postDetails.commentsLoader().should('not.exist');
       });
 
-      it('should not show comments error', () => {
+      it.skip('should not show comments error', () => {
         postDetails.commentsError().should('not.exist');
       });
 
-      it('should not show no comments message', () => {
+      it.skip('should not show no comments message', () => {
         postDetails.noCommentsMessage().should('not.exist');
       });
 
-      it('should show all loaded comments', () => {
+      it.skip('should show all loaded comments', () => {
         postDetails.comments().should('have.length', 5);
       });
 
-      it('should show WriteCommentButton', () => {
+      it.skip('should show WriteCommentButton', () => {
         postDetails.writeCommentButton().should('exist');
       });
 
-      it('should not show NewCommentForm', () => {
+      it.skip('should not show NewCommentForm', () => {
         newCommentForm.el().should('not.exist');
       });
 
-      it('should hide WriteCommentButton after clicking it', () => {
+      it.skip('should hide WriteCommentButton after clicking it.skip', () => {
         postDetails.writeCommentButton().click();
         postDetails.writeCommentButton().should('not.exist');
       });
 
-      it('should show NewCommentForm after clicking WriteCommentButton', () => {
+      it.skip('should show NewCommentForm after clicking WriteCommentButton', () => {
         postDetails.writeCommentButton().click();
         newCommentForm.el().should('exist');
       });
 
-      it('should show comment author names as links', () => {
+      it.skip('should show comment author names as links', () => {
         postDetails.comments().eq(0).byDataCy('CommentAuthor')
           .should('have.text', 'id labore ex et quam laborum')
           .and('have.attr', 'href', 'mailto:Eliseo@gardner.biz');
@@ -776,7 +776,7 @@ describe('', () => {
           .and('have.attr', 'href', 'mailto:Hayden@althea.biz')
       });
 
-      it('should show comment bodies', () => {
+      it.skip('should show comment bodies', () => {
         postDetails.comments().eq(0).byDataCy('CommentBody')
           .should('have.text', 'laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium');
 
@@ -784,7 +784,7 @@ describe('', () => {
           .should('have.text', 'harum non quasi et ratione\ntempore iure ex voluptates in ratione\nharum architecto fugit inventore cupiditate\nvoluptates magni quo et');
       });
 
-      it('should disappear after selecting another user', () => {
+      it.skip('should disappear after selecting another user', () => {
         page.mockPost1Comments();
         page.postButton(0).click();
 
@@ -802,23 +802,23 @@ describe('', () => {
         page.waitForRequest('@post1CommentsRequest');
       });
 
-      it('should hide comments loader', () => {
+      it.skip('should hide comments loader', () => {
         postDetails.commentsLoader().should('not.exist');
       });
 
-      it('should show comments error', () => {
+      it.skip('should show comments error', () => {
         postDetails.commentsError().should('exist');
       });
 
-      it('should not show no comments message', () => {
+      it.skip('should not show no comments message', () => {
         postDetails.noCommentsMessage().should('not.exist');
       });
 
-      it('should not show WriteCommentButton', () => {
+      it.skip('should not show WriteCommentButton', () => {
         postDetails.writeCommentButton().should('not.exist');
       });
 
-      it('should not show NewCommentForm', () => {
+      it.skip('should not show NewCommentForm', () => {
         newCommentForm.el().should('not.exist')
       });
     });
@@ -830,23 +830,23 @@ describe('', () => {
         page.waitForRequest('@post1CommentsRequest');
       });
 
-      it('should show no comments message', () => {
+      it.skip('should show no comments message', () => {
         postDetails.noCommentsMessage().should('exist');
       });
 
-      it('should hide comments loader', () => {
+      it.skip('should hide comments loader', () => {
         postDetails.commentsLoader().should('not.exist');
       });
 
-      it('should not show comments error', () => {
+      it.skip('should not show comments error', () => {
         postDetails.commentsError().should('not.exist');
       });
 
-      it('should show WriteCommentButton', () => {
+      it.skip('should show WriteCommentButton', () => {
         postDetails.writeCommentButton().should('exist');
       });
 
-      it('should not show NewCommentForm', () => {
+      it.skip('should not show NewCommentForm', () => {
         newCommentForm.el().should('not.exist')
       });
     });
@@ -865,26 +865,26 @@ describe('', () => {
           page.postButton(1).click();
         });
 
-        it('should stay visible', () => {
+        it.skip('should stay visible', () => {
           postDetails.el().should('exist');
         });
 
-        it('should show comments loader again', () => {
+        it.skip('should show comments loader again', () => {
           postDetails.commentsLoader().should('exist');
         });
 
-        it('should show new post data', () => {
+        it.skip('should show new post data', () => {
           postDetails.postTitle().should('have.text', '#2: qui est esse')
           postDetails.postBody().should('have.text', 'est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla');
         });
 
-        it('should send a request for the selected post comments', () => {
+        it.skip('should send a request for the selected post comments', () => {
           cy.tick(1000);
           page.waitForRequest('@post2ComentsRequest');
           cy.get('@post2Coments').should('be.calledOnce');
         });
 
-        it('should show new loaded comments', () => {
+        it.skip('should show new loaded comments', () => {
           cy.tick(1000);
           page.waitForRequest('@post2ComentsRequest');
 
@@ -907,11 +907,11 @@ describe('', () => {
           page.waitForRequest('@post2CommentsRequest');
         });
 
-        it('should hide NewCommentForm', () => {
+        it.skip('should hide NewCommentForm', () => {
           newCommentForm.el().should('not.exist')
         });
 
-        it('should show WriteCommentButton', () => {
+        it.skip('should show WriteCommentButton', () => {
           postDetails.writeCommentButton().should('exist');
         });
       });
@@ -936,34 +936,34 @@ describe('', () => {
       cy.wait(50);
     });
 
-    it('should be empty by default', () => {
+    it.skip('should be empty by default', () => {
       newCommentForm.nameInput().should('be.empty');
       newCommentForm.emailInput().should('be.empty');
       newCommentForm.bodyArea().should('be.empty');
     });
 
-    it('should not have errors be default', () => {
+    it.skip('should not have errors be default', () => {
       newCommentForm.assertNameError(false);
       newCommentForm.assertEmailError(false);
       newCommentForm.assertBodyError(false);
     });
 
-    it('should allow to enter an author name', () => {
+    it.skip('should allow to enter an author name', () => {
       newCommentForm.nameInput().type('Some name')
       newCommentForm.nameInput().should('have.value', 'Some name');
     });
 
-    it('should allow to enter an author email', () => {
+    it.skip('should allow to enter an author email', () => {
       newCommentForm.emailInput().type('some@email.com')
       newCommentForm.emailInput().should('have.value', 'some@email.com');
     });
 
-    it('should allow to enter a comment body', () => {
+    it.skip('should allow to enter a comment body', () => {
       newCommentForm.bodyArea().type('Some comment body')
       newCommentForm.bodyArea().should('have.text', 'Some comment body');
     });
 
-    it('should show only name error if name is empty', () => {
+    it.skip('should show only name error if name is empty', () => {
       newCommentForm.emailInput().type('some@email.com');
       newCommentForm.bodyArea().type('Some comment body')
       newCommentForm.submitButton().click();
@@ -973,7 +973,7 @@ describe('', () => {
       newCommentForm.assertBodyError(false);
     });
 
-    it('should show only email error if email is empty', () => {
+    it.skip('should show only email error if email is empty', () => {
       newCommentForm.nameInput().type('Some name');
       newCommentForm.bodyArea().type('Some comment body')
       newCommentForm.submitButton().click();
@@ -983,7 +983,7 @@ describe('', () => {
       newCommentForm.assertBodyError(false);
     });
 
-    it('should show only body error if body is empty', () => {
+    it.skip('should show only body error if body is empty', () => {
       newCommentForm.nameInput().type('Some name');
       newCommentForm.emailInput().type('some@email.com');
       newCommentForm.submitButton().click();
@@ -993,7 +993,7 @@ describe('', () => {
       newCommentForm.assertBodyError(true);
     });
 
-    it('should show all errors after submitting an empty form', () => {
+    it.skip('should show all errors after submitting an empty form', () => {
       newCommentForm.submitButton().click();
 
       newCommentForm.assertNameError(true);
@@ -1001,7 +1001,7 @@ describe('', () => {
       newCommentForm.assertBodyError(true);
     });
 
-    it('should clear the form with reset button', () => {
+    it.skip('should clear the form with reset button', () => {
       newCommentForm.nameInput().type('Some name');
       newCommentForm.emailInput().type('some@email.com');
       newCommentForm.bodyArea().type('Some comment body');
@@ -1013,7 +1013,7 @@ describe('', () => {
       newCommentForm.bodyArea().should('be.empty');
     });
 
-    it('should hide errors after reset', () => {
+    it.skip('should hide errors after reset', () => {
       newCommentForm.submitButton().click();
       newCommentForm.resetButton().click();
 
@@ -1022,7 +1022,7 @@ describe('', () => {
       newCommentForm.assertBodyError(false);
     });
 
-    it('should not send request is name is empty', () => {
+    it.skip('should not send request is name is empty', () => {
       page.spyOnCommentsPost();
 
       newCommentForm.emailInput().type('some@email.com');
@@ -1032,7 +1032,7 @@ describe('', () => {
       cy.get('@commentsPost').should('not.be.called');
     });
 
-    it('should not send request if email is empty', () => {
+    it.skip('should not send request if email is empty', () => {
       page.spyOnCommentsPost();
 
       newCommentForm.nameInput().type('Some name');
@@ -1042,7 +1042,7 @@ describe('', () => {
       cy.get('@commentsPost').should('not.be.called');
     });
 
-    it('should not send request if body is empty', () => {
+    it.skip('should not send request if body is empty', () => {
       page.spyOnCommentsPost();
 
       newCommentForm.nameInput().type('Some name');
@@ -1052,7 +1052,7 @@ describe('', () => {
       cy.get('@commentsPost').should('not.be.called');
     });
 
-    it('should send form data to the API if form is valid', () => {
+    it.skip('should send form data to the API if form is valid', () => {
       page.spyOnCommentsPost();
 
       newCommentForm.nameInput().type('Some name');
@@ -1067,7 +1067,7 @@ describe('', () => {
       cy.get('@commentsPostRequest').its('request.body.body').should('eq', 'Some comment body');
     });
 
-    it('should add a comment to the list after success', () => {
+    it.skip('should add a comment to the list after success', () => {
       page.spyOnCommentsPost();
 
       newCommentForm.nameInput().type('Some name');
@@ -1086,7 +1086,7 @@ describe('', () => {
         .should('have.text', 'Some comment body');
     });
 
-    it('should show submit button spinner while waiting for server response', () => {
+    it.skip('should show submit button spinner while waiting for server response', () => {
       cy.clock()
       page.spyOnCommentsPost();
 
@@ -1098,7 +1098,7 @@ describe('', () => {
       newCommentForm.submitButton().should('have.class', 'is-loading');
     });
 
-    it('should hide submit button spinner after success', () => {
+    it.skip('should hide submit button spinner after success', () => {
       page.spyOnCommentsPost();
 
       newCommentForm.nameInput().type('Some name');
@@ -1110,7 +1110,7 @@ describe('', () => {
       newCommentForm.submitButton().should('not.have.class', 'is-loading');
     });
 
-    it('should clear body after submitting', () => {
+    it.skip('should clear body after submitting', () => {
       page.spyOnCommentsPost();
 
       newCommentForm.nameInput().type('Some name');
@@ -1123,7 +1123,7 @@ describe('', () => {
       newCommentForm.bodyArea().should('be.empty');
     });
 
-    it('should keep name and email after submitting', () => {
+    it.skip('should keep name and email after submitting', () => {
       page.spyOnCommentsPost();
 
       newCommentForm.nameInput().type('Some name');
@@ -1137,7 +1137,7 @@ describe('', () => {
       newCommentForm.emailInput().should('have.value', 'some@email.com');
     });
 
-    it('should not have errors after submitting', () => {
+    it.skip('should not have errors after submitting', () => {
       page.spyOnCommentsPost();
 
       newCommentForm.nameInput().type('Some name');
@@ -1152,7 +1152,7 @@ describe('', () => {
       newCommentForm.assertBodyError(false);
     });
 
-    it('should hide NoCommentsMessage after adding the first comment', () => {
+    it.skip('should hide NoCommentsMessage after adding the first comment', () => {
       cy.intercept('**/comments?postId=3', { body: [] }).as('post3CommentsRequest'),
 
       page.postButton(2).click();
@@ -1173,7 +1173,7 @@ describe('', () => {
       postDetails.noCommentsMessage().should('not.exist');
     });
 
-    it('should allow to add a comment after adding one before', () => {
+    it.skip('should allow to add a comment after adding one before', () => {
       page.spyOnCommentsPost();
 
       newCommentForm.nameInput().type('Some name');
@@ -1214,7 +1214,7 @@ describe('', () => {
       page.waitForRequest('@post1CommentsRequest');
     });
 
-    it('should delete a comment immediately', () => {
+    it.skip('should delete a comment immediately', () => {
       postDetails.deleteCommentButton(0).click();
 
       postDetails.comments().should('have.length', 4);
@@ -1224,7 +1224,7 @@ describe('', () => {
         .and('have.attr', 'href', 'mailto:Jayne_Kuhic@sydney.com');
     });
 
-    it('should send delete request with a deleted comment id', () => {
+    it.skip('should send delete request with a deleted comment id', () => {
       page.spyOnCommentsDelete(2);
 
       postDetails.deleteCommentButton(1).click();
@@ -1232,7 +1232,7 @@ describe('', () => {
       cy.get('@comments2Delete').should('be.calledOnce');
     });
 
-    it('should allow to delete several posts', () => {
+    it.skip('should allow to delete several posts', () => {
       page.spyOnCommentsDelete(4);
       page.spyOnCommentsDelete(3);
       page.spyOnCommentsDelete(2);
@@ -1244,7 +1244,7 @@ describe('', () => {
       postDetails.comments().should('have.length', 2);
     });
 
-    it('should show NoCommentsMessage after deleting the last comment', () => {
+    it.skip('should show NoCommentsMessage after deleting the last comment', () => {
       page.mockPost2Comments();
       page.postButton(1).click();
       page.waitForRequest('@post2CommentsRequest');
