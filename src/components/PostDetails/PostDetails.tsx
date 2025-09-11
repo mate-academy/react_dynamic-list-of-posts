@@ -1,49 +1,46 @@
+/* eslint-disable prettier/prettier */
+
 import { Loader } from '../Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { Post } from '../../types/Post';
-import { Comment } from '../../types/Comment';
+import { Post } from '../../types/interfaces';
 import { PostComment } from './PostComment';
 import { ErrorMessages } from '../../types/ErrorMessages';
+import { useComments } from '../../hooks/useComments';
+import React, { useState } from 'react';
 
 type Props = {
   selectedPost: Post | null;
-  comments: Comment[];
-  isOpenCommentForm: boolean;
-  isLoadingComments: boolean;
-  toggleCommentForm: () => void;
-  handleDeleteComment: (commentId: number) => void;
-  inputName: string;
-  inputEmail: string;
-  inputMessage: string;
-  handleInputName: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleInputEmail: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleInputMessage: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  onResetForm: () => void;
-  handleAddComment: (
-    setIsSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
-  ) => void;
-  isLoadingAdd: boolean;
   currentError: ErrorMessages | null;
+  setCurrentError: React.Dispatch<React.SetStateAction<ErrorMessages | null>>;
+  setIsOpenCommentForm: React.Dispatch<React.SetStateAction<boolean>>
+  isOpenCommentForm:boolean,
 };
 
 export const PostDetails: React.FC<Props> = ({
   selectedPost,
-  comments,
-  isOpenCommentForm,
-  isLoadingComments,
-  isLoadingAdd,
-  toggleCommentForm,
-  handleDeleteComment,
-  handleAddComment,
-  inputName,
-  inputEmail,
-  inputMessage,
-  handleInputName,
-  handleInputEmail,
-  handleInputMessage,
-  onResetForm,
   currentError,
+  setCurrentError,
+  setIsOpenCommentForm,
+  isOpenCommentForm,
 }) => {
+  const [inputForm, setInputForm] = useState({
+    name: '',
+    email: '',
+    body: '',
+  });
+
+  const {
+    comments,
+    isLoadingComments,
+    isLoadingAdd,
+    handleAddComment,
+    handleDeleteComment,
+  } = useComments(selectedPost, setCurrentError, inputForm, setInputForm);
+
+  const toggleCommentForm = () => {
+    setIsOpenCommentForm(true);
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
@@ -92,13 +89,8 @@ export const PostDetails: React.FC<Props> = ({
               </button>
             ) : (
               <NewCommentForm
-                inputName={inputName}
-                inputEmail={inputEmail}
-                inputMessage={inputMessage}
-                handleInputName={handleInputName}
-                handleInputEmail={handleInputEmail}
-                handleInputMessage={handleInputMessage}
-                onResetForm={onResetForm}
+                inputForm={inputForm}
+                setInputForm={setInputForm}
                 handleAddComment={handleAddComment}
                 isLoadingAdd={isLoadingAdd}
               />

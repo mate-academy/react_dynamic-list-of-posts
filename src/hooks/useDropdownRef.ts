@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
-export const useDropdownRef = () => {
-  const [isOpenDropdown, setIsOpenDropdown] = useState<boolean>(false);
-
+export const useDropdownRef = (
+  setIsOpenDropdown: React.Dispatch<React.SetStateAction<boolean>>,
+) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -24,7 +24,5 @@ export const useDropdownRef = () => {
 
   return {
     dropdownRef,
-    isOpenDropdown,
-    setIsOpenDropdown,
   };
 };

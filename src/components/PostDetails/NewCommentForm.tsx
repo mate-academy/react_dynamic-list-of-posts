@@ -1,32 +1,30 @@
 import classNames from 'classnames';
 import { ErrorMessages } from '../../types/ErrorMessages';
 import { useState } from 'react';
+import { InputForm } from '../../types/interfaces';
 
 type Props = {
-  inputName: string;
-  inputEmail: string;
-  inputMessage: string;
-  handleInputName: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleInputEmail: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleInputMessage: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  onResetForm: () => void;
+  inputForm: InputForm;
+  setInputForm: React.Dispatch<React.SetStateAction<InputForm>>;
   handleAddComment: (
     setIsSubmitted: React.Dispatch<React.SetStateAction<boolean>>,
   ) => void;
   isLoadingAdd: boolean;
 };
 export const NewCommentForm: React.FC<Props> = ({
-  inputName,
-  inputEmail,
-  inputMessage,
-  handleInputName,
-  handleInputEmail,
-  handleInputMessage,
-  onResetForm,
+  inputForm,
+  setInputForm,
   handleAddComment,
   isLoadingAdd,
 }) => {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const onResetForm = () => {
+    setInputForm({
+      name: '',
+      email: '',
+      body: '',
+    });
+  };
 
   const emptyInputCheck = (input: string) => {
     return input === '' && isSubmitted;
@@ -46,16 +44,18 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', {
-              'is-danger': emptyInputCheck(inputName),
+              'is-danger': emptyInputCheck(inputForm.name),
             })}
-            value={inputName}
-            onChange={handleInputName}
+            value={inputForm.name}
+            onChange={event => {
+              setInputForm({ ...inputForm, name: event.target.value });
+            }}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
-          {emptyInputCheck(inputName) && (
+          {emptyInputCheck(inputForm.name) && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -65,7 +65,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {emptyInputCheck(inputName) && (
+        {emptyInputCheck(inputForm.name) && (
           <p className="help is-danger" data-cy="ErrorMessage">
             {ErrorMessages.EmptyName}
           </p>
@@ -84,17 +84,19 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', {
-              'is-danger': emptyInputCheck(inputEmail),
+              'is-danger': emptyInputCheck(inputForm.email),
             })}
-            value={inputEmail}
-            onChange={handleInputEmail}
+            value={inputForm.email}
+            onChange={event => {
+              setInputForm({ ...inputForm, email: event.target.value });
+            }}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          {emptyInputCheck(inputEmail) && (
+          {emptyInputCheck(inputForm.email) && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -104,7 +106,7 @@ export const NewCommentForm: React.FC<Props> = ({
           )}
         </div>
 
-        {emptyInputCheck(inputEmail) && (
+        {emptyInputCheck(inputForm.email) && (
           <p className="help is-danger" data-cy="ErrorMessage">
             {ErrorMessages.EmptyEmail}
           </p>
@@ -122,13 +124,15 @@ export const NewCommentForm: React.FC<Props> = ({
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', {
-              'is-danger': emptyInputCheck(inputMessage),
+              'is-danger': emptyInputCheck(inputForm.body),
             })}
-            value={inputMessage}
-            onChange={handleInputMessage}
+            value={inputForm.body}
+            onChange={event => {
+              setInputForm({ ...inputForm, body: event.target.value });
+            }}
           />
         </div>
-        {emptyInputCheck(inputMessage) && (
+        {emptyInputCheck(inputForm.body) && (
           <p className="help is-danger" data-cy="ErrorMessage">
             {ErrorMessages.EmptyMessage}
           </p>
@@ -147,9 +151,9 @@ export const NewCommentForm: React.FC<Props> = ({
 
               event.preventDefault();
               if (
-                !inputName.trim() ||
-                !inputEmail.trim() ||
-                !inputMessage.trim()
+                !inputForm.name.trim() ||
+                !inputForm.email.trim() ||
+                !inputForm.body.trim()
               ) {
                 return;
               }

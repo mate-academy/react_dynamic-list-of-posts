@@ -6,36 +6,22 @@ import { UserSelector } from './UserSelector';
 import { Loader } from './Loader';
 import { usePosts } from '../hooks/usePosts';
 import { ErrorMessages } from '../types/ErrorMessages';
+import { useState } from 'react';
 
 export const AppPosts = () => {
+  const [currentError, setCurrentError] = useState<ErrorMessages | null>(null);
+  const [isOpenCommentForm, setIsOpenCommentForm] = useState<boolean>(false);
   const {
     posts,
-    comments,
-    isLoadingPosts,
-    isLoadingAdd,
-    isOpenDropdown,
     isOpenSidebar,
-    isOpenCommentForm,
+    setIsOpenSidebar,
     selectedUser,
     selectedPost,
+    setSelectedPost,
     handleSelectUser,
-    handleDeleteComment,
-    handleInputName,
-    handleInputEmail,
-    handleInputMessage,
-    toggleDropdown,
-    toggleSidebar,
-    toggleCommentForm,
     users,
-    isLoadingComments,
-    inputName,
-    inputEmail,
-    inputMessage,
-    onResetForm,
-    handleAddComment,
-    dropdownRef,
-    currentError,
-  } = usePosts();
+    isLoadingPosts,
+  } = usePosts(setCurrentError);
 
   return (
     <main className="section">
@@ -46,11 +32,8 @@ export const AppPosts = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  isOpenDropdown={isOpenDropdown}
                   selectedUser={selectedUser}
                   handleSelectUser={handleSelectUser}
-                  toggleDropdown={toggleDropdown}
-                  dropdownRef={dropdownRef}
                 />
               </div>
 
@@ -69,8 +52,10 @@ export const AppPosts = () => {
                     posts.length > 0 ? (
                       <PostsList
                         posts={posts}
-                        toggleSidebar={toggleSidebar}
                         selectedPost={selectedPost}
+                        setSelectedPost={setSelectedPost}
+                        setIsOpenSidebar={setIsOpenSidebar}
+                        setIsOpenCommentForm={setIsOpenCommentForm}
                       />
                     ) : (
                       <div
@@ -102,21 +87,10 @@ export const AppPosts = () => {
               {selectedPost && (
                 <PostDetails
                   selectedPost={selectedPost}
-                  comments={comments}
-                  isOpenCommentForm={isOpenCommentForm}
-                  toggleCommentForm={toggleCommentForm}
-                  isLoadingComments={isLoadingComments}
-                  handleDeleteComment={handleDeleteComment}
-                  inputName={inputName}
-                  inputEmail={inputEmail}
-                  inputMessage={inputMessage}
-                  handleInputName={handleInputName}
-                  handleInputEmail={handleInputEmail}
-                  handleInputMessage={handleInputMessage}
-                  onResetForm={onResetForm}
-                  handleAddComment={handleAddComment}
-                  isLoadingAdd={isLoadingAdd}
                   currentError={currentError}
+                  setCurrentError={setCurrentError}
+                  isOpenCommentForm={isOpenCommentForm}
+                  setIsOpenCommentForm={setIsOpenCommentForm}
                 />
               )}
             </div>

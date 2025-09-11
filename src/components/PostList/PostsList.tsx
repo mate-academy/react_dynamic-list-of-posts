@@ -1,17 +1,36 @@
-import { Post } from '../../types/Post';
+/* eslint-disable @typescript-eslint/indent */
+import { Post } from '../../types/interfaces';
 import { PostListItem } from './PostListItem';
 
 type Props = {
   posts: Post[];
-  toggleSidebar: (postId: number) => void;
   selectedPost: Post | null;
+  setSelectedPost: React.Dispatch<React.SetStateAction<Post | null>>;
+  setIsOpenSidebar: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsOpenCommentForm: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const PostsList: React.FC<Props> = ({
   posts,
-  toggleSidebar,
   selectedPost,
+  setSelectedPost,
+  setIsOpenSidebar,
+  setIsOpenCommentForm,
 }) => {
+  const toggleSidebar = (postId: number) => {
+    setIsOpenCommentForm(false);
+
+    if (selectedPost?.id === postId) {
+      setIsOpenSidebar(false);
+      setSelectedPost(null);
+    } else {
+      setIsOpenSidebar(true);
+      const newPost = posts.find(post => post.id === postId) || null;
+
+      setSelectedPost(newPost);
+    }
+  };
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>

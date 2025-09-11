@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { Post } from '../../types/Post';
+import { Post } from '../../types/interfaces';
 
 type Props = {
   post: Post;
@@ -9,11 +9,11 @@ type Props = {
 
 export const PostListItem: React.FC<Props> = ({
   post,
-  toggleSidebar,
   selectedPost,
+  toggleSidebar,
 }) => {
   return (
-    <tr data-cy="Post" key={post.id}>
+    <tr data-cy="Post">
       <td data-cy="PostId">{post.id}</td>
 
       <td data-cy="PostTitle">{post.title}</td>

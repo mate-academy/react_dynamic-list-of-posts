@@ -1,23 +1,26 @@
-import React, { RefObject } from 'react';
-import { User } from '../types/User';
+import React, { useState } from 'react';
 import classNames from 'classnames';
+import { User } from '../types/interfaces';
+import { useDropdownRef } from '../hooks/useDropdownRef';
+
 type Props = {
   users: User[];
-  isOpenDropdown: boolean;
   selectedUser: User | null;
   handleSelectUser: (id: number) => void;
-  toggleDropdown: () => void;
-  dropdownRef: RefObject<HTMLDivElement>;
 };
 
 export const UserSelector: React.FC<Props> = ({
   users,
-  isOpenDropdown,
   selectedUser,
   handleSelectUser,
-  toggleDropdown,
-  dropdownRef,
 }) => {
+  const [isOpenDropdown, setIsOpenDropdown] = useState<boolean>(false);
+  const { dropdownRef } = useDropdownRef(setIsOpenDropdown);
+
+  const toggleDropdown = () => {
+    setIsOpenDropdown(prev => !prev);
+  };
+
   return (
     <div
       data-cy="UserSelector"
@@ -50,7 +53,10 @@ export const UserSelector: React.FC<Props> = ({
                 className={classNames('dropdown-item', {
                   'is-active': selectedUser?.id === user.id,
                 })}
-                onClick={() => handleSelectUser(user.id)}
+                onClick={() => {
+                  handleSelectUser(user.id);
+                  setIsOpenDropdown(false);
+                }}
               >
                 {user.name}
               </a>
