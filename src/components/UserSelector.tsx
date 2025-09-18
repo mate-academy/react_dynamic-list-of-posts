@@ -14,6 +14,7 @@ export const UserSelector: React.FC<Props> = ({
   activeUser,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -26,9 +27,10 @@ export const UserSelector: React.FC<Props> = ({
 
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as Element;
-
-      if (!target.closest('[data-cy="UserSelector"]')) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -44,6 +46,7 @@ export const UserSelector: React.FC<Props> = ({
 
   return (
     <div
+      ref={dropdownRef}
       data-cy="UserSelector"
       className={classNames('dropdown', { 'is-active': isOpen })}
     >

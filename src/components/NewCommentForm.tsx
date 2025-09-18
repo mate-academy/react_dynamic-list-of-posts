@@ -74,17 +74,15 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
   ) => {
     const { name, value } = event.target;
 
-    setTouched(prevState => ({
-      ...prevState,
-      [name]: true,
-    }));
+    // Only validate if already touched (after first submit)
+    if (touched[name as keyof typeof touched]) {
+      const isValid = validateField(name, value);
 
-    const isValid = validateField(name, value);
-
-    setErrors(prevState => ({
-      ...prevState,
-      [name]: !isValid,
-    }));
+      setErrors(prevState => ({
+        ...prevState,
+        [name]: !isValid,
+      }));
+    }
   };
 
   const validateForm = useCallback(() => {
@@ -137,7 +135,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
         error instanceof Error ? error.message : 'Failed to add comment';
 
       setSubmitError(errorMessage);
-
+      // Re-throw to allow parent component to handle the error
       throw error;
     } finally {
       setIsSubmitting(false);
@@ -161,8 +159,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
         try {
           await handleSubmit();
         } catch (error) {
-          // Помилка вже оброблена в handleSubmit
-          // Тут можна додати додаткову логіку, якщо потрібно
+          // Error is already handled in handleSubmit
         }
       }}
     >
