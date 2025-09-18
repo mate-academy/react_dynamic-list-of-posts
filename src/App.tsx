@@ -98,7 +98,7 @@ export const App = () => {
   const handleAddComment = useCallback(
     async (commentData: CommentData) => {
       if (!post) {
-        return;
+        throw new Error('No post selected');
       }
 
       const newComment = { ...commentData, postId: post.id };
@@ -107,6 +107,8 @@ export const App = () => {
         const addedComment = await CommentService.addComment(newComment);
 
         setComments(prev => [...prev, addedComment]);
+
+        return addedComment;
       } catch (error) {
         throw error;
       }

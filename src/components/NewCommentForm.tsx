@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
-import { CommentData } from '../types/Comment';
+import { CommentData, Comment } from '../types/Comment';
 
 type Props = {
-  onAddComment?: (comment: CommentData) => Promise<void>;
+  onAddComment?: (comment: CommentData) => Promise<Comment>;
 };
 
 export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
@@ -128,15 +128,13 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
         body: formData.body,
       };
 
-      await Promise.resolve(onAddComment(commentData));
+      await onAddComment(commentData);
       clearFormAfterSubmit();
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : 'Failed to add comment';
 
       setSubmitError(errorMessage);
-      // Re-throw to allow parent component to handle the error
-      throw error;
     } finally {
       setIsSubmitting(false);
     }
@@ -156,11 +154,7 @@ export const NewCommentForm: React.FC<Props> = ({ onAddComment }) => {
       onReset={handleReset}
       onSubmit={async e => {
         e.preventDefault();
-        try {
-          await handleSubmit();
-        } catch (error) {
-          // Error is already handled in handleSubmit
-        }
+        await handleSubmit();
       }}
     >
       <div className="field" data-cy="NameField">

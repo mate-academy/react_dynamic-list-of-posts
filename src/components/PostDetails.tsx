@@ -11,7 +11,7 @@ type Props = {
   error?: boolean;
   loading?: boolean;
   deleteCommentById: (id: number) => void;
-  addComment?: (comment: CommentData) => Promise<void>;
+  addComment?: (comment: CommentData) => Promise<Comment>;
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -64,34 +64,37 @@ export const PostDetails: React.FC<Props> = ({
           <p className="title is-4">Comments:</p>
         )}
 
-        {comments.map(comment => (
-          <article
-            className="message is-small"
-            data-cy="Comment"
-            key={comment.id}
-          >
-            <div className="message-header">
-              <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                {comment.name}
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-                onClick={() => deleteCommentById(comment.id)}
-              >
-                delete button
-              </button>
-            </div>
+        {comments.length > 0 &&
+          !loading &&
+          !error &&
+          comments.map(comment => (
+            <article
+              className="message is-small"
+              data-cy="Comment"
+              key={comment.id}
+            >
+              <div className="message-header">
+                <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                  {comment.name}
+                </a>
+                <button
+                  data-cy="CommentDelete"
+                  type="button"
+                  className="delete is-small"
+                  aria-label="delete"
+                  onClick={() => deleteCommentById(comment.id)}
+                >
+                  delete button
+                </button>
+              </div>
 
-            <div className="message-body" data-cy="CommentBody">
-              {comment.body}
-            </div>
-          </article>
-        ))}
+              <div className="message-body" data-cy="CommentBody">
+                {comment.body}
+              </div>
+            </article>
+          ))}
 
-        {!showForm && !loading && !error && (
+        {!showForm && !loading && !error && addComment && (
           <button
             data-cy="WriteCommentButton"
             type="button"
@@ -102,7 +105,7 @@ export const PostDetails: React.FC<Props> = ({
           </button>
         )}
 
-        {showForm && <NewCommentForm onAddComment={addComment} />}
+        {showForm && addComment && <NewCommentForm onAddComment={addComment} />}
       </div>
     </div>
   );

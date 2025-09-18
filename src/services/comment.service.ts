@@ -13,7 +13,9 @@ export const deleteCommentById = async (commentId: number) => {
   return response;
 };
 
-export const addComment = async (comment: Omit<Comment, 'id'>) => {
+export const addComment = async (
+  comment: Omit<Comment, 'id'>,
+): Promise<Comment> => {
   const response = await client.post<Comment>('/comments', comment);
 
   return response;
