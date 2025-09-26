@@ -1,60 +1,136 @@
-import classNames from 'classnames';
-
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
 import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { Sidebar } from './components/Sidebar';
+import { useEffect, useState } from 'react';
+import { User } from './types/User';
+import { client } from './utils/fetchClient';
+import { Post } from './types/Post';
 
-export const App = () => (
-  <main className="section">
-    <div className="container">
-      <div className="tile is-ancestor">
-        <div className="tile is-parent">
-          <div className="tile is-child box is-success">
-            <div className="block">
-              <UserSelector />
-            </div>
+export enum AppError {
+  None,
+  NoPosts,
+  Default,
+}
 
-            <div className="block" data-cy="MainContent">
-              <p data-cy="NoSelectedUser">No user selected</p>
+export const errorMessages: Record<AppError, string> = {
+  [AppError.None]: '',
+  [AppError.NoPosts]: 'No posts yet',
+  [AppError.Default]: 'Something went wrong!',
+};
 
-              <Loader />
+export const App = () => {
+  const [error, setError] = useState<AppError>(AppError.None);
+  const [selectedUser, setSelectedUser] = useState<User | null>(() => {
+    const saved = localStorage.getItem('selectedUser');
 
-              <div
-                className="notification is-danger"
-                data-cy="PostsLoadingError"
-              >
-                Something went wrong!
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [clients, setClients] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
+
+  const [currentPost, setCurrentPost] = useState<Post | null>(null);
+
+  useEffect(() => {
+    if (selectedUser) {
+      localStorage.setItem('selectedUser', JSON.stringify(selectedUser));
+    } else {
+      localStorage.removeItem('selectedUser');
+    }
+  }, [selectedUser]);
+
+  useEffect(() => {
+    if (!selectedUser) {
+      setPosts([]);
+      setCurrentPost(null);
+
+      return;
+    }
+
+    setIsPostsLoading(true);
+    setCurrentPost(null);
+
+    client
+      .get<Post[]>(`/posts?userId=${selectedUser.id}`)
+      .then(fetchedPosts => {
+        if (fetchedPosts.length === 0) {
+          setPosts([]);
+          setError(AppError.NoPosts);
+        } else {
+          setPosts(fetchedPosts);
+          setError(AppError.None);
+        }
+      })
+      .catch(() => setError(AppError.Default))
+      .finally(() => setIsPostsLoading(false));
+  }, [selectedUser]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    client
+      .get<User[]>('/users')
+      .then(setClients)
+      .catch(() => setError(AppError.Default))
+      .finally(() => setIsLoading(false));
+  }, []);
+
+  return (
+    <main className="section">
+      <div className="container">
+        <div className="tile is-ancestor">
+          <div className="tile is-parent is-8">
+            <div className="tile is-child box is-success">
+              <div className="block">
+                <UserSelector
+                  clients={clients}
+                  selectedUser={selectedUser}
+                  setSelectedUser={setSelectedUser}
+                />
               </div>
 
-              <div className="notification is-warning" data-cy="NoPostsYet">
-                No posts yet
-              </div>
+              <div className="block" data-cy="MainContent">
+                {!isLoading && !selectedUser && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-              <PostsList />
+                {error === AppError.Default && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    {errorMessages[AppError.Default]}
+                  </div>
+                )}
+
+                {!isPostsLoading && error === AppError.NoPosts && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    {errorMessages[AppError.NoPosts]}
+                  </div>
+                )}
+
+                {isPostsLoading && <Loader />}
+
+                {!isPostsLoading && selectedUser && posts.length > 0 && (
+                  <PostsList
+                    posts={posts}
+                    currentPost={currentPost}
+                    onSelect={setCurrentPost}
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div
-          data-cy="Sidebar"
-          className={classNames(
-            'tile',
-            'is-parent',
-            'is-8-desktop',
-            'Sidebar',
-            'Sidebar--open',
-          )}
-        >
-          <div className="tile is-child box is-success ">
-            <PostDetails />
-          </div>
+          <Sidebar post={currentPost} />
         </div>
       </div>
-    </div>
-  </main>
-);
+    </main>
+  );
+};
