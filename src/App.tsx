@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable prettier/prettier */
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
@@ -31,11 +33,9 @@ export const App = () => {
     return saved ? JSON.parse(saved) : null;
   });
 
-  const [isLoading, setIsLoading] = useState(true);
   const [clients, setClients] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isPostsLoading, setIsPostsLoading] = useState(false);
-
   const [currentPost, setCurrentPost] = useState<Post | null>(null);
 
   useEffect(() => {
@@ -50,6 +50,7 @@ export const App = () => {
     if (!selectedUser) {
       setPosts([]);
       setCurrentPost(null);
+      setError(AppError.None);
 
       return;
     }
@@ -73,12 +74,10 @@ export const App = () => {
   }, [selectedUser]);
 
   useEffect(() => {
-    setIsLoading(true);
     client
       .get<User[]>('/users')
       .then(setClients)
-      .catch(() => setError(AppError.Default))
-      .finally(() => setIsLoading(false));
+      .catch(() => setError(AppError.Default));
   }, []);
 
   return (
@@ -96,7 +95,7 @@ export const App = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!isLoading && !selectedUser && (
+                {!selectedUser && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
@@ -109,11 +108,16 @@ export const App = () => {
                   </div>
                 )}
 
-                {!isPostsLoading && error === AppError.NoPosts && (
-                  <div className="notification is-warning" data-cy="NoPostsYet">
-                    {errorMessages[AppError.NoPosts]}
-                  </div>
-                )}
+                {!isPostsLoading &&
+                  selectedUser &&
+                  error === AppError.NoPosts && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      {errorMessages[AppError.NoPosts]}
+                    </div>
+                  )}
 
                 {isPostsLoading && <Loader />}
 

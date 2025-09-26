@@ -21,29 +21,25 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAdd }) => {
   }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
 
     if (saved) {
-      const {
-        name: savedName,
-        email: savedEmail,
-        body: savedBody,
-        submitted: savedSubmitted,
-      } = JSON.parse(saved);
+      const parsed = JSON.parse(saved);
 
-      setName(savedName);
-      setEmail(savedEmail);
-      setBody(savedBody);
-      setSubmitted(savedSubmitted);
+      setName(parsed.name ?? '');
+      setEmail(parsed.email ?? '');
+      setBody(parsed.body ?? '');
+      setSubmitted(Boolean(parsed.submitted));
     }
   }, [STORAGE_KEY]);
 
   useEffect(() => {
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ name, email, body: '', submitted: false }),
+      JSON.stringify({ name, email, body, submitted }),
     );
   }, [name, email, body, submitted, STORAGE_KEY]);
 
@@ -68,6 +64,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAdd }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
+    setSubmitError(null);
 
     const newErrors = validate();
 
@@ -92,7 +89,8 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAdd }) => {
       setErrors({});
       setSubmitted(false);
       localStorage.removeItem(STORAGE_KEY);
-    } catch {
+    } catch (err) {
+      setSubmitError('Failed to submit comment. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -104,6 +102,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAdd }) => {
     setBody('');
     setErrors({});
     setSubmitted(false);
+    setSubmitError(null);
     localStorage.removeItem(STORAGE_KEY);
   };
 
@@ -113,6 +112,10 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAdd }) => {
       onSubmit={handleSubmit}
       onReset={handleClear}
     >
+      {submitError && (
+        <div className="notification is-danger">{submitError}</div>
+      )}
+
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name

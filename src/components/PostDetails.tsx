@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { Post } from '../types/Post';
+import { Comment } from '../types/Comment';
+import { client } from '../utils/fetchClient';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { Post } from '../types/Post';
-import { client } from '../utils/fetchClient';
-import { Comment } from '../types/Comment';
 
 type Props = {
   post: Post;
@@ -13,123 +13,72 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const COMMENTS_KEY = `comments-${post.id}`;
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [showForm, setShowForm] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem(COMMENTS_KEY);
-
-    if (saved) {
-      setComments(JSON.parse(saved));
-    } else {
-      setIsLoading(true);
-      setError(false);
-
-      client
-        .get<Comment[]>(`/comments?postId=${post.id}`)
-        .then(data => {
-          setComments(data);
-          localStorage.setItem(COMMENTS_KEY, JSON.stringify(data));
-        })
-        .catch(() => setError(true))
-        .finally(() => setIsLoading(false));
-    }
-
-    setShowForm(false);
+    setIsLoading(true);
+    client
+      .get<Comment[]>(`/comments?postId=${post.id}`)
+      .then(setComments)
+      .catch(() => setError('Failed to load comments'))
+      .finally(() => setIsLoading(false));
   }, [post.id]);
 
   useEffect(() => {
     if (comments.length > 0) {
       localStorage.setItem(COMMENTS_KEY, JSON.stringify(comments));
+    } else {
+      localStorage.removeItem(COMMENTS_KEY);
     }
-  }, [comments]);
+  }, [comments, COMMENTS_KEY]);
 
   const handleDeleteComment = async (comment: Comment) => {
+    setComments(prev => prev.filter(c => c.id !== comment.id));
+
     try {
       await client.delete(`/comments/${comment.id}`);
-
-      setComments(prev => prev.filter(com => com.id !== comment.id));
     } catch (err) {
-      alert('Could not delete comment. Please try again.');
+      setComments(prev => [...prev, comment]);
+      setError('Failed to delete comment');
     }
   };
 
-  const handleAddComment = (newComment: Comment) => {
-    setComments(prev => [...prev, newComment]);
+  const handleAddComment = (comment: Comment) => {
+    setComments(prev => [...prev, comment]);
   };
 
   return (
-    <div className="content" data-cy="PostDetails">
-      <div className="block">
-        <h2 data-cy="PostTitle">
-          #{post.id}: {post.title}
-        </h2>
-        <p data-cy="PostBody">{post.body}</p>
-      </div>
+    <div data-cy="PostDetails">
+      <h2 className="title">{post.title}</h2>
+      <p>{post.body}</p>
 
-      <div className="block">
-        {isLoading && <Loader />}
+      {error && <div className="notification is-danger">{error}</div>}
 
-        {error && (
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
-          </div>
-        )}
+      {isLoading && <Loader />}
 
-        {!isLoading && !error && comments.length === 0 && (
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-        )}
-
-        {!isLoading && !error && comments.length > 0 && (
-          <>
-            <p className="title is-4">Comments:</p>
-            {comments.map(comment => (
-              <article
-                key={comment.id}
-                className="message is-small"
-                data-cy="Comment"
-              >
-                <div className="message-header">
-                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
-                    {comment.name}
-                  </a>
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                    onClick={() => handleDeleteComment(comment)}
-                  />
-                </div>
-                <div className="message-body" data-cy="CommentBody">
-                  {comment.body}
-                </div>
-              </article>
-            ))}
-          </>
-        )}
-
-        {!isLoading && !error && (
-          <>
-            {!showForm && (
+      {!isLoading &&
+        comments.map(comment => (
+          <article
+            key={comment.id}
+            className="message is-small is-link"
+            data-cy="Comment"
+          >
+            <div className="message-header">
+              <p>{comment.name}</p>
               <button
-                data-cy="WriteCommentButton"
                 type="button"
-                className="button is-link"
-                onClick={() => setShowForm(true)}
-              >
-                Write a comment
-              </button>
-            )}
+                aria-label="delete"
+                onClick={() => handleDeleteComment(comment)}
+              />
+            </div>
+            <div className="message-body">
+              <p>{comment.body}</p>
+              <a href={`mailto:${comment.email}`}>{comment.email}</a>
+            </div>
+          </article>
+        ))}
 
-            {showForm && (
-              <NewCommentForm postId={post.id} onAdd={handleAddComment} />
-            )}
-          </>
-        )}
-      </div>
+      <NewCommentForm postId={post.id} onAdd={handleAddComment} />
     </div>
   );
 };
