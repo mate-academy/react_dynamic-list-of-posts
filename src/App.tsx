@@ -26,16 +26,28 @@ export const errorMessages: Record<AppError, string> = {
 };
 
 export const App = () => {
-  const [error, setError] = useState<AppError>(AppError.None);
+  const [usersError, setUsersError] = useState<AppError>(AppError.None);
+  const [postsError, setPostsError] = useState<AppError>(AppError.None);
   const [selectedUser, setSelectedUser] = useState<User | null>(() => {
     const saved = localStorage.getItem('selectedUser');
 
-    return saved ? JSON.parse(saved) : null;
+    if (!saved) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(saved) as User;
+    } catch {
+      localStorage.removeItem('selectedUser');
+
+      return null;
+    }
   });
 
   const [clients, setClients] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
   const [isPostsLoading, setIsPostsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentPost, setCurrentPost] = useState<Post | null>(null);
 
   useEffect(() => {
@@ -50,12 +62,13 @@ export const App = () => {
     if (!selectedUser) {
       setPosts([]);
       setCurrentPost(null);
-      setError(AppError.None);
+      setPostsError(AppError.None);
 
       return;
     }
 
     setIsPostsLoading(true);
+    setPostsError(AppError.None);
     setCurrentPost(null);
 
     client
@@ -63,21 +76,25 @@ export const App = () => {
       .then(fetchedPosts => {
         if (fetchedPosts.length === 0) {
           setPosts([]);
-          setError(AppError.NoPosts);
+          setPostsError(AppError.NoPosts);
         } else {
           setPosts(fetchedPosts);
-          setError(AppError.None);
+          setPostsError(AppError.None);
         }
       })
-      .catch(() => setError(AppError.Default))
+      .catch(() => setPostsError(AppError.Default))
       .finally(() => setIsPostsLoading(false));
   }, [selectedUser]);
 
   useEffect(() => {
+    setIsLoading(true);
+    setUsersError(AppError.None);
+
     client
       .get<User[]>('/users')
       .then(setClients)
-      .catch(() => setError(AppError.Default));
+      .catch(() => setUsersError(AppError.Default))
+      .finally(() => setIsLoading(false));
   }, []);
 
   return (
@@ -95,11 +112,20 @@ export const App = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUser && (
+                {usersError === AppError.Default && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="UsersLoadingError"
+                  >
+                    {errorMessages[AppError.Default]}
+                  </div>
+                )}
+
+                {!isLoading && !selectedUser && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {error === AppError.Default && (
+                {postsError === AppError.Default && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -108,16 +134,11 @@ export const App = () => {
                   </div>
                 )}
 
-                {!isPostsLoading &&
-                  selectedUser &&
-                  error === AppError.NoPosts && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      {errorMessages[AppError.NoPosts]}
-                    </div>
-                  )}
+                {!isPostsLoading && postsError === AppError.NoPosts && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    {errorMessages[AppError.NoPosts]}
+                  </div>
+                )}
 
                 {isPostsLoading && <Loader />}
 
