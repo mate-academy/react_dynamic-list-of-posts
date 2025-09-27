@@ -15,9 +15,15 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
+    // сбрасываем перед новой загрузкой
+    setComments([]);
+    setError(null);
     setIsLoading(true);
+    setShowForm(false);
+
     client
       .get<Comment[]>(`/comments?postId=${post.id}`)
       .then(setComments)
@@ -38,7 +44,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
     try {
       await client.delete(`/comments/${comment.id}`);
-    } catch (err) {
+    } catch {
       setComments(prev => [...prev, comment]);
       setError('Failed to delete comment');
     }
@@ -50,14 +56,27 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
   return (
     <div data-cy="PostDetails">
-      <h2 className="title">{post.title}</h2>
-      <p>{post.body}</p>
+      <h2 className="title" data-cy="PostTitle">
+        #{post.id}: {post.title}
+      </h2>
+      <p data-cy="PostBody">{post.body}</p>
 
-      {error && <div className="notification is-danger">{error}</div>}
+      {error && (
+        <div className="notification is-danger" data-cy="CommentsError">
+          {error}
+        </div>
+      )}
 
       {isLoading && <Loader />}
 
+      {!isLoading && comments.length === 0 && !error && (
+        <p className="title is-4" data-cy="NoCommentsMessage">
+          No comments yet
+        </p>
+      )}
+
       {!isLoading &&
+        !error &&
         comments.map(comment => (
           <article
             key={comment.id}
@@ -65,21 +84,40 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             data-cy="Comment"
           >
             <div className="message-header">
-              <p>{comment.name}</p>
+              <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                {comment.name}
+              </a>
               <button
                 type="button"
+                className="delete is-small"
+                data-cy="CommentDelete"
                 aria-label="delete"
                 onClick={() => handleDeleteComment(comment)}
               />
             </div>
-            <div className="message-body">
-              <p>{comment.body}</p>
-              <a href={`mailto:${comment.email}`}>{comment.email}</a>
+            <div className="message-body" data-cy="CommentBody">
+              {comment.body}
             </div>
           </article>
         ))}
 
-      <NewCommentForm postId={post.id} onAdd={handleAddComment} />
+      {!isLoading && !error && (
+        <>
+          {!showForm && (
+            <button
+              type="button"
+              className="button is-link"
+              data-cy="WriteCommentButton"
+              onClick={() => setShowForm(true)}
+            >
+              Write a comment
+            </button>
+          )}
+          {showForm && (
+            <NewCommentForm postId={post.id} onAdd={handleAddComment} />
+          )}
+        </>
+      )}
     </div>
   );
 };
