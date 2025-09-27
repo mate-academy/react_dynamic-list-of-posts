@@ -1,86 +1,75 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Post } from '../types/Post';
+import classNames from 'classnames';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+type Props = {
+  posts: Post[];
+  onSelect: (post: Post | null) => void;
+  currentPost: Post | null;
+};
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-          <th> </th>
-        </tr>
-      </thead>
+export const PostsList: React.FC<Props> = ({
+  posts,
+  onSelect,
+  currentPost,
+}) => {
+  const STORAGE_KEY = 'currentPostId';
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+  useEffect(() => {
+    const savedId = localStorage.getItem(STORAGE_KEY);
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+    if (savedId) {
+      const post = posts.find(p => p.id === Number(savedId));
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+      if (post) {
+        onSelect(post);
+      }
+    }
+  }, [posts]);
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+  const handleToggle = (post: Post) => {
+    if (currentPost?.id === post.id) {
+      localStorage.removeItem(STORAGE_KEY);
+      onSelect(null);
+    } else {
+      localStorage.setItem(STORAGE_KEY, post.id.toString());
+      onSelect(post);
+    }
+  };
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+  return (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          {posts.map(post => (
+            <tr key={post.id} data-cy="Post">
+              <td data-cy="PostId">{post.id}</td>
+              <td data-cy="PostTitle">{post.title}</td>
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className={classNames('button is-link', {
+                    'is-light': currentPost?.id !== post.id,
+                    'is-active': currentPost?.id === post.id,
+                  })}
+                  onClick={() => handleToggle(post)}
+                >
+                  {currentPost?.id === post.id ? 'Close' : 'Open'}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};

@@ -2,7 +2,7 @@
 const BASE_URL = 'https://mate.academy/students-api';
 
 // a promise resolved after a given delay
-function wait(delay: number) {
+function wait(delay: number = 300) {
   return new Promise(resolve => {
     setTimeout(resolve, delay);
   });
@@ -29,7 +29,13 @@ function request<T>(
   // for a demo purpose we emulate a delay to see if Loaders work
   return wait(300)
     .then(() => fetch(BASE_URL + url, options))
-    .then(response => response.json());
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return response.json() as Promise<T>;
+    });
 }
 
 export const client = {
