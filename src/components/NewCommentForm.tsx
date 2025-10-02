@@ -1,99 +1,146 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { FormInput } from './FormInput';
+import { FormTextarea } from './FormTextarea';
+import { Comment } from '../types/Comment';
+import classNames from 'classnames';
+import { FormErrorState } from '../types/ErrorState';
 
-export const NewCommentForm: React.FC = () => {
+type Props = {
+  loading: boolean;
+  selectedPostId?: number;
+  onAddComment: ({
+    postId,
+    name,
+    email,
+    body,
+  }: Omit<Comment, 'id'>) => Promise<void>;
+};
+
+export const NewCommentForm: React.FC<Props> = ({
+  loading,
+  selectedPostId,
+  onAddComment,
+}) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [text, setText] = useState('');
+
+  const [error, setError] = useState<FormErrorState>({
+    name: false,
+    email: false,
+    text: false,
+  });
+
+  const handleClear = () => {
+    setText('');
+
+    setError(prev => ({
+      ...prev,
+      name: false,
+      email: false,
+      text: false,
+    }));
+  };
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const newErrors: FormErrorState = {
+      name: name.trim() === '',
+      email: email.trim() === '',
+      text: text.trim() === '',
+    };
+
+    setError(newErrors);
+
+    if (Object.values(newErrors).some(Boolean)) {
+      return;
+    }
+
+    try {
+      if (selectedPostId) {
+        const newComment: Omit<Comment, 'id'> = {
+          postId: selectedPostId,
+          name: name,
+          email: email,
+          body: text,
+        };
+
+        await onAddComment(newComment);
+        handleClear();
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
   return (
-    <form data-cy="NewCommentForm">
-      <div className="field" data-cy="NameField">
-        <label className="label" htmlFor="comment-author-name">
-          Author Name
-        </label>
+    <form data-cy="NewCommentForm" onSubmit={e => onSubmit(e)}>
+      <FormInput
+        label="Name"
+        id="comment-author-name"
+        name="name"
+        type="text"
+        placeholder="Name Surname"
+        value={name}
+        onChange={value => {
+          setName(value);
+          setError(prev => ({ ...prev, name: false }));
+        }}
+        error={error.name}
+        leftIcon="fa-user"
+      />
 
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="name"
-            id="comment-author-name"
-            placeholder="Name Surname"
-            className="input is-danger"
-          />
+      <FormInput
+        label="Email"
+        id="comment-author-email"
+        name="email"
+        type="email"
+        placeholder="email@test.com"
+        value={email}
+        onChange={value => {
+          setEmail(value);
+          setError(prev => ({ ...prev, email: false }));
+        }}
+        error={error.email}
+        leftIcon="fa-envelope"
+      />
 
-          <span className="icon is-small is-left">
-            <i className="fas fa-user" />
-          </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
-      </div>
-
-      <div className="field" data-cy="EmailField">
-        <label className="label" htmlFor="comment-author-email">
-          Author Email
-        </label>
-
-        <div className="control has-icons-left has-icons-right">
-          <input
-            type="text"
-            name="email"
-            id="comment-author-email"
-            placeholder="email@test.com"
-            className="input is-danger"
-          />
-
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
-          </span>
-
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
-      </div>
-
-      <div className="field" data-cy="BodyField">
-        <label className="label" htmlFor="comment-body">
-          Comment Text
-        </label>
-
-        <div className="control">
-          <textarea
-            id="comment-body"
-            name="body"
-            placeholder="Type comment here"
-            className="textarea is-danger"
-          />
-        </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
-      </div>
+      <FormTextarea
+        label="Comment Text"
+        id="comment-body"
+        name="body"
+        data="BodyField"
+        placeholder="Type comment here"
+        value={text}
+        onChange={value => {
+          setText(value);
+          setError(prev => ({ ...prev, text: false }));
+        }}
+        error={error.text}
+      />
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={classNames('button is-link', { 'is-loading': loading })}
+          >
             Add
           </button>
         </div>
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={() => {
+              handleClear();
+              setEmail('');
+              setName('');
+            }}
+          >
             Clear
           </button>
         </div>
