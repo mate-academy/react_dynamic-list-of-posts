@@ -61,9 +61,9 @@ export const PostDetails: React.FC<Props> = ({ postId, title, body }) => {
 
   // load comments
   useEffect(() => {
+    setIsFormOpen(false);
     if (!postId) {
       setComments([]);
-      setIsFormOpen(false);
 
       return;
     }
@@ -96,101 +96,99 @@ export const PostDetails: React.FC<Props> = ({ postId, title, body }) => {
 
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 className="title is-3" data-cy="PostTitle">
-            #{postId}: {title}
-          </h2>
+      <div className="block">
+        <h2 className="title is-3" data-cy="PostTitle">
+          {postId}: {title}
+        </h2>
 
-          <p className="mb-4" data-cy="PostBody">
-            {body}
+        <p className="mb-4" data-cy="PostBody">
+          {body}
+        </p>
+      </div>
+
+      <div className="block">
+        {isLoading && <Loader />}
+
+        {error && (
+          <div className="notification is-danger" data-cy="CommentsError">
+            Something went wrong
+          </div>
+        )}
+
+        {!isLoading && !error && comments.length === 0 && (
+          <p className="subtitle" data-cy="NoComments">
+            No comments yet
           </p>
-        </div>
+        )}
 
-        <div className="block">
-          {isLoading && <Loader />}
+        {!isLoading && !error && comments.length > 0 && (
+          <>
+            <p className="title is-4">Comments:</p>
 
-          {error && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
-            </div>
-          )}
+            {deleteError && (
+              <div className="notification is-danger is-light mb-3">
+                {deleteError}{' '}
+                {lastFailedId != null && (
+                  <button
+                    type="button"
+                    className="button is-small is-danger is-light"
+                    onClick={retryDelete}
+                  >
+                    Retry
+                  </button>
+                )}
+              </div>
+            )}
 
-          {!isLoading && !error && comments.length === 0 && (
-            <p className="subtitle" data-cy="NoComments">
-              No comments yet
-            </p>
-          )}
+            {comments.map(c => (
+              <article
+                key={c.id}
+                className="message is-small"
+                data-cy="Comment"
+              >
+                <div className="message-header">
+                  <a href={`mailto:${c.email}`} data-cy="CommentAuthor">
+                    {c.name}
+                  </a>
 
-          {!isLoading && !error && comments.length > 0 && (
-            <>
-              <p className="title is-4">Comments:</p>
-              {deleteError && (
-                <div className="notification is-danger is-light mb-3">
-                  {deleteError}{' '}
-                  {lastFailedId != null && (
-                    <button
-                      type="button"
-                      className="button is-small is-danger is-light"
-                      onClick={retryDelete}
-                    >
-                      Retry
-                    </button>
-                  )}
+                  <button
+                    data-cy="CommentDelete"
+                    type="button"
+                    className="delete is-small"
+                    aria-label="delete"
+                    onClick={() => handleDelete(c.id)}
+                    disabled={deletingIds.has(c.id)}
+                  />
                 </div>
-              )}
 
-              {comments.map(c => (
-                // eslint-disable-next-line max-len
-                <article
-                  key={c.id}
-                  className="message is-small"
-                  data-cy="Comment"
-                >
-                  <div className="message-header">
-                    <a href={`mailto: ${c.email}`} data-cy="CommentAuthor">
-                      {c.name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => handleDelete(c.id)}
-                      disabled={deletingIds.has(c.id)}
-                    >
-                      delete button
-                    </button>
-                  </div>
-                  <div className="message-body" data-cy="CommentBody">
-                    {c.body}
-                  </div>
+                <div className="message-body" data-cy="CommentBody">
+                  {c.body}
+                </div>
+              </article>
+            ))}
 
-                  {!isFormOpen && (
-                    <button
-                      data-cy="WriteCommentButton"
-                      type="button"
-                      className="button is-link"
-                      onClick={() => setIsFormOpen(true)}
-                    >
-                      Write a comment
-                    </button>
-                  )}
-                </article>
-              ))}
-            </>
-          )}
-        </div>
-
-        {isFormOpen && (
-          <NewCommentForm
-            postId={postId}
-            onSubmitted={(newComment: Comment) => {
-              setComments(prev => [...prev, newComment]);
-            }}
-          />
+            {!isFormOpen && (
+              <button
+                data-cy="WriteCommentButton"
+                type="button"
+                className="button is-link"
+                onClick={() => setIsFormOpen(true)}
+              >
+                Write a comment
+              </button>
+            )}
+          </>
         )}
       </div>
+
+      {isFormOpen && (
+        <NewCommentForm
+          postId={postId}
+          onSubmitted={(newComment: Comment) => {
+            setComments(prev => [...prev, newComment]);
+          }}
+        />
+      )}
     </div>
   );
 };

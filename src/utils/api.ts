@@ -9,7 +9,7 @@ export const getPostsByUser = (userId: number) => {
 };
 
 export const getCommentsByPost = (postId: number) => {
-  return client.get<Comment[]>(`/commets?postId=${postId}`);
+  return client.get<Comment[]>(`/comments?postId=${postId}`);
 };
 
 export const createComment = (payload: Omit<Comment, 'id'>) => {
