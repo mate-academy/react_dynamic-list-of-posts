@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { Comment, CommentData } from '../types/Comment';
 import { createComment } from '../utils/api';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import PropTypes from 'prop-types';
 
 type FormErrors = Partial<Record<keyof CommentData, string>>;
 
@@ -16,7 +18,6 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSubmitted }) => {
   const [submitting, setSubmitting] = useState(false);
   const [wasSubmitted, setWasSubmitted] = useState(false);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const errors = useMemo<FormErrors>(() => {
     const e: FormErrors = {};
 
@@ -198,4 +199,9 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSubmitted }) => {
       </div>
     </form>
   );
+};
+
+NewCommentForm.propTypes = {
+  postId: PropTypes.number.isRequired,
+  onSubmitted: PropTypes.func.isRequired,
 };

@@ -49,7 +49,7 @@ export const App = () => {
 
   // when user changes, fetch post
   useEffect(() => {
-    if (!selectedUserId) {
+    if (selectedUserId === null) {
       setPosts([]);
       setSelectedPostId(null);
       setPostError(null);
@@ -81,7 +81,7 @@ export const App = () => {
     : null;
 
   const handleSelectPost = (id: number) => {
-    setSelectedPostId(prev => (prev === id ? null : id)); // toggle Open/Close
+    setSelectedPostId(prev => (prev === id ? null : id));
   };
 
   return (
@@ -101,7 +101,7 @@ export const App = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUserId && (
+                {selectedUserId === null && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
                 {selectedUserId && (
@@ -118,7 +118,6 @@ export const App = () => {
                     )}
 
                     {!postLoading && !postError && posts.length === 0 && (
-                      // eslint-disable-next-line max-len
                       <div
                         className="notification is-warning"
                         data-cy="NoPostsYet"

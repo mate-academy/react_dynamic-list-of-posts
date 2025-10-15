@@ -1,5 +1,7 @@
 import React from 'react';
 import { Post } from '../types/Post';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import PropTypes from 'prop-types';
 
 type Props = {
   posts: Post[];
@@ -20,7 +22,6 @@ export const PostsList: React.FC<Props> = ({
         <tr className="has-background-link-light">
           <th>#</th>
           <th>Title</th>
-          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
           <th> </th>
         </tr>
       </thead>
@@ -64,3 +65,17 @@ export const PostsList: React.FC<Props> = ({
     </table>
   </div>
 );
+
+PostsList.propTypes = {
+  posts: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.number.isRequired,
+      userId: PropTypes.number.isRequired,
+      title: PropTypes.string.isRequired,
+      body: PropTypes.string.isRequired,
+    }).isRequired,
+  ).isRequired,
+
+  selectedPostId: PropTypes.number,
+  onSelect: PropTypes.func.isRequired,
+} as unknown as React.WeakValidationMap<unknown>;

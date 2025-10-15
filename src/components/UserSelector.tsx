@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import PropTypes from 'prop-types';
 
 type Props = {
   users: User[];
@@ -29,7 +31,7 @@ export const UserSelector: React.FC<Props> = ({
     document.addEventListener('mousedown', onDocClick);
 
     return () => document.removeEventListener('mousedown', onDocClick);
-  });
+  }, []);
 
   const currentTitle = isLoading
     ? 'Loading users...'
@@ -112,3 +114,18 @@ export const UserSelector: React.FC<Props> = ({
     </div>
   );
 };
+
+UserSelector.propTypes = {
+  users: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+    }).isRequired,
+  ).isRequired,
+
+  isLoading: PropTypes.bool.isRequired,
+  error: PropTypes.string,
+  selectedUserId: PropTypes.number,
+  onSelect: PropTypes.func.isRequired,
+} as unknown as React.WeakValidationMap<unknown>;

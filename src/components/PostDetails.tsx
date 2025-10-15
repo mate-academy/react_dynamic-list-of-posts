@@ -3,6 +3,8 @@ import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Comment } from '../types/Comment';
 import { deleteComment, getCommentsByPost } from '../utils/api';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import PropTypes from 'prop-types';
 
 type Props = {
   postId: number | null;
@@ -101,7 +103,7 @@ export const PostDetails: React.FC<Props> = ({ postId, title, body }) => {
     };
   }, [postId]);
 
-  if (!postId) {
+  if (postId === null) {
     return (
       <p className="title is-4" data-cy="NoCommentsMessage">
         No comments yet
@@ -207,4 +209,10 @@ export const PostDetails: React.FC<Props> = ({ postId, title, body }) => {
       )}
     </div>
   );
+};
+
+PostDetails.propTypes = {
+  postId: PropTypes.number,
+  title: PropTypes.string,
+  body: PropTypes.string,
 };
