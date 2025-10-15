@@ -1,107 +1,218 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
+import { Comment } from '../types/Comment';
+import { deleteComment, getCommentsByPost } from '../utils/api';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import PropTypes from 'prop-types';
 
-export const PostDetails: React.FC = () => {
+type Props = {
+  postId: number | null;
+  title?: string;
+  body?: string;
+};
+
+export const PostDetails: React.FC<Props> = ({ postId, title, body }) => {
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
+  // #region delete
+  const [deletingIds, setDeletingIds] = useState<Set<number>>(new Set());
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [lastFailedId, setLastFailedId] = useState<number | null>(null);
+
+  const handleDelete = async (id: number) => {
+    const prev = comments;
+
+    setComments(prev.filter(c => c.id !== id));
+    setDeleteError(null);
+    setLastFailedId(null);
+    setDeletingIds(s => new Set(s).add(id));
+
+    try {
+      await deleteComment(id);
+      setDeletingIds(s => {
+        const next = new Set(s);
+
+        next.delete(id);
+
+        return next;
+      });
+    } catch {
+      setComments(prev);
+      setDeletingIds(s => {
+        const next = new Set(s);
+
+        next.delete(id);
+
+        return next;
+      });
+      setDeleteError('Failed to delete comment. Try again.');
+      setLastFailedId(id);
+    }
+  };
+
+  const retryDelete = () => {
+    if (lastFailedId != null) {
+      handleDelete(lastFailedId);
+    }
+  };
+  // #endregion
+
+  // load comments
+  useEffect(() => {
+    setIsFormOpen(false);
+
+    if (postId === null) {
+      setComments([]);
+      setError(null);
+      setIsLoading(false);
+
+      return;
+    }
+
+    let cancelled = false;
+
+    const load = async () => {
+      try {
+        setError(null);
+        setIsLoading(true);
+        const data = await getCommentsByPost(postId);
+
+        if (!cancelled) {
+          setComments(data);
+        }
+      } catch {
+        if (!cancelled) {
+          setError('Something went wrong');
+          setComments([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [postId]);
+
+  if (postId === null) {
+    return (
+      <p className="title is-4" data-cy="NoCommentsMessage">
+        No comments yet
+      </p>
+    );
+  }
+
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
-          </h2>
-
-          <p data-cy="PostBody">
-            eveniet quo quis laborum totam consequatur non dolor ut et est
-            repudiandae est voluptatem vel debitis et magnam
-          </p>
-        </div>
-
-        <div className="block">
-          <Loader />
-
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
+      {postId !== null && (
+        <>
+          <div className="block">
+            <h2 className="title is-3" data-cy="PostTitle">
+              #{postId}: {title}
+            </h2>
+            <p className="mb-4" data-cy="PostBody">
+              {body}
+            </p>
           </div>
 
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
+          <div className="block">
+            {isLoading && <Loader />}
 
-          <p className="title is-4">Comments:</p>
+            {error && (
+              <div className="notification is-danger" data-cy="CommentsError">
+                Something went wrong
+              </div>
+            )}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
+            {!isLoading && !error && comments.length === 0 && (
+              <p className="subtitle" data-cy="NoCommentsMessage">
+                No comments yet
+              </p>
+            )}
 
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
+            {!isLoading && !error && comments.length > 0 && (
+              <>
+                <p className="title is-4">Comments:</p>
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
+                {deleteError && (
+                  <div className="notification is-danger is-light mb-3">
+                    {deleteError}{' '}
+                    {lastFailedId != null && (
+                      <button
+                        type="button"
+                        className="button is-small is-danger is-light"
+                        onClick={retryDelete}
+                      >
+                        Retry
+                      </button>
+                    )}
+                  </div>
+                )}
 
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div className="message-body" data-cy="CommentBody">
-              One more comment
-            </div>
-          </article>
+                {comments.map(c => (
+                  <article
+                    key={c.id}
+                    className="message is-small"
+                    data-cy="Comment"
+                  >
+                    <div className="message-header">
+                      <a href={`mailto:${c.email}`} data-cy="CommentAuthor">
+                        {c.name}
+                      </a>
+                      <button
+                        data-cy="CommentDelete"
+                        type="button"
+                        className="delete is-small"
+                        aria-label="delete"
+                        onClick={() => handleDelete(c.id)}
+                        disabled={deletingIds.has(c.id)}
+                      />
+                    </div>
+                    <div className="message-body" data-cy="CommentBody">
+                      {c.body}
+                    </div>
+                  </article>
+                ))}
+              </>
+            )}
+          </div>
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
+          {!isLoading && !error && !isFormOpen && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setIsFormOpen(true)}
+            >
+              Write a comment
+            </button>
+          )}
 
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
-        </div>
-
-        <NewCommentForm />
-      </div>
+          {isFormOpen && (
+            <NewCommentForm
+              postId={postId}
+              onSubmitted={(newComment: Comment) =>
+                setComments(prev => [...prev, newComment])
+              }
+            />
+          )}
+        </>
+      )}
     </div>
   );
+};
+
+PostDetails.propTypes = {
+  postId: PropTypes.number,
+  title: PropTypes.string,
+  body: PropTypes.string,
 };
