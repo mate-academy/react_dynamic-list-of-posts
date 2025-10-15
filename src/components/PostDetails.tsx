@@ -62,11 +62,16 @@ export const PostDetails: React.FC<Props> = ({ postId, title, body }) => {
   // load comments
   useEffect(() => {
     setIsFormOpen(false);
-    if (!postId) {
+
+    if (postId === null) {
       setComments([]);
+      setError(null);
+      setIsLoading(false);
 
       return;
     }
+
+    let cancelled = false;
 
     const load = async () => {
       try {
@@ -74,16 +79,26 @@ export const PostDetails: React.FC<Props> = ({ postId, title, body }) => {
         setIsLoading(true);
         const data = await getCommentsByPost(postId);
 
-        setComments(data);
+        if (!cancelled) {
+          setComments(data);
+        }
       } catch {
-        setError('Something went wrong');
-        setComments([]);
+        if (!cancelled) {
+          setError('Something went wrong');
+          setComments([]);
+        }
       } finally {
-        setIsLoading(false);
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
     };
 
     load();
+
+    return () => {
+      cancelled = true;
+    };
   }, [postId]);
 
   if (!postId) {
@@ -96,98 +111,99 @@ export const PostDetails: React.FC<Props> = ({ postId, title, body }) => {
 
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="block">
-        <h2 className="title is-3" data-cy="PostTitle">
-          {postId}: {title}
-        </h2>
-
-        <p className="mb-4" data-cy="PostBody">
-          {body}
-        </p>
-      </div>
-
-      <div className="block">
-        {isLoading && <Loader />}
-
-        {error && (
-          <div className="notification is-danger" data-cy="CommentsError">
-            Something went wrong
+      {postId !== null && (
+        <>
+          <div className="block">
+            <h2 className="title is-3" data-cy="PostTitle">
+              #{postId}: {title}
+            </h2>
+            <p className="mb-4" data-cy="PostBody">
+              {body}
+            </p>
           </div>
-        )}
 
-        {!isLoading && !error && comments.length === 0 && (
-          <p className="subtitle" data-cy="NoComments">
-            No comments yet
-          </p>
-        )}
+          <div className="block">
+            {isLoading && <Loader />}
 
-        {!isLoading && !error && comments.length > 0 && (
-          <>
-            <p className="title is-4">Comments:</p>
-
-            {deleteError && (
-              <div className="notification is-danger is-light mb-3">
-                {deleteError}{' '}
-                {lastFailedId != null && (
-                  <button
-                    type="button"
-                    className="button is-small is-danger is-light"
-                    onClick={retryDelete}
-                  >
-                    Retry
-                  </button>
-                )}
+            {error && (
+              <div className="notification is-danger" data-cy="CommentsError">
+                Something went wrong
               </div>
             )}
 
-            {comments.map(c => (
-              <article
-                key={c.id}
-                className="message is-small"
-                data-cy="Comment"
-              >
-                <div className="message-header">
-                  <a href={`mailto:${c.email}`} data-cy="CommentAuthor">
-                    {c.name}
-                  </a>
-
-                  <button
-                    data-cy="CommentDelete"
-                    type="button"
-                    className="delete is-small"
-                    aria-label="delete"
-                    onClick={() => handleDelete(c.id)}
-                    disabled={deletingIds.has(c.id)}
-                  />
-                </div>
-
-                <div className="message-body" data-cy="CommentBody">
-                  {c.body}
-                </div>
-              </article>
-            ))}
-
-            {!isFormOpen && (
-              <button
-                data-cy="WriteCommentButton"
-                type="button"
-                className="button is-link"
-                onClick={() => setIsFormOpen(true)}
-              >
-                Write a comment
-              </button>
+            {!isLoading && !error && comments.length === 0 && (
+              <p className="subtitle" data-cy="NoCommentsMessage">
+                No comments yet
+              </p>
             )}
-          </>
-        )}
-      </div>
 
-      {isFormOpen && (
-        <NewCommentForm
-          postId={postId}
-          onSubmitted={(newComment: Comment) => {
-            setComments(prev => [...prev, newComment]);
-          }}
-        />
+            {!isLoading && !error && comments.length > 0 && (
+              <>
+                <p className="title is-4">Comments:</p>
+
+                {deleteError && (
+                  <div className="notification is-danger is-light mb-3">
+                    {deleteError}{' '}
+                    {lastFailedId != null && (
+                      <button
+                        type="button"
+                        className="button is-small is-danger is-light"
+                        onClick={retryDelete}
+                      >
+                        Retry
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                {comments.map(c => (
+                  <article
+                    key={c.id}
+                    className="message is-small"
+                    data-cy="Comment"
+                  >
+                    <div className="message-header">
+                      <a href={`mailto:${c.email}`} data-cy="CommentAuthor">
+                        {c.name}
+                      </a>
+                      <button
+                        data-cy="CommentDelete"
+                        type="button"
+                        className="delete is-small"
+                        aria-label="delete"
+                        onClick={() => handleDelete(c.id)}
+                        disabled={deletingIds.has(c.id)}
+                      />
+                    </div>
+                    <div className="message-body" data-cy="CommentBody">
+                      {c.body}
+                    </div>
+                  </article>
+                ))}
+              </>
+            )}
+          </div>
+
+          {!isLoading && !error && !isFormOpen && (
+            <button
+              data-cy="WriteCommentButton"
+              type="button"
+              className="button is-link"
+              onClick={() => setIsFormOpen(true)}
+            >
+              Write a comment
+            </button>
+          )}
+
+          {isFormOpen && (
+            <NewCommentForm
+              postId={postId}
+              onSubmitted={(newComment: Comment) =>
+                setComments(prev => [...prev, newComment])
+              }
+            />
+          )}
+        </>
       )}
     </div>
   );

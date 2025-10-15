@@ -58,6 +58,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onSubmitted }) => {
 
       onSubmitted(created);
       setBody('');
+      setWasSubmitted(false);
     } finally {
       setSubmitting(false);
     }

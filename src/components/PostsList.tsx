@@ -26,7 +26,7 @@ export const PostsList: React.FC<Props> = ({
       </thead>
 
       <tbody>
-        {posts.map((post, index) => (
+        {posts.map(post => (
           <tr
             key={post.id}
             data-cy="Post"
@@ -34,7 +34,7 @@ export const PostsList: React.FC<Props> = ({
               selectedPostId === post.id ? 'has-background-link-light' : ''
             }
           >
-            <td data-cy="PostId">{index + 1}</td>
+            <td data-cy="PostId">{post.id}</td>
 
             <td data-cy="PostTitle">
               <a
@@ -52,7 +52,7 @@ export const PostsList: React.FC<Props> = ({
               <button
                 type="button"
                 data-cy="PostButton"
-                className="button is-link is-light"
+                className={`button is-link ${selectedPostId === post.id ? '' : 'is-light'}`}
                 onClick={() => onSelect(post.id)}
               >
                 {selectedPostId === post.id ? 'Close' : 'Open'}
