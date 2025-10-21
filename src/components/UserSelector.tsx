@@ -1,16 +1,72 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/indent */
+import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react';
+import { User } from '../types/User';
+import classNames from 'classnames';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  setToggleButton: Dispatch<SetStateAction<boolean>>;
+  setSelectedUserId: Dispatch<SetStateAction<number | null>>;
+  toggleButton: boolean;
+  users: User[];
+  selectedUserId: number | null;
+  setOpenSideBar: Dispatch<SetStateAction<boolean>>;
+};
+
+export const UserSelector: React.FC<Props> = ({
+  setToggleButton,
+  setSelectedUserId,
+  toggleButton,
+  users,
+  selectedUserId,
+  setOpenSideBar,
+}) => {
+  const buttonRef = useRef(null);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = event => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
+        setToggleButton(false);
+      }
+    };
+
+    if (toggleButton) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [toggleButton, setToggleButton]);
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className={classNames('dropdown', { 'is-active': toggleButton })}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
+          ref={buttonRef}
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => {
+            setToggleButton(!toggleButton);
+          }}
         >
-          <span>Choose a user</span>
+          <span>
+            {selectedUserId
+              ? users.find(user => {
+                  return user.id === selectedUserId;
+                })?.name
+              : 'Choose a user'}
+          </span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -18,23 +74,32 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
+      <div
+        ref={dropdownRef}
+        className={classNames('dropdown-menu', { 'is-active': toggleButton })}
+        id="dropdown-menu"
+        role="menu"
+      >
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+          {users.map(user => {
+            return (
+              <a
+                onClick={event => {
+                  event.preventDefault();
+                  setSelectedUserId(user.id);
+                  setToggleButton(false);
+                  setOpenSideBar(false);
+                }}
+                href={`#user-${user.id}`}
+                key={user.id}
+                className={classNames('dropdown-item', {
+                  'is-active': user.id === selectedUserId,
+                })}
+              >
+                {user.name}
+              </a>
+            );
+          })}
         </div>
       </div>
     </div>
