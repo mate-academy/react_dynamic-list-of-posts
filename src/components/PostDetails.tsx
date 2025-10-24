@@ -6,7 +6,7 @@ import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 
 type Props = {
-  isLoaderComment: boolean;
+  isLoadingComment: boolean;
   isErrorComment: boolean;
   selectedPostComments: Comment[] | null;
   selectedUserPosts: Post[] | null;
@@ -20,7 +20,7 @@ type Props = {
   setFormText: Dispatch<SetStateAction<string>>;
   formText: string;
   handleSubmit: (nameSurname, email, text, postId) => void;
-  isLoaderForm: boolean;
+  isLoadingForm: boolean;
   formErrors: { name: boolean; email: boolean; text: boolean };
   setFormErrors: Dispatch<
     SetStateAction<{ name: boolean; email: boolean; text: boolean }>
@@ -30,7 +30,7 @@ type Props = {
 
 export const PostDetails: React.FC<Props> = ({
   selectedUserPosts,
-  isLoaderComment,
+  isLoadingComment,
   isErrorComment,
   selectedPostComments,
   selectedPostId,
@@ -43,7 +43,7 @@ export const PostDetails: React.FC<Props> = ({
   setFormText,
   formText,
   handleSubmit,
-  isLoaderForm,
+  isLoadingForm,
   formErrors,
   setFormErrors,
   handleDelete,
@@ -64,7 +64,7 @@ export const PostDetails: React.FC<Props> = ({
         </div>
 
         <div className="block">
-          {isLoaderComment && <Loader />}
+          {isLoadingComment && <Loader />}
 
           {isErrorComment && (
             <div className="notification is-danger" data-cy="CommentsError">
@@ -78,7 +78,7 @@ export const PostDetails: React.FC<Props> = ({
             </p>
           )}
 
-          {!isLoaderComment && selectedPostComments?.length > 0 && (
+          {!isLoadingComment && selectedPostComments?.length > 0 && (
             <p className="title is-4">Comments:</p>
           )}
 
@@ -115,7 +115,7 @@ export const PostDetails: React.FC<Props> = ({
           })}
 
           {!formOpened &&
-            !isLoaderComment &&
+            !isLoadingComment &&
             selectedPostComments?.length >= 0 && (
               <button
                 data-cy="WriteCommentButton"
@@ -139,10 +139,9 @@ export const PostDetails: React.FC<Props> = ({
             formName={formName}
             handleSubmit={handleSubmit}
             setFormOpened={setFormOpened}
-            isLoaderForm={isLoaderForm}
+            isLoadingForm={isLoadingForm}
             formErrors={formErrors}
             setFormErrors={setFormErrors}
-            setDeletedCommentId={setDeletedCommentId}
           />
         )}
       </div>

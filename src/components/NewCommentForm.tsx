@@ -12,7 +12,7 @@ type Props = {
   selectedPostId: number;
   handleSubmit: (nameSurname, email, text, postId) => void;
   setFormOpened: Dispatch<SetStateAction<boolean>>;
-  isLoaderForm: boolean;
+  isLoadingForm: boolean;
   formErrors: { name: boolean; email: boolean; text: boolean };
   setFormErrors: Dispatch<
     SetStateAction<{ name: boolean; email: boolean; text: boolean }>
@@ -29,7 +29,7 @@ export const NewCommentForm: React.FC<Props> = ({
   selectedPostId,
   handleSubmit,
   setFormOpened,
-  isLoaderForm,
+  isLoadingForm,
   formErrors,
   setFormErrors,
 }) => {
@@ -157,7 +157,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="submit"
             className={classNames('button is-link', {
-              'is-loading': isLoaderForm,
+              'is-loading': isLoadingForm,
             })}
           >
             Add

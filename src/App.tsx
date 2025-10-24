@@ -31,9 +31,9 @@ export const App = () => {
 
   const [formOpened, setFormOpened] = useState<boolean>(false);
 
-  const [isLoader, setIsLoader] = useState<boolean>(false);
-  const [isLoaderComment, setIsLoaderComment] = useState<boolean>(false);
-  const [isLoaderForm, setIsLoaderForm] = useState<boolean>(false);
+  const [isLoading, setisLoading] = useState<boolean>(false);
+  const [isLoadingComment, setisLoadingComment] = useState<boolean>(false);
+  const [isLoadingForm, setisLoadingForm] = useState<boolean>(false);
 
   const [isError, setIsError] = useState<boolean>(false);
   const [isErrorComment, setIsErrorComment] = useState<boolean>(false);
@@ -56,28 +56,28 @@ export const App = () => {
   useEffect(() => {
     if (selectedUserId !== null) {
       setSelectedUserPosts(null);
-      setIsLoader(true);
+      setisLoading(true);
       client
         .get(`/posts?userId=${selectedUserId}`)
         .then(res => {
           setSelectedUserPosts(res);
         })
         .catch(() => setIsError(true))
-        .finally(() => setIsLoader(false));
+        .finally(() => setisLoading(false));
     }
   }, [selectedUserId]);
 
   useEffect(() => {
     if (selectedPostId !== null) {
       setSelectedPostComments(null);
-      setIsLoaderComment(true);
+      setisLoadingComment(true);
       client
         .get(`/comments?postId=${selectedPostId}`)
         .then(res => {
           setSelectedPostComments(res);
         })
         .catch(() => setIsErrorComment(true))
-        .finally(() => setIsLoaderComment(false));
+        .finally(() => setisLoadingComment(false));
     }
   }, [selectedPostId]);
 
@@ -108,7 +108,7 @@ export const App = () => {
       return;
     }
 
-    setIsLoaderForm(true);
+    setisLoadingForm(true);
 
     client
       .post(`/comments`, newComment)
@@ -119,7 +119,7 @@ export const App = () => {
         }
       })
       .finally(() => {
-        setIsLoaderForm(false);
+        setisLoadingForm(false);
       });
   };
 
@@ -162,7 +162,7 @@ export const App = () => {
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {isLoader && <Loader />}
+                {isLoading && <Loader />}
 
                 {isError && (
                   <div
@@ -173,7 +173,7 @@ export const App = () => {
                   </div>
                 )}
 
-                {!isLoader &&
+                {!isLoading &&
                   selectedUserPosts?.length === 0 &&
                   selectedUserId && (
                     <div
@@ -184,7 +184,7 @@ export const App = () => {
                     </div>
                   )}
 
-                {!isLoader && selectedUserPosts?.length > 0 && (
+                {!isLoading && selectedUserPosts?.length > 0 && (
                   <PostsList
                     selectedUserPosts={selectedUserPosts}
                     setOpenSideBar={setOpenSideBar}
@@ -213,7 +213,7 @@ export const App = () => {
                 <PostDetails
                   selectedUserPosts={selectedUserPosts}
                   selectedPostComments={selectedPostComments}
-                  isLoaderComment={isLoaderComment}
+                  isLoadingComment={isLoadingComment}
                   isErrorComment={isErrorComment}
                   selectedPostId={selectedPostId}
                   formOpened={formOpened}
@@ -225,7 +225,7 @@ export const App = () => {
                   setFormText={setFormText}
                   formText={formText}
                   handleSubmit={handleSubmit}
-                  isLoaderForm={isLoaderForm}
+                  isLoadingForm={isLoadingForm}
                   formErrors={formErrors}
                   setFormErrors={setFormErrors}
                   handleDelete={handleDelete}
