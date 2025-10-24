@@ -95,9 +95,9 @@ export const App = () => {
     };
 
     const newErrors = {
-      name: nameSurname === '',
-      email: email === '',
-      text: text === '',
+      name: nameSurname.trim() === '',
+      email: email.trim() === '',
+      text: text.trim() === '',
     };
 
     setFormErrors(newErrors);
@@ -124,8 +124,16 @@ export const App = () => {
   };
 
   const handleDelete = (commentId: number | null) => {
+    if (commentId == null) {
+      return;
+    }
+
     client.delete(`/comments/${commentId}`);
     setSelectedPostComments(prev => {
+      if (!prev) {
+        return [];
+      }
+
       const newComments = prev.filter(comment => comment.id !== commentId);
 
       return newComments;

@@ -23,9 +23,9 @@ type Props = {
   isLoaderForm: boolean;
   formErrors: { name: boolean; email: boolean; text: boolean };
   setFormErrors: Dispatch<
-    SetStateAction<{ name: booleam; email: boolean; text: boolean }>
+    SetStateAction<{ name: boolean; email: boolean; text: boolean }>
   >;
-  handleDelete: () => void;
+  handleDelete: (id: number) => void;
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -46,7 +46,6 @@ export const PostDetails: React.FC<Props> = ({
   isLoaderForm,
   formErrors,
   setFormErrors,
-  setDeletedCommentId,
   handleDelete,
 }) => {
   const postComment = selectedUserPosts?.find(
