@@ -1,2 +1,27 @@
+# Ігнорувати папку з залежностями
 /node_modules
+
+# Ігнорувати збірки
+/dist
 /build
+
+# Ігнорувати конфігураційні файли для IDE
+.vscode
+.idea
+
+# Ігнорувати лог-файли
+*.log
+
+# Ігнорувати тимчасові файли OS
+.DS_Store
+Thumbs.db
+
+# Ігнорувати тестові результати, coverage
+/coverage
+/.nyc_output
+
+# Ігнорувати lock-файли (опційно)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
