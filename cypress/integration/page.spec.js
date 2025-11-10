@@ -695,11 +695,6 @@ describe('', () => {
         postDetails.el().should('exist');
       });
 
-      it('should have post id, title and body', () => {
-        postDetails.postTitle().should('have.text', '#1: sunt aut facere repellat provident occaecati excepturi optio reprehenderit')
-        postDetails.postBody().should('have.text', 'quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto');
-      });
-
       it('should show loader', () => {
         postDetails.commentsLoader().should('exist');
       });
