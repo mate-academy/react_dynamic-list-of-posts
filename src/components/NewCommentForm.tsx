@@ -1,8 +1,104 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { TypeErrorMessages } from '../types/ErrorMessages';
+import { Comment as AppComment, CommentData } from '../types/Comment';
+import { Post } from '../types/Post';
+import cn from 'classnames';
 
-export const NewCommentForm: React.FC = () => {
+interface Props {
+  addNewComment: (postId: number, data: CommentData) => Promise<AppComment>;
+  selectedPost: Post | null;
+}
+
+export const NewCommentForm: React.FC<Props> = ({
+  addNewComment,
+  selectedPost,
+}) => {
+  const [name, setName] = useState<string>('');
+  const [errName, setErrName] = useState<TypeErrorMessages.name | ''>('');
+  const [email, setEmail] = useState<string>('');
+  const [errEmail, setErrEmail] = useState<TypeErrorMessages.email | ''>('');
+  const [message, setMessege] = useState<string>('');
+  const [errMess, setErrorMess] = useState<TypeErrorMessages.textarea | ''>('');
+  const [addError, setAddError] = useState<TypeErrorMessages | ''>('');
+  const [loadingAdd, setLoadingAdd] = useState<boolean>(false);
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setErrName('');
+    setName(e.target.value);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setErrEmail('');
+    setEmail(e.target.value);
+  };
+
+  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setErrorMess('');
+    setMessege(e.target.value);
+  };
+
+  const getErrors = () => {
+    let valid: boolean = true;
+
+    if (name.trim() === '') {
+      setErrName(TypeErrorMessages.name);
+      valid = false;
+    }
+
+    if (email.trim() === '') {
+      setErrEmail(TypeErrorMessages.email);
+      valid = false;
+    }
+
+    if (message.trim() === '') {
+      setErrorMess(TypeErrorMessages.textarea);
+      valid = false;
+    }
+
+    return valid;
+  };
+
+  const onClear = () => {
+    setErrName('');
+    setErrEmail('');
+    setErrorMess('');
+    setName('');
+    setEmail('');
+    setMessege('');
+  };
+
+  const createNewComment = (): CommentData => {
+    return { name: name, email: email, body: message };
+  };
+
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setErrName('');
+    setErrEmail('');
+    setErrorMess('');
+    setAddError('');
+
+    const haveError = getErrors();
+
+    if (!haveError || selectedPost === null) {
+      return;
+    }
+
+    try {
+      setLoadingAdd(true);
+
+      await addNewComment(selectedPost.id, createNewComment());
+
+      setMessege('');
+    } catch {
+      setAddError(TypeErrorMessages.add);
+    } finally {
+      setLoadingAdd(false);
+    }
+  };
+
   return (
-    <form data-cy="NewCommentForm">
+    <form data-cy="NewCommentForm" onSubmit={onSubmit} onReset={onClear}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -14,24 +110,30 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            value={name}
+            onChange={handleNameChange}
+            className={cn('input', { 'is-danger': errName })}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {errName && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
+        {errName && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            {TypeErrorMessages.name}
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -45,24 +147,30 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            value={email}
+            onChange={handleEmailChange}
+            className={cn('input', { 'is-danger': errEmail })}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {errEmail && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
+        {errEmail && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            {TypeErrorMessages.email}
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -75,18 +183,31 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            value={message}
+            onChange={handleMessageChange}
+            className={cn('textarea', { 'is-danger': errMess })}
           />
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
+        {errMess && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            {TypeErrorMessages.textarea}
+          </p>
+        )}
       </div>
 
+      {addError && (
+        <div className="notification is-danger">
+          <button className="delete" onClick={() => setAddError('')}></button>
+          {addError}
+        </div>
+      )}
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={cn('button is-link', { 'is-loading': loadingAdd })}
+          >
             Add
           </button>
         </div>
