@@ -65,6 +65,7 @@ export const NewCommentForm: React.FC<Props> = ({
     setName('');
     setEmail('');
     setMessage('');
+    setAddError('');
   };
 
   const createNewComment = (): CommentData => {

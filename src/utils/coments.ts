@@ -1,7 +1,7 @@
 import { client } from './fetchClient';
 import { Comment } from '../types/Comment';
 
-export const getComents = (postId: number) =>
+export const getComments = (postId: number) =>
   client.get<Comment[]>(`/comments?postId=${postId}`);
 
 export const postComment = (newComment: Omit<Comment, 'id'>) =>

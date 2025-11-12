@@ -12,7 +12,7 @@ import { Post } from './types/Post';
 import { getPosts } from './utils/post';
 import { TypeErrorMessages } from './types/ErrorMessages';
 import {
-  getComents,
+  getComments,
   postComment,
   deleteComment as delCom,
 } from './utils/coments';
@@ -85,7 +85,7 @@ export const App = () => {
         setComments([]);
         setLoadingComments(true);
 
-        const postComments = await getComents(selectedPost.id);
+        const postComments = await getComments(selectedPost.id);
 
         if (postComments.length === 0) {
           setComPostErrMes(TypeErrorMessages.noComments);
