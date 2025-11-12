@@ -47,7 +47,6 @@ export const PostsList: React.FC<Props> = ({ posts, selectedPost, onPost }) => {
                   className={cn('button is-link', {
                     'is-light': selectedPost?.id !== post.id,
                   })}
-                  // without 'is-light'
                   onClick={() => handleClick(post)}
                 >
                   {selectedPost?.id === post.id ? 'Close' : 'Open'}

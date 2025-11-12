@@ -17,8 +17,8 @@ export const NewCommentForm: React.FC<Props> = ({
   const [errName, setErrName] = useState<TypeErrorMessages.name | ''>('');
   const [email, setEmail] = useState<string>('');
   const [errEmail, setErrEmail] = useState<TypeErrorMessages.email | ''>('');
-  const [message, setMessege] = useState<string>('');
-  const [errMess, setErrorMess] = useState<TypeErrorMessages.textarea | ''>('');
+  const [message, setMessage] = useState<string>('');
+  const [errMess, setErrMess] = useState<TypeErrorMessages.textarea | ''>('');
   const [addError, setAddError] = useState<TypeErrorMessages | ''>('');
   const [loadingAdd, setLoadingAdd] = useState<boolean>(false);
 
@@ -33,11 +33,11 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setErrorMess('');
-    setMessege(e.target.value);
+    setErrMess('');
+    setMessage(e.target.value);
   };
 
-  const getErrors = () => {
+  const validateForm = () => {
     let valid: boolean = true;
 
     if (name.trim() === '') {
@@ -51,7 +51,7 @@ export const NewCommentForm: React.FC<Props> = ({
     }
 
     if (message.trim() === '') {
-      setErrorMess(TypeErrorMessages.textarea);
+      setErrMess(TypeErrorMessages.textarea);
       valid = false;
     }
 
@@ -61,10 +61,10 @@ export const NewCommentForm: React.FC<Props> = ({
   const onClear = () => {
     setErrName('');
     setErrEmail('');
-    setErrorMess('');
+    setErrMess('');
     setName('');
     setEmail('');
-    setMessege('');
+    setMessage('');
   };
 
   const createNewComment = (): CommentData => {
@@ -75,12 +75,12 @@ export const NewCommentForm: React.FC<Props> = ({
     event.preventDefault();
     setErrName('');
     setErrEmail('');
-    setErrorMess('');
+    setErrMess('');
     setAddError('');
 
-    const haveError = getErrors();
+    const isFormValid = validateForm();
 
-    if (!haveError || selectedPost === null) {
+    if (!isFormValid || selectedPost === null) {
       return;
     }
 
@@ -89,7 +89,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
       await addNewComment(selectedPost.id, createNewComment());
 
-      setMessege('');
+      setMessage('');
     } catch {
       setAddError(TypeErrorMessages.add);
     } finally {
