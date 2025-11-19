@@ -7,10 +7,9 @@ import { Loader } from './Loader';
 
 interface Props {
   post?: Post | null;
-  onClose: () => void;
 }
 
-export const PostDetails: React.FC<Props> = ({ post, onClose }) => {
+export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loadingComments, setLoadingComments] = useState(false);
   const [errorComments, setErrorComments] = useState<string | null>(null);
@@ -44,6 +43,19 @@ export const PostDetails: React.FC<Props> = ({ post, onClose }) => {
     }
   };
 
+  const handleDeleteCommment = async (id: number) => {
+    const prev = comments;
+
+    setComments(prev.filter(c => c.id !== id));
+
+    try {
+      await client.delete(`/comments/${id}`);
+    } catch {
+      alert('Delete comment error. Try again.!');
+      setComments(prev);
+    }
+  };
+
   if (!post) {
     return (
       <div className="notification is-info" data-cy="NoPostSelected">
@@ -60,10 +72,6 @@ export const PostDetails: React.FC<Props> = ({ post, onClose }) => {
         </h2>
 
         <p data-cy="PostBody">{post.body}</p>
-
-        <button type="button" className="delete" onClick={onClose}>
-          Close
-        </button>
       </div>
       <div className="block">
         {loadingComments && <Loader />}
@@ -76,13 +84,32 @@ export const PostDetails: React.FC<Props> = ({ post, onClose }) => {
           <p data-cy="NoCommentsMessage">No comments yet</p>
         )}
         {!loadingComments && !errorComments && comments.length > 0 && (
-          <ul>
-            {comments.map(c => (
-              <li key={c.id} data-cy="Comment">
-                <strong>{c.name}</strong>: {c.body}
-              </li>
-            ))}
-          </ul>
+          <>
+            <h3 className="comments-title">Comments:</h3>
+
+            <ul>
+              {comments.map(c => (
+                <li key={c.id} data-cy="Comment" className="comment-item">
+                  <div className="comment-header">
+                    <span className="comment-author" data-cy="CommentAuthor">
+                      {c.name}
+                    </span>
+
+                    <button
+                      type="button"
+                      className="delete"
+                      onClick={() => handleDeleteCommment(c.id)}
+                      data-cy="CommentDelete"
+                    />
+                  </div>
+
+                  <p className="comment-body" data-cy="CommentBody">
+                    {c.body}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </>
         )}
       </div>
       {!showForm && (
@@ -97,13 +124,7 @@ export const PostDetails: React.FC<Props> = ({ post, onClose }) => {
       )}
 
       {/* Formulário só aparece depois do clique */}
-      {showForm && (
-        <NewCommentForm
-          defaultName="Marcel"
-          defaultEmail="marcel@test.com"
-          onSubmit={handleAddComment}
-        />
-      )}
+      {showForm && <NewCommentForm onSubmit={handleAddComment} />}
     </div>
   );
 };

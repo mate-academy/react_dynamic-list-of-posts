@@ -56,7 +56,7 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const handleClear = () => {
-    setForm(prev => ({ ...prev, body: '' })); // mantém name e email
+    setForm({ name: '', email: '', body: '' }); // mantém name e email
     setErrors({});
     setSubmitError(null);
     setSubmitted(false);

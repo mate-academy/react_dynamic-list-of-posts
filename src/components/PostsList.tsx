@@ -37,7 +37,7 @@ export const PostsList: React.FC<Props> = ({
                 <button
                   type="button"
                   data-cy="PostButton"
-                  className="button is-danger is-light"
+                  className="button is-link"
                   onClick={onClosePost}
                 >
                   Close

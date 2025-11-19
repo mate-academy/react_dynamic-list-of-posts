@@ -21,3 +21,33 @@
 .message-body {
   white-space: pre-line;
 }
+
+.comment-item {
+  margin-bottom: 12px;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.comment-header {
+  background-color: #000;       // fundo preto
+  color: #fff;                  // texto branco
+  padding: 6px 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;          // centraliza verticalmente
+  justify-content: space-between; // nome à esquerda, botão à direita
+  margin-bottom: 6px;
+}
+
+.comment-author {
+  font-weight: bold;
+  text-decoration: none;        // sem sublinhado por padrão
+}
+
+.comment-author:hover {
+  text-decoration: underline;   // sublinhado só no hover
+}
+
+.comment-body {
+  color: #333;                  // texto normal, sem fundo preto
+}
