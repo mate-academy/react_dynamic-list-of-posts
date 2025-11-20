@@ -95,7 +95,7 @@ UserSelector.propTypes = {
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     phone: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
 
   onSelectUser: PropTypes.func.isRequired,
 };

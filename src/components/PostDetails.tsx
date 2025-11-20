@@ -20,7 +20,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<CommentError | ''>('');
   const [showCommentForm, setShowCommentForm] = useState(false);
-  const [formKey, setFormKey] = useState(0);
 
   useEffect(() => {
     setIsLoading(true);
@@ -33,6 +32,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }, [post.id]);
 
   const handleDeleteComment = async (commentId: number) => {
+    const deletedComment = comments.find(comm => comm.id === commentId);
+    let deletedCommentIndex = comments.findIndex(comm => comm.id === commentId);
+
+    if (!deletedComment || deletedCommentIndex === -1) return;
+
     try {
       setComments(curComments =>
         curComments.filter(com => com.id !== commentId),
@@ -40,7 +44,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
       await deleteComment(commentId);
     } catch (e) {
-      setComments(comments);
+      setComments(curComments =>
+        curComments.toSpliced(deletedCommentIndex, 0, deletedComment),
+      );
       setError(CommentError.DELETING);
     }
   };
@@ -56,10 +62,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     } catch (e) {
       throw e;
     }
-  };
-
-  const handleClearForm = () => {
-    setFormKey(curState => curState + 1);
   };
 
   return (
@@ -146,13 +148,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           )}
       </div>
 
-      {showCommentForm && (
-        <NewCommentForm
-          key={`new-comment-form-${formKey}`}
-          onClear={handleClearForm}
-          onSubmit={handleAddComment}
-        />
-      )}
+      {showCommentForm && <NewCommentForm onSubmit={handleAddComment} />}
     </div>
   );
 };

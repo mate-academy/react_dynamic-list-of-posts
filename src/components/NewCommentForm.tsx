@@ -22,7 +22,7 @@ export const NewCommentForm: React.FC<Props> = ({
   const [textError, setTextError] = useState('');
 
   const [isSubmiting, setIsSubmiting] = useState(false);
-  const [submitingError, setSubmitingError] = useState('');
+  const [submittingError, setSubmittingError] = useState('');
 
   const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -41,7 +41,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    setSubmitingError('');
+    setSubmittingError('');
 
     const trimmedName = name.trim();
     const trimmedEmail = email.trim();
@@ -71,8 +71,21 @@ export const NewCommentForm: React.FC<Props> = ({
       body: trimmedText,
     })
       .then(() => setText(''))
-      .catch(() => setSubmitingError('Error while adding comment'))
+      .catch(() => setSubmittingError('Error while adding comment'))
       .finally(() => setIsSubmiting(false));
+  };
+
+  const handleClear = () => {
+    setName('');
+    setNameError('');
+
+    setEmail('');
+    setEmailError('');
+
+    setText('');
+    setTextError('');
+
+    onClear();
   };
 
   return (
@@ -180,9 +193,9 @@ export const NewCommentForm: React.FC<Props> = ({
         )}
       </div>
 
-      {submitingError && (
+      {submittingError && (
         <div className="notification is-danger" data-cy="CommentsError">
-          {submitingError}
+          {submittingError}
         </div>
       )}
 
@@ -203,7 +216,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={onClear}
+            onClick={handleClear}
           >
             Clear
           </button>
