@@ -7,3 +7,8 @@ export interface Comment {
 }
 
 export type CommentData = Pick<Comment, 'name' | 'email' | 'body'>;
+
+export enum CommentError {
+  FETCHING = 'Something went wrong',
+  DELETING = 'Error while deleting comment',
+}
