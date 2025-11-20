@@ -9,6 +9,7 @@ import {
   getComments,
 } from '../services/comment.service';
 import { Comment, CommentData, CommentError } from '../types/Comment';
+import PropTypes from 'prop-types';
 
 interface Props {
   post: Post;
@@ -39,6 +40,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
       await deleteComment(commentId);
     } catch (e) {
+      setComments(comments);
       setError(CommentError.DELETING);
     }
   };
@@ -153,4 +155,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       )}
     </div>
   );
+};
+
+PostDetails.propTypes = {
+  post: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    userId: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+  }).isRequired,
 };

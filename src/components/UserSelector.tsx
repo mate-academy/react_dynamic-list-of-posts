@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { User } from '../types/User';
+import PropTypes from 'prop-types';
 
 interface Props {
   users: User[];
@@ -25,7 +26,12 @@ export const UserSelector: React.FC<Props> = ({
     }
   };
 
-  const handleSelect = (user: User) => {
+  const handleSelect = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    user: User,
+  ) => {
+    event.preventDefault();
+
     onSelectUser(user);
     setIsActive(false);
   };
@@ -63,7 +69,7 @@ export const UserSelector: React.FC<Props> = ({
                 'is-active': user.id === selectedUser?.id,
               })}
               key={user.id}
-              onClick={() => handleSelect(user)}
+              onClick={e => handleSelect(e, user)}
             >
               {user.name}
             </a>
@@ -72,4 +78,24 @@ export const UserSelector: React.FC<Props> = ({
       </div>
     </div>
   );
+};
+
+UserSelector.propTypes = {
+  users: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+      phone: PropTypes.string.isRequired,
+    }).isRequired,
+  ).isRequired,
+
+  selectedUser: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    phone: PropTypes.string.isRequired,
+  }).isRequired,
+
+  onSelectUser: PropTypes.func.isRequired,
 };

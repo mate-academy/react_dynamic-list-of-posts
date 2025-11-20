@@ -28,6 +28,8 @@ export const App: FC = () => {
 
   useEffect(() => {
     if (selectedUser) {
+      setError('');
+
       getPosts(selectedUser.id)
         .then(res => setPosts(res))
         .catch(() => setError('Something went wrong!'))

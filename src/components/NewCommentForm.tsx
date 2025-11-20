@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { CommentData } from '../types/Comment';
+import PropTypes from 'prop-types';
 
 interface Props {
   onSubmit?: (comment: CommentData) => Promise<void>;
@@ -42,28 +43,32 @@ export const NewCommentForm: React.FC<Props> = ({
     event.preventDefault();
     setSubmitingError('');
 
-    if (name === '') {
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedText = text.trim();
+
+    if (trimmedName === '') {
       setNameError('Name is required');
     }
 
-    if (email === '') {
+    if (trimmedEmail === '') {
       setEmailError('Email is required');
     }
 
-    if (text === '') {
+    if (trimmedText === '') {
       setTextError('Enter some text');
     }
 
-    if (name === '' || email === '' || text === '') {
+    if (trimmedName === '' || trimmedEmail === '' || trimmedText === '') {
       return;
     }
 
     setIsSubmiting(true);
 
     onSubmit({
-      name,
-      email,
-      body: text,
+      name: trimmedName,
+      email: trimmedEmail,
+      body: trimmedText,
     })
       .then(() => setText(''))
       .catch(() => setSubmitingError('Error while adding comment'))
@@ -206,4 +211,9 @@ export const NewCommentForm: React.FC<Props> = ({
       </div>
     </form>
   );
+};
+
+NewCommentForm.propTypes = {
+  onClear: PropTypes.func,
+  onSubmit: PropTypes.func,
 };
