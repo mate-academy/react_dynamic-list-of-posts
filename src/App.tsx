@@ -49,7 +49,7 @@ export const App = () => {
     setPosts([]);
     setPostsError('');
     setSelectedPost(null);
-    setIsPostsLoading(false);
+    // setIsPostsLoading(false);
 
     if (userIdToFetch) {
       const fetchPosts = async () => {

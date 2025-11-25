@@ -100,7 +100,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
 
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
-          {name}
+          Name
         </label>
 
         <div className="control has-icons-left has-icons-right">
@@ -110,7 +110,10 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={e => {
+              setName(e.target.value);
+              setNameError('');
+            }}
             className={classNames('input', {
               'is-danger': nameError,
             })}
@@ -140,7 +143,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
 
       <div className="field" data-cy="EmailField">
         <label className="label" htmlFor="comment-author-email">
-          {email}
+          Email
         </label>
 
         <div className="control has-icons-left has-icons-right">
@@ -150,7 +153,10 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             id="comment-author-email"
             placeholder="email@test.com"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={e => {
+              setEmail(e.target.value);
+              setEmailError('');
+            }}
             className={classNames('input', {
               'is-danger': emailError,
             })}
@@ -189,7 +195,10 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
             name="body"
             placeholder="Type comment here"
             value={body}
-            onChange={e => setBody(e.target.value)}
+            onChange={e => {
+              setBody(e.target.value);
+              setBodyError('');
+            }}
             className={classNames('textarea', {
               'is-danger': bodyError,
             })}

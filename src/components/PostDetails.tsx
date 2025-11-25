@@ -62,6 +62,10 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ selectedPost }) => {
   };
 
   const handleDeleteComment = (commentId: number) => {
+    setCommentsError('');
+
+    const originalComments = comments;
+
     setComments(prevComments =>
       prevComments.filter(comment => comment.id !== commentId),
     );
@@ -70,6 +74,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ selectedPost }) => {
     client
       .delete(`/comments/${commentId}`)
       .catch(() => {
+        setComments(originalComments);
         setCommentsError('Failed to delete a comment');
       })
       .finally(() => {
