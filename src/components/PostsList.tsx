@@ -41,7 +41,7 @@ export const PostsList: React.FC<PostListProps> = ({
           {posts.map(post => {
             const isSelected = selectedPost?.id === post.id;
             const buttonText = isSelected ? 'Close' : 'Open';
-            const buttonClass = isSelected ? 'is-link' : 'is link is-light';
+            const buttonClass = isSelected ? 'is-link' : 'is-link is-light';
 
             return (
               <tr

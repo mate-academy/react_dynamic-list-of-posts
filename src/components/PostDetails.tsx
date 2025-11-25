@@ -59,7 +59,6 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ selectedPost }) => {
 
   const handleAddComment = (newComment: Comment) => {
     setComments(prev => [...prev, newComment]);
-    setIsCommentFormVisible(false);
   };
 
   const handleDeleteComment = (commentId: number) => {
@@ -75,7 +74,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ selectedPost }) => {
       })
       .finally(() => {
         setDeletingCommentsIds(prevIds =>
-          prevIds?.filter(id => id !== commentId),
+          prevIds.filter(id => id !== commentId),
         );
       });
   };

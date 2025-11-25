@@ -31,7 +31,7 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
       setNameError('');
     }
 
-    if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email)) {
+    if (!/^\S+@\S+\.\S+$/.test(email.trim()) || !/^\S+@\S+\.\S+$/.test(email)) {
       setEmailError('Valid email is required!');
       isValid = false;
     } else {
@@ -73,8 +73,6 @@ export const NewCommentForm: React.FC<NewCommentFormProps> = ({
 
       onAddComment(newComment);
 
-      setName('');
-      setEmail('');
       setBody('');
     } catch (err) {
       setSubmitError('Failed to add comment. Please try again.');

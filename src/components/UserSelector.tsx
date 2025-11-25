@@ -78,6 +78,14 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
               'is-active': selectedUserId === null,
             })}
             onClick={() => handleSelectUser(null)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={e => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleSelectUser(null);
+              }
+            }}
           >
             Choose a user
           </div>
@@ -90,7 +98,10 @@ export const UserSelector: React.FC<UserSelectorProps> = ({
                 'is-active': user.id === selectedUserId,
               })}
               key={user.id}
-              onClick={() => handleSelectUser(user.id)}
+              onClick={e => {
+                e.preventDefault();
+                handleSelectUser(user.id);
+              }}
             >
               {user.name}
             </a>

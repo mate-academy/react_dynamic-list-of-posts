@@ -74,7 +74,7 @@ export const App = () => {
         }
       };
 
-      setTimeout(fetchPosts, 0);
+      fetchPosts();
     }
 
     return () => {
@@ -117,7 +117,7 @@ export const App = () => {
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    Something went wrong!
+                    {postsError}
                   </div>
                 )}
 
