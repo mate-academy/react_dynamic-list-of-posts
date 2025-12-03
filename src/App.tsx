@@ -8,53 +8,138 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { useEffect, useMemo, useState } from 'react';
+import { User } from './types/User';
+import { client } from './utils/fetchClient';
+import { Post } from './types/Post';
 
-export const App = () => (
-  <main className="section">
-    <div className="container">
-      <div className="tile is-ancestor">
-        <div className="tile is-parent">
-          <div className="tile is-child box is-success">
-            <div className="block">
-              <UserSelector />
-            </div>
+export const App = () => {
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [isUsersLoading, setIsUsersLoading] = useState(false);
+  const [isUsersError, setIsUsersError] = useState(false);
 
-            <div className="block" data-cy="MainContent">
-              <p data-cy="NoSelectedUser">No user selected</p>
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
+  const [isPostsError, setIsPostsError] = useState(false);
 
-              <Loader />
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
 
-              <div
-                className="notification is-danger"
-                data-cy="PostsLoadingError"
-              >
-                Something went wrong!
+  useEffect(() => {
+    setIsUsersLoading(true);
+    setIsUsersError(false);
+
+    client
+      .get<User[]>('/users')
+      .then(setUsers)
+      .catch(() => setIsUsersError(true))
+      .finally(() => setIsUsersLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (!selectedUserId) {
+      setPosts([]);
+      setSelectedPostId(null);
+
+      return;
+    }
+
+    setIsPostsLoading(true);
+    setIsPostsError(false);
+    setSelectedPostId(null);
+
+    client
+      .get<Post[]>(`/posts?userId=${selectedUserId}`)
+      .then(setPosts)
+      .catch(() => setIsPostsError(true))
+      .finally(() => setIsPostsLoading(false));
+  }, [selectedUserId]);
+
+  const selectedPost = useMemo(
+    () => posts.find(post => post.id === selectedPostId || null),
+    [posts, selectedPostId],
+  );
+
+  const handleUserSelect = (userId: number) => {
+    setSelectedUserId(userId);
+  };
+
+  const handlePostToggle = (postId: number) => {
+    setSelectedPostId(current => (current === postId ? null : postId));
+  };
+
+  return (
+    <main className="section">
+      <div className="container">
+        <div className="tile is-ancestor">
+          <div className="tile is-parent">
+            <div className="tile is-child box is-success">
+              <div className="block">
+                <UserSelector
+                  users={users}
+                  selectedUserId={selectedUserId}
+                  onSelectedUser={handleUserSelect}
+                  isLoading={isUsersLoading}
+                  hasError={isUsersError}
+                />
               </div>
 
-              <div className="notification is-warning" data-cy="NoPostsYet">
-                No posts yet
-              </div>
+              <div className="block" data-cy="MainContent">
+                {!selectedUserId && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-              <PostsList />
+                {selectedUserId && (
+                  <>
+                    {isPostsLoading && <Loader />}
+
+                    {isPostsError && (
+                      <div
+                        className="notification is-danger"
+                        data-cy="PostsLoadingError"
+                      >
+                        Something went wrong!
+                      </div>
+                    )}
+
+                    {!isPostsLoading && !isPostsError && posts.length === 0 && (
+                      <div
+                        className="notification is-warning"
+                        data-cy="NoPostsYet"
+                      >
+                        No posts yet
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {!isPostsLoading && !isPostsError && posts.length > 0 && (
+                  <PostsList
+                    posts={posts}
+                    selectedPostId={selectedPostId}
+                    onPostToggle={handlePostToggle}
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div
-          data-cy="Sidebar"
-          className={classNames(
-            'tile',
-            'is-parent',
-            'is-8-desktop',
-            'Sidebar',
-            'Sidebar--open',
-          )}
-        >
-          <div className="tile is-child box is-success ">
-            <PostDetails />
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': Boolean(selectedPost) },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              {selectedPost && <PostDetails post={selectedPost} />}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </main>
-);
+    </main>
+  );
+};
