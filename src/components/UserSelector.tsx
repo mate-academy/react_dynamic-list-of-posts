@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { User } from '../types/User';
 import { Loader } from './Loader';
+import classNames from 'classnames';
 
 type Props = {
   users: User[];
@@ -54,7 +55,7 @@ export const UserSelector: React.FC<Props> = ({
     <div
       ref={rootRef}
       data-cy="UserSelector"
-      className={`dropdown ${isOpen ? 'is-active' : ''}`}
+      className={classNames('dropdown', { 'is-active': isOpen })}
     >
       <div className="dropdown-trigger">
         <button
@@ -91,7 +92,9 @@ export const UserSelector: React.FC<Props> = ({
               <a
                 key={user.id}
                 href={`#user-${user.id}`}
-                className={`dropdown-item ${selectedUserId === user.id ? 'is-active' : ''}`}
+                className={classNames('dropdown-item', {
+                  'is-active': selectedUserId === user.id,
+                })}
                 onClick={event => {
                   event.preventDefault();
                   handleSelect(user.id);

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { CommentData } from '../types/Comment';
+import classNames from 'classnames';
 
 type Props = {
-  onSubmit: (data: CommentData) => void;
+  onSubmit: (data: CommentData) => Promise<void>;
   isSubmitting: boolean;
 };
 
@@ -99,7 +100,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, isSubmitting }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={`input${errors.name ? ' is-danger' : ''} `}
+            className={classNames('input', { 'is-danger': errors.name })}
             value={formData.name}
             onChange={handleChange}
           />

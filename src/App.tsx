@@ -56,7 +56,7 @@ export const App = () => {
   }, [selectedUserId]);
 
   const selectedPost = useMemo(
-    () => posts.find(post => post.id === selectedPostId || null),
+    () => posts.find(post => post.id === selectedPostId),
     [posts, selectedPostId],
   );
 
