@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { Loader } from './Loader';
+import React, { useEffect, useState, useRef } from 'react';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { client } from '../utils/fetchClient';
 import { Comment, CommentData } from '../types/Comment';
+import { Loader } from './Loader';
 
 type Props = {
   post: Post;
@@ -16,6 +16,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [deletingIds, setDeletingIds] = useState<number[]>([]);
+
+  const nextTempId = useRef(-1);
 
   useEffect(() => {
     setIsCommentsLoading(true);
@@ -49,9 +51,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   };
 
   const handleCommentAdd = async (data: CommentData) => {
+    setIsCommentsError(false);
     setIsAdding(true);
 
-    const tempCommentId = -Math.random();
+    const tempCommentId = nextTempId.current;
+
+    nextTempId.current -= 1;
+
     const tempComment: Comment = {
       id: tempCommentId,
       postId: post.id,
@@ -69,11 +75,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       setComments(prev =>
         prev.map(comment => (comment.id === tempCommentId ? created : comment)),
       );
-      setIsFormVisible(false);
     } catch {
+      setIsCommentsError(true);
       setComments(prev => prev.filter(comment => comment.id !== tempCommentId));
-
-      throw new Error('Failed to add comment');
     } finally {
       setIsAdding(false);
     }
@@ -88,7 +92,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         <h2 data-cy="PostTitle">
           #{post.id}: {post.title}
         </h2>
-
         <p data-cy="PostBody">{post.body}</p>
       </div>
 
