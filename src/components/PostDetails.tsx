@@ -30,6 +30,8 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }, [post.id]);
 
   const handleCommentDelete = (commentId: number) => {
+    const commentToDelete = comments.find(c => c.id === commentId);
+
     setDeletingIds(prev => [...prev, commentId]);
     setComments(prev => prev.filter(comment => comment.id !== commentId));
 
@@ -37,6 +39,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       .delete(`/comments/${commentId}`)
       .catch(() => {
         setIsCommentsError(true);
+        if (commentToDelete) {
+          setComments(prev => [...prev, commentToDelete]);
+        }
       })
       .finally(() => {
         setDeletingIds(prev => prev.filter(id => id !== commentId));
@@ -46,8 +51,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const handleCommentAdd = async (data: CommentData) => {
     setIsAdding(true);
 
+    const tempCommentId = -Math.random();
     const tempComment: Comment = {
-      id: Date.now(),
+      id: tempCommentId,
       postId: post.id,
       ...data,
     };
@@ -61,14 +67,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       });
 
       setComments(prev =>
-        prev.map(comment =>
-          comment.id === tempComment.id ? created : comment,
-        ),
+        prev.map(comment => (comment.id === tempCommentId ? created : comment)),
       );
+      setIsFormVisible(false);
     } catch {
-      setComments(prev =>
-        prev.filter(comment => comment.id !== tempComment.id),
-      );
+      setComments(prev => prev.filter(comment => comment.id !== tempCommentId));
 
       throw new Error('Failed to add comment');
     } finally {

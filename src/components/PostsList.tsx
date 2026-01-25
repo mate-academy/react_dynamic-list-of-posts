@@ -6,8 +6,7 @@ import classNames from 'classnames';
 type Props = {
   posts: Post[];
   selectedPostId: number | null;
-  isLoading: boolean;
-  isError: boolean;
+
   onPostToggle: (id: number) => void;
 };
 

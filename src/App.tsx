@@ -114,8 +114,6 @@ export const App: React.FC = () => {
                       <PostsList
                         posts={posts}
                         selectedPostId={selectedPostId}
-                        isLoading={isPostsLoading}
-                        isError={isPostsError}
                         onPostToggle={handlePostToggle}
                       />
                     )}

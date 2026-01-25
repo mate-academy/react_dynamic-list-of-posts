@@ -16,6 +16,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, isSubmitting }) => {
   });
   const [errors, setErrors] = useState<Errors>({});
   const [wasSubmitted, setWasSubmitted] = useState(false);
+
   const validate = (data: CommentData): Errors => {
     const newErrors: Errors = {};
 
@@ -65,17 +66,15 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, isSubmitting }) => {
       return;
     }
 
-    try {
-      await onSubmit(formData);
+    await onSubmit(formData);
 
-      setFormData(prev => ({
-        ...prev,
-        body: '',
-      }));
+    setFormData(prev => ({
+      ...prev,
+      body: '',
+    }));
 
-      setErrors({});
-      setWasSubmitted(false);
-    } catch {}
+    setErrors({});
+    setWasSubmitted(false);
   };
 
   const handleClear = () => {
@@ -100,6 +99,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, isSubmitting }) => {
             className={`input${errors.name ? ' is-danger' : ''}`}
             value={formData.name}
             onChange={handleChange}
+            disabled={isSubmitting}
           />
 
           <span className="icon is-small is-left">
@@ -137,6 +137,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, isSubmitting }) => {
             className={`input${errors.email ? ' is-danger' : ''}`}
             value={formData.email}
             onChange={handleChange}
+            disabled={isSubmitting}
           />
 
           <span className="icon is-small is-left">
@@ -173,6 +174,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, isSubmitting }) => {
             className={`textarea${errors.body ? ' is-danger' : ''}`}
             value={formData.body}
             onChange={handleChange}
+            disabled={isSubmitting}
           />
         </div>
 
@@ -190,16 +192,16 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, isSubmitting }) => {
             className={`button is-link${isSubmitting ? ' is-loading' : ''}`}
             disabled={isSubmitting}
           >
-            add
+            Add
           </button>
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button
             type="reset"
             className="button is-link is-light"
             onClick={handleClear}
+            disabled={isSubmitting}
           >
             Clear
           </button>
