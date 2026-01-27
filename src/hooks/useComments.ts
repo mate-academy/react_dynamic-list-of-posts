@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getComments, delComment, postComment } from '../api/todos';
 import { Comment } from '../types/Comment';
 
@@ -7,6 +7,7 @@ export function useComments(postId: number | null) {
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
+  const tempIdRef = useRef(-1);
 
   useEffect(() => {
     if (!postId) {
@@ -50,8 +51,12 @@ export function useComments(postId: number | null) {
     setHasError(false);
     setIsAdding(true);
 
+    const tempId = tempIdRef.current;
+
+    tempIdRef.current -= 1;
+
     const tempComment: Comment = {
-      id: Date.now(),
+      id: tempId,
       postId,
       name,
       email,
