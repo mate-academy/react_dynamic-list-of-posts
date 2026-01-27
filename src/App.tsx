@@ -19,43 +19,36 @@ export const App = () => {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [hasUsersError, setHasUsersError] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  // const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  // const [isCommentFormOpen, setIsCommentFormOpen] = useState(false);
 
   useEffect(() => {
     setHasUsersError(false);
     setIsLoadingUsers(true);
-    client.get<User[]>('/users')
-      .then((usersFromServer) => {
-        setUsers(usersFromServer)
+    client
+      .get<User[]>('/users')
+      .then(usersFromServer => {
+        setUsers(usersFromServer);
       })
       .catch(() => {
         setHasUsersError(true);
       })
       .finally(() => {
         setIsLoadingUsers(false);
-      })
+      });
   }, []);
-  
-  const selectUser = (person: User) => {
+
+  const handleSelectUser = (person: User) => {
     if (selectedUser?.id === person.id) {
       return;
     } else {
-      setSelectedUser(person)
-      // setIsSidebarOpen(false);
+      setSelectedUser(person);
       setSelectedPost(null);
-      // setIsCommentFormOpen(false);
     }
   };
-  
-  const selectPost = (post: Post) => {
-    setSelectedPost(prev =>
-      prev?.id === post.id ? null : post
-    );
 
-    // setIsCommentFormOpen(false);
+  const handleSelectPost = (post: Post) => {
+    setSelectedPost(prev => (prev?.id === post.id ? null : post));
   };
-  
+
   return (
     <main className="section">
       <div className="container">
@@ -63,9 +56,9 @@ export const App = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector 
+                <UserSelector
                   users={users}
-                  onSelectUser={selectUser}
+                  onSelectUser={handleSelectUser}
                   selectedUser={selectedUser}
                 />
               </div>
@@ -74,45 +67,40 @@ export const App = () => {
                 {isLoadingUsers && <Loader />}
 
                 {!isLoadingUsers && !selectedUser && !hasUsersError && (
-                  <p data-cy="NoSelectedUser">No user selected</p>)
-                }
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
                 {!isLoadingUsers && hasUsersError && (
                   <div className="notification is-danger" data-cy="UsersError">
                     Something went wrong while loading users
                   </div>
                 )}
-  
+
                 {!isLoadingUsers && selectedUser && (
                   <PostsList
                     selectedUser={selectedUser}
                     selectedPost={selectedPost}
-                    onSelectPost={selectPost}
+                    onSelectPost={handleSelectPost}
                   />
                 )}
               </div>
             </div>
           </div>
 
-          
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                { 'Sidebar--open': !!selectedPost },
-              )}
-            >
-              <div className="tile is-child box is-success ">
-                {selectedPost && (
-                  <PostDetails
-                    selectedPost={selectedPost}
-                  />
-                )}
-              </div>
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': !!selectedPost },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              {selectedPost && <PostDetails selectedPost={selectedPost} />}
             </div>
+          </div>
         </div>
       </div>
     </main>

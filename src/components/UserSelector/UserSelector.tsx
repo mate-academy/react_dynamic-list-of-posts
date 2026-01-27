@@ -4,13 +4,13 @@ import { User } from '../../types/User';
 
 type Props = {
   users: User[];
-  onSelectUser: (person: User) => void
-  selectedUser: User | null
-}
+  onSelectUser: (person: User) => void;
+  selectedUser: User | null;
+};
 export const UserSelector: React.FC<Props> = ({
   users,
   onSelectUser = () => {},
-  selectedUser
+  selectedUser,
 }) => {
   const [isShowUsers, setIsShowUsers] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -21,10 +21,14 @@ export const UserSelector: React.FC<Props> = ({
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsShowUsers(false);
       }
     };
+
     document.addEventListener('click', handleOutsideClick);
 
     return () => {
@@ -46,9 +50,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-controls="dropdown-menu"
           onClick={handleClick}
         >
-          <span>
-            {selectedUser ? selectedUser.name : 'Choose a user'}
-          </span>
+          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -56,16 +58,14 @@ export const UserSelector: React.FC<Props> = ({
         </button>
       </div>
 
-      
-      <UsersList 
+      <UsersList
         users={users}
         selectedUser={selectedUser}
-        onSelectUser={(user) => {
-          onSelectUser(user),
-          setIsShowUsers(false)
+        onSelectUser={user => {
+          onSelectUser(user);
+          setIsShowUsers(false);
         }}
       />
-      
     </div>
   );
 };

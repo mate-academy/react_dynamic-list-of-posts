@@ -4,81 +4,110 @@ import { Post } from '../../types/Post';
 import { Comment } from '../../types/Comment';
 
 type Props = {
-  selectedPost: Post | null
-  setComments: React.Dispatch<React.SetStateAction<Comment[]>>
-}
-export const NewCommentForm: React.FC<Props> = ({selectedPost, setComments}) => {
-  const [queryName, setQueryName] = useState('');
-  const [hasErrorName, setHasErrorName] = useState(false);
-  const [queryEmail, setQueryEmail] = useState('');
-  const [hasErrorEmail, setHasErrorEmail] = useState(false);
-  const [queryComText, setQueryComText] = useState('');
-  const [hasErrorComText, setHasErrorComText] = useState(false);
+  selectedPost: Post | null;
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
+};
+const initialFormState = {
+  name: '',
+  email: '',
+  body: '',
+  hasErrorName: false,
+  hasErrorEmail: false,
+  hasErrorBody: false,
+};
+
+export const NewCommentForm: React.FC<Props> = ({
+  selectedPost,
+  setComments,
+}) => {
+  // const [queryName, setQueryName] = useState('');
+  // const [hasErrorName, setHasErrorName] = useState(false);
+  // const [queryEmail, setQueryEmail] = useState('');
+  // const [hasErrorEmail, setHasErrorEmail] = useState(false);
+  // const [queryComText, setQueryComText] = useState('');
+  // const [hasErrorComText, setHasErrorComText] = useState(false);
+  const [form, setForm] = useState(initialFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasSubmitError, setHasSubmitError] = useState(false);
 
   const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQueryName(event.target.value);
-    setHasErrorName(false);
+    setForm(prev => ({
+      ...prev,
+      name: event.target.value,
+      hasErrorName: false,
+    }));
   };
+
   const handleChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQueryEmail(event.target.value);
-    setHasErrorEmail(false);
+    setForm(prev => ({
+      ...prev,
+      email: event.target.value,
+      hasErrorEmail: false,
+    }));
   };
-  const handleChangeComText = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setQueryComText(event.target.value);
-    setHasErrorComText(false);
+
+  const handleChangeComText = (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
+    setForm(prev => ({
+      ...prev,
+      body: event.target.value,
+      hasErrorBody: false,
+    }));
   };
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!selectedPost) return;
+    if (!selectedPost) {
+      return;
+    }
 
-    const nameError = queryName.trim() === '';
-    const emailError = queryEmail.trim() === '';
-    const bodyError = queryComText.trim() === '';
+    const nameError = form.name.trim() === '';
+    const emailError = form.email.trim() === '';
+    const bodyError = form.body.trim() === '';
 
-    setHasErrorName(nameError);
-    setHasErrorEmail(emailError);
-    setHasErrorComText(bodyError);
+    setForm(prev => ({
+      ...prev,
+      hasErrorName: nameError,
+      hasErrorEmail: emailError,
+      hasErrorBody: bodyError,
+    }));
 
-    if (nameError || emailError || bodyError) return;
-  
-    const newComment: Omit<Comment, 'id'> = {
-        postId: selectedPost.id,
-        name: queryName.trim(),
-        email: queryEmail.trim(),
-        body: queryComText.trim()
-    };
+    if (nameError || emailError || bodyError) {
+      return;
+    }
 
     setIsSubmitting(true);
-    client.post<Comment>('/comments', newComment)
-      .then((res) => {
-        setComments(prevCom => [...prevCom, res])
-        setQueryComText('');
-  setHasErrorComText(false)
+    setHasSubmitError(false);
+
+    const newComment: Omit<Comment, 'id'> = {
+      postId: selectedPost.id,
+      name: form.name.trim(),
+      email: form.email.trim(),
+      body: form.body.trim(),
+    };
+
+    client
+      .post<Comment>('/comments', newComment)
+      .then(res => {
+        setComments(prev => [...prev, res]);
+        setForm(prev => ({ ...prev, body: '' }));
       })
       .catch(() => {
-        setHasErrorName(true);
-        setHasErrorEmail(true);
-        setHasErrorComText(true);
+        setHasSubmitError(true);
       })
       .finally(() => {
         setIsSubmitting(false);
-      })
+      });
   };
 
   const handleReset = () => {
-    setQueryName('');
-    setQueryEmail('');
-    setQueryComText('');
-    setHasErrorName(false);
-    setHasErrorEmail(false);
-    setHasErrorComText(false);
-  }
+    setForm(initialFormState);
+    setHasSubmitError(false);
+  };
+
   return (
-    <form 
-      data-cy="NewCommentForm"
-      onSubmit={handleSubmit}
-    >
+    <form data-cy="NewCommentForm" onSubmit={handleSubmit}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -90,8 +119,8 @@ export const NewCommentForm: React.FC<Props> = ({selectedPost, setComments}) => 
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={`input ${hasErrorName ? 'is-danger' : ''}`}
-            value={queryName}
+            className={`input ${form.hasErrorName ? 'is-danger' : ''}`}
+            value={form.name}
             onChange={handleChangeName}
           />
 
@@ -99,25 +128,21 @@ export const NewCommentForm: React.FC<Props> = ({selectedPost, setComments}) => 
             <i className="fas fa-user" />
           </span>
 
-          {hasErrorName && (
-  <span
-    className="icon is-small is-right has-text-danger"
-    data-cy="ErrorIcon"
-  >
-    <i className="fas fa-exclamation-triangle" />
-  </span>
-)}
+          {form.hasErrorName && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        {hasErrorName && (
-          <p 
-            className="help is-danger"
-            data-cy="ErrorMessage"
-          >
+        {form.hasErrorName && (
+          <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
         )}
-
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -131,8 +156,8 @@ export const NewCommentForm: React.FC<Props> = ({selectedPost, setComments}) => 
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={`input ${hasErrorEmail ? 'is-danger' : ''}`}
-            value={queryEmail}
+            className={`input ${form.hasErrorEmail ? 'is-danger' : ''}`}
+            value={form.email}
             onChange={handleChangeEmail}
           />
 
@@ -140,17 +165,17 @@ export const NewCommentForm: React.FC<Props> = ({selectedPost, setComments}) => 
             <i className="fas fa-envelope" />
           </span>
 
-          {hasErrorEmail && (
+          {form.hasErrorEmail && (
             <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
           )}
         </div>
 
-        {hasErrorEmail && (
+        {form.hasErrorEmail && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -163,17 +188,17 @@ export const NewCommentForm: React.FC<Props> = ({selectedPost, setComments}) => 
         </label>
 
         <div className="control">
-    <textarea
-      id="comment-body"
-      name="body"
-      placeholder="Type comment here"
-      className={`textarea ${hasErrorComText ? 'is-danger' : ''}`}
-      value={queryComText}
-      onChange={handleChangeComText}
-    />
-  </div>
+          <textarea
+            id="comment-body"
+            name="body"
+            placeholder="Type comment here"
+            className={`textarea ${form.hasErrorBody ? 'is-danger' : ''}`}
+            value={form.body}
+            onChange={handleChangeComText}
+          />
+        </div>
 
-        {hasErrorComText && (
+        {form.hasErrorBody && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
@@ -182,7 +207,7 @@ export const NewCommentForm: React.FC<Props> = ({selectedPost, setComments}) => 
 
       <div className="field is-grouped">
         <div className="control">
-          <button 
+          <button
             type="submit"
             className={`button is-link ${isSubmitting ? 'is-loading' : ''}`}
           >
@@ -192,7 +217,7 @@ export const NewCommentForm: React.FC<Props> = ({selectedPost, setComments}) => 
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button 
+          <button
             type="reset"
             className="button is-link is-light"
             onClick={handleReset}
@@ -201,6 +226,11 @@ export const NewCommentForm: React.FC<Props> = ({selectedPost, setComments}) => 
           </button>
         </div>
       </div>
+      {hasSubmitError && (
+        <p className="help is-danger" data-cy="CommentError">
+          Failed to add a comment. Please try again.
+        </p>
+      )}
     </form>
   );
 };
