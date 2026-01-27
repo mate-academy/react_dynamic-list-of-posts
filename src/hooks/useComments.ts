@@ -31,14 +31,29 @@ export function useComments(postId: number | null) {
   const deleteComment = async (commentId: number) => {
     setHasError(false);
 
-    const prevComments = comments;
+    let removed: Comment | null = null;
+    let removedIndex = -1;
 
-    setComments(prev => prev.filter(c => c.id !== commentId));
+    setComments(prev => {
+      removedIndex = prev.findIndex(c => c.id === commentId);
+      removed = removedIndex >= 0 ? prev[removedIndex] : null;
+
+      return prev.filter(c => c.id !== commentId);
+    });
 
     try {
       await delComment(commentId);
     } catch {
-      setComments(prevComments);
+      if (removed && removedIndex >= 0) {
+        setComments(prev => {
+          const next = [...prev];
+
+          next.splice(removedIndex, 0, removed!);
+
+          return next;
+        });
+      }
+
       setHasError(true);
     }
   };
