@@ -26,15 +26,13 @@ export const App = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   const [isPostOpen, setIsPostOpen] = useState(false);
-  const [isPostsLoad, setIsPostsLoad] = useState(false);
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
 
   const [comments, setComments] = useState<Comment[]>([]);
   const [isCommentsLoad, setIsCommentsLoad] = useState(false);
   const [commentsError, setCommentsError] = useState<string | null>(null);
 
   const [isFormOpen, setIsFormOpen] = useState(false);
-
-  console.log(users);
 
   function getUsers() {
     userServices.getUsers().then(response => setUsers(response));
@@ -43,7 +41,7 @@ export const App = () => {
   function getPosts(userId: number) {
     setIsPostOpen(false);
     setPosts(null);
-    setIsPostsLoad(true);
+    setIsPostsLoading(true);
     postServices
       .getPosts(userId)
       .then(response => {
@@ -51,7 +49,7 @@ export const App = () => {
       })
       .catch(() => setPostErrorMessage(Errors.Loading))
       .finally(() => {
-        setIsPostsLoad(false);
+        setIsPostsLoading(false);
         setIsFormOpen(false);
       });
   }
@@ -68,10 +66,14 @@ export const App = () => {
   }
 
   function deleteComments(id: number, lastComments: Comment[]) {
+    setCommentsError(null);
     const newComments = lastComments.filter(comment => comment.id !== id);
 
     setComments(newComments);
-    commentsServices.deleteComments(id);
+    commentsServices.deleteComments(id).catch(() => {
+      setComments(lastComments);
+      setCommentsError(Errors.Deleting);
+    });
   }
 
   useEffect(() => {
@@ -108,7 +110,7 @@ export const App = () => {
 
               <div className="block" data-cy="MainContent">
                 {!user && <p data-cy="NoSelectedUser">No user selected</p>}
-                {isPostsLoad && <Loader />}
+                {isPostsLoading && <Loader />}
 
                 {postErrorMessage && (
                   <div

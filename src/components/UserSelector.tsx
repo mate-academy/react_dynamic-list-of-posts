@@ -23,7 +23,10 @@ export const UserSelector: React.FC<Props> = ({
     }
   };
 
-  const onSelect = (event: React.MouseEvent<HTMLAnchorElement>, user: User) => {
+  const handleSelect = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    user: User,
+  ) => {
     event.preventDefault();
     onChoice(user);
     setIsMenuOpen(false);
@@ -63,7 +66,7 @@ export const UserSelector: React.FC<Props> = ({
               className={classNames('dropdown-item', {
                 'is-active': selectedName === user.name,
               })}
-              onClick={event => onSelect(event, user)}
+              onClick={event => handleSelect(event, user)}
             >
               {user.name}
             </a>

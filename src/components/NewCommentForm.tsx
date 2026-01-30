@@ -204,13 +204,13 @@ export const NewCommentForm: React.FC<Props> = ({
             className={classNames('button is-link', {
               'is-loading': isAdding,
             })}
+            disabled={isAdding}
           >
             Add
           </button>
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button
             type="reset"
             className="button is-link is-light"
