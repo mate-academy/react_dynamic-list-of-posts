@@ -8,7 +8,7 @@ import { Errors } from '../utils/errors';
 type Props = {
   comments: Comment[];
   errorMessage: string | null;
-  isCommentsLoad: boolean;
+  isCommentsLoading: boolean;
   selectedPost: Post | null;
   onNewComment: (comments: Comment[]) => void;
   onError: (message: string) => void;
@@ -21,7 +21,7 @@ export const PostDetails: React.FC<Props> = React.memo(
   ({
     comments,
     errorMessage,
-    isCommentsLoad,
+    isCommentsLoading,
     selectedPost,
     onNewComment,
     onError,
@@ -44,7 +44,7 @@ export const PostDetails: React.FC<Props> = React.memo(
         </div>
 
         <div className="block">
-          {isCommentsLoad && <Loader />}
+          {isCommentsLoading && <Loader />}
 
           {errorMessage && (
             <div className="notification is-danger" data-cy="CommentsError">
@@ -52,7 +52,7 @@ export const PostDetails: React.FC<Props> = React.memo(
             </div>
           )}
 
-          {comments.length === 0 && !isCommentsLoad && !errorMessage && (
+          {comments.length === 0 && !isCommentsLoading && !errorMessage && (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -91,7 +91,7 @@ export const PostDetails: React.FC<Props> = React.memo(
             </>
           )}
 
-          {isFormOpen === false && !isCommentsLoad && !errorMessage && (
+          {isFormOpen === false && !isCommentsLoading && !errorMessage && (
             <button
               data-cy="WriteCommentButton"
               type="button"

@@ -29,7 +29,7 @@ export const App = () => {
   const [isPostsLoading, setIsPostsLoading] = useState(false);
 
   const [comments, setComments] = useState<Comment[]>([]);
-  const [isCommentsLoad, setIsCommentsLoad] = useState(false);
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
   const [commentsError, setCommentsError] = useState<string | null>(null);
 
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -55,14 +55,14 @@ export const App = () => {
   }
 
   function getComments(id: number) {
-    setIsCommentsLoad(true);
+    setIsCommentsLoading(true);
     commentsServices
       .getComments(id)
       .then(response => {
         setComments(response);
       })
       .catch(() => setCommentsError(Errors.Loading))
-      .finally(() => setIsCommentsLoad(false));
+      .finally(() => setIsCommentsLoading(false));
   }
 
   function deleteComments(id: number, lastComments: Comment[]) {
@@ -154,7 +154,7 @@ export const App = () => {
                 <PostDetails
                   comments={comments}
                   errorMessage={commentsError}
-                  isCommentsLoad={isCommentsLoad}
+                  isCommentsLoading={isCommentsLoading}
                   selectedPost={selectedPost}
                   onNewComment={setComments}
                   onError={setCommentsError}

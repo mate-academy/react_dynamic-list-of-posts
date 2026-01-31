@@ -74,4 +74,4 @@ export const PostsList: React.FC<Props> = React.memo(
   },
 );
 
-PostsList.displayName = 'PostList';
+PostsList.displayName = 'PostsList';
