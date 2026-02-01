@@ -24,12 +24,13 @@ export const App = () => {
   const [loadingComments, setLoadingComments] = useState(false);
   const [postsError, setPostsError] = useState(false);
   const [commentsError, setCommentsError] = useState(false);
+  const [usersError, setUsersError] = useState(false);
 
   useEffect(() => {
     client
       .get<User[]>('/users')
       .then(setUsers)
-      .catch(() => {});
+      .catch(() => setUsersError(true));
   }, []);
 
   useEffect(() => {
@@ -95,7 +96,13 @@ export const App = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!selectedUser && (
+                {usersError && (
+                  <div className="notification is-danger">
+                    Failed to load users. Please reload the page.
+                  </div>
+                )}
+
+                {!selectedUser && !usersError && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 

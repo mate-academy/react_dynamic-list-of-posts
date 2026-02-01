@@ -23,14 +23,24 @@ export const PostDetails: React.FC<Props> = ({
   onDeleteComment,
 }) => {
   const [showForm, setShowForm] = useState(false);
+  const [deleteError, setDeleteError] = useState<number | null>(null);
 
   useEffect(() => {
     setShowForm(false);
+    setDeleteError(null);
   }, [post.id]);
 
-  const handleDeleteComment = (commentId: number) => {
+  const handleDeleteComment = (commentId: number, comment: Comment) => {
+    // Optimistic update
     onDeleteComment(commentId);
-    client.delete(`/comments/${commentId}`);
+    setDeleteError(null);
+
+    // Try to delete on server
+    client.delete(`/comments/${commentId}`).catch(() => {
+      // Rollback on error
+      onAddComment(comment);
+      setDeleteError(commentId);
+    });
   };
 
   return (
@@ -77,7 +87,7 @@ export const PostDetails: React.FC<Props> = ({
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => handleDeleteComment(comment.id)}
+                    onClick={() => handleDeleteComment(comment.id, comment)}
                   >
                     delete button
                   </button>
@@ -86,6 +96,12 @@ export const PostDetails: React.FC<Props> = ({
                 <div className="message-body" data-cy="CommentBody">
                   {comment.body}
                 </div>
+
+                {deleteError === comment.id && (
+                  <div className="notification is-danger is-light">
+                    Failed to delete comment. Please try again.
+                  </div>
+                )}
               </article>
             ))}
           </>

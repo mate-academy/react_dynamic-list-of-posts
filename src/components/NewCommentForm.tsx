@@ -15,6 +15,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
   const [emailError, setEmailError] = useState(false);
   const [bodyError, setBodyError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,6 +27,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
     setNameError(hasNameError);
     setEmailError(hasEmailError);
     setBodyError(hasBodyError);
+    setSubmitError(false);
 
     if (hasNameError || hasEmailError || hasBodyError) {
       return;
@@ -44,10 +46,15 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
       .post<Comment>('/comments', commentData)
       .then(newComment => {
         onCommentAdded(newComment);
+        // Only clear the body, keep name and email for convenience
         setBody('');
         setNameError(false);
         setEmailError(false);
         setBodyError(false);
+        setSubmitError(false);
+      })
+      .catch(() => {
+        setSubmitError(true);
       })
       .finally(() => {
         setIsSubmitting(false);
@@ -61,6 +68,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
     setNameError(false);
     setEmailError(false);
     setBodyError(false);
+    setSubmitError(false);
   };
 
   return (
@@ -174,6 +182,12 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
           </p>
         )}
       </div>
+
+      {submitError && (
+        <div className="notification is-danger">
+          Failed to add comment. Please try again.
+        </div>
+      )}
 
       <div className="field is-grouped">
         <div className="control">
