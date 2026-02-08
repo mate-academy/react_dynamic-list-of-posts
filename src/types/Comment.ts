@@ -1,4 +1,4 @@
-export interface Comment {
+export interface PostComment {
   id: number;
   postId: number;
   name: string;
@@ -6,4 +6,4 @@ export interface Comment {
   body: string;
 }
 
-export type CommentData = Pick<Comment, 'name' | 'email' | 'body'>;
+export type CommentData = Pick<PostComment, 'name' | 'email' | 'body'>;
