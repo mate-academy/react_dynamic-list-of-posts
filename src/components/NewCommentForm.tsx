@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Comment } from '../types/Comment';
 import { client } from '../utils/fetchClient';
+import classNames from 'classnames';
 
 type Props = {
   postId: number;
@@ -13,8 +14,6 @@ type Errors = {
   body?: string;
 };
 
-const ERROR_TEXT = 'Something went wrong';
-
 export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
   //#region States
   const [name, setName] = useState('');
@@ -22,6 +21,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
   const [body, setBody] = useState('');
   const [errors, setErrors] = useState<Errors>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   //#endregion
 
   //#region Validation
@@ -42,20 +42,24 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
 
   //#region Handles
   const handleFieldChange = (field: keyof Errors, value: string) => {
-    if (field === 'name') {
-      setName(value);
-    }
-
-    if (field === 'email') {
-      setEmail(value);
-    }
-
-    if (field === 'body') {
-      setBody(value);
+    switch (field) {
+      case 'name':
+        setName(value);
+        break;
+      case 'email':
+        setEmail(value);
+        break;
+      case 'body':
+        setBody(value);
+        break;
     }
 
     if (errors[field]) {
       setErrors({ ...errors, [field]: undefined });
+    }
+
+    if (submitError) {
+      setSubmitError(null);
     }
   };
 
@@ -101,7 +105,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
         setErrors({});
       })
       .catch(() => {
-        setErrors({ name: ERROR_TEXT });
+        setSubmitError('Something went wrong. Please try again.');
       })
       .finally(() => {
         setIsLoading(false);
@@ -113,6 +117,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
     setEmail('');
     setBody('');
     setErrors({});
+    setSubmitError(null);
   };
   //#endregion
 
@@ -129,7 +134,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={`input ${errors.name ? 'is-danger' : ''}`}
+            className={classNames('input', { 'is-danger': errors.name })}
             value={name}
             onChange={e => handleFieldChange('name', e.target.value)}
           />
@@ -166,7 +171,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={`input ${errors.email ? 'is-danger' : ''}`}
+            className={classNames('input', { 'is-danger': errors.email })}
             value={email}
             onChange={e => handleFieldChange('email', e.target.value)}
           />
@@ -202,7 +207,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={`textarea ${errors.body ? 'is-danger' : ''}`}
+            className={classNames('textarea', { 'is-danger': errors.body })}
             value={body}
             onChange={e => handleFieldChange('body', e.target.value)}
           />
@@ -215,11 +220,17 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
         )}
       </div>
 
+      {submitError && (
+        <div className="notification is-danger">{submitError}</div>
+      )}
+
       <div className="field is-grouped">
         <div className="control">
           <button
             type="submit"
-            className={`button is-link ${isLoading ? 'is-loading' : ''}`}
+            className={classNames('button', 'is-link', {
+              'is-loading': isLoading,
+            })}
           >
             Add
           </button>

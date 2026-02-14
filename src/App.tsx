@@ -106,9 +106,14 @@ export const App = () => {
   };
 
   const handleCommentDelete = (commentId: number) => {
+    const prevComments = comments;
+
     setComments(comments.filter(comment => comment.id !== commentId));
 
-    client.delete(`/comments/${commentId}`);
+    client.delete(`/comments/${commentId}`).catch(() => {
+      setComments(prevComments);
+      alert('Failed to delete comment. Please try again.');
+    });
   };
   //#endregion
 
