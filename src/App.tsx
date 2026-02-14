@@ -1,60 +1,115 @@
-import classNames from 'classnames';
-
-import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
+import 'bulma/css/bulma.css';
 import './App.scss';
 
-import { PostsList } from './components/PostsList';
+import classNames from 'classnames';
+import { useCallback, useEffect, useState } from 'react';
+import { getUserPostsFromServer } from './api/postApi';
+import { getUsersFromServer } from './api/userApi';
+import { MainContent } from './components/MainContent';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
+import { AppState } from './types/App';
+import { Post } from './types/Post';
+import { User } from './types/User';
 
-export const App = () => (
-  <main className="section">
-    <div className="container">
-      <div className="tile is-ancestor">
-        <div className="tile is-parent">
-          <div className="tile is-child box is-success">
-            <div className="block">
-              <UserSelector />
-            </div>
+export const App = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [ui, setUi] = useState<AppState>({
+    selectedUser: null,
+    selectedPost: null,
+    isLoadingPosts: false,
+    postsError: false,
+  });
+  const updateUi = useCallback((newState: Partial<AppState>) => {
+    setUi(prev => ({
+      ...prev,
+      ...newState,
+    }));
+  }, []);
 
-            <div className="block" data-cy="MainContent">
-              <p data-cy="NoSelectedUser">No user selected</p>
+  const getUsers = async () => {
+    try {
+      const fetchedUsers = await getUsersFromServer();
 
-              <Loader />
+      setUsers(fetchedUsers);
+    } catch {
+      setUsers([]);
+    }
+  };
 
-              <div
-                className="notification is-danger"
-                data-cy="PostsLoadingError"
-              >
-                Something went wrong!
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+  async function selectUser(user: User) {
+    if (!user) {
+      return;
+    }
+
+    updateUi({
+      selectedUser: user,
+      selectedPost: null,
+      postsError: false,
+      isLoadingPosts: true,
+    });
+
+    try {
+      const fetchedPosts = await getUserPostsFromServer(user.id);
+
+      setPosts(fetchedPosts);
+    } catch {
+      updateUi({
+        postsError: true,
+      });
+    } finally {
+      updateUi({
+        isLoadingPosts: false,
+      });
+    }
+  }
+
+  return (
+    <main className="section">
+      <div className="container">
+        <div className="tile is-ancestor">
+          <div className="tile is-parent">
+            <div className="tile is-child box is-success">
+              <div className="block">
+                <UserSelector
+                  users={users}
+                  onUserSelect={selectUser}
+                  selectedUser={ui.selectedUser}
+                />
               </div>
 
-              <div className="notification is-warning" data-cy="NoPostsYet">
-                No posts yet
+              <div className="block" data-cy="MainContent">
+                <MainContent ui={ui} posts={posts} updateUi={updateUi} />
               </div>
-
-              <PostsList />
+              <></>
             </div>
           </div>
-        </div>
-
-        <div
-          data-cy="Sidebar"
-          className={classNames(
-            'tile',
-            'is-parent',
-            'is-8-desktop',
-            'Sidebar',
-            'Sidebar--open',
-          )}
-        >
-          <div className="tile is-child box is-success ">
-            <PostDetails />
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              {
+                'Sidebar--open': ui.selectedPost,
+              },
+            )}
+          >
+            {ui.selectedPost && (
+              <div className="tile is-child box is-success ">
+                <PostDetails post={ui.selectedPost} />
+              </div>
+            )}
           </div>
         </div>
       </div>
-    </div>
-  </main>
-);
+    </main>
+  );
+};

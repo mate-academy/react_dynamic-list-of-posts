@@ -7,3 +7,11 @@ export interface Comment {
 }
 
 export type CommentData = Pick<Comment, 'name' | 'email' | 'body'>;
+
+export interface CommentsState {
+  isLoading: boolean;
+  isCommentsLoadingError: boolean;
+  isCommentDeleteError: boolean;
+  comments: Comment[];
+  isFormOpened: boolean;
+}
