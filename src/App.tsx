@@ -15,6 +15,8 @@ import { client } from './utils/fetchClient';
 
 export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [usersError, setUsersError] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
@@ -22,12 +24,14 @@ export const App = () => {
   const [postsError, setPostsError] = useState(false);
 
   useEffect(() => {
+    setLoadingUsers(true);
+    setUsersError(false);
+
     client
       .get<User[]>('/users')
       .then(setUsers)
-      .catch(() => {
-        // Handle error silently or show notification if needed
-      });
+      .catch(() => setUsersError(true))
+      .finally(() => setLoadingUsers(false));
   }, []);
 
   useEffect(() => {
@@ -69,11 +73,24 @@ export const App = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector
-                  users={users}
-                  selectedUser={selectedUser}
-                  onUserSelect={handleUserSelect}
-                />
+                {loadingUsers && <Loader />}
+
+                {usersError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="UsersLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
+
+                {!usersError && (
+                  <UserSelector
+                    users={users}
+                    selectedUser={selectedUser}
+                    onUserSelect={handleUserSelect}
+                  />
+                )}
               </div>
 
               <div className="block" data-cy="MainContent">
