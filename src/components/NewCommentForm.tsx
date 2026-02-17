@@ -76,6 +76,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
     setEmail('');
     setBody('');
     setErrors({ name: '', email: '', body: '' });
+    setSubmitError(false);
   };
 
   const handleNameChange = (value: string) => {

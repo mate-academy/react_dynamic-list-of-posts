@@ -14,11 +14,16 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [loadingComments, setLoadingComments] = useState(false);
   const [commentsError, setCommentsError] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [deleteError, setDeleteError] = useState<{
+    comment: Comment;
+    index: number;
+  } | null>(null);
 
   useEffect(() => {
     setLoadingComments(true);
     setCommentsError(false);
     setShowForm(false);
+    setDeleteError(null);
 
     client
       .get<Comment[]>(`/comments?postId=${post.id}`)
@@ -27,18 +32,54 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       .finally(() => setLoadingComments(false));
   }, [post.id]);
 
-  const handleDeleteComment = (commentId: number) => {
-    const deletedComment = comments.find(comment => comment.id === commentId);
+  const performDeleteComment = (comment: Comment, originalIndex: number) => {
+    client.delete(`/comments/${comment.id}`).catch(() => {
+      setComments(prevComments => {
+        if (prevComments.some(prevComment => prevComment.id === comment.id)) {
+          return prevComments;
+        }
 
+        const restoredComments = [...prevComments];
+        const safeIndex = Math.min(originalIndex, restoredComments.length);
+
+        restoredComments.splice(safeIndex, 0, comment);
+
+        return restoredComments;
+      });
+      setDeleteError({ comment, index: originalIndex });
+    });
+  };
+
+  const handleDeleteComment = (commentId: number) => {
+    const originalIndex = comments.findIndex(
+      comment => comment.id === commentId,
+    );
+    const deletedComment = comments[originalIndex];
+
+    if (!deletedComment) {
+      return;
+    }
+
+    setDeleteError(null);
     setComments(prevComments =>
       prevComments.filter(comment => comment.id !== commentId),
     );
 
-    client.delete(`/comments/${commentId}`).catch(() => {
-      if (deletedComment) {
-        setComments(prevComments => [...prevComments, deletedComment]);
-      }
-    });
+    performDeleteComment(deletedComment, originalIndex);
+  };
+
+  const handleRetryDelete = () => {
+    if (!deleteError) {
+      return;
+    }
+
+    const { comment, index } = deleteError;
+
+    setDeleteError(null);
+    setComments(prevComments =>
+      prevComments.filter(prevComment => prevComment.id !== comment.id),
+    );
+    performDeleteComment(comment, index);
   };
 
   const handleAddComment = (newComment: Comment) => {
@@ -56,6 +97,19 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
 
       <div className="block">
+        {deleteError && (
+          <div className="notification is-danger">
+            Failed to delete a comment.
+            <button
+              type="button"
+              className="button is-danger is-light ml-3"
+              onClick={handleRetryDelete}
+            >
+              Retry
+            </button>
+          </div>
+        )}
+
         {loadingComments && <Loader />}
 
         {!loadingComments && commentsError && (

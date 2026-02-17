@@ -21,3 +21,21 @@
 .message-body {
   white-space: pre-line;
 }
+
+.UserSelector {
+  position: relative;
+
+  .dropdown {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.UserSelector__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}

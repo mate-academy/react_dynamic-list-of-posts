@@ -53,7 +53,7 @@ export const App = () => {
     setSelectedUser(user);
   };
 
-  const handlePostSelect = (post: Post) => {
+  const handlePostSelect = (post: Post | null) => {
     setSelectedPost(post);
   };
 
