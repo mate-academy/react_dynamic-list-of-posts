@@ -1,107 +1,125 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
+import { Post } from '../types/Post';
+import { Comment } from '../types/Comment';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-export const PostDetails: React.FC = () => {
+interface Props {
+  post: Post;
+  comments: Comment[];
+  commentsLoading: boolean;
+  commentsError: boolean;
+  onDelete: (id: number) => void;
+  onAdd: (name: string, email: string, body: string) => Promise<void>;
+}
+
+export const PostDetails: React.FC<Props> = ({
+  post,
+  comments,
+  commentsLoading,
+  commentsError,
+  onDelete,
+  onAdd,
+}) => {
+  const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    setShowForm(false);
+  }, [post.id]);
+
+  const handleWriteCommentClick = () => {
+    setShowForm(true);
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
-          </h2>
+      <div className="block">
+        <h2 data-cy="PostTitle">
+          #{post.id}: {post.title}
+        </h2>
+        <p data-cy="PostBody">{post.body}</p>
+      </div>
 
-          <p data-cy="PostBody">
-            eveniet quo quis laborum totam consequatur non dolor ut et est
-            repudiandae est voluptatem vel debitis et magnam
-          </p>
-        </div>
+      <div className="block">
+        {commentsLoading && <Loader />}
 
-        <div className="block">
-          <Loader />
-
+        {!commentsLoading && commentsError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
+        )}
 
+        {!commentsLoading && !commentsError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
+        )}
 
-          <p className="title is-4">Comments:</p>
+        {!commentsLoading &&
+          !commentsError &&
+          comments.map(comment => (
+            <article
+              key={comment.id}
+              className="message is-small"
+              data-cy="Comment"
+            >
+              <div className="message-header">
+                <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                  {comment.name}
+                </a>
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
+                <button
+                  type="button"
+                  className="delete is-small"
+                  data-cy="CommentDelete"
+                  onClick={() => onDelete(comment.id)}
+                />
+              </div>
 
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
+              <div className="message-body" data-cy="CommentBody">
+                {comment.body}
+              </div>
+            </article>
+          ))}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-            <div className="message-body" data-cy="CommentBody">
-              One more comment
-            </div>
-          </article>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
+        {!showForm && !commentsLoading && !commentsError && (
           <button
-            data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
+            data-cy="WriteCommentButton"
+            onClick={handleWriteCommentClick}
           >
             Write a comment
           </button>
-        </div>
-
-        <NewCommentForm />
+        )}
       </div>
+
+      {showForm && <NewCommentForm postId={post.id} onAdd={onAdd} />}
     </div>
   );
+};
+
+PostDetails.propTypes = {
+  post: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+    userId: PropTypes.number.isRequired,
+  }).isRequired as PropTypes.Validator<Post>,
+
+  comments: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+      body: PropTypes.string.isRequired,
+      postId: PropTypes.number.isRequired,
+    }),
+  ).isRequired as PropTypes.Validator<Comment[]>,
+
+  commentsLoading: PropTypes.bool.isRequired,
+  commentsError: PropTypes.bool.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  onAdd: PropTypes.func.isRequired,
 };
