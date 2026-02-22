@@ -26,8 +26,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         const res: Comment[] = await client.get<Comment[]>(url);
 
         setComments(res);
-        setErrorComment('')
-
+        setErrorComment('');
       } catch (e) {
         setErrorComment('Something went wrong');
       } finally {
@@ -41,13 +40,19 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   }, [selectedPost]);
 
   const deleteComment = async (commentID: number) => {
-    const comment = comments.find(comment => comment.id === commentID);
+    const comment = comments.find(
+      findingComment => findingComment.id === commentID,
+    );
 
     try {
-      setComments(prev => prev.filter(comment => comment.id !== commentID))
+      setComments(prev =>
+        prev.filter(prevComment => prevComment.id !== commentID),
+      );
       await client.delete(`/comments/${commentID}`);
     } catch (e) {
-      if (comment) setComments(prev => [ ...prev, comment ]);
+      if (comment) {
+        setComments(prev => [...prev, comment]);
+      }
     }
   };
 

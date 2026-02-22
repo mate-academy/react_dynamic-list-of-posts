@@ -10,7 +10,6 @@ type Props = {
 export const PostsList: React.FC<Props> = ({ posts, onChange }: Props) => {
   const [openedPost, setOpenedPost] = useState<Post | null>(null);
 
-
   useEffect(() => {
     onChange(openedPost);
   }, [openedPost]);

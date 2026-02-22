@@ -28,7 +28,7 @@ export const UserSelector: React.FC<Props> = ({ onChange }: Props) => {
         const res: User[] = await client.get(url);
 
         setUsers(res);
-      } catch (e) { }
+      } catch (e) {}
     }
 
     loadUsers('/users');
@@ -36,30 +36,28 @@ export const UserSelector: React.FC<Props> = ({ onChange }: Props) => {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-
   useEffect(() => {
     const listener = (event: MouseEvent) => {
       const el = dropdownRef.current;
-      if (!el || el.contains(event.target as Node)) return;
+
+      if (!el || el.contains(event.target as Node)) {
+        return;
+      }
+
       setIsDropdown(false);
     };
 
-    document.addEventListener("mousedown", listener);
+    document.addEventListener('mousedown', listener);
 
     return () => {
-      document.removeEventListener("mousedown", listener);
+      document.removeEventListener('mousedown', listener);
     };
   }, [dropdownRef, isDropdown]);
-
 
   return (
     <div
       data-cy="UserSelector"
-      className={classNames(
-        'dropdown',
-        isDropdown ? 'is-active' : ''
-      )}
-
+      className={classNames('dropdown', isDropdown ? 'is-active' : '')}
       ref={dropdownRef}
     >
       <div className="dropdown-trigger">
@@ -86,7 +84,7 @@ export const UserSelector: React.FC<Props> = ({ onChange }: Props) => {
               href={`#user-${user.id}`}
               className={classNames(
                 'dropdown-item',
-                user.id === selectedUser?.id ? 'is-active' : ''
+                user.id === selectedUser?.id ? 'is-active' : '',
               )}
               onClick={() => {
                 setSelectedUser(

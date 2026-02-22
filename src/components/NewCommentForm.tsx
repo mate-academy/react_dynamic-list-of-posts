@@ -52,16 +52,14 @@ export const NewCommentForm: React.FC<Props> = ({
     try {
       setIsLoading(true);
 
-      const comment = { ...data, postId: selectedPostId }
+      const comment = { ...data, postId: selectedPostId };
       const createdComment = await client.post<Comment>('/comments', comment);
 
       onCommentCreated(createdComment);
 
       setInputsData(prev => ({ ...prev, body: '' }));
     } catch (e) {
-
     } finally {
-
       setIsLoading(false);
     }
   };
@@ -72,36 +70,36 @@ export const NewCommentForm: React.FC<Props> = ({
     sendData(inputsData);
   };
 
-
-  const updateStateOfInputs = (type: 'name' | 'email' | 'body', e: React.ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
-
+  const updateStateOfInputs = (
+    type: 'name' | 'email' | 'body',
+    e: React.ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     switch (type) {
       case 'name': {
         setInputsData({ ...inputsData, name: e.target.value });
         setErrorsForm({ ...errorsForm, errorName: false });
 
-        return
+        return;
       }
 
       case 'email': {
         setInputsData({ ...inputsData, email: e.target.value });
         setErrorsForm({ ...errorsForm, errorEmail: false });
 
-        return
+        return;
       }
 
       case 'body': {
         setInputsData({ ...inputsData, body: e.target.value });
         setErrorsForm({ ...errorsForm, errorBody: false });
 
-        return
+        return;
       }
 
       default:
-        return
+        return;
     }
-
-  }
+  };
 
   return (
     <form data-cy="NewCommentForm" onSubmit={handleSubmit}>
@@ -116,10 +114,7 @@ export const NewCommentForm: React.FC<Props> = ({
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames(
-              'input',
-              errorsForm.errorName && 'is-danger',
-            )}
+            className={classNames('input', errorsForm.errorName && 'is-danger')}
             value={inputsData.name}
             onChange={e => updateStateOfInputs('name', e)}
           />

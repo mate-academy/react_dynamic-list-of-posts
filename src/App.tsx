@@ -30,7 +30,7 @@ export const App = () => {
 
   useEffect(() => {
     setErrorPosts('');
-    
+
     async function loadPosts(url: string) {
       try {
         setLoadingPosts(true);
