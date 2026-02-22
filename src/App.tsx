@@ -20,6 +20,7 @@ export const App = () => {
   const [loadingPosts, setLoadingPosts] = useState(false);
 
   const handleUserChange = (user: User) => {
+    setSelectedPost(null);
     setSelectedUser(user);
   };
 
@@ -28,10 +29,11 @@ export const App = () => {
   };
 
   useEffect(() => {
+    setErrorPosts('');
+    
     async function loadPosts(url: string) {
       try {
         setLoadingPosts(true);
-        setSelectedPost(null);
         const res: Post[] = await client.get(url);
 
         setPosts(res);
@@ -91,27 +93,22 @@ export const App = () => {
             </div>
           </div>
 
-          
-            <div
-              data-cy="Sidebar"
-              className={classNames(
-                'tile',
-                'is-parent',
-                'is-8-desktop',
-                'Sidebar',
-                selectedPost !== null && 'Sidebar--open',
-              )}
-            >
-
-              {selectedPost !== null && (
-                 <div className="tile is-child box is-success ">
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              selectedPost !== null && 'Sidebar--open',
+            )}
+          >
+            {selectedPost !== null && (
+              <div className="tile is-child box is-success ">
                 <PostDetails selectedPost={selectedPost} />
-                
               </div>
-              )}
-             
-            </div>
-          
+            )}
+          </div>
         </div>
       </div>
     </main>

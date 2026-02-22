@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Post } from '../types/Post';
+import classNames from 'classnames';
 
 type Props = {
   posts: Post[];
@@ -9,12 +10,9 @@ type Props = {
 export const PostsList: React.FC<Props> = ({ posts, onChange }: Props) => {
   const [openedPost, setOpenedPost] = useState<Post | null>(null);
 
-  const selectPost = (post: Post | null) => {
-    onChange(post);
-  };
 
   useEffect(() => {
-    selectPost(openedPost);
+    onChange(openedPost);
   }, [openedPost]);
 
   return (
@@ -42,7 +40,11 @@ export const PostsList: React.FC<Props> = ({ posts, onChange }: Props) => {
                   <button
                     type="button"
                     data-cy="PostButton"
-                    className={`button is-link ${openedPost !== post && 'is-light'}`}
+                    className={classNames(
+                      'button',
+                      'is-link',
+                      openedPost?.id !== post.id && 'is-light',
+                    )}
                     onClick={() =>
                       setOpenedPost(prev =>
                         prev?.id === post.id ? null : post,

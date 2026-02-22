@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { client } from '../utils/fetchClient';
+import { Comment } from '../types/Comment';
+import classNames from 'classnames';
 
 interface NewComment {
-  postId: number;
   name: string;
   email: string;
   body: string;
@@ -10,7 +11,7 @@ interface NewComment {
 
 type Props = {
   selectedPostId: number;
-  onCommentCreated: (comment: NewComment) => void;
+  onCommentCreated: (newComment: Comment) => void;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
@@ -18,7 +19,6 @@ export const NewCommentForm: React.FC<Props> = ({
   onCommentCreated,
 }) => {
   const [inputsData, setInputsData] = useState({
-    postId: selectedPostId,
     name: '',
     email: '',
     body: '',
@@ -34,9 +34,9 @@ export const NewCommentForm: React.FC<Props> = ({
 
   const validationData = (data: NewComment) => {
     const newErrors = {
-      errorName: !data.name,
-      errorEmail: !data.email,
-      errorBody: !data.body,
+      errorName: !data.name.trim(),
+      errorEmail: !data.email.trim(),
+      errorBody: !data.body.trim(),
     };
 
     setErrorsForm(newErrors);
@@ -51,13 +51,16 @@ export const NewCommentForm: React.FC<Props> = ({
 
     try {
       setIsLoading(true);
-      const createdComment = await client.post<NewComment>('/comments', data);
+
+      const comment = { ...data, postId: selectedPostId }
+      const createdComment = await client.post<Comment>('/comments', comment);
 
       onCommentCreated(createdComment);
+
+      setInputsData(prev => ({ ...prev, body: '' }));
     } catch (e) {
 
     } finally {
-      setInputsData(prev => ({ ...prev, body: '' }));
 
       setIsLoading(false);
     }
@@ -68,6 +71,37 @@ export const NewCommentForm: React.FC<Props> = ({
 
     sendData(inputsData);
   };
+
+
+  const updateStateOfInputs = (type: 'name' | 'email' | 'body', e: React.ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => {
+
+    switch (type) {
+      case 'name': {
+        setInputsData({ ...inputsData, name: e.target.value });
+        setErrorsForm({ ...errorsForm, errorName: false });
+
+        return
+      }
+
+      case 'email': {
+        setInputsData({ ...inputsData, email: e.target.value });
+        setErrorsForm({ ...errorsForm, errorEmail: false });
+
+        return
+      }
+
+      case 'body': {
+        setInputsData({ ...inputsData, body: e.target.value });
+        setErrorsForm({ ...errorsForm, errorBody: false });
+
+        return
+      }
+
+      default:
+        return
+    }
+
+  }
 
   return (
     <form data-cy="NewCommentForm" onSubmit={handleSubmit}>
@@ -82,12 +116,12 @@ export const NewCommentForm: React.FC<Props> = ({
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={`input ${errorsForm.errorName && 'is-danger'}`}
+            className={classNames(
+              'input',
+              errorsForm.errorName && 'is-danger',
+            )}
             value={inputsData.name}
-            onChange={e => {
-              setInputsData({ ...inputsData, name: e.target.value });
-              setErrorsForm({ ...errorsForm, errorName: false });
-            }}
+            onChange={e => updateStateOfInputs('name', e)}
           />
 
           <span className="icon is-small is-left">
@@ -124,10 +158,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="email@test.com"
             className={`input ${errorsForm.errorEmail && 'is-danger'}`}
             value={inputsData.email}
-            onChange={e => {
-              setInputsData({ ...inputsData, email: e.target.value });
-              setErrorsForm({ ...errorsForm, errorEmail: false });
-            }}
+            onChange={e => updateStateOfInputs('email', e)}
           />
 
           <span className="icon is-small is-left">
@@ -163,10 +194,7 @@ export const NewCommentForm: React.FC<Props> = ({
             placeholder="Type comment here"
             className={`input ${errorsForm.errorBody && 'is-danger'}`}
             value={inputsData.body}
-            onChange={e => {
-              setInputsData({ ...inputsData, body: e.target.value });
-              setErrorsForm({ ...errorsForm, errorBody: false });
-            }}
+            onChange={e => updateStateOfInputs('body', e)}
           />
         </div>
 
@@ -194,17 +222,16 @@ export const NewCommentForm: React.FC<Props> = ({
             className="button is-link is-light"
             onClick={() => {
               setInputsData({
-                postId: selectedPostId,
                 name: '',
                 email: '',
                 body: '',
-              })
+              });
 
               setErrorsForm({
-    errorName: false,
-    errorEmail: false,
-    errorBody: false,
-  })
+                errorName: false,
+                errorEmail: false,
+                errorBody: false,
+              });
             }}
           >
             Clear

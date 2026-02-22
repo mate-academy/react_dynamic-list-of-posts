@@ -9,13 +9,6 @@ type Props = {
   selectedPost: Post;
 };
 
-interface NewComment {
-  postId: number;
-  name: string;
-  email: string;
-  body: string;
-}
-
 export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const [loadingComment, setLoadingComment] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -23,15 +16,18 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   const [isOpenForm, setIsOpenForm] = useState(false);
 
   useEffect(() => {
-
     setIsOpenForm(false);
 
     async function selectedComments(url: string) {
+      setErrorComment('');
+
       try {
         setLoadingComment(true);
         const res: Comment[] = await client.get<Comment[]>(url);
 
         setComments(res);
+        setErrorComment('')
+
       } catch (e) {
         setErrorComment('Something went wrong');
       } finally {
@@ -45,11 +41,13 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   }, [selectedPost]);
 
   const deleteComment = async (commentID: number) => {
+    const comment = comments.find(comment => comment.id === commentID);
+
     try {
-      client.delete(`/comments/${commentID}`);
+      setComments(prev => prev.filter(comment => comment.id !== commentID))
+      await client.delete(`/comments/${commentID}`);
     } catch (e) {
-    } finally {
-      setComments(prev => prev.filter(comment => comment.id !== commentID));
+      if (comment) setComments(prev => [ ...prev, comment ]);
     }
   };
 
@@ -128,8 +126,8 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
     return content;
   };
 
-  const handleCommentCreated = (newComment: NewComment) => {
-    setComments(prev => [...prev, newComment as Comment]);
+  const handleCommentCreated = (newComment: Comment) => {
+    setComments(prev => [...prev, newComment]);
   };
 
   return (
@@ -141,9 +139,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
         <p data-cy="PostBody">{selectedPost.body}</p>
       </div>
 
-      <div className="block">
-        {selectedPost && checkComments()}
-      </div>
+      <div className="block">{selectedPost && checkComments()}</div>
 
       {isOpenForm && (
         <NewCommentForm
