@@ -19,7 +19,7 @@ export const NewCommentForm: React.FC<Props> = ({
   selectedPostId,
   onCommentCreated,
   setErrorComment,
-}) => {
+}: Props) => {
   const [inputsData, setInputsData] = useState({
     name: '',
     email: '',
@@ -140,7 +140,10 @@ export const NewCommentForm: React.FC<Props> = ({
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={`input ${errorsForm.errorEmail && 'is-danger'}`}
+            className={classNames(
+              'input',
+              errorsForm.errorEmail && 'is-danger'
+            )}
             value={inputsData.email}
             onChange={e => updateStateOfInputs('email', e)}
           />
@@ -176,7 +179,10 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={`input ${errorsForm.errorBody && 'is-danger'}`}
+            className={classNames(
+              'input',
+              errorsForm.errorBody && 'is-danger'
+            )}
             value={inputsData.body}
             onChange={e => updateStateOfInputs('body', e)}
           />
@@ -193,7 +199,11 @@ export const NewCommentForm: React.FC<Props> = ({
         <div className="control">
           <button
             type="submit"
-            className={`button is-link ${isLoading && 'is-loading'}`}
+            className={classNames(
+              'button',
+              'is-link',
+              isLoading && 'is-loading'
+            )}
           >
             Add
           </button>

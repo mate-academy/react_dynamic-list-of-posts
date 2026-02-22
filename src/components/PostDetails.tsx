@@ -40,7 +40,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   }, [selectedPost]);
 
   const deleteComment = async (commentID: number) => {
-    const commentsBefourChange = comments;
+    const commentsBefourChange = [ ...comments ];
 
     try {
       setComments(prev =>
