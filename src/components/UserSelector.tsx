@@ -36,28 +36,12 @@ export const UserSelector: React.FC<Props> = ({ onChange }: Props) => {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const listener = (event: MouseEvent) => {
-      const el = dropdownRef.current;
-
-      if (!el || el.contains(event.target as Node)) {
-        return;
-      }
-
-      setIsDropdown(false);
-    };
-
-    document.addEventListener('mousedown', listener);
-
-    return () => {
-      document.removeEventListener('mousedown', listener);
-    };
-  }, [dropdownRef, isDropdown]);
-
   return (
     <div
       data-cy="UserSelector"
       className={classNames('dropdown', isDropdown ? 'is-active' : '')}
+      tabIndex={0}
+      onBlur={() => setIsDropdown(false)}
       ref={dropdownRef}
     >
       <div className="dropdown-trigger">
@@ -86,10 +70,8 @@ export const UserSelector: React.FC<Props> = ({ onChange }: Props) => {
                 'dropdown-item',
                 user.id === selectedUser?.id ? 'is-active' : '',
               )}
-              onClick={() => {
-                setSelectedUser(
-                  users.find(userLooking => userLooking.id === user.id),
-                );
+              onMouseDown={() => {
+                setSelectedUser(user);
                 setIsDropdown(false);
               }}
             >

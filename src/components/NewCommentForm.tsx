@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { client } from '../utils/fetchClient';
 import { Comment } from '../types/Comment';
 import classNames from 'classnames';
@@ -12,11 +12,13 @@ interface NewComment {
 type Props = {
   selectedPostId: number;
   onCommentCreated: (newComment: Comment) => void;
+  setErrorComment: (newError: string) => void;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   selectedPostId,
   onCommentCreated,
+  setErrorComment,
 }) => {
   const [inputsData, setInputsData] = useState({
     name: '',
@@ -59,6 +61,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
       setInputsData(prev => ({ ...prev, body: '' }));
     } catch (e) {
+      setErrorComment('Something went wrong');
     } finally {
       setIsLoading(false);
     }
@@ -71,34 +74,20 @@ export const NewCommentForm: React.FC<Props> = ({
   };
 
   const updateStateOfInputs = (
-    type: 'name' | 'email' | 'body',
-    e: React.ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
+    field: 'name' | 'email' | 'body',
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    switch (type) {
-      case 'name': {
-        setInputsData({ ...inputsData, name: e.target.value });
-        setErrorsForm({ ...errorsForm, errorName: false });
+    const { value } = e.target;
 
-        return;
-      }
+    setInputsData(prev => ({
+      ...prev,
+      [field]: value,
+    }));
 
-      case 'email': {
-        setInputsData({ ...inputsData, email: e.target.value });
-        setErrorsForm({ ...errorsForm, errorEmail: false });
-
-        return;
-      }
-
-      case 'body': {
-        setInputsData({ ...inputsData, body: e.target.value });
-        setErrorsForm({ ...errorsForm, errorBody: false });
-
-        return;
-      }
-
-      default:
-        return;
-    }
+    setErrorsForm(prev => ({
+      ...prev,
+      [`error${field[0].toUpperCase()}${field.slice(1)}`]: false,
+    }));
   };
 
   return (

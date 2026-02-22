@@ -12,7 +12,7 @@ export const PostsList: React.FC<Props> = ({ posts, onChange }: Props) => {
 
   useEffect(() => {
     onChange(openedPost);
-  }, [openedPost]);
+  }, [openedPost, onChange]);
 
   return (
     <div data-cy="PostsList">
@@ -50,7 +50,7 @@ export const PostsList: React.FC<Props> = ({ posts, onChange }: Props) => {
                       )
                     }
                   >
-                    {openedPost === post ? 'Close' : 'Open'}
+                    {openedPost?.id === post.id ? 'Close' : 'Open'}
                   </button>
                 </td>
               </tr>

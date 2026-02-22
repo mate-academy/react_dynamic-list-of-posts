@@ -40,9 +40,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   }, [selectedPost]);
 
   const deleteComment = async (commentID: number) => {
-    const comment = comments.find(
-      findingComment => findingComment.id === commentID,
-    );
+    const commentsBefourChange = comments;
 
     try {
       setComments(prev =>
@@ -50,9 +48,8 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       );
       await client.delete(`/comments/${commentID}`);
     } catch (e) {
-      if (comment) {
-        setComments(prev => [...prev, comment]);
-      }
+      setComments(commentsBefourChange);
+      setErrorComment('Something went wrong');
     }
   };
 
@@ -132,7 +129,9 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
   };
 
   const handleCommentCreated = (newComment: Comment) => {
-    setComments(prev => [...prev, newComment]);
+    if (newComment.id) {
+      setComments(prev => [...prev, newComment]);
+    }
   };
 
   return (
@@ -146,10 +145,11 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
 
       <div className="block">{selectedPost && checkComments()}</div>
 
-      {isOpenForm && (
+      {isOpenForm && !errorComment && (
         <NewCommentForm
           selectedPostId={selectedPost.id}
           onCommentCreated={handleCommentCreated}
+          setErrorComment={setErrorComment}
         />
       )}
     </div>
