@@ -48,8 +48,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     })
       .then(() => setBody(''))
       .finally(() => setSubmitting(false));
-
-    setBody('');
   };
 
   const onReset = () => {
@@ -178,7 +176,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
             className={classNames('button is-link', {
               'is-loading': submitting,
             })}
-            onClick={() => onSubmit}
           >
             Add
           </button>

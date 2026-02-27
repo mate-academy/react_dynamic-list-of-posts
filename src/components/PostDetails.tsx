@@ -51,7 +51,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       });
   };
 
-  const handleDeleteMessage = (commentId: number) => {
+  const handleDeleteComment = (commentId: number) => {
     setErrorCommentMessage(ErrorMessage.None);
 
     const currentComments = [...comments];
@@ -107,7 +107,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     type="button"
                     className="delete is-small"
                     aria-label="delete"
-                    onClick={() => handleDeleteMessage(comment.id)}
+                    onClick={() => handleDeleteComment(comment.id)}
                   >
                     delete button
                   </button>

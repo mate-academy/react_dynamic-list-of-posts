@@ -48,8 +48,6 @@ export const App = () => {
 
   const handleUserSelect = (user: User) => {
     setSelectedUser(user);
-    setLoader(true);
-    setErrorMessage(ErrorMessage.None);
     setPosts([]);
     setSelectedPost(null);
   };
