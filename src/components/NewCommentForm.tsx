@@ -8,6 +8,13 @@ interface Props {
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
 }
 
+const ClearErrors = {
+  name: false,
+  email: false,
+  body: false,
+  adding: false,
+};
+
 export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
   const [isAdding, setIsAdding] = React.useState(false);
   const [newCommentData, setNewCommentData] = React.useState<CommentData>({
@@ -15,11 +22,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
     email: '',
     body: '',
   });
-  const [errors, setErrors] = React.useState({
-    name: false,
-    email: false,
-    body: false,
-  });
+  const [errors, setErrors] = React.useState(ClearErrors);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +31,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
       name: !newCommentData.name.trim(),
       email: !newCommentData.email.trim(),
       body: !newCommentData.body.trim(),
+      adding: false,
     };
 
     setErrors(newErrors);
@@ -44,7 +48,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
         setNewCommentData({ ...newCommentData, body: '' });
       })
       .catch(() => {
-        // Handle error here
+        setErrors({ ...newErrors, adding: true });
       })
       .finally(() => {
         setIsAdding(false);
@@ -54,11 +58,17 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
   const handleClear = (e: React.MouseEvent) => {
     e.preventDefault();
     setNewCommentData({ name: '', email: '', body: '' });
-    setErrors({ name: false, email: false, body: false });
+    setErrors(ClearErrors);
   };
 
   return (
     <form data-cy="NewCommentForm" onSubmit={handleSubmit}>
+      {errors.adding && (
+        <p className="help is-danger" data-cy="ErrorMessage">
+          Error Adding Comment
+        </p>
+      )}
+
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -72,9 +82,10 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': errors.name })}
             value={newCommentData.name}
-            onChange={e =>
-              setNewCommentData({ ...newCommentData, name: e.target.value })
-            }
+            onChange={e => {
+              setNewCommentData({ ...newCommentData, name: e.target.value });
+              setErrors({ ...errors, name: false });
+            }}
           />
 
           <span className="icon is-small is-left">
@@ -111,9 +122,10 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': errors.email })}
             value={newCommentData.email}
-            onChange={e =>
-              setNewCommentData({ ...newCommentData, email: e.target.value })
-            }
+            onChange={e => {
+              setNewCommentData({ ...newCommentData, email: e.target.value });
+              setErrors({ ...errors, email: false });
+            }}
           />
 
           <span className="icon is-small is-left">
@@ -149,9 +161,10 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': errors.body })}
             value={newCommentData.body}
-            onChange={e =>
-              setNewCommentData({ ...newCommentData, body: e.target.value })
-            }
+            onChange={e => {
+              setNewCommentData({ ...newCommentData, body: e.target.value });
+              setErrors({ ...errors, body: false });
+            }}
           />
         </div>
 

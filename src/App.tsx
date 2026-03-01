@@ -4,7 +4,6 @@ import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import { getUsers } from './api/users';
 import { client } from './utils/fetchClient';
 
 import { useEffect, useState } from 'react';
@@ -31,12 +30,20 @@ export const App = () => {
   const [postState, setPostState] = useState<PostState | null>(null);
 
   useEffect(() => {
-    getUsers()
+    client
+      .get<User[]>('/users')
       .then(loadedUsers => {
         setUsers(loadedUsers);
       })
       .catch(() => {
-        // Handle error here
+        setUsers([
+          {
+            id: 0,
+            name: 'Error loading users',
+            email: 'error',
+            phone: 'error',
+          },
+        ]);
       });
   }, []);
 
