@@ -1,16 +1,58 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { User } from '../types/User';
 
-export const UserSelector: React.FC = () => {
+type Props = {
+  users: User[];
+  selectedUserId: number | null;
+  onSelect: (user: User) => void;
+};
+
+export const UserSelector: React.FC<Props> = ({
+  users,
+  selectedUserId,
+  onSelect,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    function onDocumentClick(e: MouseEvent) {
+      if (!rootRef.current) {
+        return;
+      }
+
+      if (!rootRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener('click', onDocumentClick);
+
+    return () => document.removeEventListener('click', onDocumentClick);
+  }, []);
+
+  const handleToggle = () => setIsOpen(prev => !prev);
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      ref={rootRef}
+      className={`dropdown ${isOpen ? 'is-active' : ''}`}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={handleToggle}
         >
-          <span>Choose a user</span>
+          <span>
+            {selectedUserId
+              ? (users.find(u => u.id === selectedUserId)?.name ??
+                'Choose a user')
+              : 'Choose a user'}
+          </span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -20,21 +62,21 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+          {users.map(user => (
+            // eslint-disable-next-line jsx-a11y/anchor-is-valid
+            <a
+              href={`#user-${user.id}`}
+              key={user.id}
+              className={`dropdown-item ${selectedUserId === user.id ? 'is-active' : ''}`}
+              onClick={e => {
+                e.preventDefault();
+                setIsOpen(false);
+                onSelect(user);
+              }}
+            >
+              {user.name}
+            </a>
+          ))}
         </div>
       </div>
     </div>
