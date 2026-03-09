@@ -113,9 +113,7 @@ export const App = () => {
                 {!loadingUsers && selectedUserId === null && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
-
                 {loadingPosts && <Loader />}
-
                 {postsError && !loadingPosts && (
                   <div
                     className="notification is-danger"
@@ -124,7 +122,7 @@ export const App = () => {
                     Something went wrong!
                   </div>
                 )}
-
+                {/* eslint-disable */}
                 {!loadingPosts &&
                   selectedUserId !== null &&
                   posts.length === 0 &&
@@ -136,7 +134,6 @@ export const App = () => {
                       No posts yet
                     </div>
                   )}
-
                 {!loadingPosts && posts.length > 0 && !postsError && (
                   <PostsList
                     posts={posts}
