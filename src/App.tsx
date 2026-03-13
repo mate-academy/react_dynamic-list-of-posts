@@ -4,69 +4,39 @@ import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import { client } from './utils/fetchClient';
-
-import { useEffect, useState } from 'react';
-
-import { User } from './types/User';
-import { Post } from './types/Post';
-
 import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-
-enum PostState {
-  Loading = 'loading',
-  LoadingError = 'error',
-  LoadingSuccess = 'success',
-}
+import { useState } from 'react';
+import { Post } from './types/Post';
+import { client } from './utils/fetchClient';
 
 export const App = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [activeUser, setActiveUser] = useState<number | null>(null);
-  const [activePost, setActivePost] = useState<Post | null>(null);
-  const [postState, setPostState] = useState<PostState | null>(null);
-  useEffect(() => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUserSelected, setIsUserSelected] = useState(false);
+  const [selectedPosts, setSelectedPosts] = useState<Post[] | null>(null);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const selectUser = (userId: number) => {
+    setErrorMessage('');
+    setIsLoading(true);
+    setSelectedPost(null);
     client
-      .get<User[]>('/users')
-      .then(loadedUsers => {
-        setUsers(loadedUsers);
+      .get<Post[]>(`/posts?userId=${userId}`)
+      .then(posts => {
+        setSelectedPosts(posts);
       })
-      .catch(() => {
-        setUsers([
-          {
-            id: 0,
-            name: 'Error loading users',
-            email: 'error',
-            phone: 'error',
-          },
-        ]);
-      });
-  }, []);
-  useEffect(() => {
-    setActivePost(null);
-
-    if (activeUser === null || activeUser < 1) {
-      setPostState(null);
-      setPosts([]);
-
-      return;
-    }
-
-    setPostState(PostState.Loading);
-    client
-      .get<Post[]>(`/posts?userId=${activeUser}`)
-      .then(loadedPosts => {
-        setPosts(loadedPosts);
-        setPostState(PostState.LoadingSuccess);
+      .catch(error => {
+        setErrorMessage('Failed to load posts. Please try again.');
+        setSelectedPosts(null);
+        throw error;
       })
-      .catch(() => {
-        setPostState(PostState.LoadingError);
+      .finally(() => {
+        setIsLoading(false);
       });
-  }, [activeUser]);
-
+  };
   return (
     <main className="section">
       <div className="container">
@@ -75,61 +45,59 @@ export const App = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
-                  users={users}
-                  activeUser={activeUser}
-                  setActiveUser={setActiveUser}
+                  onSelect={selectUser}
+                  setIsSelected={setIsUserSelected}
                 />
               </div>
-              <div className="block" data-cy="MainContent">
-                {activeUser === null && (
+               <div className="block" data-cy="MainContent">
+                {!isUserSelected && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
-
-                {postState === PostState.LoadingSuccess &&
-                  (posts.length > 0 ? (
-                    <PostsList
-                      posts={posts}
-                      activePost={activePost}
-                      setActivePost={setActivePost}
-                    />
-                  ) : (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  ))}
-
-                {postState === PostState.Loading && <Loader />}
-
-                {postState === PostState.LoadingError && (
+                {isLoading && <Loader />}
+ {errorMessage && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    Something went wrong!
+                    {errorMessage}
                   </div>
+                )}
+
+                {!isLoading && selectedPosts && selectedPosts.length === 0 && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
+                {!isLoading && selectedPosts && selectedPosts.length > 0 && (
+                  <PostsList
+                    selectedPosts={selectedPosts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
+                  />
                 )}
               </div>
             </div>
           </div>
-           <div
+          <div
             data-cy="Sidebar"
             className={classNames(
               'tile',
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              { 'Sidebar--open': activePost !== null },
+              {
+                'Sidebar--open': selectedPost,
+              },
             )}
           >
             <div className="tile is-child box is-success ">
-              {activePost !== null && <PostDetails post={activePost} />}
+              {selectedPost && (
+                <PostDetails post={selectedPost} key={selectedPost.id} />
+              )}
             </div>
           </div>
         </div>
       </div>
-       </main>
+      </main>
   );
 };

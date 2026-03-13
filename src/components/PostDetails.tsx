@@ -2,102 +2,136 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
-import { Comment } from '../types/Comment';
-import { CommentItem } from './CommentItem';
 import { client } from '../utils/fetchClient';
+import { Comment } from '../types/Comment';
 
-interface Props {
+type Props = {
   post: Post;
-}
-
-enum CommentsState {
-  Loading = 'loading',
-  LoadingError = 'error',
-  LoadingSuccess = 'success',
-}
+};
 
 export const PostDetails: React.FC<Props> = ({ post }) => {
-  const [showForm, setShowForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [comments, setComments] = useState<Comment[]>([]);
-  const [commentsState, setCommentsState] = useState<CommentsState | null>(
-    null,
-  );
+  const [isCreatePressed, setIsCreatePressed] = useState(false);
 
-  useEffect(() => {
-    setCommentsState(CommentsState.Loading);
-    setShowForm(false);
-
-    client
-      .get<Comment[]>(`/comments?postId=${post.id}`)
-      .then((loadedComments: Comment[]) => {
-        setComments(loadedComments);
-        setCommentsState(CommentsState.LoadingSuccess);
-      })
-      .catch(() => {
-        setCommentsState(CommentsState.LoadingError);
-      });
-  }, [post.id]);
-
-  const deleteCommentHandler = (commentId: number) => {
-    const oldComments = [...comments];
-
-    setComments(prevComments =>
-      prevComments.filter(comment => comment.id !== commentId),
+  const deleteComment = (commentId: number) => {
+    setComments(currComments =>
+      currComments.filter(comment => comment.id !== commentId),
     );
+
+    client.delete(`/comments/${commentId}`).catch(error => {
+      setErrorMessage('Unable to delete a comment');
+      client.get<Comment[]>(`/comments?postId=${post.id}`).then(setComments);
+      throw error;
+    });
+  };
+
+  const addNewComment = (newComment: Omit<Comment, 'id'>) => {
+    setIsAdding(true);
+
     client
-      .delete(`/comments/${commentId}`)
-      .then(() => {})
-      .catch(() => {
-        setComments(oldComments);
+      .post<Comment>('/comments', newComment)
+      .then(returnedComment => {
+        setComments(currComments => [...currComments, returnedComment]);
+      })
+      .catch(error => {
+        setErrorMessage('Failed to add comment. Please try again.');
+        throw error;
+      })
+      .finally(() => {
+        setIsAdding(false);
       });
   };
-  return (
+
+  useEffect(() => {
+    setIsLoading(true);
+    setErrorMessage('');
+
+    if (post) {
+      client
+        .get<Comment[]>(`/comments?postId=${post.id}`)
+        .then(setComments)
+        .catch(error => {
+          setErrorMessage('Something went wrong');
+          throw error;
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [post]);
+   return (
     <div className="content" data-cy="PostDetails">
       <div className="content" data-cy="PostDetails">
         <div className="block">
-          <h2 data-cy="PostTitle">
-             #{post.id}: {post.title}
-          </h2>
-           <p data-cy="PostBody">{post.body}</p>
+          <h2 data-cy="PostTitle">{`#${post.id}: ${post.title}`}</h2>
+
+          <p data-cy="PostBody">{post.body}</p>
         </div>
 
         <div className="block">
-          {commentsState === CommentsState.Loading && <Loader />}
-          {commentsState === CommentsState.LoadingError && (
+          {isLoading && <Loader />}
+           {errorMessage && !isLoading && (
             <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
+              {errorMessage}
             </div>
           )}
-            {commentsState === CommentsState.LoadingSuccess &&
-            (comments.length > 0 ? (
-              <>
-                <p className="title is-4">Comments:</p>
-                {comments.map(comment => (
-                  <CommentItem
-                    key={comment.id}
-                    comment={comment}
-                    deleteComment={deleteCommentHandler}
-                  />
-                ))}
-              </>
-            ) : (
-              <p className="title is-4" data-cy="NoCommentsMessage">
-                No comments yet
-              </p>
-            ))}
-          {!showForm && commentsState === CommentsState.LoadingSuccess && (
+           {!isLoading && !errorMessage && comments && comments.length === 0 && (
+            <p className="title is-4" data-cy="NoCommentsMessage">
+              No comments yet
+            </p>
+          )}
+
+          {!isLoading && !errorMessage && comments && comments.length > 0 && (
+            <>
+              <p className="title is-4">Comments:</p>
+              {comments.map(comment => (
+                <article
+                  className="message is-small"
+                  data-cy="Comment"
+                  key={comment.id}
+                >
+                  <div className="message-header">
+                    <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                      {comment.name}
+                    </a>
+                    <button
+                      data-cy="CommentDelete"
+                      type="button"
+                      className="delete is-small"
+                      aria-label="delete"
+                      onClick={() => deleteComment(comment.id)}
+                    >
+                      delete button
+                    </button>
+                  </div>
+
+                  <div className="message-body" data-cy="CommentBody">
+                    {comment.body}
+                  </div>
+                </article>
+              ))}
+            </>
+          )}
+          {!isLoading && !errorMessage && !isCreatePressed && comments && (
             <button
               data-cy="WriteCommentButton"
               type="button"
               className="button is-link"
-              onClick={() => setShowForm(true)}
+              onClick={() => setIsCreatePressed(true)}
             >
               Write a comment
             </button>
           )}
         </div>
-        {showForm && (
-          <NewCommentForm postId={post.id} setComments={setComments} />
+        {isCreatePressed && (
+          <NewCommentForm
+            postId={post.id}
+            onAdd={addNewComment}
+            isAdding={isAdding}
+          />
         )}
       </div>
     </div>

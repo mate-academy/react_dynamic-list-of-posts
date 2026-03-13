@@ -1,27 +1,42 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { client } from '../utils/fetchClient';
 import { User } from '../types/User';
 import classNames from 'classnames';
 
-interface Props {
-  users: User[];
-  activeUser: number | null;
-  setActiveUser: (userId: number) => void;
-}
+type Props = {
+  onSelect: (userId: number) => void;
+  setIsSelected: (isSelected: boolean) => void;
+};
 
-export const UserSelector: React.FC<Props> = ({
-  users,
-  activeUser,
-  setActiveUser,
-}) => {
-  const [focused, setFocused] = useState(false);
+export const UserSelector: React.FC<Props> = ({ onSelect, setIsSelected }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const [chosenUser, setChosenUser] = useState<User | null>(null);
 
-  const selectedUserName =
-    users.find(u => u.id === activeUser)?.name || 'Choose a user';
-return (
-  <div
+  const selectUser = (
+    event: React.MouseEvent<HTMLAnchorElement>,
+    userId: number,
+  ) => {
+    event.preventDefault();
+
+    if (chosenUser && chosenUser.id === userId) {
+      return;
+    }
+
+    onSelect(userId);
+    setIsSelected(true);
+    setChosenUser(users.find(user => user.id === userId) || null);
+    setIsOpen(false);
+  };
+
+  useEffect(() => {
+    client.get<User[]>('/users').then(setUsers);
+  }, []);
+   return (
+    <div
       data-cy="UserSelector"
-      className={classNames('dropdown', { 'is-active': focused })}
-      onBlur={() => setFocused(false)}
+      className={classNames('dropdown', { 'is-active': isOpen })}
+      onBlur={() => setTimeout(() => setIsOpen(false), 300)}
     >
       <div className="dropdown-trigger">
         <button
@@ -29,9 +44,13 @@ return (
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => setFocused(!focused)}
+          onClick={() => setIsOpen(!isOpen)}
         >
-          <span>{selectedUserName}</span>
+          {!chosenUser ? (
+            <span>Choose a user</span>
+          ) : (
+            <span>{chosenUser.name}</span>
+          )}
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -43,15 +62,12 @@ return (
         <div className="dropdown-content">
           {users.map(user => (
             <a
-              key={user.id}
+              href={`user-${user.id}`}
               className={classNames('dropdown-item', {
-                'is-active': activeUser === user.id,
+                'is-active': chosenUser?.id === user.id,
               })}
-              onMouseDown={e => {
-                e.preventDefault();
-                setActiveUser(user.id);
-                setFocused(false);
-              }}
+              key={user.id}
+              onClick={event => selectUser(event, user.id)}
             >
               {user.name}
             </a>
