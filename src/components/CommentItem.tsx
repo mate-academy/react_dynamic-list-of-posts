@@ -3,10 +3,10 @@ import { Comment } from '../types/Comment';
 
 interface Props {
   comment: Comment;
-  deleteComment: (commentId: number) => void;
+  onDeleteComment: (commentId: number) => void;
 }
 
-export const CommentItem: React.FC<Props> = ({ comment, deleteComment }) => {
+export const CommentItem: React.FC<Props> = ({ comment, onDeleteComment }) => {
   return (
     <article className="message is-small" data-cy="Comment">
       <div className="message-header">
@@ -18,7 +18,7 @@ export const CommentItem: React.FC<Props> = ({ comment, deleteComment }) => {
           type="button"
           className="delete is-small"
           aria-label="delete"
-          onClick={() => deleteComment(comment.id)}
+          onClick={() => onDeleteComment(comment.id)}
         >
           delete button
         </button>

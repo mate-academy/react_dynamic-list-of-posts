@@ -22,6 +22,7 @@ export const App = () => {
   const selectUser = (userId: number) => {
     setErrorMessage('');
     setIsLoading(true);
+    setIsUserSelected(true);
     setSelectedPost(null);
     client
       .get<Post[]>(`/posts?userId=${userId}`)
@@ -37,6 +38,7 @@ export const App = () => {
         setIsLoading(false);
       });
   };
+
   return (
     <main className="section">
       <div className="container">
@@ -44,17 +46,14 @@ export const App = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector
-                  onSelect={selectUser}
-                  setIsSelected={setIsUserSelected}
-                />
+                <UserSelector onSelect={selectUser} />
               </div>
-               <div className="block" data-cy="MainContent">
+              <div className="block" data-cy="MainContent">
                 {!isUserSelected && (
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
                 {isLoading && <Loader />}
- {errorMessage && (
+                {errorMessage && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -72,7 +71,7 @@ export const App = () => {
                   <PostsList
                     selectedPosts={selectedPosts}
                     selectedPost={selectedPost}
-                    setSelectedPost={setSelectedPost}
+                    onSelectPost={setSelectedPost}
                   />
                 )}
               </div>
@@ -98,6 +97,6 @@ export const App = () => {
           </div>
         </div>
       </div>
-      </main>
+    </main>
   );
 };

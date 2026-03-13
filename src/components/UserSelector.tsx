@@ -5,10 +5,9 @@ import classNames from 'classnames';
 
 type Props = {
   onSelect: (userId: number) => void;
-  setIsSelected: (isSelected: boolean) => void;
 };
 
-export const UserSelector: React.FC<Props> = ({ onSelect, setIsSelected }) => {
+export const UserSelector: React.FC<Props> = ({ onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
   const [chosenUser, setChosenUser] = useState<User | null>(null);
@@ -24,7 +23,6 @@ export const UserSelector: React.FC<Props> = ({ onSelect, setIsSelected }) => {
     }
 
     onSelect(userId);
-    setIsSelected(true);
     setChosenUser(users.find(user => user.id === userId) || null);
     setIsOpen(false);
   };
@@ -32,7 +30,8 @@ export const UserSelector: React.FC<Props> = ({ onSelect, setIsSelected }) => {
   useEffect(() => {
     client.get<User[]>('/users').then(setUsers);
   }, []);
-   return (
+
+  return (
     <div
       data-cy="UserSelector"
       className={classNames('dropdown', { 'is-active': isOpen })}

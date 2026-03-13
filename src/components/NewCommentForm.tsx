@@ -79,8 +79,9 @@ export const NewCommentForm: React.FC<Props> = ({
 
     setBody('');
   };
-    return (
-      <form
+
+  return (
+    <form
       data-cy="NewCommentForm"
       onSubmit={event => addComment(event)}
       onReset={reset}
@@ -96,7 +97,7 @@ export const NewCommentForm: React.FC<Props> = ({
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-             className={classNames('input', { 'is-danger': nameMessage })}
+            className={classNames('input', { 'is-danger': nameMessage })}
             value={name}
             onChange={event => editName(event)}
           />
@@ -104,7 +105,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
-           {nameMessage && (
+          {nameMessage && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -113,7 +114,7 @@ export const NewCommentForm: React.FC<Props> = ({
             </span>
           )}
         </div>
-         {nameMessage && (
+        {nameMessage && (
           <p className="help is-danger" data-cy="ErrorMessage">
             {nameMessage}
           </p>
@@ -170,7 +171,7 @@ export const NewCommentForm: React.FC<Props> = ({
             onChange={event => editBody(event)}
           />
         </div>
-         {bodyMessage && (
+        {bodyMessage && (
           <p className="help is-danger" data-cy="ErrorMessage">
             {bodyMessage}
           </p>
@@ -179,7 +180,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
       <div className="field is-grouped">
         <div className="control">
-           <button
+          <button
             type="submit"
             className={classNames('button is-link', {
               'is-loading': isAdding,
