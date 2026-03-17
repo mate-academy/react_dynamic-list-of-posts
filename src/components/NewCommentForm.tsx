@@ -8,21 +8,26 @@ interface Props {
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
 }
 
-const ClearErrors = {
-  name: false,
-  email: false,
-  body: false,
-  adding: false,
+type FormState = CommentData & {
+  errors: {
+    name: boolean;
+    email: boolean;
+    body: boolean;
+    adding: boolean;
+  };
+};
+
+const initialState: FormState = {
+  name: '',
+  email: '',
+  body: '',
+  errors: { name: false, email: false, body: false, adding: false },
 };
 
 export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
   const [isAdding, setIsAdding] = useState(false);
-  const [newCommentData, setNewCommentData] = useState<CommentData>({
-    name: '',
-    email: '',
-    body: '',
-  });
-  const [errors, setErrors] = useState(ClearErrors);
+  const [formState, setFormState] = useState<FormState>(initialState);
+  const { errors, ...newCommentData } = formState;
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -34,7 +39,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
       adding: false,
     };
 
-    setErrors(newErrors);
+    setFormState(prev => ({ ...prev, errors: newErrors }));
 
     if (newErrors.name || newErrors.email || newErrors.body) {
       return;
@@ -45,10 +50,13 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
       .post<Comment>(`/comments`, { postId, ...newCommentData })
       .then(newComment => {
         setComments(prevComments => [...prevComments, newComment]);
-        setNewCommentData({ ...newCommentData, body: '' });
+        setFormState(prev => ({ ...prev, body: '' }));
       })
       .catch(() => {
-        setErrors({ ...newErrors, adding: true });
+        setFormState(prev => ({
+          ...prev,
+          errors: { ...newErrors, adding: true },
+        }));
       })
       .finally(() => {
         setIsAdding(false);
@@ -57,8 +65,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
 
   const handleClear = (event: React.MouseEvent) => {
     event.preventDefault();
-    setNewCommentData({ name: '', email: '', body: '' });
-    setErrors(ClearErrors);
+    setFormState(initialState);
   };
 
   return (
@@ -82,10 +89,13 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': errors.name })}
             value={newCommentData.name}
-            onChange={e => {
-              setNewCommentData({ ...newCommentData, name: e.target.value });
-              setErrors({ ...errors, name: false });
-            }}
+            onChange={e =>
+              setFormState(prev => ({
+                ...prev,
+                name: e.target.value,
+                errors: { ...prev.errors, name: false },
+              }))
+            }
           />
 
           <span className="icon is-small is-left">
@@ -122,10 +132,13 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': errors.email })}
             value={newCommentData.email}
-            onChange={e => {
-              setNewCommentData({ ...newCommentData, email: e.target.value });
-              setErrors({ ...errors, email: false });
-            }}
+            onChange={e =>
+              setFormState(prev => ({
+                ...prev,
+                email: e.target.value,
+                errors: { ...prev.errors, email: false },
+              }))
+            }
           />
 
           <span className="icon is-small is-left">
@@ -161,10 +174,13 @@ export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': errors.body })}
             value={newCommentData.body}
-            onChange={e => {
-              setNewCommentData({ ...newCommentData, body: e.target.value });
-              setErrors({ ...errors, body: false });
-            }}
+            onChange={e =>
+              setFormState(prev => ({
+                ...prev,
+                body: e.target.value,
+                errors: { ...prev.errors, body: false },
+              }))
+            }
           />
         </div>
 
