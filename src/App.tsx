@@ -10,11 +10,11 @@ import { UserSelector } from './components/UserSelector/UserSelector';
 import { Loader } from './components/Loader';
 import { useEffect, useState } from 'react';
 import { User } from './types/User';
-import * as userService from './api/users';
-import * as postService from './api/posts';
+import * as userService from './api/user.service';
+import * as postService from './api/post.service';
 import { Post } from './types/Post';
 import { Comment, CommentData } from './types/Comment';
-import * as commentService from './api/comments';
+import * as commentService from './api/comment.service';
 
 export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
