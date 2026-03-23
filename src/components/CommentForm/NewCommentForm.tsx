@@ -1,4 +1,4 @@
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useState } from 'react';
 import classNames from 'classnames';
 import { CommentData } from '../../types/Comment';
 
@@ -14,17 +14,12 @@ export const NewCommentForm: React.FC<Props> = ({
   const [isNameValid, setIsNameValid] = React.useState(true);
   const [isEmailValid, setIsEmailValid] = React.useState(true);
   const [isBodyValid, setIsBodyValid] = React.useState(true);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [body, setBody] = useState('');
 
   const handleSubmitComment = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    const form = event.currentTarget;
-
-    const { name, email, body } = Object.fromEntries(new FormData(form)) as {
-      name: string;
-      email: string;
-      body: string;
-    };
 
     const trimmedName = name.trim();
     const trimmedEmail = email.trim();
@@ -48,9 +43,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
     onCommentAdded({ name, email, body });
 
-    const textarea = form.elements.namedItem('body') as HTMLTextAreaElement;
-
-    textarea.value = '';
+    setBody('');
   };
 
   return (
@@ -70,18 +63,22 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': !isNameValid })}
+            value={name}
+            onChange={event => setName(event.target.value)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {!isNameValid && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
         {!isNameValid && (
@@ -103,18 +100,22 @@ export const NewCommentForm: React.FC<Props> = ({
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': !isEmailValid })}
+            value={email}
+            onChange={event => setEmail(event.target.value)}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {!isEmailValid && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
         {!isEmailValid && (
@@ -135,6 +136,8 @@ export const NewCommentForm: React.FC<Props> = ({
             name="body"
             placeholder="Type comment here"
             className={classNames('input', { 'is-danger': !isBodyValid })}
+            value={body}
+            onChange={event => setBody(event.target.value)}
           />
         </div>
 
@@ -159,7 +162,18 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control">
           {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={() => {
+              setName('');
+              setEmail('');
+              setBody('');
+              setIsNameValid(true);
+              setIsEmailValid(true);
+              setIsBodyValid(true);
+            }}
+          >
             Clear
           </button>
         </div>

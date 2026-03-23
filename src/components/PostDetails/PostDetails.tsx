@@ -12,6 +12,9 @@ type Props = {
   onCommentAdded: (comment: CommentData) => void;
   onCommentDeleted: (commentId: number) => void;
   isAddingComment: boolean;
+  commentsLoadingErrorMessages: string;
+  onCommentWriteButtonCLick: () => void;
+  isWritingComment: boolean;
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -22,17 +25,28 @@ export const PostDetails: React.FC<Props> = ({
   onCommentAdded,
   onCommentDeleted,
   isAddingComment,
+  commentsLoadingErrorMessages,
+  onCommentWriteButtonCLick,
+  isWritingComment,
 }) => {
-  const [isWritingComment, setIsWritingComment] = React.useState(false);
 
   if (!post) {
     return null;
   }
 
   const isCommentsMissed =
-    !isCommentsLoading && !isAddingCommentFailed && comments.length === 0;
+    !isCommentsLoading &&
+    !isAddingCommentFailed &&
+    comments.length === 0 &&
+    !commentsLoadingErrorMessages;
   const isCommentsPresent =
-    !isCommentsLoading && !isAddingCommentFailed && comments.length > 0;
+    !isCommentsLoading &&
+    !isAddingCommentFailed &&
+    comments.length > 0 &&
+    !commentsLoadingErrorMessages;
+
+  const isButtonShown =
+    !isCommentsLoading && !isWritingComment && !commentsLoadingErrorMessages;
 
   return (
     <div className="content" data-cy="PostDetails">
@@ -48,6 +62,12 @@ export const PostDetails: React.FC<Props> = ({
         {!isCommentsLoading && isAddingCommentFailed && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong while adding a comment
+          </div>
+        )}
+
+        {!isCommentsLoading && commentsLoadingErrorMessages && (
+          <div className="notification is-danger" data-cy="CommentsError">
+            {commentsLoadingErrorMessages}
           </div>
         )}
 
@@ -67,7 +87,7 @@ export const PostDetails: React.FC<Props> = ({
                 key={comment.id}
               >
                 <div className="message-header">
-                  <a href={`mailTo:${comment.email}`} data-cy="CommentAuthor">
+                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                     {comment.name}
                   </a>
                   <button
@@ -88,12 +108,12 @@ export const PostDetails: React.FC<Props> = ({
             ))}
           </>
         )}
-        {!isCommentsLoading && !isWritingComment && (
+        {isButtonShown && (
           <button
             data-cy="WriteCommentButton"
             type="button"
             className="button is-link"
-            onClick={() => setIsWritingComment(true)}
+            onClick={() => onCommentWriteButtonCLick()}
           >
             Write a comment
           </button>

@@ -29,6 +29,9 @@ export const App = () => {
   const [isAddingComment, setIsAddingComment] = useState(false);
   const [isAddingCommentFailed, setIsAddingCommentFailed] = useState(false);
   const [visibleComments, setVisibleComments] = useState<Comment[]>([]);
+  const [commentsLoadingErrorMessages, setCommentsLoadingErrorMessages] =
+    useState('');
+  const [isWritingComment, setIsWritingComment] = useState(false);
 
   useEffect(() => {
     userService.getUsers().then(setUsers);
@@ -77,6 +80,7 @@ export const App = () => {
     setIsCommentsLoading(true);
     setIsPostDetailsOpen(true);
     setOpenedPost(post);
+    setIsWritingComment(false);
 
     commentService
       .getPostComments(post.id)
@@ -84,7 +88,7 @@ export const App = () => {
         setVisibleComments(receivedComments);
         setComments(receivedComments);
       })
-      .catch(() => setErrorMessage('Something went wrong'))
+      .catch(() => setCommentsLoadingErrorMessages('Something went wrong'))
       .finally(() => {
         setIsCommentsLoading(false);
       });
@@ -123,6 +127,10 @@ export const App = () => {
       })
       .catch(() => setIsAddingCommentFailed(true))
       .finally(() => setIsAddingComment(false));
+  };
+
+  const handleCommentWriteButtonClick = () => {
+    setIsWritingComment(true);
   };
 
   return (
@@ -191,6 +199,9 @@ export const App = () => {
                 onCommentAdded={handleCommentAdded}
                 onCommentDeleted={handleCommentDelete}
                 isAddingComment={isAddingComment}
+                commentsLoadingErrorMessages={commentsLoadingErrorMessages}
+                onCommentWriteButtonCLick={handleCommentWriteButtonClick}
+                isWritingComment={isWritingComment}
               />
             </div>
           </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { User } from '../../types/User';
 import classNames from 'classnames';
 
@@ -14,14 +14,33 @@ export const UserSelector: React.FC<Props> = ({
   onUserChose,
 }) => {
   const [isActive, setIsActive] = React.useState(false);
+  const selectorRef = React.useRef<HTMLDivElement>(null);
 
   const handleUserChose = (user: User) => {
     onUserChose(user);
     setIsActive(false);
   };
 
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (
+        selectorRef.current &&
+        !selectorRef.current.contains(event.target as Node)
+      ) {
+        setIsActive(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, []);
+
   return (
     <div
+      ref={selectorRef}
       data-cy="UserSelector"
       className={classNames('dropdown', { 'is-active': isActive })}
     >
