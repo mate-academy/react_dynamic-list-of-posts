@@ -1,42 +1,94 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { User } from '../types/User';
+import classNames from 'classnames';
+import { Post } from '../types/Post';
+type Props = {
+  users: User[];
+  selectedUser: User | null;
+  onSelectedUser: (user: User) => void;
+  setSelectedPost: (post: Post | null) => void;
+};
 
-export const UserSelector: React.FC = () => {
-  return (
-    <div data-cy="UserSelector" className="dropdown is-active">
-      <div className="dropdown-trigger">
-        <button
-          type="button"
-          className="button"
-          aria-haspopup="true"
-          aria-controls="dropdown-menu"
-        >
-          <span>Choose a user</span>
+export const UserSelector = React.memo<Props>(
+  ({ users, selectedUser, onSelectedUser, setSelectedPost }) => {
+    const [isActiveMenu, setIsActiveMenu] = useState(false);
 
-          <span className="icon is-small">
-            <i className="fas fa-angle-down" aria-hidden="true" />
-          </span>
-        </button>
-      </div>
+    const handleButtonMenu = useCallback(() => {
+      setIsActiveMenu(boolean => !boolean);
+    }, []);
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+    const handleItemMenu = useCallback(
+      (event: React.MouseEvent<HTMLAnchorElement>, user: User) => {
+        event.preventDefault();
+        onSelectedUser(user);
+        setIsActiveMenu(false);
+        setSelectedPost(null);
+      },
+      [],
+    );
+
+    const dropdown = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      function handleClickOutside(event: MouseEvent) {
+        if (
+          dropdown.current &&
+          !dropdown.current.contains(event.target as Node)
+        ) {
+          setIsActiveMenu(false);
+        }
+      }
+
+      document.addEventListener('mousedown', handleClickOutside);
+
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, []);
+
+    return (
+      <div
+        data-cy="UserSelector"
+        className={classNames('dropdown', {
+          'is-active': isActiveMenu,
+        })}
+        ref={dropdown}
+      >
+        <div className="dropdown-trigger">
+          <button
+            type="button"
+            className="button"
+            aria-haspopup="true"
+            aria-controls="dropdown-menu"
+            onClick={handleButtonMenu}
+          >
+            <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
+
+            <span className="icon is-small">
+              <i className="fas fa-angle-down" aria-hidden="true" />
+            </span>
+          </button>
+        </div>
+
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          <div className="dropdown-content">
+            {users.map(user => (
+              <a
+                key={user.id}
+                href={`#${user.id}`}
+                onClick={event => handleItemMenu(event, user)}
+                className={classNames('dropdown-item', {
+                  'is-active': selectedUser?.id === user.id,
+                })}
+              >
+                {user.name}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  },
+);
+
+UserSelector.displayName = 'UserSelector';

@@ -3,8 +3,9 @@
   "include": [
     "src"
   ],
-  "compilerOptions": {
-    "sourceMap": false,
-    "types": ["node", "cypress"]
-  }
+ "compilerOptions": {
+  "jsx": "react",
+  "noUnusedLocals": false,
+  "noUnusedParameters": false,
+}
 }
