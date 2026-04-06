@@ -1,6 +1,7 @@
 import React from 'react';
 import { Post } from '../types/Post';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 
 type Props = {
   posts: Post[];
@@ -56,3 +57,8 @@ export const PostsList: React.FC<Props> = ({
     </table>
   </div>
 );
+
+PostsList.propTypes = {
+  posts: PropTypes.array.isRequired,
+  onPostSelect: PropTypes.func.isRequired,
+};

@@ -5,11 +5,15 @@ import classNames from 'classnames';
 type Props = {
   users: User[];
   onUserSelect: (userId: number | null) => void;
+  selectedUserId?: number | null;
 };
 
-export const UserSelector: React.FC<Props> = ({ users, onUserSelect }) => {
+export const UserSelector: React.FC<Props> = ({
+  users,
+  onUserSelect,
+  selectedUserId,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isUser, setIsUser] = useState<User | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -29,6 +33,8 @@ export const UserSelector: React.FC<Props> = ({ users, onUserSelect }) => {
     };
   }, []);
 
+  const selectedUser = users.find(user => user.id === selectedUserId);
+
   return (
     <div
       ref={dropdownRef}
@@ -45,7 +51,7 @@ export const UserSelector: React.FC<Props> = ({ users, onUserSelect }) => {
           onClick={() => setIsOpen(!isOpen)}
           data-cy="UserSelectorButton"
         >
-          <span>{isUser?.name || 'Choose a user'}</span>
+          <span>{selectedUser?.name || 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -59,13 +65,12 @@ export const UserSelector: React.FC<Props> = ({ users, onUserSelect }) => {
               key={user.id}
               href="#"
               className={classNames('dropdown-item', {
-                'is-active': isUser?.id === user.id,
+                'is-active': user.id === selectedUserId,
               })}
               onClick={event => {
                 event.preventDefault();
                 onUserSelect(user.id);
                 setIsOpen(false);
-                setIsUser(user);
               }}
               data-cy={`UserSelectorItem-${user.id}`}
             >

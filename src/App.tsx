@@ -38,6 +38,9 @@ export const App = () => {
     setIsLoading(true);
 
     if (selectedUserId === null) {
+      setPosts([]);
+      setIsLoading(false);
+
       return;
     }
 
@@ -64,7 +67,11 @@ export const App = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector users={users} onUserSelect={setSelectedUserId} />
+                <UserSelector
+                  users={users}
+                  selectedUserId={selectedUserId}
+                  onUserSelect={setSelectedUserId}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
