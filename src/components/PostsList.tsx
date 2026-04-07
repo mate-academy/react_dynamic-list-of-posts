@@ -61,4 +61,5 @@ export const PostsList: React.FC<Props> = ({
 PostsList.propTypes = {
   posts: PropTypes.array.isRequired,
   onPostSelect: PropTypes.func.isRequired,
+  selectedPostId: PropTypes.number,
 };

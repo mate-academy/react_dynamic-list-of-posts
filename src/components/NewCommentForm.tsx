@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Comment } from '../types/Comment';
 import { client } from '../utils/fetchClient';
+import PropTypes from 'prop-types';
 
 type Props = {
   onAdd: (newComment: Comment) => void;
@@ -213,4 +214,9 @@ export const NewCommentForm: React.FC<Props> = ({ onAdd, postId }) => {
       )}
     </form>
   );
+};
+
+NewCommentForm.propTypes = {
+  onAdd: PropTypes.func.isRequired,
+  postId: PropTypes.number.isRequired,
 };

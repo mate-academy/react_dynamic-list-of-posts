@@ -12,6 +12,7 @@ import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { client } from './utils/fetchClient';
 import { Post } from './types/Post';
+import PropTypes from 'prop-types';
 
 export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -136,4 +137,8 @@ export const App = () => {
       </div>
     </main>
   );
+};
+
+App.propTypes = {
+  selectedPostId: PropTypes.number,
 };
