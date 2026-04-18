@@ -4,6 +4,7 @@ import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
 import { getComments } from '../utils/getData';
+import { deleteComment } from '../utils/deleteData';
 
 interface PostDetailsProps {
   post: Post;
@@ -20,26 +21,30 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post }) => {
       .then(setComments)
       .catch(() => setIsError(true))
       .finally(() => setHasCommentsLoaded(true));
+
+    return () => {
+      setHasCommentsLoaded(false);
+      setIsError(false);
+      setOpenNewCommentForm(false);
+    };
   }, [post]);
 
-  return (
-    <div className="content" data-cy="PostDetails">
-      <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 data-cy="PostTitle">#{`${post.id}: ${post.title}`}</h2>
+  const childComponent = () => {
+    if (!hasCommentsLoaded) {
+      return <Loader />;
+    }
 
-          <p data-cy="PostBody">{post.body}</p>
+    if (isError) {
+      return (
+        <div className="notification is-danger" data-cy="CommentsError">
+          Something went wrong
         </div>
+      );
+    }
 
+    return (
+      <>
         <div className="block">
-          {!hasCommentsLoaded && <Loader />}
-
-          {isError && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              Something went wrong
-            </div>
-          )}
-
           {comments.length > 0 ? (
             <>
               <p className="title is-4">Comments:</p>
@@ -58,6 +63,13 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post }) => {
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
+                      onClick={() =>
+                        deleteComment(comment.id).then(() => {
+                          setComments(prevComments =>
+                            prevComments.filter(c => c.id !== comment.id),
+                          );
+                        })
+                      }
                     >
                       delete button
                     </button>
@@ -75,7 +87,7 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post }) => {
             </p>
           )}
 
-          {!openNewCommentForm && (
+          {hasCommentsLoaded && !openNewCommentForm && (
             <button
               data-cy="WriteCommentButton"
               type="button"
@@ -87,8 +99,27 @@ export const PostDetails: React.FC<PostDetailsProps> = ({ post }) => {
           )}
         </div>
 
-        {openNewCommentForm && <NewCommentForm />}
+        {openNewCommentForm && (
+          <NewCommentForm
+            postId={post.id}
+            handleError={() => setIsError(true)}
+            onCommentCreated={(newComment: Comment) =>
+              setComments(prevComments => [...prevComments, newComment])
+            }
+          />
+        )}
+      </>
+    );
+  };
+
+  return (
+    <div className="content" data-cy="PostDetails">
+      <div className="block">
+        <h2 data-cy="PostTitle">#{`${post.id}: ${post.title}`}</h2>
+
+        <p data-cy="PostBody">{post.body}</p>
       </div>
+      {childComponent()}
     </div>
   );
 };

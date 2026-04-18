@@ -42,6 +42,7 @@ export const App = () => {
     setIsPostLoaded(false);
     getPosts(selectedUser.id)
       .then(setPosts)
+      .catch(() => setIsError(true))
       .finally(() => setIsPostLoaded(true));
   }, [selectedUser]);
 
@@ -73,7 +74,7 @@ export const App = () => {
                   </div>
                 )}
 
-                {selectedUser && (
+                {!isError && selectedUser && (
                   <PostsList
                     isPostLoaded={isPostLoaded}
                     posts={posts}
