@@ -93,15 +93,13 @@ const NewCommentFormBase: React.FC<Props> = ({ postId, onSubmit }) => {
       isValid = false;
     }
 
-    if (!hasBody || !hasEmail || !hasName) {
-      isValid = false;
-    }
-
     return isValid;
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // clear api request error message
+    clearErrorMessage();
 
     const isValid = validateForm();
 
@@ -110,8 +108,6 @@ const NewCommentFormBase: React.FC<Props> = ({ postId, onSubmit }) => {
     }
 
     setIsSubmitting(true);
-    clearErrorMessage();
-    clearAllFormErrors();
 
     onSubmit(postId, formData)
       .then(() => {

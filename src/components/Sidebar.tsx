@@ -14,6 +14,8 @@ const SidebarBase: React.FC<Props> = ({ activePost }) => {
   const [comments, setComments] = useState<CommentType[]>([]);
 
   const loadComments = useCallback(async () => {
+    setComments([]);
+
     if (activePost?.id) {
       return client
         .getPostComments(activePost?.id)
