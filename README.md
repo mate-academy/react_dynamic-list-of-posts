@@ -5,6 +5,8 @@ be opened in the sidebar with its comments. There should delete a comment and a
 form to add new comments.
 Install Prettier Extention and use this [VSCode settings](https://mate-academy.github.io/fe-program/tools/vscode/settings.json) to enable format on save.
 
+[DEMO LINK](https://timurradkevic.github.io/react_dynamic-list-of-posts/)
+
 > Here is [the working version](https://mate-academy.github.io/react_dynamic-list-of-posts/)
 
 1. Learn the `utils/fetchClient.ts` and use it to interact with the API (tests expect that you each API request is sent after 300 ms delay);
