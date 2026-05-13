@@ -1,8 +1,107 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Comment } from '../types/Comment';
+import classNames from 'classnames';
+import * as FunctionCalls from '../api/functionServerRequests';
 
-export const NewCommentForm: React.FC = () => {
+type Props = {
+  setAllComments: React.Dispatch<React.SetStateAction<Comment[] | null>>;
+  postId: number;
+  allComments: Comment[] | null;
+};
+
+export const NewCommentForm: React.FC<Props> = ({
+  setAllComments,
+  postId,
+  allComments,
+}) => {
+  // input name
+  const [name, setName] = useState('');
+  const [shoowErrorName, setShoowErrorName] = useState(false);
+
+  // input Email
+  const [email, setEmail] = useState('');
+  const [shoowErrorEmail, setShoowErrorEmail] = useState(false);
+
+  // input Text
+  const [text, setText] = useState('');
+  const [shoowErrorText, setShoowErrorText] = useState(false);
+
+  const [shoowLoadingSubmit, setShoowLoadingSubmit] = useState(false);
+
+  function clearInput() {
+    setName('');
+    setShoowErrorName(false);
+    setEmail('');
+    setShoowErrorText(false);
+    setText('');
+    setShoowErrorEmail(false);
+  }
+
+  function detectionName() {
+    if (name === '') {
+      setShoowErrorName(true);
+
+      return false;
+    }
+
+    return true;
+  }
+
+  function detectionEmail() {
+    if (email === '') {
+      setShoowErrorEmail(true);
+
+      return false;
+    }
+
+    return true;
+  }
+
+  function detectionText() {
+    if (text === '') {
+      setShoowErrorText(true);
+
+      return false;
+    }
+
+    return true;
+  }
+
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    detectionName();
+    detectionEmail();
+    detectionText();
+
+    if (detectionName() && detectionEmail() && detectionText()) {
+      const maxId = allComments
+        ? Math.max(...allComments.map(com => com.id))
+        : 0;
+      const newComment = {
+        id: maxId + 1,
+        postId: postId,
+        name: name,
+        email: email,
+        body: text,
+      };
+
+      setShoowLoadingSubmit(true);
+      FunctionCalls.addComment(newComment)
+        .then(() => {
+          setAllComments(current =>
+            current ? [...current, newComment] : [newComment],
+          );
+        })
+        .finally(() => {
+          setText('');
+          setShoowErrorEmail(false);
+          setShoowLoadingSubmit(false);
+        });
+    }
+  }
+
   return (
-    <form data-cy="NewCommentForm">
+    <form data-cy="NewCommentForm" onSubmit={e => onSubmit(e)}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -14,24 +113,36 @@ export const NewCommentForm: React.FC = () => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className="input is-danger"
+            className={classNames('input', {
+              'is-danger': shoowErrorName,
+            })}
+            value={name}
+            onChange={e => {
+              setName(e.target.value);
+              setShoowErrorName(false);
+            }}
+            onBlur={() => detectionName()}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {shoowErrorName && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
+        {shoowErrorName && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Name is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="EmailField">
@@ -45,24 +156,36 @@ export const NewCommentForm: React.FC = () => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className="input is-danger"
+            className={classNames('input', {
+              'is-danger': shoowErrorEmail,
+            })}
+            value={email}
+            onChange={e => {
+              setEmail(e.target.value);
+              setShoowErrorEmail(false);
+            }}
+            onBlur={() => detectionEmail()}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {shoowErrorEmail && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
+        {shoowErrorEmail && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Email is required
+          </p>
+        )}
       </div>
 
       <div className="field" data-cy="BodyField">
@@ -75,25 +198,43 @@ export const NewCommentForm: React.FC = () => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className="textarea is-danger"
+            className={classNames('textarea', {
+              'is-danger': shoowErrorText,
+            })}
+            value={text}
+            onChange={e => {
+              setText(e.target.value);
+              setShoowErrorText(false);
+            }}
+            onBlur={() => detectionText()}
           />
         </div>
 
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
+        {shoowErrorText && (
+          <p className="help is-danger" data-cy="ErrorMessage">
+            Enter some text
+          </p>
+        )}
       </div>
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
+          <button
+            type="submit"
+            className={classNames('button is-link', {
+              'is-loading': shoowLoadingSubmit,
+            })}
+          >
             Add
           </button>
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            onClick={() => clearInput()}
+          >
             Clear
           </button>
         </div>
