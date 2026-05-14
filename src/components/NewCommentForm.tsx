@@ -6,13 +6,13 @@ import * as FunctionCalls from '../api/functionServerRequests';
 type Props = {
   setAllComments: React.Dispatch<React.SetStateAction<Comment[] | null>>;
   postId: number;
-  allComments: Comment[] | null;
+  setShoowErrorLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
   setAllComments,
   postId,
-  allComments,
+  setShoowErrorLoading,
 }) => {
   // input name
   const [name, setName] = useState('');
@@ -67,36 +67,34 @@ export const NewCommentForm: React.FC<Props> = ({
     return true;
   }
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     detectionName();
     detectionEmail();
     detectionText();
 
     if (detectionName() && detectionEmail() && detectionText()) {
-      const maxId = allComments
-        ? Math.max(...allComments.map(com => com.id))
-        : 0;
-      const newComment = {
-        id: maxId + 1,
-        postId: postId,
-        name: name,
-        email: email,
-        body: text,
-      };
+      try {
+        const newComment = {
+          postId: postId,
+          name: name,
+          email: email,
+          body: text,
+        };
 
-      setShoowLoadingSubmit(true);
-      FunctionCalls.addComment(newComment)
-        .then(() => {
-          setAllComments(current =>
-            current ? [...current, newComment] : [newComment],
-          );
-        })
-        .finally(() => {
-          setText('');
-          setShoowErrorEmail(false);
-          setShoowLoadingSubmit(false);
-        });
+        setShoowLoadingSubmit(true);
+        const comment = await FunctionCalls.addComment(newComment);
+
+        setAllComments(current =>
+          current ? [...current, comment] : [comment],
+        );
+      } catch {
+        setShoowErrorLoading(true);
+      } finally {
+        setText('');
+        setShoowErrorEmail(false);
+        setShoowLoadingSubmit(false);
+      }
     }
   }
 

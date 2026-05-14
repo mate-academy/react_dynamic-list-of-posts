@@ -22,18 +22,13 @@ export const PostDetails: React.FC<Props> = ({ choosePost }) => {
       setShoowLoadingComments(true);
       FunctionCalls.getComments(choosePost.id)
         .then(comments => {
-          let id: number = 0;
-          const newComments = comments.map(com => {
-            id++;
-
-            return {
-              id: id,
-              postId: choosePost.id,
-              name: com.name,
-              email: com.email,
-              body: com.body,
-            };
-          });
+          const newComments = comments.map(com => ({
+            id: com.id,
+            postId: choosePost.id,
+            name: com.name,
+            email: com.email,
+            body: com.body,
+          }));
 
           setAllComments(newComments);
         })
@@ -78,7 +73,7 @@ export const PostDetails: React.FC<Props> = ({ choosePost }) => {
               </p>
             ))}
 
-          {allComments && allComments.length > 0 && (
+          {allComments && allComments.length > 0 && !shoowErrorLoading && (
             <>
               <p className="title is-4">Comments:</p>
               {allComments.map(comment => {
@@ -126,11 +121,11 @@ export const PostDetails: React.FC<Props> = ({ choosePost }) => {
           )}
         </div>
 
-        {shoowNewComment && (
+        {shoowNewComment && !shoowErrorLoading && (
           <NewCommentForm
             setAllComments={setAllComments}
             postId={choosePost.id}
-            allComments={allComments}
+            setShoowErrorLoading={setShoowErrorLoading}
           />
         )}
       </div>

@@ -27,15 +27,13 @@ export const App = () => {
   const [showError, setShowError] = useState(false);
 
   useEffect(() => {
-    FunctionCalls.getUsers()
-      .then(users => {
-        setAllUsers(users);
-      })
-      .catch(() => {})
-      .finally(() => {});
+    FunctionCalls.getUsers().then(users => {
+      setAllUsers(users);
+    });
   }, []);
 
   useEffect(() => {
+    setShowError(false);
     if (chooseUser) {
       setShowLoading(true);
       FunctionCalls.getPosts(chooseUser.id)
