@@ -12,7 +12,7 @@ Install Prettier Extention and use this [VSCode settings](https://mate-academy.g
     - load users from the API on page load;
     - implement the `UserSelector` as a dropdown using the given markup;
 1. When a user is selected load the user's posts form [the API](https://mate-academy.github.io/fe-students-api/) and show them using a table in the main content clock;
-    - show the `<Loader>` while waiting for the API response;
+    - show the `<Loader>` while waiting for the API response;0
     - show an error notification if `posts` loading fails;
     - if the user has no posts show the `No posts yet` notification.
 1. Add the `Sidebar--open` class to the sidebar when a post is selected;
@@ -35,3 +35,4 @@ Install Prettier Extention and use this [VSCode settings](https://mate-academy.g
 1. Implement comment deletion
     - Delete the commnet immediately not waiting for the server response to improve the UX.
 1. (*) Handle `Add` and `Delete` errors so the user can retry
+[DEMO LINK](https://danf4691.github.io/react_dynamic-list-of-posts/)
