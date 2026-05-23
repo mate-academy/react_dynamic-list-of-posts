@@ -8,53 +8,93 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { useState } from 'react';
+import { User } from './types/User';
+import { Post } from './types/Post';
 
-export const App = () => (
-  <main className="section">
-    <div className="container">
-      <div className="tile is-ancestor">
-        <div className="tile is-parent">
-          <div className="tile is-child box is-success">
-            <div className="block">
-              <UserSelector />
-            </div>
+export const App = () => {
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [openPostId, setOpenPostId] = useState<number | null>(null);
 
-            <div className="block" data-cy="MainContent">
-              <p data-cy="NoSelectedUser">No user selected</p>
-
-              <Loader />
-
-              <div
-                className="notification is-danger"
-                data-cy="PostsLoadingError"
-              >
-                Something went wrong!
+  return (
+    <main className="section">
+      <div className="container">
+        <div className="tile is-ancestor">
+          <div className="tile is-parent">
+            <div className="tile is-child box is-success">
+              <div className="block">
+                <UserSelector
+                  selectedUser={selectedUser}
+                  setOpenPostId={setOpenPostId}
+                  setPosts={setPosts}
+                  setIsLoading={setIsPostsLoading}
+                  setErrorMessage={setErrorMessage}
+                  setSelectedUser={setSelectedUser}
+                />
               </div>
 
-              <div className="notification is-warning" data-cy="NoPostsYet">
-                No posts yet
-              </div>
+              <div className="block" data-cy="MainContent">
+                <p data-cy="NoSelectedUser">
+                  {selectedUser ? '' : 'No user selected'}
+                </p>
 
-              <PostsList />
+                <Loader isLoading={isPostsLoading} />
+
+                {errorMessage && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    {errorMessage}
+                  </div>
+                )}
+
+                {selectedUser && !isPostsLoading && posts.length === 0 && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
+                  </div>
+                )}
+
+                <PostsList
+                  posts={posts}
+                  openPostId={openPostId}
+                  setOpenPostId={setOpenPostId}
+                />
+              </div>
             </div>
           </div>
-        </div>
 
-        <div
-          data-cy="Sidebar"
-          className={classNames(
-            'tile',
-            'is-parent',
-            'is-8-desktop',
-            'Sidebar',
-            'Sidebar--open',
-          )}
-        >
-          <div className="tile is-child box is-success ">
-            <PostDetails />
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              {
+                'Sidebar--open': openPostId,
+              },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              {openPostId && (
+                <PostDetails
+                  openPostId={openPostId}
+                  posts={posts}
+                  isLoading={isCommentsLoading}
+                  errorMessage={errorMessage}
+                  setErrorMessage={setErrorMessage}
+                  setIsLoading={setIsCommentsLoading}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </main>
-);
+    </main>
+  );
+};
