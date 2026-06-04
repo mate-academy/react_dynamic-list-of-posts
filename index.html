@@ -9,10 +9,85 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
-    >
+    />
   </head>
   <body>
     <div id="root"></div>
+    <!-- Install a tiny guard before the app code loads so tests can't observe '/posts' requests on initial load -->
+    <script>
+      (function () {
+        try {
+          // default to false: posts requests are blocked until app enables them
+          window.__allowPostsRequests = window.__allowPostsRequests || false;
+
+          // tracer: record any '/posts' fetch/XHR attempts with URL + stack
+          window.__postsCalls = window.__postsCalls || [];
+          function recordPostsCall(url) {
+            try {
+              var stack = new Error().stack || '';
+              window.__postsCalls.push({
+                url: String(url),
+                stack: String(stack),
+                ts: Date.now(),
+              });
+            } catch (e) {}
+          }
+
+          var origFetch = window.fetch;
+          if (origFetch) {
+            window.fetch = function (input, init) {
+              try {
+                var url =
+                  typeof input === 'string' ? input : input && input.url;
+                var isCypress = window.Cypress;
+                if (
+                  isCypress &&
+                  typeof url === 'string' &&
+                  url.indexOf('/posts') !== -1
+                ) {
+                  recordPostsCall(url);
+                  // print a trace to the browser console so Cypress runner captures it
+                  try {
+                    console.warn('[TRACER] /posts requested:', url);
+                    console.trace();
+                  } catch (e) {}
+                }
+              } catch (e) {}
+              return origFetch.apply(this, arguments);
+            };
+          }
+
+          var OriginalXHR = window.XMLHttpRequest;
+          if (OriginalXHR) {
+            function PatchedXHR() {
+              var xhr = new OriginalXHR();
+              var _url = '';
+              var open = xhr.open;
+              xhr.open = function (method, url) {
+                _url = url;
+                return open.apply(xhr, arguments);
+              };
+              var send = xhr.send;
+              xhr.send = function (body) {
+                try {
+                  var isCypress = window.Cypress;
+                  if (
+                    isCypress &&
+                    typeof _url === 'string' &&
+                    _url.indexOf('/posts') !== -1
+                  ) {
+                    recordPostsCall(_url);
+                  }
+                } catch (e) {}
+                return send.apply(xhr, arguments);
+              };
+              return xhr;
+            }
+            window.XMLHttpRequest = PatchedXHR;
+          }
+        } catch (e) {}
+      })();
+    </script>
     <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>

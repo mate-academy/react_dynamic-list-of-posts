@@ -28,7 +28,38 @@ function request<T>(
 
   // for a demo purpose we emulate a delay to see if Loaders work
   return wait(300)
-    .then(() => fetch(BASE_URL + url, options))
+    .then(() => {
+      try {
+        // runtime tracer for tests: record any '/posts' requests
+        const globalAny: any =
+          typeof window !== 'undefined' ? window : globalThis;
+
+        const fullUrl = BASE_URL + url;
+
+        if (
+          globalAny &&
+          globalAny.__postsCalls &&
+          typeof fullUrl === 'string' &&
+          fullUrl.indexOf('/posts') !== -1
+        ) {
+          try {
+            globalAny.__postsCalls.push({
+              url: fullUrl,
+              stack: String(new Error().stack),
+              ts: Date.now(),
+            });
+
+            // visible in Cypress logs
+            // eslint-disable-next-line no-console
+            console.warn('[fetchClient tracer] /posts requested:', fullUrl);
+            // eslint-disable-next-line no-console
+            console.trace();
+          } catch (e) {}
+        }
+      } catch (e) {}
+
+      return fetch(BASE_URL + url, options);
+    })
     .then(response => response.json());
 }
 
