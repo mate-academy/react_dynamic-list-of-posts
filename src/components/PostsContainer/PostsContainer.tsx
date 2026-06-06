@@ -1,5 +1,3 @@
-// ..PostsContainer
-
 import { useState, useEffect } from 'react';
 import { UserSelector } from './UserSelector';
 import { Loader } from '../Loader';
@@ -24,11 +22,13 @@ export const PostsContainer = ({
   closeSidebar,
 }: PostsContainerProps) => {
   const [users, setUsers] = useState<User[]>([]);
-  const [isPostsLoading, setIsPostsLoading] = useState(false);
-  const [postsLoadingError, setPostsLoadingError] = useState(false);
-  const [noPostsYetMessage, setNoPostsYetMessage] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [posts, setPosts] = useState<Post[]>([]);
+
+  const [postsState, setPostsState] = useState({
+    items: [] as Post[],
+    isLoading: false,
+    hasError: false,
+  });
 
   const onSelectUser = (user: User) => {
     setSelectedUser(user);
@@ -37,42 +37,42 @@ export const PostsContainer = ({
   };
 
   useEffect(() => {
-    if (!selectedUser) {
-      return;
-    }
-
-    setIsPostsLoading(true);
-    setPosts([]);
-    setPostsLoadingError(false);
-
-    client
-      .get<Post[]>(`/posts?userId=${selectedUser.id}`)
-      .then(data => {
-        setPosts(data);
-        setNoPostsYetMessage(data.length === 0);
-      })
-      .catch(() => {
-        setPostsLoadingError(true);
-      })
-      .finally(() => {
-        setIsPostsLoading(false);
-      });
-  }, [selectedUser]);
-
-  useEffect(() => {
     client
       .get<User[]>('/users')
       .then(data => {
         setUsers(data);
       })
-      .catch(() => {
-        setPostsLoadingError(true);
-      })
-      .finally(() => {
-        setIsPostsLoading(false);
-        setNoPostsYetMessage(false);
-      });
+      .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (!selectedUser) {
+      return;
+    }
+
+    setPostsState({
+      items: [],
+      isLoading: true,
+      hasError: false,
+    });
+
+    client
+      .get<Post[]>(`/posts?userId=${selectedUser.id}`)
+      .then(data => {
+        setPostsState({
+          items: data,
+          isLoading: false,
+          hasError: false,
+        });
+      })
+      .catch(() => {
+        setPostsState(prevState => ({
+          ...prevState,
+          isLoading: false,
+          hasError: true,
+        }));
+      });
+  }, [selectedUser]);
 
   return (
     <div className="tile is-parent">
@@ -86,22 +86,22 @@ export const PostsContainer = ({
         </div>
 
         <div className="block" data-cy="MainContent">
-          {isPostsLoading && <Loader />}
+          {postsState.isLoading && <Loader />}
 
-          {!isPostsLoading && postsLoadingError && (
+          {!postsState.isLoading && postsState.hasError && (
             <div className="notification is-danger" data-cy="PostsLoadingError">
               Something went wrong!
             </div>
           )}
 
-          {!isPostsLoading && !postsLoadingError && !selectedUser && (
+          {!postsState.isLoading && !postsState.hasError && !selectedUser && (
             <p data-cy="NoSelectedUser">No user selected</p>
           )}
 
-          {!isPostsLoading &&
-            !postsLoadingError &&
+          {!postsState.isLoading &&
+            !postsState.hasError &&
             selectedUser &&
-            (noPostsYetMessage ? (
+            (postsState.items.length === 0 ? (
               <div className="notification is-warning" data-cy="NoPostsYet">
                 No posts yet
               </div>
@@ -109,7 +109,7 @@ export const PostsContainer = ({
               <PostsList
                 openSidebar={openSidebar}
                 closeSidebar={closeSidebar}
-                posts={posts}
+                posts={postsState.items}
                 handleSelectedPost={handleSelectedPost}
                 selectedPost={selectedPost}
                 clearSelectedPost={clearSelectedPost}
