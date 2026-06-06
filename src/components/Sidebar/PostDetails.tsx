@@ -59,14 +59,8 @@ export const PostDetails = ({ selectedPost }: PostDetailsProps) => {
     addComentBlock();
   };
 
-  // const deleteComment = (commentId: number) => {
-  //   client.delete(`/comments/${commentId}`).then(() => {
-  //     setComments(comments.filter(comment => comment.id !== commentId));
-  //   });
-  // };
   const deleteComment = (commentId: number) => {
     client.delete(`/comments/${commentId}`).then(() => {
-      //  Використовуємо функціональне оновлення стейту
       setComments(currentComments =>
         currentComments.filter(comment => comment.id !== commentId),
       );

@@ -98,7 +98,6 @@ export const PostsContainer = ({
             <p data-cy="NoSelectedUser">No user selected</p>
           )}
 
-          {/* Використовуємо noPostsYetMessage тут */}
           {!isPostsLoading &&
             !postsLoadingError &&
             selectedUser &&

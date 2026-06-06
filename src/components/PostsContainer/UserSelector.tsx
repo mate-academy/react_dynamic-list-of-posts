@@ -14,7 +14,7 @@ export const UserSelector = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  const handelClick = () => {
+  const handleClick = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
@@ -52,7 +52,7 @@ export const UserSelector = ({
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={handelClick}
+          onClick={handleClick}
         >
           {selectedUser ? (
             <span>{selectedUser.name}</span>
