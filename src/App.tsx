@@ -1,60 +1,94 @@
 import classNames from 'classnames';
 
+import { useEffect, useState } from 'react';
+
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import { PostsList } from './components/PostsList';
+import { User } from './types/User';
+import { Post } from './types/Post';
+import { getUsers, getPostsByUser } from './api';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
-import { Loader } from './components/Loader';
+import { MainContent } from './components/MainContent';
 
-export const App = () => (
-  <main className="section">
-    <div className="container">
-      <div className="tile is-ancestor">
-        <div className="tile is-parent">
-          <div className="tile is-child box is-success">
-            <div className="block">
-              <UserSelector />
-            </div>
+export const App = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState(0);
 
-            <div className="block" data-cy="MainContent">
-              <p data-cy="NoSelectedUser">No user selected</p>
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
-              <Loader />
+  const [postsLoading, setPostsLoading] = useState(false);
+  const [postsError, setPostsError] = useState(false);
 
-              <div
-                className="notification is-danger"
-                data-cy="PostsLoadingError"
-              >
-                Something went wrong!
+  useEffect(() => {
+    getUsers().then(setUsers);
+  }, []);
+
+  useEffect(() => {
+    if (!selectedUserId) {
+      return;
+    }
+
+    setSelectedPost(null);
+    setPostsLoading(true);
+    setPostsError(false);
+
+    getPostsByUser(selectedUserId)
+      .then(setPosts)
+      .catch(() => {
+        setPostsError(true);
+      })
+      .finally(() => {
+        setPostsLoading(false);
+      });
+  }, [selectedUserId]);
+
+  return (
+    <main className="section">
+      <div className="container">
+        <div className="tile is-ancestor">
+          <div className="tile is-parent">
+            <div className="tile is-child box is-success">
+              <div className="block">
+                <UserSelector
+                  users={users}
+                  selectedUserId={selectedUserId}
+                  onSelect={setSelectedUserId}
+                />
               </div>
 
-              <div className="notification is-warning" data-cy="NoPostsYet">
-                No posts yet
-              </div>
-
-              <PostsList />
+              <MainContent
+                selectedUserId={selectedUserId}
+                posts={posts}
+                loading={postsLoading}
+                error={postsError}
+                selectedPostId={selectedPost?.id || 0}
+                onSelectPost={setSelectedPost}
+              />
             </div>
           </div>
-        </div>
 
-        <div
-          data-cy="Sidebar"
-          className={classNames(
-            'tile',
-            'is-parent',
-            'is-8-desktop',
-            'Sidebar',
-            'Sidebar--open',
-          )}
-        >
-          <div className="tile is-child box is-success ">
-            <PostDetails />
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              {
+                'Sidebar--open': !!selectedPost,
+              },
+            )}
+          >
+            <div className="tile is-child box is-success">
+              {selectedPost && <PostDetails post={selectedPost} />}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </main>
-);
+    </main>
+  );
+};
