@@ -1,15 +1,18 @@
 import React from 'react';
+import classNames from 'classnames';
 import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[];
+  selectedPost: Post | null;
+  onPostSelect: (post: Post) => void;
 };
 
-export const PostsList: React.FC<Props> = ({ posts }) => {
-  if (posts.length === 0) {
-    return null;
-  }
-
+export const PostsList: React.FC<Props> = ({
+  posts,
+  selectedPost,
+  onPostSelect,
+}) => {
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -35,9 +38,12 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
                 <button
                   type="button"
                   data-cy="PostButton"
-                  className="button is-link is-light"
+                  className={classNames('button', 'is-link', {
+                    'is-light': selectedPost?.id !== post.id,
+                  })}
+                  onClick={() => onPostSelect(post)}
                 >
-                  Open
+                  {selectedPost?.id === post.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

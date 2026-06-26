@@ -12,17 +12,28 @@ import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { Post } from './types/Post';
 import { getUsers } from './api/users';
-import { getUserPosts } from './api/posts';
+import { getUserPosts } from './api/userPosts';
 
 export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
-    getUsers().then(setUsers);
+    const loadUsers = async () => {
+      try {
+        const data = await getUsers();
+
+        setUsers(data);
+      } catch {
+        setHasError(true);
+      }
+    };
+
+    loadUsers();
   }, []);
 
   useEffect(() => {
@@ -31,14 +42,32 @@ export const App = () => {
     }
 
     setPosts([]);
+    setSelectedPost(null);
     setHasError(false);
     setIsLoading(true);
 
-    getUserPosts(selectedUser.id)
-      .then(setPosts)
-      .catch(() => setHasError(true))
-      .finally(() => setIsLoading(false));
+    const loadPosts = async () => {
+      try {
+        const data = await getUserPosts(selectedUser.id);
+
+        setPosts(data);
+      } catch {
+        setHasError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadPosts();
   }, [selectedUser]);
+
+  const handleUserSelect = (user: User) => {
+    setSelectedUser(user);
+  };
+
+  const handlePostSelect = (post: Post) => {
+    setSelectedPost(current => (current?.id === post.id ? null : post));
+  };
 
   return (
     <main className="section">
@@ -50,7 +79,7 @@ export const App = () => {
                 <UserSelector
                   users={users}
                   selectedUser={selectedUser}
-                  onSelected={setSelectedUser}
+                  onSelected={handleUserSelect}
                 />
               </div>
 
@@ -82,7 +111,11 @@ export const App = () => {
                     )}
 
                     {!isLoading && !hasError && posts.length > 0 && (
-                      <PostsList posts={posts} />
+                      <PostsList
+                        posts={posts}
+                        selectedPost={selectedPost}
+                        onPostSelect={handlePostSelect}
+                      />
                     )}
                   </>
                 )}
@@ -97,11 +130,11 @@ export const App = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              { 'Sidebar--open': !!selectedPost },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
         </div>

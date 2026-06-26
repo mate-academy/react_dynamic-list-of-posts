@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import { User } from '../types/User';
 
@@ -14,22 +14,6 @@ export const UserSelector: React.FC<Props> = ({
   onSelected,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsExpanded(false);
-      }
-    };
-
-    document.addEventListener('click', handleOutsideClick);
-
-    return () => document.removeEventListener('click', handleOutsideClick);
-  }, []);
 
   const handleUserSelect = (user: User) => {
     onSelected(user);
@@ -40,7 +24,6 @@ export const UserSelector: React.FC<Props> = ({
     <div
       data-cy="UserSelector"
       className={classNames('dropdown', { 'is-active': isExpanded })}
-      ref={dropdownRef}
     >
       <div className="dropdown-trigger">
         <button
@@ -49,6 +32,7 @@ export const UserSelector: React.FC<Props> = ({
           aria-haspopup="true"
           aria-controls="dropdown-menu"
           onClick={() => setIsExpanded(current => !current)}
+          onBlur={() => setIsExpanded(false)}
         >
           <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
@@ -67,6 +51,11 @@ export const UserSelector: React.FC<Props> = ({
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}
+              onMouseDown={event => {
+                // prevents the trigger's onBlur from closing
+                // the dropdown before the click is registered
+                event.preventDefault();
+              }}
               onClick={() => handleUserSelect(user)}
             >
               {user.name}
