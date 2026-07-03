@@ -8,53 +8,106 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { usePosts } from './hooks/usePosts';
 
-export const App = () => (
-  <main className="section">
-    <div className="container">
-      <div className="tile is-ancestor">
-        <div className="tile is-parent">
-          <div className="tile is-child box is-success">
-            <div className="block">
-              <UserSelector />
-            </div>
+export const App = () => {
+  const {
+    users,
+    selectedUser,
+    handleSelectUser,
+    isPostsLoading,
+    postsError,
+    posts,
+    selectedPost,
+    handlePostClick,
+    comments,
+    commentsError,
+    isCommentsLoading,
+    handleAddComment,
+    handleDeleteComment,
+  } = usePosts();
 
-            <div className="block" data-cy="MainContent">
-              <p data-cy="NoSelectedUser">No user selected</p>
-
-              <Loader />
-
-              <div
-                className="notification is-danger"
-                data-cy="PostsLoadingError"
-              >
-                Something went wrong!
+  return (
+    <main className="section">
+      <div className="container">
+        <div className="tile is-ancestor">
+          <div className="tile is-parent">
+            <div className="tile is-child box is-success">
+              <div className="block">
+                <UserSelector
+                  users={users}
+                  selectedUser={selectedUser}
+                  selectUser={handleSelectUser}
+                />
               </div>
 
-              <div className="notification is-warning" data-cy="NoPostsYet">
-                No posts yet
-              </div>
+              <div className="block" data-cy="MainContent">
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-              <PostsList />
+                {isPostsLoading && <Loader />}
+
+                {postsError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    {postsError}
+                  </div>
+                )}
+
+                {/* eslint-disable @typescript-eslint/indent */}
+                {!isPostsLoading &&
+                  !postsError &&
+                  selectedUser &&
+                  posts.length === 0 && (
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
+                      No posts yet
+                    </div>
+                  )}
+
+                {!isPostsLoading &&
+                  !postsError &&
+                  selectedUser &&
+                  posts.length > 0 && (
+                    <PostsList
+                      posts={posts}
+                      selectedPostId={selectedPost?.id || null}
+                      onPostClick={handlePostClick}
+                    />
+                  )}
+                {/* eslint-enable @typescript-eslint/indent */}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div
-          data-cy="Sidebar"
-          className={classNames(
-            'tile',
-            'is-parent',
-            'is-8-desktop',
-            'Sidebar',
-            'Sidebar--open',
-          )}
-        >
-          <div className="tile is-child box is-success ">
-            <PostDetails />
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': selectedPost },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              <PostDetails
+                post={selectedPost}
+                comments={comments}
+                error={commentsError}
+                loading={isCommentsLoading}
+                onDeleteComment={handleDeleteComment}
+                onAddComment={handleAddComment}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </main>
-);
+    </main>
+  );
+};
