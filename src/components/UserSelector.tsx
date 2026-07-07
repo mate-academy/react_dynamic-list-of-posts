@@ -54,7 +54,7 @@ export const UserSelector = ({
             (user, index) =>
               user.name && (
                 <a
-                  key={`${user.name}-#${user.id}`}
+                  key={user.id}
                   href={`#user-${index + 1}`}
                   className={cn('dropdown-item', {
                     'is-active': user.name === activeUser?.name,

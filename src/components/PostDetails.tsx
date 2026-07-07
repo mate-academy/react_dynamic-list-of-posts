@@ -24,12 +24,13 @@ export const PostDetails = ({
   handleAddComment,
   commentsError,
   isCommentsLoading,
+  commentActionError,
   formIsOpen,
   setFormIsOpen,
   commentBtn,
   setCommentBtn,
 }: Props) => {
-  const hideButton = () => {
+  const handleWriteCommentClick = () => {
     setCommentBtn(!commentBtn);
   };
 
@@ -45,7 +46,7 @@ export const PostDetails = ({
         <div className="block">
           {isCommentsLoading && <Loader />}
 
-          {commentsError && !isCommentsLoading && (
+          {(commentsError || commentActionError) && !isCommentsLoading && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
@@ -95,7 +96,7 @@ export const PostDetails = ({
               className="button is-link"
               onClick={() => {
                 setFormIsOpen(!formIsOpen);
-                hideButton();
+                handleWriteCommentClick();
               }}
             >
               Write a comment

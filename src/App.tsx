@@ -27,9 +27,9 @@ export const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isPostsLoading, setIsPostsLoading] = useState(false);
   const [isCommentsLoading, setIsCommentsLoading] = useState(false);
-  const [commentActionError, setCommentActionError] = useState(false);
   const [commentsError, setCommentsError] = useState(false);
   const [postsError, setPostsError] = useState(false);
+  const [commentActionError, setCommentActionError] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -185,12 +185,12 @@ export const App = () => {
                   handleCommentDelete={handleCommentDelete}
                   handleAddComment={handleAddComment}
                   commentsError={commentsError}
-                  commentActionError={commentActionError}
                   isCommentsLoading={isCommentsLoading}
                   formIsOpen={formIsOpen}
                   setFormIsOpen={setFormIsOpen}
                   commentBtn={commentBtn}
                   setCommentBtn={setCommentBtn}
+                  commentActionError={commentActionError}
                 />
               )}
             </div>

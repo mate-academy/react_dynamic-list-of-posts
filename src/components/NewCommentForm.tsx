@@ -37,14 +37,17 @@ export const NewCommentForm = ({ handleAddComment, postId }: Props) => {
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
+    setError(false);
   };
 
   const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
+    setError(false);
   };
 
   const handleBodyChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     setBody(event.target.value);
+    setError(false);
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -197,7 +200,6 @@ export const NewCommentForm = ({ handleAddComment, postId }: Props) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button
             type="reset"
             className="button is-link is-light"
