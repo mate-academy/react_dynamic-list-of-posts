@@ -1,10 +1,9 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { Comment } from '../types/Comment';
 import cn from 'classnames';
-import { client } from '../utils/fetchClient';
 
 type Props = {
-  handleAddComment: (comment: Comment) => void;
+  handleAddComment: (comment: Omit<Comment, 'id'>) => Promise<void>;
   postId: number;
 };
 
@@ -15,12 +14,13 @@ export const NewCommentForm = ({ handleAddComment, postId }: Props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<boolean>(false);
 
-  const addComment = (
+  const addComment = async (
     inputName: string,
     inputEmail: string,
     inputBody: string,
   ) => {
     setLoading(true);
+
     const newComment: Omit<Comment, 'id'> = {
       postId,
       name: inputName,
@@ -28,10 +28,11 @@ export const NewCommentForm = ({ handleAddComment, postId }: Props) => {
       body: inputBody,
     };
 
-    client
-      .post(`/comments`, newComment)
-      .then(addedComment => handleAddComment(addedComment as Comment))
-      .finally(() => setLoading(false));
+    try {
+      await handleAddComment(newComment);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +47,7 @@ export const NewCommentForm = ({ handleAddComment, postId }: Props) => {
     setBody(event.target.value);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const trimmedName = name.trim();
@@ -69,7 +70,7 @@ export const NewCommentForm = ({ handleAddComment, postId }: Props) => {
       return;
     }
 
-    addComment(trimmedName, trimmedEmail, trimmedBody);
+    await addComment(trimmedName, trimmedEmail, trimmedBody);
     setBody('');
     setError(false);
   };

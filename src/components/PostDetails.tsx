@@ -2,15 +2,15 @@ import { Comment } from '../types/Comment';
 import { Post } from '../types/Post';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
-import { client } from '../utils/fetchClient';
 
 type Props = {
   post: Post | null;
   comments: Comment[];
   handleCommentDelete: (commentId: number) => void;
-  handleAddComment: (comment: Comment) => void;
-  error: boolean;
-  loading: boolean;
+  handleAddComment: (comment: Omit<Comment, 'id'>) => Promise<void>;
+  commentsError: boolean;
+  isCommentsLoading: boolean;
+  commentActionError: boolean;
   formIsOpen: boolean;
   setFormIsOpen: (comment: boolean) => void;
   commentBtn: boolean;
@@ -22,19 +22,13 @@ export const PostDetails = ({
   comments,
   handleCommentDelete,
   handleAddComment,
-  error,
-  loading,
+  commentsError,
+  isCommentsLoading,
   formIsOpen,
   setFormIsOpen,
   commentBtn,
   setCommentBtn,
 }: Props) => {
-  const deleteComment = (commentId: number) => {
-    client
-      .delete(`/comments/${commentId}`)
-      .then(() => handleCommentDelete(commentId));
-  };
-
   const hideButton = () => {
     setCommentBtn(!commentBtn);
   };
@@ -49,15 +43,15 @@ export const PostDetails = ({
         </div>
 
         <div className="block">
-          {loading && <Loader />}
+          {isCommentsLoading && <Loader />}
 
-          {error && !loading && (
+          {commentsError && !isCommentsLoading && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong
             </div>
           )}
 
-          {!error && !loading && comments.length === 0 ? (
+          {!commentsError && !isCommentsLoading && comments.length === 0 ? (
             <p className="title is-4" data-cy="NoCommentsMessage">
               No comments yet
             </p>
@@ -81,7 +75,7 @@ export const PostDetails = ({
                       type="button"
                       className="delete is-small"
                       aria-label="delete"
-                      onClick={() => deleteComment(comment.id)}
+                      onClick={() => handleCommentDelete(comment.id)}
                     >
                       delete button
                     </button>
@@ -94,7 +88,7 @@ export const PostDetails = ({
             </>
           )}
 
-          {!loading && !error && commentBtn && (
+          {!isCommentsLoading && !commentsError && commentBtn && (
             <button
               data-cy="WriteCommentButton"
               type="button"

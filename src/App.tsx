@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -8,7 +9,7 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { client } from './utils/fetchClient';
 import { User } from './types/User';
 import { Post } from './types/Post';
@@ -16,56 +17,62 @@ import { Comment } from './types/Comment';
 
 export const App = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
+  const [userComments, setUserComments] = useState<Comment[]>([]);
   const [activeUser, setActiveUser] = useState<User | null>(null);
   const [activePost, setActivePost] = useState<Post | null>(null);
   const [activeBtnId, setActiveBtnId] = useState<number | null>(null);
   const [formIsOpen, setFormIsOpen] = useState(false);
   const [commentBtn, setCommentBtn] = useState(true);
-  const [error, setError] = useState(false);
-  const [isLoad, setIsLoad] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isPostsLoading, setIsPostsLoading] = useState(false);
+  const [isCommentsLoading, setIsCommentsLoading] = useState(false);
+  const [commentActionError, setCommentActionError] = useState(false);
+  const [commentsError, setCommentsError] = useState(false);
+  const [postsError, setPostsError] = useState(false);
 
   useEffect(() => {
-    setIsLoad(true);
+    setIsLoading(true);
     client
       .get('/users')
       .then(data => setUsers(data as User[]))
-      .finally(() => setIsLoad(false));
+      .finally(() => setIsLoading(false));
   }, []);
 
   useEffect(() => {
     if (!activeUser) {
-      setPosts([]);
+      setUserPosts([]);
 
       return;
     }
 
-    setIsLoad(true);
-    setError(false);
+    setUserPosts([]);
+    setIsPostsLoading(true);
+    setPostsError(false);
 
     client
       .get(`/posts?userId=${activeUser.id}`)
-      .then(data => setPosts(data as Post[]))
-      .catch(() => setError(true))
-      .finally(() => setIsLoad(false));
+      .then(data => setUserPosts(data as Post[]))
+      .catch(() => setPostsError(true))
+      .finally(() => setIsPostsLoading(false));
   }, [activeUser]);
 
   useEffect(() => {
     if (!activePost) {
-      setComments([]);
+      setUserComments([]);
 
       return;
     }
 
-    setIsLoad(true);
-    setError(false);
+    setUserComments([]);
+    setIsCommentsLoading(true);
+    setCommentsError(false);
 
     client
       .get(`/comments?postId=${activePost.id}`)
-      .then(data => setComments(data as Comment[]))
-      .catch(() => setError(true))
-      .finally(() => setIsLoad(false));
+      .then(data => setUserComments(data as Comment[]))
+      .catch(() => setCommentsError(true))
+      .finally(() => setIsCommentsLoading(false));
   }, [activePost]);
 
   useEffect(() => {
@@ -73,21 +80,37 @@ export const App = () => {
     setCommentBtn(true);
   }, [activeUser, activePost]);
 
-  const handleCommentDelete = (commentId: number) => {
-    setComments(prev => prev.filter(comment => comment.id !== commentId));
+  const handleCommentDelete = async (commentId: number) => {
+    setCommentActionError(false);
+    const prevComments = [...userComments];
+
+    setUserComments(prev => prev.filter(comment => comment.id !== commentId));
+
+    try {
+      await client.delete(`/comments/${commentId}`);
+    } catch {
+      setUserComments(prevComments);
+      setCommentActionError(true);
+    }
   };
 
-  const handleAddComment = (comment: Comment) => {
-    setComments(prev => [...prev, comment]);
+  const handleAddComment = async (comment: Omit<Comment, 'id'>) => {
+    setCommentActionError(false);
+    const prevComments = [...userComments];
+    const tempComment = {
+      ...comment,
+      id: Date.now(),
+    };
+
+    setUserComments(prev => [...prev, tempComment]);
+
+    try {
+      await client.post(`/comments`, comment);
+    } catch {
+      setUserComments(prevComments);
+      setCommentActionError(true);
+    }
   };
-
-  const userPosts = useMemo(() => {
-    return [...posts].filter(post => post.userId === activeUser?.id);
-  }, [activeUser, posts]);
-
-  const userComments = useMemo(() => {
-    return [...comments].filter(comment => comment.postId === activePost?.id);
-  }, [activePost, comments]);
 
   return (
     <main className="section">
@@ -109,9 +132,9 @@ export const App = () => {
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {isLoad && !error && <Loader />}
+                {isPostsLoading && <Loader />}
 
-                {error && !isLoad && (
+                {postsError && !isPostsLoading && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -120,24 +143,27 @@ export const App = () => {
                   </div>
                 )}
 
-                {!error && userPosts.length === 0 && !isLoad && (
+                {!postsError && userPosts.length === 0 && !isPostsLoading && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {activeUser && !error && !isLoad && userPosts.length > 0 && (
-                  <PostsList
-                    posts={userPosts}
-                    activeBtnId={activeBtnId}
-                    setActiveBtnId={setActiveBtnId}
-                    setActivePost={setActivePost}
-                  />
-                )}
+                {activeUser &&
+                  !postsError &&
+                  !isLoading &&
+                  userPosts.length > 0 && (
+                    <PostsList
+                      posts={userPosts}
+                      activeBtnId={activeBtnId}
+                      setActiveBtnId={setActiveBtnId}
+                      setActivePost={setActivePost}
+                    />
+                  )}
               </div>
             </div>
           </div>
-          {/* activeBtnId === activePost?.id && userPosts.length > 0 */}
+
           <div
             data-cy="Sidebar"
             className={classNames(
@@ -158,8 +184,9 @@ export const App = () => {
                   comments={userComments}
                   handleCommentDelete={handleCommentDelete}
                   handleAddComment={handleAddComment}
-                  error={error}
-                  loading={isLoad}
+                  commentsError={commentsError}
+                  commentActionError={commentActionError}
+                  isCommentsLoading={isCommentsLoading}
                   formIsOpen={formIsOpen}
                   setFormIsOpen={setFormIsOpen}
                   commentBtn={commentBtn}
