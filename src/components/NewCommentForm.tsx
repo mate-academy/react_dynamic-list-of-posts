@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable prettier/prettier */
 import React, { FormEvent, useState } from 'react';
 import classNames from 'classnames';
@@ -18,39 +19,41 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [bodyError, setBodyError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
+  const handleSubmit = async (event: FormEvent) => {
+  event.preventDefault();
 
-    const trimmedName = name.trim();
-    const trimmedEmail = email.trim();
-    const trimmedBody = body.trim();
+  const trimmedName = name.trim();
+  const trimmedEmail = email.trim();
+  const trimmedBody = body.trim();
 
-    const hasNameError = !trimmedName;
-    const hasEmailError = !trimmedEmail;
-    const hasBodyError = !trimmedBody;
+  const hasNameError = !trimmedName;
+  const hasEmailError = !trimmedEmail;
+  const hasBodyError = !trimmedBody;
 
-    setNameError(hasNameError);
-    setEmailError(hasEmailError);
-    setBodyError(hasBodyError);
+  setNameError(hasNameError);
+  setEmailError(hasEmailError);
+  setBodyError(hasBodyError);
 
-    if (hasNameError || hasEmailError || hasBodyError) {
-      return;
-    }
+  if (hasNameError || hasEmailError || hasBodyError) {
+    return;
+  }
 
-    setIsSubmitting(true);
+  setIsSubmitting(true);
 
-    onSubmit({
+  try {
+    await onSubmit({
       name: trimmedName,
       email: trimmedEmail,
       body: trimmedBody,
-    })
-      .then(() => {
-        setBody('');
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
-  };
+    });
+
+    setBody('');
+  } catch {
+    // Keep all entered values so the user can try again.
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const handleClear = () => {
     setName('');

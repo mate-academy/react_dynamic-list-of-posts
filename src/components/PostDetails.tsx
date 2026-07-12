@@ -1,3 +1,4 @@
+/* eslint-disable padding-line-between-statements */
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/indent */
 import React, { useEffect, useState } from 'react';
@@ -19,58 +20,76 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
   useEffect(() => {
+  const loadComments = async () => {
     setIsLoading(true);
     setHasError(false);
     setComments([]);
     setIsFormVisible(false);
 
-    client
-      .get<Comment[]>(`/comments?postId=${post.id}`)
-      .then(setComments)
-      .catch(() => {
-        setHasError(true);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [post.id]);
+    try {
+      const loadedComments = await client.get<Comment[]>(
+        `/comments?postId=${post.id}`,
+      );
 
-  const handleAddComment = (commentData: CommentData) => {
-    return client
-      .post<Comment>('/comments', {
-        ...commentData,
-        postId: post.id,
-      })
-      .then(newComment => {
-        setComments(currentComments => [
-          ...currentComments,
-          newComment,
-        ]);
-      });
-  };
-
-  const handleDeleteComment = (commentId: number) => {
-    const deletedComment = comments.find(
-      comment => comment.id === commentId,
-    );
-
-    if (!deletedComment) {
-      return;
+      setComments(loadedComments);
+    } catch {
+      setHasError(true);
+    } finally {
+      setIsLoading(false);
     }
-
-    setComments(currentComments =>
-      currentComments.filter(
-        comment => comment.id !== commentId,
-      ),
-    );
-
-    client.delete(`/comments/${commentId}`).catch(() => {
-      setComments(currentComments => [
-        ...currentComments,
-        deletedComment,
-      ]);
-    });
   };
+
+  loadComments();
+}, [post.id]);
+
+  const handleAddComment = async (commentData: CommentData) => {
+  try {
+    const newComment = await client.post<Comment>('/comments', {
+      ...commentData,
+      postId: post.id,
+    });
+
+    setComments(currentComments => [
+      ...currentComments,
+      newComment,
+    ]);
+  } catch {
+    throw new Error('Unable to add a comment');
+  }
+};
+  const handleDeleteComment = async (commentId: number) => {
+  const deletedComment = comments.find(
+    comment => comment.id === commentId,
+  );
+
+  if (!deletedComment) {
+    return;
+  }
+
+  setComments(currentComments =>
+    currentComments.filter(
+      comment => comment.id !== commentId,
+    ),
+  );
+
+  try {
+    await client.delete(`/comments/${commentId}`);
+  } catch {
+    setComments(currentComments => {
+      const commentAlreadyExists = currentComments.some(
+        comment => comment.id === deletedComment.id,
+      );
+
+      if (commentAlreadyExists) {
+        return currentComments;
+      }
+
+      return [...currentComments, deletedComment].sort(
+        (commentA, commentB) => commentA.id - commentB.id,
+      );
+    });
+  }
+};
 
   return (
     <div
