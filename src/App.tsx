@@ -26,7 +26,17 @@ export const App = () => {
   const [postsError, setPostsError] = useState(false);
 
   useEffect(() => {
-    client.get<User[]>('/users').then(setUsers);
+    const loadUsers = async () => {
+      try {
+        const loadedUsers = await client.get<User[]>('/users');
+
+        setUsers(loadedUsers);
+      } catch {
+        // The task does not require a users loading error message.
+      }
+    };
+
+    loadUsers();
   }, []);
 
   useEffect(() => {
@@ -37,20 +47,26 @@ export const App = () => {
       return;
     }
 
-    setIsPostsLoading(true);
-    setPostsError(false);
-    setPosts([]);
-    setSelectedPost(null);
+    const loadPosts = async () => {
+      setIsPostsLoading(true);
+      setPostsError(false);
+      setPosts([]);
+      setSelectedPost(null);
 
-    client
-      .get<Post[]>(`/posts?userId=${selectedUser.id}`)
-      .then(setPosts)
-      .catch(() => {
+      try {
+        const loadedPosts = await client.get<Post[]>(
+          `/posts?userId=${selectedUser.id}`,
+        );
+
+        setPosts(loadedPosts);
+      } catch {
         setPostsError(true);
-      })
-      .finally(() => {
+      } finally {
         setIsPostsLoading(false);
-      });
+      }
+    };
+
+    loadPosts();
   }, [selectedUser]);
 
   const handleSelectPost = (post: Post) => {
