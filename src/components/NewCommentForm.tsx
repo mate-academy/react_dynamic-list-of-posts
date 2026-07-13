@@ -1,24 +1,34 @@
 import classNames from 'classnames';
-import React, { useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { Comment } from '../types/Comment';
 import { client } from '../utils/fetchClient';
 
 type Props = {
   postId: number | null;
   onCommentAdded: (comment: Comment) => void;
+  setIsCommentError: Dispatch<SetStateAction<boolean>>;
+  setIsFormOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 type NewComment = Omit<Comment, 'id'>;
 
-export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
+export const NewCommentForm: React.FC<Props> = ({
+  postId,
+  onCommentAdded,
+  setIsCommentError,
+  setIsFormOpen,
+}) => {
   const [name, setName] = useState('');
   const [hasNameError, setHasNameError] = useState(false);
+  const trimmedName = name.trim();
 
   const [email, setEmail] = useState('');
   const [hasEmailError, setHasEmailError] = useState(false);
+  const trimmedEmail = email.trim();
 
   const [body, setBody] = useState('');
   const [hasBodyError, setHasBodyError] = useState(false);
+  const trimmedBody = body.trim();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,6 +39,11 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
       .post<Comment>('/comments', data)
       .then(createdComment => {
         onCommentAdded(createdComment);
+        setBody('');
+      })
+      .catch(() => {
+        setIsCommentError(true);
+        setIsFormOpen(false);
       })
       .finally(() => setIsLoading(false));
   };
@@ -51,22 +66,20 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setHasNameError(!name);
-    setHasEmailError(!email);
-    setHasBodyError(!body);
+    setHasNameError(!trimmedName);
+    setHasEmailError(!trimmedEmail);
+    setHasBodyError(!trimmedBody);
 
-    if (!name || !email || !body) {
+    if (!trimmedName || !trimmedEmail || !trimmedBody) {
       return;
     }
 
     onSubmit({
       postId: postId || 0,
-      name: name,
-      email: email,
-      body: body,
+      name: trimmedName,
+      email: trimmedEmail,
+      body: trimmedBody,
     });
-
-    setBody('');
   };
 
   const reset = () => {
@@ -186,7 +199,6 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
 
       <div className="field is-grouped">
         <div className="control">
-          {/* is-loading */}
           <button
             type="submit"
             className={classNames('button is-link', {

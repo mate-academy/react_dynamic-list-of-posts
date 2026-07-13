@@ -159,6 +159,7 @@ export const App = () => {
                   setIsFormOpen={setIsFormOpen}
                   onCommentAdded={addComment}
                   onCommentDeleted={deleteComment}
+                  setIsCommentError={setIsCommentError}
                 />
               </div>
             )}

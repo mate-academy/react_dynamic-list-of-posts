@@ -15,6 +15,7 @@ type Props = {
   setIsFormOpen: Dispatch<SetStateAction<boolean>>;
   onCommentAdded: (comment: Comment) => void;
   onCommentDeleted: (commentId: number) => void;
+  setIsCommentError: Dispatch<SetStateAction<boolean>>;
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -27,6 +28,7 @@ export const PostDetails: React.FC<Props> = ({
   setIsFormOpen,
   onCommentAdded,
   onCommentDeleted,
+  setIsCommentError,
 }) => {
   const [selectedPost, setSelectedPost] = useState<Post>();
 
@@ -126,6 +128,8 @@ export const PostDetails: React.FC<Props> = ({
           <NewCommentForm
             postId={activePostId}
             onCommentAdded={onCommentAdded}
+            setIsCommentError={setIsCommentError}
+            setIsFormOpen={setIsFormOpen}
           />
         )}
       </div>
