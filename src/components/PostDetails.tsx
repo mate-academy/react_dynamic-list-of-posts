@@ -129,7 +129,6 @@ export const PostDetails: React.FC<Props> = ({
             postId={activePostId}
             onCommentAdded={onCommentAdded}
             setIsCommentError={setIsCommentError}
-            setIsFormOpen={setIsFormOpen}
           />
         )}
       </div>

@@ -7,7 +7,6 @@ type Props = {
   postId: number | null;
   onCommentAdded: (comment: Comment) => void;
   setIsCommentError: Dispatch<SetStateAction<boolean>>;
-  setIsFormOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 type NewComment = Omit<Comment, 'id'>;
@@ -16,7 +15,6 @@ export const NewCommentForm: React.FC<Props> = ({
   postId,
   onCommentAdded,
   setIsCommentError,
-  setIsFormOpen,
 }) => {
   const [name, setName] = useState('');
   const [hasNameError, setHasNameError] = useState(false);
@@ -39,11 +37,11 @@ export const NewCommentForm: React.FC<Props> = ({
       .post<Comment>('/comments', data)
       .then(createdComment => {
         onCommentAdded(createdComment);
+        setIsCommentError(false);
         setBody('');
       })
       .catch(() => {
         setIsCommentError(true);
-        setIsFormOpen(false);
       })
       .finally(() => setIsLoading(false));
   };
