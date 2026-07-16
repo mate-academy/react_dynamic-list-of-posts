@@ -8,53 +8,99 @@ import { PostsList } from './components/PostsList';
 import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { useEffect, useState } from 'react';
+import { Post } from './types/Post';
+import { client } from './utils/fetchClient';
 
-export const App = () => (
-  <main className="section">
-    <div className="container">
-      <div className="tile is-ancestor">
-        <div className="tile is-parent">
-          <div className="tile is-child box is-success">
-            <div className="block">
-              <UserSelector />
-            </div>
+export const App = () => {
+  const [error, setError] = useState('');
+  const [chooseUserId, setChooseUserId] = useState<number | null>(null);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+  const [loader, setLoader] = useState(false);
 
-            <div className="block" data-cy="MainContent">
-              <p data-cy="NoSelectedUser">No user selected</p>
+  const [postsFromUser, setPostsFromUser] = useState<Post[] | null>(null);
+  const selectedPost = postsFromUser?.find(user => user.id === selectedPostId);
 
-              <Loader />
+  useEffect(() => {
+    if (chooseUserId) {
+      setLoader(true);
+      setSelectedPostId(null);
 
-              <div
-                className="notification is-danger"
-                data-cy="PostsLoadingError"
-              >
-                Something went wrong!
+      client
+        .get<Post[]>(`/posts?userId=${chooseUserId}`)
+        .then(currentPosts => {
+          setPostsFromUser(currentPosts);
+        })
+        .catch(() => {
+          setError('Something went wrong!');
+
+          return;
+        })
+        .finally(() => {
+          setLoader(false);
+        });
+    }
+  }, [chooseUserId]);
+
+  return (
+    <main className="section">
+      <div className="container">
+        <div className="tile is-ancestor">
+          <div className="tile is-parent">
+            <div className="tile is-child box is-success">
+              <div className="block">
+                <UserSelector
+                  responce={value => setError(value)}
+                  choosenUser={setChooseUserId}
+                />
               </div>
 
-              <div className="notification is-warning" data-cy="NoPostsYet">
-                No posts yet
-              </div>
+              <div className="block" data-cy="MainContent">
+                {!loader && !error && !postsFromUser && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-              <PostsList />
+                {error && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    {error}
+                  </div>
+                )}
+
+                {loader ? (
+                  <Loader />
+                ) : (
+                  postsFromUser && (
+                    <PostsList
+                      posts={postsFromUser}
+                      selectedPost={setSelectedPostId}
+                    />
+                  )
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div
-          data-cy="Sidebar"
-          className={classNames(
-            'tile',
-            'is-parent',
-            'is-8-desktop',
-            'Sidebar',
-            'Sidebar--open',
-          )}
-        >
-          <div className="tile is-child box is-success ">
-            <PostDetails />
+          <div
+            data-cy="Sidebar"
+            className={classNames(
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              {
+                'Sidebar--open': selectedPost !== undefined,
+              },
+            )}
+          >
+            <div className="tile is-child box is-success ">
+              {selectedPost && <PostDetails post={selectedPost} />}
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </main>
-);
+    </main>
+  );
+};
