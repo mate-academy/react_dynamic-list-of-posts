@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { client } from '../utils/fetchClient';
 import { Comment } from '../types/Comment';
+import classNames from 'classnames';
 
 interface Props {
   postId: number;
@@ -12,6 +13,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
   const [email, setEmail] = useState('');
   const [body, setBody] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState(false);
   const [hasErrors, setHasErrors] = useState({
     name: false,
     email: false,
@@ -19,6 +21,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
   });
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    setServerError(false);
     event.preventDefault();
 
     if (!name.trim() || !email.trim() || !body.trim()) {
@@ -41,6 +44,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
       })
       .catch(() => {
         setIsLoading(false);
+        setServerError(true);
       });
   };
 
@@ -64,7 +68,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
             name="name"
             id="comment-author-name"
             placeholder="Name Surname"
-            className={`input ${hasErrors.name ? 'is-danger' : ''}`}
+            className={classNames('input', { 'is-danger': hasErrors.name })}
             value={name}
             onChange={event => {
               setName(event.target.value);
@@ -107,7 +111,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"
-            className={`input ${hasErrors.email ? 'is-danger' : ''}`}
+            className={classNames('input', { 'is-danger': hasErrors.email })}
             value={email}
             onChange={event => {
               setEmail(event.target.value);
@@ -149,7 +153,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
             id="comment-body"
             name="body"
             placeholder="Type comment here"
-            className={`textarea ${hasErrors.body ? 'is-danger' : ''}`}
+            className={classNames('textarea', { 'is-danger': hasErrors.body })}
             value={body}
             onChange={event => {
               setBody(event.target.value);
@@ -170,6 +174,9 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
 
       <div className="field is-grouped">
         <div className="control">
+          {serverError && (
+            <p className="help is-danger">Failed to add comment</p>
+          )}
           <button
             type="submit"
             className={`button is-link ${isLoading ? 'is-loading' : ''}`}

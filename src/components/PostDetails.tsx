@@ -4,7 +4,6 @@ import { NewCommentForm } from './NewCommentForm';
 import { client } from '../utils/fetchClient';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
-import classNames from 'classnames';
 
 interface Props {
   post: Post;
@@ -15,11 +14,10 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [deletingCommentIds] = useState<number[]>([]);
 
   useEffect(() => {
-    setIsLoading(true);
     setHasError(false);
+    setIsLoading(true);
     setIsFormVisible(false);
     client
       .get<Comment[]>(`/comments?postId=${post.id}`)
@@ -89,12 +87,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
               <button
                 data-cy="CommentDelete"
                 type="button"
-                className={classNames('delete', 'is-small', {
-                  'is-loading': deletingCommentIds.includes(comment.id),
-                })}
+                className="delete is-small"
                 aria-label="delete"
                 onClick={() => handleDeleteComment(comment.id)}
-                disabled={deletingCommentIds.includes(comment.id)}
               >
                 delete button
               </button>
