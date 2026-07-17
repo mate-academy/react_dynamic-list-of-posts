@@ -1,86 +1,70 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Post } from '../types/Post';
+import classNames from 'classnames';
 
-export const PostsList: React.FC = () => (
-  <div data-cy="PostsList">
-    <p className="title">Posts:</p>
+interface PostListProps {
+  posts: Post[];
+  selectedPost: (postId: number) => void;
+}
 
-    <table className="table is-fullwidth is-striped is-hoverable is-narrow">
-      <thead>
-        <tr className="has-background-link-light">
-          <th>#</th>
-          <th>Title</th>
-          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-          <th> </th>
-        </tr>
-      </thead>
+export const PostsList = ({ posts, selectedPost }: PostListProps) => {
+  const [buttonClickId, setButtonClickId] = useState(0);
 
-      <tbody>
-        <tr data-cy="Post">
-          <td data-cy="PostId">17</td>
+  const handleSubmit = (postId: number) => {
+    if (postId === buttonClickId) {
+      setButtonClickId(0);
+      selectedPost(0);
 
-          <td data-cy="PostTitle">
-            fugit voluptas sed molestias voluptatem provident
-          </td>
+      return;
+    }
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
+    setButtonClickId(postId);
+    selectedPost(postId);
+  };
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">18</td>
+  return posts.length > 0 ? (
+    <div data-cy="PostsList">
+      <p className="title">Posts:</p>
 
-          <td data-cy="PostTitle">
-            voluptate et itaque vero tempora molestiae
-          </td>
+      <table className="table is-fullwidth is-striped is-hoverable is-narrow">
+        <thead>
+          <tr className="has-background-link-light">
+            <th>#</th>
+            <th>Title</th>
+            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+            <th> </th>
+          </tr>
+        </thead>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link"
-            >
-              Close
-            </button>
-          </td>
-        </tr>
+        <tbody>
+          {posts.map(post => (
+            <tr data-cy="Post" key={post.id}>
+              <td data-cy="PostId">{post.id}</td>
 
-        <tr data-cy="Post">
-          <td data-cy="PostId">19</td>
-          <td data-cy="PostTitle">adipisci placeat illum aut reiciendis qui</td>
+              <td data-cy="PostTitle">{post.title}</td>
 
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-
-        <tr data-cy="Post">
-          <td data-cy="PostId">20</td>
-          <td data-cy="PostTitle">doloribus ad provident suscipit at</td>
-
-          <td className="has-text-right is-vcentered">
-            <button
-              type="button"
-              data-cy="PostButton"
-              className="button is-link is-light"
-            >
-              Open
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-);
+              <td className="has-text-right is-vcentered">
+                <button
+                  type="button"
+                  data-cy="PostButton"
+                  className={classNames(
+                    `button is-link ${buttonClickId === post.id ? '' : 'is-light'}`,
+                  )}
+                  onClick={() => {
+                    handleSubmit(post.id);
+                  }}
+                >
+                  {buttonClickId === post.id ? 'Close' : 'Open'}
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  ) : (
+    <div className="notification is-warning" data-cy="NoPostsYet">
+      No posts yet
+    </div>
+  );
+};
