@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 interface NewCommentFormProps {
@@ -203,4 +204,8 @@ export const NewCommentForm = ({ dataResponce }: NewCommentFormProps) => {
       </div>
     </form>
   );
+};
+
+NewCommentForm.propTypes = {
+  dataResponce: PropTypes.func.isRequired,
 };
