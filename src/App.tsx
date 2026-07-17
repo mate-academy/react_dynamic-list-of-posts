@@ -34,7 +34,6 @@ export const App = () => {
         .catch(() => {
           setError('Something went wrong!');
 
-          return;
         })
         .finally(() => {
           setLoader(false);

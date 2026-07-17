@@ -13,28 +13,42 @@ export const PostDetails = ({ post }: PostDetailsProps) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [error, setError] = useState('');
   const [loader, setLoader] = useState(false);
-
   const [buttonClick, setButtonClick] = useState(false);
 
-  const setNewComment = data => {
-    const comment = {
-      ...data,
-      postId: post.id,
-    };
+  const setNewComment = async (data: {
+    name: string;
+    email: string;
+    body: string;
+  }): Promise<boolean> => {
+    try {
+      const createdComment = await client.post<Comment>('/comments', {
+        ...data,
+        postId: post.id,
+      });
 
-    return client.post<Comment>('/comments', comment).then(createdComment => {
       setComments(current => [...current, createdComment]);
+      setError('');
 
       return true;
-    });
+    } catch {
+      setError('Something went wrong');
+
+      return false;
+    }
   };
 
-  const deleteComment = (commentId: number) => {
-    client.delete(`/comments/${commentId}`).then(() => {
-      setComments(currentComments =>
-        currentComments.filter(comment => comment.id !== commentId),
-      );
-    });
+  const deleteComment = async (commentId: number) => {
+    const previousComments = comments;
+
+    setComments(current => current.filter(comment => comment.id !== commentId));
+
+    try {
+      await client.delete(`/comments/${commentId}`);
+      setError('');
+    } catch {
+      setComments(previousComments);
+      setError('Something went wrong');
+    }
   };
 
   useEffect(() => {
@@ -49,7 +63,7 @@ export const PostDetails = ({ post }: PostDetailsProps) => {
         );
 
         setComments(currentComments);
-      } catch (e) {
+      } catch {
         setError('Something went wrong');
       } finally {
         setLoader(false);
@@ -61,86 +75,74 @@ export const PostDetails = ({ post }: PostDetailsProps) => {
 
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 data-cy="PostTitle">
-            #{post.id}: {post.title}
-          </h2>
+      <div className="block">
+        <h2 data-cy="PostTitle">
+          #{post.id}: {post.title}
+        </h2>
 
-          <p data-cy="PostBody">{post.body}</p>
-        </div>
+        <p data-cy="PostBody">{post.body}</p>
+      </div>
 
-        <div className="block">
-          {/* 1. Якщо є помилка — показуємо ТІЛЬКИ її */}
-          {error && (
-            <div className="notification is-danger" data-cy="CommentsError">
-              {error}
-            </div>
-          )}
+      <div className="block">
+        {error && (
+          <div className="notification is-danger" data-cy="CommentsError">
+            {error}
+          </div>
+        )}
 
-          {/* 2. Лоудер показуємо, якщо йде завантаження і немає помилки */}
-          {!error && loader && <Loader />}
+        {!error && loader && <Loader />}
 
-          {/* 3. "No comments yet" показуємо, тільки якщо успішно завантажили, але коментарів 0 */}
-          {!error && !loader && comments.length === 0 && (
-            <p className="title is-4" data-cy="NoCommentsMessage">
-              No comments yet
-            </p>
-          )}
+        {!error && !loader && comments.length === 0 && (
+          <p className="title is-4" data-cy="NoCommentsMessage">
+            No comments yet
+          </p>
+        )}
 
-          {/* 4. Список коментарів показуємо, коли вони є і немає помилок */}
-          {!error && !loader && comments.length > 0 && (
-            <>
-              <p className="title is-4">Comments:</p>
-              {comments.map(currentComment => (
-                <article
-                  className="message is-small"
-                  data-cy="Comment"
-                  key={currentComment.id}
-                >
-                  <div className="message-header">
-                    <a
-                      href={`mailto:${currentComment.email}`}
-                      data-cy="CommentAuthor"
-                    >
-                      {currentComment.name}
-                    </a>
-                    <button
-                      data-cy="CommentDelete"
-                      type="button"
-                      className="delete is-small"
-                      aria-label="delete"
-                      onClick={() => deleteComment(currentComment.id)}
-                    >
-                      delete button
-                    </button>
-                  </div>
+        {!error && !loader && comments.length > 0 && (
+          <>
+            <p className="title is-4">Comments:</p>
 
-                  <div className="message-body" data-cy="CommentBody">
-                    {currentComment.body}
-                  </div>
-                </article>
-              ))}
-            </>
-          )}
+            {comments.map(comment => (
+              <article
+                key={comment.id}
+                className="message is-small"
+                data-cy="Comment"
+              >
+                <div className="message-header">
+                  <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
+                    {comment.name}
+                  </a>
 
-          {/* 5. Кнопку "Write a comment" теж логічно ховати при помилці */}
-          {!error && !buttonClick && !loader && (
-            <button
-              data-cy="WriteCommentButton"
-              type="button"
-              className="button is-link"
-              onClick={() => setButtonClick(true)}
-            >
-              Write a comment
-            </button>
-          )}
-        </div>
+                  <button
+                    type="button"
+                    className="delete is-small"
+                    data-cy="CommentDelete"
+                    aria-label="delete"
+                    onClick={() => deleteComment(comment.id)}
+                  />
+                </div>
 
-        {buttonClick && (
-          <NewCommentForm dataResponce={data => setNewComment(data)} />
+                <div className="message-body" data-cy="CommentBody">
+                  {comment.body}
+                </div>
+              </article>
+            ))}
+          </>
+        )}
+
+        {!error && !buttonClick && !loader && (
+          <button
+            type="button"
+            className="button is-link"
+            data-cy="WriteCommentButton"
+            onClick={() => setButtonClick(true)}
+          >
+            Write a comment
+          </button>
         )}
       </div>
+
+      {buttonClick && <NewCommentForm dataResponce={setNewComment} />}
     </div>
   );
 };

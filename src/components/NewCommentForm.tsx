@@ -23,7 +23,6 @@ export const NewCommentForm = ({ dataResponce }: NewCommentFormProps) => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setButtonLoading(true);
 
     const normalAuthor = author.trim();
     const normalEmail = email.trim();
@@ -50,15 +49,16 @@ export const NewCommentForm = ({ dataResponce }: NewCommentFormProps) => {
         setText('');
         setTextDanger(false);
       }
+    } catch {
     } finally {
       setButtonLoading(false);
     }
   };
 
   const reset = () => {
-    setText('');
     setAuthor('');
     setEmail('');
+    setText('');
 
     setAuthorDanger(false);
     setEmailDanger(false);
@@ -66,7 +66,7 @@ export const NewCommentForm = ({ dataResponce }: NewCommentFormProps) => {
   };
 
   return (
-    <form data-cy="NewCommentForm" onSubmit={event => handleSubmit(event)}>
+    <form data-cy="NewCommentForm" onSubmit={handleSubmit}>
       <div className="field" data-cy="NameField">
         <label className="label" htmlFor="comment-author-name">
           Author Name
@@ -74,18 +74,24 @@ export const NewCommentForm = ({ dataResponce }: NewCommentFormProps) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
+            id="comment-author-name"
             type="text"
             name="name"
             value={author}
-            id="comment-author-name"
             placeholder="Name Surname"
-            className={classNames(`input`, { 'is-danger': authorDanger })}
-            onChange={event => setAuthor(event.target.value)}
+            className={classNames('input', {
+              'is-danger': authorDanger,
+            })}
+            onChange={event => {
+              setAuthor(event.target.value);
+              setAuthorDanger(false);
+            }}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
+
           {authorDanger && (
             <span
               className="icon is-small is-right has-text-danger"
@@ -95,6 +101,7 @@ export const NewCommentForm = ({ dataResponce }: NewCommentFormProps) => {
             </span>
           )}
         </div>
+
         {authorDanger && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
@@ -109,18 +116,24 @@ export const NewCommentForm = ({ dataResponce }: NewCommentFormProps) => {
 
         <div className="control has-icons-left has-icons-right">
           <input
+            id="comment-author-email"
             type="text"
             name="email"
             value={email}
-            id="comment-author-email"
             placeholder="email@test.com"
-            className={classNames(`input`, { 'is-danger': emailDanger })}
-            onChange={event => setEmail(event.target.value)}
+            className={classNames('input', {
+              'is-danger': emailDanger,
+            })}
+            onChange={event => {
+              setEmail(event.target.value);
+              setEmailDanger(false);
+            }}
           />
 
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
+
           {emailDanger && (
             <span
               className="icon is-small is-right has-text-danger"
@@ -149,10 +162,16 @@ export const NewCommentForm = ({ dataResponce }: NewCommentFormProps) => {
             name="body"
             value={text}
             placeholder="Type comment here"
-            className={classNames(`textarea`, { 'is-danger': textDanger })}
-            onChange={event => setText(event.target.value)}
+            className={classNames('textarea', {
+              'is-danger': textDanger,
+            })}
+            onChange={event => {
+              setText(event.target.value);
+              setTextDanger(false);
+            }}
           />
         </div>
+
         {textDanger && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
@@ -164,7 +183,7 @@ export const NewCommentForm = ({ dataResponce }: NewCommentFormProps) => {
         <div className="control">
           <button
             type="submit"
-            className={classNames(`button is-link`, {
+            className={classNames('button is-link', {
               'is-loading': buttonLoading,
             })}
           >
@@ -173,7 +192,6 @@ export const NewCommentForm = ({ dataResponce }: NewCommentFormProps) => {
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
           <button
             type="reset"
             className="button is-link is-light"
