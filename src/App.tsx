@@ -83,7 +83,14 @@ export const App = () => {
     [currentPost],
   );
 
-  const isPostsExist = !isLoading && !isError && currentUser && posts.length;
+  const hasUser = currentUser !== null;
+  const hasPosts = posts.length > 0;
+
+  const showNoUser = !hasUser;
+  const showLoader = hasUser && isLoading;
+  const showError = hasUser && !isLoading && isError;
+  const showEmpty = hasUser && !isLoading && !isError && !hasPosts;
+  const showPosts = hasUser && !isLoading && !isError && hasPosts;
 
   return (
     <main className="section">
@@ -100,13 +107,11 @@ export const App = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                {!currentUser && (
-                  <p data-cy="NoSelectedUser">No user selected</p>
-                )}
+                {showNoUser && <p data-cy="NoSelectedUser">No user selected</p>}
 
-                {isLoading && <Loader />}
+                {showLoader && <Loader />}
 
-                {!isLoading && isError && (
+                {showError && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
@@ -115,13 +120,13 @@ export const App = () => {
                   </div>
                 )}
 
-                {!isPostsExist && (
+                {showEmpty && (
                   <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
 
-                {isPostsExist && (
+                {showPosts && (
                   <PostsList
                     posts={posts}
                     currentPost={currentPost}
