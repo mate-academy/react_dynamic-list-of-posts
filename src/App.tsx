@@ -46,10 +46,6 @@ export const App = () => {
     const fetchPosts = async () => {
       setIsLoading(true);
 
-      if (!currentUser) {
-        return;
-      }
-
       try {
         const data = await client.get<Post[]>(
           `/posts?userId=${currentUser.id}`,
