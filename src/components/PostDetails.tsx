@@ -12,16 +12,20 @@ interface Props {
 export const PostDetails: React.FC<Props> = ({ post }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(false);
+
+  const [hasLoadingError, setHasLoadingError] = useState(false);
+  const [hasDeleteError, setHasDeleteError] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
-    setIsError(false);
+    setHasLoadingError(false);
+    setHasDeleteError(false);
+    setComments([]);
 
     getPostComments(post.id)
       .then(setComments)
-      .catch(() => setIsError(true))
+      .catch(() => setHasLoadingError(true))
       .finally(() => {
         setIsLoading(false);
         setIsFormVisible(false);
@@ -29,8 +33,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   }, [post.id]);
 
   const handleDeleteComment = (commentId: number) => {
-    setComments(prevComments => prevComments.filter(c => c.id !== commentId));
-    deleteComment(commentId).catch(() => setIsError(true));
+    setHasDeleteError(false);
+
+    deleteComment(commentId)
+      .then(() => {
+        setComments(prevComments =>
+          prevComments.filter(c => c.id !== commentId),
+        );
+      })
+      .catch(() => {
+        setHasDeleteError(true);
+      });
   };
 
   const handleAddComment = (newComment: Comment) => {
@@ -49,17 +62,22 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
       <div className="block">
         {isLoading && <Loader />}
-        {!isLoading && isError && (
+        {!isLoading && hasLoadingError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
         )}
-        {!isLoading && !isError && comments.length === 0 && (
+        {hasDeleteError && (
+          <div className="notification is-danger">
+            Unable to delete a comment
+          </div>
+        )}
+        {!isLoading && !hasLoadingError && comments.length === 0 && (
           <p className="title is-4" data-cy="NoCommentsMessage">
             No comments yet
           </p>
         )}
-        {!isLoading && !isError && comments.length > 0 && (
+        {!isLoading && !hasLoadingError && comments.length > 0 && (
           <>
             <p className="title is-4">Comments:</p>
 
@@ -80,9 +98,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                     className="delete is-small"
                     aria-label="delete"
                     onClick={() => handleDeleteComment(comment.id)}
-                  >
-                    delete button
-                  </button>
+                  />
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">
@@ -93,7 +109,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           </>
         )}
 
-        {!isFormVisible && (
+        {!isFormVisible && !isLoading && !hasLoadingError && (
           <button
             data-cy="WriteCommentButton"
             type="button"

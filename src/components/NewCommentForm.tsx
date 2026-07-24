@@ -19,8 +19,19 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
   const [bodyError, setBodyError] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleReset = () => {
+    setName('');
+    setEmail('');
+    setBody('');
+    setNameError('');
+    setEmailError('');
+    setBodyError('');
+    setIsError(false);
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     let hasError = false;
@@ -45,33 +56,27 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
     }
 
     setIsLoading(true);
+    setIsError(false);
 
-    createComment({
-      name: name.trim(),
-      email: email.trim(),
-      body: body.trim(),
-      postId,
-    })
-      .then(createdComment => {
-        onAddComment(createdComment);
+    try {
+      const newComment = await createComment({
+        postId,
+        name,
+        email,
+        body,
+      });
 
-        setBody('');
+      onAddComment(newComment);
 
-        setNameError('');
-        setEmailError('');
-        setBodyError('');
-      })
-      .catch(() => {})
-      .finally(() => setIsLoading(false));
-  };
-
-  const handleReset = () => {
-    setName('');
-    setEmail('');
-    setBody('');
-    setNameError('');
-    setEmailError('');
-    setBodyError('');
+      setBody('');
+      setNameError('');
+      setEmailError('');
+      setBodyError('');
+    } catch {
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -98,6 +103,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
             onChange={e => {
               setName(e.target.value);
               setNameError('');
+              setIsError(false);
             }}
           />
 
@@ -140,6 +146,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
             onChange={e => {
               setEmail(e.target.value);
               setEmailError('');
+              setIsError(false);
             }}
           />
 
@@ -181,15 +188,23 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAddComment }) => {
             onChange={e => {
               setBody(e.target.value);
               setBodyError('');
+              setIsError(false);
             }}
           />
         </div>
+
         {bodyError && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
         )}
       </div>
+
+      {isError && (
+        <div className="notification is-danger" data-cy="ErrorMessage">
+          Can&apos;t add a comment
+        </div>
+      )}
 
       <div className="field is-grouped">
         <div className="control">

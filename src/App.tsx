@@ -33,15 +33,23 @@ export const App = () => {
       return;
     }
 
-    setIsLoadingPosts(true);
-    setIsPostsError(false);
-    setSelectedPost(null);
+    const loadPosts = async () => {
+      setIsLoadingPosts(true);
+      setIsPostsError(false);
+      setSelectedPost(null);
 
-    getPosts(selectedUser.id)
-      // .then(module => module.getPosts(selectedUser.id))
-      .then(setPosts)
-      .catch(() => setIsPostsError(true))
-      .finally(() => setIsLoadingPosts(false));
+      try {
+        const loadedPosts = await getPosts(selectedUser.id);
+
+        setPosts(loadedPosts);
+      } catch {
+        setIsPostsError(true);
+      } finally {
+        setIsLoadingPosts(false);
+      }
+    };
+
+    loadPosts();
   }, [selectedUser]);
 
   return (
