@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
@@ -47,6 +46,9 @@ export const App: React.FC = () => {
       .finally(() => setLoadingPosts(false));
   }, [selectedUserId]);
 
+  const showNoPosts =
+    !loadingPosts && !postsError && selectedUserId && posts.length === 0;
+
   return (
     <main className="section">
       <div className="container">
@@ -77,14 +79,8 @@ export const App: React.FC = () => {
                   </div>
                 )}
 
-                {!loadingPosts &&
-                  !postsError &&
-                  selectedUserId &&
-                  posts.length === 0 && (
-                  <div
-                    className="notification is-warning"
-                    data-cy="NoPostsYet"
-                  >
+                {showNoPosts && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
                     No posts yet
                   </div>
                 )}
@@ -103,14 +99,15 @@ export const App: React.FC = () => {
           <div
             data-cy="Sidebar"
             className={classNames(
-              'tile', 'is-parent', 'is-8-desktop', 'Sidebar',
-              { 'Sidebar--open': selectedPost !== null }
+              'tile',
+              'is-parent',
+              'is-8-desktop',
+              'Sidebar',
+              { 'Sidebar--open': selectedPost !== null },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPost && (
-                <PostDetails post={selectedPost} />
-              )}
+              {selectedPost && <PostDetails post={selectedPost} />}
             </div>
           </div>
         </div>

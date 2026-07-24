@@ -1,5 +1,6 @@
 import React from 'react';
 import { Post } from '../types/Post';
+import classNames from 'classnames';
 
 interface Props {
   posts: Post[];
@@ -34,7 +35,9 @@ export const PostsList: React.FC<Props> = ({
                 <button
                   type="button"
                   data-cy="PostButton"
-                  className={`button is-link ${isSelected ? '' : 'is-light'}`}
+                  className={classNames('button is-link', {
+                    'is-light': !isSelected,
+                  })}
                   onClick={() => onSelect(isSelected ? null : post)}
                 >
                   {isSelected ? 'Close' : 'Open'}

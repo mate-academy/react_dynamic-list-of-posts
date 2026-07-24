@@ -9,16 +9,27 @@ interface Props {
 }
 
 export const NewCommentForm: React.FC<Props> = ({ postId, onAdd }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [body, setBody] = useState('');
-
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    body: false,
+  const [formState, setFormState] = useState({
+    name: '',
+    email: '',
+    body: '',
+    errors: { name: false, email: false, body: false },
+    submitting: false,
   });
-  const [submitting, setSubmitting] = useState(false);
+
+  const { name, email, body, errors, submitting } = formState;
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name: field, value } = e.target;
+
+    setFormState(prev => ({
+      ...prev,
+      [field]: value,
+      errors: { ...prev.errors, [field]: false },
+    }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,30 +40,41 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAdd }) => {
       body: !body.trim(),
     };
 
-    setErrors(newErrors);
+    const hasErrors = newErrors.name || newErrors.email || newErrors.body;
 
-    if (newErrors.name || newErrors.email || newErrors.body) {
+    if (hasErrors) {
+      setFormState(prev => ({ ...prev, errors: newErrors }));
+
       return;
     }
 
-    setSubmitting(true);
+    setFormState(prev => ({ ...prev, submitting: true, errors: newErrors }));
 
     client
       .post<Comment>('/comments', { postId, name, email, body })
       .then(newComment => {
         onAdd(newComment);
-        setBody('');
-        setErrors({ name: false, email: false, body: false });
+        setFormState(prev => ({
+          ...prev,
+          body: '',
+          submitting: false,
+          errors: { name: false, email: false, body: false },
+        }));
       })
-      .catch(() => alert('Error adding comment, bro!'))
-      .finally(() => setSubmitting(false));
+      .catch(() => {
+        alert('Error adding comment, bro!');
+        setFormState(prev => ({ ...prev, submitting: false }));
+      });
   };
 
   const handleClear = () => {
-    setName('');
-    setEmail('');
-    setBody('');
-    setErrors({ name: false, email: false, body: false });
+    setFormState({
+      name: '',
+      email: '',
+      body: '',
+      errors: { name: false, email: false, body: false },
+      submitting: false,
+    });
   };
 
   return (
@@ -73,10 +95,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAdd }) => {
             placeholder="Name Surname"
             className={classNames('input', { 'is-danger': errors.name })}
             value={name}
-            onChange={e => {
-              setName(e.target.value);
-              setErrors(prev => ({ ...prev, name: false }));
-            }}
+            onChange={handleChange}
           />
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
@@ -109,10 +128,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAdd }) => {
             placeholder="email@test.com"
             className={classNames('input', { 'is-danger': errors.email })}
             value={email}
-            onChange={e => {
-              setEmail(e.target.value);
-              setErrors(prev => ({ ...prev, email: false }));
-            }}
+            onChange={handleChange}
           />
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
@@ -144,10 +160,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onAdd }) => {
             placeholder="Type comment here"
             className={classNames('textarea', { 'is-danger': errors.body })}
             value={body}
-            onChange={e => {
-              setBody(e.target.value);
-              setErrors(prev => ({ ...prev, body: false }));
-            }}
+            onChange={handleChange}
           />
         </div>
         {errors.body && (
