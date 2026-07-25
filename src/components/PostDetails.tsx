@@ -35,15 +35,14 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const handleDeleteComment = (commentId: number) => {
     setHasDeleteError(false);
 
-    deleteComment(commentId)
-      .then(() => {
-        setComments(prevComments =>
-          prevComments.filter(c => c.id !== commentId),
-        );
-      })
-      .catch(() => {
-        setHasDeleteError(true);
-      });
+    const previousComments = comments;
+
+    setComments(prev => prev.filter(c => c.id !== commentId));
+
+    deleteComment(commentId).catch(() => {
+      setHasDeleteError(true);
+      setComments(previousComments);
+    });
   };
 
   const handleAddComment = (newComment: Comment) => {
