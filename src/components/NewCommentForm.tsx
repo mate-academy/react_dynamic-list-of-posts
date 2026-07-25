@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { useState } from 'react';
 import { Comment } from '../types/Comment';
-import { createComment } from '../api/comments';
+import { createComment } from '../api/commentApi';
 
 interface Props {
   postId: number;

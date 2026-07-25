@@ -10,9 +10,9 @@ import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { User } from './types/User';
 import { useEffect, useState } from 'react';
-import { getUsers } from './api/users';
+import { getUsers } from './api/userApi';
 import { Post } from './types/Post';
-import { getPosts } from './api/postsApi';
+import { getPosts } from './api/postApi';
 
 export const App = () => {
   const [users, setUsers] = useState<User[]>([]);

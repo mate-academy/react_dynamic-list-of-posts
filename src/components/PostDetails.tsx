@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 import { Post } from '../types/Post';
-import { deleteComment, getPostComments } from '../api/comments';
+import { deleteComment, getPostComments } from '../api/commentApi';
 import { Comment } from '../types/Comment';
 
 interface Props {
