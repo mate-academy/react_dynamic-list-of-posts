@@ -27,29 +27,19 @@ export const App = () => {
   }, []);
 
   useEffect(() => {
-    if (!selectedUser) {
-      setPosts([]);
-
-      return;
-    }
-
-    const loadPosts = async () => {
+    if (selectedUser) {
       setIsLoadingPosts(true);
       setIsPostsError(false);
       setSelectedPost(null);
 
-      try {
-        const loadedPosts = await getPosts(selectedUser.id);
-
-        setPosts(loadedPosts);
-      } catch {
-        setIsPostsError(true);
-      } finally {
-        setIsLoadingPosts(false);
-      }
-    };
-
-    loadPosts();
+      getPosts(selectedUser.id)
+        .then(setPosts)
+        .catch(() => setIsPostsError(true))
+        .finally(() => setIsLoadingPosts(false));
+    } else {
+      setPosts([]);
+      setSelectedPost(null);
+    }
   }, [selectedUser]);
 
   return (
