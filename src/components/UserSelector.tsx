@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { getUsers } from '../utils/services';
+import { User } from '../types/User';
+import cn from 'classnames';
 
 interface Props {
-  userId: number;
   onUserSelect: (userId: number) => void;
+  selectedUserId: number | null;
 }
 
-export const UserSelector: React.FC<Props> = ({ userId, onUserSelect }) => {
-  const [users, setUsers] = useState([]);
+export const UserSelector: React.FC<Props> = ({
+  onUserSelect,
+  selectedUserId,
+}) => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     getUsers().then(data => {
@@ -16,14 +22,17 @@ export const UserSelector: React.FC<Props> = ({ userId, onUserSelect }) => {
   }, []);
 
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      data-cy="UserSelector"
+      className={cn('dropdown', { 'is-active': isOpen })}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
-          onClick={() => onUserSelect(userId)}
+          onClick={() => setIsOpen(!isOpen)}
         >
           <span>Choose a user</span>
 
@@ -40,8 +49,13 @@ export const UserSelector: React.FC<Props> = ({ userId, onUserSelect }) => {
               <a
                 key={user.id}
                 href={`#user-${user.id}`}
-                className="dropdown-item"
-                onClick={() => onUserSelect(user.id)}
+                className={cn('dropdown-item', {
+                  'is-active': selectedUserId === user.id,
+                })}
+                onClick={() => {
+                  onUserSelect(user.id);
+                  setIsOpen(false);
+                }}
               >
                 {user.name}
               </a>

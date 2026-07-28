@@ -15,9 +15,15 @@ export const App = () => {
   const [selectedUserId, setSelectedUserId] = useState(0);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isError, setIsError] = useState('');
 
   useEffect(() => {
+    if (!selectedUserId) {
+      return;
+    }
+
     setLoading(true);
+    setIsError('');
 
     getPostByUserId(selectedUserId)
       .then(data => {
@@ -27,7 +33,11 @@ export const App = () => {
       .catch(() => {
         setLoading(false);
       });
-  }, []);
+  }, [selectedUserId]);
+
+  const handleUserSelect = (userId: number) => {
+    setSelectedUserId(userId);
+  };
 
   return (
     <main className="section">
@@ -36,26 +46,41 @@ export const App = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector />
+                <UserSelector
+                  onUserSelect={handleUserSelect}
+                  selectedUserId={selectedUserId}
+                />
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
+                {!selectedUserId && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
-                <Loader />
+                {/* {loading && <Loader />} */}
 
-                <div
-                  className="notification is-danger"
-                  data-cy="PostsLoadingError"
-                >
-                  Something went wrong!
-                </div>
+                {isError && selectedUserId && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="PostsLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
 
-                <div className="notification is-warning" data-cy="NoPostsYet">
-                  No posts yet
-                </div>
-
-                <PostsList />
+                {!loading && (
+                  <>
+                    {posts.length === 0 && (
+                      <div
+                        className="notification is-warning"
+                        data-cy="NoPostsYet"
+                      >
+                        No posts yet
+                      </div>
+                    )}
+                  </>
+                )}
+                {posts.length > 0 && <PostsList posts={posts} />}
               </div>
             </div>
           </div>

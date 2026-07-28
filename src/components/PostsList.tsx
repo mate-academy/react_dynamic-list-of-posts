@@ -1,20 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import cn from 'classnames';
 import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[];
-  selectedPostId?: number;
-  onDelete: (postId: number) => void;
-  onSelect: (post: Post) => void;
 };
 
-export const PostsList: React.FC<Props> = ({
-  onDelete,
-  onSelect,
-  posts,
-  selectedPostId,
-}) => {
+export const PostsList: React.FC<Props> = ({ posts }) => {
+  const [selectedPostId, setSelectedPostId] = useState<Post | null>(null);
+
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -35,7 +29,7 @@ export const PostsList: React.FC<Props> = ({
               key={post.id}
               data-cy="Post"
               className={cn({
-                'has-background-info': selectedPostId === post.id,
+                'has-background-info': selectedPostId?.id === post.id,
               })}
             >
               <td data-cy="PostId">{post.id}</td>
@@ -46,33 +40,20 @@ export const PostsList: React.FC<Props> = ({
                 <button
                   type="button"
                   data-cy="PostButton"
-                  className="button is-link is-light"
-                  onClick={() => onSelect(post)}
+                  className={cn('button', 'is-link', {
+                    ' is-light': selectedPostId?.id !== post.id,
+                  })}
+                  onClick={() =>
+                    setSelectedPostId(
+                      selectedPostId?.id === post.id ? null : post,
+                    )
+                  }
                 >
-                  Open
+                  {selectedPostId?.id === post.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>
           ))}
-
-          {/* <tr data-cy="Post">
-            <td data-cy="PostId">18</td>
-
-            <td data-cy="PostTitle">
-              voluptate et itaque vero tempora molestiae
-            </td>
-
-            <td className="has-text-right is-vcentered">
-              <button
-                type="button"
-                data-cy="PostButton"
-                className="button is-link"
-                onClick={() => onDelete(post.id)}
-              >
-                Close
-              </button>
-            </td>
-          </tr> */}
         </tbody>
       </table>
     </div>
