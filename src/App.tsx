@@ -9,6 +9,7 @@ import { PostDetails } from './components/PostDetails';
 import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
 import { useState, useEffect } from 'react';
+import { Post } from './types/Post';
 import { getPostByUserId } from './utils/services';
 
 export const App = () => {
@@ -16,6 +17,7 @@ export const App = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isError, setIsError] = useState('');
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
     if (!selectedUserId) {
@@ -24,6 +26,8 @@ export const App = () => {
 
     setLoading(true);
     setIsError('');
+    setPosts([]); // очищуємо старі пости
+    setSelectedPost(null); //закрити сайдбар
 
     getPostByUserId(selectedUserId)
       .then(data => {
@@ -32,6 +36,7 @@ export const App = () => {
       })
       .catch(() => {
         setLoading(false);
+        setIsError('Error loading posts');
       });
   }, [selectedUserId]);
 
@@ -47,6 +52,7 @@ export const App = () => {
             <div className="tile is-child box is-success">
               <div className="block">
                 <UserSelector
+                  userId={selectedUserId}
                   onUserSelect={handleUserSelect}
                   selectedUserId={selectedUserId}
                 />
@@ -57,7 +63,7 @@ export const App = () => {
                   <p data-cy="NoSelectedUser">No user selected</p>
                 )}
 
-                {/* {loading && <Loader />} */}
+                {loading && <Loader />}
 
                 {isError && selectedUserId && (
                   <div
@@ -68,19 +74,27 @@ export const App = () => {
                   </div>
                 )}
 
-                {!loading && (
-                  <>
-                    {posts.length === 0 && (
+                {posts.length === 0 &&
+                  !loading &&
+                  selectedUserId > 0 &&
+                  !isError && (
+                    <>
                       <div
                         className="notification is-warning"
                         data-cy="NoPostsYet"
                       >
                         No posts yet
                       </div>
-                    )}
-                  </>
+                    </>
+                  )}
+
+                {posts.length > 0 && (
+                  <PostsList
+                    posts={posts}
+                    selectedPost={selectedPost}
+                    setSelectedPost={setSelectedPost}
+                  />
                 )}
-                {posts.length > 0 && <PostsList posts={posts} />}
               </div>
             </div>
           </div>
@@ -92,11 +106,13 @@ export const App = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              'Sidebar--open',
+              {
+                'Sidebar--open': selectedPost,
+              },
             )}
           >
             <div className="tile is-child box is-success ">
-              <PostDetails />
+              {selectedPost && <PostDetails selectedPost={selectedPost} />}
             </div>
           </div>
         </div>

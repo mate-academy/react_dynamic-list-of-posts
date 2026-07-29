@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import cn from 'classnames';
 import { Post } from '../types/Post';
 
 type Props = {
   posts: Post[];
+  selectedPost: Post | null;
+  setSelectedPost: (post: Post | null) => void;
 };
 
-export const PostsList: React.FC<Props> = ({ posts }) => {
-  const [selectedPostId, setSelectedPostId] = useState<Post | null>(null);
-
+export const PostsList: React.FC<Props> = ({
+  posts,
+  selectedPost,
+  setSelectedPost,
+}) => {
   return (
     <div data-cy="PostsList">
       <p className="title">Posts:</p>
@@ -29,7 +33,7 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
               key={post.id}
               data-cy="Post"
               className={cn({
-                'has-background-info': selectedPostId?.id === post.id,
+                'has-background-info': selectedPost?.id === post.id,
               })}
             >
               <td data-cy="PostId">{post.id}</td>
@@ -41,15 +45,13 @@ export const PostsList: React.FC<Props> = ({ posts }) => {
                   type="button"
                   data-cy="PostButton"
                   className={cn('button', 'is-link', {
-                    ' is-light': selectedPostId?.id !== post.id,
+                    ' is-light': selectedPost?.id !== post.id,
                   })}
                   onClick={() =>
-                    setSelectedPostId(
-                      selectedPostId?.id === post.id ? null : post,
-                    )
+                    setSelectedPost(selectedPost?.id === post.id ? null : post)
                   }
                 >
-                  {selectedPostId?.id === post.id ? 'Close' : 'Open'}
+                  {selectedPost?.id === post.id ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

@@ -1,19 +1,11 @@
 import React from 'react';
 import { useState } from 'react';
 import cn from 'classnames';
-import { CommentData } from '../types/Comment';
-import { User } from '../types/User';
-import { Post } from '../types/Post';
 
-type Props = {
-  onSubmit: (comment: CommentData) => void;
-  post?: Post | null;
-};
-
-export const NewCommentForm: React.FC<Props> = ({ onSubmit, post }) => {
+export const NewCommentForm: React.FC = () => {
   // Name
   const [name, setName] = useState('');
-  const [nameError, setnameError] = useState('');
+  const [nameError, setNameError] = useState('');
   // EMAIL
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -21,11 +13,13 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, post }) => {
   const [body, setBody] = useState('');
   const [bodyError, setBodyError] = useState('');
 
+  const [errors, setErrors] = useState({ name: '', email: '', body: '' });
+
   const [isLoading, setIsLoading] = useState(false);
 
   const handleNameChange = (value: string) => {
     setName(value);
-    setnameError('');
+    setNameError('');
   };
 
   const handleEmailChange = (value: string) => {
@@ -40,29 +34,38 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, post }) => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    if (!name.trim()) {
+      setNameError('Name is required');
+
+      return;
+    }
+
+    if (!email.trim()) {
+      setEmailError('Email is required');
+
+      return;
+    }
+
+    if (!body.trim()) {
+      setBodyError('Enter some text');
+
+      return;
+    }
 
     setName('');
     setEmail('');
     setBody('');
-
-    if (!name.trim()) setnameError('Name is required');
-    if (!email.trim()) setEmailError('Email is required');
-    if (!body.trim()) setBodyError('Enter some text');
-    if (!name || !email || !body) return;
-
     setIsLoading(true);
-
-    onSubmit({ name, email, body });
   };
 
   const handleClearButton = () => {
-    setName(post?.name || '');
-    setnameError('');
+    setName('');
+    setNameError('');
 
-    setEmail(post?.email || '');
+    setEmail('');
     setEmailError('');
 
-    setBody(post?.body || '');
+    setBody('');
     setBodyError('');
   };
 
@@ -83,17 +86,19 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, post }) => {
             className={cn('input', { 'is-danger': nameError })}
             onChange={e => handleNameChange(e.target.value)}
           />
+
+          <span className="icon is-small is-left">
+            <i className="fas fa-user" />
+          </span>
+
           {nameError && (
-            <span className="icon is-small is-left">
-              <i className="fas fa-user" />
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
             </span>
           )}
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
         </div>
         {nameError && (
           <p className="help is-danger" data-cy="ErrorMessage">
@@ -117,17 +122,18 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit, post }) => {
             className={cn('input', { 'is-danger': emailError })}
             onChange={e => handleEmailChange(e.target.value)}
           />
-          {emailError && (
-            <span className="icon is-small is-left">
-              <i className="fas fa-envelope" />
+
+          <span className="icon is-small is-left">
+            <i className="fas fa-envelope" />
+          </span>
+          {nameError && (
+            <span
+              className="icon is-small is-right has-text-danger"
+              data-cy="ErrorIcon"
+            >
+              <i className="fas fa-exclamation-triangle" />
             </span>
           )}
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
         </div>
         {emailError && (
           <p className="help is-danger" data-cy="ErrorMessage">

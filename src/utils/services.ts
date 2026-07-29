@@ -18,21 +18,21 @@ export const getPostByUserId = (userId: number) => {
 // COMMENTS
 
 export const getCommentByPostId = (postId: number) => {
-  return client.get<Comment[]>(`/comment/$postId=${postId}`);
+  return client.get<Comment[]>(`/comments?postId=${postId}`);
 };
 
 // delete
 
 export const deleteComment = (commentId: number) => {
-  return client.delete<Comment[]>(`/comment/${commentId}`);
+  return client.delete<number>(`/comment/${commentId}`);
 };
 
-// add
+// create
 
-export const addComment = ({  userId, title, body}: Omit<Post, 'id'>) => {
-  return client.post<Comment[]>('/comment', {
-    userId: userId,
-    title: title,
-    body: body,
+export const createPostComment = ({ name, email, body }: Omit<Post, 'id'>) => {
+  return client.post<Comment>('/comment', {
+    name,
+    email,
+    body,
   });
 };
