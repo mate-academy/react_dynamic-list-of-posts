@@ -2,7 +2,11 @@ import React from 'react';
 import { useState } from 'react';
 import cn from 'classnames';
 
-export const NewCommentForm: React.FC = () => {
+type Props = {
+  onSubmit: (data: { name: string; email: string; body: string }) => void;
+};
+
+export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   // Name
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState('');
@@ -12,8 +16,6 @@ export const NewCommentForm: React.FC = () => {
   // body
   const [body, setBody] = useState('');
   const [bodyError, setBodyError] = useState('');
-
-  const [errors, setErrors] = useState({ name: '', email: '', body: '' });
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,28 +36,27 @@ export const NewCommentForm: React.FC = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (!name.trim()) {
-      setNameError('Name is required');
+    // Спочатку встановлюємо помилки для порожніх полів
+    const newNameError = !name.trim() ? 'Name is required' : '';
+    const newEmailError = !email.trim() ? 'Email is required' : '';
+    const newBodyError = !body.trim() ? 'Enter some text' : '';
 
+    setNameError(newNameError);
+    setEmailError(newEmailError);
+    setBodyError(newBodyError);
+
+    if (newNameError || newEmailError || newBodyError) {
       return;
     }
 
-    if (!email.trim()) {
-      setEmailError('Email is required');
+    setIsLoading(true);
 
-      return;
-    }
-
-    if (!body.trim()) {
-      setBodyError('Enter some text');
-
-      return;
-    }
+    onSubmit({ name, email, body });
 
     setName('');
     setEmail('');
     setBody('');
-    setIsLoading(true);
+    setIsLoading(false);
   };
 
   const handleClearButton = () => {
@@ -126,7 +127,7 @@ export const NewCommentForm: React.FC = () => {
           <span className="icon is-small is-left">
             <i className="fas fa-envelope" />
           </span>
-          {nameError && (
+          {emailError && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"

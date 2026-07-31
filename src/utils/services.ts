@@ -24,12 +24,16 @@ export const getCommentByPostId = (postId: number) => {
 // delete
 
 export const deleteComment = (commentId: number) => {
-  return client.delete<number>(`/comment/${commentId}`);
+  return client.delete(`/comment/${commentId}`);
 };
 
 // create
 
-export const createPostComment = ({ name, email, body }: Omit<Post, 'id'>) => {
+export const createPostComment = ({
+  name,
+  email,
+  body,
+}: Omit<Comment, 'id'>) => {
   return client.post<Comment>('/comment', {
     name,
     email,

@@ -36,6 +36,14 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
       );
   }
 
+  function addComment({ name, email, body }: Comment) {
+    commentService
+      .addComment({ name, email, body })
+      .then((newComment: Comment) => {
+        setComments(currentComment => [...currentComment, newComment]);
+      });
+  }
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
@@ -105,7 +113,7 @@ export const PostDetails: React.FC<Props> = ({ selectedPost }) => {
           </button>
         )}
       </div>
-      {isFormOpen && <NewCommentForm />}
+      {isFormOpen && <NewCommentForm onSubmit={addComment} />}
     </div>
   );
 };
