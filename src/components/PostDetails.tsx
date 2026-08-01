@@ -58,8 +58,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
 
     setDeleteError('');
 
-    // Оптимистическое удаление:
-    // сначала удаляем на экране
     setComments(currentComments =>
       currentComments.filter(comment => comment.id !== commentId),
     );
@@ -67,8 +65,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
     try {
       await removeComment(commentId);
     } catch {
-      // При ошибке возвращаем комментарий
-      // на прежнее место
       setComments(currentComments => {
         const restoredComments = [...currentComments];
 
