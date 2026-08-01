@@ -1,40 +1,76 @@
-import React from 'react';
+import { User } from '../types/User';
+import { useState, useRef, useEffect } from 'react';
 
-export const UserSelector: React.FC = () => {
+export interface Props {
+  users: User[];
+  selectedUser: User | null;
+  handleSelectUser: (user: User) => void;
+}
+
+export const UserSelector: React.FC<Props> = ({
+  users,
+  selectedUser,
+  handleSelectUser,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // перевіряємо, куди клікнув юзер
+    const handleClickOutside = (event: MouseEvent) => {
+      // чи був цей клік поза компонентом
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        // якщо так —> setIsOpen(false)
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // видаляє слухач, якщо компонент видаляється або закривається//.
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      ref={dropdownRef}
+      data-cy="UserSelector"
+      className={`dropdown ${isOpen ? 'is-active' : ''}`}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setIsOpen(!isOpen)}
         >
-          <span>Choose a user</span>
-
-          <span className="icon is-small">
-            <i className="fas fa-angle-down" aria-hidden="true" />
-          </span>
+          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
         </button>
       </div>
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+          {users.map(user => (
+            <a
+              key={user.id}
+              href={`#user-${user.id}`}
+              className={`dropdown-item ${selectedUser?.id === user.id ? 'is-active' : ''}`}
+              onClick={event => {
+                event.preventDefault(); // Запобігаємо зайвому стрибку сторінки за якорем
+                handleSelectUser(user);
+                // закриваємо меню після вибору юзера
+                setIsOpen(false);
+              }}
+            >
+              {user.name}
+            </a>
+          ))}
         </div>
       </div>
     </div>

@@ -5,3 +5,5 @@ export const Loader = () => (
     <div className="Loader__content" />
   </div>
 );
+
+// comment
