@@ -1,12 +1,14 @@
 import React from 'react';
 import { useState } from 'react';
 import cn from 'classnames';
+import * as commentService from '../utils/services';
 
 type Props = {
-  onSubmit: (data: { name: string; email: string; body: string }) => void;
+  postId: number;
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
 };
 
-export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
+export const NewCommentForm: React.FC<Props> = ({ postId, setComments }) => {
   // Name
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState('');
@@ -36,7 +38,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    // Спочатку встановлюємо помилки для порожніх полів
+
     const newNameError = !name.trim() ? 'Name is required' : '';
     const newEmailError = !email.trim() ? 'Email is required' : '';
     const newBodyError = !body.trim() ? 'Enter some text' : '';
@@ -51,12 +53,21 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
     setIsLoading(true);
 
-    onSubmit({ name, email, body });
-
-    setName('');
-    setEmail('');
-    setBody('');
-    setIsLoading(false);
+    commentService
+      .addComment({ name, email, body, postId })
+      .then((newComment: Comment) => {
+        setComments(currentComment => [...currentComment, newComment]);
+        // Очищаем форму только при успешной отправке
+        // setName('');
+        // setEmail('');
+        setBody('');
+      })
+      .finally(() => {
+        setIsLoading(false);
+        // setName('');
+        // setEmail('');
+        // setBody('');
+      });
   };
 
   const handleClearButton = () => {
@@ -170,7 +181,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={cn('button is-link', { 'is-loading': isLoading })}
-            onClick={handleClearButton}
+            // onClick={handleClearButton}
           >
             Add
           </button>
