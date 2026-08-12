@@ -4,15 +4,13 @@ import classNames from 'classnames';
 type Props = {
   postApi: Post[];
   selectedPostId: number | null;
-  onOpenPost?: (postId: number) => void;
-  closePost?: (postId: number) => void;
+  onOpenPost?: (postId: number | null) => void;
 };
 
 export const PostsList: React.FC<Props> = ({
   postApi,
   selectedPostId,
   onOpenPost,
-  closePost,
 }) => {
   return (
     <div data-cy="PostsList">
@@ -41,12 +39,12 @@ export const PostsList: React.FC<Props> = ({
                     'is-light': post.id !== selectedPostId,
                   })}
                   onClick={() =>
-                    post.id !== selectedPostId
-                      ? onOpenPost?.(post.id)
-                      : closePost?.(post.id)
+                    onOpenPost?.(
+                      post.id === selectedPostId ? null : post.id,
+                    )
                   }
                 >
-                  {post.id !== selectedPostId ? 'Open' : 'Close'}
+                  {post.id === selectedPostId ? 'Close' : 'Open'}
                 </button>
               </td>
             </tr>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { User } from '../types/User';
+import classNames from 'classnames';
 type Props = {
   users: User[];
   onLoadUsers: () => void;
@@ -31,7 +32,7 @@ export const UserSelector: React.FC<Props> = ({
   return (
     <div
       data-cy="UserSelector"
-      className={`dropdown ${isOpen ? 'is-active' : ''}`}
+      className={classNames('dropdown', { 'is-active': isOpen })}
     >
       <div className="dropdown-trigger">
         <button

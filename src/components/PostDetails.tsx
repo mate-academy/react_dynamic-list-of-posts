@@ -31,7 +31,6 @@ export const PostDetails: React.FC<Props> = ({
 
   const handleOpenForm = (comment: CommentData) => {
     return onSubmitComment(comment);
-    setIsOpenForm(true);
   };
 
   return (
@@ -77,10 +76,8 @@ export const PostDetails: React.FC<Props> = ({
                   type="button"
                   className="delete is-small"
                   aria-label="delete"
-                  onClick={() => {
-                    onDeleteComment(comment.id);
-                  }}
-                >
+                  onClick={() => onDeleteComment(comment.id)}
+                  >
                   delete button
                 </button>
               </div>

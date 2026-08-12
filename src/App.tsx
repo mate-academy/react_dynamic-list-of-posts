@@ -20,16 +20,17 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<ErrorType | ''>('');
   const [selectedUserId, setSelectedUserId] = useState<User['id'] | null>(null);
-  const [postsId, setPostsId] = useState<Post[]>([]);
+  const [postId, setPostId] = useState<Post[]>([]);
   const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
 
   const loadUsers = useCallback(() => {
-    setPostsId([]);
+    setPostId([]);
     setErrorMessage('');
     setIsLoading(true);
 
-    postServise.getUser()
+    postServise
+      .getUser()
       .then(setUsers)
       .catch(() => setErrorMessage(ErrorType.LoadUser))
       .finally(() => setIsLoading(false));
@@ -40,22 +41,20 @@ export const App: React.FC = () => {
   }, [loadUsers]);
 
   useEffect(() => {
-    if (!selectedUserId) {
-      setPostsId([]);
-
-      return;
+    if (selectedUserId === null) {
+       return;
     }
 
     const loadPosts = async () => {
       try {
-        setIsLoading(true);
-        setSelectedPostId(null);
         setErrorMessage('');
+        setSelectedPostId(null);
+        setIsLoading(true);
 
-        const data = await postServise.getPosts(selectedUserId);
+        const post = await postServise.getPosts(selectedUserId);
 
-        setPostsId(data as Post[]);
-      } catch (error) {
+        setPostId(post as Post[]);
+      } catch {
         setErrorMessage(ErrorType.DownloadError);
       } finally {
         setIsLoading(false);
@@ -69,7 +68,12 @@ export const App: React.FC = () => {
     setSelectedUserId(userId);
   };
 
-  const openPost = async (postId: number) => {
+  const openPost = async (postId: number | null) => {
+    if (postId === null) {
+    setSelectedPostId(null);
+    setComments([]);
+    return;
+  }
     setIsLoading(true);
     setSelectedPostId(postId);
     setErrorMessage('');
@@ -81,11 +85,10 @@ export const App: React.FC = () => {
       setErrorMessage(ErrorType.DownloadError);
     } finally {
       setIsLoading(false);
-      //setSelectedPostId(postId);
     }
   };
 
-  async function addNewComment (comment: CommentData, postId: number) {
+  async function addNewComment(comment: CommentData, postId: number) {
     try {
       const newComment = await postServise.addComment(comment, postId);
 
@@ -95,12 +98,14 @@ export const App: React.FC = () => {
     }
   }
 
-  async function handleDeleteComment (commentId: number) {
-    try {
-      await postServise.deleteComments(commentId);
-      setComments(currentComments =>
+  async function handleDeleteComment(commentId: number) {
+    setErrorMessage('');
+    setComments(currentComments =>
         currentComments.filter(comment => comment.id !== commentId),
       );
+
+      try {
+      await postServise.deleteComments(commentId);
     } catch (error) {
       setErrorMessage(ErrorType.Delete);
     }
@@ -113,27 +118,27 @@ export const App: React.FC = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector
-                  users={users}
-                  onLoadUsers={loadUsers}
-                  onSelectUser={handleSelectUser}
-                  selectedUserId={selectedUserId}
-                />
+                {!errorMessage && (
+                  <UserSelector
+                    users={users}
+                    onLoadUsers={loadUsers}
+                    onSelectUser={handleSelectUser}
+                    selectedUserId={selectedUserId}
+                  />
+                )}
               </div>
 
               <div className="block" data-cy="MainContent">
                 {!errorMessage && !selectedUserId && (
-                  <p data-cy="NoSelectedUser">
-                    {ErrorType.LoadUser}
-                  </p>
+                  <p data-cy="NoSelectedUser">{ErrorType.LoadUser}</p>
                 )}
 
-                {!errorMessage  && isLoading && (
+                {errorMessage && (
                   <div
                     className="notification is-danger"
                     data-cy="PostsLoadingError"
                   >
-                    {ErrorType.DownloadError}
+                    {errorMessage}
                   </div>
                 )}
 
@@ -141,15 +146,18 @@ export const App: React.FC = () => {
 
                 {!isLoading && !errorMessage && selectedUserId !== null && (
                   <>
-                    {postsId.length > 0 ? (
+                    {postId.length > 0 ? (
                       <PostsList
-                        postApi={postsId}
+                        postApi={postId}
                         onOpenPost={openPost}
                         selectedPostId={selectedPostId}
-                        closePost={() => setSelectedPostId(null)}
+
                       />
                     ) : (
-                      <div className="notification is-warning" data-cy="NoPostsYet">
+                      <div
+                        className="notification is-warning"
+                        data-cy="NoPostsYet"
+                      >
                         {ErrorType.NoPosts}
                       </div>
                     )}
@@ -166,18 +174,20 @@ export const App: React.FC = () => {
               'is-parent',
               'is-8-desktop',
               'Sidebar',
-              {'Sidebar--open': selectedPostId !== null},
+              { 'Sidebar--open': selectedPostId !== null },
             )}
           >
             <div className="tile is-child box is-success ">
-              {selectedPostId && postsId.length > 0 && (
+              {selectedPostId && postId.length > 0 && (
                 <PostDetails
-                  postsApi={postsId}
+                  postsApi={postId}
                   comments={comments}
                   isLoading={isLoading}
                   errorMessage={errorMessage}
                   selectedPostId={selectedPostId}
-                  onSubmitComment={(comment) => addNewComment(comment, selectedPostId!)}
+                  onSubmitComment={comment =>
+                    addNewComment(comment, selectedPostId!)
+                  }
                   onDeleteComment={handleDeleteComment}
                 />
               )}
@@ -185,6 +195,6 @@ export const App: React.FC = () => {
           </div>
         </div>
       </div>
-      </main>
+    </main>
   );
 };

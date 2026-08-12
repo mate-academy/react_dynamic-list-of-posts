@@ -42,27 +42,32 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setNameError('');
+    setEmailError('');
+    setBodyError('');
+    let hasError = false;
 
-    if (!name.trim() || !email.trim() || !body.trim()) {
-      if (!name.trim()) {
+      if (!name.trim() || !name.trim().length) {
         setNameError(ErrorType.NoName);
+        hasError = true;
       }
 
-      if (!email.trim()) {
+      if (!email.trim() || !email.trim().length) {
         setEmailError(ErrorType.NoEmail);
+        hasError = true;
       }
 
-      if (!body.trim()) {
+      if (!body.trim() || !body.trim().length) {
         setBodyError(ErrorType.NoText);
+        hasError = true;
       }
-
+     if (hasError) {
       return;
-    }
-
+     }
     setIsSubmitting(true);
 
     try {
-        onSubmit?.({
+      await onSubmit?.({
         name: name.trim(),
         email: email.trim(),
         body: body.trim(),
