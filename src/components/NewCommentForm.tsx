@@ -51,8 +51,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         email: false,
         body: false,
       });
-    } catch {
-      // Error is handled by parent component.
+    } catch (error) {
+      throw error;
     } finally {
       setIsSubmitting(false);
     }
@@ -205,13 +205,18 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="submit"
             className={`button is-link ${isSubmitting ? 'is-loading' : ''}`}
+            disabled={isSubmitting}
           >
             Add
           </button>
         </div>
 
         <div className="control">
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            className="button is-link is-light"
+            disabled={isSubmitting}
+          >
             Clear
           </button>
         </div>

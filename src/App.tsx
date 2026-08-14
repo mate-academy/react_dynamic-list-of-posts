@@ -92,6 +92,12 @@ export const App = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
+                <UserSelector
+                  users={users}
+                  selectedUser={selectedUser}
+                  onSelect={setSelectedUser}
+                />
+
                 {isUsersLoading && <Loader />}
 
                 {usersError && (
@@ -101,14 +107,6 @@ export const App = () => {
                   >
                     Something went wrong!
                   </div>
-                )}
-
-                {!isUsersLoading && !usersError && (
-                  <UserSelector
-                    users={users}
-                    selectedUser={selectedUser}
-                    onSelect={setSelectedUser}
-                  />
                 )}
               </div>
 
