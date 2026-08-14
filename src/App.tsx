@@ -1,4 +1,4 @@
-/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/indent */
 import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 
@@ -22,11 +22,29 @@ export const App = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
+  const [isUsersLoading, setIsUsersLoading] = useState(true);
+  const [usersError, setUsersError] = useState(false);
+
   const [isPostsLoading, setIsPostsLoading] = useState(false);
   const [postsError, setPostsError] = useState(false);
 
   useEffect(() => {
-    client.get<User[]>('/users').then(setUsers);
+    const loadUsers = async () => {
+      setIsUsersLoading(true);
+      setUsersError(false);
+
+      try {
+        const loadedUsers = await client.get<User[]>('/users');
+
+        setUsers(loadedUsers);
+      } catch {
+        setUsersError(true);
+      } finally {
+        setIsUsersLoading(false);
+      }
+    };
+
+    loadUsers();
   }, []);
 
   useEffect(() => {
@@ -37,20 +55,26 @@ export const App = () => {
       return;
     }
 
-    setIsPostsLoading(true);
-    setPostsError(false);
-    setSelectedPost(null);
+    const loadPosts = async () => {
+      setIsPostsLoading(true);
+      setPostsError(false);
+      setSelectedPost(null);
 
-    client
-      .get<Post[]>(`/posts?userId=${selectedUser.id}`)
-      .then(setPosts)
-      .catch(() => {
-        setPostsError(true);
+      try {
+        const loadedPosts = await client.get<Post[]>(
+          `/posts?userId=${selectedUser.id}`,
+        );
+
+        setPosts(loadedPosts);
+      } catch {
         setPosts([]);
-      })
-      .finally(() => {
+        setPostsError(true);
+      } finally {
         setIsPostsLoading(false);
-      });
+      }
+    };
+
+    loadPosts();
   }, [selectedUser]);
 
   const handlePostSelect = (post: Post) => {
@@ -68,11 +92,24 @@ export const App = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector
-                  users={users}
-                  selectedUser={selectedUser}
-                  onSelect={setSelectedUser}
-                />
+                {isUsersLoading && <Loader />}
+
+                {usersError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="UsersLoadingError"
+                  >
+                    Something went wrong!
+                  </div>
+                )}
+
+                {!isUsersLoading && !usersError && (
+                  <UserSelector
+                    users={users}
+                    selectedUser={selectedUser}
+                    onSelect={setSelectedUser}
+                  />
+                )}
               </div>
 
               <div className="block" data-cy="MainContent">
@@ -95,24 +132,24 @@ export const App = () => {
                   !isPostsLoading &&
                   !postsError &&
                   posts.length === 0 && (
-                  <div
-                    className="notification is-warning"
-                    data-cy="NoPostsYet"
-                  >
+                    <div
+                      className="notification is-warning"
+                      data-cy="NoPostsYet"
+                    >
                       No posts yet
-                  </div>
-                )}
+                    </div>
+                  )}
 
                 {selectedUser &&
                   !isPostsLoading &&
                   !postsError &&
                   posts.length > 0 && (
-                  <PostsList
-                    posts={posts}
-                    selectedPost={selectedPost}
-                    onSelect={handlePostSelect}
-                  />
-                )}
+                    <PostsList
+                      posts={posts}
+                      selectedPost={selectedPost}
+                      onSelect={handlePostSelect}
+                    />
+                  )}
               </div>
             </div>
           </div>

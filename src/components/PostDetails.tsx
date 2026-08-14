@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { Comment, CommentData } from '../types/Comment';
 import { Post } from '../types/Post';
@@ -39,21 +40,23 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       });
   }, [post.id]);
 
-  const handleDelete = (commentId: number) => {
+  const handleDeleteComment = async (commentId: number) => {
     const previousComments = comments;
 
     setDeleteError(false);
 
-    // Delete immediately from UI
+    // Optimistic update
     setComments(currentComments =>
       currentComments.filter(comment => comment.id !== commentId),
     );
 
-    client.delete(`/comments/${commentId}`).catch(() => {
-      // Restore comment if API request failed
+    try {
+      await client.delete(`/comments/${commentId}`);
+    } catch {
+      // Restore comment if DELETE failed
       setComments(previousComments);
       setDeleteError(true);
-    });
+    }
   };
 
   const handleAddComment = async (commentData: CommentData) => {
@@ -65,12 +68,11 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
         postId: post.id,
       });
 
-      // Add new comment to the end of the list
       setComments(currentComments => [...currentComments, newComment]);
     } catch (error) {
       setAddError(true);
 
-      // Let NewCommentForm know that request failed
+      // NewCommentForm uses this to stop loading
       throw error;
     }
   };
@@ -132,7 +134,7 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
                         type="button"
                         className="delete is-small"
                         aria-label="delete"
-                        onClick={() => handleDelete(comment.id)}
+                        onClick={() => handleDeleteComment(comment.id)}
                       />
                     </div>
 
@@ -181,4 +183,13 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
       </div>
     </div>
   );
+};
+
+PostDetails.propTypes = {
+  post: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    userId: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+  }).isRequired,
 };
