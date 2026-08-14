@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { CommentData } from '../types/Comment';
 
@@ -6,18 +7,12 @@ type Props = {
   onSubmit: (comment: CommentData) => Promise<void>;
 };
 
-type Errors = {
-  name: boolean;
-  email: boolean;
-  body: boolean;
-};
-
 export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
   const [name, setName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [body, setBody] = React.useState('');
 
-  const [errors, setErrors] = React.useState<Errors>({
+  const [errors, setErrors] = React.useState({
     name: false,
     email: false,
     body: false,
@@ -49,8 +44,6 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         body,
       });
 
-      // Name and email stay after successful submit
-      // Only comment body is cleared
       setBody('');
 
       setErrors({
@@ -58,6 +51,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
         email: false,
         body: false,
       });
+    } catch {
+      // Error is handled by parent component.
     } finally {
       setIsSubmitting(false);
     }
@@ -223,4 +218,8 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
       </div>
     </form>
   );
+};
+
+NewCommentForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
 };
