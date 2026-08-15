@@ -1,107 +1,195 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
+import { Comment, CommentData } from '../types/Comment';
+import { Post } from '../types/Post';
+import { client } from '../utils/fetchClient';
 import { Loader } from './Loader';
 import { NewCommentForm } from './NewCommentForm';
 
-export const PostDetails: React.FC = () => {
+type Props = {
+  post: Post;
+};
+
+export const PostDetails: React.FC<Props> = ({ post }) => {
+  const [comments, setComments] = React.useState<Comment[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [hasError, setHasError] = React.useState(false);
+
+  const [isFormVisible, setIsFormVisible] = React.useState(false);
+
+  const [addError, setAddError] = React.useState(false);
+  const [deleteError, setDeleteError] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsLoading(true);
+    setHasError(false);
+    setComments([]);
+    setIsFormVisible(false);
+    setAddError(false);
+    setDeleteError(false);
+
+    client
+      .get<Comment[]>(`/comments?postId=${post.id}`)
+      .then(setComments)
+      .catch(() => {
+        setHasError(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [post.id]);
+
+  const handleDeleteComment = async (commentId: number) => {
+    const previousComments = comments;
+
+    setDeleteError(false);
+
+    // Optimistic update
+    setComments(currentComments =>
+      currentComments.filter(comment => comment.id !== commentId),
+    );
+
+    try {
+      await client.delete(`/comments/${commentId}`);
+    } catch {
+      // Restore comment if DELETE failed
+      setComments(previousComments);
+      setDeleteError(true);
+    }
+  };
+
+  const handleAddComment = async (commentData: CommentData) => {
+    setAddError(false);
+
+    try {
+      const newComment = await client.post<Comment>('/comments', {
+        ...commentData,
+        postId: post.id,
+      });
+
+      setComments(currentComments => [...currentComments, newComment]);
+    } catch (error) {
+      setAddError(true);
+
+      // NewCommentForm uses this to stop loading
+      throw error;
+    }
+  };
+
   return (
     <div className="content" data-cy="PostDetails">
-      <div className="content" data-cy="PostDetails">
-        <div className="block">
-          <h2 data-cy="PostTitle">
-            #18: voluptate et itaque vero tempora molestiae
-          </h2>
+      <div className="block">
+        <h2 data-cy="PostTitle">
+          #{post.id}: {post.title}
+        </h2>
 
-          <p data-cy="PostBody">
-            eveniet quo quis laborum totam consequatur non dolor ut et est
-            repudiandae est voluptatem vel debitis et magnam
-          </p>
-        </div>
+        <p data-cy="PostBody">{post.body}</p>
+      </div>
 
-        <div className="block">
-          <Loader />
+      <div className="block">
+        {isLoading && <Loader />}
 
+        {hasError && (
           <div className="notification is-danger" data-cy="CommentsError">
             Something went wrong
           </div>
+        )}
 
-          <p className="title is-4" data-cy="NoCommentsMessage">
-            No comments yet
-          </p>
-
-          <p className="title is-4">Comments:</p>
-
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
+        {!isLoading && !hasError && (
+          <>
+            {deleteError && (
+              <div
+                className="notification is-danger"
+                data-cy="DeleteCommentError"
               >
-                delete button
-              </button>
-            </div>
+                Unable to delete comment. Please try again.
+              </div>
+            )}
 
-            <div className="message-body" data-cy="CommentBody">
-              Some comment
-            </div>
-          </article>
+            {comments.length === 0 ? (
+              <p className="title is-4" data-cy="NoCommentsMessage">
+                No comments yet
+              </p>
+            ) : (
+              <>
+                <p className="title is-4">Comments:</p>
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
+                {comments.map(comment => (
+                  <article
+                    className="message is-small"
+                    data-cy="Comment"
+                    key={comment.id}
+                  >
+                    <div className="message-header">
+                      <a
+                        href={`mailto:${comment.email}`}
+                        data-cy="CommentAuthor"
+                      >
+                        {comment.name}
+                      </a>
 
+                      <button
+                        data-cy="CommentDelete"
+                        type="button"
+                        className="delete is-small"
+                        aria-label="delete"
+                        onClick={() => handleDeleteComment(comment.id)}
+                      />
+                    </div>
+
+                    <div
+                      className="message-body"
+                      data-cy="CommentBody"
+                      style={{ whiteSpace: 'pre-wrap' }}
+                    >
+                      {comment.body}
+                    </div>
+                  </article>
+                ))}
+              </>
+            )}
+
+            {!isFormVisible && (
               <button
-                data-cy="CommentDelete"
+                data-cy="WriteCommentButton"
                 type="button"
-                className="delete is-small"
-                aria-label="delete"
+                className="button is-link"
+                onClick={() => {
+                  setIsFormVisible(true);
+                  setAddError(false);
+                }}
               >
-                delete button
+                Write a comment
               </button>
-            </div>
-            <div className="message-body" data-cy="CommentBody">
-              One more comment
-            </div>
-          </article>
+            )}
 
-          <article className="message is-small" data-cy="Comment">
-            <div className="message-header">
-              <a href="mailto:misha@mate.academy" data-cy="CommentAuthor">
-                Misha Hrynko
-              </a>
+            {isFormVisible && (
+              <>
+                {addError && (
+                  <div
+                    className="notification is-danger"
+                    data-cy="AddCommentError"
+                  >
+                    Unable to add comment. Please try again.
+                  </div>
+                )}
 
-              <button
-                data-cy="CommentDelete"
-                type="button"
-                className="delete is-small"
-                aria-label="delete"
-              >
-                delete button
-              </button>
-            </div>
-
-            <div className="message-body" data-cy="CommentBody">
-              {'Multi\nline\ncomment'}
-            </div>
-          </article>
-
-          <button
-            data-cy="WriteCommentButton"
-            type="button"
-            className="button is-link"
-          >
-            Write a comment
-          </button>
-        </div>
-
-        <NewCommentForm />
+                <NewCommentForm onSubmit={handleAddComment} />
+              </>
+            )}
+          </>
+        )}
       </div>
     </div>
   );
+};
+
+PostDetails.propTypes = {
+  post: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    userId: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+  }).isRequired,
 };
