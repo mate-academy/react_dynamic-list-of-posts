@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/indent */
 import { useEffect, useState } from 'react';
-import classNames from 'classnames';
 
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
 
-import { PostsList } from './components/PostsList';
-import { PostDetails } from './components/PostDetails';
-import { UserSelector } from './components/UserSelector';
 import { Loader } from './components/Loader';
+import { MainContent } from './components/MainContent';
+import { PostDetails } from './components/PostDetails';
+import { PostsList } from './components/PostsList';
+import { Sidebar } from './components/Sidebar';
+import { UserSelector } from './components/UserSelector';
 
-import { User } from './types/User';
 import { Post } from './types/Post';
+import { User } from './types/User';
 import { client } from './utils/fetchClient';
 
 export const App = () => {
@@ -89,85 +90,67 @@ export const App = () => {
     <main className="section">
       <div className="container">
         <div className="tile is-ancestor">
-          <div className="tile is-parent">
-            <div className="tile is-child box is-success">
-              <div className="block">
-                <UserSelector
-                  users={users}
-                  selectedUser={selectedUser}
-                  onSelect={setSelectedUser}
-                />
+          <MainContent>
+            <div className="block">
+              <UserSelector
+                users={users}
+                selectedUser={selectedUser}
+                onSelect={setSelectedUser}
+              />
 
-                {isUsersLoading && <Loader />}
+              {isUsersLoading && <Loader />}
 
-                {usersError && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="UsersLoadingError"
-                  >
-                    Something went wrong!
+              {usersError && (
+                <div
+                  className="notification is-danger"
+                  data-cy="UsersLoadingError"
+                >
+                  Something went wrong!
+                </div>
+              )}
+            </div>
+
+            <div className="block" data-cy="MainContent">
+              {!selectedUser && (
+                <p data-cy="NoSelectedUser">No user selected</p>
+              )}
+
+              {selectedUser && isPostsLoading && <Loader />}
+
+              {selectedUser && postsError && (
+                <div
+                  className="notification is-danger"
+                  data-cy="PostsLoadingError"
+                >
+                  Something went wrong!
+                </div>
+              )}
+
+              {selectedUser &&
+                !isPostsLoading &&
+                !postsError &&
+                posts.length === 0 && (
+                  <div className="notification is-warning" data-cy="NoPostsYet">
+                    No posts yet
                   </div>
                 )}
-              </div>
 
-              <div className="block" data-cy="MainContent">
-                {!selectedUser && (
-                  <p data-cy="NoSelectedUser">No user selected</p>
+              {selectedUser &&
+                !isPostsLoading &&
+                !postsError &&
+                posts.length > 0 && (
+                  <PostsList
+                    posts={posts}
+                    selectedPost={selectedPost}
+                    onSelect={handlePostSelect}
+                  />
                 )}
-
-                {selectedUser && isPostsLoading && <Loader />}
-
-                {selectedUser && postsError && (
-                  <div
-                    className="notification is-danger"
-                    data-cy="PostsLoadingError"
-                  >
-                    Something went wrong!
-                  </div>
-                )}
-
-                {selectedUser &&
-                  !isPostsLoading &&
-                  !postsError &&
-                  posts.length === 0 && (
-                    <div
-                      className="notification is-warning"
-                      data-cy="NoPostsYet"
-                    >
-                      No posts yet
-                    </div>
-                  )}
-
-                {selectedUser &&
-                  !isPostsLoading &&
-                  !postsError &&
-                  posts.length > 0 && (
-                    <PostsList
-                      posts={posts}
-                      selectedPost={selectedPost}
-                      onSelect={handlePostSelect}
-                    />
-                  )}
-              </div>
             </div>
-          </div>
+          </MainContent>
 
-          <div
-            data-cy="Sidebar"
-            className={classNames(
-              'tile',
-              'is-parent',
-              'is-8-desktop',
-              'Sidebar',
-              {
-                'Sidebar--open': selectedPost !== null,
-              },
-            )}
-          >
-            <div className="tile is-child box is-success">
-              {selectedPost && <PostDetails post={selectedPost} />}
-            </div>
-          </div>
+          <Sidebar isOpen={selectedPost !== null}>
+            {selectedPost && <PostDetails post={selectedPost} />}
+          </Sidebar>
         </div>
       </div>
     </main>
