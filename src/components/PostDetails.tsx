@@ -4,6 +4,7 @@ import { NewCommentForm } from '../components/NewCommentForm';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
 import { client } from '../utils/fetchClient';
+import 'bulma/css/bulma.css';
 
 interface Props {
   post: Post | null;
@@ -57,10 +58,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           <h2 data-cy="PostTitle">
             #{post.id}: {post.title}
           </h2>
-
           <p data-cy="PostBody">{post.body}</p>
+          <h3>Comments:</h3>
           {isLoadingComments && <Loader />}
-
           {isCommentsError && (
             <div className="notification is-danger" data-cy="CommentsError">
               Something went wrong!
@@ -77,27 +77,34 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
           {isDeleteError && (
             <div className="notification is-danger">Something went wrong!</div>
           )}
-
           {comments.map(comment => (
-            <article data-cy="Comment" key={comment.id}>
-              <a data-cy="CommentAuthor" href={`mailto:${comment.email}`}>
-                {comment.name}
-              </a>
+            <article
+              className="message is-small"
+              data-cy="Comment"
+              key={comment.id}
+            >
+              <div className="message-header">
+                <a data-cy="CommentAuthor" href={`mailto:${comment.email}`}>
+                  {comment.name}
+                </a>
 
-              <p data-cy="CommentBody">{comment.body}</p>
+                <button
+                  type="button"
+                  className="delete"
+                  onClick={() => deleteComment(comment)}
+                >
+                  Delete
+                </button>
+              </div>
 
-              <button
-                type="button"
-                className="delete"
-                onClick={() => deleteComment(comment)}
-              >
-                Delete
-              </button>
+              <div className="message-body" data-cy="CommentBody">
+                <p>{comment.body}</p>
+              </div>
             </article>
           ))}
-
           {!isLoadingComments && !isCommentsError && !isCommentFormVisible && (
             <button
+              className="button is-link"
               data-cy="WriteCommentButton"
               onClick={() => {
                 setIsCommentFormVisible(true);
@@ -106,7 +113,6 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
               Write a comment
             </button>
           )}
-
           {isCommentFormVisible && (
             <NewCommentForm
               onCommentAdd={comment => {

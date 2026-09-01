@@ -108,19 +108,20 @@ export const App = () => {
                   )}
                 {/* eslint-enable @typescript-eslint/indent */}
 
-                {isLoadingPosts ? (
-                  <Loader />
-                ) : (
-                  <PostsList
-                    posts={posts}
-                    selectedPost={selectedPost}
-                    onPostSelect={post => {
-                      setSelectedPost(
-                        selectedPost?.id === post.id ? null : post,
-                      );
-                    }}
-                  />
-                )}
+                {selectedUser &&
+                  (isLoadingPosts ? (
+                    <Loader />
+                  ) : (
+                    <PostsList
+                      posts={posts}
+                      selectedPost={selectedPost}
+                      onPostSelect={post => {
+                        setSelectedPost(
+                          selectedPost?.id === post.id ? null : post,
+                        );
+                      }}
+                    />
+                  ))}
               </div>
             </div>
           </div>
