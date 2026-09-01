@@ -3,6 +3,8 @@ import classNames from 'classnames';
 import 'bulma/css/bulma.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import './App.scss';
+// eslint-disable-next-line import/no-extraneous-dependencies
+//import PropTypes from 'prop-types';
 
 import { useState, useEffect } from 'react';
 import { PostsList } from './components/PostsList';
@@ -80,7 +82,9 @@ export const App = () => {
               </div>
 
               <div className="block" data-cy="MainContent">
-                <p data-cy="NoSelectedUser">No user selected</p>
+                {!selectedUser && (
+                  <p data-cy="NoSelectedUser">No user selected</p>
+                )}
 
                 {isPostsError && (
                   <div
@@ -140,3 +144,5 @@ export const App = () => {
     </main>
   );
 };
+
+App.propTypes = {};

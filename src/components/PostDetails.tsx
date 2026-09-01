@@ -14,10 +14,17 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [isCommentsError, setIsCommentsError] = useState(false);
   const [isCommentFormVisible, setIsCommentFormVisible] = useState(false);
-  const deleteComment = (comment: Comment) => {
-    setComments(prev => prev.filter(item => item.id !== comment.id));
+  const [isDeleteError, setIsDeleteError] = useState(false);
+  const deleteComment = async (comment: Comment) => {
+    setIsDeleteError(false);
 
-    client.delete(`/comments/${comment.id}`);
+    try {
+      await client.delete(`/comments/${comment.id}`);
+
+      setComments(prev => prev.filter(item => item.id !== comment.id));
+    } catch {
+      setIsDeleteError(true);
+    }
   };
 
   useEffect(() => {
@@ -66,6 +73,9 @@ export const PostDetails: React.FC<Props> = ({ post }) => {
             >
               No comments yet
             </div>
+          )}
+          {isDeleteError && (
+            <div className="notification is-danger">Something went wrong!</div>
           )}
 
           {comments.map(comment => (
