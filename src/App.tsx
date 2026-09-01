@@ -19,14 +19,25 @@ export const App = () => {
 
   const [isLoadingPosts, setIsLoadingPosts] = useState<boolean>(false);
   const [isPostsError, setIsPostsError] = useState<boolean>(false);
+  const [isUsersError, setIsUsersError] = useState(false);
 
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
-    client.get<User[]>(`/users`).then(result => {
-      setUsers(result);
-    });
+    const loadUsers = async () => {
+      try {
+        setIsUsersError(false);
+
+        const result = await client.get<User[]>('/users');
+
+        setUsers(result);
+      } catch {
+        setIsUsersError(true);
+      }
+    };
+
+    loadUsers();
   }, []);
 
   useEffect(() => {
@@ -35,10 +46,9 @@ export const App = () => {
     }
 
     setSelectedPost(null);
-
     setIsPostsError(false);
-
     setIsLoadingPosts(true);
+
     client
       .get<Post[]>(`/posts?userId=${selectedUser.id}`)
       .then(result => {
@@ -58,11 +68,20 @@ export const App = () => {
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
               <div className="block">
-                <UserSelector users={users} onUserSelect={setSelectedUser} />
+                {isUsersError && (
+                  <div className="notification is-danger">
+                    Something went wrong!
+                  </div>
+                )}
+
+                {!isUsersError && (
+                  <UserSelector users={users} onUserSelect={setSelectedUser} />
+                )}
               </div>
 
               <div className="block" data-cy="MainContent">
                 <p data-cy="NoSelectedUser">No user selected</p>
+
                 {isPostsError && (
                   <div
                     className="notification is-danger"

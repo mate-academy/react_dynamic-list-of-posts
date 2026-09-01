@@ -12,51 +12,50 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdd }) => {
   const [isName, setIsName] = useState('');
   const [isEmail, setIsEmail] = useState('');
   const [isBody, setIsBody] = useState('');
-  const [isErrorName, setIsErrorName] = useState(false);
-  const [isErrorEmail, setIsErrorEmail] = useState(false);
-  const [isErrorBody, setIsErrorBody] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [errors, setErrors] = useState({
+    name: false,
+    email: false,
+    body: false,
+  });
 
   return (
     <form
       data-cy="NewCommentForm"
-      onSubmit={event => {
+      onSubmit={async event => {
         event.preventDefault();
 
-        if (!isName) {
-          setIsErrorName(true);
+        const hasErrors = {
+          name: !isName.trim(),
+          email: !isEmail.trim(),
+          body: !isBody.trim(),
+        };
+
+        setErrors(hasErrors);
+
+        if (hasErrors.name || hasErrors.email || hasErrors.body) {
+          return;
         }
 
-        if (!isEmail) {
-          setIsErrorEmail(true);
-        }
+        setIsError(false);
+        setIsLoading(true);
 
-        if (!isBody) {
-          setIsErrorBody(true);
-        }
-
-        if (isName && isEmail && isBody) {
-          setIsLoading(true);
-        }
-
-        client
-          /* eslint-disable @typescript-eslint/indent, prettier/prettier, max-len */
-          .post<Comment>('/comments', {
+        try {
+          const result = await client.post<Comment>('/comments', {
             postId,
             name: isName,
             email: isEmail,
             body: isBody,
-          })
-          /* eslint-enable @typescript-eslint/indent, prettier/prettier, max-len */
-          .then(result => {
-            onCommentAdd(result);
-            setIsBody('');
-            setIsLoading(false);
-          })
-
-          .catch(() => {
-            setIsLoading(false);
           });
+
+          onCommentAdd(result);
+          setIsBody('');
+        } catch {
+          setIsError(true);
+        } finally {
+          setIsLoading(false);
+        }
       }}
     >
       <div className="field" data-cy="NameField">
@@ -71,19 +70,22 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdd }) => {
             id="comment-author-name"
             placeholder="Name Surname"
             className={classNames('input', {
-              'is-danger': isErrorName,
+              'is-danger': errors.name,
             })}
             value={isName}
             onChange={event => {
               setIsName(event.target.value);
-              setIsErrorName(false);
+              setErrors(prev => ({
+                ...prev,
+                name: false,
+              }));
             }}
           />
           <span className="icon is-small is-left">
             <i className="fas fa-user" />
           </span>
 
-          {isErrorName && (
+          {errors.name && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -93,7 +95,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdd }) => {
           )}
         </div>
 
-        {isErrorName && (
+        {errors.name && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Name is required
           </p>
@@ -112,12 +114,15 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdd }) => {
             id="comment-author-email"
             placeholder="email@test.com"
             className={classNames('input', {
-              'is-danger': isErrorEmail,
+              'is-danger': errors.email,
             })}
             value={isEmail}
             onChange={event => {
               setIsEmail(event.target.value);
-              setIsErrorEmail(false);
+              setErrors(prev => ({
+                ...prev,
+                email: false,
+              }));
             }}
           />
 
@@ -125,7 +130,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdd }) => {
             <i className="fas fa-envelope" />
           </span>
 
-          {isErrorEmail && (
+          {errors.email && (
             <span
               className="icon is-small is-right has-text-danger"
               data-cy="ErrorIcon"
@@ -135,7 +140,7 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdd }) => {
           )}
         </div>
 
-        {isErrorEmail && (
+        {errors.email && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Email is required
           </p>
@@ -153,22 +158,29 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdd }) => {
             name="body"
             placeholder="Type comment here"
             className={classNames('textarea', {
-              'is-danger': isErrorBody,
+              'is-danger': errors.body,
             })}
             value={isBody}
             onChange={event => {
               setIsBody(event.target.value);
-              setIsErrorBody(false);
+              setErrors(prev => ({
+                ...prev,
+                body: false,
+              }));
             }}
           />
         </div>
 
-        {isErrorBody && (
+        {errors.body && (
           <p className="help is-danger" data-cy="ErrorMessage">
             Enter some text
           </p>
         )}
       </div>
+
+      {isError && (
+        <div className="notification is-danger">Something went wrong!</div>
+      )}
 
       <div className="field is-grouped">
         <div className="control">
@@ -192,11 +204,13 @@ export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdd }) => {
               setIsName('');
               setIsEmail('');
               setIsBody('');
+              setIsError(false);
 
-              setIsErrorName(false);
-
-              setIsErrorEmail(false);
-              setIsErrorBody(false);
+              setErrors({
+                name: false,
+                email: false,
+                body: false,
+              });
             }}
           >
             Clear

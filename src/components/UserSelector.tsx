@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { User } from '../types/User';
 import classNames from 'classnames';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import PropTypes from 'prop-types';
 
 interface Props {
   users: User[];
@@ -76,4 +78,17 @@ export const UserSelector: React.FC<Props> = ({ users, onUserSelect }) => {
       </div>
     </div>
   );
+};
+
+UserSelector.propTypes = {
+  users: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+      phone: PropTypes.string.isRequired,
+    }).isRequired,
+  ).isRequired,
+  onUserSelect: PropTypes.func.isRequired,
 };
