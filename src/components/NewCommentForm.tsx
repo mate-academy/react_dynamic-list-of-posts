@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { addComment } from '../api/comments';
+import { addComment } from '../api/comment';
 import { Post } from '../types/Post';
 import { Comment } from '../types/Comment';
 import classNames from 'classnames';
@@ -121,7 +121,7 @@ export const NewCommentForm: React.FC<Props> = ({
 
         <div className="control has-icons-left has-icons-right">
           <input
-            type="text"
+            type="email"
             name="email"
             id="comment-author-email"
             placeholder="email@test.com"

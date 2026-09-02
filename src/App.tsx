@@ -11,9 +11,9 @@ import { Loader } from './components/Loader';
 import { useEffect, useState } from 'react';
 import { User } from './types/User';
 import { Post } from './types/Post';
-import { getPosts } from './api/posts';
+import { getPosts } from './api/post';
 import { Comment } from './types/Comment';
-import { deleteComment, getComments } from './api/comments';
+import { deleteComment, getComments } from './api/comment';
 import { getUsers } from './api/users';
 
 export const App = () => {
@@ -76,10 +76,13 @@ export const App = () => {
       return;
     }
 
-    deleteComment(commentId).then(() => {
-      setPostComments(current =>
-        current.filter(comment => comment.id !== commentId),
-      );
+    setPostComments(current =>
+      current.filter(comment => comment.id !== commentId),
+    );
+
+    deleteComment(commentId).catch(() => {
+      setPostComments(current => [...current, commentToDelete]);
+      setPostCommentsError(true);
     });
   };
 
@@ -111,7 +114,6 @@ export const App = () => {
               <div className="block">
                 <UserSelector
                   users={users}
-                  setError={usersError}
                   userSelect={handleSelectUser}
                   selectedUser={selectedUser}
                 />

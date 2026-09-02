@@ -4,7 +4,6 @@ import classNames from 'classnames';
 
 type Props = {
   users: User[];
-  setError: boolean;
   userSelect: (user: User) => void;
   selectedUser: User | null;
 };
