@@ -27,9 +27,15 @@ function request<T>(
   }
 
   // for a demo purpose we emulate a delay to see if Loaders work
-  return wait(300)
+  return wait(100)
     .then(() => fetch(BASE_URL + url, options))
-    .then(response => response.json());
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return response.json();
+    });
 }
 
 export const client = {
