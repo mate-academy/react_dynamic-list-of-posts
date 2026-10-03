@@ -1,99 +1,189 @@
-import React from 'react';
+import React, { useState, FormEvent } from 'react';
+import { addComment } from '../utils/apiComments';
+import { Comment } from '../types/Comment';
 
-export const NewCommentForm: React.FC = () => {
+type Props = {
+  postId: number;
+  onCommentAdded: (comment: Comment) => void;
+};
+
+export const NewCommentForm: React.FC<Props> = ({ postId, onCommentAdded }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [body, setBody] = useState('');
+
+  const [nameError, setNameError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
+  const [bodyError, setBodyError] = useState(false);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+
+    const isNameEmpty = !name.trim();
+    const isEmailEmpty = !email.trim();
+    const isBodyEmpty = !body.trim();
+
+    setNameError(isNameEmpty);
+    setEmailError(isEmailEmpty);
+    setBodyError(isBodyEmpty);
+
+    if (isNameEmpty || isEmailEmpty || isBodyEmpty) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    addComment(postId, {
+      name,
+      email,
+      body,
+    })
+      .then(comment => {
+        onCommentAdded(comment);
+        setBody('');
+        setSubmitError('');
+      })
+      .catch(() => {
+        setSubmitError('Unable to add comment. Please try again.');
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
+  };
+
+  const handleClear = () => {
+    setName('');
+    setEmail('');
+    setBody('');
+
+    setNameError(false);
+    setEmailError(false);
+    setBodyError(false);
+  };
+
   return (
-    <form data-cy="NewCommentForm">
-      <div className="field" data-cy="NameField">
-        <label className="label" htmlFor="comment-author-name">
-          Author Name
+    <form data-cy="NewCommentForm" onSubmit={handleSubmit}>
+      <div className="field">
+        <label className="label" htmlFor="comment-name">
+          Name
         </label>
 
-        <div className="control has-icons-left has-icons-right">
+        <div className="control has-icons-right" data-cy="NameField">
           <input
+            id="comment-name"
+            className={`input ${nameError ? 'is-danger' : ''}`}
             type="text"
-            name="name"
-            id="comment-author-name"
-            placeholder="Name Surname"
-            className="input is-danger"
+            placeholder="Name"
+            value={name}
+            onChange={event => {
+              setName(event.target.value);
+              setNameError(false);
+            }}
           />
 
-          <span className="icon is-small is-left">
-            <i className="fas fa-user" />
-          </span>
+          {nameError && (
+            <span className="icon is-small is-right" data-cy="ErrorIcon">
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {nameError && (
+            <p className="help is-danger" data-cy="ErrorMessage">
+              Name is required
+            </p>
+          )}
         </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Name is required
-        </p>
       </div>
 
-      <div className="field" data-cy="EmailField">
-        <label className="label" htmlFor="comment-author-email">
-          Author Email
+      <div className="field">
+        <label className="label" htmlFor="comment-email">
+          Email
         </label>
 
-        <div className="control has-icons-left has-icons-right">
+        <div className="control has-icons-right" data-cy="EmailField">
           <input
-            type="text"
-            name="email"
-            id="comment-author-email"
-            placeholder="email@test.com"
-            className="input is-danger"
+            id="comment-email"
+            className={`input ${emailError ? 'is-danger' : ''}`}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={event => {
+              setEmail(event.target.value);
+              setEmailError(false);
+            }}
           />
 
-          <span className="icon is-small is-left">
-            <i className="fas fa-envelope" />
-          </span>
+          {emailError && (
+            <span className="icon is-small is-right" data-cy="ErrorIcon">
+              <i className="fas fa-exclamation-triangle" />
+            </span>
+          )}
 
-          <span
-            className="icon is-small is-right has-text-danger"
-            data-cy="ErrorIcon"
-          >
-            <i className="fas fa-exclamation-triangle" />
-          </span>
+          {emailError && (
+            <p className="help is-danger" data-cy="ErrorMessage">
+              Email is required
+            </p>
+          )}
         </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Email is required
-        </p>
       </div>
 
-      <div className="field" data-cy="BodyField">
+      <div className="field">
         <label className="label" htmlFor="comment-body">
-          Comment Text
+          Comment
         </label>
 
-        <div className="control">
+        <div className="control" data-cy="BodyField">
           <textarea
             id="comment-body"
-            name="body"
-            placeholder="Type comment here"
-            className="textarea is-danger"
+            className={`textarea ${bodyError ? 'is-danger' : ''}`}
+            placeholder="Comment"
+            value={body}
+            onChange={event => {
+              setBody(event.target.value);
+              setBodyError(false);
+            }}
           />
+          {bodyError && (
+            <p className="help is-danger" data-cy="ErrorMessage">
+              Comment is required
+            </p>
+          )}
         </div>
-
-        <p className="help is-danger" data-cy="ErrorMessage">
-          Enter some text
-        </p>
       </div>
+
+      {submitError && (
+        <div
+          className="notification is-danger"
+          role="alert"
+          data-cy="SubmitError"
+        >
+          {submitError}
+        </div>
+      )}
 
       <div className="field is-grouped">
         <div className="control">
-          <button type="submit" className="button is-link is-loading">
-            Add
+          <button
+            type="submit"
+            data-cy="SubmitButton"
+            className={`button is-link ${isSubmitting ? 'is-loading' : ''}`}
+            disabled={isSubmitting}
+          >
+            Submit
           </button>
         </div>
 
         <div className="control">
-          {/* eslint-disable-next-line react/button-has-type */}
-          <button type="reset" className="button is-link is-light">
+          <button
+            type="reset"
+            data-cy="ClearButton"
+            className="button is-light"
+            onClick={handleClear}
+            disabled={isSubmitting}
+          >
             Clear
           </button>
         </div>
