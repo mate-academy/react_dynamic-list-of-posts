@@ -1,16 +1,63 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import classNames from 'classnames';
+import PropTypes from 'prop-types';
+import { User } from '../types/User';
+import { userShape } from '../types/propShapes';
 
-export const UserSelector: React.FC = () => {
+interface UserSelectorProps {
+  users: User[];
+  onSelectUser: (id: number) => void;
+  activeUser: number | null;
+}
+
+export const UserSelector: React.FC<UserSelectorProps> = ({
+  users,
+  onSelectUser,
+  activeUser,
+}) => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
+  const handleClick = (id: number) => {
+    onSelectUser(id);
+    setIsDropdownOpen(false);
+  };
+
+  const selectedUser = users.find(user => user.id === activeUser);
+
   return (
-    <div data-cy="UserSelector" className="dropdown is-active">
+    <div
+      ref={dropdownRef}
+      data-cy="UserSelector"
+      className={classNames('dropdown', { 'is-active': isDropdownOpen })}
+    >
       <div className="dropdown-trigger">
         <button
           type="button"
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setIsDropdownOpen(current => !current)}
         >
-          <span>Choose a user</span>
+          <span>{selectedUser ? selectedUser.name : 'Choose a user'}</span>
 
           <span className="icon is-small">
             <i className="fas fa-angle-down" aria-hidden="true" />
@@ -20,23 +67,26 @@ export const UserSelector: React.FC = () => {
 
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+          {users.map(user => (
+            <a
+              href={`#user-${user.id}`}
+              className={classNames('dropdown-item', {
+                'is-active': activeUser === user.id,
+              })}
+              key={user.id}
+              onClick={() => handleClick(user.id)}
+            >
+              {user.name}
+            </a>
+          ))}
         </div>
       </div>
     </div>
   );
+};
+
+UserSelector.propTypes = {
+  users: PropTypes.arrayOf(userShape.isRequired).isRequired,
+  activeUser: PropTypes.number,
+  onSelectUser: PropTypes.func.isRequired,
 };
