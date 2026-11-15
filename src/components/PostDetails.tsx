@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { Post } from '../types/Post';
 import { Comment, CommentData } from '../types/Comment';
 import { Loader } from './Loader';
@@ -99,4 +100,22 @@ export const PostDetails: React.FC<Props> = ({
       </div>
     </div>
   );
+};
+
+PostDetails.propTypes = {
+  post: PropTypes.shape({
+    userId: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+    body: PropTypes.string.isRequired,
+  }).isRequired,
+  comments: PropTypes.arrayOf(
+    PropTypes.shape({
+      postId: PropTypes.number.isRequired,
+      id: PropTypes.number.isRequired,
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+      body: PropTypes.string.isRequired,
+    }).isRequired,
+  ).isRequired,
 };
