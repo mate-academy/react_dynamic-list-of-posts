@@ -55,7 +55,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
     }
   };
 
-  const handClearForm = () => {
+  const handleClearForm = () => {
     setName('');
     setEmail('');
     setBody('');
@@ -194,7 +194,7 @@ export const NewCommentForm: React.FC<Props> = ({ onSubmit }) => {
           <button
             type="reset"
             className="button is-link is-light"
-            onClick={handClearForm}
+            onClick={handleClearForm}
           >
             Clear
           </button>
