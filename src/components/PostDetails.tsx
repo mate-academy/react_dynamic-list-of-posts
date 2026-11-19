@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Post } from '../types/Post';
 import type { Comment } from '../types/Comment';
 import { Loader } from './Loader';
+import { NewCommentForm } from './NewCommentForm';
 
 type Props = {
   selectedPost: Post;
   comments: Comment[] | null;
   isLoadingComments: boolean;
   commentsError: boolean;
+  onDeleteComment: (commentId: number) => void;
+  onAddComment: (comment: Comment) => void;
 };
 
 export const PostDetails: React.FC<Props> = ({
@@ -15,7 +18,15 @@ export const PostDetails: React.FC<Props> = ({
   comments,
   isLoadingComments,
   commentsError,
+  onDeleteComment,
+  onAddComment,
 }) => {
+  const [isFormVisible, setIsFormVisible] = useState(false);
+
+  useEffect(() => {
+    setIsFormVisible(false);
+  }, [selectedPost.id]);
+
   return (
     <div className="content" data-cy="PostDetails">
       <div className="block">
@@ -55,6 +66,14 @@ export const PostDetails: React.FC<Props> = ({
                   <a href={`mailto:${comment.email}`} data-cy="CommentAuthor">
                     {comment.name}
                   </a>
+
+                  <button
+                    data-cy="CommentDelete"
+                    type="button"
+                    className="delete is-small"
+                    aria-label="delete"
+                    onClick={() => onDeleteComment(comment.id)}
+                  />
                 </div>
 
                 <div className="message-body" data-cy="CommentBody">
@@ -63,6 +82,24 @@ export const PostDetails: React.FC<Props> = ({
               </article>
             ))}
           </>
+        )}
+
+        {!isFormVisible && (
+          <button
+            data-cy="WriteCommentButton"
+            type="button"
+            className="button is-link"
+            onClick={() => setIsFormVisible(true)}
+          >
+            Write a comment
+          </button>
+        )}
+
+        {isFormVisible && (
+          <NewCommentForm
+            postId={selectedPost.id}
+            onAddComment={onAddComment}
+          />
         )}
       </div>
     </div>

@@ -104,6 +104,25 @@ export const App: React.FC = () => {
       });
   }, [selectedPost?.id]);
 
+  // Delete comment
+
+  const handleDeleteComment = (commentId: number) => {
+    setComments(
+      currentComments =>
+        currentComments?.filter(comment => comment.id !== commentId) ?? null,
+    );
+
+    client.delete(`/comments/${commentId}`).catch(() => {
+      // console.error('Failed to delete comment');
+    });
+  };
+
+  const handleAddComment = (newComment: Comment) => {
+    setComments(currentComments =>
+      currentComments ? [...currentComments, newComment] : [newComment],
+    );
+  };
+
   return (
     <main className="section">
       <div className="container">
@@ -168,6 +187,8 @@ export const App: React.FC = () => {
                   comments={comments}
                   isLoadingComments={isLoadingComments}
                   commentsError={commentsError}
+                  onDeleteComment={handleDeleteComment}
+                  onAddComment={handleAddComment}
                 />
               </div>
             </div>
