@@ -1,6 +1,21 @@
-import React from 'react';
+import cn from 'classnames';
 
-export const UserSelector: React.FC = () => {
+import { useState } from 'react';
+import type { User } from '../types/User';
+
+type Props = {
+  users: User[] | null;
+  selected: number | null;
+  selectUser: (user: number) => void;
+};
+
+export const UserSelector: React.FC<Props> = ({
+  users,
+  selected,
+  selectUser,
+}) => {
+  const [userList, setUserList] = useState<boolean>(false);
+
   return (
     <div data-cy="UserSelector" className="dropdown is-active">
       <div className="dropdown-trigger">
@@ -9,6 +24,7 @@ export const UserSelector: React.FC = () => {
           className="button"
           aria-haspopup="true"
           aria-controls="dropdown-menu"
+          onClick={() => setUserList(prev => !prev)}
         >
           <span>Choose a user</span>
 
@@ -18,25 +34,23 @@ export const UserSelector: React.FC = () => {
         </button>
       </div>
 
-      <div className="dropdown-menu" id="dropdown-menu" role="menu">
-        <div className="dropdown-content">
-          <a href="#user-1" className="dropdown-item">
-            Leanne Graham
-          </a>
-          <a href="#user-2" className="dropdown-item is-active">
-            Ervin Howell
-          </a>
-          <a href="#user-3" className="dropdown-item">
-            Clementine Bauch
-          </a>
-          <a href="#user-4" className="dropdown-item">
-            Patricia Lebsack
-          </a>
-          <a href="#user-5" className="dropdown-item">
-            Chelsey Dietrich
-          </a>
+      {userList && (
+        <div className="dropdown-menu" id="dropdown-menu" role="menu">
+          {users?.map(user => (
+            <li key={user.id}>
+              <a
+                href={`#user-${user.id}`}
+                className={cn('dropdown-item', {
+                  'is-active': selected === user.id,
+                })}
+                onClick={() => selectUser(user.id)}
+              >
+                {user.name}
+              </a>
+            </li>
+          ))}
         </div>
-      </div>
+      )}
     </div>
   );
 };

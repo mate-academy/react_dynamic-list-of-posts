@@ -4,3 +4,9 @@ export interface User {
   email: string;
   phone: string;
 }
+
+export enum UserErrors {
+  noPost = 'No posts yet',
+  noSelected = 'No user selected',
+  wentWrong = 'Something went wrong!',
+}
